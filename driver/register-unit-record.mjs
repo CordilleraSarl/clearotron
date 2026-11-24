@@ -34,6 +34,7 @@ import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname, basename } from "node:path";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { paths, readJson } from "./run-record.mjs";
+import { registerPlanCallKilled } from "./tool-calls.mjs";
 
 /**
  * THE REPAIR TAIL FOR THIS STAGE'S BESPOKE FOLLOWUPS — one implementation, used by all of them.
@@ -275,7 +276,15 @@ export function recordUnitNote(runDir, received, { now = () => new Date().toISOS
     return { written: null, refused: undeclared, captured: closeCapture({ ok: false, refused: undeclared }), capture_failed: captureFailed };
   }
   const call = mergeUnitNoteCall(lastAcceptedUnitNote(dir0, axis), received);
-  const v = acceptUnitNote(call, { account: readBandAccount(dir0, axis), planned: plannedEntries(dir0, axis) });
+  const account = readBandAccount(dir0, axis);
+  // NO BAND BECAUSE THE PLAN CALL NEVER CAME BACK is a product fault, not a unit that has not run: the call log holds
+  // its start and no return. The step is told so, and is not sent back to make the call again (product-fault.mjs).
+  if (!account) {
+    const killed = registerPlanCallKilled(dir0, axis);
+    if (killed) return { written: null, refused: null, product_fault: `${killed.tool ?? "register call"} for ${axis} never returned`,
+      captured: closeCapture({ ok: false, product_fault: true }), capture_failed: captureFailed };
+  }
+  const v = acceptUnitNote(call, { account, planned: plannedEntries(dir0, axis) });
   if (!v.ok) {
     // BEST-EFFORT, and it must stay that way: a journal write that failed a refusal would turn a defect
     // the seat can fix into one it cannot see. The refusal is the return value; this is the audit trail.

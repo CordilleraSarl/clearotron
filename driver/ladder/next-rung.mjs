@@ -10,6 +10,7 @@
 
 import { runLog, note } from "../log.mjs";
 import { everyToolCallRefused } from "../engine/tool-refusal.mjs";
+import { productFaultOf } from "../product-fault.mjs";
 
 // #5b — stop a WARM attempt after ONE try when it ran to the HARD WALL. The warm patch is the one rung that resumes
 // a session: it is passed the session that just produced a content failure. If that resumed turn was SIGKILLed at
@@ -193,6 +194,15 @@ export function nextRung({ fail, warm, attempt, maxRetries, attemptFails, usage,
         free_rungs_used: rungsRefunded, free_rungs_max: WARM_ZERO_USAGE_FREE_RUNGS,
         fail: String(fail).slice(0, 200) });
     } catch { /* telemetry best-effort — never fail a turn over a journal line */ }
+  }
+  // A PRODUCT FAULT ENDS THE LADDER. The call failed for a reason in the product, and the step was told not to repeat
+  // it (product-fault.mjs), so a re-ask would ask for the call it was told not to make, and a fresh attempt would
+  // make it again at full cost. The stage ends failed with the fault named, and the run delivers the gap.
+  const fault = productFaultOf({ fail, runDir, label: name });
+  if (fault) {
+    note(`[${name}] attempt ${attempt} ended on a product fault (${fault.cause}${fault.tool ? ` on ${fault.tool}` : ""}) — breaking the ladder: the call is not repeated, and the gap is delivered`);
+    recordAttemptPrevented("ladder-break:product-fault", "product-fault");
+    return out("break");
   }
   // Exactly one row per prevented attempt: the warm produced-nothing case satisfies the cut AND then
   // falls into the break below, and two rows for one decision would double every count taken off them.

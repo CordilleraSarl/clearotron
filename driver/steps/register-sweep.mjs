@@ -12,7 +12,8 @@ import { GRID_HALVES, GRID_SEATS, MEANING_SEAT, balanceClosureCells, findCoverag
 import { connotationObligations, parseDispositionForm, parsePrRiskResults, renderDispositionTable } from "../connotation-search.mjs";
 import { NON_MATERIAL_AXES } from "../coverage-ledger.mjs";
 import { undecidedCrossChecks, waitingCrossCheck, withoutWait } from "../cross-check-wait.mjs";
-import { plainDeferralReason } from "../deferral-row.mjs";
+import { plainCause, plainDeferralReason } from "../deferral-row.mjs";
+import { productFaultOf } from "../product-fault.mjs";
 import { formSidecarPath, outstandingRows, unionDispositionForm } from "../disposition-union.mjs";
 import { config, envGateOn } from "../driver.config.mjs";
 import { registerAdapter } from "../engine/run-choices.mjs";   // the run's register adapter, from ctx.register
@@ -269,15 +270,19 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     }
   }
   // A REGISTER UNIT THAT WROTE NO RESULT is the searches not completed, after every other member has been held to its
-  // own failure as before (unfinishedUnitAsItStands, above). A rate limit keeps its own path.
+  // own failure as before (unfinishedUnitAsItStands, above). A rate limit keeps its own path. So is a unit whose plan
+  // call was sent and never came back, whether or not its note was filed: that is a product fault, the unit was not
+  // asked to repeat the call, and its slices are delivered open as having timed out (product-fault.mjs).
+  const killedCall = (i) => Boolean(productFaultOf({ fail: gatherResults[i]?.fail, runDir: run.runDir, label: `register-unit:${gather[i].axis}` }));
   const unfinished = gather.map((g, i) => i).filter((i) => gather[i].name === "register-unit" && gather[i].axis
-    && !gatherResults[i]?.ok && !gatherResults[i]?.resetsAt && !existsSync(P.registerUnit(gather[i].axis)));
+    && !gatherResults[i]?.ok && !gatherResults[i]?.resetsAt && (!existsSync(P.registerUnit(gather[i].axis)) || killedCall(i)));
   gather.forEach((g, i) => { if (!unfinished.includes(i)) must(gatherResults[i], g.name + (g.axis ? `:${g.axis}` : "")); });
   if (unfinished.length) {
     const axesOut = unfinished.map((i) => gather[i].axis), first = gatherResults[unfinished[0]];
     throw Object.assign(new StageFailure(`register-unit:${axesOut[0]}`, first?.fail ?? "failed", undefined, { quantity: first?.quantity }),
       { notCompletedPart: "searches", unfinishedUnits: axesOut,
-        excludedSlices: axesOut.flatMap((a) => slicesUnitNeverReached(P, ctx.registerPlan, a)) });
+        excludedSlices: unfinished.flatMap((i) => slicesUnitNeverReached(P, ctx.registerPlan, gather[i].axis,
+          ...(killedCall(i) ? [plainCause("tool_timeout")] : []))) });
   }
   // winning session key per axis → a later escalation resumes the EXACT key the unit succeeded on.
   // (register units only — a common-law half's axis is its half id, tracked in clHalves, never here.)
