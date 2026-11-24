@@ -1329,9 +1329,15 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-plan-is-repaired-in-two-states.test.mjs": {
+          "tests": 4,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-plan-states-every-names-group.test.mjs": {
           "tests": 6,
-          "asserts": 30,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -1601,13 +1607,13 @@
         },
         "a-memo-has-a-door-onto-it.test.mjs": {
           "tests": 26,
-          "asserts": 85,
+          "asserts": 88,
           "skips": 0,
           "todos": 0
         },
         "a-memo-is-offered-only-where-it-can-be-written.test.mjs": {
-          "tests": 3,
-          "asserts": 17,
+          "tests": 5,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -9849,8 +9855,8 @@
           "todos": 0
         },
         "the-connector-says-what-its-handlers-do.test.mjs": {
-          "tests": 6,
-          "asserts": 22,
+          "tests": 8,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
