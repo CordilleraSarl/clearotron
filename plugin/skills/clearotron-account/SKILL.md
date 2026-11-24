@@ -29,7 +29,8 @@ they carry the case-law reading:
 - **Multi-country focus search** — one name, across a region or two or more countries. The
   native-language investigation can be added to it.
 - **Full country search** — one name, exactly one country. The only search that carries the case-law
-  and opposition reading, and the native-language investigation runs as part of it.
+  and opposition reading, and it includes the native-language investigation where the territory is
+  supported.
 
 `describe_options` is the authority on which of these this deployment can actually run, and on
 anything unavailable — never recite this list as the menu without checking it.
@@ -47,8 +48,9 @@ record:
   specific to the goods. It runs dozens of queries and rules every result it gets back, including the
   ones it discards. A clearance that reports nothing troubling here has *read* the question and
   answered it — it has not skipped it.
-- **Native-language lanes**, on a full country search, and on a multi-country focus search that added
-  them: the name read in the language and script of the market, not only in English.
+- **Native-language lanes**: the name read in the language and script of the market, not only in
+  English. A Full country search includes native-language work where the territory is supported. A
+  Multi-country focus search can add it. Use the report's recorded coverage to say what actually ran.
 
 Case law and oppositions are read on a full country search and are not part of the other three.
 
@@ -136,7 +138,7 @@ Names in this section are yours to call, never yours to say.
 - **`stop_run`** — cancels a search that is queued or running.
 - **`what_if_plan`** — free. *What would change if…* On a live search, re-run one step
   (`kind: "stage"`). On a delivered one, ask for a memo (`kind: "memo"`) with the assumption in
-  `instructions` ("treat ACME's mark as expired", "assume the goods narrow to software"). It runs nothing: it
+  `instructions` ("assume the goods narrow to software"). It runs nothing: it
   tells you which step re-runs, how complete an answer one step gives, what sits downstream that will
   **not** be recomputed, whether it hits paid external search, and roughly how long it took last time.
   It returns a `confirmationToken`. Read the honesty note back to the user before you spend anything.

@@ -21,9 +21,8 @@ request beneath it, which makes a follow-up look like a fresh request, so check 
 (in flight and recently delivered) and your own sent confirmation for the thread first. A bare "proceed"
 or a thank-you never starts a second search: reply once that the search is already running, and stop. A
 different mark in the same thread is a distinct matter and its own search. A newly named applicant, or
-marks to exclude, go in through `feed_context` while a run is in flight; it carries nothing else, so a
-changed instruction reaches only a new search. Only the requester's explicit "run it again" starts a
-second search of the same mark, with `dupOverride: true`.
+marks to exclude, go in through `feed_context` while a run is in flight; it carries nothing else. Only
+the requester's explicit "run it again" starts a second search of the same mark, with `dupOverride: true`.
 
 **2. Read the brief out of the request.** Ask only for what is both impossible to infer and material.
 - The mark or marks, and what kind each is: a word, a logo, a slogan.

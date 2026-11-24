@@ -22,9 +22,10 @@ A clearance reads more than the register. It reads live and pending rights acros
 reads use off the register on marketplaces, retailers and the open web; it reads what the name
 **means and connotes** — its semantic field, slang and street readings, cultural and historical
 associations, political charge, and controversy specific to the goods, in a connotation sweep that
-rules every result it gets back; and on a full country search, or a multi-country focus search that
-added it, it reads the name in the language and script of the market. Case law and oppositions are read on some
-searches and not on others, and the report says which this was.
+rules every result it gets back; and it can read the name in the language and script of the market.
+A Full country search includes native-language work where the territory is supported. A Multi-country
+focus search can add it. Use the report's recorded coverage to say what actually ran. Case law and
+oppositions are read on some searches and not on others, and the report says which this was.
 
 Every one of those readings can come back quiet. **A reading that returned nothing is a result, not a
 gap.** Before you tell a user the search did not look at something, read the report's own scope and

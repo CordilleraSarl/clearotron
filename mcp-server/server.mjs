@@ -103,7 +103,8 @@ const log = (...a) => process.stderr.write(`[${NS}] ${a.join(" ")}\n`);
 // injection-scrubber (which redacts "ignore previous instructions" patterns) leaves it intact.
 export const BRIEFING_NOTE =
   "Plain-language layer — brief the user in this voice. Translate any risk codes (e.g. 'Level 5 = C + " +
-  "[dispute type]') into plain English. Name no model, internal step, tool or document in the answer.";
+  "[dispute type]') into plain English. Name no internal model, step, tool or document in the answer. You may identify " +
+  "a public filing or evidence source to explain the result.";
 
 // ---- run / artifact helpers --------------------------------------------------------------------
 
@@ -403,16 +404,18 @@ const tools = {
     if (section) { const secs = parseSections(parseFront(text).body); return { ...hint, name, section, text: secs[section] ?? `(section "${section}" not found; available: ${Object.keys(secs).join(", ")})` }; }
     return { ...hint, name, file: basename(path), text };
   },
-  list_findings({ runId, kind, sourceLayer, group }) {
+  list_findings({ runId, kind, sourceLayer, group }, { scope } = {}) {
     const run = mustRun(runId);
     if (isKnockoutRun(run)) {
       // `group` is the clearance report's on-field/off-field/out-of-scope curation. A knockout report has
-      // no such sectioning, so the honest answer names that rather than filtering to nothing.
+      // no such sectioning, so the honest answer names that rather than filtering to nothing. A report link
+      // cannot call without `group` (shared/scope.mjs), so it is sent where its findings are (design, 2026-11-24).
       if (group) {
         return {
           _note: BRIEFING_NOTE, kind: "cards", group, items: [],
-          ...notProducedOnThisProduct("on-field/off-field/out-of-scope card groups",
-            "Call list_findings without `group` for this run's findings, each with its band."),
+          ...notProducedOnThisProduct("on-field/off-field/out-of-scope card groups", scope?.kind === "user"
+            ? "Read this run's findings in brief and in the report."
+            : "Call list_findings without `group` for this run's findings, each with its band."),
         };
       }
       return { _note: BRIEFING_NOTE, ...knockoutFindings(run, { kind, sourceLayer }) };
@@ -762,6 +765,9 @@ const PROMPTS = [
     description: "The conflicts in order of how much they actually threaten the filing, with the evidence behind each.",
     audiences: ["user", "account"],
     text: "Take me through the risks in this search, most material first. For each: who holds the right, where, over what goods or services, how close it is to my mark, and what it would take to get past it. Keep the report's ranking — an on-field conflict outranks a watchlist note, and do not promote one into the other. Say for each whether the underlying record was actually retrieved or the citation rests on a write-up.",
+    // A REPORT LINK HOLDS THE REPORT, ITS BRIEF AND ITS CARDS, and no record or search list (design, 2026-11-24): it is
+    // asked to answer from those and to say where they stop, never to certify a retrieval from a summary.
+    textFor: { user: "Take me through the risks in this search, most material first. For each: who holds the right, where, over what goods or services, how close it is to my mark, and what it would take to get past it. Keep the report's ranking — an on-field conflict outranks a watchlist note, and do not promote one into the other. Answer from the delivered report, its briefing and the report cards you can read. Where they do not show whether the underlying record was retrieved, say that this connection cannot show it." },
   },
   {
     name: "what-wasnt-covered",
@@ -769,6 +775,7 @@ const PROMPTS = [
     description: "The honest edges of this search: what it did not reach, and what came back empty rather than clean.",
     audiences: ["user", "account"],
     text: "Tell me what this search did NOT cover, and be precise about the difference between an area that was searched and came back empty and an area that was never reached. Read the coverage statement and the searches that returned nothing before you answer. A reading that ran and found nothing is a result — report it as one, and do not describe it as a gap. Then state the real gaps plainly, in one place, without burying them under the clean parts.",
+    textFor: { user: "Tell me what this search did NOT cover, and be precise about the difference between an area that was searched and came back empty and an area that was never reached. Read the report's coverage statement before you answer. Where the report does not list the searches that returned nothing, say that this connection cannot show them. A reading that ran and found nothing is a result — report it as one, and do not describe it as a gap. Then state the real gaps plainly, in one place, without burying them under the clean parts." },
   },
   {
     name: "compare-the-search-options",
@@ -795,7 +802,7 @@ export function promptsFor(kind) {
 /** One prompt's text, or null when this audience is not offered it. */
 export function promptText(kind, name) {
   const p = PROMPTS.find((x) => x.name === name && x.audiences.includes(kind));
-  return p ? p.text : null;
+  return p ? p.textFor?.[kind] ?? p.text : null;
 }
 
 // ---- the client-facing cut of a tool description ---------------------------------
@@ -841,11 +848,12 @@ const CLIENT_TOOL_TEXT = {
   brief: (kind) =>
     "Start here for any question about what a search found: one plain-language briefing of the search — which product it was, the overall risk in plain words, each conflict in one or two plain sentences, and any conditions on the result. Facts, never advice."
     + (kind === "account" ? " Reach for get_run, trace and decision_timeline only when the user asks how the search reached a conclusion." : ""),
+  // A report link reaches the cards only (shared/scope.mjs), and a Knockout has none, so its link is sent to the brief and the report.
   list_findings: (kind) => (kind === "user"
-    ? "The individual findings behind the brief, as plain-language report cards. Pass group: on-field, off-field or out-of-scope; on this connection it is required."
+    ? "On a clearance report, the individual findings behind the brief, as plain-language report cards. Pass group: on-field, off-field or out-of-scope; on this connection it is required. A Knockout report has no report cards here: read its findings in brief and in the report."
     : null),
   what_if_plan: () =>
-    "Free: plans a what-if and spends nothing. kind 'stage' (the default) re-runs one step of a LIVE search: pass `stage`, and put the change in `instructions` (e.g. 'treat ACME as expired'). It reports what re-runs, what downstream is not recomputed, how complete the answer is, and a confirmationToken. kind 'memo' answers a what-if about a DELIVERED clearance report: a bounded re-read of its archived findings under a stated assumption, spending model tokens only — no searching, no register calls, and the report and its archive are never modified. A memo takes no stage; put the reader's own words in `instructions`.",
+    "Free: plans a what-if and spends nothing. kind 'stage' (the default) re-runs one step of a LIVE search: pass `stage`, and put the change in `instructions`. It reports what re-runs, what downstream is not recomputed, how complete the answer is, and a confirmationToken. kind 'memo' answers a what-if about a DELIVERED clearance report: a bounded re-read of its archived findings under a stated assumption, spending model tokens only — no searching, no register calls, and the report and its archive are never modified. A memo takes no stage; put the reader's own words in `instructions`.",
   what_if_result: () =>
     "Collect a what-if: its state (queued, running, done or failed) and, once done, what it changed against the original search. Pass runId and the experimentId what_if_run returned; omit experimentId to list every what-if asked of this search. The original is never modified — the experiment runs in its own sandbox.",
 };

@@ -21,9 +21,10 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", WORK);
 pinEnv(process.env, "CLEAROTRON_DEFAULT_AGENT", "intake-agent");
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(WORK, "pool"));
 
-const { TOOL_DEFS, describeForAudience, BRIEFING_NOTE } = await import("../server.mjs");
+const { TOOL_DEFS, describeForAudience, BRIEFING_NOTE, tools, promptText } = await import("../server.mjs");
 const { feedContext } = await import("../lib/ops.mjs");
-const { visibleTools } = await import("../../shared/scope.mjs");
+const { visibleTools, authorize } = await import("../../shared/scope.mjs");
+const { buildFixture, buildKnockoutRun, RUN_ID, RUN_ID_KO } = await import("./_fixture.mjs");
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const pack = (d, f = "SKILL.md") => readFileSync(join(ROOT, "skills", d, f), "utf8").split("\n").join(" ").replace(/ +/g, " ");
 const def = (name) => TOOL_DEFS.find((d) => d.name === name);
@@ -42,6 +43,8 @@ test("a client's session is not offered the model its gate refuses", () => {
   const plan = as("what_if_plan", "account");
   assert.equal("model" in plan.inputSchema.properties, false, "the account is offered a model and then refused for sending it");
   assert.doesNotMatch(plan.description, /model(?! tokens)/, "the description still invites a model");
+  assert.doesNotMatch(plan.description, /e\.g\./, "the description names an example where it only shows how to pass an assumption");
+  assert.doesNotMatch(pack("clearotron-account"), /treat ACME/, "the account briefing names an example where it only shows how to pass an assumption");
   assert.ok("model" in as("what_if_plan", "ops").inputSchema.properties, "the operator's tool lost a field it may use");
 });
 
@@ -53,9 +56,42 @@ test("a report link is told only of the tools it holds, and that a group is requ
     const text = as(name, "user").description;
     assert.deepEqual(named(text).filter((n) => !held(n)), [], `${name} points a report link at tools it does not hold`);
   }
-  assert.match(as("list_findings", "user").description, /Pass group: on-field, off-field or out-of-scope; on this connection it is required\./);
+  assert.match(as("list_findings", "user").description, /^On a clearance report, .*Pass group: on-field, off-field or out-of-scope; on this connection it is required\. A Knockout report has no report cards here: read its findings in brief and in the report\.$/);
   assert.equal(as("list_findings", "account").description, def("list_findings").description, "the account keeps the raw view's description");
   assert.match(pack("clearotron-client"), /## Your tools/, "the report link's briefing still counts its tools");
+});
+
+// THROUGH THE GATE AND THE HANDLER, for both products (design, 2026-11-24): a report link reaches the cards only, and a
+// Knockout has none, so its link is sent to the brief and the report rather than to a call its gate refuses.
+test("a report link lists a clearance's cards by group, and is sent to the brief and the report for a Knockout's findings", async () => {
+  buildFixture();
+  buildKnockoutRun();
+  const viaLink = async (runId, args) => {
+    const scope = { kind: "user", runId };
+    return tools.list_findings(authorize(scope, "list_findings", { runId, ...args }), { scope });
+  };
+  const cards = await viaLink(RUN_ID, { group: "on-field" });
+  assert.equal(cards.kind, "cards");
+  assert.ok(cards.items.length > 0, "a clearance report link lists no cards in a group it holds");
+  for (const runId of [RUN_ID, RUN_ID_KO])
+    assert.throws(() => authorize({ kind: "user", runId }, "list_findings", { runId }), /curated group/, "a report link reached the raw findings");
+  const knockout = await viaLink(RUN_ID_KO, { group: "on-field" });
+  assert.equal(knockout.available, false);
+  assert.match(knockout.note, /Read this run's findings in brief and in the report\.$/);
+  assert.doesNotMatch(knockout.note, /without `group`/, "a Knockout report link is sent to a call its gate refuses");
+  const operator = await tools.list_findings({ runId: RUN_ID_KO, group: "on-field" }, { scope: { kind: "ops" } });
+  assert.match(operator.note, /Call list_findings without `group`/, "an operator lost the pointer to the call it may make");
+});
+
+test("the report link's two evidence prompts answer from what the link holds, and the account's keep the evidence it can read", () => {
+  for (const name of ["walk-me-through-the-risks", "what-wasnt-covered"]) {
+    assert.ok(promptText("user", name), `${name} is no longer offered on a report link`);
+    assert.doesNotMatch(promptText("user", name), /the searches that returned nothing before you answer|Say for each whether the underlying record was actually retrieved/,
+      `${name} asks a report link for evidence it cannot read`);
+    assert.match(promptText("user", name), /this connection cannot show/, `${name} does not tell a report link to state the limit`);
+  }
+  assert.match(promptText("account", "walk-me-through-the-risks"), /Say for each whether the underlying record was actually retrieved/);
+  assert.match(promptText("account", "what-wasnt-covered"), /Read the coverage statement and the searches that returned nothing/);
 });
 
 test("a run-failed notice is settled with mark_sent, as the courier's instructions and the outbox both say", () => {
@@ -68,16 +104,19 @@ test("feed_context is described as taking what its handler takes", () => {
   assert.throws(() => feedContext({ runId: "quillmere-run", instructions: "search the EU only" }), /instructions is not accepted/);
   assert.doesNotMatch(pack("clearotron-ops"), /feed_context`, whose field is `instructions`/, "the ops briefing still sends guidance through a refused field");
   assert.doesNotMatch(pack("clearotron-ops"), /A changed instruction while a run is in flight goes in through `feed_context`/);
+  assert.doesNotMatch(pack("clearotron-ops"), /a changed instruction reaches only a new search/, "the briefing infers what another route accepts from this tool's limits");
   assert.match(pack("clearotron-ops"), /`feed_context` takes only the applicant and exclusions; it carries no instructions\./);
 });
 
-test("the native-language reading is claimed only for the searches that run it, and no model or step is named", () => {
+test("the native-language reading is claimed only for the searches that run it, and no internal name is given", () => {
   for (const d of ["clearotron-client", "clearotron-account"]) {
     assert.doesNotMatch(pack(d), /where the territories call for (it|them)/, `${d} claims a native-language reading on searches that never run one`);
-    assert.match(pack(d), /on a full country search, (or|and on) a multi-country focus search that added (it|them)/);
+    assert.ok(pack(d).includes("A Full country search includes native-language work where the territory is supported. A Multi-country focus search can add it. Use the report's recorded coverage to say what actually ran."),
+      `${d} does not state design's distinction`);
   }
-  assert.equal(BRIEFING_NOTE.endsWith("Name no model, internal step, tool or document in the answer."), true,
-    "the note riding every plain-language answer still licenses what both briefings forbid");
+  assert.doesNotMatch(pack("clearotron-account"), /native-language investigation runs as part of it/, "a Full country search is said to examine a language its territory may not support");
+  assert.equal(BRIEFING_NOTE.endsWith("Name no internal model, step, tool or document in the answer. You may identify a public filing or evidence source to explain the result."), true,
+    "the note riding every plain-language answer licenses internal names, or forbids naming the public source of a result");
   for (const kind of ["user", "account"])
     assert.doesNotMatch(as("start_run", kind).description, /takes hours/, "the client's start_run still promises hours instead of the preview's turnaround");
   assert.doesNotMatch(def("describe_options").description, /once the requester has confirmed/,
