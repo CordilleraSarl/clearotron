@@ -1157,18 +1157,8 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   const outIsToolWritten = files.length ? toolWrittenArtifact(files[0]) : null;
   if (sibling && files.length && !sibIsToolWritten && !outIsToolWritten) {
     const sib = join(dirname(files[0]), sibling);
-    // THE OUT FILE IS NAMED ONLY TO SAY "LEAVE IT ALONE", AND ON A CONVERTED STAGE THAT IS THE WRONG WAY
-    // TO SAY IT. This message carries TWO artifacts — the stage's out, told to stand,
-    // and the sibling, told to be re-saved — so a reader looking for "does any message name a
-    // tool-written artifact beside a write order" cannot pair them, and the guard flags the pair.
-    // Its conservatism is right: pairing an order with a target by proximity would be guessing, and the
-    // defect it exists to catch looks exactly like this from outside. So the converted case says the file
-    // is the driver's WITHOUT naming a path — which is also more accurate than telling a seat not to
-    // rewrite something it holds no writer for.
-    const outIsToolWritten = toolWrittenArtifact(files[0]);
-    const standsClause = outIsToolWritten
-      ? `Do NOT redo the work from scratch. This stage's own output is the driver's — it is rendered from your \`${outIsToolWritten.tool}\` call and you hold no tool that writes it, so there is nothing there for you to rewrite or protect.`
-      : `Do NOT redo the work from scratch, and do NOT rewrite ${names || "the findings file"} (it already passed validation).`;
+    // The stage's own output is not the driver's here (the guard above), so the session is told to leave it as it stands.
+    const standsClause = `Do NOT redo the work from scratch, and do NOT rewrite ${names || "the findings file"} (it already passed validation).`;
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. ${standsClause}\n` +
       `Your saved ${sibling} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), heldRecord: heldSynthesisRecord(files), adds })}.\n` +
       `Re-save the COMPLETE corrected JSON at ${sib}. Do not stop until it exists and is valid.`;
