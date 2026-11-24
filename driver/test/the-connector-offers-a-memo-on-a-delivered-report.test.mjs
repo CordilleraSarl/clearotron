@@ -23,6 +23,9 @@ import { instructionsFor } from "../../mcp-server/lib/instructions.mjs";
 import { whatIfPlan } from "../../mcp-server/lib/whatif.mjs";
 import { visibleTools } from "../../shared/scope.mjs";
 import { STAGE_ORDER } from "../stages.mjs";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 // WRAPPED PROSE IS STILL ONE SENTENCE. These files are hand-wrapped at ~100 columns, so a sentence the
 // briefing states runs across a newline and a regex with a literal space in it misses text that is
@@ -36,7 +39,8 @@ const clientPack = () => flat(instructionsFor({ kind: "user" }));
 // A delivered, archived run — the state the memo exists for. whatIfPlan is pure over a resolved run, so
 // this is the real planner, not a stand-in for it.
 const delivered = {
-  runId: "r-315", slug: "s", codename: "c", agent: "a", runDir: "/nonexistent",
+  // Holding the findings a memo reads: the planner offers a memo only where the worker can read one.
+  runId: "r-315", slug: "s", codename: "c", agent: "a", runDir: (() => { const d = mkdtempSync(join(tmpdir(), "memo-offer-")); writeFileSync(join(d, "findings.json"), "{}"); return d; })(),
   P: {}, status: "delivered", state: "delivered", location: "archive",
 };
 const ASSUMPTION = "the Korean application were abandoned";
@@ -64,7 +68,7 @@ test("the briefing tells the assistant to check the state before refusing", () =
 test("the refusal the briefing warns about is the refusal the engine actually gives", () => {
   const plan = whatIfPlan({ run: delivered, stage: STAGE_ORDER[0], instructions: ASSUMPTION });
   assert.equal(plan.runnable, false, "a step re-run on a delivered run is supposed to be refused");
-  assert.match(plan.reason, /live runs only/i,
+  assert.match(plan.reason, /no step of it re-runs; to ask what changes under an assumption, plan a memo instead/i,
     "the engine's refusal changed wording; the briefing tells the assistant a step re-run is refused on a "
     + "delivered report, so the two have drifted");
 });

@@ -61,7 +61,7 @@ function manualShape() {
 
 // One invented name, with a value for every key the manual's example shows.
 const VALUES = {
-  batch: { productContext: "A software tool for invented test data.", inUseAs: "a software product or app", useKind: "software app", umbrellaBrandNote: null, executionOrder: ["VELTRIN"] },
+  batch: { productContext: "A software tool for invented test data.", inUseAs: "a software product or app", useKind: "software app", umbrellaBrandNote: null, executionOrder: ["VELTRIN"], families: [["VELTRIN"]] },
   mark: { ref: null, name: "VELTRIN", classes: [9, 42], beltAndBraces: [35], classesPlain: "Software, and software services.",
     contextFraming: "The name of the tool itself.", useKind: "software app", places: ["web", "example.com"],
     spellings: ["VELTRIN", "VELTRYN"], alternatives: [], priorKnowledge: null, priority: 1 },
@@ -86,12 +86,13 @@ test("a frame call shaped as the manual shows it, places per name, passes the ga
     "the required-field gate refuses a call the manual teaches and the acceptor accepts, before the handler runs");
 });
 
-test("the gate still walks into the batch: a call missing what the acceptor does require is refused there", async () => {
-  // THE CONTROL. Without it the arm above cannot tell a schema that requires the right fields from a gate
-  // that stopped looking inside `batch` at all.
+test("the gate lets a batch sent without its product context reach the recorder, which refuses it on a first call", async () => {
+  // THE CONTROL, turned round by design's ruling of 2026-11-24: the gate cannot tell a first call from a repair, so it
+  // requires nothing on the batch, and the recorder refuses what a first call leaves out. Both entrances are driven
+  // end to end in a-knockout-plan-is-repaired-in-two-states.test.mjs.
   const call = manualShapedCall();
   delete call.batch.productContext;
-  assert.equal(acceptKnockoutFrame(call).ok, false, "premise: the acceptor refuses a batch with no product context");
   const schema = await schemaOf("record_knockout_frame");
-  assert.ok(requiredFieldViolations(schema, call).includes("batch.productContext"), "the gate no longer looks inside batch");
+  assert.deepEqual(requiredFieldViolations(schema, call), [], "the gate refuses a batch field the recorder would merge from the saved plan");
+  assert.match(acceptKnockoutFrame(call).reason ?? "", /^knockoutframe_context_missing:/, "a first call without the product context is accepted");
 });

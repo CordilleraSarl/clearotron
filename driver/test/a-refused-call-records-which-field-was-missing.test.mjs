@@ -102,9 +102,10 @@ const rowsOf = (runDir) => {
 test("the settled row names the fields the call did not carry", async () => {
   const runDir = mkdtempSync(join(tmpdir(), "missing-field-"));
   try {
-    // `record_knockout_frame` declares scope_note, batch and marks required. Sending one of the three is
-    // the shape the round of 2026-09-26 hit: a first call with nothing to merge onto.
-    const out = await callTool(runDir, "record_knockout_frame", { scope_note: "a note" });
+    // The round of 2026-09-26 hit this on the Knockout frame, a first call with nothing to merge onto. That tool now
+    // requires nothing at the gate (design, 2026-11-24: its recorder holds the first call and the repair), so the arm
+    // drives the blind frame, which still declares four fields required: one sent, three missing.
+    const out = await callTool(runDir, "record_blind_frame", { dominant_element: "a note" });
     assert.equal(out?.isError, true, "precondition: the gate refused this call at all");
     const settled = rowsOf(runDir).filter((r) => r.event === "settled");
     assert.equal(settled.length, 1, "the gate wrote no settled row, so there is nothing to assert about");
@@ -112,16 +113,16 @@ test("the settled row names the fields the call did not carry", async () => {
     assert.match(String(settled[0].reason ?? ""), /^missing_required:/,
       "the row still carries ok:false and no reason — the defect 985 is about, with the reason in scope "
       + "at the line that wrote it");
-    for (const field of ["batch", "marks"])
+    for (const field of ["variants", "fields", "ranking_basis"])
       assert.match(settled[0].reason, new RegExp(`\\b${field}\\b`), `the row does not name the missing \`${field}\``);
-    assert.doesNotMatch(settled[0].reason, /\bscope_note\b/, "the row names a field the call DID carry");
+    assert.doesNotMatch(settled[0].reason, /\bdominant_element\b/, "the row names a field the call DID carry");
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
 test("the row carries the field names and not the refusal sentence", async () => {
   const runDir = mkdtempSync(join(tmpdir(), "missing-field-text-"));
   try {
-    const out = await callTool(runDir, "record_knockout_frame", {});
+    const out = await callTool(runDir, "record_blind_frame", {});
     const text = String(out?.content?.[0]?.text ?? "");
     assert.match(text, /_missing_required:/, "precondition: the model was handed the refusal");
     const [settled] = rowsOf(runDir).filter((r) => r.event === "settled");
@@ -144,8 +145,8 @@ test("a call the gate lets past settles with no reason at all", async () => {
     // The handler may still refuse this payload for reasons of its own; that is fine and is the point. The
     // claim is about the GATE: a call it lets past leaves a row with no `reason`, whatever the handler then
     // decides.
-    const args = minimalFor(await schemaOf(runDir, "record_knockout_frame"));
-    const out = await callTool(runDir, "record_knockout_frame", args);
+    const args = minimalFor(await schemaOf(runDir, "record_blind_frame"));
+    const out = await callTool(runDir, "record_blind_frame", args);
     const settled = rowsOf(runDir).filter((r) => r.event === "settled");
     assert.equal(settled.length, 1, "precondition: the call settled at all");
     assert.doesNotMatch(String(out?.content?.[0]?.text ?? ""), /_missing_required:/,

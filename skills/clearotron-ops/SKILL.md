@@ -20,9 +20,9 @@ a yes.
 request beneath it, which makes a follow-up look like a fresh request, so check `list_runs` for the mark
 (in flight and recently delivered) and your own sent confirmation for the thread first. A bare "proceed"
 or a thank-you never starts a second search: reply once that the search is already running, and stop. A
-different mark in the same thread is a distinct matter and its own search. A changed instruction while
-a run is in flight goes in through `feed_context`. Only the requester's explicit "run it again" starts a
-second search of the same mark, with `dupOverride: true`.
+different mark in the same thread is a distinct matter and its own search. A newly named applicant, or
+marks to exclude, go in through `feed_context` while a run is in flight; it carries nothing else. Only
+the requester's explicit "run it again" starts a second search of the same mark, with `dupOverride: true`.
 
 **2. Read the brief out of the request.** Ask only for what is both impossible to infer and material.
 - The mark or marks, and what kind each is: a word, a logo, a slogan.
@@ -105,8 +105,8 @@ Extract from the request, faithfully (verbatim beats paraphrase):
 - **`customer`** — the applicant/owner name as stated. Omitting it arms the engine's late-bind
   watch; supply it later via `feed_context` when the requester answers.
 - **`upfrontInstructions`** — the requester's per-mark guidance, VERBATIM. Do not summarize away
-  constraints ("run X only", "Y is our own mark, not a conflict"). (Mid-run guidance goes through
-  `feed_context`, whose field is `instructions`.)
+  constraints ("run X only", "Y is our own mark, not a conflict"). (`feed_context` takes only the
+  applicant and exclusions; it carries no instructions.)
 - **`jurisdictions`** — the territories, when the requester names them ("EU and US only"). Present,
   they are AUTHORITATIVE: the search is told not to widen past them. Omit and the account's own
   default territories apply. Names or codes both read; max 20. Each search accepts its own geography

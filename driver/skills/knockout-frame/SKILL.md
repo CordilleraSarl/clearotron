@@ -78,7 +78,8 @@ on every place you name for it (task 2d), and keeps what each search returned, w
 ```json
 { "schema": 1,
   "batch": { "productContext": "<one sentence>", "inUseAs": "<task 2c>", "useKind": "<task 2c: the use phrase>",
-             "umbrellaBrandNote": null, "executionOrder": ["<mark>", "..."] },
+             "umbrellaBrandNote": null, "executionOrder": ["<mark>", "..."],
+             "families": [["<mark>", "<mark>"], ["<mark>"]] },
   "marks": [ { "ref": "<or null>", "name": "<verbatim>", "classes": [8, 21],
                "beltAndBraces": [35], "classesPlain": "<plain-language line>",
                "contextFraming": "<what THIS name is for — see task 2b>",
@@ -89,6 +90,6 @@ on every place you name for it (task 2d), and keeps what each search returned, w
 ```
 
 Exactly one row per instructed mark (name parity vs instructed-scope, byte-exact after trim);
-`beltAndBraces` are Nice ints; `executionOrder` is a permutation of the names. Each mark's `places` holds
+`beltAndBraces` are Nice ints; `executionOrder` is a permutation of the names. `families`: Put every submitted name in exactly one group. List unrelated names as groups of one. Each mark's `places` holds
 two or more entries, with no upper limit, one of them `web` and each other a bare host. No searching, no register speculation beyond the framing sentence. Also send a
 2–3 sentence scope note as `scope_note` (what the batch is, which classes, anything flagged).

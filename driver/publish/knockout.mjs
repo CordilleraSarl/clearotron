@@ -14,6 +14,7 @@ import { join } from 'node:path';
 import { EMAIL_TIER } from '../../shared/brand.mjs';
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
+import { knockoutCorrectionChecks, readCorrectionRound } from '../knockout-correction-check.mjs';   // a corrected Knockout delivers its correction
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
 import { KNOCKOUT_EMAIL as KO, KNOCKOUT_WORKBOOK as KW, KNOCKOUT_PAGE as KP } from './strings.mjs';
@@ -639,7 +640,7 @@ function readTheMachineChecks({ runDir, findings, receipts }) {
   //      rewriting history; where the run store is read-only it simply does not land.
   let qcFlags = [], machineChecksFailed = null;
   try {
-    const lint = runKnockoutLint({ findings });
+    const lint = runKnockoutLint({ findings, correction: knockoutCorrectionChecks({ findings, round: readCorrectionRound(runDir) }) });
     qcFlags = deliveryFlagLines(lint.failures.filter((c) => c.surface === 'report'));
     try {
       ensureDriverDir(runDir);

@@ -5,6 +5,9 @@
 
 import { test, before } from "node:test";
 import assert from "node:assert/strict";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { buildFixture, RUN_ID } from "./_fixture.mjs";
 
 let runs, whatif;
@@ -82,9 +85,11 @@ test("whatIfRun refuses without a confirmation", async () => {
 // the door open from BOTH sides: a memo gets through, and the live-run rule a memo is exempt from is
 // still enforced for everything that is not one.
 
+// A delivered clearance, with the findings a memo reads: every door asks for them before a memo runs (design, 2026-11-24).
+const deliveredDir = () => { const d = mkdtempSync(join(tmpdir(), "whatif-memo-")); writeFileSync(join(d, "findings.json"), "{}"); return d; };
 const deliveredRun = (over = {}) => ({
   runId: "d-e-f", slug: "d", codename: "f", location: "archive", state: "delivered",
-  P: {}, runDir: "/d", status: {}, ...over,
+  P: {}, runDir: deliveredDir(), status: {}, ...over,
 });
 const memoToken = (assumption, runId = "d-e-f") =>
   Buffer.from(JSON.stringify({ runId, kind: "memo", instructions: assumption })).toString("base64url");

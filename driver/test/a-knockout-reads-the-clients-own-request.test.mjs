@@ -81,10 +81,12 @@ const frameCall = (alternatives) => ({ schema: 1, scope_note: "An invented note.
 test("a row's alternatives are checked for shape only: which forms the request gives is the frame's reading of it", () => {
   for (const a of [undefined, null, [], ["LAKE MOON", "MOON LAKE"], ["LAKE/MOON"], ["LAKE, MOON"], ["LUNAR LAKE"]]) assert.equal(alternativesDefect(NAME, a), null, JSON.stringify(a));
   for (const a of ["LAKE MOON", [""], ["  "], [7]]) assert.match(alternativesDefect(NAME, a), /a list of the written forms of this one item/);
-  assert.equal(acceptKnockoutFrame(frameCall(["LAKE MOON", "MOON LAKE"])).ok, true);
-  assert.equal(acceptKnockoutFrame(frameCall(["LAKE/MOON"])).ok, true, "a form holding a slash was refused for its punctuation");
-  assert.equal(acceptKnockoutFrame(frameCall(undefined)).ok, true, "a row with one form was refused");
-  assert.match(acceptKnockoutFrame(frameCall("LAKE MOON")).reason, /knockoutframe_alternatives/);
+  // The call carries a use and spellings on its name, the shape only a replay hands back as saved.
+  const accept = (a) => acceptKnockoutFrame(frameCall(a), { saved: true });
+  assert.equal(accept(["LAKE MOON", "MOON LAKE"]).ok, true);
+  assert.equal(accept(["LAKE/MOON"]).ok, true, "a form holding a slash was refused for its punctuation");
+  assert.equal(accept(undefined).ok, true, "a row with one form was refused");
+  assert.match(accept("LAKE MOON").reason, /knockoutframe_alternatives/);
 
   const run = tempRun();
   const plan = join(run, "knockout-plan.json");

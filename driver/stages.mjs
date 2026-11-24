@@ -41,7 +41,7 @@ import { STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";   // — the ask is
 // The ledger's closed vocabularies, so the dispatch cannot teach an order or a member the code refuses.
 import { SCOPE_LAYERS, SCOPE_STATUSES } from "./scope-ledger.mjs";
 import { CLOSURE_EVIDENCE_FILES } from "./doubt-closure-call.mjs";
-import { caseLawSourceLines } from "./case-law-sources.mjs"; import { FAMILY_COMPLETENESS, COMMON_LAW_PARITY, RESPONSE_BAND_COHERENCE, REGISTRATION_NUMBERS, ENFORCER_INFERRED, LEGAL_TERMS_OF_ART } from "./manual-paragraphs.mjs";   // — carried by the stage's own manual; kept here for a copy that lacks one
+import { caseLawSourceLines } from "./case-law-sources.mjs"; import { productName } from "./products.mjs"; import { FAMILY_COMPLETENESS, COMMON_LAW_PARITY, RESPONSE_BAND_COHERENCE, REGISTRATION_NUMBERS, ENFORCER_INFERRED, LEGAL_TERMS_OF_ART } from "./manual-paragraphs.mjs";   // — carried by the stage's own manual; kept here for a copy that lacks one
 import { readAcceptedClosures } from "./doubt-closure-tool.mjs";   //  — what a retry no longer needs to ask   // conversion 6 — file_index is a POSITION into this list
 import { DECLINATION_REASON_TOKENS } from "./declination-call.mjs";   // — the vocabulary is dictated FROM the acceptance boundary, so the order and the refusal cannot disagree
 
@@ -1184,9 +1184,9 @@ export const STAGES = {
         why: "CONVERTED (conversion 2). It read `mechanical:pre-bound` — 'the driver named the path in the dispatch' — which was true and is now beside the point: there is no path in the dispatch. The seat sends VALUES and the driver renders matter-context.md, so nothing is pre-bound because nothing is handed over to be filled in",
       },
     },
-    message: ({ paths: P, job, customerUnknown, profile, exclusionSeed }) => lines(
+    message: ({ paths: P, job, customerUnknown, profile, exclusionSeed, searchPolicy }) => lines(
       reads(["skills/matter-frame/SKILL.md"]),
-      `Build the strategic matter frame for this trademark preliminary-search request.`,
+      `Build the strategic matter frame for this trademark search request${productName(searchPolicy?.level) ? `: a ${productName(searchPolicy.level)}` : ""}.`,   // the product the run resolved, never "preliminary" for every clearance (design, 2026-11-24)
       `Request: ${JSON.stringify(job.marks ?? job.markName ?? job.name)}; classes ${JSON.stringify(job.classes ?? "")}.`,
       job.goods ? `Goods/services (verbatim): ${job.goods}` : "",
       // Round 2 Change 1a — the instructed territories are the AUTHORITATIVE scope; matter-frame derives scope

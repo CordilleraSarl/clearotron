@@ -9,7 +9,7 @@ import { paths } from "./run-record.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { validators as koValidators, registerLaneState, PERMITTED_SOURCES, useOf } from "./verify-knockout.mjs";
+import { validators as koValidators, registerLaneState, PERMITTED_SOURCES, useOf, FAMILIES_RULE, FRAME_REPAIR_RULE } from "./verify-knockout.mjs";
 import { kebab, PRODUCT_POLICIES } from "./search-policy.mjs";
 // — the door owns "did the request name any classes?"; this builder reads it rather than
 // re-deriving it. A third copy is what put the knockout frame a class behind the intake.
@@ -290,7 +290,7 @@ const FAMILY_RULE = `Read the common evidence once, and give each name its own c
 const FAMILY_RIGHTS_SENTENCE = (file) => `Earlier filings and market sources to consider for these names are in ${file}, each listed under the name it is for. Each suggested filing resembles a spelling being searched and overlaps a requested class. Read its goods, status and territory against the proposed use.`;
 const FAMILY_RIGHTS_ANSWER = `For each filing, say what you concluded for the name it is listed under: weigh it in a finding and list its recordId in \`weighedFilings\`, or write a \`registerReads\` row saying why it does or does not bear on that name. Where a filing or source was found is provenance only, and no reason either way.`;
 // THE INTAKE GROUPS THE NAMES INTO FAMILIES, checked in code (knockout-frame-record.mjs, familiesDefect).
-const FAMILIES_LINE = `Group the submitted names for the same proposed use when they share a recognisable word, phrase, stem, look or sound that could lead to the same earlier conflict. Consider each whole name and the proposed goods or services. Changes in word order, plural, ending or accompanying words can leave a family. A common descriptor, business suffix or theme alone is insufficient. Keep a short chain together when the middle name warrants both comparisons. Otherwise use the strongest direct relationship and retain material links to names in other groups. Keep an uncertain name separate. Put each submitted name verbatim in exactly one group in batch.families. Keep spellings generated only for searching outside the groups.`;
+const FAMILIES_LINE = `Group the submitted names for the same proposed use when they share a recognisable word, phrase, stem, look or sound that could lead to the same earlier conflict. Consider each whole name and the proposed goods or services. Changes in word order, plural, ending or accompanying words can leave a family. A common descriptor, business suffix or theme alone is insufficient. Keep a short chain together when the middle name warrants both comparisons. Otherwise use the strongest direct relationship. Keep an uncertain name separate. ${FAMILIES_RULE}`;
 const FAMILY_READER_OPENER = (n) => `You are reading the register for a family of ${n} names of a KNOCKOUT screen: close variations the client chose for one proposed use. Read each distinct filing once, and keep for each name its own source, goods, status, relevance and follow-up questions. Carry an uncertain filing that may matter to a rating with your reason; never drop one silently. You rate nothing; the step after you rates what you carry forward, with your reasons.`;
 // THE REVIEW CHECKS FACTS AGAINST THEIR SOURCES AND THE RATINGS OF FINDINGS ON REGISTERED MARKS, and one correction answers what it
 // raises. Measured in testing, 2026-11-23: of 23 review complaints on five real orders, 13 chased thin web leads and 4 were coverage
@@ -460,9 +460,9 @@ export const KO_STAGES = {
       `HAND THE FRAME BACK BY CALLING \`record_knockout_frame\`. THERE ARE NO FILES FOR YOU TO WRITE and this dispatch names none — the driver writes both the plan and the scope note from what you send, and nothing you write by hand is read.`,
       `Send \`scope_note\`: the 2–3 sentence scope note, FINISHED — what the batch is, which classes, anything flagged. It is written to knockout-frame.md exactly as you send it, with no heading added and nothing composed into it, so it must read as a complete document on arrival.`,
       `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming, places (task 2d: the places THIS name is searched on, two or more, one of them the whole web, as many as the name needs) and priority, and useKind only where the request gives that name a different use (task 2c). The driver writes each name's spellings (task 2e). Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
-      `Send \`batch\`: productContext, inUseAs (task 2c), useKind (task 2c), and executionOrder as a permutation of your mark names. THE PLACES ARE PER NAME (task 2d) and go on each mark, not here.`,
+      `Send \`batch\`: productContext, inUseAs (task 2c), useKind (task 2c), families, and executionOrder as a permutation of your mark names. THE PLACES ARE PER NAME (task 2d) and go on each mark, not here.`,
       FAMILIES_LINE,
-      `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges marks BY NAME onto what it already accepted, so a mark you omit keeps its row — but a mark you DO send replaces that row whole, so send a corrected mark complete rather than as a fragment.`,
+      FRAME_REPAIR_RULE,
     ),
   },
   "knockout-register-read": {

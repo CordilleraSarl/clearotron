@@ -465,6 +465,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-corrected-knockout-delivers-its-correction.test.mjs": {
+          "tests": 8,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
         "a-correction-adds-the-finding-its-flags-name.test.mjs": {
           "tests": 12,
           "asserts": 36,
@@ -1329,6 +1335,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-plan-is-repaired-in-two-states.test.mjs": {
+          "tests": 4,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-plan-states-every-names-group.test.mjs": {
+          "tests": 6,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-publishes-once.test.mjs": {
           "tests": 2,
           "asserts": 16,
@@ -1595,7 +1613,13 @@
         },
         "a-memo-has-a-door-onto-it.test.mjs": {
           "tests": 26,
-          "asserts": 85,
+          "asserts": 88,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-memo-is-offered-only-where-it-can-be-written.test.mjs": {
+          "tests": 5,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -7413,6 +7437,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-assistants-name-the-product-the-search-is.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "the-attempt-record-carries-tool-time.test.mjs": {
           "tests": 14,
           "asserts": 49,
@@ -9827,6 +9857,12 @@
         "the-connector-calls-an-unsearched-area-what-the-report-does.test.mjs": {
           "tests": 2,
           "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-connector-says-what-its-handlers-do.test.mjs": {
+          "tests": 7,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },

@@ -65,7 +65,7 @@ import { REGISTER_AXES } from "../../coverage-ledger.mjs";
 import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
-import { USE_PHRASE } from "../../verify-knockout.mjs";   // the use phrase, defined once
+import { USE_PHRASE, FAMILIES_RULE, FRAME_REPAIR_RULE } from "../../verify-knockout.mjs";   // the use phrase, the families and the repair rule, each defined once
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
 import { recordKnockoutCorrection } from "../../knockout-correction-record.mjs";
 import { recordKnockoutRegisterRead } from "../../knockout-register-record.mjs";
@@ -1551,19 +1551,15 @@ serve({
       "knockout-plan.json and writes knockout-frame.md, so you never format JSON and never write either " +
       "file. `scope_note` is written EXACTLY as you send it, so write the finished 2-3 sentences — the " +
       "driver adds no heading and composes nothing into it. One row per instructed mark, names verbatim " +
-      "from the instructed scope. A repair turn may send only what it is correcting: the driver merges " +
-      "marks onto what it already accepted BY MARK NAME, so the marks you omit survive — but a mark you " +
-      "DO send replaces its stored row key by key, so send that mark whole.",
+      `from the instructed scope. ${FRAME_REPAIR_RULE}`,
     inputSchema: {
       type: "object",
-      // THE FIRST CALL'S CONTRACT, and it matches the acceptor rather than under-promising against it.
-      // This schema declared NOTHING required while `acceptKnockoutFrame` refused a call missing any of
-      // these three, so the document handed to the seat said a field was optional and the driver then
-      // refused it by name. A schema and an acceptor that disagree resolve toward the STRICTER side.
+      // NOTHING IS REQUIRED AT THE TOP OR ON THE BATCH, because the gate cannot tell a first call from a repair (design,
+      // 2026-11-24). The seat is handed this schema once, at the start of its session, and the gate checks every call
+      // against it; required fields here refused the repair the description asks for, a batch field or a name row sent
+      // alone, before the recorder saw it. The recorder holds the two states instead: the complete plan before its first
+      // save, and the plan a repair leaves after it. A name row stays required whole, because a row sent replaces its row.
       //
-      // A REPAIR turn may still omit all three: the acceptor validates the MERGED result, so the stored
-      // value stands. `required` describes the call that has nothing to merge onto — the first one.
-      required: ["scope_note", "batch", "marks"],
       // `schema` is accepted and ignored: the driver writes its own. Declared so a seat that sends it is
       // not refused for a field nobody reads — the narrow-refusal rule preserve-merge.mjs states.
       properties: {
@@ -1577,7 +1573,6 @@ serve({
         },
         batch: {
           type: "object",
-          required: ["productContext", "inUseAs", "useKind"],   // places are per name (ruling 570): the batch list is optional, as in the acceptor and the manual
           properties: {
             productContext: { type: "string", description: "One sentence: what the batch is for. Every mark's contextFraming is read against it." },
             // THE ORDER'S USE PHRASE (design, 2026-11-24): one for the names with the order's proposed use, so two runs of one order ask the same questions.
@@ -1594,7 +1589,7 @@ serve({
             },
             families: {
               type: "array", items: { type: "array", items: { type: "string" } },
-              description: "Put each submitted name verbatim in exactly one group in batch.families. Keep spellings generated only for searching outside the groups.",
+              description: FAMILIES_RULE,
             },
           },
         },
