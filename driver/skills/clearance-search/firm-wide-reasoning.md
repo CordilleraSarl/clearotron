@@ -5,22 +5,20 @@
 
 Reasoning true under every framework and lane.
 
-## Risk calibration adjustments (vs the v2 common-law-only framework)
+## Register evidence in the rating
 
-The risk-framework calibration rules originated in a common-law-only context. With register evidence available, three rules need adjustment:
+With register evidence available, three rules apply:
 
-### RF-10 update (was: "pending register overlay")
+### RF-10: when a rating carries the common-law caveat
 
-**v2 (common-law only):** *"Frame all assessments as pending register overlay. Standard caveat: 'Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction.'"*
+When register analysis ran AND surfaced live filings related to the finding, the assessment is confirmed. Use a caveat only when:
 
-**v3 (register included):** when register analysis ran AND surfaced live filings related to the finding, the assessment is no longer "pending overlay" — it's confirmed. Use the caveat only when:
-
-1. Register skipped (e.g., provider failed mid-run) — in which case fall back to v2 wording: "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."
+1. Register skipped (e.g., provider failed mid-run): "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."
 2. Register completed but no live filings surfaced for the finding's entity — note: "Register search returned no live filings for [entity] in target classes; rating reflects common-law evidence only." **Only sayable when that entity's material jurisdictions are `confirmed-clean` in the coverage ledger.**
 3. Register completed and surfaced live filings — drop the caveat entirely. Synthesis cites the register evidence directly.
-4. Register ran but the entity's material jurisdictions are `deferred` / `coverage-limited` in the ledger — do NOT say "no live filings." Caveat per the Coverage-honesty rule: "Register coverage for [entity] in [jurisdiction] was [deferred/limited] this run — not a clean negative" (the verdict carries it). doc-35: do NOT append "[scope] sweep recommended" — a search-reachable gap is closed or an internal note, never a client commission-a-sweep caveat.
+4. Register ran but the entity's material jurisdictions are `deferred` / `coverage-limited` in the ledger — do NOT say "no live filings." Caveat per the Coverage-honesty rule: "Register coverage for [entity] in [jurisdiction] was [deferred/limited] this run — not a clean negative" (the verdict carries it). Do NOT append "[scope] sweep recommended" — a search-reachable gap is closed or an internal note, never a client commission-a-sweep caveat.
 
-### RF-15 update (was: "Register Risk Estimate")
+### RF-15: the register note
 
 When the register ran, the note confirms rather than estimates. Write one of four states:
 
@@ -29,7 +27,7 @@ When the register ran, the note confirms rather than estimates. Write one of fou
 | Register ran, found filings | "Register search surfaced [N] live filings related to this entity (see Findings #X, #Y)." |
 | Register ran, no filings (material jurisdictions `confirmed-clean`) | "Register search returned no live filings for [entity] in target classes — common-law-only basis." |
 | Register ran, but material jurisdictions `deferred` / `coverage-limited` | "Register coverage for [entity] in [jurisdiction(s)] was [deferred/limited] — not confirmed clean" (the verdict carries it; no "sweep recommended" caveat — closed in the run or an internal note). |
-| Register skipped | Original v2 estimation language: "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction." |
+| Register skipped | "Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction." |
 
 ### Stealth-filer recalibration
 
@@ -76,9 +74,7 @@ The calibration of *how much* a properly-earned crowded field caps risk lives in
 
 ## Firm-wide reasoning discipline (applies under every framework)
 
-*(Migrated from the retired firm-neutral framework file (doc 50): the framework files now carry each
-customer's deck ONLY; the firm's how-to-reason discipline lives here and applies whichever framework is in
-force. Band references below use positional language — "the lowest band", "the middle band", "the top
+*(This discipline applies whichever framework is in force. Band references below use positional language — "the lowest band", "the middle band", "the top
 bands" — because the words differ per framework; the framework in force supplies the words.)*
 
 ### The consumer confusion test — the governing gate (apply FIRST)

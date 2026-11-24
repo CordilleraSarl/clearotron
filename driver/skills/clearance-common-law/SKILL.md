@@ -1,6 +1,6 @@
 ---
 name: clearance-common-law
-description: Common-law / marketplace execution for the v3 preliminary trademark search workflow. **Run by the driver** — do not call directly. Reads the variant manifest produced by `clearance-variants` and runs structured Perplexity research across the DICTATED platform list plus general web, social, e-commerce, and industry press. Produces a common-law findings file consumed by the orchestrator for synthesis and Excel assembly. Runs alongside `clearance-register`.
+description: Common-law / marketplace execution for the trademark search workflow. **Run by the driver** — do not call directly. Reads the variant manifest produced by `clearance-variants` and runs structured Perplexity research across the DICTATED platform list plus general web, social, e-commerce, and industry press. Produces a common-law findings file that synthesis reads. Runs alongside `clearance-register`.
 ---
 
 ## Spawned session

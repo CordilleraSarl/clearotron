@@ -239,9 +239,7 @@ third is never a clean negative either: its count stays on the record.
 
 **Each open row is discharged only by ITSELF.** A `coverage-limited` row about one slice does not
 account for a different slice's block, however plainly its reason discusses the axis — so set the status
-on the row that owns the block. This is the same rule the gate has always applied: a disclosure counted
-only where it named that block. What changed is that you no longer have to name it, because the driver
-wrote the block its own row. Rows about slices that genuinely enumerated to `has_more:false` STAY
+on the row that owns the block. The driver wrote each block its own row. Rows about slices that genuinely enumerated to `has_more:false` STAY
 `confirmed-clean` — do not downgrade them, that trades one false claim for another.
 
 Never retype a query id, a hit count or any other identifier into a reason cell to prove you read
@@ -274,8 +272,7 @@ uncertainty about whether I LOOKED, or about what the COMPLETE picture MEANS?* W
 
 **Axis labelling is the driver's on every row the driver wrote — and yours on every row you add.** Each
 driver row already carries its axis and its coverage unit, composed by the driver from the plan entry the
-row is about: you never retype one of those, so a transposed or markdown-wrapped axis is no longer a
-reachable failure on them. A row YOU add is the one place an axis cell is still yours, and it is a closed
+row is about: you never retype one of those. A row YOU add is the one place an axis cell is still yours, and it is a closed
 four-token vocabulary — the list is above, it is in the dispatch's coverage block, and the tool refuses
 an axis outside it at call time with the rejected value named.
 

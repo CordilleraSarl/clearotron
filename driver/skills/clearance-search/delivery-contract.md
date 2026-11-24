@@ -22,7 +22,7 @@ The card's risk chip is code-built from the finding's `band` + disposition; the 
 engineering/pipeline register. "Full detail" is collapsed.
 This is distillation by *removal and relocation* — do not add length to hit it.
 
-**Prose & curation (spec 09).** Cut dead weight and throat-clearing; one idea per sentence; 3+ parallel items
+**Prose & curation.** Cut dead weight and throat-clearing; one idea per sentence; 3+ parallel items
 become a `- ` list (**inside card bodies too**), never an inline `(a)…(b)…(c)` run; verdict-first; numbers over
 superlatives, no intensifiers or GPT-isms; say each caveat once. **Depth-on-click, not length-on-screen:** the
 card head + the typed `net` are always visible; everything heavier goes to `### Full
@@ -46,7 +46,7 @@ typed `net` (written once in `synthesis`); its shape is specified in
 [synthesis-rules.md](synthesis-rules.md) → *The finding sentence*, and nothing on the card restates or
 re-condenses it. One finding, one summary, one source.
 
-**Honesty — a negative is a searched result only if a search produced it (spec 09 §2, rule 7 / v2).** "No
+**Honesty — a negative is a searched result only if a search produced it.** "No
 marketplace use of [mark] found" is a *result* — write it only when a search actually ran for that mark. If the
 basis is an inference (the owner looks like a music act, not a games company), say that: "owner is a music-act
 entity; no targeted use-check ran, so there is no use finding either way", never a clean negative. Note the
@@ -55,7 +55,7 @@ prescription grammar, ruled out; a check a human must still make is a typed acti
 finding's actual-use line carries the searched result + link. Never
 dress an un-run check as a searched negative — on any surface (report, cover, client table).
 
-**Source layer on every card (spec 09 §5, v2).** Each `## ` card carries a `- source: Register | Common-law |
+**Source layer on every card.** Each `## ` card carries a `- source: Register | Common-law |
 Both` meta line (which layer surfaced it), rendered as a small tag on the card head and reflected in Full
 detail — **detail level only, never the top-line summary**. **Show what common-law actually contributed.** When
 the marketplace / meaning search surfaced or strengthened this finding — it is *why* some conflicts lead at all
@@ -84,7 +84,7 @@ says how many. And **say which kind of negative you hold, every time**: a source
 nothing from reads *"searched — none found"*; a source it never reached reads *"not searched this run"* or
 *"could not be searched — <reason>"*. The same source must never wear both readings in one report.
 
-**Emission voice — numbers, inferences, attributions (CHANGE 5).** (a) **No floating registration numbers in
+**Emission voice — numbers, inferences, attributions.** (a) **No floating registration numbers in
 prose.** The per-record structured render is the source of truth for registration / application / serial numbers
 (the code lane renders them); a card's prose (`### Full detail` narrative bullets) names the
 OWNER + MARK and does not float the number — the only place a number appears is the final `- Source:` bullet's
@@ -96,7 +96,7 @@ source or are omitted** — a corporate-history / ownership-transfer / affiliati
 fetched register or common-law record fact (e.g. "acquired by X in 2024") needs an inline source or is left out
 (set in `synthesis`; the report never re-introduces an unsourced one).
 
-**Evidence & precision (spec 09 v1).** For an ambiguous fact, give the base-rate counts, not an adjective ("of
+**Evidence & precision.** For an ambiguous fact, give the base-rate counts, not an adjective ("of
 marks filed that week: 966 registered, 453 refused, 691 pending", not "a crowded field"). A bounded rating
 carries its scope in parentheses ("Medium (Germany only)", "(only while the application is live)") — never
 unscoped where scope exists. Never assert foreign procedure as fact — "as we understand [jurisdiction] examination

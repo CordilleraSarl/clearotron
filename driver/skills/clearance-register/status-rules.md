@@ -88,7 +88,7 @@ These are flag-for-review heuristics, not auto-drop rules. The record stays in f
 
 The funnel carries **every** dead record forward with its status and dates; **whether a dead record matters is
 JUDGMENT's call (Layer B)**, not a funnel keep/drop. This section is the **reference for the reads judgment
-makes** — it no longer instructs the funnel to drop anything.
+makes**.
 
 - **Dead-but-identical** — a record with a **dead status** whose mark text is an **identical match** to the
   input (case-insensitive, ignoring punctuation — the reference algorithm below). The reviewing lawyer never ignores an

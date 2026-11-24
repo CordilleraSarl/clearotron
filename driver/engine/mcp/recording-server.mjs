@@ -600,7 +600,7 @@ serve({
           type: "array",
           description:
             "One row per scope decision. The driver renders the ledger table AND writes scope-ledger.json " +
-            "from these rows — it no longer recovers them by parsing the table back out of the prose.",
+            "from these rows.",
           items: {
             type: "object", required: ["layer", "item", "status"],
             properties: {

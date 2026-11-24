@@ -335,8 +335,7 @@ contradicts. Read the narrative's forward steps against the register, BOTH direc
 
 ### Card-vs-record fact checks (reconcile or surface, never smooth)
 
-For each card's client-facing line (the stamped `- net:`, which is the finding's typed `net` — a conversion
-retired the separately-authored `- one:` line and the "The read" section), check the asserted FACTS against the
+For each card's client-facing line (the stamped `- net:`, which is the finding's typed `net`), check the asserted FACTS against the
 finding's own record (meters, registrations' classes/status, use_check):
 - A proximity assertion that contradicts the record — "closely proximate goods" over a
   different-class / diverging-goods registration, "high proximity" over a `goods_proximity: low`

@@ -90,8 +90,7 @@ absent from prose.
 `register-coverage-ledger.json` (every axis/unit/status/reason row) and `_driver/plan-execution.json` (every
 query the active provider refused, with the mechanical reason), plus the owner×element screen's receipt. Both
 files are also named as inputs and can be read directly, but the escalation question is already answered in the
-table — do **not** reconstruct the ledger by reading the findings prose. (On the 2026-07-30 run that
-reconstruction burned 28,592 thinking tokens, 95% of the stage's emission, and still got the answer wrong.)
+table — do **not** reconstruct the ledger by reading the findings prose.
 
 Two classes of gap are **not** escalation triggers:
 - a gap the **Coverage ledger records as `coverage-limited`** — a crowd recorded with its count, which a
@@ -182,10 +181,10 @@ Read both findings files. Apply four explicit rules tied to the staff lawyer's s
 
 | # | Trigger | Action | Owned by |
 |---|---|---|---|
-| 1 | Every common-law owner found | Check register for any trademark filings by that owner in target classes | **CODE (2026-07-10):** the driver's cross-check dispatcher mints an `xcheck-owner-*` plan entry per extracted owner from the "Similar listing(s) found" receipts and executes it deterministically (`_driver/register-xcheck.json` is the receipt); verify the receipt in synthesis |
+| 1 | Every common-law owner found | Check register for any trademark filings by that owner in target classes | **CODE:** the driver's cross-check dispatcher mints an `xcheck-owner-*` plan entry per extracted owner from the "Similar listing(s) found" receipts and executes it deterministically (`_driver/register-xcheck.json` is the receipt); verify the receipt in synthesis |
 | 2 | Every register stealth-filer pattern (law firm as owner) | One common-law query for the underlying client's marketplace use | recorded by the digest; not run |
 | 3 | Every watchlist-hit owner appearing in register but NOT in common-law | One common-law query for that owner's marketplace activity | recorded by the digest; not run |
-| 4 | Every common-law finding without a register tie | One register query for the entity name | **CODE (2026-07-10):** the same dispatcher mints an `xcheck-mark-*` contains entry per owner-less similar-listing mark; anything the receipts show over-cap or unparsed, dispatch via the register supplemental lane (`register_propose_supplemental`) |
+| 4 | Every common-law finding without a register tie | One register query for the entity name | **CODE:** the same dispatcher mints an `xcheck-mark-*` contains entry per owner-less similar-listing mark; anything the receipts show over-cap or unparsed, dispatch via the register supplemental lane (`register_propose_supplemental`) |
 
 **All four triggers fire deterministically when their condition is met.** Triggers 1/4 are now code-fired
 (the dispatcher's cap + overflow log mirror the rules below; the `crosscheck-missing` tripwire flags any
@@ -213,7 +212,7 @@ Apply the existing triggers for actual-use, enforcement, and owner checks after 
 - Owner-portfolio-bound common-law checks already counted in this step count toward the Option D cap (Step 3).
 - **Enforcement the query finds is a lead, not a verified authority** (the ENFORCEMENT AUTHORITY rule in the stage message): it informs the enforcer meter with basis `inferred-from-signal`, and its URL is cited inline in the finding's prose. If the query finds no enforcement record, the enforcer is `low` with basis `inferred-from-signal`, and the finding says the search found none. The enforcer stays `unknown`, and nothing is claimed, only when the query could not run.
 
-**Output contract — ENFORCED by the driver (spec 11), not optional.** For every finding, at any band, whose
+**Output contract — ENFORCED by the driver, not optional.** For every finding, at any band, whose
 mitigant or verdict turns on the **absence** of use (it says the mark is "not in actual use" / "unused" / has
 "no marketplace use found", or names non-use revocation/cancellation as the mitigant), record its result in that finding's `use_check.source`: <result URL | "perplexity_research — no result">.
 
@@ -221,8 +220,7 @@ The driver checks the structured finding record. A required use-check source bel
 status does not require an invented source. The reviewer checks whether the available evidence supports the claim.
 The synthesis stage cannot ship an *inferred* "no use" — it must actually run the scoped query (owner + mark + goods/field), unless an answer this run already holds answers that question, and cite the result, or state the honest
 "no result". Never dress an un-run check as a clean negative. Also mirror the result into the matching `# Actions`
-item: "confirm the owner's actual use" becomes the stated result, not a task handed onward (this is what fills
-spec 09's "Checks we ran — what we found" bucket). A search that failed, was refused, was not asked, or has no
+item: "confirm the owner's actual use" becomes the stated result, not a task handed onward. A search that failed, was refused, was not asked, or has no
 available saved answer supplies no search result. Use relevant evidence already held, and leave any remaining use or
 enforcement question unknown. Never describe the unanswered question as a search that found no result, no use, or no
 enforcement, and do not infer a low enforcement likelihood from that failure. Record no-result only when a completed
