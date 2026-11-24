@@ -5339,7 +5339,7 @@
         },
         "jx-p4-units.test.mjs": {
           "tests": 25,
-          "asserts": 136,
+          "asserts": 137,
           "skips": 0,
           "todos": 0
         },
@@ -8232,6 +8232,12 @@
         "the-narrative-seat-does-not-describe-the-fetch-lane.test.mjs": {
           "tests": 8,
           "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-native-language-reader-is-given-the-chinese-register-records.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
