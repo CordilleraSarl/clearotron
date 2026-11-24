@@ -210,8 +210,8 @@ const nameKey = (s) => String(s ?? "").trim().toLowerCase();
  *                     happy-path test passes on a merge that deletes everything it was not handed.
  *   chunkSummary      REPLACED when present, KEPT when absent. It narrates the whole chunk, so a partial
  *                     summary is not a thing — either the seat restated it or it did not.
- *   batch             MERGED PER KEY. Chunk 0 only, and its two keys are independent: a correction to
- *                     productContext must not drop standardCaveats.
+ *   batch             MERGED PER KEY. Optional from any group, and its two keys are independent: a correction to
+ *                     productContext must not drop standardCaveats. The driver takes the product context from the plan.
  *   framework         REPLACED when present. It is one object naming the deck and its ladder; half a
  *                     ladder is not a ladder.
  *   schema_version    THE DRIVER'S. Never taken from the payload — a stored document's version is a fact

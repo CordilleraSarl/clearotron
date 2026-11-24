@@ -162,7 +162,7 @@ are worked examples of the one failure, not its boundary:
 | belt-and-braces classes | extra classes |
 | dispatch, instructed | the request, what was asked |
 | lane | class, or channel — whichever you mean |
-| chunk | never; say the batch, or these names |
+| chunk | never; say these names, or the name |
 
 The target is the level of these, each the standard for its line:
 
@@ -174,7 +174,7 @@ The target is the level of these, each the standard for its line:
 > **A finding's `net`.** "Same name, same goods, and their filing came first in every territory we
 > searched. We see no argument against it."
 
-> **The batch opener.** "One name screened: WAYPOINT, rated High."
+> **A name's line in the group summary.** "WAYPOINT, rated High: two navigation apps already trade under it on the same app stores."
 
 **Shortening by dropping the reason is not the fix.** The "why" stays, in plain words. A visible
 line that is short because it no longer says why is worse than the long one it replaced, and it
@@ -329,22 +329,21 @@ not look identical afterwards.
 
 ## Batch outputs
 
-- **Chunk summary** (`chunkSummary` — EVERY chunk emits one for ITS marks): marks grouped by band, why,
-  key evidence inline, practical mitigating factors. Code concatenates the chunks into the batch
-  executive summary, so a mark you skip here is missing from the report.
-  **Structure it:** a short opening line for what the batch shows, then one `## <MARK NAME>` sub-header
-  per mark carrying its band and what drives it, bullets where they help. A sub-header is `## ` or `### `,
-  never `# `.
+- **Group summary** (`chunkSummary`; every rating group sends one for ITS names): open with a line for
+  each name and its band, then one `## <MARK NAME>` sub-header per name with what drives its band, key
+  evidence inline and practical mitigating factors, bullets where they help. Code joins the groups'
+  summaries into the order's summary once every name is rated, so a name you leave out here is missing
+  from the report. A sub-header is `## ` or `### `, never `# `.
   **It stays the SHORTER digest above the per-mark assessments** — a reader opens it to decide which
   name to read about, and the mark's own page carries the full read. Keep it tighter than any one
   mark's `assessment`.
-- **`knockout-findings.json`** (strict, closed keys — one entry per SEARCHED mark; per-CHUNK files
-  carry `chunkSummary` + this chunk's `marks`, chunk 0 also `batch` + `framework`):
+- **`knockout-findings.json`** (strict, closed keys — one entry per SEARCHED mark; each rating group's
+  file carries `chunkSummary` and its own names' `marks`. Use `batch.standardCaveats` only for a qualification the brief establishes for every name in the order. Put a qualification specific to an assigned name in that name’s assessment. The driver takes the framework
+  from the frozen one and the product context from the plan):
 
 ```json
 { "schema_version": 1,
-  "framework": { "source": "<framework_key>", "ladder": ["<highest>", "..."] },
-  "batch": { "productContext": "...", "standardCaveats": ["..."] },
+  "batch": { "standardCaveats": ["..."] },
   "chunkSummary": "<markdown for THIS chunk's marks>",
   "marks": [ { "ref": null, "name": "<verbatim>", "classesSearched": [8], "beltAndBraces": [35],
                "contextFraming": "...", "rating": "<band word>", "ratingQualifier": null,
