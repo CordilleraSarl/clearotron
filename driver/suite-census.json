@@ -7427,7 +7427,7 @@
         },
         "the-assistants-name-the-product-the-search-is.test.mjs": {
           "tests": 3,
-          "asserts": 11,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -9862,7 +9862,7 @@
         },
         "the-connector-says-what-its-handlers-do.test.mjs": {
           "tests": 6,
-          "asserts": 21,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
