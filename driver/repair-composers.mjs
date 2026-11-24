@@ -777,7 +777,7 @@ export const REPAIR_COMPOSERS = [
     key: "common-law:grid-ledger",
     compose: ({ gridLedger, gridSpecPath }) => lines(
         `This is a fresh session: your earlier common-law work is not in your context. Your findings file is already written and stands.`,
-        `The grid ledger ${gridLedger} is missing — the deterministic grid call did not complete. Call perplexity_research again with enable_sandbox:true and grid_spec_path: ${gridSpecPath}. The tool writes the ledger itself from the API response; do NOT write it yourself and do NOT re-emit the grid JSON.`,
+        `The grid ledger ${gridLedger} is missing — the deterministic grid call did not complete. Call perplexity_research again with grid_spec_path: ${gridSpecPath}. The tool writes the ledger itself from the API response; do NOT write it yourself and do NOT re-emit the grid JSON.`,
         `Then return ONLY: the grid ledger path + one line confirming the tool reported it written.`,
       ),
     samples: [{ name: "the ledger the grid call never wrote", tail: "tool", args: { gridLedger: "grid-ledger.json", gridSpecPath: "grid-spec.json" } }],
@@ -788,7 +788,7 @@ export const REPAIR_COMPOSERS = [
     key: "common-law:coverage-closure",
     compose: ({ findingsFile, suppSpec, suppSpecPath, closable, cellKey }) => lines(
         `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep.`,
-        suppSpec ? `These ${closable.length} grid cells are recorded as not-executed/coverage-limited with NO mechanical failure behind them — they are closable now. Run them via the DETERMINISTIC supplementary search-as-code grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${suppSpecPath}. The tool runs EXACTLY the dictated cells and WRITES the supplementary ledger to its output_path itself — do NOT save it yourself and do NOT re-emit the grid JSON. The cells:` : "",
+        suppSpec ? `These ${closable.length} grid cells are recorded as not-executed/coverage-limited with NO mechanical failure behind them — they are closable now. Run them via the DETERMINISTIC supplementary search-as-code grid: call perplexity_research with grid_spec_path: ${suppSpecPath}. The tool runs EXACTLY the dictated cells and WRITES the supplementary ledger to its output_path itself — do NOT save it yourself and do NOT re-emit the grid JSON. The cells:` : "",
         ...(suppSpec ? closable.map((c) => `- ${cellKey(c)}`) : []),
         // The edit direction has to be SCOPED here: this prompt already forbids saving the grid JSON,
         // and the tail below is the first thing in it that hands over the Edit tool. A model that reads
@@ -805,7 +805,7 @@ export const REPAIR_COMPOSERS = [
     key: "common-law-half:coverage-closure",
     compose: ({ findingsFile, gridSpecPath, suppSpec, suppSpecPath, cells, cellKey }) => lines(
         `This is a fresh session: your earlier common-law work is not in your context, and your findings file is ${findingsFile}. Do NOT redo the full sweep. You own ONE HALF of this matter's grid (your half-grid spec: ${gridSpecPath}).`,
-        suppSpec ? `These ${cells.length} grid cells are recorded as not-executed/coverage-limited with NO mechanical failure behind them — they are closable now. Run them via the DETERMINISTIC supplementary search-as-code grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${suppSpecPath}. The tool runs EXACTLY the dictated cells and WRITES the supplementary ledger to its output_path itself — do NOT save it yourself and do NOT re-emit the grid JSON. The cells:` : "",
+        suppSpec ? `These ${cells.length} grid cells are recorded as not-executed/coverage-limited with NO mechanical failure behind them — they are closable now. Run them via the DETERMINISTIC supplementary search-as-code grid: call perplexity_research with grid_spec_path: ${suppSpecPath}. The tool runs EXACTLY the dictated cells and WRITES the supplementary ledger to its output_path itself — do NOT save it yourself and do NOT re-emit the grid JSON. The cells:` : "",
         ...(suppSpec ? cells.map((c) => `- ${cellKey(c)}`) : []),
         `Then update ONLY those Negative-results matrix rows with their real receipts ("No results" / "No similar listings (N candidates reviewed)" / "Similar listing(s) found — see Findings") and reconcile the Coverage ledger rows they close, preserving everything else. The driver validates grid completeness from the ledgers the tool wrote — never from your prose. The edit direction below covers ${findingsFile} ONLY; the machine ledgers stay the tool's.`,
         editRepairTail(findingsFile),

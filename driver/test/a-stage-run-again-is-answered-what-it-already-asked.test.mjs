@@ -112,12 +112,14 @@ test("another stage's answer is never reused, and neither is a question asked di
   await callResearch(d, { task: ask("Example Holdings") });
   await callResearch(d, { task: ask("Example Holdings") }, { session: OTHER });
   assert.equal(sent(d).length, 2, "another stage was answered with this stage's answer");
+  // A depth a step still sends is ignored (the run's setting decides the tier), so it is the same question, answered.
   await callResearch(d, { task: ask("Example Holdings"), depth: "fast-search" });
+  assert.equal(sent(d).length, 2, "a depth the step sent made the same question a new one");
   await callResearch(d, { task: ask("Example Holdings"), allow_fetch: true });
   await callResearch(d, { task: `${ask("Example Holdings")} Name the source.` });
-  assert.equal(sent(d).length, 5, "a question at another depth, with another option or in other words was not sent");
-  await callResearch(d, { task: ask("Example Holdings"), depth: "fast-search" }, { session: `${KEY}-rerun2` });
-  assert.equal(sent(d).length, 5, "the same question at the same depth was sent again");
+  assert.equal(sent(d).length, 4, "a question with another option or in other words was not sent");
+  await callResearch(d, { task: ask("Example Holdings"), allow_fetch: true }, { session: `${KEY}-rerun2` });
+  assert.equal(sent(d).length, 4, "the same question with the same option was sent again");
 });
 
 test("a question whose earlier call failed or came back unreadable is sent again", async (t) => {

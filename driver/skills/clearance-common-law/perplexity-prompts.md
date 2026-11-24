@@ -23,7 +23,9 @@ query is recorded, and a clean PR claim with no recorded search is rejected (`co
 
 The tool writes the grid ledger, then returns how many cells it holds and the candidates to judge. Then:
 
-0. The grid ledger common-law-grid.json is written by the tool. Do not write it.
+0. The grid ledger common-law-grid.json is written by the tool. Do not write it. It records every cell as a
+   result or a gap: read it for the negative-results rows and the coverage rows. The call lists only the
+   cells with candidates.
 1. **Judge each cell's candidates yourself** — identical / confusingly similar / conceptually
    related vs. plain noise. The program recorded everything; the legal filtering is yours.
 2. **Negative matrix rows carry the receipt**: a cell with `no_hit` → "No results"; a cell whose
@@ -31,7 +33,7 @@ The tool writes the grid ledger, then returns how many cells it holds and the ca
    blank.
 3. **Every `gaps` entry becomes a `coverage-limited` ledger row** (the cell did NOT run — that is
    unsearched, never clean).
-4. If the tool returns `ERROR: sandbox was not used` or a stdout-parse error, retry the call once;
+4. If the tool returns `ERROR: grid run failed — sandbox was not used — no program executed` or a stdout-parse error, retry the call once;
    if it persists, follow the skill's Failure protocol (no findings file, declare the failure).
 
 ## Follow-up calls
