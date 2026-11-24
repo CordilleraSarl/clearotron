@@ -30,6 +30,7 @@ process.env.MOCK_SKEPTIC = "no flags surfaced";
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
 
 const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { knockoutInner, frameworkEchoFault } = await import("../pipeline-knockout.mjs");
@@ -86,7 +87,7 @@ test("a group's message is its own job: one name's words or a family's, and no b
     framework: { bands: [{ label: "High" }, { label: "Low" }] }, frameworkPath: null, probeNote: "" });
   const one = message(["QUILLBRAE"]);
   assert.match(one, /^You are rating one name for a Knockout screen\.$/m);
-  const CAVEAT_DUTY = "Use `batch.standardCaveats` only for a qualification the brief establishes for every name in the order. Put a qualification specific to an assigned name in that name’s assessment.";
+  const CAVEAT_DUTY = ASSESS_SENTENCES.caveatsForTheOrderQualificationsForTheName;
   assert.ok(one.includes(`You send \`marks\` and \`chunkSummary\`. ${CAVEAT_DUTY} Use the supplied frozen framework. Open your \`chunkSummary\` with a line for this name`), "a name rated alone is told where an order-wide and a name's own qualification go");
   const family = message(["QUILLBRAE", "QUILBRAE", "QUILL BRAE"]);
   assert.match(family, /^You are rating a family of 3 names for a Knockout screen\. Each name is a client choice and gets its own rating and reasons\.$/m);

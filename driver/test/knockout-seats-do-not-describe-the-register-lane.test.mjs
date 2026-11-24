@@ -22,7 +22,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { knockoutGridSpec, KO_STAGES } from "../stages-knockout.mjs";
 import { buildGridProgramTask } from "../../providers/perplexity/src/core.js";
-import { RETIRED_POLICIES } from "../search-policy.mjs";   // — the retired rungs, derived not recited
+import { RETIRED_POLICIES } from "../search-policy.mjs";
+import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";   // — the retired rungs, derived not recited
 
 /** Says something about the seat not searching registers. */
 const SCOPES_OFF_REGISTERS = /do not search trademark registers|common-law \/ marketplace only/i;
@@ -113,13 +114,22 @@ test("the assess seat's cure is still there — #706 part 2 is not traded for #1
 // where it changes what the rater infers, in what the register reading hands it, as the reading's own states.
 test("the rater's manual leaves register coverage to the report and keeps the reading's states for inference", () => {
   const manual = readFileSync(new URL("../skills/knockout-assess/SKILL.md", import.meta.url), "utf8").replace(/\s+/g, " ");
-  assert.ok(manual.includes("Use registerEstimate only where your message says the register component was skipped. An empty carried list does not establish that it was skipped. With held filings, weigh their evidence."));
+  assert.ok(manual.includes(ASSESS_SENTENCES.registerEstimateOnlyWhereSkipped), "the estimate is no longer owed only on a skip");
   for (const gone of ["under RF-15", "keep a verified zero, a failed question, and an unread answer distinct", "register-pending notes"])
     assert.ok(!manual.includes(gone), `the rater's manual still asks it to state the search: "${gone}"`);
   assert.match(manual, /`zero` \(a verified zero\), `failed` \(no answer\), `crowd-not-read` or `not-asked`/,
     "the reading's states no longer reach the rater, so a failed question could be weighed as a zero");
-  assert.ok(seatPrompts()["knockout-assess"].includes("a filing you were handed is evidence like any other. You may say what a particular held filing's record does not show."),
-    "the rater is not told it may say what a held filing's record does not show");
+  assert.match(seatPrompts()["knockout-assess"], /^SAY NOTHING ABOUT WHETHER THE REGISTER LANE RAN[^\n]* You may say what a particular held filing's record does not show\.$/m,
+    "the rater is not told, beside the lane rule, that it may say what a held filing's record does not show");
+});
+
+// The firm-wide reasoning is written for the full clearance. On a Knockout its register notes are the engine's, and a crowd
+// earns weight only from the marketplace evidence the rater read, never from a count of filings.
+test("the rater's manual maps the firm-wide reasoning onto a Knockout without handing it the register's notes", () => {
+  const manual = readFileSync(new URL("../skills/knockout-assess/SKILL.md", import.meta.url), "utf8");
+  const section = manual.slice(manual.indexOf(ASSESS_SENTENCES.firmWideReasoningOnAKnockout), manual.indexOf("## Calibration rules"));
+  assert.ok(section.length > 200 && section.length < 2000, "the section is missing or no longer ends at the calibration rules");
+  assert.doesNotMatch(section, /numbered findings|Never cite a finding by number/, "a Knockout finding has an ordinal; the section says it has none");
 });
 
 // ── NO LIVE DISPATCH NAMES A RETIRED PRODUCT RUNG ─────────────────────────────

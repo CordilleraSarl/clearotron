@@ -28,4 +28,19 @@ export const ASSESS_SENTENCES = Object.freeze({
   theRatingYouHaveAlready: "the rating you have already reached stands exactly as it is, and nothing in this section asks you to "
     + "raise or lower it",
   whereManyResultsShareOne: "**Where many results share one ground, write it once**",
+  caveatsForTheOrderQualificationsForTheName: "Use `batch.standardCaveats` only for a qualification the brief establishes for "
+    + "every name in the order. Put a qualification specific to an assigned name in that name’s assessment.",
+  registerEstimateOnlyWhereSkipped: "Use registerEstimate only where your message says the register component was skipped.",
+  firmWideReasoningOnAKnockout: "## The firm-wide reasoning, on a Knockout",
+  firmWideAppliesThisManualGoverns: "Apply its reasoning here. Where it names a clearance field or output, or differs from this "
+    + "manual, this manual governs:",
+  positionsGoInTheBasis: "What it asks you to write in `legal_position` and `practical_position` goes in the finding's `basis`.",
+  findingNameInProseOrdinalInRecord: "Use the finding's name in reader-facing prose. Keep its ordinal in the record.",
+  engineWritesTheRegisterNotes: "The engine writes the register caveats and notes of RF-10 and RF-15. Write neither.",
+  reputationalRiskIsARatedFinding: "A reputational or cultural risk is a rated `findings[]` record here",
+  verifiedIdenticalUseNotAMention: "Distinguish a verified identical marketplace use from a thin, unverified web mention. A "
+    + "verified identical use receives the applicable evidence assessment. A mere mention follows the marketplace-lead rule",
+  crowdingMitigatesOnlyOnShownCrowd: "Give crowding mitigating weight only when the marketplace evidence you read shows the "
+    + "crowd in the conflict’s goods and territory. State what you counted, how you narrowed it, and which relevant live "
+    + "conflicts remain.",
 });
