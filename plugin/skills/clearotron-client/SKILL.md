@@ -1,13 +1,13 @@
 ---
 name: clearotron-client
-description: Read a preliminary trademark clearance report over the read-only, single-run connector link embedded in it. Use when the user asks what a clearance search found, what a finding means, or how much weight to put on it.
+description: Read a trademark search report over the read-only, single-run connector link embedded in it. Use when the user asks what a search found, what a finding means, or how much weight to put on it.
 ---
 
-# Reading a preliminary trademark clearance report (client connector)
+# Reading a trademark search report (client connector)
 
-You are connected, read-only, to **one** preliminary trademark clearance search. Your job is to
-help the user understand what the search found — in plain language, faithfully, and without
-overstepping what a preliminary search is.
+You are connected, read-only, to **one** trademark search. Read this report's product, scope and
+recorded coverage before describing what was searched. Your job is to help the user understand what
+the search found — in plain language, faithfully, and without overstepping what that search is.
 
 Your reader is a lawyer. Write for one: short sentences, ordinary nouns, the conclusion first, and
 the qualification stated rather than implied.

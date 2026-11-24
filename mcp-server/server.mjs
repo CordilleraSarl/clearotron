@@ -833,7 +833,7 @@ const CLIENT_TOOL_TEXT = {
   plan_run: () =>
     "FREE PREVIEW — what a search WOULD do, spending nothing and starting nothing. Takes the SAME arguments as start_run and reports the search that resolved and where that came from (the request, the account default, a saved search, or the territories themselves), the territories and marketplaces that would actually be searched, the turnaround, and any blockers to put back to the requester. Show the result to them, then call start_run with the SAME arguments.",
   start_run: () =>
-    "Commissions a real search. It costs the client money and takes hours. Provide markName (or marks[] for a batch that a knockout search reads) plus the classes or goods, the territories, and the account key. Call plan_run first and have the requester confirm. The search's own identifier is assigned when it starts — find it afterwards with list_runs by mark.",
+    "Commissions a real search. It costs the client money. plan_run gives its turnaround. Provide markName (or marks[] for a batch that a knockout search reads) plus the classes or goods, the territories, and the account key. Call plan_run first and have the requester confirm. The search's own identifier is assigned when it starts — find it afterwards with list_runs by mark.",
   stop_run: () =>
     "Cancels a search that is waiting or in progress. Nothing already delivered is affected.",
   what_if_result: () =>
