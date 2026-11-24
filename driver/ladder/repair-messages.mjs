@@ -8,7 +8,7 @@
 // Moved out of gateway.mjs unchanged, so that the ladder's phases import these instead of having them handed in.
 import { CONNOTATION_FORM_TOKEN_RE, CONNOTATION_NO_RESEMBLANCE_MARK, CONNOTATION_UNMATCHED_MARK } from "../connotation-search.mjs";
 import { REGISTER_AXES } from "../coverage-ledger.mjs";
-import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.mjs";
+import { DISPOSITIONS, FINDINGS_SCHEMA_VERSION, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.mjs";
 import { undispatchableFiringDirectives } from "../frame-diff-model.mjs";
 import { CLEARANCE_FINDINGS_TOKEN_RE, gridLedgerNameFor, repairSiblingName, toolWrittenArtifact } from "./form-sync.mjs";
 import { rel } from "./turn-signals.mjs";
@@ -111,8 +111,9 @@ export function frameDiffUndispatchable(expectFile, lastFail = "framediff_direct
 
 // THE WRITER'S RETRY, WHEN THE DRIVER HOLDS ITS RECORD. A save the tool accepted can still fail the stage's own check
 // of the written files, and the driver then holds the record that save left: the retry sends only the change, in the
-// patch the follow-ups above it ask for. A record nobody saved yet, or one whose version is being replaced, still
-// takes the complete save.
+// patch the follow-ups above it ask for. A record nobody saved yet, or one held at another schema version, which must be
+// re-versioned, still takes the complete save. The version is read off the held record, never off the failure's text: a
+// row's own check names the schema in its explanation, and that says nothing about the version the record is held at.
 // The patch a held record takes, in the tool's own words; the retry for most findings checks leaves the narrative as it is.
 // On the correction answering a review's flags, and on its retries, the rows are described in the words ruled for that
 // correction (2026-11-02): it may add the finding for an excluded position its flags name (synthesis-record.mjs).
@@ -122,7 +123,6 @@ export const CORRECTION_ROWS = "the complete finding objects you changed or adde
 export const patchRows = (adds = false) => (adds ? CORRECTION_ROWS : REPLACED_ROWS);
 const heldRecordPatch = (adds = false) => `ONE \`record_synthesis\` PATCH call, sending only the change: \`findings_patch\` carrying ${patchRows(adds)}, and \`findings\` carrying any register you corrected, complete, and never a \`findings[]\` list`;
 const heldRecordRetry = (adds = false) => `Fix exactly that in ${heldRecordPatch(adds)}; leave the narrative prose unchanged`;
-const VERSION_FAILURE_RE = /finding_legacy_scale_forbidden|schema_version/;
 // A USE CHECK'S CORRECTION corrects what depends on the finding too, so it never says to leave the narrative as it is
 // (design, 2026-10-28). A held record takes the patch, in the tool's own words, with the narrative sections it changes;
 // a record not yet accepted is completed by its first call, which the line after every hint names. The caller prints a
@@ -132,12 +132,17 @@ const useCheckCorrection = (heldRecord, adds = false) => heldRecord
   ? `${RESEARCH_CORRECTION} Send it in ${heldRecordPatch(adds)}. In \`narrative\`, send only the sections you changed — the rest are held`
   : RESEARCH_CORRECTION.replace(/\.$/, "");
 /**
- * Does the driver hold an accepted synthesis record for the run these files belong to? Read from either of the files
- * the writer's call renders: the stage's own expected file is the narrative, and a caller may name the findings.
+ * Does the driver hold an accepted synthesis record for the run these files belong to, at the schema version this driver
+ * dictates, so that a retry patches it? Read from either of the files the writer's call renders: the stage's own
+ * expected file is the narrative, and a caller may name the findings. A record held at another version is re-sent whole.
  */
 export const heldSynthesisRecord = (files) => {
   const f = (Array.isArray(files) ? files : [files]).find((x) => typeof x === "string" && [NARRATIVE_FILE, FINDINGS_FILE].includes(basename(x)));
-  return Boolean(f) && existsSync(synthesisCallPaths(dirname(f)).accepted);
+  if (!f) return false;
+  const at = synthesisCallPaths(dirname(f)).accepted;
+  if (!existsSync(at)) return false;
+  try { return JSON.parse(readFileSync(at, "utf8"))?.params?.findings?.schema_version === FINDINGS_SCHEMA_VERSION; }
+  catch { return false; }
 };
 
 // ── A FAILURE'S CODES: THE TOKENS ITS REASON CARRIES ─────────────────────────────────────────────
@@ -296,7 +301,7 @@ export const REPAIR_HINTS = [
       `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), quadrant {x,y} in [0,1], a ` +
       `typed source, a disposition, and a unique 1-based ordinal. The failed check was: ${tok}.${extra} ` +
       (USE_CHECK_TOKEN_RE.test(lastFail) ? useCheckCorrection(heldRecord, adds)
-        : heldRecord && !VERSION_FAILURE_RE.test(lastFail) ? heldRecordRetry(adds)
+        : heldRecord ? heldRecordRetry(adds)
         : `Fix exactly that in one complete \`record_synthesis\` call, and leave the narrative prose unchanged`);
   } },
   { code: "coverage_status_offenum", codes: ["coverage_status_offenum"], hint(lastFail) {

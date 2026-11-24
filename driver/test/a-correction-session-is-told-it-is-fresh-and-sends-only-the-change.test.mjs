@@ -29,6 +29,8 @@ import { composeFollowup, STAGES, paths } from "../stages.mjs";
 import { correctionHint, heldSynthesisRecord } from "../gateway.mjs";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { acceptedEnvelope } from "../preserve-merge.mjs";
+import { FINDINGS_SCHEMA_VERSION } from "../findings-model.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const composer = (key) => {
@@ -176,7 +178,10 @@ test("the writer's retry after a failed check sends only the change while the dr
   assert.ok(!correctionHint(tok, { heldRecord: true, adds: true }).includes(PATCH), "the correction's retry is told only to replace");
   assert.ok(correctionHint("finding_use_check_missing:2", { heldRecord: true, adds: true }).includes("the complete finding objects you changed or added: keep each existing finding's `ordinal`; for a new finding answering a flag about an excluded position named in this correction, use the next unused ordinal after the highest in the current record and cite a record from that position"), "the use check's correction on a correction's retry");
   assert.ok(correctionHint(tok).includes(WHOLE) && !correctionHint(tok).includes(PATCH), "no held record takes the whole save");
-  assert.ok(correctionHint("finding_legacy_scale_forbidden:composite", { heldRecord: true }).includes(WHOLE), "a version being replaced takes the whole save");
+  // A row's own check names the schema in its explanation; on a record held at the dictated version it is still one row.
+  assert.ok(correctionHint("finding_legacy_scale_forbidden:composite (schema_version 4 rates with the framework's band WORD)", { heldRecord: true }).includes(PATCH),
+    "a defective row in a current record is not re-sent whole");
+  assert.ok(correctionHint("finding_disposition_missing:2 (schema_version 4 requires a disposition on every finding)", { heldRecord: true }).includes(PATCH));
   assert.ok(!correctionHint("coverage_status_offenum (axis primary-sweep)", { heldRecord: true }).includes("record_synthesis"), "another stage's hint is unchanged");
   // The run's own files decide: an accepted save is the record the driver holds. The files are the ones the stage
   // really expects, its narrative alone, as the retry is composed from them.
@@ -186,7 +191,12 @@ test("the writer's retry after a failed check sends only the change while the dr
     assert.deepEqual(expected.map((f) => f.slice(dir.length + 1)), ["narrative.md"], "premise: the writer's stage expects its narrative alone");
     assert.equal(heldSynthesisRecord(expected), false);
     mkdirSync(join(dir, "_driver", "synthesis-calls"), { recursive: true });
-    writeFileSync(join(dir, "_driver", "synthesis-calls", "accepted.json"), "{}\n");
+    const held = (version) => writeFileSync(join(dir, "_driver", "synthesis-calls", "accepted.json"),
+      acceptedEnvelope({ findings: { schema_version: version, findings: [] } }, "2026-11-24T00:00:00Z"));
+    held(FINDINGS_SCHEMA_VERSION - 1);
+    assert.equal(heldSynthesisRecord(expected), false, "a record held at an older version is patched instead of re-versioned");
+    assert.ok(correctionHint(tok, { heldRecord: heldSynthesisRecord(expected) }).includes(WHOLE), "a record that must change version takes the whole save");
+    held(FINDINGS_SCHEMA_VERSION);
     assert.equal(heldSynthesisRecord(expected), true, "the stage's own expected files do not show the record the driver holds");
     assert.ok(correctionHint(tok, { heldRecord: heldSynthesisRecord(expected) }).includes(PATCH), "a real retry is not offered the patch");
     assert.equal(heldSynthesisRecord([join(dir, "findings.json")]), true, "the findings file names the same record");
