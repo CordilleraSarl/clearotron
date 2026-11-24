@@ -2575,8 +2575,9 @@ export function applyStageWrites(msg, argv) {
         // THE ORDER'S USE PHRASE (design, 2026-11-24), and a name's own below only where its use differs.
         useKind: orderUse,
         umbrellaBrandNote: null, executionOrder: [...names],
-        // MOCK_KO_FAMILIES — the intake's families, `[["<name>", …], …]`; without it the intake groups nothing.
-        ...(process.env.MOCK_KO_FAMILIES ? { families: JSON.parse(process.env.MOCK_KO_FAMILIES) } : {}) },
+        // MOCK_KO_FAMILIES — the intake's families, `[["<name>", …], …]`; without it every name is a group of one, as a fresh
+        // plan must say (design, 2026-11-24).
+        families: process.env.MOCK_KO_FAMILIES ? JSON.parse(process.env.MOCK_KO_FAMILIES) : names.map((n) => [n]) },
       marks: names.map((n, i) => ({ ref: null, name: n, classes: [9], beltAndBraces: [35],
         classesPlain: "software (9); retail services (35, belt-and-braces)",
         contextFraming: /[aeiou]{2}|q[^u]/i.test(n) ? "coined/fanciful term" : "brand-like compound",

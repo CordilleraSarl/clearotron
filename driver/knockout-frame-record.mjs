@@ -50,7 +50,8 @@ import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted,
 import { kebabCollisions } from "./search-policy.mjs";
 // The plan's own checks for the web search's lists, one definition: the call is refused with the plan's
 // sentence, so the seat hears the rule once, in the same words, whichever door it reaches first.
-import { placesDefect, spellingsDefect, useKindDefect, alternativesDefect, marketSpellings, heldTerms, batchUseKindDefect, spaced } from "./verify-knockout.mjs";
+import { placesDefect, spellingsDefect, useKindDefect, alternativesDefect, marketSpellings, heldTerms, batchUseKindDefect, spaced,
+  FAMILIES_RULE, familiesMissingDefect, FRAME_REPAIR_RULE } from "./verify-knockout.mjs";
 import { readAcceptedOrder } from "./accepted-order.mjs";
 import { paths as runPaths } from "./run-record.mjs";
 
@@ -108,7 +109,7 @@ export function familiesDefect(marks, families) {
   const parts = [unknown.length ? `names no instructed name: ${unknown.map((n) => `"${verbatim.get(n)}"`).join(", ")}` : "",
     twice.length ? `places a name in more than one family: ${twice.map((n) => `"${verbatim.get(n)}"`).join(", ")}` : "",
     missing.length ? `leaves out: ${missing.map((n) => `"${verbatim.get(n)}"`).join(", ")}` : ""].filter(Boolean);
-  return parts.length ? `batch.families ${parts.join("; ")}. Put each submitted name verbatim in exactly one group in batch.families.` : null;
+  return parts.length ? `batch.families ${parts.join("; ")}. ${FAMILIES_RULE}` : null;
 }
 
 /** Refuse an undeclared key by path, through the shared implementation every transport now uses. */
@@ -249,7 +250,10 @@ export function acceptKnockoutFrame(params) {
     if (collisions.length)
       defects.push(`knockoutframe_key_collision: marks ${collisions.map(([a, b]) => `"${a}"/"${b}"`).join(", ")} collide to the same research key — a batch cannot carry two marks that differ only in spacing, punctuation or case, because they would share ONE research payload and one of them would be rated on the other's evidence. Reword or drop one`);
 
-    if (params?.batch?.families !== undefined) {
+    // A FRESH PLAN STATES EVERY NAME'S GROUP (design, 2026-11-24); a held answer from before keeps what it framed.
+    if (built && familiesMissingDefect(params?.batch?.families)) {
+      defects.push(`knockoutframe_families: ${familiesMissingDefect(params?.batch?.families)}`);
+    } else if (params?.batch?.families != null && marks.every((m) => str(m?.name))) {   // an unnamed mark is reported once, above
       const familiesRefused = familiesDefect(marks, params.batch.families);
       if (familiesRefused) defects.push(`knockoutframe_families: ${familiesRefused}`);
     }
@@ -312,9 +316,8 @@ export function useNotInRequest(plan, text) {
  */
 function frameRefusal(defects) {
   return `knockoutframe_refused: ${defects.length} defects in this call, every one of them below. `
-    + "Fix them all in the next call — correcting one leaves the rest, and the driver refuses again. A repair "
-    + "turn may send only the marks it is correcting; a mark you do send replaces its stored row key by key, "
-    + `so send that mark whole.\n${defects.map((d, i) => `${i + 1}. ${d}`).join("\n")}`;
+    + `Fix them all in the next call — correcting one leaves the rest, and the driver refuses again. ${FRAME_REPAIR_RULE}`
+    + `\n${defects.map((d, i) => `${i + 1}. ${d}`).join("\n")}`;
 }
 
 /**

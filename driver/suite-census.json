@@ -1335,6 +1335,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-plan-states-every-names-group.test.mjs": {
+          "tests": 6,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-publishes-once.test.mjs": {
           "tests": 2,
           "asserts": 16,

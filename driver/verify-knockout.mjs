@@ -510,6 +510,24 @@ export function batchUseKindDefect(useKind) {
   return typeof useKind === "string" && useKind.trim() ? null : `batch.useKind is required (task 2c). ${USE_PHRASE}`;
 }
 
+/**
+ * THE FAMILIES, DEFINED ONCE (design, 2026-11-24). A plan that left the field out was accepted and every name was then rated
+ * alone, so a family of variations could be lost with no refusal. A fresh plan now states every name's group, singletons
+ * included; a held answer from before keeps what it framed. The grouping line, the tool's field note, the manual and the
+ * refusals all state it in these words.
+ */
+export const FAMILIES_RULE = "Put every submitted name in exactly one group. List unrelated names as groups of one.";
+export function familiesMissingDefect(families) {
+  return families == null ? `batch.families is required to complete the plan. ${FAMILIES_RULE}` : null;
+}
+
+/**
+ * THE REPAIR RULE, DEFINED ONCE (design, 2026-11-24). A refused call saves nothing, so a repair that sent only the corrected
+ * names after a refused first call lost every other name; after a save, a sent name replaces its whole row. The message,
+ * the tool's description and the refusal all state it in these words.
+ */
+export const FRAME_REPAIR_RULE = "Until the tool confirms it saved the plan, send the complete corrected plan. After confirmation, send only changed batch fields and complete changed name rows.";
+
 export function useKindDefect(name, useKind) {
   const refusal = `mark "${name}": useKind is required: one to three words, the kind of use this name is searched for (task 2c)`;
   return typeof useKind === "string" && useKind.trim() ? null : refusal;

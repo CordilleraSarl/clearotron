@@ -20,7 +20,7 @@ const NOTE = "A scope note of two sentences. It says which search ran.";
 const MARK = {
   name: "IRONWHISK", classesPlain: "tools (8)", contextFraming: "compound", places: ["web", "shop.example.test"],
 };
-const frame = (over = {}) => ({ scope_note: NOTE, batch: { productContext: "a kitchen tool line", useKind: "kitchen tool" }, marks: [MARK], ...over });
+const frame = (over = {}) => ({ scope_note: NOTE, batch: { productContext: "a kitchen tool line", useKind: "kitchen tool", families: [["IRONWHISK"]] }, marks: [MARK], ...over });
 const refuse = (p) => { const r = acceptKnockoutFrame(p); assert.equal(r.ok, false, "the fixture was accepted, so this arm measures nothing"); return r.reason; };
 
 test("the control: a whole frame is accepted, so a refusal below is the payload and not the fixture", () => {
@@ -44,9 +44,9 @@ test("defects on different marks and on the batch arrive together", () => {
     marks: [{ ...MARK, name: "A", places: ["web"] },
       { name: "B", classesPlain: "c", contextFraming: "f" }],
   });
-  assert.match(reason, /^knockoutframe_refused: 5 defects/);
+  assert.match(reason, /^knockoutframe_refused: 6 defects/);
   for (const t of ["knockoutframe_note_missing", "knockoutframe_context_missing", "knockoutframe_use_kind: batch.useKind",
-    "knockoutframe_places:A", "knockoutframe_places:B"])
+    "knockoutframe_places:A", "knockoutframe_places:B", "knockoutframe_families: batch.families is required"])
     assert.ok(reason.includes(t), `${t} is missing from the refusal: ${reason}`);
 });
 
@@ -55,7 +55,7 @@ test("defects on different marks and on the batch arrive together", () => {
 // for a single fault is being handed a count and a paragraph to learn nothing from. Arms elsewhere pin those
 // sentences verbatim; this one pins that the shape does not change around them.
 test("one defect is still one sentence, with no count and no list", () => {
-  const reason = refuse(frame({ batch: { productContext: "a kitchen tool line" } }));
+  const reason = refuse(frame({ batch: { productContext: "a kitchen tool line", families: [["IRONWHISK"]] } }));
   assert.doesNotMatch(reason, /knockoutframe_refused/, "a single defect was dressed as a list");
   assert.doesNotMatch(reason, /^1\. |\n1\. /, "a single defect was numbered");
   assert.match(reason, /^knockoutframe_use_kind: batch\.useKind is required/);

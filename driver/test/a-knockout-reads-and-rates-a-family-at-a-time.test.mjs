@@ -14,6 +14,7 @@ import { join } from "node:path";
 
 import { KO_STAGES, koPaths, filingsOnce, expandFilingsOnce, sameRecord } from "../stages-knockout.mjs";
 import { familiesDefect } from "../knockout-frame-record.mjs";
+import { FAMILIES_RULE } from "../verify-knockout.mjs";   // the groups, defined once
 import { knockoutReaderFiles } from "../pipeline-knockout.mjs";
 import { earlierRights, earlierRightsLines, earlierRightsOutcome, earlierRightsReviewLines } from "../ko-earlier-rights.mjs";
 import { composeOwnerQuery, ownersOwedACheck, runOwnerChecks } from "../owner-use-check.mjs";
@@ -34,14 +35,14 @@ test("the intake's grouping is checked in code: every submitted name in exactly 
   assert.match(familiesDefect(order, [["QUILLBRAE", "QUILBRAY"], ["QUILBRAY", "MOSSVALE"]]), /places a name in more than one family: "QUILBRAY"/);
   assert.match(familiesDefect(order, [["QUILLBRAE", "QUILBRAY"], ["MOSSVALE", "QUILLBRAE GOLD"]]), /names no instructed name: "QUILLBRAE GOLD"/);
   assert.match(familiesDefect(order, [["QUILLBRAE"], []]), /each a non-empty list/);
-  assert.match(familiesDefect(order, [["QUILLBRAE"]]), /Put each submitted name verbatim in exactly one group in batch\.families\.$/, "the refusal says what to send");
+  assert.ok(familiesDefect(order, [["QUILLBRAE"]]).endsWith(FAMILIES_RULE), "the refusal says what to send");
 });
 
 test("the intake is told to group the names, in the approved words, and runs on the fast tier", () => {
   const K = koPaths(fresh("frame"));
   const message = KO_STAGES["knockout-frame"].message({ K, job: {}, profile: null });
   assert.ok(message.includes("Group the submitted names for the same proposed use when they share a recognisable word, phrase, stem, look or sound that could lead to the same earlier conflict."));
-  assert.ok(message.includes("Put each submitted name verbatim in exactly one group in batch.families. Keep spellings generated only for searching outside the groups."));
+  assert.ok(message.includes(`Keep an uncertain name separate. ${FAMILIES_RULE}`), "the grouping line no longer closes on the one definition of the groups");
   assert.deepEqual([KO_STAGES["knockout-frame"].model, KO_STAGES["knockout-frame"].thinking], ["haiku", "low"]);
   assert.deepEqual([KO_STAGES["knockout-register-read"].model, KO_STAGES["knockout-register-read"].thinking], ["sonnet", "medium"]);
   for (const stage of ["knockout-assess", "knockout-review", "knockout-correct"])
