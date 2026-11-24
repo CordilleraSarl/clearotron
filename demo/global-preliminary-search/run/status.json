@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "id": "mcp-mu6xx14r-1447ee78",
-  "runId": "tmpdemo2014globalpreliminarysearch-venqori-2026-09-18-sample-capture",
+  "id": "demo-0-7-global-preliminary-search",
+  "runId": "tmpdemo2014globalpreliminarysearch-venqori-2026-11-20-sample-capture",
   "slug": "tmpdemo2014globalpreliminarysearch-venqori",
   "codename": "sample-capture",
-  "date": "2026-09-18",
+  "date": "2026-11-20",
   "agent": "localagent",
   "forwarder": "e2e",
   "ref": "DEMO-2014-global-preliminary-search",
@@ -15,26 +15,39 @@
     41
   ],
   "demoRun": false,
-  "demoDataProfile": false,
+  "demoDataProfile": true,
   "state": "delivered",
-  "pid": 3000413,
-  "pidStarttime": "76018023",
-  "engineCommit": "bd7eb97dfb06066e581b45221274bc55c10fcb77",
+  "pid": 1778939,
+  "pidStarttime": "383729969",
+  "engineCommit": "f4c545317fd5398eeaecb70f9ee661d1e25189f6",
   "engineCommitSource": "git",
   "stepIndex": 8,
   "stepLabel": "Sending to you",
   "stepN": 9,
   "stepTotal": 9,
+  "currentStep": {
+    "index": 7,
+    "label": "Publishing",
+    "n": 8,
+    "total": 9
+  },
   "lastStage": "publish",
-  "verdict": "CONDITIONAL",
-  "url": "/portal/report/tmpdemo2014globalpreliminarysearch-venqori-2026-09-18-sample-capture/",
+  "review": {
+    "signoff": "CONDITIONAL"
+  },
+  "url": "/portal/report/tmpdemo2014globalpreliminarysearch-venqori-2026-11-20-sample-capture/",
   "failedStage": null,
   "reason": null,
-  "deliveredAt": "2026-09-18T13:49:19.141Z",
+  "deliveredAt": "2026-11-20T20:47:28.065Z",
   "attempts": 1,
-  "updatedAt": "2026-09-18T13:49:19.141Z",
-  "startedAt": "2026-09-18T12:35:08.519Z",
+  "updatedAt": "2026-11-20T20:47:28.065Z",
+  "startedAt": "2026-11-20T19:43:40.334Z",
+  "tier": "Moderate",
+  "statement": "Moderate — conditional on: No consent covering the proposed UK water-training use appears on the record searched (and 4 more).",
   "stoppable": false,
+  "registersServed": [
+    "clarivate"
+  ],
   "providerUsage": {
     "clarivate": {
       "search": 0,
@@ -43,24 +56,28 @@
       "phoneme": 0,
       "batch_screen": 0,
       "enumerate": 0,
-      "execute_plan": 198,
-      "propose_supplemental": 28,
-      "total": 226,
+      "execute_plan": 89,
+      "propose_supplemental": 24,
+      "total": 113,
       "by_tool": {
-        "execute_plan": 198,
-        "propose_supplemental": 28
+        "execute_plan": 89,
+        "propose_supplemental": 24
       },
       "unclassified": 0,
+      "providers": [
+        "clarivate"
+      ],
       "ledger": {
         "configured": true,
         "present": true,
         "readable": true,
-        "rowsScanned": 21095
+        "rowsScanned": 44141
       },
-      "retries": 10,
-      "errors": 10,
-      "cache_hits": 0,
-      "bytes": 8749530,
+      "retries": 0,
+      "errors": 15,
+      "cache_hits": 25,
+      "records_reused": 276,
+      "bytes": 2638376,
       "duplicate_fetches": 0,
       "duplicate_fetches_same_session": 0,
       "duplicate_fetches_cross_session": 0
@@ -68,116 +85,108 @@
   },
   "tokens": {
     "total": {
-      "input": 2356356,
-      "output": 206729,
-      "cacheRead": 27533696,
+      "input": 2101133,
+      "output": 153088,
+      "cacheRead": 24320896,
       "cacheWrite": 0,
-      "attempts": 41,
+      "attempts": 57,
       "thoughtTurns": 0
     },
     "byStage": {
       "blind-frame": {
-        "input": 9496,
-        "output": 2855,
-        "cacheRead": 60544,
+        "input": 14930,
+        "output": 2857,
+        "cacheRead": 30848,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "clearance-variants": {
-        "input": 39798,
-        "output": 8998,
-        "cacheRead": 201088,
+        "input": 22360,
+        "output": 5838,
+        "cacheRead": 75264,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "common-law-half:a": {
-        "input": 158794,
-        "output": 10929,
-        "cacheRead": 1211904,
-        "cacheWrite": 0,
-        "attempts": 3,
-        "thoughtTurns": 0
-      },
-      "common-law-half:b": {
-        "input": 94552,
-        "output": 6723,
-        "cacheRead": 586752,
-        "cacheWrite": 0,
-        "attempts": 2,
-        "thoughtTurns": 0
-      },
-      "common-law-half:m": {
-        "input": 41180,
-        "output": 2705,
-        "cacheRead": 313856,
+        "input": 79011,
+        "output": 2843,
+        "cacheRead": 452608,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
+      "common-law-half:b": {
+        "input": 68112,
+        "output": 3165,
+        "cacheRead": 502400,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "common-law-half:m": {
+        "input": 31781,
+        "output": 683,
+        "cacheRead": 80512,
+        "cacheWrite": 0,
+        "attempts": 2,
+        "thoughtTurns": 0
+      },
       "doubt-closure": {
-        "input": 30383,
-        "output": 4217,
-        "cacheRead": 146944,
+        "input": 20697,
+        "output": 959,
+        "cacheRead": 147712,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "frame-diff": {
-        "input": 59272,
-        "output": 3544,
-        "cacheRead": 314880,
+        "input": 29825,
+        "output": 1168,
+        "cacheRead": 125184,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "matter-frame": {
-        "input": 32498,
-        "output": 5096,
-        "cacheRead": 184832,
+        "input": 10667,
+        "output": 2425,
+        "cacheRead": 67328,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "narrative-refutation": {
-        "input": 372313,
-        "output": 39498,
-        "cacheRead": 5397376,
+        "input": 286063,
+        "output": 18779,
+        "cacheRead": 4357888,
         "cacheWrite": 0,
         "attempts": 3,
         "thoughtTurns": 0
       },
       "placement-inquiry": {
-        "input": 151201,
-        "output": 32214,
-        "cacheRead": 2580736,
-        "cacheWrite": 0,
-        "attempts": 1,
-        "thoughtTurns": 0
-      },
-      "register-digest": {
-        "input": 224583,
-        "output": 11691,
-        "cacheRead": 1580032,
+        "input": 246399,
+        "output": 37833,
+        "cacheRead": 5248000,
         "cacheWrite": 0,
         "attempts": 2,
         "thoughtTurns": 0
       },
-      "register-unit:incumbent-class": {
-        "input": 166328,
-        "output": 6211,
-        "cacheRead": 975360,
+      "register-digest": {
+        "input": 97879,
+        "output": 3167,
+        "cacheRead": 800000,
         "cacheWrite": 0,
-        "attempts": 4,
+        "attempts": 1,
         "thoughtTurns": 0
       },
       "register-unit:primary-sweep": {
-        "input": 134432,
-        "output": 5886,
-        "cacheRead": 947968,
+        "input": 129285,
+        "output": 4216,
+        "cacheRead": 1184384,
         "cacheWrite": 0,
-        "attempts": 3,
+        "attempts": 2,
         "thoughtTurns": 0
       },
       "register-unit:saturation-probe": {
@@ -189,133 +198,309 @@
         "thoughtTurns": 0
       },
       "register-unit:transliteration-numeric": {
-        "input": 55321,
-        "output": 1795,
-        "cacheRead": 416000,
+        "input": 37843,
+        "output": 2398,
+        "cacheRead": 653568,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-card:1": {
-        "input": 26098,
-        "output": 876,
-        "cacheRead": 76800,
+        "input": 14988,
+        "output": 318,
+        "cacheRead": 56192,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:10": {
+        "input": 14560,
+        "output": 264,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:11": {
+        "input": 14421,
+        "output": 224,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:12": {
+        "input": 14486,
+        "output": 218,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:13": {
+        "input": 15930,
+        "output": 315,
+        "cacheRead": 80384,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:14": {
+        "input": 14483,
+        "output": 227,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:15": {
+        "input": 14728,
+        "output": 308,
+        "cacheRead": 56832,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:16": {
+        "input": 14430,
+        "output": 245,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:18": {
+        "input": 14631,
+        "output": 209,
+        "cacheRead": 55936,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:19": {
+        "input": 28417,
+        "output": 236,
+        "cacheRead": 42240,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-card:2": {
-        "input": 18860,
-        "output": 1033,
-        "cacheRead": 83968,
+        "input": 14646,
+        "output": 276,
+        "cacheRead": 56576,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:20": {
+        "input": 14488,
+        "output": 232,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:21": {
+        "input": 14478,
+        "output": 242,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:22": {
+        "input": 14443,
+        "output": 214,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:23": {
+        "input": 14493,
+        "output": 245,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:24": {
+        "input": 14809,
+        "output": 252,
+        "cacheRead": 55936,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:25": {
+        "input": 14528,
+        "output": 265,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:26": {
+        "input": 14504,
+        "output": 274,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:27": {
+        "input": 14460,
+        "output": 229,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:28": {
+        "input": 14468,
+        "output": 257,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:29": {
+        "input": 14493,
+        "output": 257,
+        "cacheRead": 56064,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-card:3": {
-        "input": 19900,
-        "output": 901,
-        "cacheRead": 81920,
+        "input": 14606,
+        "output": 278,
+        "cacheRead": 56320,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:30": {
+        "input": 28515,
+        "output": 255,
+        "cacheRead": 42112,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:31": {
+        "input": 14450,
+        "output": 223,
+        "cacheRead": 56064,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "report-card:32": {
+        "input": 14656,
+        "output": 290,
+        "cacheRead": 56320,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-card:4": {
-        "input": 19647,
-        "output": 774,
-        "cacheRead": 81920,
+        "input": 16376,
+        "output": 647,
+        "cacheRead": 106880,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-card:5": {
-        "input": 19589,
-        "output": 1015,
-        "cacheRead": 81920,
+        "input": 15888,
+        "output": 349,
+        "cacheRead": 80896,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-card:6": {
-        "input": 19314,
-        "output": 774,
-        "cacheRead": 81920,
+        "input": 16070,
+        "output": 343,
+        "cacheRead": 81280,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-card:7": {
-        "input": 23375,
-        "output": 1215,
-        "cacheRead": 138752,
+        "input": 15903,
+        "output": 310,
+        "cacheRead": 80640,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-card:8": {
-        "input": 19198,
-        "output": 654,
-        "cacheRead": 81920,
+        "input": 14503,
+        "output": 238,
+        "cacheRead": 56192,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-card:9": {
-        "input": 19290,
-        "output": 756,
-        "cacheRead": 81920,
+        "input": 14480,
+        "output": 265,
+        "cacheRead": 56192,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-overview": {
-        "input": 110629,
-        "output": 4193,
-        "cacheRead": 520448,
+        "input": 95042,
+        "output": 489,
+        "cacheRead": 282880,
         "cacheWrite": 0,
         "attempts": 2,
         "thoughtTurns": 0
       },
       "skeptic": {
-        "input": 22947,
-        "output": 3090,
-        "cacheRead": 183040,
+        "input": 76775,
+        "output": 1531,
+        "cacheRead": 339456,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "synthesis": {
-        "input": 467358,
-        "output": 49086,
-        "cacheRead": 11120896,
+        "input": 368133,
+        "output": 56232,
+        "cacheRead": 8110976,
         "cacheWrite": 0,
-        "attempts": 3,
+        "attempts": 4,
         "thoughtTurns": 0
       }
     },
     "byModel": {
-      "gpt-5.6-sol": {
-        "input": 1297247,
-        "output": 149438,
-        "cacheRead": 21125504,
+      "gpt-6.1-sol": {
+        "input": 1175716,
+        "output": 131347,
+        "cacheRead": 19874688,
         "cacheWrite": 0,
-        "attempts": 12,
+        "attempts": 15,
         "thoughtTurns": 0
       },
-      "gpt-5.6-luna": {
-        "input": 294526,
-        "output": 20357,
-        "cacheRead": 2112512,
+      "gpt-6-luna": {
+        "input": 178904,
+        "output": 6691,
+        "cacheRead": 1035520,
         "cacheWrite": 0,
-        "attempts": 6,
+        "attempts": 4,
         "thoughtTurns": 0
       },
-      "gpt-5.6-terra": {
-        "input": 764583,
-        "output": 36934,
-        "cacheRead": 4295680,
+      "gpt-6.1-terra": {
+        "input": 746513,
+        "output": 15050,
+        "cacheRead": 3410688,
         "cacheWrite": 0,
-        "attempts": 22,
+        "attempts": 37,
         "thoughtTurns": 0
       },
       "code:execute-plan": {
@@ -329,11 +514,11 @@
     },
     "byEngine": {
       "openai-agent": {
-        "input": 2356356,
-        "output": 206729,
-        "cacheRead": 27533696,
+        "input": 2101133,
+        "output": 153088,
+        "cacheRead": 24320896,
         "cacheWrite": 0,
-        "attempts": 40,
+        "attempts": 56,
         "thoughtTurns": 0
       },
       "code": {
@@ -347,11 +532,11 @@
     },
     "byAuthMode": {
       "subscription": {
-        "input": 2356356,
-        "output": 206729,
-        "cacheRead": 27533696,
+        "input": 2101133,
+        "output": 153088,
+        "cacheRead": 24320896,
         "cacheWrite": 0,
-        "attempts": 40,
+        "attempts": 56,
         "thoughtTurns": 0
       },
       "not-provider-billed": {
@@ -369,55 +554,55 @@
     "schemaVersion": 1,
     "modelBasis": "requested",
     "dispatchCensus": {
-      "total": 41,
-      "measured": 40,
+      "total": 57,
+      "measured": 56,
       "streamed": 0,
       "unmeasured": 0,
       "codeSide": 1
     },
     "dispatchCensusReconciles": true,
     "tokens": {
-      "input": 2356356,
-      "output": 206729,
+      "input": 2101133,
+      "output": 153088,
       "cacheWrite": 0,
-      "cacheRead": 27533696
+      "cacheRead": 24320896
     },
     "tokensComplete": true,
     "byBilling": {
-      "openai-agent|subscription|gpt-5.6-sol": {
+      "openai-agent|subscription|gpt-6.1-sol": {
         "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "gpt-5.6-sol",
-        "dispatches": 12,
+        "model": "gpt-6.1-sol",
+        "dispatches": 15,
         "tokens": {
-          "input": 1297247,
-          "output": 149438,
+          "input": 1175716,
+          "output": 131347,
           "cacheWrite": 0,
-          "cacheRead": 21125504
+          "cacheRead": 19874688
         }
       },
-      "openai-agent|subscription|gpt-5.6-luna": {
+      "openai-agent|subscription|gpt-6-luna": {
         "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "gpt-5.6-luna",
-        "dispatches": 6,
+        "model": "gpt-6-luna",
+        "dispatches": 4,
         "tokens": {
-          "input": 294526,
-          "output": 20357,
+          "input": 178904,
+          "output": 6691,
           "cacheWrite": 0,
-          "cacheRead": 2112512
+          "cacheRead": 1035520
         }
       },
-      "openai-agent|subscription|gpt-5.6-terra": {
+      "openai-agent|subscription|gpt-6.1-terra": {
         "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "gpt-5.6-terra",
-        "dispatches": 22,
+        "model": "gpt-6.1-terra",
+        "dispatches": 37,
         "tokens": {
-          "input": 764583,
-          "output": 36934,
+          "input": 746513,
+          "output": 15050,
           "cacheWrite": 0,
-          "cacheRead": 4295680
+          "cacheRead": 3410688
         }
       },
       "code|not-provider-billed|code:execute-plan": {
@@ -453,65 +638,68 @@
       "statement": "this run spent on one vendor (openai) under one billing mode (subscription)"
     },
     "emittedVsLanded": {
-      "emittedOutputTokens": 206729,
-      "landedBytes": 173294,
-      "landedBytesFromStages": 27,
+      "emittedOutputTokens": 153088,
+      "landedBytes": 194947,
+      "landedBytesFromStages": 48,
       "stagesWithoutLandedRecord": [
         "engine-turn",
+        "follow-up-searches",
         "reading-log",
         "record-discard",
+        "register-answer-watch",
         "register-record-bodies",
         "register-repair",
+        "research-answers",
         "tool-calls"
       ],
       "landedShareIsFloor": true,
-      "landedShare": 0.2096,
+      "landedShare": 0.3184,
       "landedShareBasis": "landedBytes / (emittedOutputTokens * bytesPerOutputTokenAssumed)",
       "bytesPerOutputTokenAssumed": 4,
-      "emittedOnDispatchesThatWroteNothing": 720,
+      "emittedOnDispatchesThatWroteNothing": 1724,
       "thinkingNotSeparable": "thinking is billed inside output_tokens and is never broken out (engine/CONTRACT.md §2) — it sits inside the not-landed share and cannot be split from discarded prose",
       "thoughtTurns": 0
     },
     "emittedVsLandedByStage": {
       "blind-frame": {
-        "emittedOutputTokens": 2855,
-        "landedBytes": 8434,
-        "landedShare": 0.7385,
+        "emittedOutputTokens": 2857,
+        "landedBytes": 11769,
+        "landedShare": 1.0298,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "clearance-variants": {
-        "emittedOutputTokens": 8998,
-        "landedBytes": 11928,
-        "landedShare": 0.3314,
+        "emittedOutputTokens": 5838,
+        "landedBytes": 16682,
+        "landedShare": 0.7144,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "common-law-half:a": {
-        "emittedOutputTokens": 10929,
-        "landedBytes": 20513,
-        "landedShare": 0.4692,
+        "emittedOutputTokens": 2843,
+        "landedBytes": 7590,
+        "landedShare": 0.6674,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "common-law-half:b": {
-        "emittedOutputTokens": 6723,
-        "landedBytes": 10884,
-        "landedShare": 0.4047,
+        "emittedOutputTokens": 3165,
+        "landedBytes": 8353,
+        "landedShare": 0.6598,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "common-law-half:m": {
-        "emittedOutputTokens": 2705,
-        "landedBytes": 2893,
-        "landedShare": 0.2674,
+        "emittedOutputTokens": 683,
+        "landedBytes": 319,
+        "landedShare": 0.1168,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "doubt-closure": {
-        "emittedOutputTokens": 4217,
-        "landedBytes": 10881,
-        "landedShare": 0.6451,
+        "emittedOutputTokens": 959,
+        "landedBytes": 9166,
+        "landedShare": 2.3895,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -522,31 +710,38 @@
         "landedShareReason": "no dispatch row on this stage journalled an output record",
         "tokensComplete": true
       },
+      "follow-up-searches": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
       "frame-diff": {
-        "emittedOutputTokens": 3544,
-        "landedBytes": 2731,
-        "landedShare": 0.1926,
+        "emittedOutputTokens": 1168,
+        "landedBytes": 2508,
+        "landedShare": 0.5368,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "matter-frame": {
-        "emittedOutputTokens": 5096,
-        "landedBytes": 8364,
-        "landedShare": 0.4103,
+        "emittedOutputTokens": 2425,
+        "landedBytes": 8063,
+        "landedShare": 0.8312,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "narrative-refutation": {
-        "emittedOutputTokens": 39498,
-        "landedBytes": 2854,
-        "landedShare": 0.0181,
+        "emittedOutputTokens": 18779,
+        "landedBytes": 1826,
+        "landedShare": 0.0243,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "placement-inquiry": {
-        "emittedOutputTokens": 32214,
-        "landedBytes": 26041,
-        "landedShare": 0.2021,
+        "emittedOutputTokens": 37833,
+        "landedBytes": 59748,
+        "landedShare": 0.3948,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -564,10 +759,17 @@
         "landedShareReason": "no dispatch row on this stage journalled an output record",
         "tokensComplete": true
       },
+      "register-answer-watch": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
       "register-digest": {
-        "emittedOutputTokens": 11691,
-        "landedBytes": 50058,
-        "landedShare": 1.0704,
+        "emittedOutputTokens": 3167,
+        "landedBytes": 35569,
+        "landedShare": 2.8078,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -585,115 +787,269 @@
         "landedShareReason": "no dispatch row on this stage journalled an output record",
         "tokensComplete": true
       },
-      "register-unit:incumbent-class": {
-        "emittedOutputTokens": 6211,
-        "landedBytes": 291,
-        "landedShare": 0.0117,
-        "landedShareReason": null,
-        "tokensComplete": true
-      },
       "register-unit:primary-sweep": {
-        "emittedOutputTokens": 5886,
-        "landedBytes": 330,
-        "landedShare": 0.014,
+        "emittedOutputTokens": 4216,
+        "landedBytes": 725,
+        "landedShare": 0.043,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "register-unit:saturation-probe": {
         "emittedOutputTokens": 0,
-        "landedBytes": 834,
+        "landedBytes": 835,
         "landedShare": null,
         "landedShareReason": "the stage journalled no emitted output tokens to compare against",
         "tokensComplete": true
       },
       "register-unit:transliteration-numeric": {
-        "emittedOutputTokens": 1795,
-        "landedBytes": 300,
-        "landedShare": 0.0418,
+        "emittedOutputTokens": 2398,
+        "landedBytes": 453,
+        "landedShare": 0.0472,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:1": {
-        "emittedOutputTokens": 876,
-        "landedBytes": 755,
-        "landedShare": 0.2155,
+        "emittedOutputTokens": 318,
+        "landedBytes": 887,
+        "landedShare": 0.6973,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:10": {
+        "emittedOutputTokens": 264,
+        "landedBytes": 558,
+        "landedShare": 0.5284,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:11": {
+        "emittedOutputTokens": 224,
+        "landedBytes": 487,
+        "landedShare": 0.5435,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:12": {
+        "emittedOutputTokens": 218,
+        "landedBytes": 432,
+        "landedShare": 0.4954,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:13": {
+        "emittedOutputTokens": 315,
+        "landedBytes": 603,
+        "landedShare": 0.4786,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:14": {
+        "emittedOutputTokens": 227,
+        "landedBytes": 516,
+        "landedShare": 0.5683,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:15": {
+        "emittedOutputTokens": 308,
+        "landedBytes": 813,
+        "landedShare": 0.6599,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:16": {
+        "emittedOutputTokens": 245,
+        "landedBytes": 436,
+        "landedShare": 0.4449,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:18": {
+        "emittedOutputTokens": 209,
+        "landedBytes": 373,
+        "landedShare": 0.4462,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:19": {
+        "emittedOutputTokens": 236,
+        "landedBytes": 496,
+        "landedShare": 0.5254,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:2": {
-        "emittedOutputTokens": 1033,
-        "landedBytes": 681,
-        "landedShare": 0.1648,
+        "emittedOutputTokens": 276,
+        "landedBytes": 747,
+        "landedShare": 0.6766,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:20": {
+        "emittedOutputTokens": 232,
+        "landedBytes": 495,
+        "landedShare": 0.5334,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:21": {
+        "emittedOutputTokens": 242,
+        "landedBytes": 577,
+        "landedShare": 0.5961,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:22": {
+        "emittedOutputTokens": 214,
+        "landedBytes": 466,
+        "landedShare": 0.5444,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:23": {
+        "emittedOutputTokens": 245,
+        "landedBytes": 566,
+        "landedShare": 0.5776,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:24": {
+        "emittedOutputTokens": 252,
+        "landedBytes": 624,
+        "landedShare": 0.619,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:25": {
+        "emittedOutputTokens": 265,
+        "landedBytes": 608,
+        "landedShare": 0.5736,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:26": {
+        "emittedOutputTokens": 274,
+        "landedBytes": 625,
+        "landedShare": 0.5703,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:27": {
+        "emittedOutputTokens": 229,
+        "landedBytes": 489,
+        "landedShare": 0.5338,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:28": {
+        "emittedOutputTokens": 257,
+        "landedBytes": 597,
+        "landedShare": 0.5807,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:29": {
+        "emittedOutputTokens": 257,
+        "landedBytes": 594,
+        "landedShare": 0.5778,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:3": {
-        "emittedOutputTokens": 901,
-        "landedBytes": 565,
-        "landedShare": 0.1568,
+        "emittedOutputTokens": 278,
+        "landedBytes": 685,
+        "landedShare": 0.616,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:30": {
+        "emittedOutputTokens": 255,
+        "landedBytes": 570,
+        "landedShare": 0.5588,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:31": {
+        "emittedOutputTokens": 223,
+        "landedBytes": 449,
+        "landedShare": 0.5034,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "report-card:32": {
+        "emittedOutputTokens": 290,
+        "landedBytes": 784,
+        "landedShare": 0.6759,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:4": {
-        "emittedOutputTokens": 774,
-        "landedBytes": 589,
-        "landedShare": 0.1902,
+        "emittedOutputTokens": 647,
+        "landedBytes": 866,
+        "landedShare": 0.3346,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:5": {
-        "emittedOutputTokens": 1015,
-        "landedBytes": 516,
-        "landedShare": 0.1271,
+        "emittedOutputTokens": 349,
+        "landedBytes": 807,
+        "landedShare": 0.5781,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:6": {
-        "emittedOutputTokens": 774,
-        "landedBytes": 577,
-        "landedShare": 0.1864,
+        "emittedOutputTokens": 343,
+        "landedBytes": 746,
+        "landedShare": 0.5437,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:7": {
-        "emittedOutputTokens": 1215,
-        "landedBytes": 557,
-        "landedShare": 0.1146,
+        "emittedOutputTokens": 310,
+        "landedBytes": 667,
+        "landedShare": 0.5379,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:8": {
-        "emittedOutputTokens": 654,
-        "landedBytes": 487,
-        "landedShare": 0.1862,
+        "emittedOutputTokens": 238,
+        "landedBytes": 489,
+        "landedShare": 0.5137,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:9": {
-        "emittedOutputTokens": 756,
-        "landedBytes": 533,
-        "landedShare": 0.1763,
+        "emittedOutputTokens": 265,
+        "landedBytes": 676,
+        "landedShare": 0.6377,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-overview": {
-        "emittedOutputTokens": 4193,
-        "landedBytes": 1190,
-        "landedShare": 0.071,
+        "emittedOutputTokens": 489,
+        "landedBytes": 736,
+        "landedShare": 0.3763,
         "landedShareReason": null,
         "tokensComplete": true
       },
+      "research-answers": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
       "skeptic": {
-        "emittedOutputTokens": 3090,
-        "landedBytes": 1164,
-        "landedShare": 0.0942,
+        "emittedOutputTokens": 1531,
+        "landedBytes": 1101,
+        "landedShare": 0.1798,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "synthesis": {
-        "emittedOutputTokens": 49086,
-        "landedBytes": 8344,
-        "landedShare": 0.0425,
+        "emittedOutputTokens": 56232,
+        "landedBytes": 10776,
+        "landedShare": 0.0479,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -726,8 +1082,8 @@
       "dimensions": {
         "turnaroundHours": {
           "quoted": 2.5,
-          "actual": 1.24,
-          "ratio": 0.5,
+          "actual": 1.06,
+          "ratio": 0.42,
           "actualBasis": "wall:status.startedAt→terminal",
           "actualIncludesParked": true,
           "reason": null
@@ -767,7 +1123,7 @@
       "unmeasurable": 6
     }
   },
-  "statement": "Moderate — conditional on: Align Networks' three ENQOR applications remain pending on the Korean record searched (and 3 more).",
+  "caption": "VENQORI presents Moderate risk: Vencora’s UK training right would probably defeat the company’s proposed water-related teaching. The Chinese-script name 文科里 faces a separate likely claim, while VENQORI alone gives the company the better argument without an established corresponding pronunciation. Local-language marketplace coverage and several close-name rights remain unresolved.",
   "sendPending": true,
-  "endedAt": "2026-09-18T13:49:19.141Z"
+  "endedAt": "2026-11-20T20:47:28.065Z"
 }

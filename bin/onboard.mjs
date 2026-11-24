@@ -269,7 +269,7 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PACKAGED = installRoute(REPO) === "packaged";
 const THIS_TREE = PACKAGED ? "the installed package" : "this checkout";
 // The example job, by the path it has in THIS install, so the printed command runs from any directory.
-const EXAMPLE_JOB = join(REPO, "examples", "job.euipo.json");
+const EXAMPLE_JOB = join(REPO, "examples", "job.knockout.json");
 const ENV_PATH = envLocalPath({ repoRoot: REPO });   // resolved, never composed: one resolver, so moving this file later is one line
 // WHAT IS READ IS NOT ALWAYS WHERE THE NEXT WRITE GOES. An install configured before the move still
 // has its file at the old path, and the loader still reads it — so every READ here asks
@@ -1642,7 +1642,7 @@ export function whatSetupLeft({ copy = null, engine = null, turnRan = false } = 
 export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
   const ctx = await readCheckContext();
-  const { leadIsTheRefusal, turnLeads, signInLineLeads } = await sayOpening(ctx);
+  const { leadIsTheRefusal, refusal, turnLeads, signInLineLeads } = await sayOpening(ctx);
 
   // The path this command runs from, with the build it names below it.
   say(`\n  repo: ${REPO}`);
@@ -1669,7 +1669,7 @@ export async function runCheck() {
   await sayBackgroundUnits(ctx);
   await sayStartButtonPath(ctx);
   await sayClientConnector(ctx);
-  return sayVerdict(ctx.turnRan());
+  return sayVerdict(ctx.turnRan(), refusal);
 }
 
 /** What more than one section of the check reads, read once. `turnRan` is asked after the last section. */
@@ -1996,7 +1996,8 @@ async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, s
   // none, so setup does not reach either. The record is the one `clearotron status` reads; `start` writes `envFile`.
   const { readRunning } = await import(pathToFileURL(join(REPO, "shared", "running-start.mjs")).href);
   const startRunning = leadIsTheRefusal && readRunning().some((r) => !r.demo && typeof r.envFile === "string" && r.envFile !== "");
-  if (leadIsTheRefusal) say(`  ${cannotSearchYet(missingWords, invoke("install"), startRunning ? { kind: "start" } : null)}`);
+  const refusal = leadIsTheRefusal ? cannotSearchYet(missingWords, invoke("install"), startRunning ? { kind: "start" } : null) : null;
+  if (refusal) say(`  ${refusal}`);
   else {
     let turn = null;
     if (turnLeads) {
@@ -2008,7 +2009,7 @@ async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, s
     if (turn) sayTurn(turn);
   }
   sayResearch();
-  return { leadIsTheRefusal, turnLeads, signInLineLeads };
+  return { leadIsTheRefusal, refusal, turnLeads, signInLineLeads };
 }
 
 async function sayDeployment({ fileEnv, hosted, unitEnv }) {
@@ -3955,8 +3956,14 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
   } catch (e) { warn(`the client-connector state could not be read: ${e.message}`); }
 }
 
-function sayVerdict(probeTurnRan) {
+function sayVerdict(probeTurnRan, refusal = null) {
   say("");
+  // A BLOCKER THAT STOPS EVERY SEARCH IS SAID FIRST IN THE VERDICT TOO, WITH ITS FIX. The exit status stays the
+  // contract below, so a reader who reads only the end is the one this is for. Where the opening was the
+  // refusal's own sentence, the verdict opens with the same sentence, which names what is missing and the
+  // command that sets it. On a machine with background units, "Will a search run?" is the opening, its blocking
+  // row names the file to set, and it is already the first row of the list below.
+  if (refusal) say(`  ${refusal}\n`);
   // NAMED, NOT COUNTED, AND NAMED FIRST — before the problem count and independently of it. Listing
   // blockers only when `problems` is empty would reproduce this command's original defect one level up:
   // an install with one misconfiguration AND no register would print the count, exit 1, and never
@@ -5126,7 +5133,8 @@ try {
   say("");
   // A FIRST REAL CLEARANCE IS SUGGESTED ONLY WHERE ONE CAN RUN. With no register chosen, the line suggesting
   // `run` sat a few lines above the warning that `run` will refuse at its door.
-  // …and the EU job only where the register reaches the EU.
+  // …and the EU job only where the register reaches the EU. It is a knockout search, as the Quickstart's first run
+  // is: the multi-country job this line named before takes hours, where a knockout proves the install in minutes.
   if (registerSelected && spec?.euHalf !== false) {
     say(`  ${style.dim(`Also: \`${invocationPrefix()}clearotron demo\` replays a finished report with no keys and no model calls;`)}`);
     say(`  ${style.dim(`\`${invocationPrefix()}clearotron run --job ${/\s/.test(EXAMPLE_JOB) ? `"${EXAMPLE_JOB}"` : EXAMPLE_JOB}\` runs a first real clearance on the EU register.`)}`);
@@ -5195,6 +5203,12 @@ try {
     }
   }
 
+  // NO AI, SAID AS PLAINLY AS NO REGISTER, with the one command that adds one. Enter at every prompt ends here,
+  // because installing a vendor's program is never the default.
+  if (!aiChosen) {
+    warn(`no AI is chosen, so \`${invocationPrefix()}clearotron run\` will refuse at its door.`);
+    say(`    Set it by re-running \`${invocationPrefix()}clearotron install\`.\n`);
+  }
   if (!registerSelected) {
     warn(`no register is selected, so \`${invocationPrefix()}clearotron run\` will refuse at its door.`);
     say(`    \`${invocationPrefix()}clearotron demo\` and \`${invocationPrefix()}clearotron start\` work now. A real`);

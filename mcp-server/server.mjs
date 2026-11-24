@@ -85,7 +85,7 @@ import { evidenceRecords, searchLog, coverageStatement, registrationGoods, deliv
 // clearance projections read artifacts this product does not write, and returned empty rather than saying
 // so.
 import {
-  isKnockoutRun, knockoutDoc, knockoutArtifacts, knockoutArtifactPath, knockoutFindings,
+  isKnockoutRun, knockoutDoc, knockoutArtifacts, knockoutArtifactPath, knockoutFindings, knockoutFinding,
   knockoutEvidence, knockoutSearches, knockoutCoverage, traceKnockout, notProducedOnThisProduct,
 } from "./lib/knockout.mjs";
 import { instructionsFor } from "./lib/instructions.mjs";
@@ -442,6 +442,12 @@ const tools = {
   },
   get_finding({ runId, id }) {
     const run = mustRun(runId);
+    // A Knockout's ids are the ones its list_findings gives; the clearance's audit trail holds none of them.
+    if (isKnockoutRun(run)) {
+      const item = knockoutFinding(run, id);
+      if (!item) throw new Error(`finding "${id}" not found in ${runId}. Use list_findings to see ids.`);
+      return item;
+    }
     const f = getFinding(run.P, id);
     if (!f) throw new Error(`finding "${id}" not found in ${runId}. Use list_findings to see ids (F#, NR#, AT#).`);
     // THE REPORT'S FINDING (2026-11-19): where the run's report document delivered the record this block names, its
@@ -683,7 +689,7 @@ const TOOL_DEFS = [
   { name: "list_searches", description: "What the search looked for and where — the searches that came back empty as well as the ones that surfaced something. Each row carries the term, the match shapes tried (exact, fuzzy, phonetic, transliteration…), the classes and jurisdictions, the register office where one was named, and the outcome (no-hit | found | out-of-scope | screened-out | excluded-own-rights | negligible). This is the defensibility record: proof of where the search looked and found nothing. Filter by outcome.", inputSchema: { type: "object", properties: { ...runIdProp, outcome: { type: "string", enum: ["no-hit", "found", "out-of-scope", "screened-out", "excluded-own-rights", "negligible", "recorded"] } }, required: ["runId"] } },
   { name: "get_search_coverage", description: "What the search covered and what is still open, in the report's own words — each area with its state (Searched — clean / Partially covered / Open item / Not searched). An area that is not clean is NOT cleared: read it as open. Reach for this whenever a result looks clean and the user is about to rely on it.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },
   { name: "list_findings", description: "Structured findings from the deterministic audit. kind: findings (default) | negatives | audit (audit-trail). Filter by sourceLayer (Register/Common-law). Pass group (on-field/off-field/out-of-scope) to get the curated report cards instead — the cards' one-liners are already plain-language.", inputSchema: { type: "object", properties: { ...runIdProp, kind: { type: "string", enum: ["findings", "negatives", "audit"] }, sourceLayer: { type: "string" }, group: { type: "string", enum: ["on-field", "off-field", "out-of-scope"] } }, required: ["runId"] } },
-  { name: "get_finding", description: "One finding/negative/audit-trail record by id (F#, NR#, AT#).", inputSchema: { type: "object", properties: { ...runIdProp, id: { type: "string" } }, required: ["runId", "id"] } },
+  { name: "get_finding", description: "One finding/negative/audit-trail record by id (F#, NR#, AT#). When a cited register record has saved goods or services, `goodsAsRegistered` gives the register’s wording in its original language, with the provider’s English translation where available.", inputSchema: { type: "object", properties: { ...runIdProp, id: { type: "string" } }, required: ["runId", "id"] } },
   { name: "trace", description: "ENGINEERING/AUDIT view — HOW a conclusion was reached; use only when the user asks how/why, not for briefing findings. Walks the full logic flow from any target (a stage, an artifact name, a finding id, or 'verdict') back through the stage that emitted it (and whether a failover occurred), its inputs (with sha-at-consumption vs now), the audit-trail rationale, search terms + record URL, skeptic escalations, and the refutation verdict. Pass shallow:true for a fast skeleton (stage→input lineage + verdict only; skips the findings rebuild and the live provider-usage tally).", inputSchema: { type: "object", properties: { ...runIdProp, target: { type: "string", description: "stage | artifact | finding id (F#/NR#/AT#) | 'verdict' | a mark/owner substring" }, depth: { type: "number", description: "upstream recursion depth (default 2)" }, shallow: { type: "boolean", description: "Fast skeleton: lineage + verdict only, skipping the slow enrichments. Use when a full trace is slow or you only need the chain." } }, required: ["runId", "target"] } },
   { name: "get_telemetry", description: "ENGINEERING/AUDIT view — per-run + per-stage execution telemetry (models, tokens, wall, failovers, fail reasons) from run.jsonl + the per-attempt logs. The ONLY tool that reports model identity — keep model names out of answers unless explicitly asked. Pass stage (+axis) to focus.", inputSchema: { type: "object", properties: { ...runIdProp, stage: { type: "string" }, axis: { type: "string" } }, required: ["runId"] } },
   { name: "get_provider_usage", description: "ENGINEERING/AUDIT view — billed register-search provider call counts for the run, RECOMPUTED live from the ledger (more correct than the cached value) with a drift/low-confidence flag.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },

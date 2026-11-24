@@ -56,12 +56,12 @@ import { maxNamesFor } from "./products.mjs";
 import { MAX_JURISDICTIONS } from "./enqueue-schema.mjs";
 import { STAGES } from "./stages.mjs";
 import { quoteBoundsFor } from "./effort-model.mjs";
-// Both of these are OUTSIDE driver/, and that is the point: the two figures and are about
-// live in `bin/` and in a provider, and a manifest that could only reach driver/ would have had nothing
-// to bind them to. Neither import has a load-time side effect — `bin/start.mjs` guards its bootstrap
-// behind `isMain` (driver/test/start-command.test.mjs already imports it), and `index-store.js` pulls
-// only `node:sqlite`.
-import { resolvePorts } from "../bin/start.mjs";
+// Both of these are OUTSIDE driver/, and that is the point: the doors' ports live in `shared/` (the start
+// command and the server install both read them there) and the index's freshness in a provider, and a
+// manifest that could only reach driver/ would have had nothing to bind them to. Neither import has a
+// load-time side effect: `shared/door-ports.mjs` is one pure function, and `index-store.js` pulls only
+// `node:sqlite`.
+import { resolvePorts } from "../shared/door-ports.mjs";
 import { FRESHNESS_HOURS } from "../providers/uspto-local/src/index-store.js";
 
 // ── deriving each figure in the spelling its doc uses ────────────────────────────────────────────────
@@ -274,7 +274,7 @@ export const DOC_CONSTANTS = [
   // the file itself; binding it would demand it equal a number it is supposed to differ from.
   {
     constant: "TRADEMARK_MCP_HTTP_PORT default",
-    source: { file: "bin/start.mjs", symbol: "resolvePorts({}).mcp" },
+    source: { file: "shared/door-ports.mjs", symbol: "resolvePorts({}).mcp" },
     expected: () => DERIVED.mcpPort,
     doc: "INSTALL.md",
     pattern: /# TRADEMARK_MCP_HTTP_PORT=(\d+)/,
@@ -297,42 +297,42 @@ export const DOC_CONSTANTS = [
   // binds them so the next move of the default cannot leave them behind.
   {
     constant: "TRADEMARK_MCP_HTTP_PORT default",
-    source: { file: "bin/start.mjs", symbol: "resolvePorts({}).mcp" },
+    source: { file: "shared/door-ports.mjs", symbol: "resolvePorts({}).mcp" },
     expected: () => DERIVED.mcpPort,
     doc: "INSTALL.md",
     pattern: /engine door on (\d+)/,
   },
   {
     constant: "TRADEMARK_MCP_HTTP_PORT default",
-    source: { file: "bin/start.mjs", symbol: "resolvePorts({}).mcp" },
+    source: { file: "shared/door-ports.mjs", symbol: "resolvePorts({}).mcp" },
     expected: () => DERIVED.mcpPort,
     doc: "docs/CLIENT-MCP.md",
     pattern: /TRADEMARK_MCP_HTTP_PORT` \(default (\d+)\)/,
   },
   {
     constant: "TRADEMARK_MCP_HTTP_PORT default",
-    source: { file: "bin/start.mjs", symbol: "resolvePorts({}).mcp" },
+    source: { file: "shared/door-ports.mjs", symbol: "resolvePorts({}).mcp" },
     expected: () => DERIVED.mcpPort,
     doc: "docs/architecture/05-config-governance.md",
     pattern: /TRADEMARK_MCP_HTTP_PORT` \((\d+)\)/,
   },
   {
     constant: "TRADEMARK_MCP_HTTP_PORT default",
-    source: { file: "bin/start.mjs", symbol: "resolvePorts({}).mcp" },
+    source: { file: "shared/door-ports.mjs", symbol: "resolvePorts({}).mcp" },
     expected: () => DERIVED.mcpPort,
     doc: "docs/architecture/09-security-and-data.md",
     pattern: /loopback :(\d+)/,
   },
   {
     constant: "TRADEMARK_MCP_HTTP_PORT default",
-    source: { file: "bin/start.mjs", symbol: "resolvePorts({}).mcp" },
+    source: { file: "shared/door-ports.mjs", symbol: "resolvePorts({}).mcp" },
     expected: () => DERIVED.mcpPort,
     doc: "mcp-server/remote/REMOTE-SETUP.md",
     pattern: /^TRADEMARK_MCP_HTTP_PORT=(\d+)/m,
   },
   {
     constant: "TRADEMARK_MCP_HTTP_PORT default",
-    source: { file: "bin/start.mjs", symbol: "resolvePorts({}).mcp" },
+    source: { file: "shared/door-ports.mjs", symbol: "resolvePorts({}).mcp" },
     expected: () => DERIVED.mcpPort,
     doc: "mcp-server/remote/REMOTE-SETUP.md",
     pattern: /curl -s http:\/\/127\.0\.0\.1:(\d+)\/healthz/,

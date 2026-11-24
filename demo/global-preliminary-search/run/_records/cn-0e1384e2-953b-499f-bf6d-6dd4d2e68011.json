@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/0e1384e2-953b-499f-bf6d-6dd4d2e68011",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "0e1384e2-953b-499f-bf6d-6dd4d2e68011",
+  "applicationNumber": "25405307",
+  "registrationNumber": "25405307",
+  "applicationDate": "2017-07-19",
+  "registrationDate": "2018-07-21",
+  "expiryDate": "2028-07-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-04-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EVENRIOT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "原电池组;电动运载工具用充电站;交互式触屏终端;可下载的手机应用软件;运载工具用蓄电池;电池;计算机程序(可下载软件);导航仪器;移动电源(可充电电池);蓄电池",
+      "translation_language": "en",
+      "translation": "Primary Battery Packs; Charging Stations for Electric Vehicles; Interactive Touch Screen Terminals; Downloadable Mobile Application Software; Battery for Vehicles; Batteries; Computer Programs (Downloadable Software); Navigation Instruments; Power Banks (Rechargeable Batteries); Battery"
+    }
+  ],
+  "owner": "Beijing-filled Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市海淀区龙岗路51号院7号楼2层C119室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing-filled Technology Co., Ltd.",
+        "applicantNativeName": "北京智充科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Primary Battery Packs; Charging Stations for Electric Vehicles; Interactive Touch Screen Terminals; Downloadable Mobile Application Software; Battery for Vehicles; Batteries; Computer Programs (Downloadable Software); Navigation Instruments; Power Banks (Rechargeable Batteries); Battery",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "原电池组;电动运载工具用充电站;交互式触屏终端;可下载的手机应用软件;运载工具用蓄电池;电池;计算机程序(可下载软件);导航仪器;移动电源(可充电电池);蓄电池"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Batteries, chargers",
+        "Computers and their external equipments",
+        "Equipments used in communication and navigation"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0922",
+          "subNatGoodsServicesDescription": "Batteries, chargers"
+        },
+        {
+          "subNatClassNumber": "0901",
+          "subNatGoodsServicesDescription": "Computers and their external equipments"
+        },
+        {
+          "subNatClassNumber": "0907",
+          "subNatGoodsServicesDescription": "Equipments used in communication and navigation"
+        }
+      ]
+    },
+    "id": "0e1384e2-953b-499f-bf6d-6dd4d2e68011",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1596"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "博雅智泉(北京)知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170719",
+        "applicationNumber": "25405307"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280720",
+      "lastPublicationDate": "20180420",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180721",
+        "registrationNumber": "25405307"
+      }
+    },
+    "version": "20251002220100",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EVENRIOT"
+    }
+  },
+  "_uri": "/mark/cn/0e1384e2-953b-499f-bf6d-6dd4d2e68011",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.187Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

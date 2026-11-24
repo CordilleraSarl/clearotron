@@ -24,6 +24,8 @@ import { projectAssessmentField } from '../findings-model.mjs';
 import { inputsLine } from '../framework-method.mjs';
 import { deliveryVocabViolations } from '../predelivery-lint.mjs';
 import { coverageUnitLabel } from '../coverage-ledger.mjs';
+import { leftOpenFold } from './render.mjs';   // the gaps the report lists under Left open, one list for every surface
+import { followUpKindsFrom } from '../follow-up-twins.mjs';
 
 const HEAD_FILL = WB.headerFill;
 // plain-English coverage-state fills (the state words are relabelled for the reader; the fills key off them).
@@ -32,17 +34,23 @@ const WIDE = {
   // Summary
   'Field': 26, 'Value': 96,
   // Findings
-  '#': 5, 'Conflicting mark': 30, 'Owner': 30, 'Country': 10, 'Source': 14, 'Class': 12,
+  '#': 5, 'Conflicting mark': 30, 'Owner': 40, 'Country': 10, 'Source': 14, 'Class': 12,
   'Registration(s)': 30, 'Status & key dates': 26, 'Record retrieved?': 30, 'Risk band': 14,
   'How we treated it': 40, 'Mark similarity': 18, 'Goods proximity': 18, 'Use': 16, 'Enforcer': 18, 'Link': 40,
-  // What was searched
-  'Search term / variant': 40, 'Scope': 20, 'Result': 24, 'Outcome': 24, 'Note': 60,
+  // What was searched. 'Result' is also the Knockout's Negative Results column, which holds a sentence.
+  'Search term / variant': 40, 'Scope': 20, 'Result': 40, 'Outcome': 24, 'Note': 60,
   // Coverage & gaps
   'Area': 40, 'State': 12, 'What was done': 60, "What's left": 60,
   // The Knockout's sheets (knockout.mjs), whose long text wrapped in the 16-wide default: Findings, Negative Results,
   // Audit Trail and Working Notes. One table for both workbooks, so a header means one width wherever it appears.
-  'Finding Name': 40, 'Type': 40, 'Net': 60, 'Basis': 60, 'Evidence': 60,
+  'Mark': 40, 'Finding Name': 40, 'Band': 40, 'Type': 40, 'Net': 60, 'Basis': 60, 'Evidence': 60,
   'Search Term': 40, 'Source / Context': 40, 'Notes': 60, 'Result Summary': 60,
+  // A finding reference is the mark and the range of its ordinals, so it is as long as the mark.
+  'Finding Reference': 40,
+  // Register Counts and Register Filings: a worldwide scope's list of codes, the forms a close count was taken over,
+  // a filing's mark, the form it matched, its classes and its record's address.
+  'Territories': 60, 'Close variation forms': 60, 'Register': 24,
+  'Matched form': 40, 'Trademark': 40, 'Classes': 40, 'Record': 60,
 };
 const width = h => WIDE[h] || 16;
 
@@ -438,16 +446,28 @@ function splitCoverageNote(note, state) {
   return state === W.state.open || state === W.state.limited ? { done: '', left: n } : { done: n, left: '—' };
 }
 
-function coverageRows(coverage) {
+// The two cells a coverage row's words go in.
+function coverageCells(c, state) {
+  // A row that says which cell its words belong in is not split: a reading turn's reason is one sentence,
+  // and cut at its first `;` it read as half done and half left.
+  return ('done' in c || 'left' in c)
+    ? { done: plainNote(c.done ?? ''), left: plainNote(c.left ?? '') || '—' }
+    : splitCoverageNote(c.note, state);
+}
+
+// `folded` is each written row the report prints in place of Follow-up rows, with those rows (buildAudit).
+function coverageRows(coverage, folded = new Map()) {
   return (coverage || []).map(c => {
     const state = STATE_WORD[c.state] || W.state.note;
-    // A row that says which cell its words belong in is not split: a reading turn's reason is one sentence,
-    // and cut at its first `;` it read as half done and half left.
-    const { done, left } = ('done' in c || 'left' in c)
-      ? { done: plainNote(c.done ?? ''), left: plainNote(c.left ?? '') || '—' }
-      : splitCoverageNote(c.note, state);
+    const { done, left } = coverageCells(c, state);
+    // A row's `detail` is the list its note counts, such as the territories a script's search did not complete in: it
+    // is printed under the note, as the report prints it.
+    const detail = Array.isArray(c.detail) && c.detail.length ? `\n${c.detail.map(plainNote).join(', ')}` : '';
+    // What a folded Follow-up row says that this row does not, the reason its search did not complete, follows.
+    const carried = (folded.get(c) ?? []).map((f) => coverageCells(f, STATE_WORD[f.state] || W.state.note).left)
+      .filter((l, i, all) => l && l !== '—' && !left.includes(l) && all.indexOf(l) === i).map((l) => `\n${l}`).join('');
     // An area the engine named by its axis reads the reader's label, as the Summary's slices do.
-    return { Area: plainNote(coverageUnitLabel(c.area)), State: state, 'What was done': done, "What's left": left };
+    return { Area: plainNote(coverageUnitLabel(c.area)), State: state, 'What was done': done, "What's left": `${left}${detail}${carried}` };
   });
 }
 
@@ -628,15 +648,29 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   wb.creator = BRAND.name;
   wb.created = new Date(0); // deterministic
 
-  const coverage = contract?.coverage || [];
+  // EVERY GAP THE REPORT LEAVES OPEN IS ON THIS SHEET, ONCE (design, 2026-11-20). The report's Left open list is the
+  // run's open coverage rows, which this sheet already prints, and the local-script gaps the report composes from the
+  // search record. A gap is added only where no coverage row already says it, word for word; the Summary's count and
+  // caveat read the added rows like any other.
+  //
+  // A FOLLOW-UP ROW THE REPORT FOLDS INTO ITS WRITTEN TWIN IS FOLDED HERE TOO (design, 2026-11-21), by the report's own
+  // rule (leftOpenFold), so the sheet prints that gap once, as the twin. What only the Follow-up row says stays on the
+  // twin's row. A Follow-up row the report prints, with a different scope or no twin, stays its own row.
+  const recorded = contract?.coverage || [];
+  const { rows: leftOpen, twins } = leftOpenFold({ coverage: recorded, localScripts: contract?.localScripts ?? null,
+    followUpKinds: followUpKindsFrom(contract?.followUpKinds) });
+  const folded = new Map();
+  for (const [followUp, twin] of twins) folded.set(twin, [...(folded.get(twin) ?? []), followUp]);
+  const listed = [...recorded, ...leftOpen.filter((r) => !recorded.some((c) => c?.area === r?.area && c?.note === r?.note))];
+  const coverage = listed.filter((c) => !twins.has(c));
   const coverageJudgment = contract?.coverageJudgment || null;
   const verdict = contract?.verdict || null;
   const fetchState = contract?.fetchState || {};
   const jurisdiction = contract?.jurisdiction || '';
   // The parts that failed and still shipped, as the shipped deferral row composes them at delivery. A part
-  // whose row the report's own coverage already carries, word for word, is that row: printed once.
+  // whose row the report's own coverage already carries, word for word, is that row: printed once, folded or not.
   const degradedParts = (contract?.degradedParts || [])
-    .filter((d) => !coverage.some((c) => c?.area === d?.area && c?.note === d?.note));
+    .filter((d) => !listed.some((c) => c?.area === d?.area && c?.note === d?.note));
 
   // context notes (famous-mark neighbours) ride the Findings tab as explicitly-not-rated rows, so the book
   // holds exactly four tabs and the "never dropped" promise still holds.
@@ -706,7 +740,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   // made the checks it wanted. Same builder, same four columns, same State colour: this is not a second
   // shape and not a new sheet, and the words are the run receipt's own.
   addSheet(wb, 'Coverage & gaps', COVERAGE_COLS,
-    [...coverageRows(coverage), ...coverageRows(degradedParts), ...coverageRows(contract?.droppedConditions || []),
+    [...coverageRows(coverage, folded), ...coverageRows(degradedParts), ...coverageRows(contract?.droppedConditions || []),
      ...coverageRows(contract?.undispatchedProbes || []), ...coverageRows(contract?.withheldFamilies || []),
      ...coverageRows(contract?.releasedFamilies || []), ...(contract?.setAside || []).map((s) => ({ Area: plainNote(coverageUnitLabel(s.area)), State: 'Note', 'What was done': plainNote(s.note) || '—', "What's left": '—' }))], (row, _d, kept) => {
     if (!kept.has('State')) return;

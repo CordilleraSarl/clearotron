@@ -1,0 +1,12 @@
+{
+  "schema_version": 2,
+  "queries": [
+    {"query": "YIWU TENGDING UMBRELLA CO., LTD.", "jurisdiction": "Japan", "results": 5},
+    {"query": "VenKuri ベンクリ 商標", "jurisdiction": "Japan", "results": 5},
+    {"query": "商標 類似 称呼 外観 観念 商品 類似 電子機器 ソフトウェア", "jurisdiction": "Japan", "results": 5}
+  ],
+  "citations": [
+    {"proceeding": "商標登録願拒絶査定抗告審判審決取消請求", "forum": "Supreme Court of Japan, Third Petty Bench", "jurisdiction": "Japan", "decided": "1960-10-04", "url": "https://www.courts.go.jp/hanrei/52938/detail2/index.html", "read": "read", "ord": 1, "bearing": "Pronunciation similarity was assessed in concrete trading circumstances; the famous sewing-machine facts limit the analogy."},
+    {"proceeding": "商標登録拒絶査定不服審判審決取消請求", "forum": "Supreme Court of Japan, Third Petty Bench", "jurisdiction": "Japan", "decided": "1968-04-09", "url": "https://www.courts.go.jp/hanrei/66499/detail2/index.html", "read": "read", "ord": null, "bearing": "Considered the perception of ジム in relation to office machinery when assessing descriptiveness; not a direct similarity precedent."}
+  ]
+}

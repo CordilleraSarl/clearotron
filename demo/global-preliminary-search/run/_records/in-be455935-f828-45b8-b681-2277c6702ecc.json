@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/in/be455935-f828-45b8-b681-2277c6702ecc",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "be455935-f828-45b8-b681-2277c6702ecc",
+  "applicationNumber": "6832112",
+  "registrationNumber": null,
+  "applicationDate": "2025-01-30",
+  "registrationDate": null,
+  "expiryDate": "2035-01-30",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Seven Ring Gold",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Wearable devices, payment devices, electronic hardware, internet of things, integrated circuits, electronic sensors, batteries, software, firmware, contactless payment devices, access control devices, keyless entry devices, transport ticketing devices, near field communication devices",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "SEVENRING INNOVATIONS PRIVATE LIMITED Body Incorporate",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "BHAVIK SALIA[18094]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Flat No. 1003, C-Wing, Marathon Cosmos, LBS Marg, Mulund West, Mumbai - 400080",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "SEVENRING INNOVATIONS PRIVATE LIMITED Body Incorporate"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Wearable devices, payment devices, electronic hardware, internet of things, integrated circuits, electronic sensors, batteries, software, firmware, contactless payment devices, access control devices, keyless entry devices, transport ticketing devices, near field communication devices"
+        }
+      ]
+    },
+    "id": "be455935-f828-45b8-b681-2277c6702ecc",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2267"
+      }
+    ],
+    "recordLastUpdated": "20260714",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "703, Vijay Tower, Dr. Lazarus Road, Charai, Thane West, Thane, Maharashtra - 400 602",
+        "representativeName": "BHAVIK SALIA[18094]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250130",
+        "applicationNumber": "6832112"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20350130",
+      "markCurrentStatus": "ACCEPTED AND ADVERTISED"
+    },
+    "version": "20260714020310",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Seven Ring Gold"
+    }
+  },
+  "_uri": "/mark/in/be455935-f828-45b8-b681-2277c6702ecc",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.177Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

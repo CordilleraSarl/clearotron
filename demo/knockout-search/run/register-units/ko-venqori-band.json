@@ -1,0 +1,3475 @@
+[
+  {
+    "state": "enumerated",
+    "total_hits": 69,
+    "count": 69,
+    "records": [
+      {
+        "record_id": "/mark/ae/29742280-0b1c-4bf5-869b-1b572d14ac7f",
+        "guid": "29742280-0b1c-4bf5-869b-1b572d14ac7f",
+        "office": "ae",
+        "mark_text": "VONCORE",
+        "classes": [
+          9
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2008-01-21",
+        "registration_date": null,
+        "expiry_date": null,
+        "owner_name": null,
+        "owner_country": "CH",
+        "jurisdictions": "AE",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "29742280-0b1c-4bf5-869b-1b572d14ac7f",
+          "registrationOfficeCode": "AE"
+        },
+        "screen": {
+          "uri": "/mark/ae/29742280-0b1c-4bf5-869b-1b572d14ac7f",
+          "guid": "29742280-0b1c-4bf5-869b-1b572d14ac7f",
+          "office": "ae",
+          "mark_text": "VONCORE",
+          "mark_transliteration": null,
+          "classes": [
+            9
+          ],
+          "status": "PENDING",
+          "owner": null,
+          "owner_native": null,
+          "owner_country": "CH",
+          "application_date": "2008-01-21",
+          "registration_date": null,
+          "expiry_date": null,
+          "application_number": "105580",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/ar/47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+        "guid": "47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+        "office": "ar",
+        "mark_text": "VINKARA",
+        "classes": [
+          9
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2018-06-14",
+        "registration_date": "2019-09-23",
+        "expiry_date": null,
+        "owner_name": "LEGADO IT S.R.L.-FERREYRA ESTEFANIA-CABRAL JUAN H.",
+        "owner_country": "AR",
+        "jurisdictions": "AR",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+          "registrationOfficeCode": "AR"
+        },
+        "screen": {
+          "uri": "/mark/ar/47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+          "guid": "47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+          "office": "ar",
+          "mark_text": "VINKARA",
+          "mark_transliteration": null,
+          "classes": [
+            9
+          ],
+          "status": "REGISTERED",
+          "owner": "LEGADO IT S.R.L.-FERREYRA ESTEFANIA-CABRAL JUAN H.",
+          "owner_native": null,
+          "owner_country": "AR",
+          "application_date": "2018-06-14",
+          "registration_date": "2019-09-23",
+          "expiry_date": null,
+          "application_number": "3717066",
+          "registration_number": "3019713",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/ar/84f5c85b-798b-4e42-ac08-e30d4b02f0d5",
+        "guid": "84f5c85b-798b-4e42-ac08-e30d4b02f0d5",
+        "office": "ar",
+        "mark_text": "VINKARA",
+        "classes": [
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2018-06-14",
+        "registration_date": "2019-09-23",
+        "expiry_date": null,
+        "owner_name": "LEGADO IT S.R.L.-FERREYRA ESTEFANIA-CABRAL JUAN H.",
+        "owner_country": "AR",
+        "jurisdictions": "AR",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "84f5c85b-798b-4e42-ac08-e30d4b02f0d5",
+          "registrationOfficeCode": "AR"
+        },
+        "screen": {
+          "uri": "/mark/ar/84f5c85b-798b-4e42-ac08-e30d4b02f0d5",
+          "guid": "84f5c85b-798b-4e42-ac08-e30d4b02f0d5",
+          "office": "ar",
+          "mark_text": "VINKARA",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "LEGADO IT S.R.L.-FERREYRA ESTEFANIA-CABRAL JUAN H.",
+          "owner_native": null,
+          "owner_country": "AR",
+          "application_date": "2018-06-14",
+          "registration_date": "2019-09-23",
+          "expiry_date": null,
+          "application_number": "3717067",
+          "registration_number": "3019714",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/bx/ea1dbac7-8ad8-47d2-b2ef-7c8f57d08861",
+        "guid": "ea1dbac7-8ad8-47d2-b2ef-7c8f57d08861",
+        "office": "bx",
+        "mark_text": "VENCARE",
+        "classes": [
+          35,
+          42,
+          44
+        ],
+        "status": "EXPIRED",
+        "status_date": null,
+        "application_date": "2013-05-16",
+        "registration_date": "2013-08-12",
+        "expiry_date": null,
+        "owner_name": "Vencare Holding BV",
+        "owner_country": "NL",
+        "jurisdictions": "BX",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "ea1dbac7-8ad8-47d2-b2ef-7c8f57d08861",
+          "registrationOfficeCode": "BX"
+        },
+        "screen": {
+          "uri": "/mark/bx/ea1dbac7-8ad8-47d2-b2ef-7c8f57d08861",
+          "guid": "ea1dbac7-8ad8-47d2-b2ef-7c8f57d08861",
+          "office": "bx",
+          "mark_text": "VENCARE",
+          "mark_transliteration": null,
+          "classes": [
+            35,
+            42,
+            44
+          ],
+          "status": "EXPIRED",
+          "owner": "Vencare Holding BV",
+          "owner_native": null,
+          "owner_country": "NL",
+          "application_date": "2013-05-16",
+          "registration_date": "2013-08-12",
+          "expiry_date": null,
+          "application_number": "1268466",
+          "registration_number": "938210",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/bx/2c9c651a-e93f-4179-a3c0-f26638712c48",
+        "guid": "2c9c651a-e93f-4179-a3c0-f26638712c48",
+        "office": "bx",
+        "mark_text": "DE WERELD VAN CORA",
+        "classes": [
+          2,
+          3,
+          5,
+          8,
+          9,
+          11,
+          16,
+          20,
+          21,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "1998-02-13",
+        "registration_date": null,
+        "expiry_date": "2028-02-13",
+        "owner_name": "Shopping Cora Chatelineau SA",
+        "owner_country": "BE",
+        "jurisdictions": "BX",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "2c9c651a-e93f-4179-a3c0-f26638712c48",
+          "registrationOfficeCode": "BX"
+        },
+        "screen": {
+          "uri": "/mark/bx/2c9c651a-e93f-4179-a3c0-f26638712c48",
+          "guid": "2c9c651a-e93f-4179-a3c0-f26638712c48",
+          "office": "bx",
+          "mark_text": "DE WERELD VAN CORA",
+          "mark_transliteration": null,
+          "classes": [
+            2,
+            3,
+            5,
+            8,
+            9,
+            11,
+            16,
+            20,
+            21,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35
+          ],
+          "status": "REGISTERED",
+          "owner": "Shopping Cora Chatelineau SA",
+          "owner_native": null,
+          "owner_country": "BE",
+          "application_date": "1998-02-13",
+          "registration_date": null,
+          "expiry_date": "2028-02-13",
+          "application_number": "910334",
+          "registration_number": "R 636214",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/ca/4a250661-58aa-4ee7-9d80-51073ad12f9e",
+        "guid": "4a250661-58aa-4ee7-9d80-51073ad12f9e",
+        "office": "ca",
+        "mark_text": "VINKARA",
+        "classes": [
+          33,
+          35,
+          36,
+          41
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2013-05-30",
+        "registration_date": "2015-02-03",
+        "expiry_date": "2030-02-03",
+        "owner_name": "B-BAK GIDA TARIM VE TICARET ANONIM SIRKETI",
+        "owner_country": "TR",
+        "jurisdictions": "CA",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "4a250661-58aa-4ee7-9d80-51073ad12f9e",
+          "registrationOfficeCode": "CA"
+        },
+        "screen": {
+          "uri": "/mark/ca/4a250661-58aa-4ee7-9d80-51073ad12f9e",
+          "guid": "4a250661-58aa-4ee7-9d80-51073ad12f9e",
+          "office": "ca",
+          "mark_text": "VINKARA",
+          "mark_transliteration": null,
+          "classes": [
+            33,
+            35,
+            36,
+            41
+          ],
+          "status": "REGISTERED",
+          "owner": "B-BAK GIDA TARIM VE TICARET ANONIM SIRKETI",
+          "owner_native": null,
+          "owner_country": "TR",
+          "application_date": "2013-05-30",
+          "registration_date": "2015-02-03",
+          "expiry_date": "2030-02-03",
+          "application_number": "1628793",
+          "registration_number": "TMA895683",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/ca/844e42db-2c5e-442e-971b-340fa0062aa9",
+        "guid": "844e42db-2c5e-442e-971b-340fa0062aa9",
+        "office": "ca",
+        "mark_text": "VINKARA WINERY KALECIK ANKARA THIS IS THE TIME, MY LOVE TO POUR  THE WINE...",
+        "classes": [
+          33,
+          35,
+          36,
+          41
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2013-05-30",
+        "registration_date": "2015-09-10",
+        "expiry_date": "2030-09-10",
+        "owner_name": "B-BAK GIDA TARIM VE TICARET ANONIM SIRKETI",
+        "owner_country": "TR",
+        "jurisdictions": "CA",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "844e42db-2c5e-442e-971b-340fa0062aa9",
+          "registrationOfficeCode": "CA"
+        },
+        "screen": {
+          "uri": "/mark/ca/844e42db-2c5e-442e-971b-340fa0062aa9",
+          "guid": "844e42db-2c5e-442e-971b-340fa0062aa9",
+          "office": "ca",
+          "mark_text": "VINKARA WINERY KALECIK ANKARA THIS IS THE TIME, MY LOVE TO POUR  THE WINE...",
+          "mark_transliteration": null,
+          "classes": [
+            33,
+            35,
+            36,
+            41
+          ],
+          "status": "REGISTERED",
+          "owner": "B-BAK GIDA TARIM VE TICARET ANONIM SIRKETI",
+          "owner_native": null,
+          "owner_country": "TR",
+          "application_date": "2013-05-30",
+          "registration_date": "2015-09-10",
+          "expiry_date": "2030-09-10",
+          "application_number": "1628794",
+          "registration_number": "TMA913529",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/ch/75b855ee-314b-4713-8e3e-4e8ac1b10461",
+        "guid": "75b855ee-314b-4713-8e3e-4e8ac1b10461",
+        "office": "ch",
+        "mark_text": "vencura",
+        "classes": [
+          9,
+          16,
+          35,
+          36,
+          38,
+          41,
+          42,
+          44,
+          45
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2022-07-27",
+        "registration_date": "2022-11-10",
+        "expiry_date": "2032-07-27",
+        "owner_name": "vencura AG",
+        "owner_country": "CH",
+        "jurisdictions": "CH",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "75b855ee-314b-4713-8e3e-4e8ac1b10461",
+          "registrationOfficeCode": "CH"
+        },
+        "screen": {
+          "uri": "/mark/ch/75b855ee-314b-4713-8e3e-4e8ac1b10461",
+          "guid": "75b855ee-314b-4713-8e3e-4e8ac1b10461",
+          "office": "ch",
+          "mark_text": "vencura",
+          "mark_transliteration": null,
+          "classes": [
+            9,
+            16,
+            35,
+            36,
+            38,
+            41,
+            42,
+            44,
+            45
+          ],
+          "status": "REGISTERED",
+          "owner": "vencura AG",
+          "owner_native": null,
+          "owner_country": "CH",
+          "application_date": "2022-07-27",
+          "registration_date": "2022-11-10",
+          "expiry_date": "2032-07-27",
+          "application_number": "9959/2022",
+          "registration_number": "789065",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/ch/a1b37fae-9606-4298-891e-6e27fbce482b",
+        "guid": "a1b37fae-9606-4298-891e-6e27fbce482b",
+        "office": "ch",
+        "mark_text": "VONCORE",
+        "classes": [
+          9,
+          16,
+          36
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2001-09-19",
+        "registration_date": "2001-10-05",
+        "expiry_date": "2031-09-19",
+        "owner_name": "Bank Vontobel AG",
+        "owner_country": "CH",
+        "jurisdictions": "CH",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "a1b37fae-9606-4298-891e-6e27fbce482b",
+          "registrationOfficeCode": "CH"
+        },
+        "screen": {
+          "uri": "/mark/ch/a1b37fae-9606-4298-891e-6e27fbce482b",
+          "guid": "a1b37fae-9606-4298-891e-6e27fbce482b",
+          "office": "ch",
+          "mark_text": "VONCORE",
+          "mark_transliteration": null,
+          "classes": [
+            9,
+            16,
+            36
+          ],
+          "status": "REGISTERED",
+          "owner": "Bank Vontobel AG",
+          "owner_native": null,
+          "owner_country": "CH",
+          "application_date": "2001-09-19",
+          "registration_date": "2001-10-05",
+          "expiry_date": "2031-09-19",
+          "application_number": "9234/2001",
+          "registration_number": "490062",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/cn/74e98469-29f7-476b-b8fb-0b31be263484",
+        "guid": "74e98469-29f7-476b-b8fb-0b31be263484",
+        "office": "cn",
+        "mark_text": "VANCORE SPACE HOME",
+        "classes": [
+          42
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2026-05-07",
+        "registration_date": null,
+        "expiry_date": null,
+        "owner_name": "Guangzhou Wange Space Home Technology Co., Ltd.",
+        "owner_country": "CN",
+        "jurisdictions": "CN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "74e98469-29f7-476b-b8fb-0b31be263484",
+          "registrationOfficeCode": "CN"
+        },
+        "screen": {
+          "uri": "/mark/cn/74e98469-29f7-476b-b8fb-0b31be263484",
+          "guid": "74e98469-29f7-476b-b8fb-0b31be263484",
+          "office": "cn",
+          "mark_text": "VANCORE SPACE HOME",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "PENDING",
+          "owner": "Guangzhou Wange Space Home Technology Co., Ltd.",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2026-05-07",
+          "registration_date": null,
+          "expiry_date": null,
+          "application_number": "91623986",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/cn/41fc4542-ca3e-459a-93f5-1cb88bc1fe05",
+        "guid": "41fc4542-ca3e-459a-93f5-1cb88bc1fe05",
+        "office": "cn",
+        "mark_text": "VANCORE",
+        "classes": [
+          9
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2026-02-10",
+        "registration_date": null,
+        "expiry_date": null,
+        "owner_name": "Qiqi Cultural Creative Media (Shenzhen) Co., Ltd.",
+        "owner_country": "CN",
+        "jurisdictions": "CN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "41fc4542-ca3e-459a-93f5-1cb88bc1fe05",
+          "registrationOfficeCode": "CN"
+        },
+        "screen": {
+          "uri": "/mark/cn/41fc4542-ca3e-459a-93f5-1cb88bc1fe05",
+          "guid": "41fc4542-ca3e-459a-93f5-1cb88bc1fe05",
+          "office": "cn",
+          "mark_text": "VANCORE",
+          "mark_transliteration": null,
+          "classes": [
+            9
+          ],
+          "status": "PENDING",
+          "owner": "Qiqi Cultural Creative Media (Shenzhen) Co., Ltd.",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2026-02-10",
+          "registration_date": null,
+          "expiry_date": null,
+          "application_number": "90167197",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/cn/b8a93ca9-ccb6-44e3-ba1e-3d4e0838c953",
+        "guid": "b8a93ca9-ccb6-44e3-ba1e-3d4e0838c953",
+        "office": "cn",
+        "mark_text": "万葵电气",
+        "classes": [
+          9
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2025-06-13",
+        "registration_date": null,
+        "expiry_date": null,
+        "owner_name": "Shenzhen Cape can Electric Technology Co., Ltd",
+        "owner_country": "CN",
+        "jurisdictions": "CN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "b8a93ca9-ccb6-44e3-ba1e-3d4e0838c953",
+          "registrationOfficeCode": "CN"
+        },
+        "screen": {
+          "uri": "/mark/cn/b8a93ca9-ccb6-44e3-ba1e-3d4e0838c953",
+          "guid": "b8a93ca9-ccb6-44e3-ba1e-3d4e0838c953",
+          "office": "cn",
+          "mark_text": "万葵电气",
+          "mark_transliteration": "VANCORE ELECTRICAL WAN KUI DIAN QI",
+          "classes": [
+            9
+          ],
+          "status": "PENDING",
+          "owner": "Shenzhen Cape can Electric Technology Co., Ltd",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2025-06-13",
+          "registration_date": null,
+          "expiry_date": null,
+          "application_number": "85905881",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/cn/9b232f06-4fda-4a49-bbd8-ecd4c837ba41",
+        "guid": "9b232f06-4fda-4a49-bbd8-ecd4c837ba41",
+        "office": "cn",
+        "mark_text": "万葵电气",
+        "classes": [
+          42
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2025-06-13",
+        "registration_date": null,
+        "expiry_date": null,
+        "owner_name": "Shenzhen Cape can Electric Technology Co., Ltd",
+        "owner_country": "CN",
+        "jurisdictions": "CN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "9b232f06-4fda-4a49-bbd8-ecd4c837ba41",
+          "registrationOfficeCode": "CN"
+        },
+        "screen": {
+          "uri": "/mark/cn/9b232f06-4fda-4a49-bbd8-ecd4c837ba41",
+          "guid": "9b232f06-4fda-4a49-bbd8-ecd4c837ba41",
+          "office": "cn",
+          "mark_text": "万葵电气",
+          "mark_transliteration": "VANCORE ELECTRICAL WAN KUI DIAN QI",
+          "classes": [
+            42
+          ],
+          "status": "PENDING",
+          "owner": "Shenzhen Cape can Electric Technology Co., Ltd",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2025-06-13",
+          "registration_date": null,
+          "expiry_date": null,
+          "application_number": "85898672",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+        "guid": "817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+        "office": "cn",
+        "mark_text": "VENKURI",
+        "classes": [
+          9
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2019-04-01",
+        "registration_date": "2020-01-28",
+        "expiry_date": "2030-01-27",
+        "owner_name": "Yiwu Tengding Umbrella Co., Ltd.",
+        "owner_country": "CN",
+        "jurisdictions": "CN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+          "registrationOfficeCode": "CN"
+        },
+        "screen": {
+          "uri": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+          "guid": "817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+          "office": "cn",
+          "mark_text": "VENKURI",
+          "mark_transliteration": null,
+          "classes": [
+            9
+          ],
+          "status": "REGISTERED",
+          "owner": "Yiwu Tengding Umbrella Co., Ltd.",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2019-04-01",
+          "registration_date": "2020-01-28",
+          "expiry_date": "2030-01-27",
+          "application_number": "37216828A",
+          "registration_number": "37216828A",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+        "guid": "90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+        "office": "cn",
+        "mark_text": "VENKURI",
+        "classes": [
+          9
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2019-04-01",
+        "registration_date": null,
+        "expiry_date": null,
+        "owner_name": "Yiwu Tengding Umbrella Co., Ltd.",
+        "owner_country": "CN",
+        "jurisdictions": "CN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+          "registrationOfficeCode": "CN"
+        },
+        "screen": {
+          "uri": "/mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+          "guid": "90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+          "office": "cn",
+          "mark_text": "VENKURI",
+          "mark_transliteration": null,
+          "classes": [
+            9
+          ],
+          "status": "PENDING",
+          "owner": "Yiwu Tengding Umbrella Co., Ltd.",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2019-04-01",
+          "registration_date": null,
+          "expiry_date": null,
+          "application_number": "37216828",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/cn/5786e5ce-3962-4cb9-9fe1-f4df4522f575",
+        "guid": "5786e5ce-3962-4cb9-9fe1-f4df4522f575",
+        "office": "cn",
+        "mark_text": "VANCARO",
+        "classes": [
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2018-06-16",
+        "registration_date": "2019-07-28",
+        "expiry_date": "2029-07-27",
+        "owner_name": "Beijing Wanrun Chengda Technology Co., Ltd.",
+        "owner_country": "CN",
+        "jurisdictions": "CN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "5786e5ce-3962-4cb9-9fe1-f4df4522f575",
+          "registrationOfficeCode": "CN"
+        },
+        "screen": {
+          "uri": "/mark/cn/5786e5ce-3962-4cb9-9fe1-f4df4522f575",
+          "guid": "5786e5ce-3962-4cb9-9fe1-f4df4522f575",
+          "office": "cn",
+          "mark_text": "VANCARO",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "Beijing Wanrun Chengda Technology Co., Ltd.",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2018-06-16",
+          "registration_date": "2019-07-28",
+          "expiry_date": "2029-07-27",
+          "application_number": "31669041",
+          "registration_number": "31669041",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/cn/2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+        "guid": "2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+        "office": "cn",
+        "mark_text": "VANCARO",
+        "classes": [
+          9
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2018-06-16",
+        "registration_date": "2019-07-21",
+        "expiry_date": "2029-07-20",
+        "owner_name": "Beijing Wanrun Chengda Technology Co., Ltd.",
+        "owner_country": "CN",
+        "jurisdictions": "CN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+          "registrationOfficeCode": "CN"
+        },
+        "screen": {
+          "uri": "/mark/cn/2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+          "guid": "2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+          "office": "cn",
+          "mark_text": "VANCARO",
+          "mark_transliteration": null,
+          "classes": [
+            9
+          ],
+          "status": "REGISTERED",
+          "owner": "Beijing Wanrun Chengda Technology Co., Ltd.",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2018-06-16",
+          "registration_date": "2019-07-21",
+          "expiry_date": "2029-07-20",
+          "application_number": "31669506",
+          "registration_number": "31669506",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/cn/71246c53-f5f7-44ab-ac9d-730dffd96771",
+        "guid": "71246c53-f5f7-44ab-ac9d-730dffd96771",
+        "office": "cn",
+        "mark_text": "VANCORE",
+        "classes": [
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2016-10-09",
+        "registration_date": "2017-11-28",
+        "expiry_date": "2027-11-27",
+        "owner_name": "Zhuzhou City Van Gogh Decoration Engineering Co., Ltd",
+        "owner_country": "CN",
+        "jurisdictions": "CN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "71246c53-f5f7-44ab-ac9d-730dffd96771",
+          "registrationOfficeCode": "CN"
+        },
+        "screen": {
+          "uri": "/mark/cn/71246c53-f5f7-44ab-ac9d-730dffd96771",
+          "guid": "71246c53-f5f7-44ab-ac9d-730dffd96771",
+          "office": "cn",
+          "mark_text": "VANCORE",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "Zhuzhou City Van Gogh Decoration Engineering Co., Ltd",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2016-10-09",
+          "registration_date": "2017-11-28",
+          "expiry_date": "2027-11-27",
+          "application_number": "21506438",
+          "registration_number": "21506438",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/cn/5eaeb2ee-386b-4a71-97bc-4959fddfbc16",
+        "guid": "5eaeb2ee-386b-4a71-97bc-4959fddfbc16",
+        "office": "cn",
+        "mark_text": "凡圣品",
+        "classes": [
+          9
+        ],
+        "status": "EXPIRED",
+        "status_date": null,
+        "application_date": "2012-04-10",
+        "registration_date": "2013-06-21",
+        "expiry_date": null,
+        "owner_name": "Shenzhen Fanshengpin Technology Co., Ltd.",
+        "owner_country": "CN",
+        "jurisdictions": "CN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "5eaeb2ee-386b-4a71-97bc-4959fddfbc16",
+          "registrationOfficeCode": "CN"
+        },
+        "screen": {
+          "uri": "/mark/cn/5eaeb2ee-386b-4a71-97bc-4959fddfbc16",
+          "guid": "5eaeb2ee-386b-4a71-97bc-4959fddfbc16",
+          "office": "cn",
+          "mark_text": "凡圣品",
+          "mark_transliteration": "VANCORE fan sheng pin",
+          "classes": [
+            9
+          ],
+          "status": "EXPIRED",
+          "owner": "Shenzhen Fanshengpin Technology Co., Ltd.",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2012-04-10",
+          "registration_date": "2013-06-21",
+          "expiry_date": null,
+          "application_number": "10746051",
+          "registration_number": "10746051",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/de/8539231b-7e79-4c64-983c-a2af5da4d771",
+        "guid": "8539231b-7e79-4c64-983c-a2af5da4d771",
+        "office": "de",
+        "mark_text": "VINKORY",
+        "classes": [
+          9,
+          16,
+          25,
+          28,
+          41
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2026-06-08",
+        "registration_date": null,
+        "expiry_date": null,
+        "owner_name": "TRCT Medien GmbH",
+        "owner_country": "DE",
+        "jurisdictions": "DE",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "8539231b-7e79-4c64-983c-a2af5da4d771",
+          "registrationOfficeCode": "DE"
+        },
+        "screen": {
+          "uri": "/mark/de/8539231b-7e79-4c64-983c-a2af5da4d771",
+          "guid": "8539231b-7e79-4c64-983c-a2af5da4d771",
+          "office": "de",
+          "mark_text": "VINKORY",
+          "mark_transliteration": null,
+          "classes": [
+            9,
+            16,
+            25,
+            28,
+            41
+          ],
+          "status": "PENDING",
+          "owner": "TRCT Medien GmbH",
+          "owner_native": null,
+          "owner_country": "DE",
+          "application_date": "2026-06-08",
+          "registration_date": null,
+          "expiry_date": null,
+          "application_number": "302026231220.9",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/de/c5b0c781-8444-4731-a082-9159c81fbe3d",
+        "guid": "c5b0c781-8444-4731-a082-9159c81fbe3d",
+        "office": "de",
+        "mark_text": "VIANCORA",
+        "classes": [
+          35,
+          41
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2026-04-30",
+        "registration_date": "2026-07-07",
+        "expiry_date": "2036-04-30",
+        "owner_name": "Vauth, Robin",
+        "owner_country": "DE",
+        "jurisdictions": "DE",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "c5b0c781-8444-4731-a082-9159c81fbe3d",
+          "registrationOfficeCode": "DE"
+        },
+        "screen": {
+          "uri": "/mark/de/c5b0c781-8444-4731-a082-9159c81fbe3d",
+          "guid": "c5b0c781-8444-4731-a082-9159c81fbe3d",
+          "office": "de",
+          "mark_text": "VIANCORA",
+          "mark_transliteration": null,
+          "classes": [
+            35,
+            41
+          ],
+          "status": "REGISTERED",
+          "owner": "Vauth, Robin",
+          "owner_native": null,
+          "owner_country": "DE",
+          "application_date": "2026-04-30",
+          "registration_date": "2026-07-07",
+          "expiry_date": "2036-04-30",
+          "application_number": "302026224139.5",
+          "registration_number": "302026224139",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/de/c8d42318-d780-483f-9a5e-d00cc9ade9f7",
+        "guid": "c8d42318-d780-483f-9a5e-d00cc9ade9f7",
+        "office": "de",
+        "mark_text": "vincare",
+        "classes": [
+          5,
+          9,
+          10,
+          35
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2018-03-13",
+        "registration_date": "2018-11-08",
+        "expiry_date": "2028-03-31",
+        "owner_name": "vincare GmbH",
+        "owner_country": "DE",
+        "jurisdictions": "DE",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "c8d42318-d780-483f-9a5e-d00cc9ade9f7",
+          "registrationOfficeCode": "DE"
+        },
+        "screen": {
+          "uri": "/mark/de/c8d42318-d780-483f-9a5e-d00cc9ade9f7",
+          "guid": "c8d42318-d780-483f-9a5e-d00cc9ade9f7",
+          "office": "de",
+          "mark_text": "vincare",
+          "mark_transliteration": null,
+          "classes": [
+            5,
+            9,
+            10,
+            35
+          ],
+          "status": "REGISTERED",
+          "owner": "vincare GmbH",
+          "owner_native": null,
+          "owner_country": "DE",
+          "application_date": "2018-03-13",
+          "registration_date": "2018-11-08",
+          "expiry_date": "2028-03-31",
+          "application_number": "302018006318.3",
+          "registration_number": "302018006318",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+        "guid": "481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+        "office": "em",
+        "mark_text": "VENCORE",
+        "classes": [
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2026-05-22",
+        "registration_date": "2026-09-27",
+        "expiry_date": "2036-05-22",
+        "owner_name": "Symetri AB",
+        "owner_country": "SE",
+        "jurisdictions": "EM",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+          "registrationOfficeCode": "EM"
+        },
+        "screen": {
+          "uri": "/mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+          "guid": "481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+          "office": "em",
+          "mark_text": "VENCORE",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "Symetri AB",
+          "owner_native": null,
+          "owner_country": "SE",
+          "application_date": "2026-05-22",
+          "registration_date": "2026-09-27",
+          "expiry_date": "2036-05-22",
+          "application_number": "19368837",
+          "registration_number": "19368837",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274",
+        "guid": "dc47debd-f2b2-44d5-aa83-50743a2cc274",
+        "office": "em",
+        "mark_text": "VENCORA",
+        "classes": [
+          35,
+          36,
+          41,
+          42
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2026-02-24",
+        "registration_date": null,
+        "expiry_date": "2036-02-24",
+        "owner_name": "VENCORA UK LIMITED",
+        "owner_country": "GB",
+        "jurisdictions": "EM",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "dc47debd-f2b2-44d5-aa83-50743a2cc274",
+          "registrationOfficeCode": "EM"
+        },
+        "screen": {
+          "uri": "/mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274",
+          "guid": "dc47debd-f2b2-44d5-aa83-50743a2cc274",
+          "office": "em",
+          "mark_text": "VENCORA",
+          "mark_transliteration": null,
+          "classes": [
+            35,
+            36,
+            41,
+            42
+          ],
+          "status": "PENDING",
+          "owner": "VENCORA UK LIMITED",
+          "owner_native": null,
+          "owner_country": "GB",
+          "application_date": "2026-02-24",
+          "registration_date": null,
+          "expiry_date": "2036-02-24",
+          "application_number": "19321316",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/em/346d96db-15d6-40f8-a707-c87059712771",
+        "guid": "346d96db-15d6-40f8-a707-c87059712771",
+        "office": "em",
+        "mark_text": "VINCORA",
+        "classes": [
+          41,
+          42,
+          45
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2025-11-07",
+        "registration_date": "2026-02-22",
+        "expiry_date": "2035-11-07",
+        "owner_name": "Viacheslav Svizhevskyi",
+        "owner_country": "UA",
+        "jurisdictions": "EM",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "346d96db-15d6-40f8-a707-c87059712771",
+          "registrationOfficeCode": "EM"
+        },
+        "screen": {
+          "uri": "/mark/em/346d96db-15d6-40f8-a707-c87059712771",
+          "guid": "346d96db-15d6-40f8-a707-c87059712771",
+          "office": "em",
+          "mark_text": "VINCORA",
+          "mark_transliteration": null,
+          "classes": [
+            41,
+            42,
+            45
+          ],
+          "status": "REGISTERED",
+          "owner": "Viacheslav Svizhevskyi",
+          "owner_native": null,
+          "owner_country": "UA",
+          "application_date": "2025-11-07",
+          "registration_date": "2026-02-22",
+          "expiry_date": "2035-11-07",
+          "application_number": "19273261",
+          "registration_number": "19273261",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/em/2f2a8dbb-97d9-4a84-9253-8f66946aefd7",
+        "guid": "2f2a8dbb-97d9-4a84-9253-8f66946aefd7",
+        "office": "em",
+        "mark_text": "VAN CORE",
+        "classes": [
+          12,
+          35,
+          37,
+          39,
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2024-11-11",
+        "registration_date": "2025-06-01",
+        "expiry_date": "2034-11-11",
+        "owner_name": "ENVIE NOMADE",
+        "owner_country": "FR",
+        "jurisdictions": "EM",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "2f2a8dbb-97d9-4a84-9253-8f66946aefd7",
+          "registrationOfficeCode": "EM"
+        },
+        "screen": {
+          "uri": "/mark/em/2f2a8dbb-97d9-4a84-9253-8f66946aefd7",
+          "guid": "2f2a8dbb-97d9-4a84-9253-8f66946aefd7",
+          "office": "em",
+          "mark_text": "VAN CORE",
+          "mark_transliteration": null,
+          "classes": [
+            12,
+            35,
+            37,
+            39,
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "ENVIE NOMADE",
+          "owner_native": null,
+          "owner_country": "FR",
+          "application_date": "2024-11-11",
+          "registration_date": "2025-06-01",
+          "expiry_date": "2034-11-11",
+          "application_number": "19103974",
+          "registration_number": "19103974",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/em/f0eaa4a5-4dd0-4b73-bc33-2ece3d5be8e3",
+        "guid": "f0eaa4a5-4dd0-4b73-bc33-2ece3d5be8e3",
+        "office": "em",
+        "mark_text": "VANCORE",
+        "classes": [
+          1,
+          6,
+          8,
+          9,
+          11,
+          12,
+          17,
+          19,
+          20,
+          35,
+          37,
+          39,
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2024-11-11",
+        "registration_date": "2025-06-01",
+        "expiry_date": "2034-11-11",
+        "owner_name": "ENVIE NOMADE",
+        "owner_country": "FR",
+        "jurisdictions": "EM",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "f0eaa4a5-4dd0-4b73-bc33-2ece3d5be8e3",
+          "registrationOfficeCode": "EM"
+        },
+        "screen": {
+          "uri": "/mark/em/f0eaa4a5-4dd0-4b73-bc33-2ece3d5be8e3",
+          "guid": "f0eaa4a5-4dd0-4b73-bc33-2ece3d5be8e3",
+          "office": "em",
+          "mark_text": "VANCORE",
+          "mark_transliteration": null,
+          "classes": [
+            1,
+            6,
+            8,
+            9,
+            11,
+            12,
+            17,
+            19,
+            20,
+            35,
+            37,
+            39,
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "ENVIE NOMADE",
+          "owner_native": null,
+          "owner_country": "FR",
+          "application_date": "2024-11-11",
+          "registration_date": "2025-06-01",
+          "expiry_date": "2034-11-11",
+          "application_number": "19103922",
+          "registration_number": "19103922",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/em/b4033056-8e90-434d-b21b-c7791c6c2857",
+        "guid": "b4033056-8e90-434d-b21b-c7791c6c2857",
+        "office": "em",
+        "mark_text": "VANCORE",
+        "classes": [
+          15,
+          35,
+          37,
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2011-12-29",
+        "registration_date": "2012-06-25",
+        "expiry_date": "2031-12-29",
+        "owner_name": "Vancore Holding B.V.",
+        "owner_country": "NL",
+        "jurisdictions": "EM",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "b4033056-8e90-434d-b21b-c7791c6c2857",
+          "registrationOfficeCode": "EM"
+        },
+        "screen": {
+          "uri": "/mark/em/b4033056-8e90-434d-b21b-c7791c6c2857",
+          "guid": "b4033056-8e90-434d-b21b-c7791c6c2857",
+          "office": "em",
+          "mark_text": "VANCORE",
+          "mark_transliteration": null,
+          "classes": [
+            15,
+            35,
+            37,
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "Vancore Holding B.V.",
+          "owner_native": null,
+          "owner_country": "NL",
+          "application_date": "2011-12-29",
+          "registration_date": "2012-06-25",
+          "expiry_date": "2031-12-29",
+          "application_number": "10532968",
+          "registration_number": "10532968",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/em/a1858458-6b0d-401a-879b-e1bcb67554fd",
+        "guid": "a1858458-6b0d-401a-879b-e1bcb67554fd",
+        "office": "em",
+        "mark_text": "vancore",
+        "classes": [
+          16,
+          35,
+          41
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2011-04-07",
+        "registration_date": "2011-09-01",
+        "expiry_date": "2031-04-07",
+        "owner_name": "Reinhard Vanhöfen",
+        "owner_country": "DE",
+        "jurisdictions": "EM",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "a1858458-6b0d-401a-879b-e1bcb67554fd",
+          "registrationOfficeCode": "EM"
+        },
+        "screen": {
+          "uri": "/mark/em/a1858458-6b0d-401a-879b-e1bcb67554fd",
+          "guid": "a1858458-6b0d-401a-879b-e1bcb67554fd",
+          "office": "em",
+          "mark_text": "vancore",
+          "mark_transliteration": null,
+          "classes": [
+            16,
+            35,
+            41
+          ],
+          "status": "REGISTERED",
+          "owner": "Reinhard Vanhöfen",
+          "owner_native": null,
+          "owner_country": "DE",
+          "application_date": "2011-04-07",
+          "registration_date": "2011-09-01",
+          "expiry_date": "2031-04-07",
+          "application_number": "9877648",
+          "registration_number": "9877648",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/fr/051f705a-b2a7-4cbe-b142-b408c1f72b18",
+        "guid": "051f705a-b2a7-4cbe-b142-b408c1f72b18",
+        "office": "fr",
+        "mark_text": "HARAS DE LA VINCORA",
+        "classes": [
+          18,
+          25,
+          41,
+          44
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2025-08-16",
+        "registration_date": null,
+        "expiry_date": "2035-08-16",
+        "owner_name": "Amelie Francois",
+        "owner_country": "FR",
+        "jurisdictions": "FR",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "051f705a-b2a7-4cbe-b142-b408c1f72b18",
+          "registrationOfficeCode": "FR"
+        },
+        "screen": {
+          "uri": "/mark/fr/051f705a-b2a7-4cbe-b142-b408c1f72b18",
+          "guid": "051f705a-b2a7-4cbe-b142-b408c1f72b18",
+          "office": "fr",
+          "mark_text": "HARAS DE LA VINCORA",
+          "mark_transliteration": null,
+          "classes": [
+            18,
+            25,
+            41,
+            44
+          ],
+          "status": "REGISTERED",
+          "owner": "Amelie Francois",
+          "owner_native": null,
+          "owner_country": "FR",
+          "application_date": "2025-08-16",
+          "registration_date": null,
+          "expiry_date": "2035-08-16",
+          "application_number": "25 5172832",
+          "registration_number": "25 5172832",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb",
+        "guid": "1ed22bdd-4194-423f-af68-4d5d720d03cb",
+        "office": "gb",
+        "mark_text": "VINCARA",
+        "classes": [
+          9,
+          35
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2026-07-01",
+        "registration_date": "2026-09-25",
+        "expiry_date": "2036-07-01",
+        "owner_name": "Vinctos Ltd",
+        "owner_country": "GB",
+        "jurisdictions": "GB",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "1ed22bdd-4194-423f-af68-4d5d720d03cb",
+          "registrationOfficeCode": "GB"
+        },
+        "screen": {
+          "uri": "/mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb",
+          "guid": "1ed22bdd-4194-423f-af68-4d5d720d03cb",
+          "office": "gb",
+          "mark_text": "VINCARA",
+          "mark_transliteration": null,
+          "classes": [
+            9,
+            35
+          ],
+          "status": "REGISTERED",
+          "owner": "Vinctos Ltd",
+          "owner_native": null,
+          "owner_country": "GB",
+          "application_date": "2026-07-01",
+          "registration_date": "2026-09-25",
+          "expiry_date": "2036-07-01",
+          "application_number": "4409948",
+          "registration_number": "4409948",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+        "guid": "c3154106-158a-4756-b8f6-116bc310172f",
+        "office": "gb",
+        "mark_text": "VENCORA",
+        "classes": [
+          35,
+          36,
+          41,
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2026-02-24",
+        "registration_date": "2026-05-15",
+        "expiry_date": "2036-02-24",
+        "owner_name": "Vencora UK Limited",
+        "owner_country": "GB",
+        "jurisdictions": "GB",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "c3154106-158a-4756-b8f6-116bc310172f",
+          "registrationOfficeCode": "GB"
+        },
+        "screen": {
+          "uri": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+          "guid": "c3154106-158a-4756-b8f6-116bc310172f",
+          "office": "gb",
+          "mark_text": "VENCORA",
+          "mark_transliteration": null,
+          "classes": [
+            35,
+            36,
+            41,
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "Vencora UK Limited",
+          "owner_native": null,
+          "owner_country": "GB",
+          "application_date": "2026-02-24",
+          "registration_date": "2026-05-15",
+          "expiry_date": "2036-02-24",
+          "application_number": "4344644",
+          "registration_number": "4344644",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/gb/2663cfa1-16ff-4795-ba2c-ce8b0d508011",
+        "guid": "2663cfa1-16ff-4795-ba2c-ce8b0d508011",
+        "office": "gb",
+        "mark_text": "VENCURO VENCURO",
+        "classes": [
+          9,
+          35,
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2020-07-21",
+        "registration_date": "2020-10-30",
+        "expiry_date": "2030-07-21",
+        "owner_name": "Morson Group Limited",
+        "owner_country": "GB",
+        "jurisdictions": "GB",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "2663cfa1-16ff-4795-ba2c-ce8b0d508011",
+          "registrationOfficeCode": "GB"
+        },
+        "screen": {
+          "uri": "/mark/gb/2663cfa1-16ff-4795-ba2c-ce8b0d508011",
+          "guid": "2663cfa1-16ff-4795-ba2c-ce8b0d508011",
+          "office": "gb",
+          "mark_text": "VENCURO VENCURO",
+          "mark_transliteration": null,
+          "classes": [
+            9,
+            35,
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "Morson Group Limited",
+          "owner_native": null,
+          "owner_country": "GB",
+          "application_date": "2020-07-21",
+          "registration_date": "2020-10-30",
+          "expiry_date": "2030-07-21",
+          "application_number": "3514257",
+          "registration_number": "3514257",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/gb/5043fc0d-ca64-4987-a605-d2d018b2262f",
+        "guid": "5043fc0d-ca64-4987-a605-d2d018b2262f",
+        "office": "gb",
+        "mark_text": "vencuro",
+        "classes": [
+          9,
+          35,
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2013-01-23",
+        "registration_date": "2013-05-24",
+        "expiry_date": "2033-01-23",
+        "owner_name": "Morson Group Limited",
+        "owner_country": "GB",
+        "jurisdictions": "GB",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "5043fc0d-ca64-4987-a605-d2d018b2262f",
+          "registrationOfficeCode": "GB"
+        },
+        "screen": {
+          "uri": "/mark/gb/5043fc0d-ca64-4987-a605-d2d018b2262f",
+          "guid": "5043fc0d-ca64-4987-a605-d2d018b2262f",
+          "office": "gb",
+          "mark_text": "vencuro",
+          "mark_transliteration": null,
+          "classes": [
+            9,
+            35,
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "Morson Group Limited",
+          "owner_native": null,
+          "owner_country": "GB",
+          "application_date": "2013-01-23",
+          "registration_date": "2013-05-24",
+          "expiry_date": "2033-01-23",
+          "application_number": "2649117",
+          "registration_number": "2649117",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/gb/f746e958-66f6-4d4a-ab72-c0a0f2f04756",
+        "guid": "f746e958-66f6-4d4a-ab72-c0a0f2f04756",
+        "office": "gb",
+        "mark_text": "VANCORE",
+        "classes": [
+          15,
+          35,
+          37,
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2011-12-29",
+        "registration_date": "2012-06-25",
+        "expiry_date": "2031-12-29",
+        "owner_name": "Vancore Holding B.V.",
+        "owner_country": "NL",
+        "jurisdictions": "GB",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "f746e958-66f6-4d4a-ab72-c0a0f2f04756",
+          "registrationOfficeCode": "GB"
+        },
+        "screen": {
+          "uri": "/mark/gb/f746e958-66f6-4d4a-ab72-c0a0f2f04756",
+          "guid": "f746e958-66f6-4d4a-ab72-c0a0f2f04756",
+          "office": "gb",
+          "mark_text": "VANCORE",
+          "mark_transliteration": null,
+          "classes": [
+            15,
+            35,
+            37,
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "Vancore Holding B.V.",
+          "owner_native": null,
+          "owner_country": "NL",
+          "application_date": "2011-12-29",
+          "registration_date": "2012-06-25",
+          "expiry_date": "2031-12-29",
+          "application_number": "UK00910532968",
+          "registration_number": "UK00910532968",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/gb/798b935a-8e9a-4ade-be98-e79c66c9a16e",
+        "guid": "798b935a-8e9a-4ade-be98-e79c66c9a16e",
+        "office": "gb",
+        "mark_text": "vancore",
+        "classes": [
+          16,
+          35,
+          41
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2011-04-07",
+        "registration_date": "2011-09-01",
+        "expiry_date": "2031-04-07",
+        "owner_name": "Reinhard Vanhöfen",
+        "owner_country": "DE",
+        "jurisdictions": "GB",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "798b935a-8e9a-4ade-be98-e79c66c9a16e",
+          "registrationOfficeCode": "GB"
+        },
+        "screen": {
+          "uri": "/mark/gb/798b935a-8e9a-4ade-be98-e79c66c9a16e",
+          "guid": "798b935a-8e9a-4ade-be98-e79c66c9a16e",
+          "office": "gb",
+          "mark_text": "vancore",
+          "mark_transliteration": null,
+          "classes": [
+            16,
+            35,
+            41
+          ],
+          "status": "REGISTERED",
+          "owner": "Reinhard Vanhöfen",
+          "owner_native": null,
+          "owner_country": "DE",
+          "application_date": "2011-04-07",
+          "registration_date": "2011-09-01",
+          "expiry_date": "2031-04-07",
+          "application_number": "UK00909877648",
+          "registration_number": "UK00909877648",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/hk/b38f8a5b-dcf5-4072-b599-bbe75f6cb4c7",
+        "guid": "b38f8a5b-dcf5-4072-b599-bbe75f6cb4c7",
+        "office": "hk",
+        "mark_text": "VONCORE",
+        "classes": [
+          9,
+          16,
+          36
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2007-12-28",
+        "registration_date": "2007-12-28",
+        "expiry_date": "2027-12-27",
+        "owner_name": "Vontobel Holding AG",
+        "owner_country": "CH",
+        "jurisdictions": "HK",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "b38f8a5b-dcf5-4072-b599-bbe75f6cb4c7",
+          "registrationOfficeCode": "HK"
+        },
+        "screen": {
+          "uri": "/mark/hk/b38f8a5b-dcf5-4072-b599-bbe75f6cb4c7",
+          "guid": "b38f8a5b-dcf5-4072-b599-bbe75f6cb4c7",
+          "office": "hk",
+          "mark_text": "VONCORE",
+          "mark_transliteration": null,
+          "classes": [
+            9,
+            16,
+            36
+          ],
+          "status": "REGISTERED",
+          "owner": "Vontobel Holding AG",
+          "owner_native": null,
+          "owner_country": "CH",
+          "application_date": "2007-12-28",
+          "registration_date": "2007-12-28",
+          "expiry_date": "2027-12-27",
+          "application_number": "301022831",
+          "registration_number": "301022831",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/in/d4702fdd-f353-476c-8874-eedc36d6a582",
+        "guid": "d4702fdd-f353-476c-8874-eedc36d6a582",
+        "office": "in",
+        "mark_text": "Vincora",
+        "classes": [
+          42
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2026-03-14",
+        "registration_date": null,
+        "expiry_date": "2036-03-14",
+        "owner_name": "SETHULAKSHMI K B Single Firm",
+        "owner_country": "IN",
+        "jurisdictions": "IN",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "d4702fdd-f353-476c-8874-eedc36d6a582",
+          "registrationOfficeCode": "IN"
+        },
+        "screen": {
+          "uri": "/mark/in/d4702fdd-f353-476c-8874-eedc36d6a582",
+          "guid": "d4702fdd-f353-476c-8874-eedc36d6a582",
+          "office": "in",
+          "mark_text": "Vincora",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "PENDING",
+          "owner": "SETHULAKSHMI K B Single Firm",
+          "owner_native": null,
+          "owner_country": "IN",
+          "application_date": "2026-03-14",
+          "registration_date": null,
+          "expiry_date": "2036-03-14",
+          "application_number": "7594453",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/it/d640c250-d419-49ca-975a-9bb03709f3a0",
+        "guid": "d640c250-d419-49ca-975a-9bb03709f3a0",
+        "office": "it",
+        "mark_text": "VC TEAM VEIN CARE TEAM",
+        "classes": [
+          41,
+          42,
+          44
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2013-07-19",
+        "registration_date": "2014-03-17",
+        "expiry_date": "2023-07-19",
+        "owner_name": "MEDITEAM S.R.L.",
+        "owner_country": "IT",
+        "jurisdictions": "IT",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "d640c250-d419-49ca-975a-9bb03709f3a0",
+          "registrationOfficeCode": "IT"
+        },
+        "screen": {
+          "uri": "/mark/it/d640c250-d419-49ca-975a-9bb03709f3a0",
+          "guid": "d640c250-d419-49ca-975a-9bb03709f3a0",
+          "office": "it",
+          "mark_text": "VC TEAM VEIN CARE TEAM",
+          "mark_transliteration": null,
+          "classes": [
+            41,
+            42,
+            44
+          ],
+          "status": "REGISTERED",
+          "owner": "MEDITEAM S.R.L.",
+          "owner_native": null,
+          "owner_country": "IT",
+          "application_date": "2013-07-19",
+          "registration_date": "2014-03-17",
+          "expiry_date": "2023-07-19",
+          "application_number": "302013902176875 (TO/2013/002255)",
+          "registration_number": "1585708",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+        "guid": "310027f2-0562-46fe-abea-385f068a8150",
+        "office": "jp",
+        "mark_text": "Ｖｅｎｋｕｒｉ",
+        "classes": [
+          9
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2019-04-02",
+        "registration_date": "2020-03-02",
+        "expiry_date": "2030-03-02",
+        "owner_name": "YIWU TENGDING UMBRELLA CO., LTD.",
+        "owner_country": "CN",
+        "jurisdictions": "JP",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "310027f2-0562-46fe-abea-385f068a8150",
+          "registrationOfficeCode": "JP"
+        },
+        "screen": {
+          "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+          "guid": "310027f2-0562-46fe-abea-385f068a8150",
+          "office": "jp",
+          "mark_text": "Ｖｅｎｋｕｒｉ",
+          "mark_transliteration": "BENKURI",
+          "classes": [
+            9
+          ],
+          "status": "REGISTERED",
+          "owner": "YIWU TENGDING UMBRELLA CO., LTD.",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2019-04-02",
+          "registration_date": "2020-03-02",
+          "expiry_date": "2030-03-02",
+          "application_number": "2019-046708",
+          "registration_number": "6231111",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/jp/d21095b6-e079-467d-9715-cf40ca880822",
+        "guid": "d21095b6-e079-467d-9715-cf40ca880822",
+        "office": "jp",
+        "mark_text": "バンバンカラ",
+        "classes": [
+          1,
+          2,
+          4,
+          5,
+          8,
+          9,
+          16,
+          17,
+          19,
+          20,
+          21,
+          24,
+          27,
+          28,
+          34
+        ],
+        "status": "CANCELLED",
+        "status_date": null,
+        "application_date": "1988-08-01",
+        "registration_date": "1993-08-31",
+        "expiry_date": "2003-08-31",
+        "owner_name": "MANEI PAPER MFG. K.K.",
+        "owner_country": "JP",
+        "jurisdictions": "JP",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "d21095b6-e079-467d-9715-cf40ca880822",
+          "registrationOfficeCode": "JP"
+        },
+        "screen": {
+          "uri": "/mark/jp/d21095b6-e079-467d-9715-cf40ca880822",
+          "guid": "d21095b6-e079-467d-9715-cf40ca880822",
+          "office": "jp",
+          "mark_text": "バンバンカラ",
+          "mark_transliteration": "BANBANKARA",
+          "classes": [
+            1,
+            2,
+            4,
+            5,
+            8,
+            9,
+            16,
+            17,
+            19,
+            20,
+            21,
+            24,
+            27,
+            28,
+            34
+          ],
+          "status": "CANCELLED",
+          "owner": "MANEI PAPER MFG. K.K.",
+          "owner_native": null,
+          "owner_country": "JP",
+          "application_date": "1988-08-01",
+          "registration_date": "1993-08-31",
+          "expiry_date": "2003-08-31",
+          "application_number": "S63-087786",
+          "registration_number": "2566403",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/kr/e47b7d74-11ed-4f3d-a669-907240120a8c",
+        "guid": "e47b7d74-11ed-4f3d-a669-907240120a8c",
+        "office": "kr",
+        "mark_text": "K-VANKorea PASSENGER TRANSPORTATION EXPERT",
+        "classes": [
+          9
+        ],
+        "status": "CANCELLED",
+        "status_date": null,
+        "application_date": "2021-11-11",
+        "registration_date": null,
+        "expiry_date": null,
+        "owner_name": "K-Van Korea Inc.",
+        "owner_country": "KR",
+        "jurisdictions": "KR",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "e47b7d74-11ed-4f3d-a669-907240120a8c",
+          "registrationOfficeCode": "KR"
+        },
+        "screen": {
+          "uri": "/mark/kr/e47b7d74-11ed-4f3d-a669-907240120a8c",
+          "guid": "e47b7d74-11ed-4f3d-a669-907240120a8c",
+          "office": "kr",
+          "mark_text": "K-VANKorea PASSENGER TRANSPORTATION EXPERT",
+          "mark_transliteration": "K-VANKorea PASSENGER TRANSPORTATION EXPERT",
+          "classes": [
+            9
+          ],
+          "status": "CANCELLED",
+          "owner": "K-Van Korea Inc.",
+          "owner_native": null,
+          "owner_country": "KR",
+          "application_date": "2021-11-11",
+          "registration_date": null,
+          "expiry_date": null,
+          "application_number": "40-2021-0229054",
+          "registration_number": null,
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/kr/02558506-a07b-4503-a974-35b5331ceb35",
+        "guid": "02558506-a07b-4503-a974-35b5331ceb35",
+        "office": "kr",
+        "mark_text": "주식회사 스타밴코리아",
+        "classes": [
+          9
+        ],
+        "status": "EXPIRED",
+        "status_date": null,
+        "application_date": "2004-12-23",
+        "registration_date": "2005-12-22",
+        "expiry_date": null,
+        "owner_name": "Starvan Korea CO., LTD.",
+        "owner_country": "KR",
+        "jurisdictions": "KR",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "02558506-a07b-4503-a974-35b5331ceb35",
+          "registrationOfficeCode": "KR"
+        },
+        "screen": {
+          "uri": "/mark/kr/02558506-a07b-4503-a974-35b5331ceb35",
+          "guid": "02558506-a07b-4503-a974-35b5331ceb35",
+          "office": "kr",
+          "mark_text": "주식회사 스타밴코리아",
+          "mark_transliteration": "STAR VAN KOREA",
+          "classes": [
+            9
+          ],
+          "status": "EXPIRED",
+          "owner": "Starvan Korea CO., LTD.",
+          "owner_native": null,
+          "owner_country": "KR",
+          "application_date": "2004-12-23",
+          "registration_date": "2005-12-22",
+          "expiry_date": null,
+          "application_number": "40-2004-0057999",
+          "registration_number": "4006442080000",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/kz/6f261ecf-f457-4ef8-8408-1ced784a6ead",
+        "guid": "6f261ecf-f457-4ef8-8408-1ced784a6ead",
+        "office": "kz",
+        "mark_text": "Ven Kara",
+        "classes": [
+          25,
+          26,
+          41
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2022-03-04",
+        "registration_date": "2022-12-12",
+        "expiry_date": "2032-03-04",
+        "owner_name": "KARIMOVA SJOLPAN TEMIRZYANOVNA",
+        "owner_country": "KZ",
+        "jurisdictions": "KZ",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "6f261ecf-f457-4ef8-8408-1ced784a6ead",
+          "registrationOfficeCode": "KZ"
+        },
+        "screen": {
+          "uri": "/mark/kz/6f261ecf-f457-4ef8-8408-1ced784a6ead",
+          "guid": "6f261ecf-f457-4ef8-8408-1ced784a6ead",
+          "office": "kz",
+          "mark_text": "Ven Kara",
+          "mark_transliteration": null,
+          "classes": [
+            25,
+            26,
+            41
+          ],
+          "status": "REGISTERED",
+          "owner": "KARIMOVA SJOLPAN TEMIRZYANOVNA",
+          "owner_native": null,
+          "owner_country": "KZ",
+          "application_date": "2022-03-04",
+          "registration_date": "2022-12-12",
+          "expiry_date": "2032-03-04",
+          "application_number": "107566",
+          "registration_number": "81541",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551",
+        "guid": "51e372ff-5dbf-4c35-a168-b0a027a99551",
+        "office": "nz",
+        "mark_text": "VENKARO",
+        "classes": [
+          35,
+          36,
+          37,
+          41,
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2026-01-20",
+        "registration_date": "2026-07-28",
+        "expiry_date": "2036-01-20",
+        "owner_name": "VENKARO LIMITED",
+        "owner_country": "NZ",
+        "jurisdictions": "NZ",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "51e372ff-5dbf-4c35-a168-b0a027a99551",
+          "registrationOfficeCode": "NZ"
+        },
+        "screen": {
+          "uri": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551",
+          "guid": "51e372ff-5dbf-4c35-a168-b0a027a99551",
+          "office": "nz",
+          "mark_text": "VENKARO",
+          "mark_transliteration": null,
+          "classes": [
+            35,
+            36,
+            37,
+            41,
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "VENKARO LIMITED",
+          "owner_native": null,
+          "owner_country": "NZ",
+          "application_date": "2026-01-20",
+          "registration_date": "2026-07-28",
+          "expiry_date": "2036-01-20",
+          "application_number": "1313060",
+          "registration_number": "1313060",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+        "guid": "a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+        "office": "tr",
+        "mark_text": "V vancora",
+        "classes": [
+          35,
+          42
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2026-02-23",
+        "registration_date": null,
+        "expiry_date": "2036-02-23",
+        "owner_name": "RAMAZAN CEYLAN",
+        "owner_country": "TR",
+        "jurisdictions": "TR",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+          "registrationOfficeCode": "TR"
+        },
+        "screen": {
+          "uri": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+          "guid": "a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+          "office": "tr",
+          "mark_text": "V vancora",
+          "mark_transliteration": null,
+          "classes": [
+            35,
+            42
+          ],
+          "status": "PENDING",
+          "owner": "RAMAZAN CEYLAN",
+          "owner_native": null,
+          "owner_country": "TR",
+          "application_date": "2026-02-23",
+          "registration_date": null,
+          "expiry_date": "2036-02-23",
+          "application_number": "2026/024104",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/tr/71ef69fb-43b4-40e7-bb49-0bbf91502dfa",
+        "guid": "71ef69fb-43b4-40e7-bb49-0bbf91502dfa",
+        "office": "tr",
+        "mark_text": "venn care",
+        "classes": [
+          35,
+          39,
+          41,
+          43,
+          44
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": "2023-06-09",
+        "registration_date": null,
+        "expiry_date": "2033-06-09",
+        "owner_name": "VENNTOUR TURİZM ORGANİZASYON DIŞ TİCARET LİMİTED ŞİRKETİ",
+        "owner_country": "TR",
+        "jurisdictions": "TR",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "71ef69fb-43b4-40e7-bb49-0bbf91502dfa",
+          "registrationOfficeCode": "TR"
+        },
+        "screen": {
+          "uri": "/mark/tr/71ef69fb-43b4-40e7-bb49-0bbf91502dfa",
+          "guid": "71ef69fb-43b4-40e7-bb49-0bbf91502dfa",
+          "office": "tr",
+          "mark_text": "venn care",
+          "mark_transliteration": null,
+          "classes": [
+            35,
+            39,
+            41,
+            43,
+            44
+          ],
+          "status": "REGISTERED",
+          "owner": "VENNTOUR TURİZM ORGANİZASYON DIŞ TİCARET LİMİTED ŞİRKETİ",
+          "owner_native": null,
+          "owner_country": "TR",
+          "application_date": "2023-06-09",
+          "registration_date": null,
+          "expiry_date": "2033-06-09",
+          "application_number": "2023/076451",
+          "registration_number": "2023 076451",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/us/9d8fe5e2-7a60-4439-a5d5-a04d452c8e73",
+        "guid": "9d8fe5e2-7a60-4439-a5d5-a04d452c8e73",
+        "office": "us",
+        "mark_text": "VUNQERI",
+        "classes": [
+          9
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2026-07-25",
+        "registration_date": null,
+        "expiry_date": null,
+        "owner_name": "Wei Qin",
+        "owner_country": "CN",
+        "jurisdictions": "US",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "9d8fe5e2-7a60-4439-a5d5-a04d452c8e73",
+          "registrationOfficeCode": "US"
+        },
+        "screen": {
+          "uri": "/mark/us/9d8fe5e2-7a60-4439-a5d5-a04d452c8e73",
+          "guid": "9d8fe5e2-7a60-4439-a5d5-a04d452c8e73",
+          "office": "us",
+          "mark_text": "VUNQERI",
+          "mark_transliteration": null,
+          "classes": [
+            9
+          ],
+          "status": "PENDING",
+          "owner": "Wei Qin",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2026-07-25",
+          "registration_date": null,
+          "expiry_date": null,
+          "application_number": "50013176",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+        "guid": "5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+        "office": "us",
+        "mark_text": "VENCORE",
+        "classes": [
+          42
+        ],
+        "status": "PENDING",
+        "status_date": null,
+        "application_date": "2026-05-25",
+        "registration_date": null,
+        "expiry_date": null,
+        "owner_name": "Symetri AB",
+        "owner_country": "SE",
+        "jurisdictions": "US",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+          "registrationOfficeCode": "US"
+        },
+        "screen": {
+          "uri": "/mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+          "guid": "5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+          "office": "us",
+          "mark_text": "VENCORE",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "PENDING",
+          "owner": "Symetri AB",
+          "owner_native": null,
+          "owner_country": "SE",
+          "application_date": "2026-05-25",
+          "registration_date": null,
+          "expiry_date": null,
+          "application_number": "79454076",
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/us/ed45433e-ebac-4342-986b-e5f89daeea6b",
+        "guid": "ed45433e-ebac-4342-986b-e5f89daeea6b",
+        "office": "us",
+        "mark_text": "VINKORO",
+        "classes": [
+          9
+        ],
+        "status": "CANCELLED",
+        "status_date": null,
+        "application_date": "2019-01-07",
+        "registration_date": "2019-07-16",
+        "expiry_date": null,
+        "owner_name": "Liu De'an",
+        "owner_country": "CN",
+        "jurisdictions": "US",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "ed45433e-ebac-4342-986b-e5f89daeea6b",
+          "registrationOfficeCode": "US"
+        },
+        "screen": {
+          "uri": "/mark/us/ed45433e-ebac-4342-986b-e5f89daeea6b",
+          "guid": "ed45433e-ebac-4342-986b-e5f89daeea6b",
+          "office": "us",
+          "mark_text": "VINKORO",
+          "mark_transliteration": null,
+          "classes": [
+            9
+          ],
+          "status": "CANCELLED",
+          "owner": "Liu De'an",
+          "owner_native": null,
+          "owner_country": "CN",
+          "application_date": "2019-01-07",
+          "registration_date": "2019-07-16",
+          "expiry_date": null,
+          "application_number": "88251399",
+          "registration_number": "5807019",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/us/93655f2b-cf0e-4abd-aabe-563553cc716a",
+        "guid": "93655f2b-cf0e-4abd-aabe-563553cc716a",
+        "office": "us",
+        "mark_text": "VINCARI",
+        "classes": [
+          42
+        ],
+        "status": "CANCELLED",
+        "status_date": null,
+        "application_date": "2015-05-01",
+        "registration_date": "2016-01-26",
+        "expiry_date": null,
+        "owner_name": "ComplyMD, LLC",
+        "owner_country": "US",
+        "jurisdictions": "US",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "93655f2b-cf0e-4abd-aabe-563553cc716a",
+          "registrationOfficeCode": "US"
+        },
+        "screen": {
+          "uri": "/mark/us/93655f2b-cf0e-4abd-aabe-563553cc716a",
+          "guid": "93655f2b-cf0e-4abd-aabe-563553cc716a",
+          "office": "us",
+          "mark_text": "VINCARI",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "CANCELLED",
+          "owner": "ComplyMD, LLC",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": "2015-05-01",
+          "registration_date": "2016-01-26",
+          "expiry_date": null,
+          "application_number": "86616941",
+          "registration_number": "4891988",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/us/ead2d902-f255-4d1c-b3a7-2e4a4c04d258",
+        "guid": "ead2d902-f255-4d1c-b3a7-2e4a4c04d258",
+        "office": "us",
+        "mark_text": "VENCORE",
+        "classes": [
+          38,
+          42
+        ],
+        "status": "CANCELLED",
+        "status_date": null,
+        "application_date": "2014-07-15",
+        "registration_date": "2016-06-28",
+        "expiry_date": null,
+        "owner_name": "VENCORE, INC.",
+        "owner_country": "US",
+        "jurisdictions": "US",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "ead2d902-f255-4d1c-b3a7-2e4a4c04d258",
+          "registrationOfficeCode": "US"
+        },
+        "screen": {
+          "uri": "/mark/us/ead2d902-f255-4d1c-b3a7-2e4a4c04d258",
+          "guid": "ead2d902-f255-4d1c-b3a7-2e4a4c04d258",
+          "office": "us",
+          "mark_text": "VENCORE",
+          "mark_transliteration": null,
+          "classes": [
+            38,
+            42
+          ],
+          "status": "CANCELLED",
+          "owner": "VENCORE, INC.",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": "2014-07-15",
+          "registration_date": "2016-06-28",
+          "expiry_date": null,
+          "application_number": "86337765",
+          "registration_number": "4989191",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/us/5a19992f-6f39-4cf2-abcc-ea8b5d879972",
+        "guid": "5a19992f-6f39-4cf2-abcc-ea8b5d879972",
+        "office": "us",
+        "mark_text": "VENCORE",
+        "classes": [
+          35,
+          38,
+          42
+        ],
+        "status": "CANCELLED",
+        "status_date": null,
+        "application_date": "2002-05-08",
+        "registration_date": "2009-04-21",
+        "expiry_date": null,
+        "owner_name": "Vencore Solutions LLC",
+        "owner_country": "US",
+        "jurisdictions": "US",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "5a19992f-6f39-4cf2-abcc-ea8b5d879972",
+          "registrationOfficeCode": "US"
+        },
+        "screen": {
+          "uri": "/mark/us/5a19992f-6f39-4cf2-abcc-ea8b5d879972",
+          "guid": "5a19992f-6f39-4cf2-abcc-ea8b5d879972",
+          "office": "us",
+          "mark_text": "VENCORE",
+          "mark_transliteration": null,
+          "classes": [
+            35,
+            38,
+            42
+          ],
+          "status": "CANCELLED",
+          "owner": "Vencore Solutions LLC",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": "2002-05-08",
+          "registration_date": "2009-04-21",
+          "expiry_date": null,
+          "application_number": "76404506",
+          "registration_number": "3609064",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/us/91b98902-6438-4f36-939b-2b8cebe0a2f4",
+        "guid": "91b98902-6438-4f36-939b-2b8cebe0a2f4",
+        "office": "us",
+        "mark_text": "VEINCARE",
+        "classes": [
+          42
+        ],
+        "status": "CANCELLED",
+        "status_date": null,
+        "application_date": "1986-10-20",
+        "registration_date": "1987-09-15",
+        "expiry_date": null,
+        "owner_name": "VEINCARE OF FLORIDA/BOCA RATON, P.A.",
+        "owner_country": null,
+        "jurisdictions": "US",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "91b98902-6438-4f36-939b-2b8cebe0a2f4",
+          "registrationOfficeCode": "US"
+        },
+        "screen": {
+          "uri": "/mark/us/91b98902-6438-4f36-939b-2b8cebe0a2f4",
+          "guid": "91b98902-6438-4f36-939b-2b8cebe0a2f4",
+          "office": "us",
+          "mark_text": "VEINCARE",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "CANCELLED",
+          "owner": "VEINCARE OF FLORIDA/BOCA RATON, P.A.",
+          "owner_native": null,
+          "owner_country": null,
+          "application_date": "1986-10-20",
+          "registration_date": "1987-09-15",
+          "expiry_date": null,
+          "application_number": "73625965",
+          "registration_number": "1457785",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+        "guid": "9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+        "office": "wo",
+        "mark_text": "VENCORE",
+        "classes": [
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2026-05-25",
+        "expiry_date": "2036-05-25",
+        "owner_name": "Symetri AB",
+        "owner_country": "SE",
+        "jurisdictions": "WO",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+          "registrationOfficeCode": "WO"
+        },
+        "screen": {
+          "uri": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+          "guid": "9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+          "office": "wo",
+          "mark_text": "VENCORE",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "Symetri AB",
+          "owner_native": null,
+          "owner_country": "SE",
+          "application_date": null,
+          "registration_date": "2026-05-25",
+          "expiry_date": "2036-05-25",
+          "application_number": null,
+          "registration_number": "1927485",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/wo/df442737-643e-42ae-bfc5-783bd7b49eea",
+        "guid": "df442737-643e-42ae-bfc5-783bd7b49eea",
+        "office": "wo",
+        "mark_text": "VONCORE",
+        "classes": [
+          9,
+          16,
+          36
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2001-12-06",
+        "expiry_date": "2031-12-06",
+        "owner_name": "Bank Vontobel AG",
+        "owner_country": "CH",
+        "jurisdictions": "WO",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "df442737-643e-42ae-bfc5-783bd7b49eea",
+          "registrationOfficeCode": "WO"
+        },
+        "screen": {
+          "uri": "/mark/wo/df442737-643e-42ae-bfc5-783bd7b49eea",
+          "guid": "df442737-643e-42ae-bfc5-783bd7b49eea",
+          "office": "wo",
+          "mark_text": "VONCORE",
+          "mark_transliteration": null,
+          "classes": [
+            9,
+            16,
+            36
+          ],
+          "status": "REGISTERED",
+          "owner": "Bank Vontobel AG",
+          "owner_native": null,
+          "owner_country": "CH",
+          "application_date": null,
+          "registration_date": "2001-12-06",
+          "expiry_date": "2031-12-06",
+          "application_number": null,
+          "registration_number": "770686",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/xs/4449018a-fc7a-4656-890a-46ed860f99b2",
+        "guid": "4449018a-fc7a-4656-890a-46ed860f99b2",
+        "office": "xs",
+        "mark_text": "LAFAYETTE VEIN CARE",
+        "classes": [
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2015-12-02",
+        "expiry_date": null,
+        "owner_name": "SOUTHERN VASCULAR ASSOCIATES LLC",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "4449018a-fc7a-4656-890a-46ed860f99b2",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/4449018a-fc7a-4656-890a-46ed860f99b2",
+          "guid": "4449018a-fc7a-4656-890a-46ed860f99b2",
+          "office": "xs",
+          "mark_text": "LAFAYETTE VEIN CARE",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "SOUTHERN VASCULAR ASSOCIATES LLC",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "2015-12-02",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": "662717",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/xs/3fdb938b-0d92-4ab2-bf7d-db8fe3d3055c",
+        "guid": "3fdb938b-0d92-4ab2-bf7d-db8fe3d3055c",
+        "office": "xs",
+        "mark_text": "LOUISIANA VEIN CARE",
+        "classes": [
+          42,
+          44
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2015-04-22",
+        "expiry_date": null,
+        "owner_name": "CHRISTOPHER E. LAGRAIZE, M.D., L.L.C.",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "3fdb938b-0d92-4ab2-bf7d-db8fe3d3055c",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/3fdb938b-0d92-4ab2-bf7d-db8fe3d3055c",
+          "guid": "3fdb938b-0d92-4ab2-bf7d-db8fe3d3055c",
+          "office": "xs",
+          "mark_text": "LOUISIANA VEIN CARE",
+          "mark_transliteration": null,
+          "classes": [
+            42,
+            44
+          ],
+          "status": "REGISTERED",
+          "owner": "CHRISTOPHER E. LAGRAIZE, M.D., L.L.C.",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "2015-04-22",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": "658573",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/xs/ff0d9855-76bd-4b3c-98bc-23258bc07787",
+        "guid": "ff0d9855-76bd-4b3c-98bc-23258bc07787",
+        "office": "xs",
+        "mark_text": "LOUISIANA VEIN CARE",
+        "classes": [
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2015-03-18",
+        "expiry_date": null,
+        "owner_name": "CHRISTOPHER E LAGRAIZE",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "ff0d9855-76bd-4b3c-98bc-23258bc07787",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/ff0d9855-76bd-4b3c-98bc-23258bc07787",
+          "guid": "ff0d9855-76bd-4b3c-98bc-23258bc07787",
+          "office": "xs",
+          "mark_text": "LOUISIANA VEIN CARE",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "CHRISTOPHER E LAGRAIZE",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "2015-03-18",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": "657831",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/xs/d23b00de-ac64-4c21-8642-88df9e5b41ed",
+        "guid": "d23b00de-ac64-4c21-8642-88df9e5b41ed",
+        "office": "xs",
+        "mark_text": "SUTTON PLACE LASER VEIN CARE",
+        "classes": [
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2013-12-20",
+        "expiry_date": null,
+        "owner_name": "RICHARD L. MUELLER, M.D. P.C.",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "d23b00de-ac64-4c21-8642-88df9e5b41ed",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/d23b00de-ac64-4c21-8642-88df9e5b41ed",
+          "guid": "d23b00de-ac64-4c21-8642-88df9e5b41ed",
+          "office": "xs",
+          "mark_text": "SUTTON PLACE LASER VEIN CARE",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "RICHARD L. MUELLER, M.D. P.C.",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "2013-12-20",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": "S22760",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/xs/6c6a2cc5-c58a-4e57-aa80-780a25cd06d0",
+        "guid": "6c6a2cc5-c58a-4e57-aa80-780a25cd06d0",
+        "office": "xs",
+        "mark_text": "UNIVERSAL DERMATOLOGY AND VEIN CARE",
+        "classes": [
+          20,
+          42
+        ],
+        "status": "CANCELLED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2013-05-20",
+        "expiry_date": null,
+        "owner_name": "UNIVERSAL VEIN CLINICS, LLC",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "6c6a2cc5-c58a-4e57-aa80-780a25cd06d0",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/6c6a2cc5-c58a-4e57-aa80-780a25cd06d0",
+          "guid": "6c6a2cc5-c58a-4e57-aa80-780a25cd06d0",
+          "office": "xs",
+          "mark_text": "UNIVERSAL DERMATOLOGY AND VEIN CARE",
+          "mark_transliteration": null,
+          "classes": [
+            20,
+            42
+          ],
+          "status": "CANCELLED",
+          "owner": "UNIVERSAL VEIN CLINICS, LLC",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "2013-05-20",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": "2200916",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/xs/c35081d1-85bc-41b5-b7a1-b6096d84b6a8",
+        "guid": "c35081d1-85bc-41b5-b7a1-b6096d84b6a8",
+        "office": "xs",
+        "mark_text": "SVC VEIN CARE",
+        "classes": [
+          35,
+          42,
+          44
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2007-09-13",
+        "expiry_date": null,
+        "owner_name": "JANE G. BOTTSFORD",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "c35081d1-85bc-41b5-b7a1-b6096d84b6a8",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/c35081d1-85bc-41b5-b7a1-b6096d84b6a8",
+          "guid": "c35081d1-85bc-41b5-b7a1-b6096d84b6a8",
+          "office": "xs",
+          "mark_text": "SVC VEIN CARE",
+          "mark_transliteration": null,
+          "classes": [
+            35,
+            42,
+            44
+          ],
+          "status": "REGISTERED",
+          "owner": "JANE G. BOTTSFORD",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "2007-09-13",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": null,
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/xs/275051ae-40f4-407a-89e2-ad7f95c6a5ec",
+        "guid": "275051ae-40f4-407a-89e2-ad7f95c6a5ec",
+        "office": "xs",
+        "mark_text": "S W WYOMING VEIN CARE",
+        "classes": [
+          20,
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2007-07-26",
+        "expiry_date": null,
+        "owner_name": "EVANSTON CLINIC CORP.",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "275051ae-40f4-407a-89e2-ad7f95c6a5ec",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/275051ae-40f4-407a-89e2-ad7f95c6a5ec",
+          "guid": "275051ae-40f4-407a-89e2-ad7f95c6a5ec",
+          "office": "xs",
+          "mark_text": "S W WYOMING VEIN CARE",
+          "mark_transliteration": null,
+          "classes": [
+            20,
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "EVANSTON CLINIC CORP.",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "2007-07-26",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": "2007-00541196",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/xs/da1cd003-5f61-4d7b-9287-6c4e2d25460a",
+        "guid": "da1cd003-5f61-4d7b-9287-6c4e2d25460a",
+        "office": "xs",
+        "mark_text": "S W WYOMING VEIN CARE",
+        "classes": [
+          20,
+          42
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2007-07-26",
+        "expiry_date": null,
+        "owner_name": "EVANSTON CLINIC CORP.",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "da1cd003-5f61-4d7b-9287-6c4e2d25460a",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/da1cd003-5f61-4d7b-9287-6c4e2d25460a",
+          "guid": "da1cd003-5f61-4d7b-9287-6c4e2d25460a",
+          "office": "xs",
+          "mark_text": "S W WYOMING VEIN CARE",
+          "mark_transliteration": null,
+          "classes": [
+            20,
+            42
+          ],
+          "status": "REGISTERED",
+          "owner": "EVANSTON CLINIC CORP.",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "2007-07-26",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": "2007-000541196",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/xs/3edf667b-bff5-41a2-be03-9ff09b206721",
+        "guid": "3edf667b-bff5-41a2-be03-9ff09b206721",
+        "office": "xs",
+        "mark_text": "VENCORE CAPITAL",
+        "classes": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45
+        ],
+        "status": "EXPIRED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2007-06-13",
+        "expiry_date": "2017-06-12",
+        "owner_name": "VENCORE SOLUTIONS LLC",
+        "owner_country": "USAM",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "3edf667b-bff5-41a2-be03-9ff09b206721",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/3edf667b-bff5-41a2-be03-9ff09b206721",
+          "guid": "3edf667b-bff5-41a2-be03-9ff09b206721",
+          "office": "xs",
+          "mark_text": "VENCORE CAPITAL",
+          "mark_transliteration": null,
+          "classes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45
+          ],
+          "status": "EXPIRED",
+          "owner": "VENCORE SOLUTIONS LLC",
+          "owner_native": null,
+          "owner_country": "USAM",
+          "application_date": null,
+          "registration_date": "2007-06-13",
+          "expiry_date": "2017-06-12",
+          "application_number": null,
+          "registration_number": "20075702025",
+          "live_status": "dead",
+          "all_class": true,
+          "screen_verdict": "surface:all-class"
+        }
+      },
+      {
+        "record_id": "/mark/xs/67e1279e-0b48-4014-8924-f885931d926b",
+        "guid": "67e1279e-0b48-4014-8924-f885931d926b",
+        "office": "xs",
+        "mark_text": "VEIN CARE CENTER",
+        "classes": [
+          20,
+          42
+        ],
+        "status": "CANCELLED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2005-05-04",
+        "expiry_date": null,
+        "owner_name": "THE MEDICAL PARK VEIN & LASER TREATMENT CENTER, LLC",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "67e1279e-0b48-4014-8924-f885931d926b",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/67e1279e-0b48-4014-8924-f885931d926b",
+          "guid": "67e1279e-0b48-4014-8924-f885931d926b",
+          "office": "xs",
+          "mark_text": "VEIN CARE CENTER",
+          "mark_transliteration": null,
+          "classes": [
+            20,
+            42
+          ],
+          "status": "CANCELLED",
+          "owner": "THE MEDICAL PARK VEIN & LASER TREATMENT CENTER, LLC",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "2005-05-04",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": "1540333",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/xs/d9e8ab6c-8939-4457-8ca2-e837107ac9a0",
+        "guid": "d9e8ab6c-8939-4457-8ca2-e837107ac9a0",
+        "office": "xs",
+        "mark_text": "THE VEIN CARE CENTER",
+        "classes": [
+          42,
+          44
+        ],
+        "status": "REGISTERED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "2004-03-17",
+        "expiry_date": null,
+        "owner_name": "MUSKEGON SURGICAL ASSOCIATES, P.C.",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "d9e8ab6c-8939-4457-8ca2-e837107ac9a0",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/d9e8ab6c-8939-4457-8ca2-e837107ac9a0",
+          "guid": "d9e8ab6c-8939-4457-8ca2-e837107ac9a0",
+          "office": "xs",
+          "mark_text": "THE VEIN CARE CENTER",
+          "mark_transliteration": null,
+          "classes": [
+            42,
+            44
+          ],
+          "status": "REGISTERED",
+          "owner": "MUSKEGON SURGICAL ASSOCIATES, P.C.",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "2004-03-17",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": "M07333",
+          "live_status": "live",
+          "all_class": false,
+          "screen_verdict": "surface:in-scope-live"
+        }
+      },
+      {
+        "record_id": "/mark/xs/f311eedb-92e4-4ca9-9e91-218826b089d5",
+        "guid": "f311eedb-92e4-4ca9-9e91-218826b089d5",
+        "office": "xs",
+        "mark_text": "SVC SPARTANBURG VEIN CARE",
+        "classes": [
+          42
+        ],
+        "status": "EXPIRED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "1992-05-05",
+        "expiry_date": null,
+        "owner_name": "JOHN E BOTTSFORD JR MD",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "f311eedb-92e4-4ca9-9e91-218826b089d5",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/f311eedb-92e4-4ca9-9e91-218826b089d5",
+          "guid": "f311eedb-92e4-4ca9-9e91-218826b089d5",
+          "office": "xs",
+          "mark_text": "SVC SPARTANBURG VEIN CARE",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "EXPIRED",
+          "owner": "JOHN E BOTTSFORD JR MD",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "1992-05-05",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": null,
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      },
+      {
+        "record_id": "/mark/xs/9c1c4815-fedb-42cd-ac82-7a4ecf9ff25d",
+        "guid": "9c1c4815-fedb-42cd-ac82-7a4ecf9ff25d",
+        "office": "xs",
+        "mark_text": "RYE VEIN CARE CENTER",
+        "classes": [
+          42
+        ],
+        "status": "EXPIRED",
+        "status_date": null,
+        "application_date": null,
+        "registration_date": "1991-08-16",
+        "expiry_date": null,
+        "owner_name": "HESHMAT MAJLESSI, M.D., P.C.",
+        "owner_country": "US",
+        "jurisdictions": "XS",
+        "mark_feature": null,
+        "image_path": null,
+        "raw": {
+          "guid": "9c1c4815-fedb-42cd-ac82-7a4ecf9ff25d",
+          "registrationOfficeCode": "XS"
+        },
+        "screen": {
+          "uri": "/mark/xs/9c1c4815-fedb-42cd-ac82-7a4ecf9ff25d",
+          "guid": "9c1c4815-fedb-42cd-ac82-7a4ecf9ff25d",
+          "office": "xs",
+          "mark_text": "RYE VEIN CARE CENTER",
+          "mark_transliteration": null,
+          "classes": [
+            42
+          ],
+          "status": "EXPIRED",
+          "owner": "HESHMAT MAJLESSI, M.D., P.C.",
+          "owner_native": null,
+          "owner_country": "US",
+          "application_date": null,
+          "registration_date": "1991-08-16",
+          "expiry_date": null,
+          "application_number": null,
+          "registration_number": "S12711",
+          "live_status": "dead",
+          "all_class": false,
+          "screen_verdict": "drop:dead"
+        }
+      }
+    ],
+    "qid": "supp:ko-venqori:phonetic:venqori:eac756bf",
+    "query": "phonetic VENQORI [cl 9,42,41]",
+    "sent": "31b51c554561be19"
+  },
+  {
+    "state": "enumerated",
+    "total_hits": 0,
+    "count": 0,
+    "records": [],
+    "qid": "supp:ko-venqori:exact:venkori:5c104512",
+    "query": "exact VENKORI [cl 9,42,41]",
+    "sent": "77f42e9d659b55e4"
+  },
+  {
+    "state": "enumerated",
+    "total_hits": 0,
+    "count": 0,
+    "records": [],
+    "qid": "supp:ko-venqori:exact:venqori:a60444fc",
+    "query": "exact VENQORI [cl 9,42,41]",
+    "sent": "5f5f9f066c0eb3ef"
+  }
+]

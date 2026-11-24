@@ -1,25 +1,33 @@
 {
   "schema": 1,
   "batch": {
-    "productContext": "A consumer mobile app provides water-quality readings and attached online training and is sold through app stores rather than through the trade.",
+    "productContext": "The client offers a consumer mobile app for water-quality readings, comprising downloadable software for water-quality monitoring with attached online training services and sold through app stores.",
+    "inUseAs": "a consumer mobile app, a related water-quality software service, or an online training offering",
     "executionOrder": [
       "VENQORI"
     ]
   },
   "marks": [
     {
-      "ref": "DEMO-2014-knockout-search",
       "name": "VENQORI",
       "classes": [
         9,
         42,
         41
       ],
-      "beltAndBraces": [
-        35
+      "beltAndBraces": [],
+      "classesPlain": "downloadable water-quality monitoring software (9); software and technology services (42, instructed baseline); online training services attached to the software (41)",
+      "contextFraming": "VENQORI's precise intended role is not stated, possibly the name of the consumer water-quality monitoring app and its attached training offering, and it reads as a coined word in this context.",
+      "useKind": "app",
+      "places": [
+        "web",
+        "apps.apple.com",
+        "play.google.com"
       ],
-      "classesPlain": "downloadable water-quality monitoring software (9); online training services (41); software design, development and related technology services (42); online retail and app-store distribution services (35, belt-and-braces)",
-      "contextFraming": "VENQORI is intended as the product/app name for a consumer mobile water-quality monitoring application with attached online training, and reads as a coined term.",
+      "spellings": [
+        "VENQORI",
+        "VENKORI"
+      ],
       "priority": 1
     }
   ]

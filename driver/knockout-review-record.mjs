@@ -64,7 +64,7 @@ const SCHEMA_VERSION = 1;
  * and the artifact would say the seat rewrote a line it did not.
  */
 const DECLARED = {
-  "": ["schema_version", "first_question", "material", "rewrites", "declined"],
+  "": ["schema_version", "first_question", "material"],
   material: ["kind", "mark", "finding", "problem", "rests_on"],
   rewrites: ["at", "text", "why"],
   "rewrites.at": ["field", "mark", "index", "ordinal"],
@@ -135,7 +135,6 @@ export function knockoutReviewCallPaths(runDir, pass = 0) {
 export function knockoutReviewFile(runDir, pass = 0) {
   return join(String(runDir ?? ""), pass ? `knockout-review-${Number(pass)}.json` : "knockout-review.json");
 }
-export const KNOCKOUT_RECHECK_RE = /^knockout-review-\d+\.json$/;
 
 /**
  * The address as one string, for joining and for saying which address was refused.
@@ -250,8 +249,10 @@ export function acceptKnockoutReview(call) {
   }
   // An empty call and a stage that never ran leave the same artifact behind, and they are different
   // findings: one says the seat read the lines and had nothing to change, the other says nothing looked.
-  if (!(rewrites ?? []).length && !(declined ?? []).length && !(material ?? []).length)
-    return { ok: false, reason: "send at least one material, rewrite or declined row — an empty call cannot be told from a stage that never ran" };
+  // A CLEAN READ IS AN ANSWER: the question answered and an empty list of defects sent. A call with neither cannot be told from a
+  // stage that never ran.
+  if (!(rewrites ?? []).length && !(declined ?? []).length && !(material ?? []).length && !(Array.isArray(material) && firstQuestion !== undefined))
+    return { ok: false, reason: "send `first_question` and `material`, an empty list where you found no defect — an empty call cannot be told from a stage that never ran" };
   return { ok: true, model: { schema_version: SCHEMA_VERSION, ...(firstQuestion !== undefined ? { first_question: firstQuestion } : {}),
     material: material ?? [], rewrites: rewrites ?? [], declined: declined ?? [] } };
 }

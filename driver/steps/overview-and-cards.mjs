@@ -3,13 +3,16 @@
 //
 // steps/overview-and-cards.mjs — the report's overview and its cards, and the front matter the driver stamps on them.
 //
-// One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; each moves here when the other phases that share it have moved.
+// One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
+// that module lives in the modules beside it, which it imports.
 import { atomicWrite, paths } from "../run-record.mjs";
 import { ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { applyAskClosure, deriveAsks, finalizeOpenHandoffs, summarizeAsks } from "../ask-ledger.mjs";
 import { mintCommonLawCarryDoubts } from "../commonlaw-carry.mjs";
+import { consolidateFindingsFile, deriveCommonLawCarry, injectDeferralCoverage, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, localLanguageStateOf, planWriteUps, stampCoverageJudgmentRows, writeShortEntries } from "../coverage-rows-run.mjs";
 import { readDeclinations } from "../declination-tool.mjs";
+import { keepDeliveredRecordAsHistory, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, rewriteFromBeforeTheSeam, withdrawSupersededAudit } from "../delivered-record-run.mjs";
+import { caseLawJoin, settleDerivedBases } from "../dispatch-extras.mjs";
 import { injectWithdrawnRatingCoverage } from "../withdrawn-rating.mjs";
 import { CLOSURE_EVIDENCE_FILES } from "../doubt-closure-call.mjs";
 import { readAcceptedClosures } from "../doubt-closure-tool.mjs";
@@ -30,18 +33,24 @@ import { mintPresenceDoubts } from "../presence-reconciliation.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "../publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "../publish/register-presence.mjs";
 import { recallReceiptForOwnCompany } from "../recall-receipt.mjs";
+import { deriveRecordCarry } from "../record-carry-trace.mjs";
 import { mintRecordCarryDoubts, silentlyLostFindings, statedDivergenceFindings } from "../record-carry.mjs";
 import { recordedFindingUris } from "../register-digest-record.mjs";
 import { SETTLED_CLASSES, mintRemedyAccountingDoubts } from "../remedy-accounting.mjs";
+import { correctionsTheRestoreLacks, openAskForClosure, restoreTheRecordThatPassed } from "../repair-review-run.mjs";
+import { assembleReportMd, originRowsForReport } from "../report-assembly.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE, renderReportOverview } from "../report-overview-record.mjs";
+import { applyScopeFrontMatterOf, injectFrontMatter, reportIdentityRecord, writeScopeFactsOf } from "../run-end-state.mjs";
+import { StageFailure } from "../run-outcome.mjs";
+import { inScopeClassList } from "../run-scope.mjs";
+import { asPartNotCompleted, must, safeReadJson, stage } from "../stage-dispatch.mjs";
 import { parseVariantManifestModel } from "../variant-manifest-model.mjs";
 import { readWithheldFamilies } from "../withheld-families.mjs";
 import { gradedWriteUpRung } from "../write-up-form.mjs";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 
-export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }, helpers) {
-  const { StageFailure, applyScopeFrontMatterOf, asPartNotCompleted, assembleReportMd, caseLawJoin, consolidateFindingsFile, correctionsTheRestoreLacks, deriveCommonLawCarry, deriveRecordCarry, inScopeClassList, injectDeferralCoverage, injectFrontMatter, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, keepDeliveredRecordAsHistory, localLanguageStateOf, must, openAskForClosure, originRowsForReport, planWriteUps, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, reportIdentityRecord, restoreTheRecordThatPassed, rewriteFromBeforeTheSeam, safeReadJson, settleDerivedBases, stage, stampCoverageJudgmentRows, withdrawSupersededAudit, writeScopeFactsOf, writeShortEntries } = helpers;
+export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }) {
   // Phase 3 — delivery (v14 post-mortem fix). One LLM step curates the report; the audit, the page render,
   // and the email body are deterministic CODE; a tiny LLM step only SENDS. Each step is independent — a
   // failure in the audit or the email never loses the report.

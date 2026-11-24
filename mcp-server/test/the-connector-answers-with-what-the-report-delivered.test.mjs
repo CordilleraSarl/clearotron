@@ -6,9 +6,12 @@
 // files from before that, so on a run whose saved record says something else than the assessment wrote, the connector
 // gave the assessment's owner, status and classes beside a page that printed the record's, and listed a repeated row
 // twice. Both now answer with the report's delivered values, keeping the finding's id, and list each registration a
-// finding cites apart. A run published before the report document answers from its files, as before.
+// finding cites apart. The coverage answer's open rows are the page's "Left open": a follow-up row that another open row
+// already reports is left out, and the native-script searches that did not complete are listed, with the places they
+// count. A run published before the report document answers from its files, as before.
 //
-// The full-country demo is seeded as the connector finds a run, and its first finding's saved record is given an invented
+// The previous full-country demo capture (driver/test/fixtures/demo-2026-09-18), whose record repeats a row its report
+// prints once, is seeded as the connector finds a run, and its first finding's saved record is given an invented
 // owner, status and classes before it is published.
 //
 // SAFETY GUARD: the workspace and the pool are pinned before anything is imported, because the driver config freezes
@@ -30,6 +33,7 @@ const WS = process.env.CLEAROTRON_WORK_DIR, POOL = process.env.CLEAROTRON_REPORT
 const { seedDemoRuns, publishSource, demoChildren } = await import("../../driver/demo-container.mjs");
 const { republishRun } = await import("../../driver/publish/report-registry.mjs");
 const { paths } = await import("../../driver/run-record.mjs");
+const { renderReport } = await import("../../driver/publish/render-report.mjs");
 
 const statusFiles = (dir, depth = 0) => (depth > 7 || !existsSync(dir) ? [] : readdirSync(dir).flatMap((name) => {
   const p = join(dir, name);
@@ -38,7 +42,7 @@ const statusFiles = (dir, depth = 0) => (depth > 7 || !existsSync(dir) ? [] : re
 }));
 
 mkdirSync(POOL, { recursive: true });
-const examples = publishSource(join(ROOT, "demo"), { repoRoot: ROOT });
+const examples = publishSource(join(ROOT, "driver", "test", "fixtures", "demo-2026-09-18"), { repoRoot: ROOT });
 seedDemoRuns({ workspace: WS, examplesDir: examples, portalOrigin: "http://127.0.0.1:9" });
 const name = demoChildren(examples).find((n) => /full-country/.test(n));
 const meta = JSON.parse(readFileSync(join(examples, name, "meta.json"), "utf8"));
@@ -82,13 +86,44 @@ test("get_finding states the registration facts the report delivered, under the 
   assert.equal(before.registrations, undefined);
 });
 
-test("get_search_coverage states the rows the report delivered, a repeated row once", async () => {
+/** The rows a clearance page lists under "Left open", as [area, state, note, detail]: area case and inline markup aside. */
+function pageLeftOpen(html) {
+  const at = html.indexOf('<div class="openrows">');
+  const untag = (s) => { for (let was = null; was !== s;) { was = s; s = s.replace(/<[^>]*>/g, ""); } return s; };   // until none is left
+  const text = (x) => untag(x ?? "").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
+  return at < 0 ? [] : [...html.slice(at).matchAll(/<div class="ct">(.*?) <span class="cst">· (.*?)<\/span><\/div><div class="cd">(.*?)<\/div>(?:<div class="cd">(.*?)<\/div>)?/g)]
+    .map(([, area, state, note, detail]) => JSON.stringify([text(area).toLowerCase(), text(state), text(note), text(detail)]));
+}
+const answeredOpen = (areas) => areas.filter((a) => a.state !== "confirmed-clean")
+  .map((a) => JSON.stringify([a.area.toLowerCase(), a.stateLabel, a.note.replace(/`/g, ""), (a.detail ?? []).join(", ")]));
+const poolPage = () => readFileSync(join(POOL, readdirSync(POOL).find((d) => existsSync(join(POOL, d, "meta.json"))
+  && JSON.parse(readFileSync(join(POOL, d, "meta.json"), "utf8")).runId === meta.runId), "report.html"), "utf8");
+
+test("get_search_coverage states the rows the report delivered, as its page lists them", async () => {
   const delivered = JSON.parse(readFileSync(paths(runDir).reportDocument, "utf8")).client.coverage;
   const written = JSON.parse(readFileSync(join(runDir, "findings.json"), "utf8")).coverage;
   assert.ok(written.length > delivered.length, "premise: the run's record repeats a row the report prints once");
   const { areas } = await tools.get_search_coverage({ runId: meta.runId });
-  assert.equal(areas.length, delivered.length, "the coverage answer is not the report's rows");
-  assert.deepEqual(areas.map((a) => a.state), delivered.map((r) => r.state));
+  // The open rows are the page's "Left open": a follow-up row another open row already reports is left out, as there.
+  assert.deepEqual(answeredOpen(areas).sort(), pageLeftOpen(poolPage()).sort(), "the open rows are not the page's Left open");
+  assert.ok(areas.length < delivered.length, "premise: the page leaves out a follow-up row another open row reports");
+  assert.deepEqual(areas.filter((a) => a.state === "confirmed-clean").map((a) => a.area),
+    delivered.filter((r) => r.state === "confirmed-clean").map((r) => r.areaLabel || r.area), "a clean row changed");
   const before = await withoutDocument(() => tools.get_search_coverage({ runId: meta.runId }));
   assert.equal(before.areas.length, written.length, "a run published before the document no longer answers from its files");
+});
+
+test("get_search_coverage lists the native-script searches the page lists as not completed, with the places they count", async () => {
+  const file = paths(runDir).reportDocument, saved = readFileSync(file, "utf8");
+  const document = JSON.parse(saved);
+  document.scope.searchDepth = { ...document.scope.searchDepth, counts: { ...document.scope.searchDepth?.counts,
+    localScripts: { searched: ["Hani"], missed: ["Hang"], territories: { Hani: { searched: ["CN"], missed: ["JP", "KR", "TW", "HK"], worldwide: "searched", unnamed: "searched" } } } } };
+  writeFileSync(file, JSON.stringify(document));
+  try {
+    const html = renderReport(JSON.parse(JSON.stringify(document)));
+    const page = pageLeftOpen(html);
+    assert.ok(page.some((r) => JSON.parse(r)[3]), "premise: the page lists a script gap with the places it counts");
+    assert.deepEqual(answeredOpen((await tools.get_search_coverage({ runId: meta.runId })).areas).sort(), page.sort(),
+      "the script searches the page left open are not in the answer");
+  } finally { writeFileSync(file, saved); }
 });

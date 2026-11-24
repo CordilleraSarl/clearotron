@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/cn/7d8aee57-c292-4298-ae42-026967599ea4",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "7d8aee57-c292-4298-ae42-026967599ea4",
+  "applicationNumber": "55543524",
+  "registrationNumber": "55543524",
+  "applicationDate": "2021-04-25",
+  "registrationDate": "2022-01-28",
+  "expiryDate": "2032-01-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2021-10-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EVENRICH",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "临床试验;医学研究;医学实验室服务;生物学研究和分析;药品的研究和开发;生物医学研究服务;科学研究用基因检测;生物医学研究;生物技术研究",
+      "translation_language": "en",
+      "translation": "Clinical trials; medical research; medical laboratory services; biological research and analysis; pharmaceutical research and development; biomedical research services; genetic testing for scientific research; biomedical research; biotechnology research"
+    }
+  ],
+  "owner": "Nanjing Yiwei Jianhua Biological Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "江苏省南京市江北新区新锦湖路3-1号中丹生态生命科学产业园一期A座686室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Nanjing Yiwei Jianhua Biological Technology Co., Ltd.",
+        "applicantNativeName": "南京逸微健华生物科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clinical trials; medical research; medical laboratory services; biological research and analysis; pharmaceutical research and development; biomedical research services; genetic testing for scientific research; biomedical research; biotechnology research",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "临床试验;医学研究;医学实验室服务;生物学研究和分析;药品的研究和开发;生物医学研究服务;科学研究用基因检测;生物医学研究;生物技术研究"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Biological research service"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4212",
+          "subNatGoodsServicesDescription": "Biological research service"
+        }
+      ]
+    },
+    "id": "7d8aee57-c292-4298-ae42-026967599ea4",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1765"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "南京灿烂知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210425",
+        "applicationNumber": "55543524"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320127",
+      "lastPublicationDate": "20211027",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220128",
+        "registrationNumber": "55543524"
+      }
+    },
+    "version": "20251004123900",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EVENRICH"
+    }
+  },
+  "_uri": "/mark/cn/7d8aee57-c292-4298-ae42-026967599ea4",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.188Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

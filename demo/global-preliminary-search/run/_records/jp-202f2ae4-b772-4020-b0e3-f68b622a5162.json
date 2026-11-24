@@ -1,0 +1,352 @@
+{
+  "uri": "/mark/jp/202f2ae4-b772-4020-b0e3-f68b622a5162",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "202f2ae4-b772-4020-b0e3-f68b622a5162",
+  "applicationNumber": "2014-104589",
+  "registrationNumber": null,
+  "applicationDate": "2014-12-11",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "Ｖｅｎｒｉｉ",
+  "markTransliteration": "BENRII",
+  "markTranslation": "VENRII",
+  "markFeature": "DESIGN AND COLOR",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    37,
+    39,
+    41,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "広告業，広告宣伝物の企画及び制作，インターネット上での広告スペースの提供，ビジネスコンサルティング，外注業務に関する契約の仲介及びこれに関する情報の提供，経営の診断又は経営に関する助言，市場調査又は分析，事業に関する助言及び支援及びこれらに関する情報の提供，商取引の斡旋・媒介・仲介・取次ぎ・代行及びこれらに関する情報の提供，他人の事業のために行う物品の調達及びサービスの手配及びこれらに関する情報の提供，アウトソーシングに関する事業の運営及びこれに関する情報の提供，インターネットによる人材の紹介及び職業の斡旋の媒介又は取次ぎ並びにこれらに関する情報の提供，職業の紹介又はあっせん並びにこれらに関する情報の提供，介護人・家政婦・看護士のあっせん，求人情報及び求職情報の提供，競売の運営（インターネットオークションの運営を含む）及びこれに関する情報の提供，ソーシャルネットワーキングの提供のためのウェブサイト・サイト内における友人作り・写真の共有・画像の送信に関する情報ファイルの管理，一般事務処理の代理又は代行，広告用具の貸与，求人情報の提供",
+      "translation_language": "en",
+      "translation": "Provide advertisement business, advertisement promotion materials planning and production, advertisement space provision on the Internet, business consulting, brokerage of contracts concerning outsourcing business and providing information on this, advice on management diagnosis or management, market research or analysis, business Provide advice and support concerning these and information concerning them, provide mediation, mediation, intermediary, intermediary, substitution and information on these transactions, procurement of goods for arranging for others' business and arrange for services, providing information on them, Provision of information on outsourcing related business and information on this, introduction of human resources through the Internet, mediation or intermediation of job placement or intermediary, provision of information on these, introduction of profession or information and provision of information on these, caregivers, domestic workers Nurse's mediation, recruitment information and job seeking information Management of information files related to the management of auction (including the operation of Internet auction) and the provision of information concerning this, websites for providing social networking, making friends, sharing photos and sending images, Proxy or substitute for general administrative processing, lending of advertisement tools, providing job information"
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": null,
+      "description": "建築物の外部及び内部の清掃，一般家庭内の部屋の掃除",
+      "translation_language": "en",
+      "translation": "Cleaning the exterior and interior of buildings, cleaning general household rooms"
+    },
+    {
+      "classes": [
+        39
+      ],
+      "language": null,
+      "description": "引越の代行",
+      "translation_language": "en",
+      "translation": "Migration on behalf"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "インターネットを利用した人材育成のための教育及び訓練，セミナーの企画・運営又は開催並びにこれらに関する情報の提供，図書の貸与，図書及び記録の供覧，電子出版物の提供，オンラインで提供される電子書籍及び電子定期刊行物の制作，インターネット上におけるテキスト、特に書籍、雑誌、小冊子、カタログ、新聞の制作及び校正（広告文を除く），インターネットによる画像・映像・音声・音楽の提供，音響・音楽及びビデオ映像の記録物の制作，人の交流を目的とした興行の企画・運営又は開催及びこれらに関する情報の提供，インターネットによる通信を用いて行うゲームまたはクイズの提供，映画・演芸・演劇・音楽又は教育研修のための施設の提供，通訳，翻訳",
+      "translation_language": "en",
+      "translation": "Education and training for human resource development using the Internet, planning and operation of the seminar, holding of information on the holding of the seminar, provision of information on them, lending of books, viewing of books and records, provision of electronic publications, electronic books provided online Production and proofreading of electronic periodicals, texts on the Internet, especially books, magazines, brochures, catalogs, newspaper production and proofreading (excluding advertising texts), image, video, audio and music on the Internet, Production of recordings of video images, planning, operation or holding of entertainment for the purpose of exchanging people, providing information on these, providing games or quiz using Internet communication, providing movies · entertainment · theaters · music or Provide facility for education and training, interpreter, translation"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "デザインの考案，ネーミング及びロゴデザインの考案，ウェブサイトの作成又は保守，オンラインによる登録ユーザの認証，電子計算機用プログラムの設計・作成又は保守，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，サーバの記憶領域の貸与及びこれに関する情報の提供，電子計算機の貸与，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Designing, designing, creating or maintaining websites, creating or maintaining websites, authenticating registered users online, designing / creating or maintaining programs for electronic computers, and computer / automobile and other applications In order to do so, it is necessary to introduce and explain the performance and operation method etc. of machines requiring advanced professional knowledge / skills or experience, lending and providing information on the storage area of the server, lending of electronic computers, Offer program"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "家事代行，買い物の代行，留守番，高齢者及び身体障害者のための付き添い",
+      "translation_language": "en",
+      "translation": "Housekeeping acting, substitution for shopping, caretaking, attendance for the elderly and disabled"
+    }
+  ],
+  "owner": "IMPACT HOLDINGS K.K.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "MISHIMA KAGEHARU",
+  "priorities": [
+    {
+      "priorityDate": "20141211"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHIBUYA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "IMPACT HOLDINGS K.K.",
+        "applicantNativeAddress": "東京都渋谷区",
+        "applicantNativeName": "インパクトホールディングス株式会社"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Provide advertisement business, advertisement promotion materials planning and production, advertisement space provision on the Internet, business consulting, brokerage of contracts concerning outsourcing business and providing information on this, advice on management diagnosis or management, market research or analysis, business Provide advice and support concerning these and information concerning them, provide mediation, mediation, intermediary, intermediary, substitution and information on these transactions, procurement of goods for arranging for others' business and arrange for services, providing information on them, Provision of information on outsourcing related business and information on this, introduction of human resources through the Internet, mediation or intermediation of job placement or intermediary, provision of information on these, introduction of profession or information and provision of information on these, caregivers, domestic workers Nurse's mediation, recruitment information and job seeking information Management of information files related to the management of auction (including the operation of Internet auction) and the provision of information concerning this, websites for providing social networking, making friends, sharing photos and sending images, Proxy or substitute for general administrative processing, lending of advertisement tools, providing job information",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "広告業，広告宣伝物の企画及び制作，インターネット上での広告スペースの提供，ビジネスコンサルティング，外注業務に関する契約の仲介及びこれに関する情報の提供，経営の診断又は経営に関する助言，市場調査又は分析，事業に関する助言及び支援及びこれらに関する情報の提供，商取引の斡旋・媒介・仲介・取次ぎ・代行及びこれらに関する情報の提供，他人の事業のために行う物品の調達及びサービスの手配及びこれらに関する情報の提供，アウトソーシングに関する事業の運営及びこれに関する情報の提供，インターネットによる人材の紹介及び職業の斡旋の媒介又は取次ぎ並びにこれらに関する情報の提供，職業の紹介又はあっせん並びにこれらに関する情報の提供，介護人・家政婦・看護士のあっせん，求人情報及び求職情報の提供，競売の運営（インターネットオークションの運営を含む）及びこれに関する情報の提供，ソーシャルネットワーキングの提供のためのウェブサイト・サイト内における友人作り・写真の共有・画像の送信に関する情報ファイルの管理，一般事務処理の代理又は代行，広告用具の貸与，求人情報の提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Cleaning the exterior and interior of buildings, cleaning general household rooms",
+          "intClassNumber": "37",
+          "intGoodsServicesDescription": "建築物の外部及び内部の清掃，一般家庭内の部屋の掃除"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Migration on behalf",
+          "intClassNumber": "39",
+          "intGoodsServicesDescription": "引越の代行"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education and training for human resource development using the Internet, planning and operation of the seminar, holding of information on the holding of the seminar, provision of information on them, lending of books, viewing of books and records, provision of electronic publications, electronic books provided online Production and proofreading of electronic periodicals, texts on the Internet, especially books, magazines, brochures, catalogs, newspaper production and proofreading (excluding advertising texts), image, video, audio and music on the Internet, Production of recordings of video images, planning, operation or holding of entertainment for the purpose of exchanging people, providing information on these, providing games or quiz using Internet communication, providing movies · entertainment · theaters · music or Provide facility for education and training, interpreter, translation",
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "インターネットを利用した人材育成のための教育及び訓練，セミナーの企画・運営又は開催並びにこれらに関する情報の提供，図書の貸与，図書及び記録の供覧，電子出版物の提供，オンラインで提供される電子書籍及び電子定期刊行物の制作，インターネット上におけるテキスト、特に書籍、雑誌、小冊子、カタログ、新聞の制作及び校正（広告文を除く），インターネットによる画像・映像・音声・音楽の提供，音響・音楽及びビデオ映像の記録物の制作，人の交流を目的とした興行の企画・運営又は開催及びこれらに関する情報の提供，インターネットによる通信を用いて行うゲームまたはクイズの提供，映画・演芸・演劇・音楽又は教育研修のための施設の提供，通訳，翻訳"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Designing, designing, creating or maintaining websites, creating or maintaining websites, authenticating registered users online, designing / creating or maintaining programs for electronic computers, and computer / automobile and other applications In order to do so, it is necessary to introduce and explain the performance and operation method etc. of machines requiring advanced professional knowledge / skills or experience, lending and providing information on the storage area of the server, lending of electronic computers, Offer program",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "デザインの考案，ネーミング及びロゴデザインの考案，ウェブサイトの作成又は保守，オンラインによる登録ユーザの認証，電子計算機用プログラムの設計・作成又は保守，電子計算機・自動車その他その用途に応じて的確な操作をするためには高度の専門的な知識・技術又は経験を必要とする機械の性能・操作方法等に関する紹介及び説明，サーバの記憶領域の貸与及びこれに関する情報の提供，電子計算機の貸与，電子計算機用プログラムの提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Housekeeping acting, substitution for shopping, caretaking, attendance for the elderly and disabled",
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "家事代行，買い物の代行，留守番，高齢者及び身体障害者のための付き添い"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "35A01",
+          "natGoodsServicesDescription": "Advertising and publicity services"
+        },
+        {
+          "natClassNumber": "35B01",
+          "natGoodsServicesDescription": "Business management analysis or business consultancy; Business management; Marketing research or analysis; Providing information concerning commercial sales"
+        },
+        {
+          "natClassNumber": "35D01",
+          "natGoodsServicesDescription": "Employment agency services"
+        },
+        {
+          "natClassNumber": "35E01",
+          "natGoodsServicesDescription": "Auctioneering"
+        },
+        {
+          "natClassNumber": "35G03",
+          "natGoodsServicesDescription": "Office functions, namely filing, in particular documents or magnetic tapes; Compilation of information into computer databases"
+        },
+        {
+          "natClassNumber": "35J01",
+          "natGoodsServicesDescription": "Publicity material rental"
+        },
+        {
+          "natClassNumber": "42G02",
+          "natGoodsServicesDescription": "Providing employment information"
+        },
+        {
+          "natClassNumber": "37G02",
+          "natGoodsServicesDescription": "Cleaning of building exterior surfaces; Window cleaning; Carpet and rug cleaning; Floor polishing"
+        },
+        {
+          "natClassNumber": "39E04",
+          "natGoodsServicesDescription": "Removal services"
+        },
+        {
+          "natClassNumber": "41A01",
+          "natGoodsServicesDescription": "Educational and instruction services relating to arts, crafts, sports or general knowledge"
+        },
+        {
+          "natClassNumber": "41A03",
+          "natGoodsServicesDescription": "Arranging, conducting and organization of seminars"
+        },
+        {
+          "natClassNumber": "41C02",
+          "natGoodsServicesDescription": "Providing electronic publications; Services of reference libraries for literature and documentary records; Book rental"
+        },
+        {
+          "natClassNumber": "41D01",
+          "natGoodsServicesDescription": "Publication of books"
+        },
+        {
+          "natClassNumber": "41E02",
+          "natGoodsServicesDescription": "Providing videos from the internet, not downloadable; Movie theatre presentations or movie film production and distribution"
+        },
+        {
+          "natClassNumber": "41E03",
+          "natGoodsServicesDescription": "Providing digital music from the Internet, not downloadable; Presentation of live show performances; Direction or presentation of plays; Presentation of musical performances"
+        },
+        {
+          "natClassNumber": "41E04",
+          "natGoodsServicesDescription": "Production of radio or television programs"
+        },
+        {
+          "natClassNumber": "41E05",
+          "natGoodsServicesDescription": "Production of videotape film in the field of education, culture, entertainment or sports [not for movies or television programs and not for advertising or publicity]"
+        },
+        {
+          "natClassNumber": "41F06",
+          "natGoodsServicesDescription": "Organization of entertainment events excluding movies, shows, plays, musical performances, sports, horse races, bicycle races, boat races and auto races"
+        },
+        {
+          "natClassNumber": "41K01",
+          "natGoodsServicesDescription": "Providing amusement facilities"
+        },
+        {
+          "natClassNumber": "41K02",
+          "natGoodsServicesDescription": "Providing facilities for movies, shows, plays, music or educational training"
+        },
+        {
+          "natClassNumber": "41Z99",
+          "natGoodsServicesDescription": "Other education, training, entertainments, sports and cultural activities that do not correspond to any of the listed similar group code(s) for the education, training, entertainments, sports and cultural activities"
+        },
+        {
+          "natClassNumber": "42S01",
+          "natGoodsServicesDescription": "Language interpretation; Translation"
+        },
+        {
+          "natClassNumber": "42P01",
+          "natGoodsServicesDescription": "Design services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42P03",
+          "natGoodsServicesDescription": "Technological advice relating to computers, automobiles and industrial machines"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42W03",
+          "natGoodsServicesDescription": "Housework services rendered to meet the needs of individuals"
+        }
+      ]
+    },
+    "id": "202f2ae4-b772-4020-b0e3-f68b622a5162",
+    "ipRightKind": "tmk",
+    "markFeature": "DESIGN AND COLOR",
+    "markImageColourClaimed": [
+      {
+        "markImageColourClaimedText": "COLOUR MARK"
+      },
+      {
+        "markImageColourClaimedText": "COLOUR CLAIMED"
+      }
+    ],
+    "markImageViennaClassification": [
+      "02.09.14.00",
+      "02.09.16.00",
+      "04.05.03.01",
+      "04.05.21.00",
+      "26.01.01.00",
+      "26.01.04.00",
+      "26.01.06.00",
+      "27.03.01.00",
+      "27.03.02.00",
+      "27.05.01.09",
+      "27.05.01.22",
+      "27.05.21.00",
+      "27.05.23.92",
+      "27.05.23.93",
+      "29.01.03.01",
+      "29.01.03.02",
+      "29.01.11.00",
+      "29.01.12.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20141211"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "MISHIMA KAGEHARU",
+        "representativeNativeName": "三嶋　景治"
+      },
+      {
+        "representativeName": "KAWASAKI HITOSHI",
+        "representativeNativeName": "川崎　仁"
+      },
+      {
+        "representativeName": "NAKAZATO KOICHI",
+        "representativeNativeName": "中里　浩一"
+      },
+      {
+        "representativeName": "NAKAZATO TAKUO",
+        "representativeNativeName": "中里　卓夫"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20141211",
+        "applicationNumber": "2014-104589"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20230427105136",
+    "wordMarkSpecification": {
+      "markTranslation": "VENRII",
+      "markTransliteration": "BENRII",
+      "markVerbalElementText": "Ｖｅｎｒｉｉ"
+    }
+  },
+  "_uri": "/mark/jp/202f2ae4-b772-4020-b0e3-f68b622a5162",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.183Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

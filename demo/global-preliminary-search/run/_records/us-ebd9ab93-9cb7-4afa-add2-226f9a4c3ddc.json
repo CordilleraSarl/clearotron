@@ -1,0 +1,191 @@
+{
+  "uri": "/mark/us/ebd9ab93-9cb7-4afa-add2-226f9a4c3ddc",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "ebd9ab93-9cb7-4afa-add2-226f9a4c3ddc",
+  "applicationNumber": "50184088",
+  "registrationNumber": null,
+  "applicationDate": "2026-10-27",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENRISE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Business management consulting; Business development services, namely, providing start-up support for businesses of others; Business networking; Organizing business networking events in the field of entrepreneurship",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Conducting workshops and seminars in leadership, entrepreneurship, business management, and the use of artificial intelligence; Education services, namely, mentoring in the field of leadership, entrepreneurship, and business management; Providing online non-downloadable educational podcasts in the field of leadership, entrepreneurship, and technology",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "EMPOWER FUND INC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "DI LI",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "414 Yale Ave, Unit K & J, Claremont, CA, 91711, USAM",
+        "applicantAddressCity": "Claremont",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "91711",
+        "applicantAddressStateName": "CALIFORNIA",
+        "applicantAddressStreet": "414 Yale Ave, Unit K & J",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "EMPOWER FUND INC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Business management consulting; Business development services, namely, providing start-up support for businesses of others; Business networking; Organizing business networking events in the field of entrepreneurship"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Conducting workshops and seminars in leadership, entrepreneurship, business management, and the use of artificial intelligence; Education services, namely, mentoring in the field of leadership, entrepreneurship, and business management; Providing online non-downloadable educational podcasts in the field of leadership, entrepreneurship, and technology"
+        }
+      ]
+    },
+    "id": "ebd9ab93-9cb7-4afa-add2-226f9a4c3ddc",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20261027",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20261027",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "414 Yale Ave, Unit K & J, Claremont, CA, 91711, USAM",
+        "city": "Claremont",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "EMPOWER FUND INC",
+        "postalCode": "91711",
+        "stateName": "CALIFORNIA",
+        "street": "414 Yale Ave, Unit K & J"
+      },
+      {
+        "address": "414 Yale Ave, Unit K & J, Claremont, CA, 91711, USAM",
+        "city": "Claremont",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "CORPORATION",
+        "name": "EMPOWER FUND INC",
+        "postalCode": "91711",
+        "stateName": "CALIFORNIA",
+        "street": "414 Yale Ave, Unit K & J"
+      }
+    ],
+    "recordLastUpdated": "20261029",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Suite 208, City of Industry, CA 91748, United States",
+        "representativeCorrespondentAddressLines": [
+          "Suite 208",
+          "City of Industry, CA 91748",
+          "United States"
+        ],
+        "representativeCorrespondentName": "DI LI DI LI LAW, P.C., 18725 Gale Ave., Ste 208"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Suite 208, City of Industry, CA 91748, United States",
+        "representativeAddressLines": [
+          "Suite 208",
+          "City of Industry, CA 91748",
+          "United States"
+        ],
+        "representativeName": "DI LI"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20261027",
+        "applicationNumber": "50184088"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NEW APPLICATION - RECORD INITIALIZED NOT ASSIGNED TO EXAMINER",
+        "markOfficialStatusCode": "630",
+        "markOfficialStatusDate": "20261027",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20261029142049",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "AVEN RISE",
+      "markVerbalElementText": "AVENRISE"
+    }
+  },
+  "_uri": "/mark/us/ebd9ab93-9cb7-4afa-add2-226f9a4c3ddc",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.197Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

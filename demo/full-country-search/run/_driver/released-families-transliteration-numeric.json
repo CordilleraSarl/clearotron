@@ -1,0 +1,14 @@
+{
+  "axis": "transliteration-numeric",
+  "families": {
+    "transliteration-numeric:exact:v3nqori": {
+      "reason": "Digit substitutions can preserve the look of this coined app mark and reveal a different potential objector despite an empty identical list."
+    },
+    "transliteration-numeric:exact:venq0ri": {
+      "reason": "Digit substitutions can preserve the look of this coined app mark and reveal a different potential objector despite an empty identical list."
+    },
+    "transliteration-numeric:exact:venqor1": {
+      "reason": "Digit substitutions can preserve the look of this coined app mark and reveal a different potential objector despite an empty identical list."
+    }
+  }
+}

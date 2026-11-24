@@ -1,0 +1,129 @@
+{
+  "uri": "/mark/xs/af192d75-3718-4eee-b1e3-bd5cccb09580",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "af192d75-3718-4eee-b1e3-bd5cccb09580",
+  "applicationNumber": null,
+  "registrationNumber": "644817",
+  "applicationDate": null,
+  "registrationDate": "2016-05-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "GOD - GIVEN RIGHTS TRIBUNAL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Rights preservation",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MARSHALL HOME",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "P.O. BOX 7132, TUCSON, AZ, 85725-7132",
+        "applicantAddressCity": "TUCSON",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "85725-7132",
+        "applicantAddressStateName": "ARIZONA",
+        "applicantAddressStreet": "P.O. BOX 7132",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "MARSHALL HOME",
+        "applicantPhoneNumber": "520-270-0713"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Rights preservation"
+        }
+      ]
+    },
+    "id": "af192d75-3718-4eee-b1e3-bd5cccb09580",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "P.O. BOX 7132, TUCSON, AZ, 85725-7132",
+        "city": "TUCSON",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "INDIVIDUAL",
+        "name": "MARSHALL HOME",
+        "phoneNumber": "520-270-0713",
+        "postalCode": "85725-7132",
+        "stateName": "ARIZONA",
+        "street": "P.O. BOX 7132"
+      }
+    ],
+    "recordLastUpdated": "20241213",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsedAnywhereDate": "20160501",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20160503",
+        "registrationNumber": "644817"
+      }
+    },
+    "usStateOfficeCode": "AZ",
+    "usStateOfficeName": "ARIZONA",
+    "version": "20241213180256",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "GOD - GIVEN RIGHTS TRIBUNAL"
+    }
+  },
+  "_uri": "/mark/xs/af192d75-3718-4eee-b1e3-bd5cccb09580",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.188Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

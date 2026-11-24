@@ -1,0 +1,150 @@
+{
+  "uri": "/mark/cn/2093d7fc-f538-4b9c-9665-a9a91441191a",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "2093d7fc-f538-4b9c-9665-a9a91441191a",
+  "applicationNumber": "25416161",
+  "registrationNumber": "25416161",
+  "applicationDate": "2017-07-19",
+  "registrationDate": "2018-07-21",
+  "expiryDate": "2028-07-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2018-04-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EVENRIOT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "计算机软件设计;软件运营服务(SaaS);计算机技术咨询;技术研究;工业品外观设计;替他人研究和开发新产品;车辆性能检测;计算机硬件设计和开发咨询;计算机系统远程监控;建设项目的开发",
+      "translation_language": "en",
+      "translation": "Computer Software Design; Software Operation Service (SaaS); Computer Technology Consulting; Technology Research; Industrial Design; Research and Development of New Products for Others; Vehicle Performance Testing; Computer Hardware Design and Development Consulting; Computer System Remote Monitoring; Construction Projects Development"
+    }
+  ],
+  "owner": "Beijing-filled Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市海淀区龙岗路51号院7号楼2层C119室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing-filled Technology Co., Ltd.",
+        "applicantNativeName": "北京智充科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Computer Software Design; Software Operation Service (SaaS); Computer Technology Consulting; Technology Research; Industrial Design; Research and Development of New Products for Others; Vehicle Performance Testing; Computer Hardware Design and Development Consulting; Computer System Remote Monitoring; Construction Projects Development",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "计算机软件设计;软件运营服务(SaaS);计算机技术咨询;技术研究;工业品外观设计;替他人研究和开发新产品;车辆性能检测;计算机硬件设计和开发咨询;计算机系统远程监控;建设项目的开发"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Computer programming, and concerned services",
+        "Research and development service",
+        "Registered design service",
+        "Survey service",
+        "Design and information service for architecture"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        },
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4216",
+          "subNatGoodsServicesDescription": "Registered design service"
+        },
+        {
+          "subNatClassNumber": "4214",
+          "subNatGoodsServicesDescription": "Survey service"
+        },
+        {
+          "subNatClassNumber": "4217",
+          "subNatGoodsServicesDescription": "Design and information service for architecture"
+        }
+      ]
+    },
+    "id": "2093d7fc-f538-4b9c-9665-a9a91441191a",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1596"
+      }
+    ],
+    "recordLastUpdated": "20251002",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "博雅智泉(北京)知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20170719",
+        "applicationNumber": "25416161"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20280720",
+      "lastPublicationDate": "20180420",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20180721",
+        "registrationNumber": "25416161"
+      }
+    },
+    "version": "20251002220100",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EVENRIOT"
+    }
+  },
+  "_uri": "/mark/cn/2093d7fc-f538-4b9c-9665-a9a91441191a",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.187Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

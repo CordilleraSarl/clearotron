@@ -475,20 +475,10 @@ export function demoLineOnScreen(line) {
   return !(tagged && DEMO_ROUTINE_LINES.some((re) => re.test(tagged[1])));
 }
 
-export function resolvePorts(env = {}) {
-  const one = (name, dflt) => {
-    const raw = String(env[name] ?? "").trim();
-    if (!raw) return dflt;
-    const n = Number(raw);
-    if (!Number.isInteger(n) || n < 1 || n > 65535) throw new Error(`${name}="${raw}" is not a port number (1–65535).`);
-    return n;
-  };
-  // F26 — the client door is started on BOTH paths now, so its port is resolved
-  // here with the other two rather than only where the units are written. 18811 is the door's own
-  // default and shared/client-door.mjs states it; the literal is not repeated, it is imported.
-  return { portal: one("PORTAL_SERVICE_PORT", 18802), mcp: one("TRADEMARK_MCP_HTTP_PORT", 18790),
-    client: one("CLIENT_MCP_HTTP_PORT", clientDoorPort({})) };
-}
+// The doors' ports live in shared/door-ports.mjs, which the server install reads too; re-exported under the name every
+// existing reader here uses.
+export { resolvePorts } from "../shared/door-ports.mjs";
+import { resolvePorts } from "../shared/door-ports.mjs";
 
 
 /**

@@ -1,0 +1,210 @@
+{
+  "uri": "/mark/us/bcf62f2d-ab35-4d99-9bfb-75e77515a695",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "bcf62f2d-ab35-4d99-9bfb-75e77515a695",
+  "applicationNumber": "88773227",
+  "registrationNumber": null,
+  "applicationDate": "2020-01-25",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": "2020-10-15",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "RAVEN RILEY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": [
+    "\"RAVEN\" OR \"RILEY\""
+  ],
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment services, namely, providing a web site featuring non-downloadable adult-themed photographs and videos",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Amborski, Anthony J.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "831 Clay Ave, Toledo, OH, 43608",
+        "applicantAddressCity": "Toledo",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "43608",
+        "applicantAddressStateName": "OHIO",
+        "applicantAddressStreet": "831 Clay Ave",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Amborski, Anthony J."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment services, namely, providing a web site featuring non-downloadable adult-themed photographs and videos"
+        }
+      ]
+    },
+    "id": "bcf62f2d-ab35-4d99-9bfb-75e77515a695",
+    "ipRightKind": "tmk",
+    "markDisclaimers": [
+      "\"RAVEN\" OR \"RILEY\""
+    ],
+    "markEvents": [
+      {
+        "date": "20201027",
+        "descriptionText": "ABANDONMENT NOTICE E-MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20201026",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - FAILURE TO RESPOND"
+      },
+      {
+        "date": "20201026",
+        "descriptionText": "ABANDONMENT - FAILURE TO RESPOND OR LATE RESPONSE"
+      },
+      {
+        "date": "20200414",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20200414",
+        "descriptionText": "REMOVED FROM TEAS PLUS"
+      },
+      {
+        "date": "20200414",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200414",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20200414",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20200129",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20200129",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "831 Clay Ave, Toledo, OH, 43608",
+        "city": "Toledo",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Amborski, Anthony J.",
+        "postalCode": "43608",
+        "stateName": "OHIO",
+        "street": "831 Clay Ave"
+      },
+      {
+        "address": "831 Clay Ave, Toledo, OH, 43608",
+        "city": "Toledo",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Amborski, Anthony J.",
+        "postalCode": "43608",
+        "stateName": "OHIO",
+        "street": "831 Clay Ave"
+      }
+    ],
+    "recordLastUpdated": "20260508",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "TOLEDO, OH 43608, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "TOLEDO, OH 43608",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "AMBORSKI, ANTHONY J., 831 CLAY AVE"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "TOLEDO, OH 43608, UNITED STATES",
+        "representativeAddressLines": [
+          "TOLEDO, OH 43608",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20201015",
+      "active": false,
+      "application": {
+        "applicationDate": "20200125",
+        "applicationNumber": "88773227"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-FAILURE TO RESPOND",
+        "markOfficialStatusCode": "602",
+        "markOfficialStatusDate": "20201026",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED"
+    },
+    "version": "20260508144416",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN RILEY"
+    }
+  },
+  "_uri": "/mark/us/bcf62f2d-ab35-4d99-9bfb-75e77515a695",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.197Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

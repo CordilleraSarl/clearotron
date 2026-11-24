@@ -45,14 +45,27 @@ import {
   readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, copyFileSync,
   statSync, rmSync, mkdtempSync, cpSync, renameSync,
 } from "node:fs";
-import { join, dirname, relative, basename, resolve } from "node:path";
+import { join, dirname, relative, basename, resolve, sep } from "node:path";
 import { createHash } from "node:crypto";
-import { driverDir } from "../shared/driver-dir.mjs";
+import { driverDir, DRIVER_DIR } from "../shared/driver-dir.mjs";
 import { PUBLISH_INPUTS } from "../driver/publish/publish-inputs.mjs";   //
 import { tmpdir } from "node:os";
+import { createRequire } from "node:module";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
+// The record key the Knockout page looks a saved body up by, loaded from REPO as the publisher is below.
+const { normalizeRecordUri } = await import(pathToFileURL(join(REPO, "providers", "_shared", "record-uri.mjs")).href);
+
+// A FILE IS REWRITTEN ONLY IF IT IS TEXT. A saved logo is an image, and reading one as UTF-8 does not throw: it
+// decodes to replacement characters, and the rewrite would write that back over the image. Bytes that do not decode
+// are not text, so the rewrite leaves them alone. The byte order mark is kept, so a text file that has one is written
+// back as it was read.
+const UTF8 = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true });
+const readText = (path) => { try { return UTF8.decode(readFileSync(path)); } catch { return null; } };
+// THE CHECKS STILL READ AN IMAGE, byte for byte, as latin1: what the rewrite may not touch it can still find, and a
+// key or a path inside an image's bytes would ship as surely as one in a text file. So it is a finding there too.
+const readForChecks = (path) => { const t = readText(path); if (t !== null) return t; try { return readFileSync(path, "latin1"); } catch { return null; } };
 
 // ── The allowlist ────────────────────────────────────────────────────────────────────────────────────
 // Every entry cites the read that puts it here. `required` means publish cannot render without it.
@@ -65,12 +78,12 @@ const FROZEN_FILES = [
   { path: "case-law-findings.md", why: "`clPath` declared in index.mjs, the case-law section" },
   { path: "common-law-grid.json", why: "`commonLawJoinedTerms` declared in index.mjs, common-law coverage" },
   // publish/index.mjs — the _driver sidecars it reads by name
-  { path: "_driver/receipts.json", why: "publish/index.mjs:764 fetchReceipts" },
-  { path: "_driver/senior-rights.json", why: "publish/index.mjs:790 seniorRights" },
-  { path: "_driver/verdict.json", why: "publish/index.mjs:811 verdictInfo" },
+  { path: "_driver/receipts.json", why: "publish/index.mjs:783 fetchReceipts" },
+  { path: "_driver/senior-rights.json", why: "publish/index.mjs:814 seniorRights" },
+  { path: "_driver/verdict.json", why: "publish/index.mjs:819 verdictInfo" },
   { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
-  { path: "_driver/register-plan.json", why: "publish/index.mjs:914 scopeBasis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:915 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/register-plan.json", why: "publish/index.mjs:951 scopeBasis" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:952 searchedJurisdictions, the fallback for register-plan" },
   { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
   { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:173 lintSink" },
   { path: "_driver/escalation-state.json", why: "publish/index.mjs:174 escSink" },
@@ -78,6 +91,17 @@ const FROZEN_FILES = [
   { path: "_driver/corrections-state.json", why: "publish/index.mjs:175 correctionsSink" },
   { path: "_driver/search-policy.json", why: "`searchPolicy` declared in index.mjs, level + stage label" },
   { path: "_driver/profile.json", why: "publish/index.mjs reads the frozen profile; report-registry.mjs:42 republishRun, customer key" },
+  { path: "_driver/logos.json", why: "logosForReport in mark-logos.mjs, called by publishReport() in index.mjs: each cited registration's saved logo" },
+  // THE WORKBOOK'S COVERAGE ROWS AND THE REVIEWER'S RECORD, found by comparing the workbook cell by cell. Without
+  // them the Coverage & gaps sheet lost about two thirds of its rows, and the report document its withheld,
+  // released and set-aside families, while every page matched.
+  { path: "_driver/coverage-enum.json", why: "the register coverage the workbook's Coverage & gaps rows are built from (run-record.mjs coverageEnum)" },
+  { path: "_driver/register-coverage-form.form.json", why: "the register coverage form's rows (run-record.mjs registerCoverageFormAccumulator)" },
+  // The grid travels without the two places on the run's own machine it wrote to, which nothing published reads.
+  { path: "_driver/grid-spec.json", reduce: gridSpecWithoutRunPaths, why: "the common-law grid's planned surfaces, read by coverage-rows-run.mjs for the Coverage & gaps rows" },
+  { path: "_driver/declinations.json", why: "the reviewer's set-aside record (readDeclinations, read by setAsideRows in publish/index.mjs)" },
+  { path: "_driver/declination-spec.json", why: "the delivered positions setAsideRows in publish/index.mjs reads beside the declinations" },
+  { path: "_driver/degraded-parts.json", why: "the parts that did not complete, for the Coverage & gaps follow-up rows (degraded-parts.mjs)" },
 ];
 
 // EVERY INPUT THE PUBLISHER DECLARES TRAVELS, taken from its own closed table rather than restated. The
@@ -100,8 +124,8 @@ for (const path of Object.keys(PUBLISH_INPUTS)) {
 const KNOCKOUT_FILES = [
   { path: "knockout-findings.json", required: true, why: "report-registry.mjs:66 the batch findings ARE the report source" },
   { path: "knockout-plan.json", why: "republishRun() in report-registry.mjs, plan" },
-  { path: "knockout-assessment.md", why: "the merged prose the lane writes (gateway.mjs:184 TOOL_WRITTEN_PATTERNS)" },
-  { path: "knockout-frame.md", why: "the batch scope note (gateway.mjs:65 TOOL_WRITTEN_ARTIFACTS)" },
+  { path: "knockout-assessment.md", why: "the merged prose the lane writes (form-sync.mjs:190 TOOL_WRITTEN_PATTERNS)" },
+  { path: "knockout-frame.md", why: "the batch scope note (form-sync.mjs:44 TOOL_WRITTEN_ARTIFACTS)" },
   { path: "email-body.md", why: "the delivery prose the lane writes beside the assessment" },
   { path: "status.json", why: "publishReport() in index.mjs reads machineLedgerNote + markName" },
   { path: "audit.md", why: "publishReport() in index.mjs reads its `auditMd` argument, the audit workbook source" },
@@ -110,16 +134,55 @@ const KNOCKOUT_FILES = [
   { path: "_driver/framework.json", required: true, why: "republishRun() in report-registry.mjs, the bands it was rated under" },
   { path: "_driver/search-policy.json", why: "report-registry.mjs:71 level + stage label" },
   { path: "_driver/profile.json", why: "report-registry.mjs:72 customer key and the delivery overlay" },
-  { path: "_driver/verdict.json", why: "publish/index.mjs:811 verdictInfo" },
-  { path: "_driver/receipts.json", why: "publish/index.mjs:764 fetchReceipts" },
+  { path: "_driver/verdict.json", why: "publish/index.mjs:819 verdictInfo" },
+  { path: "_driver/receipts.json", why: "publish/index.mjs:783 fetchReceipts" },
   // THE COUNT SIDECARS, AND THE PROOF IS WHAT FOUND THEM. Without register-counts.json the republished
   // meta carries `registerCounts: undefined` where the source carried the provider, the taken-at stamp
   // and the per-mark counts — so the workbook's Register column and every counted figure in the
   // knockout report render empty (`buildKnockoutWorkbook` in publish/knockout.mjs). Named by `koPaths` in stages-knockout.mjs.
   { path: "_driver/register-counts.json", why: "buildKnockoutWorkbook in publish/knockout.mjs: counted figures + the Register column" },
   { path: "_driver/register-records.json", why: "koPaths in stages-knockout.mjs: the terms behind the close-variation axis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:915 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:952 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/logos.json", why: "logosForReport in mark-logos.mjs, called by publishKnockout in publish/knockout.mjs: each listed filing's saved logo" },
+  // A LISTED FILING'S REGISTER RECORD IS READ FROM THE RUN'S RECORD LOG, where a clearance reads _records/. The log
+  // is a .jsonl beside the telemetry, and each line carries the session that fetched it, so it travels reduced.
+  { path: "_driver/register-record-bodies.jsonl", reduce: recordBodiesOnly, why: "filingRecordBodies in publish/knockout.mjs, through recordBodyFromLog in providers/_shared/ledger.mjs" },
+  // Found by comparing the workbook cell by cell: the Audit Trail's web sweep row, and the report document's owner
+  // checks and sweep receipts. The sweep log is one receipt per call, with no session in it, so it travels whole.
+  { path: "_driver/knockout-sweep.jsonl", why: "the sweep receipts in publish/knockout.mjs (run-record.mjs knockoutSweep): the Audit Trail's web sweep row" },
+  { path: "_driver/owner-checks.json", why: "the owner checks the Knockout report document carries (run-record.mjs ownerChecks)" },
+  { path: "_driver/register-plan.json", why: "the register plan the Knockout reads beside its counts" },
 ];
+
+/** The grid spec without `output_path` and `connotation.dispositions_path`: absolute paths on the machine the run ran on. PURE. */
+function gridSpecWithoutRunPaths(text) {
+  const d = JSON.parse(text);
+  delete d.output_path;
+  if (d.connotation && typeof d.connotation === "object") delete d.connotation.dispositions_path;
+  return JSON.stringify(d, null, 2) + "\n";
+}
+
+/**
+ * The record log as the page reads it: the records the run's register-records.json lists, which are the only ones
+ * filingRecordBodies looks up, each by the last line that carries its body, keeping only the two fields the log's
+ * index reads (`target`, `body`). A record the run fetched and did not list stays behind with its owner, and so do
+ * the session ids, times and agents. Lines keep their order, so a record written under two spellings resolves to
+ * the same body it did in the run.
+ */
+function recordBodiesOnly(text, runDir) {
+  const listed = new Set();
+  const records = readJsonOr(driverDir(runDir, "register-records.json"), {});
+  for (const m of Array.isArray(records?.marks) ? records.marks : [])
+    for (const r of Array.isArray(m?.records) ? m.records : []) { const k = normalizeRecordUri(r?.recordId); if (k) listed.add(k); }
+  const rows = [];
+  for (const line of text.split("\n")) {
+    let r = null;
+    try { r = JSON.parse(line); } catch { continue; }
+    if (r?.body && typeof r.target === "string" && listed.has(normalizeRecordUri(r.target))) rows.push({ target: r.target, body: r.body });
+  }
+  const last = new Map(rows.map((r, i) => [r.target, i]));
+  return rows.filter((r, i) => last.get(r.target) === i).map((r) => JSON.stringify(r)).join("\n") + (rows.length ? "\n" : "");
+}
 
 /** The allowlist for a template. One place, so a new template cannot half-exist. */
 const filesFor = (t) => (t === "knockout" ? KNOCKOUT_FILES : FROZEN_FILES);
@@ -128,6 +191,12 @@ const filesFor = (t) => (t === "knockout" ? KNOCKOUT_FILES : FROZEN_FILES);
 // and parses every file in it, so the set cannot be enumerated ahead of time.
 const FROZEN_DIRS = [
   { path: "_records", ext: ".json", why: "readRecordArtifacts() in registry-fidelity.mjs" },
+  // The families the register stage withheld and released, one file per axis, read by readWithheldFamilies and
+  // releasedFamilyQids in withheld-families.mjs: the report document's reviewer record and the workbook's rows.
+  { path: DRIVER_DIR, match: /^(?:withheld|released)-families-.+\.json$/, why: "withheld-families.mjs, by its own two file patterns" },
+  // The images logos.json names, which logosForReport embeds in the page. They are binary, so the rewrite leaves
+  // their bytes alone and renames them only where the name carries a vendor key. Both lanes read them.
+  { path: "_driver/logos", ext: [".png", ".jpg", ".gif", ".webp"], why: "logosForReport in mark-logos.mjs, the extensions imageTypeOf names" },
 ];
 
 // The knockout lane's directories. Same rule as _records/: the set cannot be enumerated ahead of time,
@@ -174,7 +243,7 @@ const SCRUB = [
 // hides the next real difference.
 const VOLATILE = [
   { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs, the issue stamp in the firm locale" },
-  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:668 asOf" },
+  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:672 asOf" },
 ];
 
 // ── REWRITES — what is CHANGED on the way out, as opposed to what is refused ───────────────────────
@@ -249,6 +318,37 @@ const EXPECTED_META_DELTA = {
 // the paragraph with it: the clearance page joins its scope parts with a line break and an indent, which
 // exists only because the line does.
 const EXPECTED_DATA_DELTA = ["servedModels"];
+
+/** A workbook's sheets as rows of cell text, the volatile stamps normalised: Map(sheet name → rows). */
+async function workbookRows(path) {
+  // Resolved from REPO, as the publisher is: a copy of this script run from elsewhere still reads the product's own.
+  const ExcelJS = (await import(pathToFileURL(createRequire(join(REPO, "package.json")).resolve("exceljs")).href)).default;
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.readFile(path);
+  const out = new Map();
+  const text = (v) => (v instanceof Date ? v.toISOString() : v && typeof v === "object" ? JSON.stringify(v) : String(v ?? ""));
+  wb.eachSheet((ws) => {
+    const rows = [];
+    ws.eachRow({ includeEmpty: false }, (row) => rows.push(row.values.slice(1).map((v) => VOLATILE.reduce((acc, x) => acc.replace(x.re, x.sub), text(v)))));
+    out.set(ws.name, rows);
+  });
+  return out;
+}
+
+// The four places the report document holds what the freeze changes on purpose, named by path, so a later field that
+// happens to share one of these names is still compared: the served models, the token rollup, and the two stamps.
+const DOC_ASIDE = [["client", "servedModels"], ["build", "tokens"], ["build", "renderedAt"], ["run", "issuedAt"]];
+
+/** A report document with those four places taken out and its stamps normalised. */
+function normaliseDoc(d) {
+  for (const [a, b] of DOC_ASIDE) if (d?.[a] && typeof d[a] === "object") delete d[a][b];
+  const walk = (v) => {
+    if (Array.isArray(v)) return v.map(walk);
+    if (v && typeof v === "object") return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, walk(x)]));
+    return typeof v === "string" ? VOLATILE.reduce((acc, x) => acc.replace(x.re, x.sub), v) : v;
+  };
+  return walk(d);
+}
 const SERVED_LINE_RE = /\s*<p class="servedby"[^>]*>[^<]*<\/p>/g;
 
 // ── args ─────────────────────────────────────────────────────────────────────────────────────────────
@@ -369,7 +469,8 @@ for (const entry of filesFor(template)) {
   }
   const dst = join(frozenRun, entry.path);
   mkdirSync(dirname(dst), { recursive: true });
-  copyFileSync(src, dst);
+  if (entry.reduce) writeFileSync(dst, entry.reduce(readFileSync(src, "utf8"), runDir));
+  else copyFileSync(src, dst);
   copied.push(entry.path);
 }
 for (const dir of dirsFor(template)) {
@@ -377,9 +478,9 @@ for (const dir of dirsFor(template)) {
   if (!existsSync(src)) { note(`absent: ${dir.path}/ (${dir.why})`); continue; }
   mkdirSync(join(frozenRun, dir.path), { recursive: true });
   for (const name of readdirSync(src)) {
-    if (!name.endsWith(dir.ext)) continue;
+    if (dir.match ? !dir.match.test(name) : ![].concat(dir.ext).some((ext) => name.endsWith(ext))) continue;
     copyFileSync(join(src, name), join(frozenRun, dir.path, name));
-    copied.push(join(dir.path, name));
+    copied.push(`${dir.path}/${name}`);   // a relative path is written with "/" on every system, as the allowlist names them
   }
 }
 note(`${copied.length} file(s) copied`);
@@ -399,8 +500,8 @@ console.log("\n2b. rewrite");
 let cnFiles = 0, cnHits = 0, vkFiles = 0, vkHits = 0, ogFiles = 0, ogHits = 0;
 for (const rel of copied) {
   const path = join(frozenRun, rel);
-  let text;
-  try { text = readFileSync(path, "utf8"); } catch { continue; }   // a binary member of _records/ is not text
+  let text = readText(path);
+  if (text === null) continue;   // an image is not text, and its bytes travel as they are
   const before = text;
 
   if (renamed && sourceCodename) {
@@ -441,6 +542,21 @@ for (const rel of copied) {
 // THE SAME MAP AS THE CONTENT PASS, which is what keeps the tree joined: a filename and every reference
 // to it inside the run — including the artifact's own `uri`, which the vendor writes in UPPER case —
 // resolve to one substitute. A second renaming scheme here would break every one of those silently.
+// THE AGENT A SAMPLE RAN AS IS THE INSTALL'S, NOT THE FREEZER'S. `npx clearotron demo` seeds each sample under
+// `workspace-<agent>`, read from its status.json, and a run captured on a deployment records that deployment's agent:
+// another product's name, and a folder no install of this one makes. A frozen sample records the agent an install runs
+// as when it sets none (driver.config.mjs defaultAgent), which every shipped sample carried until 2026-11-22.
+const SAMPLE_AGENT = "localagent";
+/** Give the run in `dir` the sample's agent; true when it recorded another. */
+function setSampleAgent(dir) {
+  const at = join(dir, "status.json");
+  const status = readJsonOr(at);
+  if (!status || status.agent === SAMPLE_AGENT) return false;
+  writeFileSync(at, JSON.stringify({ ...status, agent: SAMPLE_AGENT }, null, 2) + "\n");
+  return true;
+}
+if (setSampleAgent(frozenRun)) note(`agent: the run recorded a deployment's own agent, or none; the sample records ${SAMPLE_AGENT}`);
+
 let pathRenames = 0;
 for (let i = 0; i < copied.length; i++) {
   const rel = copied[i];
@@ -468,7 +584,7 @@ if (sourceOrigin) note(`public origin: ${ogHits} link(s) in ${ogFiles} file(s) r
 {
   const survivorsCn = [], survivorsVk = [], survivorsOg = [];
   for (const rel of copied) {
-    let t; try { t = readFileSync(join(frozenRun, rel), "utf8"); } catch { continue; }
+    const t = readForChecks(join(frozenRun, rel)) ?? "";
     if (renamed && sourceCodename && t.includes(sourceCodename)) survivorsCn.push(rel);
     if (sourceOrigin && t.includes(sourceOrigin.replace(/^https?:\/\//, ""))) survivorsOg.push(rel);
     VENDOR_KEY_RE.lastIndex = 0;   // a /g regex carries lastIndex across .test() calls
@@ -495,19 +611,20 @@ const walk = (root, base = root) => {
   for (const e of readdirSync(root, { withFileTypes: true })) {
     const p = join(root, e.name);
     if (e.isDirectory()) out.push(...walk(p, base));
-    else out.push(relative(base, p));
+    else out.push(relative(base, p).split(sep).join("/"));   // "/" on every system: the prune's patterns and exceptions are written so
   }
   return out;
 };
 const frozenFiles = walk(frozenRun);
 const PRUNED = [
   { re: /\.dispatch\.txt(?:\.prev-[0-9a-f]+)?$/, what: "stage dispatch payloads" },
-  { re: /\.jsonl$/, what: "per-stage telemetry" },
+  // The record log is the one .jsonl a page reads, and it travels reduced to its bodies (KNOCKOUT_FILES).
+  { re: /\.jsonl$/, what: "per-stage telemetry", except: ["_driver/register-record-bodies.jsonl", "_driver/knockout-sweep.jsonl"] },
   { re: /^_driver\/stage-inputs\//, what: "stage inputs" },
   { re: /^_history\//, what: "pre-reopen history" },
 ];
 for (const p of PRUNED) {
-  const survivors = frozenFiles.filter((f) => p.re.test(f));
+  const survivors = frozenFiles.filter((f) => p.re.test(f) && !(p.except ?? []).includes(f));
   if (survivors.length) finding(`${p.what} survived the freeze: ${survivors.slice(0, 5).join(", ")}`);
   else note(`no ${p.what}`);
 }
@@ -518,8 +635,8 @@ note(`${sourceCount} file(s) in the source run → ${frozenFiles.length} frozen`
 console.log("\n4. scrub");
 let scrubHits = 0;
 for (const rel of frozenFiles) {
-  let text;
-  try { text = readFileSync(join(frozenRun, rel), "utf8"); } catch { continue; }
+  const text = readForChecks(join(frozenRun, rel));
+  if (text === null) continue;
   for (const rule of SCRUB) {
     rule.re.lastIndex = 0;
     const hits = text.match(rule.re);
@@ -538,7 +655,7 @@ if (!scrubHits) note(`${SCRUB.length} rule(s), 0 hits across ${frozenFiles.lengt
 // literal this script already knows, and its job is to hand the person landing the sample the exact list.
 if (sourceCodename) {
   const echoes = frozenFiles.filter((rel) => {
-    try { return readFileSync(join(frozenRun, rel), "utf8").includes(sourceCodename); } catch { return false; }
+    return readForChecks(join(frozenRun, rel))?.includes(sourceCodename) ?? false;
   });
   if (!echoes.length) note(`no file carries the source codename "${sourceCodename}"`);
   else if (renamed) finding(`${echoes.length} frozen file(s) still carry the source codename "${sourceCodename}" — rewrite each before committing: ${echoes.join(", ")}`);
@@ -573,20 +690,35 @@ const publishInto = async (pool, dir) => {
 // the source is staged and put through the same pass, and what remains is only ever an allowlist gap.
 //
 // A COPY, never the archive. The source run is real client matter; nothing here writes to it.
+//
+// THE NAMES TOO, BY THE SAME MAP, as step 2b renames the frozen copy's. A saved logo is named for its record's vendor
+// key, and logos.json names it: rewrite the content and not the name, and the staged source's logos.json points at
+// files that are not there, so the source renders without its logos and the proof compares two pages that both lack
+// them. Measured on the first freeze with logos, 2026-11-22: twelve fetched logos in the run, none on either side.
 const rewriteInPlace = (root, files) => {
   for (const rel of files) {
     const path = join(root, rel);
-    let t; try { t = readFileSync(path, "utf8"); } catch { continue; }
+    let t = readText(path);
+    if (t === null) continue;
     const before = t;
     if (renamed && sourceCodename) t = t.split(sourceCodename).join(codename);
     t = originPart(t);
     t = t.replace(VENDOR_KEY_RE, substituteFor);
     if (t !== before) writeFileSync(path, t);
   }
+  for (const rel of files) {
+    const base = basename(rel);
+    VENDOR_KEY_RE.lastIndex = 0;
+    if (!VENDOR_KEY_RE.test(base)) { VENDOR_KEY_RE.lastIndex = 0; continue; }
+    VENDOR_KEY_RE.lastIndex = 0;
+    renameSync(join(root, rel), join(root, dirname(rel), base.replace(VENDOR_KEY_RE, substituteFor)));
+  }
 };
 
+// ALWAYS STAGED. Publishing writes the report document back into the run it publishes, so a source published in place
+// gains a file it never had; and the sample's agent is set on both sides. The source run is only ever read.
 let sourceForProof = runDir;
-if ((renamed && sourceCodename) || vendorKeyMap.size || sourceOrigin) {
+{
   const staged = join(scratch, "source");
   cpSync(runDir, staged, { recursive: true });
   const stagedFiles = [];
@@ -598,6 +730,7 @@ if ((renamed && sourceCodename) || vendorKeyMap.size || sourceOrigin) {
   };
   walkRel(staged);
   rewriteInPlace(staged, stagedFiles);
+  setSampleAgent(staged);   // the same identity on both sides, so the proof answers about the allowlist alone
   sourceForProof = staged;
   note(`source staged and put through the same rewrite (${stagedFiles.length} file(s)) — the diff below `
     + "answers about the allowlist alone");
@@ -627,9 +760,19 @@ if (proofOk) {
   if (extra.length) finding(`the frozen run publishes artifacts the source does not: ${extra.join(", ")}`);
 
   for (const name of b.filter((f) => a.includes(f))) {
-    // The workbook is a zip container — its bytes carry timestamps and are not comparable. Its inputs
-    // (audit.md, findings.json) are compared directly, which is the property that matters.
-    if (name.endsWith(".xlsx")) { note(`skipped ${name} (zip container, timestamped)`); continue; }
+    // THE WORKBOOK IS COMPARED CELL BY CELL. Its bytes are a zip carrying timestamps, so they cannot be compared,
+    // and it was skipped on the strength of its inputs (audit.md, findings.json) being compared instead. But the
+    // workbook reads run files the page does not, and a freeze that left them behind published workbooks with
+    // two thirds of their coverage rows gone while every page matched (measured on four demo freezes,
+    // 2026-11-22). So each sheet is read back and compared, row by row, with the volatile stamps normalised.
+    if (name.endsWith(".xlsx")) {
+      const [wA, wB] = [await workbookRows(join(poolFull, runId, name)), await workbookRows(join(poolFrozen, runId, name))];
+      const sheets = [...new Set([...wA.keys(), ...wB.keys()])];
+      const differ = sheets.filter((sh) => JSON.stringify(wA.get(sh)) !== JSON.stringify(wB.get(sh)));
+      if (!differ.length) { note(`${name} identical, cell for cell (${sheets.length} sheets, ${[...wB.values()].reduce((n, r) => n + r.length, 0)} rows)`); continue; }
+      finding(`${name} differs between the source run and the frozen copy on ${differ.map((sh) => `${sh} (${wA.get(sh)?.length ?? 0} rows → ${wB.get(sh)?.length ?? 0})`).join(", ")} — the allowlist dropped an input the workbook reads`);
+      continue;
+    }
     const rawA = readFileSync(join(poolFull, runId, name), "utf8");
     const rawB = readFileSync(join(poolFrozen, runId, name), "utf8");
     if (name === "meta.json") {
@@ -665,6 +808,19 @@ if (proofOk) {
       continue;
     }
     finding(`${name} differs between the source run and the frozen copy — the allowlist dropped an input the renderer reads`);
+  }
+}
+// THE RUN'S OWN REPORT DOCUMENT. Publishing writes the report document back into the run folder, and every
+// surface reads it: the pages, the workbook, the email, the connector. A field the frozen copy lost shows here
+// even where no surface printed it, so it is compared too, the served-model record set aside as above.
+if (proofOk) {
+  const docOf = (dir) => { try { return JSON.parse(readFileSync(driverDir(dir, "report-document.json"), "utf8")); } catch { return null; } };
+  const [dA, dB] = [docOf(sourceForProof), docOf(frozenRun)];
+  if (!dA || !dB) finding(`the run's report document could not be read back on the ${dA ? "frozen" : "source"} side`);
+  else {
+    const strip = (d) => normaliseDoc(JSON.parse(JSON.stringify(d)));
+    if (JSON.stringify(strip(dA)) === JSON.stringify(strip(dB))) note("the run's report document identical apart from the served-model record");
+    else finding("the run's report document differs between the source run and the frozen copy — the allowlist dropped an input it is built from");
   }
 }
 if (!has("--keep-scratch")) rmSync(scratch, { recursive: true, force: true });

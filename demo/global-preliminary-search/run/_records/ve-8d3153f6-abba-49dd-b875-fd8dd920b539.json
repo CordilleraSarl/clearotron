@@ -1,0 +1,204 @@
+{
+  "uri": "/mark/ve/8d3153f6-abba-49dd-b875-fd8dd920b539",
+  "provider": "clarivate",
+  "office": "ve",
+  "guid": "8d3153f6-abba-49dd-b875-fd8dd920b539",
+  "applicationNumber": "1994-005005",
+  "registrationNumber": null,
+  "applicationDate": "1994-04-21",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "VENRIEGO",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "language": "es",
+      "description": "establecimiento dedicado a la armaduria y comercializacion de bombas de agua y sistemas de riego.",
+      "translation_language": "en",
+      "translation": "establishment dedicated to the assembly and marketing of water pumps and irrigation systems."
+    }
+  ],
+  "owner": "VENEZOLANA DE RIEGO C. A.",
+  "ownerNative": null,
+  "ownerCountry": "VE",
+  "representative": "MANUEL FRAGA MORENO",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CAGUA, EDO. ARAGUA - VENEZUELA",
+        "applicantAddressCountryCode": "VE",
+        "applicantAddressCountryName": "Venezuela",
+        "applicantName": "VENEZOLANA DE RIEGO C. A."
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "establishment dedicated to the assembly and marketing of water pumps and irrigation systems.",
+          "intClassNumber": "01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "establecimiento dedicado a la armaduria y comercializacion de bombas de agua y sistemas de riego."
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "46"
+        }
+      ]
+    },
+    "id": "8d3153f6-abba-49dd-b875-fd8dd920b539",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250630",
+    "registrationOfficeCode": "VE",
+    "registrationOfficeName": "Venezuela",
+    "representatives": [
+      {
+        "representativeAddressCountryCode": "VE",
+        "representativeAddressCountryName": "Venezuela",
+        "representativeName": "MANUEL FRAGA MORENO"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19940421",
+        "applicationNumber": "1994-005005"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "CANCELLED APPLICATION"
+    },
+    "version": "20250630172143",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENRIEGO"
+    }
+  },
+  "_uri": "/mark/ve/8d3153f6-abba-49dd-b875-fd8dd920b539",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.186Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

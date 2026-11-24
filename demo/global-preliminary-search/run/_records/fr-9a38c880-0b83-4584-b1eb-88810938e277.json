@@ -1,0 +1,160 @@
+{
+  "uri": "/mark/fr/9a38c880-0b83-4584-b1eb-88810938e277",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "9a38c880-0b83-4584-b1eb-88810938e277",
+  "applicationNumber": "16 4246991",
+  "registrationNumber": "16 4246991",
+  "applicationDate": "2016-02-06",
+  "registrationDate": null,
+  "expiryDate": "2026-02-05",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-02-26",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN RICHARDSON",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    25,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        25
+      ],
+      "language": "fr",
+      "description": ": Vêtements ; chaussures ; chapellerie ; chemises ; vêtements en cuir ; ceintures (habillement) ; fourrures (vêtements) ; gants (habillement) ; foulards ; cravates ; bonneterie ; chaussettes ; chaussons ; chaussures de plage ; chaussures de ski ; chaussures de sport ; sous-vêtements ",
+      "translation_language": "en",
+      "translation": "Clothing; shoes ; millinery; shirts; leather clothing; belts (clothing); furs (clothing); gloves (clothing); scarves; ties; hosiery; socks ; slippers; beach shoes; skiing boots ; sport shoes ; underwear"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Publicité ; gestion des affaires commerciales ; administration commerciale ; travaux de bureau ; diffusion de matériel publicitaire (tracts, prospectus, imprimés, échantillons) ; services d'abonnement à des journaux (pour des tiers) ; services d'abonnement à des services de télécommunications pour des tiers ; présentation de produits sur tout moyen de communication pour la vente au détail ; conseils en organisation et direction des affaires ; comptabilité ; reproduction de documents ; services de bureaux de placement ; portage salarial ; gestion de fichiers informatiques ; optimisation du trafic pour des sites web ; organisation d'expositions à buts commerciaux ou de publicité ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; location d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques ; audits d'entreprises (analyses commerciales) ; services d'intermédiation commerciale (conciergerie) ",
+      "translation_language": "en",
+      "translation": "Advertising; business management; business administration; office work; distribution of advertising material (tracts, prospectuses, printed matter, samples); newspaper subscription services (for others); subscription services to telecommunications services for others; presentation of goods on any means of communication for retail sale; advice on organization and business management; accounting ; reproduction of documents; employment agency services; wage portage; computer file management; traffic optimization for websites; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations ; company audits (commercial analyses); commercial intermediation services (concierge)"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": formation ; divertissement ; activités sportives et culturelles ; organisation de concours (éducation ou divertissement) ; organisation et conduite de colloques ; organisation d'expositions à buts culturels ou éducatifs .",
+      "translation_language": "en",
+      "translation": "training; entertainment ; sports and cultural activities; organization of competitions (education or entertainment); organization and conduct of conferences; organization of exhibitions for cultural or educational purposes ."
+    }
+  ],
+  "owner": "M. JACKSON RICHARDSON",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "M. JACKSON RICHARDSON",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "93 MONTEE DES BAVARDES ROUTE LE GOJAT, 73470 NOVALAISE",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "M. JACKSON RICHARDSON"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "cmMarkImageEUclassification": [
+      "26.03.01",
+      "26.03.22",
+      "26.04.11",
+      "37.01.18"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Clothing; shoes ; millinery; shirts; leather clothing; belts (clothing); furs (clothing); gloves (clothing); scarves; ties; hosiery; socks ; slippers; beach shoes; skiing boots ; sport shoes ; underwear",
+          "intClassNumber": "25",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Vêtements ; chaussures ; chapellerie ; chemises ; vêtements en cuir ; ceintures (habillement) ; fourrures (vêtements) ; gants (habillement) ; foulards ; cravates ; bonneterie ; chaussettes ; chaussons ; chaussures de plage ; chaussures de ski ; chaussures de sport ; sous-vêtements "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; business management; business administration; office work; distribution of advertising material (tracts, prospectuses, printed matter, samples); newspaper subscription services (for others); subscription services to telecommunications services for others; presentation of goods on any means of communication for retail sale; advice on organization and business management; accounting ; reproduction of documents; employment agency services; wage portage; computer file management; traffic optimization for websites; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations ; company audits (commercial analyses); commercial intermediation services (concierge)",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Publicité ; gestion des affaires commerciales ; administration commerciale ; travaux de bureau ; diffusion de matériel publicitaire (tracts, prospectus, imprimés, échantillons) ; services d'abonnement à des journaux (pour des tiers) ; services d'abonnement à des services de télécommunications pour des tiers ; présentation de produits sur tout moyen de communication pour la vente au détail ; conseils en organisation et direction des affaires ; comptabilité ; reproduction de documents ; services de bureaux de placement ; portage salarial ; gestion de fichiers informatiques ; optimisation du trafic pour des sites web ; organisation d'expositions à buts commerciaux ou de publicité ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; location d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques ; audits d'entreprises (analyses commerciales) ; services d'intermédiation commerciale (conciergerie) "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "training; entertainment ; sports and cultural activities; organization of competitions (education or entertainment); organization and conduct of conferences; organization of exhibitions for cultural or educational purposes .",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": formation ; divertissement ; activités sportives et culturelles ; organisation de concours (éducation ou divertissement) ; organisation et conduite de colloques ; organisation d'expositions à buts culturels ou éducatifs ."
+        }
+      ]
+    },
+    "id": "9a38c880-0b83-4584-b1eb-88810938e277",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00682",
+        "publicationVolume": "08"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "M. JACKSON RICHARDSON"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160206",
+        "applicationNumber": "16 4246991"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260205",
+      "lastPublicationDate": "20160226",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "16 4246991"
+      }
+    },
+    "version": "20250426160900",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN RICHARDSON"
+    }
+  },
+  "_uri": "/mark/fr/9a38c880-0b83-4584-b1eb-88810938e277",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.191Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

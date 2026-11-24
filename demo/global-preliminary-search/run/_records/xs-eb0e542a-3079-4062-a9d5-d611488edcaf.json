@@ -1,0 +1,135 @@
+{
+  "uri": "/mark/xs/eb0e542a-3079-4062-a9d5-d611488edcaf",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "eb0e542a-3079-4062-a9d5-d611488edcaf",
+  "applicationNumber": null,
+  "registrationNumber": null,
+  "applicationDate": null,
+  "registrationDate": "2003-12-16",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "HORSE HAVEN RIDING CLUB",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Equine events",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "HORSE HAVEN RIDING CLUB",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "3816 HENDERSON RD., JACKSON, MS, 39272",
+        "applicantAddressCity": "JACKSON",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "39272",
+        "applicantAddressStateName": "MISSISSIPPI",
+        "applicantAddressStreet": "3816 HENDERSON RD.",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "HORSE HAVEN RIDING CLUB",
+        "applicantPhoneNumber": "601-502-8518",
+        "applicantStateOfIncorporation": "MISSISSIPPI"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Equine events"
+        }
+      ]
+    },
+    "id": "eb0e542a-3079-4062-a9d5-d611488edcaf",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "mannerOfDisplay": "USED ON EQUINE EVENTS",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "3816 HENDERSON RD., JACKSON, MS, 39272",
+        "city": "JACKSON",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "HORSE HAVEN RIDING CLUB",
+        "phoneNumber": "601-502-8518",
+        "postalCode": "39272",
+        "stateName": "MISSISSIPPI",
+        "stateOfIncorporation": "MISSISSIPPI",
+        "street": "3816 HENDERSON RD."
+      }
+    ],
+    "recordLastUpdated": "20240305",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "1950"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20031216"
+      }
+    },
+    "usStateOfficeCode": "MS",
+    "usStateOfficeName": "MISSISSIPPI",
+    "version": "20240305091610",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HORSE HAVEN RIDING CLUB"
+    }
+  },
+  "_uri": "/mark/xs/eb0e542a-3079-4062-a9d5-d611488edcaf",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.189Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

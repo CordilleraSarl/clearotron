@@ -15,9 +15,13 @@
   },
   "caseLaw": false,
   "recipeScope": null,
+  "web": {
+    "questionPreset": "medium",
+    "resultsPerCell": 15
+  },
   "deliveryRoute": null,
-  "enqueuedVia": "mcp/start_run",
-  "enqueuedBy": "demo",
+  "enqueuedVia": null,
+  "enqueuedBy": null,
   "parentRunId": null,
-  "frozenAt": "2026-09-18T12:35:08.518Z"
+  "frozenAt": "2026-11-20T19:43:40.324Z"
 }

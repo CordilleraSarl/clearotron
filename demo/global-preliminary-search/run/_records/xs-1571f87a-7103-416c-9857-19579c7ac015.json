@@ -1,0 +1,131 @@
+{
+  "uri": "/mark/xs/1571f87a-7103-416c-9857-19579c7ac015",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "1571f87a-7103-416c-9857-19579c7ac015",
+  "applicationNumber": null,
+  "registrationNumber": "9403052",
+  "applicationDate": null,
+  "registrationDate": "2024-10-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Winterhaven Rides",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Wagon rides through the winterhaven festival of lights",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "RJW Enterprises Inc",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "895 w. Running Bird Lane, Benson, AZ, 85602, USAM",
+        "applicantAddressCity": "Benson",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "85602",
+        "applicantAddressStateName": "ARIZONA",
+        "applicantAddressStreet": "895 w. Running Bird Lane",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "RJW Enterprises Inc",
+        "applicantPhoneNumber": "850-825-0208"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Wagon rides through the winterhaven festival of lights"
+        }
+      ]
+    },
+    "id": "1571f87a-7103-416c-9857-19579c7ac015",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "895 w. Running Bird Lane, Benson, AZ, 85602, USAM",
+        "city": "Benson",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "RJW Enterprises Inc",
+        "phoneNumber": "850-825-0208",
+        "postalCode": "85602",
+        "stateName": "ARIZONA",
+        "street": "895 w. Running Bird Lane"
+      }
+    ],
+    "recordLastUpdated": "20250912",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsedAnywhereDate": "20011101",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20241023",
+        "registrationNumber": "9403052"
+      }
+    },
+    "usStateOfficeCode": "AZ",
+    "usStateOfficeName": "ARIZONA",
+    "version": "20250912131018",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "Winter haven Rides",
+      "markVerbalElementText": "Winterhaven Rides"
+    }
+  },
+  "_uri": "/mark/xs/1571f87a-7103-416c-9857-19579c7ac015",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.188Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

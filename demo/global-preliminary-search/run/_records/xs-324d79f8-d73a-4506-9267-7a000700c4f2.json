@@ -1,0 +1,138 @@
+{
+  "uri": "/mark/xs/324d79f8-d73a-4506-9267-7a000700c4f2",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "324d79f8-d73a-4506-9267-7a000700c4f2",
+  "applicationNumber": null,
+  "registrationNumber": "1082071",
+  "applicationDate": null,
+  "registrationDate": "2023-01-03",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RAVEN RIVER PRODUCTIONS LLC",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education & entertainment",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "RAVEN RIVER PRODUCTIONS LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "PO BOX 5284, BELLINGHAM, WA, 98227-5284",
+        "applicantAddressCity": "BELLINGHAM",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "98227-5284",
+        "applicantAddressStateName": "WASHINGTON",
+        "applicantAddressStreet": "PO BOX 5284",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "RAVEN RIVER PRODUCTIONS LLC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education & entertainment"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "41",
+          "natGoodsServicesDescription": "Education & entertainment"
+        }
+      ]
+    },
+    "id": "324d79f8-d73a-4506-9267-7a000700c4f2",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "PO BOX 5284, BELLINGHAM, WA, 98227-5284",
+        "city": "BELLINGHAM",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "RAVEN RIVER PRODUCTIONS LLC",
+        "postalCode": "98227-5284",
+        "stateName": "WASHINGTON",
+        "street": "PO BOX 5284"
+      }
+    ],
+    "recordLastUpdated": "20260913",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20221214"
+        }
+      ],
+      "firstUsedAnywhereDate": "20221214",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230103",
+        "registrationNumber": "1082071"
+      }
+    },
+    "usStateOfficeCode": "WA",
+    "usStateOfficeName": "WASHINGTON",
+    "version": "20260913163026",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN RIVER PRODUCTIONS LLC"
+    }
+  },
+  "_uri": "/mark/xs/324d79f8-d73a-4506-9267-7a000700c4f2",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.190Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

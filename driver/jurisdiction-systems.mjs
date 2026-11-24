@@ -19,23 +19,13 @@
 
 import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";
 
-// Unregistered use creates enforceable rights (common-law family / use-based systems).
-export const FIRST_TO_USE = [
-  "US", "CA", "AU", "NZ", "IN", "PH",          // named in the spec
-  "UK", "GB", "IE",                            // common-law core (passing off) — staff lawyer to confirm
-];
-
-// Registration is the source of rights; prior unregistered use gives little or no priority.
-export const FIRST_TO_REGISTER = [
-  "CH", "EU", "EM", "EUTM", "CN", "JP", "KR", "DE", "FR", "ES", "IT",   // named in the spec
-  "BX", "NL", "BE", "AT", "PT", "SE", "NO", "DK", "FI", "PL", "CZ",     // EU/EFTA civil family
-  "RU", "TR", "BR", "MX",                                                // well-established first-to-file
-];
+import { FIRST_TO_USE, FIRST_TO_REGISTER } from "../shared/jurisdiction-tables.mjs";   // a jurisdiction's tables live in one home
+export { FIRST_TO_USE, FIRST_TO_REGISTER };
 
 /** "first-to-use" | "first-to-register" | null (unknown — NEVER guessed, consumers leave it unlabeled).
  *  A12: the lookup runs on the CANONICAL code (UK→GB, EM/EUTM/EUIPO→EU — driver/jurisdiction-codes.mjs),
- *  so both spellings of one territory always label identically; the alias entries in the lists above
- *  stay as documentation of the accepted matter vocabulary. */
+ *  so both spellings of one territory always label identically; the alias entries in FIRST_TO_USE and
+ *  FIRST_TO_REGISTER stay as documentation of the accepted matter vocabulary. */
 export function registrationSystem(code) {
   const c = canonicalJurisdictionCode(code);
   if (!c) return null;

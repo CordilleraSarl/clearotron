@@ -55,7 +55,7 @@ test("comments are not served text — neither line nor block", () => {
 });
 
 test("A `+` CHAIN IS ONE STATEMENT — measured, not assumed", () => {
-  // This is not a nicety. gateway.mjs's cite_absent hint wraps as `…On each named row set ` +
+  // This is not a nicety. ladder/repair-messages.mjs's cite_absent hint wraps as `…On each named row set ` +
   // "`receipt_id` to one of the ids…", so per-fragment units put the order in one and the field in the
   // next. The first version of this check ran green over that live defect.
   const src = 'const hint = "On each named row set " +\n  "`receipt_id` to one of the ids listed under that row";';
@@ -190,7 +190,7 @@ test("the corpus reaches every layer the six instances came from", (ctx) => {
   const corpus = servedCorpus();
   if (corpus == null) return ctx.skip(skipReason(GUARD));
   const files = new Set(corpus.map((c) => c.file));
-  for (const f of ["driver/stages.mjs", "driver/gateway.mjs", "driver/connotation-search.mjs",
+  for (const f of ["driver/stages.mjs", "driver/ladder/repair-messages.mjs", "driver/connotation-search.mjs",
     "driver/disposition-union.mjs", "driver/skills/clearance-common-law/SKILL.md"])
     assert.ok(files.has(f), `${f} is not in the scanned corpus — the check cannot see the layer it was built for`);
 });
@@ -242,7 +242,7 @@ test("A ZERO MUST MEAN SOMETHING — the registry is not empty and the scanner i
 
   const corpus = servedCorpus();
   if (corpus == null) return ctx.skip(skipReason(GUARD));
-  for (const f of ["driver/gateway.mjs", "driver/stages.mjs", "driver/connotation-search.mjs"]) {
+  for (const f of ["driver/ladder/repair-messages.mjs", "driver/stages.mjs", "driver/connotation-search.mjs"]) {
     const row = corpus.find((c) => c.file === f);
     assert.ok(servedUnits(f, row.text).length > 50,
       `${f} yielded almost no served units — the scanner lost its place, and a lost scanner reports zero`);

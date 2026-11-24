@@ -1,0 +1,205 @@
+{
+  "uri": "/mark/fr/c6e8bb83-e015-42cb-aae4-a17a43d642f3",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "c6e8bb83-e015-42cb-aae4-a17a43d642f3",
+  "applicationNumber": "16 4279987",
+  "registrationNumber": "16 4279987",
+  "applicationDate": "2016-06-14",
+  "registrationDate": null,
+  "expiryDate": "2026-06-13",
+  "renewalDate": null,
+  "lastPublicationDate": "2016-07-08",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "AVENRIA",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    28,
+    35,
+    38,
+    41,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "fr",
+      "description": ": Appareils et instruments scientifiques ; appareils et instruments nautiques ; appareils et instruments géodésiques ; appareils et instruments photographiques ; appareils cinématographiques ; appareils et instruments optiques ; appareils et instruments de pesage ; instruments et appareils de mesure ; appareils et instruments de signalisation ; appareils et instruments de vérification (contrôle) ; appareils et instruments pour l'enseignement ; appareils pour l'enregistrement du son ; appareils pour la transmission du son ; appareils pour la reproduction du son ; appareils d'enregistrement d'images ; appareils de transmission d'images ; appareils de reproduction d'images ; disques compacts (CD) ; DVD ; supports d'enregistrement numériques ; mécanismes pour appareils à prépaiement ; caisses enregistreuses ; machines à calculer ; équipements de traitement de données ; ordinateurs ; tablettes électroniques ; ordiphones [smartphones] ; liseuses électroniques ; logiciels de jeux ; logiciels (programmes enregistrés) ; périphériques d'ordinateurs ; détecteurs ; fils électriques ; relais électriques ; combinaisons de plongée ; costumes de plongée ; gants de plongée ; masques de plongée ; vêtements de protection contre les accidents, les radiations et le feu ; dispositifs de protection personnelle contre les accidents ; extincteurs ; lunettes (optique) ; lunettes 3D ; articles de lunetterie ; étuis à lunettes ; cartes à mémoire ou à microprocesseur ; sacoches conçues pour ordinateurs portables ; montres intelligentes ; batteries électriques ; appareils pour le diagnostic non à usage médical ",
+      "translation_language": "en",
+      "translation": "Scientific apparatus and instruments; nautical apparatus and instruments; surveying apparatus and instruments; photographic apparatus and instruments; cinematographic apparatus; optical apparatus and instruments; weighing apparatus and instruments; measuring instruments and apparatus; signaling apparatus and instruments; verification (control) apparatus and instruments; teaching apparatus and instruments; sound recording apparatus; apparatus for the transmission of sound; sound reproduction apparatus; image recording apparatus; image transmission apparatus; image reproduction apparatus; compact discs (CDs); DVDs; digital recording media; mechanisms for coin-operated apparatus; cash registers; calculating machines; data processing equipment; computers; electronic tablets; ordiphones [smartphones]; e-readers; game software; computer software (recorded programs); computer peripherals; detectors; Electric wires ; electrical relays; diving suits; diving suits; diving gloves; diving masks; protective clothing against accidents, radiation and fire; personal protection devices against accidents; fire extinguishers ; glasses (optics); 3D glasses; eyewear; spectacle cases; memory or microprocessor cards; bags designed for laptop computers; smart watches; electric batteries; diagnostic apparatus not for medical purposes"
+    },
+    {
+      "classes": [
+        28
+      ],
+      "language": "fr",
+      "description": ": Jeux ; jouets ; commandes pour consoles de jeu ; décorations de fête et arbres de Noël artificiels ; appareils de culture physique ; appareils de gymnastique ; attirail de pêche ; balles et ballons de jeux ; tables de billard ; queues de billard ; billes de billard ; jeux de cartes ; jeux de table ; patins à glace ; patins à roulettes ; trottinettes [jouets] ; planches à voile ; planches pour le surf ; raquettes ; raquettes à neige ; skis ; rembourrages de protection (parties d'habillement de sport) ; maquettes [jouets] ; figurines [jouets] ",
+      "translation_language": "en",
+      "translation": "Games; toys ; controls for game consoles; festive decorations and artificial Christmas trees; physical culture equipment; gymnastic apparatus; fishing tackle; balls and game balls; pool tables; pool cues; billiard balls; card games; board games; ice skates ; roller skates ; scooters [toys]; windsurfing ; boards for surfing; snowshoes; snowshoes ; skis; protective padding (parts of sports clothing); models [toys]; figurines [toys]"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Publicité ; gestion des affaires commerciales ; administration commerciale ; travaux de bureau ; diffusion de matériel publicitaire (tracts, prospectus, imprimés, échantillons) ; services d'abonnement à des journaux (pour des tiers) ; services d'abonnement à des services de télécommunications pour des tiers ; présentation de produits sur tout moyen de communication pour la vente au détail ; conseils en organisation et direction des affaires ; comptabilité ; reproduction de documents ; services de bureaux de placement ; portage salarial ; gestion de fichiers informatiques ; optimisation du trafic pour des sites web ; organisation d'expositions à buts commerciaux ou de publicité ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; location d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques ; audits d'entreprises (analyses commerciales) ; services d'intermédiation commerciale (conciergerie) ",
+      "translation_language": "en",
+      "translation": "Advertising; business management; business administration; office work; distribution of advertising material (tracts, prospectuses, printed matter, samples); newspaper subscription services (for others); subscription services to telecommunications services for others; presentation of goods on any means of communication for retail sale; advice on organization and business management; accounting ; reproduction of documents; employment agency services; wage portage; computer file management; traffic optimization for websites; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations ; company audits (commercial analyses); commercial intermediation services (concierge)"
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "fr",
+      "description": ": Télécommunications ; informations en matière de télécommunications ; communications par terminaux d'ordinateurs ; communications par réseaux de fibres optiques ; communications radiophoniques ; communications téléphoniques ; radiotéléphonie mobile ; fourniture d'accès utilisateur à des réseaux informatiques mondiaux ; mise à disposition de forums en ligne ; fourniture d'accès à des bases de données ; services d'affichage électronique (télécommunications) ; raccordement par télécommunications à un réseau informatique mondial ; agences de presse ; agences d'informations (nouvelles) ; location d'appareils de télécommunication ; émissions radiophoniques ; émissions télévisées ; services de téléconférences ; services de visioconférence ; services de messagerie électronique ; location de temps d'accès à des réseaux informatiques mondiaux ",
+      "translation_language": "en",
+      "translation": "Telecommunications; telecommunications information; communications by computer terminals; communications by fiber optic networks; radio communications; telephone calls; mobile radiotelephony; providing user access to global computer networks; provision of online forums; provision of access to databases; electronic display services (telecommunications); connection by telecommunications to a global computer network; press agencies; news agencies (news); rental of telecommunications apparatus; radio broadcasts; TV shows; teleconferencing services; videoconferencing services; electronic mail services; rental of access time to global computer networks"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": Éducation ; formation ; divertissement ; activités sportives et culturelles ; informations en matière de divertissement ; informations en matière d'éducation ; recyclage professionnel ; mise à disposition d'installations de loisirs ; publication de livres ; prêt de livres ; production de films cinématographiques ; location d'enregistrements sonores ; location de postes de télévision ; location de décors de spectacles ; montage de bandes vidéo ; services de photographie ; organisation de concours (éducation ou divertissement) ; organisation et conduite de colloques ; organisation et conduite de conférences ; organisation et conduite de congrès ; organisation d'expositions à buts culturels ou éducatifs ; réservation de places de spectacles ; services de jeu proposés en ligne à partir d'un réseau informatique ; services de jeux d'argent ; publication électronique de livres et de périodiques en ligne ; micro- édition ",
+      "translation_language": "en",
+      "translation": "Education; training; entertainment ; sports and cultural activities; entertainment information; education information; vocational retraining; provision of leisure facilities; publication of books; loan of books; motion picture production; rental of sound recordings; rental of television sets; rental of show sets; editing of videotapes; photography services; organization of competitions (education or entertainment); organization and conduct of conferences; organization and conduct of conferences; organization and conduct of congresses; organization of exhibitions for cultural or educational purposes; reservation of tickets for shows; gaming services provided online from a computer network; gambling services; electronic publication of books and periodicals online; micro-publishing"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "fr",
+      "description": ": Evaluations techniques concernant la conception (travaux d'ingénieurs) ; recherches scientifiques ; recherches techniques ; conception d'ordinateurs pour des tiers ; développement d'ordinateurs ; conception de logiciels ; développement de logiciels ; recherche et développement de nouveaux produits pour des tiers ; services d'études de projets techniques ; architecture ; décoration intérieure ; élaboration (conception) de logiciels ; installation de logiciels ; maintenance de logiciels ; mise à jour de logiciels ; location de logiciels ; programmation pour ordinateurs ; analyse de systèmes informatiques ; conception de systèmes informatiques ; consultation en matière de conception et de développement d'ordinateurs ; numérisation de documents ; logiciel-service (SaaS) ; informatique en nuage ; conseils en technologie de l'information ; hébergement de serveurs ; contrôle technique de véhicules automobiles ; services de conception d'art graphique ; stylisme (esthétique industrielle) ; authentification d'uvres d'art ; audits en matière d'énergie ; stockage électronique de données.",
+      "translation_language": "en",
+      "translation": "Technical assessments concerning design (engineering work); scientific research ; technical research; computer design for others; computer development; software design; software development; research and development of new products for others; technical project study services; architecture; interior decoration ; development (design) of computer software; installing software; software maintenance; software update; software rental; programming for computers; analysis of computer systems; design of computer systems; consultancy in the design and development of computers; document scanning; software as a service (SaaS); cloud computing; information technology consulting; server hosting; technical control of motor vehicles; graphic art design services; styling (industrial aesthetics); authentication of works of art; energy audits; electronic data storage."
+    }
+  ],
+  "owner": "M. Guillaume Lecomte",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "M. Guillaume Lecomte",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Fugières, 38350 St Honoré",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "M. Guillaume Lecomte"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Scientific apparatus and instruments; nautical apparatus and instruments; surveying apparatus and instruments; photographic apparatus and instruments; cinematographic apparatus; optical apparatus and instruments; weighing apparatus and instruments; measuring instruments and apparatus; signaling apparatus and instruments; verification (control) apparatus and instruments; teaching apparatus and instruments; sound recording apparatus; apparatus for the transmission of sound; sound reproduction apparatus; image recording apparatus; image transmission apparatus; image reproduction apparatus; compact discs (CDs); DVDs; digital recording media; mechanisms for coin-operated apparatus; cash registers; calculating machines; data processing equipment; computers; electronic tablets; ordiphones [smartphones]; e-readers; game software; computer software (recorded programs); computer peripherals; detectors; Electric wires ; electrical relays; diving suits; diving suits; diving gloves; diving masks; protective clothing against accidents, radiation and fire; personal protection devices against accidents; fire extinguishers ; glasses (optics); 3D glasses; eyewear; spectacle cases; memory or microprocessor cards; bags designed for laptop computers; smart watches; electric batteries; diagnostic apparatus not for medical purposes",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Appareils et instruments scientifiques ; appareils et instruments nautiques ; appareils et instruments géodésiques ; appareils et instruments photographiques ; appareils cinématographiques ; appareils et instruments optiques ; appareils et instruments de pesage ; instruments et appareils de mesure ; appareils et instruments de signalisation ; appareils et instruments de vérification (contrôle) ; appareils et instruments pour l'enseignement ; appareils pour l'enregistrement du son ; appareils pour la transmission du son ; appareils pour la reproduction du son ; appareils d'enregistrement d'images ; appareils de transmission d'images ; appareils de reproduction d'images ; disques compacts (CD) ; DVD ; supports d'enregistrement numériques ; mécanismes pour appareils à prépaiement ; caisses enregistreuses ; machines à calculer ; équipements de traitement de données ; ordinateurs ; tablettes électroniques ; ordiphones [smartphones] ; liseuses électroniques ; logiciels de jeux ; logiciels (programmes enregistrés) ; périphériques d'ordinateurs ; détecteurs ; fils électriques ; relais électriques ; combinaisons de plongée ; costumes de plongée ; gants de plongée ; masques de plongée ; vêtements de protection contre les accidents, les radiations et le feu ; dispositifs de protection personnelle contre les accidents ; extincteurs ; lunettes (optique) ; lunettes 3D ; articles de lunetterie ; étuis à lunettes ; cartes à mémoire ou à microprocesseur ; sacoches conçues pour ordinateurs portables ; montres intelligentes ; batteries électriques ; appareils pour le diagnostic non à usage médical "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Games; toys ; controls for game consoles; festive decorations and artificial Christmas trees; physical culture equipment; gymnastic apparatus; fishing tackle; balls and game balls; pool tables; pool cues; billiard balls; card games; board games; ice skates ; roller skates ; scooters [toys]; windsurfing ; boards for surfing; snowshoes; snowshoes ; skis; protective padding (parts of sports clothing); models [toys]; figurines [toys]",
+          "intClassNumber": "28",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Jeux ; jouets ; commandes pour consoles de jeu ; décorations de fête et arbres de Noël artificiels ; appareils de culture physique ; appareils de gymnastique ; attirail de pêche ; balles et ballons de jeux ; tables de billard ; queues de billard ; billes de billard ; jeux de cartes ; jeux de table ; patins à glace ; patins à roulettes ; trottinettes [jouets] ; planches à voile ; planches pour le surf ; raquettes ; raquettes à neige ; skis ; rembourrages de protection (parties d'habillement de sport) ; maquettes [jouets] ; figurines [jouets] "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; business management; business administration; office work; distribution of advertising material (tracts, prospectuses, printed matter, samples); newspaper subscription services (for others); subscription services to telecommunications services for others; presentation of goods on any means of communication for retail sale; advice on organization and business management; accounting ; reproduction of documents; employment agency services; wage portage; computer file management; traffic optimization for websites; organization of exhibitions for commercial or advertising purposes; online advertising on a computer network; rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations ; company audits (commercial analyses); commercial intermediation services (concierge)",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Publicité ; gestion des affaires commerciales ; administration commerciale ; travaux de bureau ; diffusion de matériel publicitaire (tracts, prospectus, imprimés, échantillons) ; services d'abonnement à des journaux (pour des tiers) ; services d'abonnement à des services de télécommunications pour des tiers ; présentation de produits sur tout moyen de communication pour la vente au détail ; conseils en organisation et direction des affaires ; comptabilité ; reproduction de documents ; services de bureaux de placement ; portage salarial ; gestion de fichiers informatiques ; optimisation du trafic pour des sites web ; organisation d'expositions à buts commerciaux ou de publicité ; publicité en ligne sur un réseau informatique ; location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; location d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques ; audits d'entreprises (analyses commerciales) ; services d'intermédiation commerciale (conciergerie) "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Telecommunications; telecommunications information; communications by computer terminals; communications by fiber optic networks; radio communications; telephone calls; mobile radiotelephony; providing user access to global computer networks; provision of online forums; provision of access to databases; electronic display services (telecommunications); connection by telecommunications to a global computer network; press agencies; news agencies (news); rental of telecommunications apparatus; radio broadcasts; TV shows; teleconferencing services; videoconferencing services; electronic mail services; rental of access time to global computer networks",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Télécommunications ; informations en matière de télécommunications ; communications par terminaux d'ordinateurs ; communications par réseaux de fibres optiques ; communications radiophoniques ; communications téléphoniques ; radiotéléphonie mobile ; fourniture d'accès utilisateur à des réseaux informatiques mondiaux ; mise à disposition de forums en ligne ; fourniture d'accès à des bases de données ; services d'affichage électronique (télécommunications) ; raccordement par télécommunications à un réseau informatique mondial ; agences de presse ; agences d'informations (nouvelles) ; location d'appareils de télécommunication ; émissions radiophoniques ; émissions télévisées ; services de téléconférences ; services de visioconférence ; services de messagerie électronique ; location de temps d'accès à des réseaux informatiques mondiaux "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education; training; entertainment ; sports and cultural activities; entertainment information; education information; vocational retraining; provision of leisure facilities; publication of books; loan of books; motion picture production; rental of sound recordings; rental of television sets; rental of show sets; editing of videotapes; photography services; organization of competitions (education or entertainment); organization and conduct of conferences; organization and conduct of conferences; organization and conduct of congresses; organization of exhibitions for cultural or educational purposes; reservation of tickets for shows; gaming services provided online from a computer network; gambling services; electronic publication of books and periodicals online; micro-publishing",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Éducation ; formation ; divertissement ; activités sportives et culturelles ; informations en matière de divertissement ; informations en matière d'éducation ; recyclage professionnel ; mise à disposition d'installations de loisirs ; publication de livres ; prêt de livres ; production de films cinématographiques ; location d'enregistrements sonores ; location de postes de télévision ; location de décors de spectacles ; montage de bandes vidéo ; services de photographie ; organisation de concours (éducation ou divertissement) ; organisation et conduite de colloques ; organisation et conduite de conférences ; organisation et conduite de congrès ; organisation d'expositions à buts culturels ou éducatifs ; réservation de places de spectacles ; services de jeu proposés en ligne à partir d'un réseau informatique ; services de jeux d'argent ; publication électronique de livres et de périodiques en ligne ; micro- édition "
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical assessments concerning design (engineering work); scientific research ; technical research; computer design for others; computer development; software design; software development; research and development of new products for others; technical project study services; architecture; interior decoration ; development (design) of computer software; installing software; software maintenance; software update; software rental; programming for computers; analysis of computer systems; design of computer systems; consultancy in the design and development of computers; document scanning; software as a service (SaaS); cloud computing; information technology consulting; server hosting; technical control of motor vehicles; graphic art design services; styling (industrial aesthetics); authentication of works of art; energy audits; electronic data storage.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Evaluations techniques concernant la conception (travaux d'ingénieurs) ; recherches scientifiques ; recherches techniques ; conception d'ordinateurs pour des tiers ; développement d'ordinateurs ; conception de logiciels ; développement de logiciels ; recherche et développement de nouveaux produits pour des tiers ; services d'études de projets techniques ; architecture ; décoration intérieure ; élaboration (conception) de logiciels ; installation de logiciels ; maintenance de logiciels ; mise à jour de logiciels ; location de logiciels ; programmation pour ordinateurs ; analyse de systèmes informatiques ; conception de systèmes informatiques ; consultation en matière de conception et de développement d'ordinateurs ; numérisation de documents ; logiciel-service (SaaS) ; informatique en nuage ; conseils en technologie de l'information ; hébergement de serveurs ; contrôle technique de véhicules automobiles ; services de conception d'art graphique ; stylisme (esthétique industrielle) ; authentification d'uvres d'art ; audits en matière d'énergie ; stockage électronique de données."
+        }
+      ]
+    },
+    "id": "c6e8bb83-e015-42cb-aae4-a17a43d642f3",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00210",
+        "publicationVolume": "27"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "M. Guillaume Lecomte"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20160614",
+        "applicationNumber": "16 4279987"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20260613",
+      "lastPublicationDate": "20160708",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "16 4279987"
+      }
+    },
+    "version": "20250426160900",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENRIA"
+    }
+  },
+  "_uri": "/mark/fr/c6e8bb83-e015-42cb-aae4-a17a43d642f3",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.192Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

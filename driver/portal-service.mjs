@@ -176,6 +176,7 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-p
 import { deploymentBox } from "../shared/deployment-box.mjs";   // — the box names itself; one rule
 import { jobHashOf, mintConfirmation, verifyConfirmation } from "./portal-confirmation.mjs";
 import { concurrentRunsCap, resolveRunAccount, scanAccountRuns, scanAllRuns } from "./portal-runs.mjs";
+import { escapeText, escapeAttr } from "../shared/html-escape.mjs";
 export { jobHashOf, mintConfirmation, verifyConfirmation, concurrentRunsCap, resolveRunAccount, scanAccountRuns, scanAllRuns };
 // This install's release channel, `beta` or `latest`, read once off its own version. /me carries it.
 const INSTALL_CHANNEL = channelOf(ownVersion());
@@ -1422,7 +1423,7 @@ function instanceIdentity(env = process.env) {
  * button would have been a branch nothing can take.
  */
 export function denialPage(status, message) {
-  const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const esc = escapeAttr;
   // WHICH INSTANCE THIS IS. Reached through a forwarded port, this page read as a local demo refusing its own
   // user (measured 2026-09-11, a VS Code Remote-SSH forward on WSL); named, a person can tell it is not
   // theirs. Named by the organisation when one is set, otherwise by the sign-in service the browser is sent
@@ -1489,7 +1490,7 @@ ${who ? `<p style="margin-top:20px;font-size:14px">${esc(who)}.</p>` : ""}
 //
 // Self-contained for the same reason denialPage is: it has to render before the caller has an identity,
 // which is exactly when the bundle may not be reachable.
-const escHtml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const escHtml = escapeAttr;
 
 /**
  * loginPage({ email, error, signedIn }) — one field, because there is one user.
@@ -2027,7 +2028,7 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
       // become markup — the document is a tracked repository file today, and "it is ours" is exactly the
       // assumption that makes an escaping bug permanent.
       if (r.doc != null) {
-        const esc = String(r.doc).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+        const esc = escapeText(r.doc);
         const body = `<!doctype html><meta charset="utf-8"><title>Set it up by hand</title>`
           + `<style>body{margin:0;padding:28px;font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;`
           + `background:#fff;color:#111}pre{white-space:pre-wrap;word-wrap:break-word;margin:0}`

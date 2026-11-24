@@ -147,7 +147,6 @@ const PLANTED = Object.freeze({
         { text: "Searched the EU register for identical and near-identical marks in classes 9 and 42.", source_link: "https://example.org/a" },
         { text: "Swept marketplace listings for unregistered use of the dominant element across four platforms." },
       ],
-      methodology: "Register search across EUIPO and national registers, plus a common-law sweep of marketplace and web sources.",
       handling_note: "This is a preliminary clearance and not a legal opinion.",
     },
   },

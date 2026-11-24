@@ -50,7 +50,8 @@ import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted,
 import { kebabCollisions } from "./search-policy.mjs";
 // The plan's own checks for the web search's lists, one definition: the call is refused with the plan's
 // sentence, so the seat hears the rule once, in the same words, whichever door it reaches first.
-import { placesDefect, spellingsDefect, useKindDefect, alternativesDefect } from "./verify-knockout.mjs";
+import { placesDefect, spellingsDefect, useKindDefect, alternativesDefect, marketSpellings, heldTerms, batchUseKindDefect, spaced } from "./verify-knockout.mjs";
+import { readAcceptedOrder } from "./accepted-order.mjs";
 import { paths as runPaths } from "./run-record.mjs";
 
 const SCHEMA_VERSION = 1;
@@ -85,9 +86,30 @@ export function knockoutFrameCallPaths(runDir) {
  */
 const DECLARED = Object.freeze({
   "": ["schema", "batch", "marks", "scope_note"],
-  batch: ["productContext", "inUseAs", "places", "umbrellaBrandNote", "executionOrder"],
+  batch: ["productContext", "inUseAs", "useKind", "places", "umbrellaBrandNote", "executionOrder", "families"],
   marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "places", "spellings", "alternatives", "priorKnowledge", "priority"],
 });
+
+/**
+ * The intake's families, checked in code. Every submitted name sits in
+ * exactly one family, and a family names only submitted names. null when the families hold, else the defect. PURE.
+ */
+export function familiesDefect(marks, families) {
+  if (!Array.isArray(families) || !families.length || families.some((f) => !Array.isArray(f) || !f.length || f.some((n) => typeof n !== "string" || !n.trim())))
+    return "batch.families must be a list of families, each a non-empty list of instructed names";
+  const key = (n) => String(n ?? "").trim().toLowerCase();
+  const submitted = new Set((marks ?? []).map((m) => key(m?.name)));
+  const verbatim = new Map((marks ?? []).map((m) => [key(m?.name), String(m?.name ?? "").trim()]));
+  const seen = new Map();
+  for (const f of families) for (const n of f) { seen.set(key(n), (seen.get(key(n)) ?? 0) + 1); if (!verbatim.has(key(n))) verbatim.set(key(n), String(n).trim()); }
+  const unknown = [...seen.keys()].filter((n) => !submitted.has(n));
+  const twice = [...seen].filter(([, c]) => c > 1).map(([n]) => n);
+  const missing = [...submitted].filter((n) => !seen.has(n));
+  const parts = [unknown.length ? `names no instructed name: ${unknown.map((n) => `"${verbatim.get(n)}"`).join(", ")}` : "",
+    twice.length ? `places a name in more than one family: ${twice.map((n) => `"${verbatim.get(n)}"`).join(", ")}` : "",
+    missing.length ? `leaves out: ${missing.map((n) => `"${verbatim.get(n)}"`).join(", ")}` : ""].filter(Boolean);
+  return parts.length ? `batch.families ${parts.join("; ")}. Put each submitted name verbatim in exactly one group in batch.families.` : null;
+}
 
 /** Refuse an undeclared key by path, through the shared implementation every transport now uses. */
 export const refuseUndeclared = (params) => refuseUndeclaredShared(params, DECLARED, "knockoutframe");
@@ -125,9 +147,11 @@ export function mergeKnockoutFrameCall(stored, received) {
   out.batch = {
     productContext: keepIfAbsent(bPatch.productContext, bBase.productContext),
     inUseAs: keepIfAbsent(bPatch.inUseAs, bBase.inUseAs),
+    useKind: keepIfAbsent(bPatch.useKind, bBase.useKind),
     places: keepIfAbsent(bPatch.places, bBase.places),
     umbrellaBrandNote: keepIfAbsent(bPatch.umbrellaBrandNote, bBase.umbrellaBrandNote),
     executionOrder: keepIfAbsent(bPatch.executionOrder, bBase.executionOrder),
+    families: keepIfAbsent(bPatch.families, bBase.families),   // the intake's families, checked when the record is accepted
   };
 
   const byName = new Map();
@@ -178,7 +202,16 @@ export function acceptKnockoutFrame(params) {
     if (placesRefused) defects.push(`knockoutframe_places: ${placesRefused}`);
   }
 
+  // THE ORDER'S USE PHRASE AND THE BUILT SPELLINGS (design, 2026-11-24). A call names one use phrase for the order on the
+  // batch, a name's own only where the request gives it a different use, and no spellings: the driver builds them below. A
+  // held answer from before carries no phrase on the batch and a use and spellings on every name, and keeps them, so a
+  // replayed run frames as it ran. Any other call is asked for the order's phrase, never for spellings, and a null use on
+  // a name is no use.
   const marks = Array.isArray(params?.marks) ? params.marks : null;
+  const built = !heldTerms(params?.batch, marks);
+  // With no marks there is no telling a held answer from a call, so the phrase is not asked for (ruling 592's skip).
+  if (built && marks?.length && batchUseKindDefect(params?.batch?.useKind))
+    defects.push(`knockoutframe_use_kind: ${batchUseKindDefect(params?.batch?.useKind)}`);
   if (!marks || !marks.length) {
     defects.push("knockoutframe_marks_missing: marks[] is required and cannot be empty — a plan carries one row per instructed mark");
   } else {
@@ -192,14 +225,14 @@ export function acceptKnockoutFrame(params) {
         defects.push(`knockoutframe_classes_plain:${name} — classesPlain is required: the plain-language class line`);
       if (!str(m?.contextFraming))
         defects.push(`knockoutframe_context_framing:${name} — contextFraming is required, and the rating hangs off it: the assess stage is told to rate WITH this field, per mark`);
-      const useKindRefused = useKindDefect(name, m?.useKind);
+      const useKindRefused = built && m?.useKind == null ? null : useKindDefect(name, m?.useKind);
       if (useKindRefused) defects.push(`knockoutframe_use_kind:${name} — ${useKindRefused}`);
       // Per name (ruling 570). A call that sends the batch list instead is the old shape and keeps working.
       if (m?.places !== undefined || params?.batch?.places === undefined) {
         const markPlacesRefused = placesDefect(name, m?.places);
         if (markPlacesRefused) defects.push(`knockoutframe_places:${name} — ${markPlacesRefused}`);
       }
-      const spellingsRefused = spellingsDefect(name, m?.spellings);
+      const spellingsRefused = built ? null : spellingsDefect(name, m?.spellings);
       if (spellingsRefused) defects.push(`knockoutframe_spellings:${name} — ${spellingsRefused}`);
       const alternativesRefused = alternativesDefect(name, m?.alternatives);
       if (alternativesRefused) defects.push(`knockoutframe_alternatives:${name} — ${alternativesRefused}`);
@@ -215,6 +248,11 @@ export function acceptKnockoutFrame(params) {
     const collisions = kebabCollisions(marks.map((m) => String(m?.name ?? "")));
     if (collisions.length)
       defects.push(`knockoutframe_key_collision: marks ${collisions.map(([a, b]) => `"${a}"/"${b}"`).join(", ")} collide to the same research key — a batch cannot carry two marks that differ only in spacing, punctuation or case, because they would share ONE research payload and one of them would be rated on the other's evidence. Reword or drop one`);
+
+    if (params?.batch?.families !== undefined) {
+      const familiesRefused = familiesDefect(marks, params.batch.families);
+      if (familiesRefused) defects.push(`knockoutframe_families: ${familiesRefused}`);
+    }
 
     const order = params?.batch?.executionOrder;
     if (order != null) {
@@ -233,7 +271,35 @@ export function acceptKnockoutFrame(params) {
   if (defects.length === 1) return { ok: false, reason: defects[0] };
   if (defects.length) return { ok: false, reason: frameRefusal(defects) };
 
-  return { ok: true, model: { schema: SCHEMA_VERSION, batch: params.batch, marks, scope_note: scopeNote } };
+  // The plan carries the spellings the driver built, over any the call sent, so every reader of the plan reads the forms searched.
+  const planned = built ? marks.map((m) => ({ ...m, spellings: marketSpellings(m.name, m.alternatives) })) : marks;
+  return { ok: true, model: { schema: SCHEMA_VERSION, batch: params.batch, marks: planned, scope_note: scopeNote } };
+}
+
+/**
+ * The request in the words the intake is given it: the forwarded request, else the brief, then the goods and the
+ * requester's instructions, each with one space between its words. Empty where the run holds none of them.
+ */
+export function requestText(runDir) {
+  const p = runPaths(String(runDir ?? ""));
+  const read = (f) => { try { return readFileSync(f, "utf8"); } catch { return ""; } };
+  const order = readAcceptedOrder(runDir) ?? {};
+  return [read(p.inboundRequest) || read(p.confirmationBrief), order.goods, order.upfrontInstructions].map(spaced).filter(Boolean).join("\n");
+}
+
+/**
+ * THE USE PHRASE IS COPIED FROM THE REQUEST, and checked by plain containment, no pattern (owner, 2026-11-24): the order's
+ * phrase, and a name's own, each a run of the request's own words. A run with no request on file has nothing to copy
+ * from, and its phrase stands as sent. A held answer from before names no phrase on the batch and is not checked. PURE.
+ */
+export function useNotInRequest(plan, text) {
+  if (!text || plan?.batch?.useKind == null) return [];
+  const missing = (phrase) => phrase != null && !text.includes(spaced(phrase));
+  const sentence = (phrase) => `"${phrase}" is not in the request. Copy one to three words exactly as the request writes them (task 2c)`;
+  return [
+    ...(missing(plan.batch.useKind) ? [`knockoutframe_use_kind: batch.useKind ${sentence(plan.batch.useKind)}`] : []),
+    ...(plan.marks ?? []).filter((m) => missing(m?.useKind)).map((m) => `knockoutframe_use_kind:${m.name} — useKind ${sentence(m.useKind)}`),
+  ];
 }
 
 /**
@@ -296,6 +362,8 @@ export function recordKnockoutFrame(runDir, received, { now = () => new Date().t
 
   const call = mergeKnockoutFrameCall(lastAcceptedFrame(dir), received);
   const verdict = acceptKnockoutFrame(call);
+  const notInRequest = verdict.ok ? useNotInRequest(verdict.model, requestText(dir)) : [];
+  if (notInRequest.length) verdict.ok = false, verdict.reason = notInRequest.length === 1 ? notInRequest[0] : frameRefusal(notInRequest);
   if (!verdict.ok) {
     journal(verdict.reason);
     return { written: null, refused: verdict.reason, captured: closeCapture({ ok: false, refused: verdict.reason }), capture_failed: captureFailed };

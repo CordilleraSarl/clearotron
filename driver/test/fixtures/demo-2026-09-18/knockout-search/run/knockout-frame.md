@@ -1,0 +1,1 @@
+This knockout batch is configured for VENQORI as the name of a consumer mobile app for water-quality readings with attached online training, sold through app stores rather than through the trade. The instructed scope covers Classes 9, 41, and 42; Class 35 is added on a belt-and-braces basis for online retail and app-store distribution services. No umbrella brand was identified.

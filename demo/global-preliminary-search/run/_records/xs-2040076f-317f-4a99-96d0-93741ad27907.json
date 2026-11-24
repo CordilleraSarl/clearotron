@@ -1,0 +1,141 @@
+{
+  "uri": "/mark/xs/2040076f-317f-4a99-96d0-93741ad27907",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "2040076f-317f-4a99-96d0-93741ad27907",
+  "applicationNumber": null,
+  "registrationNumber": "19911064903",
+  "applicationDate": null,
+  "registrationDate": "1991-08-16",
+  "expiryDate": "2001-08-16",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "RAVEN RIDGE AT BEAVER CREEK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VAIL ASSOCIATES INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "P.O. BOX 7, VAIL, CO, 81658",
+        "applicantAddressCity": "VAIL",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "81658",
+        "applicantAddressStateName": "COLORADO",
+        "applicantAddressStreet": "P.O. BOX 7",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "VAIL ASSOCIATES INC.",
+        "applicantStateOfIncorporation": "COLORADO"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "100",
+          "natGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "2040076f-317f-4a99-96d0-93741ad27907",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "P.O. BOX 7, VAIL, CO, 81658",
+        "city": "VAIL",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "VAIL ASSOCIATES INC.",
+        "postalCode": "81658",
+        "stateName": "COLORADO",
+        "stateOfIncorporation": "COLORADO",
+        "street": "P.O. BOX 7"
+      }
+    ],
+    "recordLastUpdated": "20241213",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "expiryDate": "20010816",
+      "firstUsed": [
+        {
+          "firstUsedDate": "19910701"
+        }
+      ],
+      "firstUsedAnywhereDate": "19910701",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "EXPIRED"
+        ]
+      },
+      "markCurrentStatus": "EXPIRED",
+      "registration": {
+        "registrationDate": "19910816",
+        "registrationNumber": "19911064903"
+      }
+    },
+    "usStateOfficeCode": "CO",
+    "usStateOfficeName": "COLORADO",
+    "version": "20241213180403",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN RIDGE AT BEAVER CREEK"
+    }
+  },
+  "_uri": "/mark/xs/2040076f-317f-4a99-96d0-93741ad27907",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.203Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

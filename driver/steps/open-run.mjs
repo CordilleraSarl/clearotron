@@ -3,8 +3,8 @@
 //
 // steps/open-run.mjs — what a run settles before its first stage: its order, engine, directory, resume checks and context.
 //
-// One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; each moves here when the other phases that share it have moved.
+// One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
+// that module lives in the modules beside it, which it imports.
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { orderSnapshot, readAcceptedOrder, retainAcceptedOrder } from "../accepted-order.mjs";
 import { recordSpan } from "../attributed-span.mjs";
@@ -17,6 +17,8 @@ import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
 import { profileStoreResolution } from "../profiles.mjs";
 import { RECORDS_MODES, heldRegisterCredentials, savedRecordFetch } from "../record-replay.mjs";
+import { attachProfile, attachSearchPolicy, depthLadderEvent } from "../run-attachments.mjs";
+import { findRunDate, resumeStopRefusal } from "../run-resume.mjs";
 import { policyFor } from "../search-policy.mjs";
 import { preflightSkillsStore } from "../skills-store-provenance.mjs";
 import { assertTierSanity, paths } from "../stages.mjs";
@@ -24,8 +26,7 @@ import { stampTokenRollup } from "../tokens.mjs";
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 
-export async function openRun({ job, opts }, helpers) {
-  const { attachProfile, attachSearchPolicy, depthLadderEvent, findRunDate, resumeStopRefusal } = helpers;
+export async function openRun({ job, opts }) {
   // The order as it arrived, before anything below folds its scope or settles its fields (accepted-order.mjs).
   const acceptedOrder = orderSnapshot(job);
   assertTierSanity();

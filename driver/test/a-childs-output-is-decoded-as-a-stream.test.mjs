@@ -39,8 +39,9 @@ const SITE = /([A-Za-z_$][\w$]*)\??\.(stdout|stderr)\??\.(?:on|once|addListener|
 
 // How far above a reader its own `setEncoding` may sit. Every reader in the tree has it within three lines.
 const WINDOW = 5;
-// A decoder declared in the file, `const x = new StringDecoder(…)`, one or several to a statement.
-const DECODER = /(?:\b(?:const|let|var)\s+|,\s*)([A-Za-z_$][\w$]*)\s*=\s*new\s+StringDecoder\(/g;
+// A decoder declared in the file, `const x = new StringDecoder(…)`, one or several to a statement, or kept on an object,
+// `st.x = new StringDecoder(…)`, as the Claude adapter keeps its turn's state.
+const DECODER = /(?:\b(?:const|let|var)\s+|,\s*|\b[A-Za-z_$][\w$]*\.)([A-Za-z_$][\w$]*)\s*=\s*new\s+StringDecoder\(/g;
 
 /** The handler's own text: from the reader to the brace that closes its body, or the rest of the line for a body that is one expression. PURE. */
 function handlerText(lines, i, at) {
@@ -106,6 +107,9 @@ test("the guard refuses a chunk-by-chunk reader, and passes a decoded one and a 
   const decoder = 'const outText = new StringDecoder("utf8"), errText = new StringDecoder("utf8");\n';
   const through = (dec) => `${decoder}child.stderr.on("data", (d) => {\n  sink.write(d);\n  err += ${dec}.write(d);\n});`;
   assert.equal(readersIn(through("errText"))[0].decoded, true, "a handler that writes its chunk through a decoder was refused");
+  const kept = 'st.errText = new StringDecoder("utf8");\nst.child.stderr.on("data", (d) => {\n  st.err += st.errText.write(d);\n});';
+  assert.equal(readersIn(kept)[0].decoded, true, "a decoder kept on the turn's state object was not recognised");
+  assert.equal(readersIn('st.child.stderr.on("data", (d) => { st.err += d; });')[0].decoded, false, "a raw reader on the state object passed");
   assert.equal(readersIn(`${decoder}child.stderr.on("data", (d) => { err += d; });\nconst later = () => errText.write(x);`)[0].decoded, false,
     "a decoder written to outside the handler counted for it");
 });

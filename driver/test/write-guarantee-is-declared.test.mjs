@@ -23,6 +23,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { writeBoundaryOf } from "../gateway.mjs";
+import { driverSource } from "./driver-source.mjs";
 import { anthropicAgentEngine } from "../engine/anthropic-agent.mjs";
 import { openaiAgentEngine } from "../engine/openai-agent.mjs";
 
@@ -51,7 +52,7 @@ test("the declaration reaches the RECORD, at every site that stamps the engine",
   // Asserted textually because the value is only useful if it is written down. Every row that names the
   // engine must also name the guarantee — a row carrying one without the other is the silence again, in
   // a smaller place.
-  const src = read("driver/gateway.mjs");
+  const src = driverSource("gateway.mjs");
   const namesEngine = src.split("\n").filter((l) => /engine: engine\.name/.test(l));
   assert.ok(namesEngine.length >= 2, `expected the engine to be stamped in at least 2 rows, found ${namesEngine.length}`);
   for (const line of namesEngine) {

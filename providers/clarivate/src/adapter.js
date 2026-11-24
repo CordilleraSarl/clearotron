@@ -27,14 +27,19 @@ export const adapter = {
     } catch (e) { return { ok: false, cause: `fetch threw: ${e.message}` }; }
   },
   // One cited registration's logo, for the report: one image request, ledgered like every other call.
-  async markImage(uri, { agentId, sessionKey, recordLog = null }) {
+  //
+  // ASKED WITH THE REGISTER'S OWN SPELLING OF THE ID. The run keys its records by a lowercased ref (record-uri.mjs), and
+  // the image endpoint refuses a lowercased id: "HTTP 400: id - Not a valid id." on 12 of 12 requests of a demo re-run,
+  // 2026-11-20. The saved record keeps the id as the register gave it (`guid`, `uri`), so that is what is sent.
+  async markImage(uri, { agentId, sessionKey, recordLog = null, record = null }) {
     if (!process.env.CLARIVATE_API_KEY) return { ok: false, cause: "CLARIVATE_API_KEY absent from driver env" };
     let doMarkImage, DEFAULT_BASE;
     try { ({ doMarkImage, DEFAULT_BASE } = await import("./core.js")); }
     catch (e) { return { ok: false, cause: `plugin core unavailable: ${e.message}` }; }
     const base = process.env.CLARIVATE_API_BASE || DEFAULT_BASE;
     try {
-      return await doMarkImage(process.env.CLARIVATE_API_KEY, base, uri, { kind: "image", agentId, sessionKey, sessionId: null, recordLog });
+      const id = [record?.guid, record?.uri].find((v) => typeof v === "string" && v.trim()) ?? uri;
+      return await doMarkImage(process.env.CLARIVATE_API_KEY, base, id, { kind: "image", agentId, sessionKey, sessionId: null, recordLog });
     } catch (e) { return { ok: false, cause: `fetch threw: ${e.message}` }; }
   },
   // Depth 2's count, same contract as corsearch's (see above). A TRUE count-only call here: POST

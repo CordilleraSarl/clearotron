@@ -304,7 +304,56 @@ test("the entry job runs only on the schedule, only in the product repository, a
   const entry = job("entry");
   assert.match(entry, /\n {4}if: github\.repository == 'CordilleraSarl\/clearotron' && github\.event_name == 'schedule'\n/);
   assert.match(entry, /run: node scripts\/release-entry-catch-up\.mjs\n/);
-  assert.match(entry, /ref: \$\{\{ github\.sha \}\}/, "the job must read the version on the commit the schedule fired for");
+  assert.match(entry, /ref: \$\{\{ github\.sha \}\}/, "the job must run the scripts of the commit the schedule fired for");
+});
+
+/** The shell of the entry job's step named `name`, as the runner executes it. */
+function stepRun(entry, name) {
+  const at = entry.indexOf(`- name: ${name}\n`);
+  assert.ok(at > 0, `the entry job has no step named "${name}"`);
+  const block = entry.slice(at).match(/\n {8}run: \|\n((?: {10}.*\n)+)/);
+  assert.ok(block, `the step "${name}" runs no shell block`);
+  return block[1].split("\n").map((l) => l.slice(10)).join("\n");
+}
+
+test("the entry job decides from main's version and changelog as they are when it runs, not as they were when the schedule fired", { skip: FAKE_GH_IS_POSIX }, () => {
+  const entry = job("entry");
+  const SUBJECT = "Read the version and its changelog from main as it is now";
+  const order = ["release-publish-guard.mjs", `- name: ${SUBJECT}`, "release-entry-catch-up.mjs"].map((s) => entry.indexOf(s));
+  assert.ok(order.every((i, n) => i > 0 && (n === 0 || i > order[n - 1])), `the subject is not read between the guard and the catch-up: ${order}`);
+
+  // An origin whose main moved on after the schedule fired: the squash, then the version commit the cut landed.
+  const git = (cwd, ...a) => {
+    const r = spawnSync("git", a, { cwd, encoding: "utf8", env: { ...process.env, GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_NOSYSTEM: "1" } });
+    assert.equal(r.status, 0, `git ${a.join(" ")}: ${r.stderr}`);
+    return r.stdout.trim();
+  };
+  const origin = mkdtempSync(join(DIR, "origin-"));
+  git(origin, "init", "-q", "-b", "main");
+  const commit = (version, changelog) => {
+    writeFileSync(join(origin, "package.json"), JSON.stringify({ name: "clearotron", version }));
+    writeFileSync(join(origin, "CHANGELOG.md"), changelog);
+    git(origin, "add", "-A");
+    git(origin, "-c", "user.name=Release", "-c", "user.email=release@example.invalid", "commit", "-q", "-m", version);
+    return git(origin, "rev-parse", "HEAD");
+  };
+  const fired = commit("9.9.9-beta.3", "# Changelog\n\n## 9.9.9-beta.3\n\n- The earlier beta.\n");
+  commit("9.9.9-beta.4", "# Changelog\n\n## 9.9.9-beta.4\n\n- The beta the cut landed.\n\n## 9.9.9-beta.3\n\n- The earlier beta.\n");
+
+  // The run's checkout: the commit the schedule fired for, with no `origin/main` of its own.
+  const work = mkdtempSync(join(DIR, "checkout-"));
+  git(work, "clone", "-q", `file://${origin}`, ".");
+  git(work, "checkout", "-q", "--detach", fired);
+  git(work, "update-ref", "-d", "refs/remotes/origin/main");
+  assert.equal(JSON.parse(readFileSync(join(work, "package.json"), "utf8")).version, "9.9.9-beta.3", "premise: the checkout holds the version before the cut");
+
+  const r = spawnSync("sh", ["-e", "-c", stepRun(entry, SUBJECT)], { cwd: work, encoding: "utf8",
+    env: { ...process.env, GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_NOSYSTEM: "1" } });
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(JSON.parse(readFileSync(join(work, "package.json"), "utf8")).version, "9.9.9-beta.4",
+    "the catch-up would decide about the version before the cut, which already has its entry");
+  assert.match(readFileSync(join(work, "CHANGELOG.md"), "utf8"), /^## 9\.9\.9-beta\.4\n\n- The beta the cut landed\.$/m,
+    "the entry would be written without the changelog section of the version it is for");
 });
 
 test("the entry job can write an entry and read artifacts, and nothing else: no publish, no install, no id-token", () => {

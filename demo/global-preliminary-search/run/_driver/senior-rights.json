@@ -4,21 +4,24 @@
   "rows": [
     {
       "ordinal": 1,
-      "mark": "enqor",
+      "mark": "VENCORA",
       "applicable": true,
-      "seniorUri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1",
+      "seniorUri": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
       "rankedFrom": "record",
       "verified": true,
       "excludedDead": 0
     },
     {
       "ordinal": 2,
-      "mark": "Ｖｅｎｋｕｒｉ",
-      "applicable": true,
-      "seniorUri": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
-      "rankedFrom": "record",
-      "verified": true,
-      "excludedDead": 0
+      "mark": "文克利",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    },
+    {
+      "ordinal": 3,
+      "mark": "Vennory",
+      "applicable": false,
+      "reason": "no register legs (use/marketplace evidence path)"
     }
   ]
 }

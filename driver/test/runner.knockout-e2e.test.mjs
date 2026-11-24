@@ -30,8 +30,8 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 const root = mkdtempSync(join(tmpdir(), "clearotron-ko-e2e-"));
 const FIXTURES = join(root, "sweep-fixtures");
 mkdirSync(FIXTURES, { recursive: true });
-// canned web searches (the $0 sweep), each the grid program's printed ledger for a mark, over the mock
-// frame's spellings (the name, and its last letter doubled) on its places (`web`, `shop.example.com`).
+// canned web searches (the $0 sweep), each the grid program's printed ledger for a mark, over the driver's
+// spellings (a name of one word is its one spelling) on the mock frame's places (`web`, `shop.example.com`).
 // IRONWHISK's web cell carries a store listing and a character's wiki page, and one of its cells failed
 // in the program and says so; CLUVENDRA is clean; SUNDAY ROAST CLUB has NO fixture file → the sweep
 // degrades that mark (null-results doctrine).
@@ -42,13 +42,11 @@ writeFileSync(join(FIXTURES, "ironwhisk.grid.json"), JSON.stringify({
       { title: "Ironwhisk mixers", url: "https://www.amazon.com/ironwhisk-store" },
       { title: "Ironwhisk, the blacksmith of a cooking game", url: "https://example.test/wiki/ironwhisk" },
     ]),
-    cell("IRONWHISK", "shop.example.com"),
-    cell("IRONWHISKK", "web"),
   ],
-  gaps: ["IRONWHISKK | shop.example.com | TimeoutError()"], extras: {},
+  gaps: ["IRONWHISK | shop.example.com | TimeoutError()"], extras: {},
 }));
 writeFileSync(join(FIXTURES, "cluvendra.grid.json"), JSON.stringify({
-  cells: [cell("CLUVENDRA", "web"), cell("CLUVENDRA", "shop.example.com"), cell("CLUVENDRAA", "web"), cell("CLUVENDRAA", "shop.example.com")],
+  cells: [cell("CLUVENDRA", "web"), cell("CLUVENDRA", "shop.example.com")],
   gaps: [], extras: {},
 }));
 // canned REGISTER COUNTS (the $0 Depth 2): IRONWHISK is a busy name, CLUVENDRA is empty, and
@@ -189,7 +187,7 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   assert.equal(receipts.length, 3, "one receipted grid call per mark");
   const iw = receipts.find((r) => r.mark === "IRONWHISK");
   assert.deepEqual([iw.spellings, iw.places, iw.cells, iw.present, iw.resultsPerCell],
-    [["IRONWHISK", "IRONWHISKK"], ["web", "shop.example.com"], 4, 3, 10], "the receipt names the grid it ran");
+    [["IRONWHISK"], ["web", "shop.example.com"], 2, 1, 10], "the receipt names the grid it ran");
   const degraded = receipts.filter((r) => !r.ok);
   assert.equal(degraded.length, 1);
   assert.equal(degraded[0].mark, "SUNDAY ROAST CLUB");
@@ -199,7 +197,7 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   const payload = JSON.parse(readFileSync(join(rd, "research", "ironwhisk.md"), "utf8"));
   const urls = payload.cells.flatMap((c) => c.candidates.map((x) => x.url));
   assert.deepEqual(urls, ["https://www.amazon.com/ironwhisk-store", "https://example.test/wiki/ironwhisk"]);
-  assert.deepEqual(payload.gaps, ["IRONWHISKK | shop.example.com | TimeoutError()"]);
+  assert.deepEqual(payload.gaps, ["IRONWHISK | shop.example.com | TimeoutError()"]);
 
   // merged findings: one row per planned mark; the degraded row carries the doctrine note
   const findings = JSON.parse(readFileSync(join(rd, "knockout-findings.json"), "utf8"));
@@ -327,7 +325,8 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   const journal = readFileSync(driverDir(rd, "run.jsonl"), "utf8")
     .split("\n").filter(Boolean).map((l) => JSON.parse(l));
   const stageRows = journal.filter((e) => e.event === "stage" || e.event === "skip");
-  // The lane has exactly TWO stages that go through koStage — knockout-frame and knockout-assess#N.
+  // The lane has exactly TWO stages that go through koStage here — knockout-frame and knockout-assess#N, one per name, since no
+  // name of this batch has a family and each is rated alone. The register here is injected, so no reader turn runs.
   // The sweep and the register count are code-side and receipt themselves (`knockout-sweep-start`,
   // `knockout-register-counts`); they are not LLM stages and must not grow a stage row, or the lane
   // would report walls for work no dispatch did. Naming them here so a future reader does not read
@@ -336,7 +335,7 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   // suffix, and it appears on every knockout: a record flagged nowhere hands the reviewer its first-read
   // lines instead (owner ruling 2026-10-10). Only a record with no such line logs
   // `knockout-review outcome:nothing-flagged` and emits no stage row.
-  assert.deepEqual(stageRows.map((e) => e.stage).sort(), ["knockout-assess#0", "knockout-frame", "knockout-review"],
+  assert.deepEqual(stageRows.map((e) => e.stage).sort(), ["knockout-assess#0", "knockout-assess#1", "knockout-assess#2", "knockout-frame", "knockout-review"],
     `the knockout lane must emit one completion row per DISPATCHED stage (event census: ${
       [...new Set(journal.map((e) => e.event))].sort().join(", ")})`);
 
@@ -459,8 +458,11 @@ test("STAGE 0.5 end to end: counts measured in code, on the report, in the workb
   const ironForms = variantForms("IRONWHISK").forms.map((f) => f.form);
   const cluvForms = variantForms("CLUVENDRA").forms.map((f) => f.form);
   const countRows = ledger.filter((r) => r.stage !== "records");
-  assert.equal(countRows.length, 2 * 2 + ironForms.length + cluvForms.length,
+  assert.equal(countRows.filter((r) => !r.retry).length, 2 * 2 + ironForms.length + cluvForms.length,
     "2 marks × (2 simple predicates + one call per generated variant form), each receipted");
+  // A call with no answer is asked once more, and that call is receipted too: CLUVENDRA's fixture holds no containing
+  // figure and none for its forms.
+  assert.equal(countRows.filter((r) => r.retry).length, 1 + cluvForms.length, "each call that got no answer, asked once more");
   // The billable unit is the FORM, and the receipts say so: without the per-form line the ledger would
   // report two calls where nine were made, and the corsearch multiplier would be invisible.
   assert.deepEqual(countRows.filter((r) => r.predicate === "close" && r.mark === "IRONWHISK").map((r) => r.variant_form), ironForms);

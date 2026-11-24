@@ -1,0 +1,725 @@
+{
+  "schema_version": 7,
+  "rated_under_framework": "house-default",
+  "findings": [
+    {
+      "ordinal": 1,
+      "mark": "enqor",
+      "owner": {
+        "name": "Align Networks Inc.",
+        "country": "KR",
+        "registrations": [
+          {
+            "uri": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1",
+            "classes": [
+              "9"
+            ],
+            "status": "PENDING",
+            "filed": "2026-04-14",
+            "jurisdiction": "KR"
+          },
+          {
+            "uri": "/mark/kr/439284fa-ff3f-48dd-b691-7bec09f9a550",
+            "classes": [
+              "41"
+            ],
+            "status": "PENDING",
+            "filed": "2026-04-14",
+            "jurisdiction": "KR"
+          },
+          {
+            "uri": "/mark/kr/3e4b74e8-712d-49b8-9502-5c00cf951a41",
+            "classes": [
+              "42"
+            ],
+            "status": "PENDING",
+            "filed": "2026-04-14",
+            "jurisdiction": "KR"
+          }
+        ]
+      },
+      "band": "Moderate",
+      "borderline_between": [
+        "Moderate",
+        "Manageable"
+      ],
+      "net": "Align Networks is likely to win in South Korea against VENQORI on its pending ENQOR applications, while VENKURI is materially easier to distinguish.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1"
+        },
+        "goods_proximity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/kr/a59ef335-9570-4757-8770-26b208dc24b1"
+        },
+        "use": {
+          "token": "not-confirmed",
+          "basis": "verified-from-record",
+          "source": "https://apps.apple.com/kr/app/enqor/id6758401584"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        }
+      },
+      "quadrant": {
+        "x": 0.84,
+        "y": 0.82
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "For VENQORI, ENQOR preserves the central letter sequence and covers smartphone and downloadable software, so Align is likely to win despite reasonable water-purpose and whole-word defences. For VENKURI, the changed consonants, vowels and ending make Align likely to lose.",
+      "practical_position": "Align Networks Inc. filed Korean word-and-design ENQOR applications 40-2026-0073326, 40-2026-0073329 and 40-2026-0073330 on 14 April 2026; all remain pending in Classes 9, 41 and 42. The filings cover Class 9 smartphone and downloadable communications software, Class 41 entertainment and education including correspondence courses, and Class 42 software-development and hosting services. The Korean ENQOR app result is not attributed to Align Networks.\n- **Use-check source:** https://apps.apple.com/kr/app/enqor/id6758401584",
+      "use_check": {
+        "source": "https://apps.apple.com/kr/app/enqor/id6758401584",
+        "quality": "independent"
+      }
+    },
+    {
+      "ordinal": 2,
+      "mark": "Ｖｅｎｋｕｒｉ",
+      "owner": {
+        "name": "YIWU TENGDING UMBRELLA CO., LTD.",
+        "country": "CN",
+        "registrations": [
+          {
+            "uri": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5"
+          },
+          {
+            "uri": "/mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f"
+          },
+          {
+            "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+            "classes": [
+              "9"
+            ],
+            "status": "REGISTERED",
+            "filed": "2019-04-02",
+            "expiry": "2030-03-02",
+            "jurisdiction": "JP"
+          }
+        ]
+      },
+      "band": "Moderate",
+      "net": "Yiwu Tengding is likely to win in Japan against VENKURI on its identical registered word, but likely to lose against VENQORI.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150"
+        },
+        "use": {
+          "token": "not-confirmed",
+          "basis": "verified-from-record",
+          "source": "https://www.amazon.co.jp/-/en/Microphone-Speakerphone-Compatible-Microsoftteas-Conferencing/dp/B08ZYXFFPJ"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        }
+      },
+      "quadrant": {
+        "x": 0.64,
+        "y": 1
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "For VENKURI, the earlier word is identical and its registered consumer electronics overlap enough with a public-facing mobile product that Yiwu Tengding is likely to win, although the hardware-software distinction is a reasonable defence. For VENQORI, the Q/O spelling and sound changes make the company likely to win.",
+      "practical_position": "Yiwu Tengding owns Japanese word-only VENKURI registration 6231111, filed 2 April 2019, registered 2 March 2020 and expiring 2 March 2030 for Class 9 electronics including monitors, cameras, speakers and chargers. The family includes Chinese records 37216828A and 37216828. The Amazon Japan VENKURI electronics result does not attribute that use to Yiwu Tengding.\n- **Use-check source:** https://www.amazon.co.jp/-/en/Microphone-Speakerphone-Compatible-Microsoftteas-Conferencing/dp/B08ZYXFFPJ",
+      "use_check": {
+        "source": "https://www.amazon.co.jp/-/en/Microphone-Speakerphone-Compatible-Microsoftteas-Conferencing/dp/B08ZYXFFPJ",
+        "quality": "independent"
+      }
+    },
+    {
+      "ordinal": 3,
+      "mark": "QORIA",
+      "owner": {
+        "name": "Qoria Holdings Pty Ltd",
+        "country": "AU",
+        "registrations": [
+          {
+            "uri": "/mark/gb/2ca515f3-ff9f-41d2-8529-1ef0f31a93d7"
+          },
+          {
+            "uri": "/mark/us/1c752bbb-1800-4a86-b895-94be138f1f43"
+          },
+          {
+            "uri": "/mark/us/7eef08b1-676c-48ed-9520-92dde1da3ae1"
+          },
+          {
+            "uri": "/mark/wo/f99ca2ce-9b6b-41ac-9318-90a66bfad14b"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Qoria Holdings is likely to lose against VENQORI and VENKURI in its protected markets despite overlapping software and training rights.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/gb/2ca515f3-ff9f-41d2-8529-1ef0f31a93d7"
+        },
+        "goods_proximity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/gb/2ca515f3-ff9f-41d2-8529-1ef0f31a93d7"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        }
+      },
+      "quadrant": {
+        "x": 0.86,
+        "y": 0.62
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "QORIA covers monitoring software, hosted services and online education, but VENQORI adds a distinctive opening and VENKURI is further away in sound and spelling. The company is likely to win on both whole-mark comparisons, although QORIA can still create filing friction where its rights apply.",
+      "practical_position": "Qoria Holdings has live registrations in several markets across the company's core classes, while enforcement appetite and marketplace use are unknown on this record."
+    },
+    {
+      "ordinal": 4,
+      "mark": "VENTURI",
+      "owner": {
+        "name": "Biogénie Canada Inc.",
+        "country": "CA",
+        "registrations": [
+          {
+            "uri": "/mark/ca/7da604e3-696d-4e45-99e3-b1536d092c9e"
+          },
+          {
+            "uri": "/mark/us/daf685e7-0cee-4e3b-aa33-9d354421aeb6"
+          },
+          {
+            "uri": "/mark/wo/d5fe085c-c8b7-428f-9533-d75acd00424e"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Biogénie Canada is likely to lose against both forms because VENTURI differs as a whole and its rights centre on soil probes and analysis.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/ca/7da604e3-696d-4e45-99e3-b1536d092c9e"
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/ca/7da604e3-696d-4e45-99e3-b1536d092c9e"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        }
+      },
+      "quadrant": {
+        "x": 0.66,
+        "y": 0.55
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "VENTURI is somewhat closer to VENKURI than to VENQORI, but neither form matches the earlier word as a whole. Soil probes, depth sensors and soil analysis are adjacent to environmental monitoring but do not meet the company's consumer water software closely enough to make Biogénie likely to win.",
+      "practical_position": "Biogénie holds live Canadian and international rights for environmental probes and analysis; the current JP/KR launch scope reduces immediate exposure, and enforcement appetite is unknown."
+    },
+    {
+      "ordinal": 5,
+      "mark": "VINCARA",
+      "owner": {
+        "name": "Vinctos Ltd",
+        "country": "GB",
+        "registrations": [
+          {
+            "uri": "/mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Vinctos is likely to lose against both forms in the United Kingdom, although its unrestricted software wording can still create a filing obstacle.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb"
+        },
+        "goods_proximity": {
+          "token": "high",
+          "basis": "verified-from-record",
+          "source": "/mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        }
+      },
+      "quadrant": {
+        "x": 0.9,
+        "y": 0.58
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "The pending application claims software without limitation, but VINCARA differs from VENQORI and VENKURI in its central consonants, final vowel and overall sound. The company is likely to win on confusion, while the broad wording leaves a real registration issue.",
+      "practical_position": "The application is pending in the United Kingdom and paired with recruitment services; the present launch scope is JP/KR, and enforcement appetite is unknown."
+    },
+    {
+      "ordinal": 6,
+      "mark": "VENKARO",
+      "owner": {
+        "name": "VENKARO LIMITED",
+        "country": "NZ",
+        "registrations": [
+          {
+            "uri": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "VENKARO LIMITED is likely to lose against both forms in New Zealand despite registered SaaS, software-design and online-training services.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551"
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        }
+      },
+      "quadrant": {
+        "x": 0.58,
+        "y": 0.7
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "VENKARO is closer to VENKURI than to VENQORI, but the changed ending and property-focused SaaS, inspection and business-training wording distinguish the rights. The company is likely to win, with residual filing risk from the broader software-design terms.",
+      "practical_position": "The New Zealand registration is live and outside the stated JP/KR launch territories; enforcement appetite is unknown."
+    },
+    {
+      "ordinal": 7,
+      "mark": "VINCORA",
+      "owner": {
+        "name": "Viacheslav Svizhevskyi",
+        "country": "UA",
+        "registrations": [
+          {
+            "uri": "/mark/em/346d96db-15d6-40f8-a707-c87059712771"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Viacheslav Svizhevskyi is likely to lose against both forms in the European Union despite broad technology and training rights.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/em/346d96db-15d6-40f8-a707-c87059712771"
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/em/346d96db-15d6-40f8-a707-c87059712771"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        }
+      },
+      "quadrant": {
+        "x": 0.7,
+        "y": 0.58
+      },
+      "source": {
+        "source_type": "register-euipo",
+        "resolved_link": ""
+      },
+      "legal_position": "VINCORA covers technology services and computer or business training, but its consonant pattern and ending differ from both candidate forms. The company is likely to win on the marks as wholes, although the broad service wording leaves residual filing exposure.",
+      "practical_position": "The EU registration is live and outside the stated JP/KR launch scope; enforcement appetite is unknown."
+    },
+    {
+      "ordinal": 8,
+      "mark": "Vincora",
+      "owner": {
+        "name": "SETHULAKSHMI K B Single Firm",
+        "country": "IN",
+        "registrations": [
+          {
+            "uri": "/mark/in/d4702fdd-f353-476c-8874-eedc36d6a582"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "SETHULAKSHMI K B Single Firm is likely to lose against both forms in India despite broad web and software-development services.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/in/d4702fdd-f353-476c-8874-eedc36d6a582"
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/in/d4702fdd-f353-476c-8874-eedc36d6a582"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        }
+      },
+      "quadrant": {
+        "x": 0.65,
+        "y": 0.58
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "Vincora covers web, cloud and software-development services, but it differs from VENQORI and VENKURI in the middle consonant and ending. The company is likely to win, with a possible registry objection because the service wording is broad.",
+      "practical_position": "The Indian application is pending and outside the stated JP/KR launch scope; enforcement appetite is unknown."
+    },
+    {
+      "ordinal": 9,
+      "mark": "V vancora",
+      "owner": {
+        "name": "RAMAZAN CEYLAN",
+        "country": "TR",
+        "registrations": [
+          {
+            "uri": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7"
+          }
+        ]
+      },
+      "band": "Manageable",
+      "net": "Ramazan Ceylan is likely to lose against both forms in Turkey despite computer-programming and website services claimed in the pending Turkish application.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7"
+        },
+        "goods_proximity": {
+          "token": "medium",
+          "basis": "verified-from-record",
+          "source": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7"
+        },
+        "use": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        },
+        "enforcer": {
+          "token": "unknown",
+          "basis": "inferred-from-signal"
+        }
+      },
+      "quadrant": {
+        "x": 0.56,
+        "y": 0.45
+      },
+      "source": {
+        "source_type": "register-vendor",
+        "resolved_link": ""
+      },
+      "legal_position": "The leading V and VANCORA wording create a different whole from VENQORI and VENKURI, while the technology services overlap only broadly. The company is likely to win, though the live application can still cause prosecution friction.",
+      "practical_position": "The Turkish application is pending and outside the stated JP/KR launch scope; enforcement appetite is unknown."
+    }
+  ],
+  "coverage": [
+    {
+      "area": "primary-sweep",
+      "state": "confirmed-clean",
+      "note": "The expressible Latin-script exact, near-form, phonetic, class and territory searches were assessed."
+    },
+    {
+      "area": "primary-sweep / exact: vεηqοrι [cl 9, 42, 41]",
+      "state": "not-searched",
+      "note": "The visually identical Greek-letter form could not be searched because the register indexes non-Latin filings by transliteration."
+    },
+    {
+      "area": "primary-sweep / exact: vеnqоri [cl 9, 42, 41]",
+      "state": "not-searched",
+      "note": "The visually identical Cyrillic-letter form could not be searched because the register indexes non-Latin filings by transliteration."
+    },
+    {
+      "area": "transliteration-numeric",
+      "state": "confirmed-clean",
+      "note": "The expressible Japanese, Korean and numeric forms were assessed."
+    },
+    {
+      "area": "incumbent-class",
+      "state": "coverage-limited",
+      "note": "Priority water-sector owners were checked selectively, but portfolio counts alone do not support owner-wide conclusions."
+    },
+    {
+      "area": "incumbent-class / owner: Xylem Inc. [cl 9, 42, 41]",
+      "state": "not-searched",
+      "note": "The priority Xylem inquiry failed after acceptance and the mark intersections remained count-only, so no clean conclusion is available."
+    },
+    {
+      "area": "saturation-probe",
+      "state": "confirmed-clean",
+      "note": "The measured crowd was used only as context; named close marks were assessed separately."
+    },
+    {
+      "area": "JP and KR marketplace",
+      "state": "coverage-limited",
+      "note": "Localized results were thin or noisy, so the absence of another conflict is not conclusive."
+    },
+    {
+      "area": "supplementary commercial channels",
+      "state": "coverage-limited",
+      "note": "Domain, procurement, distributor, software-store, repository, trade-show and company-record checks used bounded fallbacks rather than a complete deterministic search."
+    },
+    {
+      "area": "common-law / BENKORI offensive meaning",
+      "state": "open",
+      "note": "The BENKORI offensive-meaning search returned no usable source material, so no clean meaning conclusion is available."
+    },
+    {
+      "area": "common-law / QUORI App proprietor and field",
+      "state": "open",
+      "note": "The app-store listing did not establish its owner or function, so it was not rated."
+    },
+    {
+      "area": "client / applicant identity and affiliates",
+      "state": "open",
+      "note": "The applicant and its affiliates were not supplied, so self-conflicts cannot be screened out."
+    },
+    {
+      "area": "Expressible Latin-name searches",
+      "state": "note",
+      "note": "Completed exact, near-form, phonetic, class and territory searches."
+    },
+    {
+      "area": "Exact Greek-letter form vεηqοrι in Classes 9, 42 and 41",
+      "state": "not-searched",
+      "note": "The visually identical Greek-letter form could not be searched because the register indexes non-Latin filings by transliteration."
+    },
+    {
+      "area": "Exact Cyrillic-letter form vеnqоri in Classes 9, 42 and 41",
+      "state": "not-searched",
+      "note": "The visually identical Cyrillic-letter form could not be searched because the register indexes non-Latin filings by transliteration."
+    },
+    {
+      "area": "Japanese, Korean and digit-substitution searches",
+      "state": "note",
+      "note": "Completed searches of the expressible Japanese, Korean and numeric forms."
+    },
+    {
+      "area": "Named water-sector owner checks",
+      "state": "note",
+      "note": "Selected owners were checked, but portfolio counts do not support owner-wide conclusions."
+    },
+    {
+      "area": "Xylem Inc. checks in Classes 9, 42 and 41",
+      "state": "not-searched",
+      "note": "The priority Xylem check failed and the mark comparisons remained count-only, so no clean conclusion is available."
+    },
+    {
+      "area": "Broad match counts",
+      "state": "note",
+      "note": "Broad match counts were used only as context; named close marks were assessed separately."
+    },
+    {
+      "area": "Japanese-script register equivalents (JP)",
+      "state": "coverage-limited",
+      "note": "Japanese-script same-meaning/phonetic register equivalents not searched on this search — The native-language investigation is offered on a Multi-country focus search and runs automatically on a Full country search."
+    },
+    {
+      "area": "Korean-script register equivalents (KR)",
+      "state": "coverage-limited",
+      "note": "Korean-script same-meaning/phonetic register equivalents not searched on this search — The native-language investigation is offered on a Multi-country focus search and runs automatically on a Full country search."
+    }
+  ],
+  "actions": [
+    {
+      "id": 1,
+      "kind": "senior-clearance",
+      "text": "Resolve Align Networks' Korean ENQOR applications before filing or launching VENQORI in South Korea.",
+      "ordinals": [
+        1
+      ],
+      "condition": "Align Networks' three ENQOR applications remain pending on the Korean record searched."
+    },
+    {
+      "id": 2,
+      "kind": "senior-clearance",
+      "text": "Resolve Yiwu Tengding's Japanese VENKURI right before filing or launching VENKURI in Japan.",
+      "ordinals": [
+        2
+      ],
+      "condition": "Yiwu Tengding's identical VENKURI registration is live on the Japanese record searched."
+    },
+    {
+      "id": 3,
+      "kind": "client-fact",
+      "text": "Confirm the applicant's legal name, affiliates and owned marks so the report does not list the applicant's own rights as conflicts.",
+      "ordinals": []
+    },
+    {
+      "id": 4,
+      "kind": "client-fact",
+      "text": "Confirm whether either name will extend to branded sensors, purifiers, connected hardware or embedded processors.",
+      "ordinals": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": 5,
+      "kind": "senior-clearance",
+      "text": "Identify the QUORI App's owner and function before treating the app-store result as cleared.",
+      "ordinals": [],
+      "condition": "The app-store receipt does not identify the proprietor or the app's function."
+    },
+    {
+      "id": 6,
+      "kind": "client-fact",
+      "text": "Confirm whether launch and filing plans remain limited to Japan and South Korea.",
+      "ordinals": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  ],
+  "mark_assessment": {
+    "distinctiveness": "VENQORI and VENKURI are coined, inherently distinctive whole words for water-monitoring software and training, with no obvious absolute-ground objection on the material reviewed.",
+    "connotation": "The searches found no evidence that either proposed name has attracted criticism as culturally appropriative. QORI may suggest a Quechua cultural origin, and one BENKORI offensive-meaning search returned no usable source material."
+  },
+  "four_answers": {
+    "third_party_rights": {
+      "read": "The strongest earlier rights are the Korean ENQOR applications and the Japanese VENKURI registration, each affecting a different candidate form.",
+      "token": "moderate",
+      "basis": "Findings 1 and 2 establish close marks in the principal launch territories and core software or electronics goods.",
+      "ordinals": [
+        1,
+        2
+      ]
+    },
+    "objection_likelihood": {
+      "read": "An objection is possible in South Korea for VENQORI and in Japan for VENKURI; the remaining owners are less likely to succeed.",
+      "token": "possible",
+      "basis": "The two leading conflicts are close, current register positions, while findings 3 to 9 carry strong whole-mark or goods defences.",
+      "ordinals": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "registrability": {
+      "read": "Registration is available with conditions because each candidate has one principal territorial obstacle and several manageable broad-technology citations.",
+      "token": "registrable-with-conditions",
+      "basis": "The Korean ENQOR applications affect VENQORI and the Japanese VENKURI registration affects VENKURI.",
+      "ordinals": [
+        1,
+        2
+      ],
+      "obstacles": [
+        {
+          "class": "9",
+          "note": "Korean ENQOR smartphone-software applications and the Japanese VENKURI electronics registration are the principal obstacles."
+        }
+      ]
+    }
+  },
+  "coverage_judgment": {
+    "sufficient": false,
+    "reason": "The exact Greek- and Cyrillic-letter lookalikes and the priority Xylem owner inquiry remain unresolved, so the picture is insufficient for unconditional worldwide reliance.",
+    "rows": [
+      {
+        "area": "primary-sweep / exact: vεηqοrι [cl 9, 42, 41]",
+        "areaLabel": "main register sweep / exact: vεηqοrι [cl 9, 42, 41]",
+        "note": "deferred — The visually identical Greek-letter form could not be searched because this register indexes non-Latin filings by transliteration rather than by their original "
+      },
+      {
+        "area": "primary-sweep / exact: vеnqоri [cl 9, 42, 41]",
+        "areaLabel": "main register sweep / exact: vеnqоri [cl 9, 42, 41]",
+        "note": "deferred — The visually identical Cyrillic-letter form could not be searched because this register indexes non-Latin filings by transliteration rather than by their origin"
+      },
+      {
+        "area": "incumbent-class (entire axis)",
+        "areaLabel": "owner portfolio sweep (all of it)",
+        "note": "coverage-limited — Six priority-owner intersections were enumerated with no records, while the broader portfolio counts provide context only and do not support record-level conclu"
+      },
+      {
+        "area": "incumbent-class / owner: Xylem Inc. [cl 9, 42, 41]",
+        "areaLabel": "owner portfolio sweep / owner: Xylem Inc. [cl 9, 42, 41]",
+        "note": "deferred — The priority Xylem portfolio inquiry failed after the provider accepted it, and the two VENQORI intersections remained count-only rather than enumerated, so no "
+      }
+    ]
+  },
+  "corrections": {
+    "applied": true,
+    "note": "Findings 1 and 2: corrected — grounded registration profiles added to the existing legal and practical fields.\nFinding 1 scope: corrected — Class 9, 41 and 42 applications described by their official scopes.\nFinding 9 status: corrected — the Turkish application is pending.\nQORIQ/NXP floor position: corrected — live Japanese and Korean rights reconciled by their semiconductor scope.\nOther live in-class floor positions: corrected — all named records reconciled by their existing field and territorial reasons.\nVerdict owner wording: corrected.\nCoverage meaning wording: corrected.\nCoverage labels: corrected to plain descriptions while preserving the underlying facts.\nCandidate-check wording: corrected.\nAction 3: corrected.\nMark connotation assessment: corrected.\nFindings 1 and 2 calibration: corrected.\nFindings 3 and 4 calibration: corrected.\nFindings 5 through 9 calibration: corrected."
+  }
+}

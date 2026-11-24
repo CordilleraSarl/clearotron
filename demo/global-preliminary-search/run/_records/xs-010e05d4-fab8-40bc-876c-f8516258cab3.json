@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/xs/010e05d4-fab8-40bc-876c-f8516258cab3",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "010e05d4-fab8-40bc-876c-f8516258cab3",
+  "applicationNumber": null,
+  "registrationNumber": "44795500",
+  "applicationDate": null,
+  "registrationDate": "2018-03-21",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RAVEN RISK SOLUTIONS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Consulting services in the area of threat & risk assessments as well as training & policy development in the areas of public safety",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "PLUMMER CONSULTING GROUP L.L.C.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2449 44TH AVE S, GRAND FORKS, ND, 58201-3424",
+        "applicantAddressCity": "GRAND FORKS",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "58201-3424",
+        "applicantAddressStateName": "NORTH DAKOTA",
+        "applicantAddressStreet": "2449 44TH AVE S",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "PLUMMER CONSULTING GROUP L.L.C."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Consulting services in the area of threat & risk assessments as well as training & policy development in the areas of public safety"
+        }
+      ]
+    },
+    "id": "010e05d4-fab8-40bc-876c-f8516258cab3",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADENAME",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "2449 44TH AVE S, GRAND FORKS, ND, 58201-3424",
+        "city": "GRAND FORKS",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "PLUMMER CONSULTING GROUP L.L.C.",
+        "postalCode": "58201-3424",
+        "stateName": "NORTH DAKOTA",
+        "street": "2449 44TH AVE S"
+      }
+    ],
+    "recordLastUpdated": "20240305",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20180321",
+        "registrationNumber": "44795500"
+      }
+    },
+    "usStateOfficeCode": "ND",
+    "usStateOfficeName": "NORTH DAKOTA",
+    "version": "20240305103451",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN RISK SOLUTIONS"
+    }
+  },
+  "_uri": "/mark/xs/010e05d4-fab8-40bc-876c-f8516258cab3",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.189Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

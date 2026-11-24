@@ -1,0 +1,114 @@
+{
+  "uri": "/mark/id/ddc14aa5-0b80-4123-8ee2-4bb23e2160b5",
+  "provider": "clarivate",
+  "office": "id",
+  "guid": "ddc14aa5-0b80-4123-8ee2-4bb23e2160b5",
+  "applicationNumber": "D001994013417",
+  "registrationNumber": "347944",
+  "applicationDate": "1995-07-22",
+  "registrationDate": "1995-11-07",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "VENRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "id",
+      "description": "Alat - alat untuk sambung menyambung kawat listrik termasuk: stopkontak, schakelar, dan plat - plat untuk kawat listrik, relay - relay termasuk: relay dan pengendalian jarak jauh, alat - alat pengaman yaitu: schakelar yang digerakkan oleh photo electric, signal/isyarat yaitu: macam - macam bell, alat - alat dan mesin - mesin telekomunikasi.",
+      "translation_language": "en",
+      "translation": "Connecting devices for electric wire include: electrical outlet, schakelar, and electric wire, relays including: relays and remote controls, safety equipment: electrically driven schakelar, signal / signal : Various kinds of bell, telecommunication tools and machinery."
+    }
+  ],
+  "owner": "MATSUSHITA ELECTRIC WORKS, LTD.",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "DRA. AMALIA ROOSSENO, SH - CS.",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "MATSUSHITA ELECTRIC WORKS, LTD."
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Connecting devices for electric wire include: electrical outlet, schakelar, and electric wire, relays including: relays and remote controls, safety equipment: electrically driven schakelar, signal / signal : Various kinds of bell, telecommunication tools and machinery.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "id",
+          "intGoodsServicesDescription": "Alat - alat untuk sambung menyambung kawat listrik termasuk: stopkontak, schakelar, dan plat - plat untuk kawat listrik, relay - relay termasuk: relay dan pengendalian jarak jauh, alat - alat pengaman yaitu: schakelar yang digerakkan oleh photo electric, signal/isyarat yaitu: macam - macam bell, alat - alat dan mesin - mesin telekomunikasi."
+        }
+      ]
+    },
+    "id": "ddc14aa5-0b80-4123-8ee2-4bb23e2160b5",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250105",
+    "registrationOfficeCode": "ID",
+    "registrationOfficeName": "Indonesia",
+    "representatives": [
+      {
+        "representativeAddress": "PERMATA HIJAU RAYA B - 29, SENAYAN, JAKARTA 12210. ID",
+        "representativeAddressCountryCode": "ID",
+        "representativeAddressCountryName": "Indonesia",
+        "representativeName": "DRA. AMALIA ROOSSENO, SH - CS."
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19950722",
+        "applicationNumber": "D001994013417"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "EXPIRED MARK",
+      "registration": {
+        "registrationDate": "19951107",
+        "registrationNumber": "347944"
+      }
+    },
+    "version": "20250105090941",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENRI"
+    }
+  },
+  "_uri": "/mark/id/ddc14aa5-0b80-4123-8ee2-4bb23e2160b5",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.186Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

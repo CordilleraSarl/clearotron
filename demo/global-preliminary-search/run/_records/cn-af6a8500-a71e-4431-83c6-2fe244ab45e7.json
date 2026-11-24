@@ -1,0 +1,130 @@
+{
+  "uri": "/mark/cn/af6a8500-a71e-4431-83c6-2fe244ab45e7",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "af6a8500-a71e-4431-83c6-2fe244ab45e7",
+  "applicationNumber": "83632270",
+  "registrationNumber": "83632270",
+  "applicationDate": "2025-02-24",
+  "registrationDate": "2025-11-28",
+  "expiryDate": "2035-11-27",
+  "renewalDate": null,
+  "lastPublicationDate": "2025-08-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "EVEN RING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "电子芯片",
+      "translation_language": "en",
+      "translation": "Electronic chip"
+    }
+  ],
+  "owner": "Shenzhen Yiwen Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省深圳市南山区西丽街道西丽社区兴科路66号乐普大厦西塔2603",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Shenzhen Yiwen Technology Co., Ltd.",
+        "applicantNativeName": "深圳市逸文科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Electronic chip",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "电子芯片"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "af6a8500-a71e-4431-83c6-2fe244ab45e7",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1949"
+      }
+    ],
+    "recordLastUpdated": "20260130",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "北京集佳知识产权代理有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250224",
+        "applicationNumber": "83632270"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20351127",
+      "lastPublicationDate": "20250827",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20251128",
+        "registrationNumber": "83632270"
+      }
+    },
+    "version": "20260130020706",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "EVEN RING"
+    }
+  },
+  "_uri": "/mark/cn/af6a8500-a71e-4431-83c6-2fe244ab45e7",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.186Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

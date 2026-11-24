@@ -65,6 +65,7 @@ import { REGISTER_AXES } from "../../coverage-ledger.mjs";
 import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
+import { USE_PHRASE } from "../../verify-knockout.mjs";   // the use phrase, defined once
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
 import { recordKnockoutCorrection } from "../../knockout-correction-record.mjs";
 import { recordKnockoutRegisterRead } from "../../knockout-register-record.mjs";
@@ -142,7 +143,8 @@ async function record_knockout_register_read(params) {
   if (!runDir) {
     return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
   }
-  return recordKnockoutRegisterRead(runDir, params);
+  // A family's reader is bound by its label, as a rating group is; a reader for the whole order has none.
+  return recordKnockoutRegisterRead(runDir, params, { boundOrdinal: String(process.env.CLEAROTRON_RECORD_AXIS ?? "") || null });
 }
 
 async function read_register_list(params) {
@@ -790,13 +792,6 @@ serve({
             },
           },
         },
-        methodology: {
-          type: "string",
-          description:
-            "OPTIONAL plain-English scope note a reviewer needs. Never a telemetry block — no query, " +
-            "fetch, variant, platform or storefront counts, no clean-check enumeration. Omit it when " +
-            "there is no real scope note to make.",
-        },
         handling_note: {
           type: "string",
           description: "OPTIONAL, ONE line — only when a finding rests on an adversary's public social/web profiles. Renders bold on the email cover.",
@@ -1385,14 +1380,8 @@ serve({
   }, {
     name: "record_knockout_review",
     description:
-      "Hand back the MATERIAL DEFECTS you found and your REWRITES of the lines a reader meets first, as VALUES. A material " +
-      "defect goes to the step that rated the batch, and you repair nothing. The driver writes a rewrite into " +
-      "the rated record itself, so you never format JSON and never write a file. Each rewrite names the " +
-      "line it replaces by the `at` address you were handed in the dispatch, copied verbatim — you do " +
-      "not quote the sentence and there is no field for one. An address naming no line on this run's " +
-      "record is refused by name, so a mistyped address costs you a turn rather than landing your text " +
-      "on the wrong line. A repair turn may send only the rows it is correcting: the driver merges BY " +
-      "ADDRESS onto what it already accepted, so rows you omit survive.",
+      "Hand back the MATERIAL DEFECTS you found, as VALUES, and your answer to the question the dispatch opens with. A material " +
+      "defect goes to the step that rated the batch, and you repair nothing. Send an empty `material` list when you found none.",
     inputSchema: {
       type: "object",
       additionalProperties: false,
@@ -1404,7 +1393,7 @@ serve({
         },
         material: {
           type: "array",
-          description: "What would change what the client is told. Empty or left out where you found nothing of that weight.",
+          description: "What would change what the client is told. Empty where you found nothing of that weight.",
           items: {
             type: "object", additionalProperties: false, required: ["kind", "mark", "problem"],
             properties: {
@@ -1413,47 +1402,6 @@ serve({
               finding: { type: "integer", description: "The finding's ordinal, where the defect is about one." },
               problem: { type: "string", description: "What is wrong and why it matters to the client." },
               rests_on: { type: "array", items: { type: "string" }, description: "The held evidence behind the defect: recordIds, question qids and URLs copied from what the run holds. Required for missing and exclusion. A defect about scope, the framework or internal agreement may name its source in problem instead." },
-            },
-          },
-        },
-        rewrites: {
-          type: "array",
-          description:
-            "One row per line you are replacing. A rewrite keeps every fact and changes only the " +
-            "register — the same band, names, reasons and conclusion, in the words the reader owns.",
-          items: {
-            type: "object", additionalProperties: false, required: ["at", "text"],
-            properties: {
-              at: {
-                type: "object", additionalProperties: false, required: ["field"],
-                description: "The address, copied VERBATIM from the dispatch row. Do not compose one.",
-                properties: {
-                  field: { type: "string", description: "The field this line lives in." },
-                  mark: { type: "string", description: "The mark's name, where the field is a mark's." },
-                  index: { type: "integer", description: "The position, where the field is a list." },
-                  ordinal: { type: "integer", description: "The finding's ordinal, for a conflict's one sentence." },
-                },
-              },
-              text: { type: "string", description: "The replacement prose, finished — written into the field exactly as sent." },
-              why: { type: "string", description: "Optional: what was wrong with the line you replaced." },
-            },
-          },
-        },
-        declined: {
-          type: "array",
-          description:
-            "If no change is needed, record that once; do not explain every unchanged line.",
-          items: {
-            type: "object", additionalProperties: false, required: ["at", "why"],
-            properties: {
-              at: {
-                type: "object", additionalProperties: false, required: ["field"],
-                properties: {
-                  field: { type: "string" }, mark: { type: "string" },
-                  index: { type: "integer" }, ordinal: { type: "integer" },
-                },
-              },
-              why: { type: "string", description: "Why the line stands as written." },
             },
           },
         },
@@ -1528,7 +1476,8 @@ serve({
   }, {
     name: "read_register_list",
     description:
-      "Read the held answer to one question by `qid`, with its filings and goods evidence. A row's `goods_state` " +
+      "Read the held answer to one question by `qid`, with its filings and goods evidence, as a table of one filing a line. " +
+      "The goods column holds the wording in the classes this name searches, cut at 200 characters a class. A row's `goods_state` " +
       "distinguishes complete, cut, unknown, absent, unavailable, and not-held wording. Pass `record_id` as well to read " +
       "all wording held for that filing. This reads existing evidence and makes no register call. Full wording is available " +
       "only where this run holds it.",
@@ -1629,9 +1578,11 @@ serve({
         },
         batch: {
           type: "object",
-          required: ["productContext", "inUseAs"],   // places are per name (ruling 570): the batch list is optional, as in the acceptor and the manual
+          required: ["productContext", "inUseAs", "useKind"],   // places are per name (ruling 570): the batch list is optional, as in the acceptor and the manual
           properties: {
             productContext: { type: "string", description: "One sentence: what the batch is for. Every mark's contextFraming is read against it." },
+            // THE ORDER'S USE PHRASE (design, 2026-11-24): one for the names with the order's proposed use, so two runs of one order ask the same questions.
+            useKind: { type: "string", description: USE_PHRASE },
             inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The places the batch is searched on include the sites where these uses are listed." },
             places: {
               type: "array", items: { type: "string" },
@@ -1642,6 +1593,10 @@ serve({
               type: "array", items: { type: "string" },
               description: "The mark names in the order they should be swept — common-word and known-problem marks first. Every entry must be a mark in this plan.",
             },
+            families: {
+              type: "array", items: { type: "array", items: { type: "string" } },
+              description: "Put each submitted name verbatim in exactly one group in batch.families. Keep spellings generated only for searching outside the groups.",
+            },
           },
         },
         marks: {
@@ -1649,9 +1604,9 @@ serve({
           description: "One row per instructed mark, names verbatim. Two names that differ only in spacing, punctuation or case are REFUSED: they would share one research payload, and one of them would be rated on the other's evidence.",
           items: {
             type: "object",
-            // The six the acceptor refuses a row without, by name. `classes` is NOT among them: a plan
+            // The four the acceptor refuses a row without, by name. `classes` is NOT among them: a plan
             // row may legitimately carry none, and the acceptor only constrains its shape when present.
-            required: ["name", "classesPlain", "contextFraming", "useKind", "places", "spellings"],
+            required: ["name", "classesPlain", "contextFraming", "places"],
             properties: {
               ref: { type: "string", description: "The requester's own reference for this mark, or omit it." },
               name: { type: "string", description: "The mark, verbatim from the instructed scope." },
@@ -1659,12 +1614,12 @@ serve({
               beltAndBraces: { type: "array", items: { type: "number" }, description: "Adjacent Nice classes swept as a precaution, integers 1-45." },
               classesPlain: { type: "string", description: "The plain-language class line — what these classes are, in words the rating step reads beside the numbers." },
               contextFraming: { type: "string", description: "What THIS name is for — a character, a location, a product line. The rating hangs off it: the assess stage is told to rate WITH this field, per mark, and two names in one batch can sit at different bands on identical evidence because they are used differently." },
-              useKind: { type: "string", description: "In one to three words, the kind of use this name most plausibly already has in this field, in your judgment (task 2c). Every search of the name adds it: each spelling is searched on each place as the spelling followed by those words. Keep it short — it goes into every one of that name's searches — but a longer answer is accepted." },
+              useKind: { type: "string", description: "A different use the request gives this name, copied as batch.useKind is (task 2c). Leave it out otherwise." },
               // PER NAME, NOT PER BATCH (ruling 570). Declared here as well as in the driver's allowlist
               // because a field the prose asks for and the schema omits is a contradiction the seat
               // resolves whichever way it happens to trust.
               places: { type: "array", items: { type: "string" }, description: "The places THIS name is searched on: two or more, one of them \"web\" (the whole web) and each other a site's bare host. No upper limit — name as many as this name needs, and no more, because every place is another search of every spelling. Two names in one batch may have different lists." },
-              spellings: { type: "array", items: { type: "string" }, description: "2 or 3 ways this name is written, the name as instructed among them. Each is searched on every place THIS name names." },
+              // NO SPELLINGS: the driver builds them from the name (task 2e). A held answer that sends them is accepted, as the record says.
               alternatives: { type: "array", items: { type: "string" }, description: "Each written form of this one item, where the request gives more than one spelling or word order. Omit otherwise." },
               priorKnowledge: { type: "string", description: "What the requester already told you about this name, or omit it." },
               priority: { type: "number", description: "This mark's position in the execution order." },

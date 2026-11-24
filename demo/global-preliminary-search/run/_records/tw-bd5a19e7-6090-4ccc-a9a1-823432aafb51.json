@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/tw/bd5a19e7-6090-4ccc-a9a1-823432aafb51",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "bd5a19e7-6090-4ccc-a9a1-823432aafb51",
+  "applicationNumber": "072034649",
+  "registrationNumber": "00241512",
+  "applicationDate": "1983-08-19",
+  "registrationDate": "1984-04-01",
+  "expiryDate": "1994-03-31",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VENRI",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    11
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        9,
+        11
+      ],
+      "language": "zh",
+      "description": "第095類:各種開關、按扭式開關、耐壓防爆型倒板開關、微動開關、中間開關、自動開關、插頭、插座、防水插座、漏電斷路器、蜂鳴器及其他應屬本類之一切商品。",
+      "translation_language": "en",
+      "translation": "Class 095: Various switches, push-button switches, pressure-resistant and explosion-proof flip switches, micro switches, intermediate switches, automatic switches, plugs, sockets, waterproof sockets, leakage circuit breakers, buzzers and other items that belong to this category All products of this category."
+    }
+  ],
+  "owner": "song xia dian gong gu fen you xian gong si",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "song xia dian gong gu fen you xian gong si"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Class 095: Various switches, push-button switches, pressure-resistant and explosion-proof flip switches, micro switches, intermediate switches, automatic switches, plugs, sockets, waterproof sockets, leakage circuit breakers, buzzers and other items that belong to this category All products of this category.",
+          "intClassNumber": "07,09,11",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "第095類:各種開關、按扭式開關、耐壓防爆型倒板開關、微動開關、中間開關、自動開關、插頭、插座、防水插座、漏電斷路器、蜂鳴器及其他應屬本類之一切商品。"
+        }
+      ]
+    },
+    "id": "bd5a19e7-6090-4ccc-a9a1-823432aafb51",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19830819",
+        "applicationNumber": "072034649"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "19940331",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19840401",
+        "registrationNumber": "00241512"
+      }
+    },
+    "version": "20260331161549",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VENRI"
+    }
+  },
+  "_uri": "/mark/tw/bd5a19e7-6090-4ccc-a9a1-823432aafb51",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.202Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

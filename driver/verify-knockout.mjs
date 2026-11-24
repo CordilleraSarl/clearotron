@@ -427,8 +427,32 @@ export function placesDefect(name, places) {
   return null;
 }
 
+/** A string's words, one space between each, by plain splitting: no pattern parses a name or a request (owner, 2026-11-24). */
+export const spaced = (s) => String(s ?? "").replaceAll("\r", " ").replaceAll("\n", " ").replaceAll("\t", " ").split(" ").filter(Boolean).join(" ");
+
 /**
- * The refusal for a mark's spellings, or null. PURE. Two spellings that differ only in case or spacing
+ * THE SPELLINGS A NAME IS SEARCHED AS ON THE MARKET, built from the name and never chosen (design, 2026-11-24). PURE.
+ *
+ * Each written form, as written, with its words joined and with its words hyphenated, the repeats dropped whatever their
+ * case. The written forms are the name's `alternatives` where the request gives one item more than one way, each kept
+ * tied to the name, else the name. Words are split at spaces and hyphens with plain string steps, no pattern. The frame
+ * chose the spellings before: a run that dropped the hyphen lost the one page only that spelling found (measured in
+ * testing, 2026-11-23), and two runs of one order asked different questions.
+ */
+export function marketSpellings(name, alternatives = null) {
+  const written = (Array.isArray(alternatives) ? alternatives : []).map(spaced).filter(Boolean);
+  const forms = [];
+  for (const w of written.length ? written : [spaced(name)]) {
+    const words = w.split(" ").flatMap((x) => x.split("-")).filter(Boolean);
+    forms.push(w, words.join(""), words.join("-"));
+  }
+  const seen = new Set();
+  return forms.filter((f) => f && !seen.has(f.toLowerCase()) && seen.add(f.toLowerCase()));
+}
+
+/**
+ * The refusal for a mark's spellings in a plan whose frame chose them, or null: a plan written before the spellings were
+ * built (marketSpellings), which carries no `batch.useKind`. PURE. Two spellings that differ only in case or spacing
  * are one search, so they are refused as a repeat; the name as instructed must be among them.
  */
 export function spellingsDefect(name, spellings) {
@@ -466,6 +490,26 @@ export function alternativesDefect(name, alternatives) {
     ? `mark "${name}": alternatives is a list of the written forms of this one item, or leave it out` : null;
 }
 
+/**
+ * THE USE PHRASE, DEFINED ONCE (owner and design, 2026-11-24). The manual's task 2c, the tool's field note and the refusal all
+ * state it in these words. The intake copies it from the request, and the record checks the copy by plain containment.
+ */
+export const USE_PHRASE = "One to three words copied exactly from the request, saying what the client will use the names for. Every web search adds them after the name. Give a name its own useKind only when the request gives that name a different use, copied the same way; otherwise leave the field out.";
+
+/**
+ * A plan or a call whose spellings the driver builds carries the order's use phrase on the batch. A held intake answer from
+ * before carries no phrase on the batch, and a use and spellings on every name, and keeps them. PURE.
+ */
+export const builtTerms = (batch) => batch?.useKind != null;
+export const heldTerms = (batch, marks) => batch?.useKind == null && Array.isArray(marks) && marks.length > 0
+  && marks.every((m) => m?.useKind != null && m?.spellings !== undefined);
+/** The phrase a name is searched with: its own where the request gave it one, else the order's. A null is no phrase. PURE. */
+export const useOf = (mark, batch) => (typeof mark?.useKind === "string" && mark.useKind.trim() ? mark.useKind.trim()
+  : typeof batch?.useKind === "string" ? batch.useKind.trim() : "");
+export function batchUseKindDefect(useKind) {
+  return typeof useKind === "string" && useKind.trim() ? null : `batch.useKind is required (task 2c). ${USE_PHRASE}`;
+}
+
 export function useKindDefect(name, useKind) {
   const refusal = `mark "${name}": useKind is required: one to three words, the kind of use this name is searched for (task 2c)`;
   return typeof useKind === "string" && useKind.trim() ? null : refusal;
@@ -485,6 +529,7 @@ export const validators = {
     // batch is searched on from them, so a plan without them has chosen its places on nothing it stated.
     if (typeof p.batch.inUseAs !== "string" || !p.batch.inUseAs.trim())
       return { ok: false, reason: "batch.inUseAs (string) is required: the kinds of use off the register, for this client's field" };
+    if (builtTerms(p.batch) && batchUseKindDefect(p.batch.useKind)) return { ok: false, reason: batchUseKindDefect(p.batch.useKind) };
     // THE BATCH'S LIST IS NO LONGER REQUIRED (ruling 570): the places are per name below. A plan frozen
     // before that carries one here, and it is still checked when present, so an archived plan reads back
     // under the rule it was written to rather than passing unexamined.
@@ -498,10 +543,18 @@ export const validators = {
       for (const k of Object.keys(m)) if (!MARK_KEYS.includes(k)) return { ok: false, reason: `plan mark key "${k}" is not in the closed contract` };
       if (typeof m.name !== "string" || !m.name.trim()) return { ok: false, reason: "every plan mark needs a verbatim name" };
       if (typeof m.classesPlain !== "string" || !m.classesPlain.trim()) return { ok: false, reason: `mark "${m.name}": classesPlain (the plain-language class line) is required` };
-      const spellingsRefused = spellingsDefect(m.name, m.spellings);
-      if (spellingsRefused) return { ok: false, reason: spellingsRefused };
+      // BUILT OR CHOSEN. A plan with the order's use phrase carries the spellings the driver built; an archived plan carries the
+      // frame's own, and reads back under the rule it was written to.
+      if (builtTerms(p.batch)) {
+        const built = marketSpellings(m.name, m.alternatives);
+        if (!Array.isArray(m.spellings) || m.spellings.length !== built.length || m.spellings.some((x, i) => x !== built[i]))
+          return { ok: false, reason: `mark "${m.name}": spellings are the driver's forms of the name, as written, joined and hyphenated (task 2e)` };
+      } else {
+        const spellingsRefused = spellingsDefect(m.name, m.spellings);
+        if (spellingsRefused) return { ok: false, reason: spellingsRefused };
+      }
       if (typeof m.contextFraming !== "string" || !m.contextFraming.trim()) return { ok: false, reason: `mark "${m.name}": contextFraming is required (the rating hangs off it)` };
-      const useKindRefused = useKindDefect(m.name, m.useKind);
+      const useKindRefused = builtTerms(p.batch) ? (m.useKind == null ? null : useKindDefect(m.name, m.useKind)) : useKindDefect(m.name, m.useKind);
       if (useKindRefused) return { ok: false, reason: useKindRefused };
       const alternativesRefused = alternativesDefect(m.name, m.alternatives);
       if (alternativesRefused) return { ok: false, reason: alternativesRefused };
@@ -616,8 +669,7 @@ export const validators = {
       return { ok: false, reason: `chunkSummary carries an "# " heading. A single hash opens a SECTION of the report, so the client's summary ends at that line and everything after it is dropped from the page with nothing reporting the loss. Sub-headers here are "## " or "### "` };
     if (isUnbrokenWall(c.chunkSummary))
       return { ok: false, reason: `chunkSummary is ${c.chunkSummary.trim().length} characters with no line break in it — the grouped page opens with this and a reader cannot scan a wall. Keep the length; add the structure: a short opening line, then one "## <MARK NAME>" sub-header per mark, bullets where they help` };
-    if (chunkNo === 0 && !(c.batch && typeof c.batch.productContext === "string" && c.batch.productContext.trim()))
-      return { ok: false, reason: "chunk 0 must carry the batch object (productContext at minimum)" };
+    // No group carries the order's duties: the product context comes from the plan (knockoutPlan above requires it).
     for (const m of c.marks) {
       if (typeof m.name !== "string" || !m.name.trim()) return { ok: false, reason: "every mark needs a name" };
       // degraded parity vs the DISK truth (the sweep's payload/.failed sentinels), both directions:

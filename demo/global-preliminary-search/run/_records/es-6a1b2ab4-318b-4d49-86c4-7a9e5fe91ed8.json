@@ -1,0 +1,111 @@
+{
+  "uri": "/mark/es/6a1b2ab4-318b-4d49-86c4-7a9e5fe91ed8",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "6a1b2ab4-318b-4d49-86c4-7a9e5fe91ed8",
+  "applicationNumber": "4376473 M8",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-25",
+  "registrationDate": null,
+  "expiryDate": "2036-04-24",
+  "renewalDate": null,
+  "lastPublicationDate": "2026-06-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "PREVENRISK-VAC",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "es",
+      "description": "Servicios cientificos y tecnologicos, asi como servicios de investigacion y diseño conexos; servicios de analisis industrial, investigacion industrial y diseño industrial; control de calidad y servicios de autenticacion; diseño y desarrollo de hardware y software",
+      "translation_language": "en",
+      "translation": "SCIENTIFIC AND TECHNOLOGICAL SERVICES, AS WELL AS RELATED RESEARCH AND DESIGN SERVICES; INDUSTRIAL ANALYSIS, INDUSTRIAL RESEARCH AND INDUSTRIAL DESIGN SERVICES; QUALITY CONTROL AND AUTHENTICATION SERVICES; DESIGN AND DEVELOPMENT OF HARDWARE AND SOFTWARE"
+    }
+  ],
+  "owner": "WECARE-U COMUNICACION SL",
+  "ownerNative": null,
+  "ownerCountry": "ES",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Barón de la Torre 5, 28043 Madrid",
+        "applicantAddressCountryCode": "ES",
+        "applicantAddressCountryName": "Spain",
+        "applicantName": "WECARE-U COMUNICACION SL"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "SCIENTIFIC AND TECHNOLOGICAL SERVICES, AS WELL AS RELATED RESEARCH AND DESIGN SERVICES; INDUSTRIAL ANALYSIS, INDUSTRIAL RESEARCH AND INDUSTRIAL DESIGN SERVICES; QUALITY CONTROL AND AUTHENTICATION SERVICES; DESIGN AND DEVELOPMENT OF HARDWARE AND SOFTWARE",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios cientificos y tecnologicos, asi como servicios de investigacion y diseño conexos; servicios de analisis industrial, investigacion industrial y diseño industrial; control de calidad y servicios de autenticacion; diseño y desarrollo de hardware y software"
+        }
+      ]
+    },
+    "id": "6a1b2ab4-318b-4d49-86c4-7a9e5fe91ed8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "7173"
+      }
+    ],
+    "recordLastUpdated": "20260628",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260425",
+        "applicationNumber": "4376473 M8"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "expiryDate": "20360424",
+      "lastPublicationDate": "20260616",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20260628020016",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PREVENRISK-VAC"
+    }
+  },
+  "_uri": "/mark/es/6a1b2ab4-318b-4d49-86c4-7a9e5fe91ed8",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.195Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

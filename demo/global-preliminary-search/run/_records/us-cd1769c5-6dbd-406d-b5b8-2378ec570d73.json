@@ -1,0 +1,429 @@
+{
+  "uri": "/mark/us/cd1769c5-6dbd-406d-b5b8-2378ec570d73",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "cd1769c5-6dbd-406d-b5b8-2378ec570d73",
+  "applicationNumber": "77940363",
+  "registrationNumber": null,
+  "applicationDate": "2010-02-19",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2010-07-13"
+  ],
+  "abandonmentDate": "2012-12-06",
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "ABANDONED",
+  "markText": "RAVEN RILEY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment services, namely, televised, live radio, live web-based non-downloadable video, and movie appearances by a professional entertainer; entertainment services, namely, providing a website featuring non-downloadable adult-themed photographs and videos; Entertainment services, namely, personal appearances by a professional entertainer",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Pate, Sarah",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "1250 Middletown-Eaton Rd., Middletown, OH, 45042",
+        "applicantAddressCity": "Middletown",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "45042",
+        "applicantAddressStateName": "OHIO",
+        "applicantAddressStreet": "1250 Middletown-Eaton Rd.",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Pate, Sarah"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment services, namely, televised, live radio, live web-based non-downloadable video, and movie appearances by a professional entertainer; entertainment services, namely, providing a website featuring non-downloadable adult-themed photographs and videos; Entertainment services, namely, personal appearances by a professional entertainer"
+        }
+      ]
+    },
+    "id": "cd1769c5-6dbd-406d-b5b8-2378ec570d73",
+    "ipRightKind": "tmk",
+    "litigationInformation": {
+      "proceedings": [
+        {
+          "decision": {
+            "code": "9",
+            "date": "20121206",
+            "text": "TERMINATED"
+          },
+          "decisionBoard": "Trademark Trial and Appeal Board (TTAB)",
+          "filingDate": "20100812",
+          "identifier": "91196056",
+          "interlocutoryAttorneyName": "YONG OH (RICHARD)KIM",
+          "kind": "Opposition",
+          "kindCode": "OPS",
+          "litigationParties": [
+            {
+              "kind": "Defendant",
+              "kindCode": "D",
+              "name": "SARAH PATE",
+              "referencedMarks": [
+                {
+                  "applicationNumber": "77940363",
+                  "markVerbalElementText": "RAVEN RILEY",
+                  "registrationNumber": "0000000"
+                }
+              ],
+              "representatives": [
+                {
+                  "addressCity": "DAYTON",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "45402",
+                  "addressState": "OH",
+                  "addressStreet": "131 NORTH LUDLOW STREET, SUITE 840",
+                  "companyName": "BEHNKE MARTIN & SCHULTE LLC",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "STEPHEN D BEHNKE"
+                }
+              ]
+            },
+            {
+              "kind": "Plaintiff",
+              "kindCode": "P",
+              "name": "THIRD PENTACLE, LLC",
+              "representatives": [
+                {
+                  "addressCity": "DAYTON",
+                  "addressCountryCode": "USAM",
+                  "addressPostalCode": "45402-1690",
+                  "addressState": "OH",
+                  "addressStreet": "130 W SECOND STREET, SUITE 900",
+                  "companyName": "BRANNON & ASSOCIATES",
+                  "kind": "Correspondent",
+                  "kindCode": "C",
+                  "name": "DAVID D BRANNON"
+                }
+              ]
+            }
+          ],
+          "proceedingEvents": [
+            {
+              "code": "T",
+              "eventDate": "20121206",
+              "text": "#15 BD'S  DECISION: DISMISSED W/O PREJUDICE"
+            },
+            {
+              "code": "T",
+              "eventDate": "20121205",
+              "text": "#14 WITHDRAWAL OF APPLICATION WITH CONSENT"
+            },
+            {
+              "code": "S",
+              "eventDate": "20120324",
+              "text": "#13 SUSPENDED PENDING DISP OF CIVIL ACTION"
+            },
+            {
+              "code": "T",
+              "eventDate": "20120209",
+              "text": "#12 D'S RESPONSE TO BOARD ORDER/INQUIRY"
+            },
+            {
+              "code": "T",
+              "eventDate": "20120209",
+              "text": "#11 CHANGE OF CORRESPONDENCE ADDRESS"
+            },
+            {
+              "code": "T",
+              "eventDate": "20120114",
+              "responseDate": "20120213",
+              "text": "#10 RESPONSE DUE  30 DAYS (DUE DATE)"
+            },
+            {
+              "code": "S",
+              "eventDate": "20110106",
+              "text": "#9 SUSPENDED PENDING DISP OF CIVIL ACTION"
+            },
+            {
+              "code": "W",
+              "eventDate": "20101117",
+              "text": "#8 P'S MOT TO SUSP PEND DISP CIV ACTION"
+            },
+            {
+              "code": "T",
+              "eventDate": "20101115",
+              "text": "#7 APPEARANCE"
+            },
+            {
+              "code": "N",
+              "eventDate": "20101021",
+              "text": "#6 ANSWER"
+            },
+            {
+              "code": "T",
+              "eventDate": "20100921",
+              "text": "#5 STIPULATION FOR AN EXTENSION OF TIME"
+            },
+            {
+              "code": "W",
+              "eventDate": "20100921",
+              "text": "#4 EXTENSION OF TIME GRANTED"
+            },
+            {
+              "code": "N",
+              "eventDate": "20100812",
+              "text": "#3 FILED AND FEE"
+            },
+            {
+              "code": "T",
+              "eventDate": "20100812",
+              "responseDate": "20100921",
+              "text": "#2 NOTICE AND TRIAL DATES SENT:  ANSWER DUE:"
+            },
+            {
+              "code": "T",
+              "eventDate": "20100812",
+              "text": "#1 PENDING, INSTITUTED"
+            }
+          ]
+        }
+      ]
+    },
+    "markEvents": [
+      {
+        "date": "20130103",
+        "descriptionText": "UNDELIVERABLE MAIL - NO ACTION TAKEN"
+      },
+      {
+        "date": "20121206",
+        "descriptionText": "ABANDONMENT NOTICE MAILED - INTER PARTES DECISION"
+      },
+      {
+        "date": "20121206",
+        "descriptionText": "ABANDONMENT - AFTER INTER PARTES DECISION"
+      },
+      {
+        "date": "20121206",
+        "descriptionText": "OPPOSITION DISMISSED NO. 999999"
+      },
+      {
+        "date": "20121206",
+        "descriptionText": "OPPOSITION TERMINATED NO. 999999"
+      },
+      {
+        "date": "20100812",
+        "descriptionText": "OPPOSITION INSTITUTED NO. 999999"
+      },
+      {
+        "date": "20100812",
+        "descriptionText": "OPPOSITION PAPERS RECEIVED AT TTAB"
+      },
+      {
+        "date": "20100714",
+        "descriptionText": "TEAS WITHDRAWAL OF ATTORNEY RECEIVED"
+      },
+      {
+        "date": "20100714",
+        "descriptionText": "WITHDRAWAL OF ATTORNEY GRANTED"
+      },
+      {
+        "date": "20100713",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20100623",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20100609",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20100609",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20100526",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "20100525",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20100525",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20100525",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20100524",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20100516",
+        "descriptionText": "TEAS AMENDMENT ENTERED BEFORE ATTORNEY ASSIGNED"
+      },
+      {
+        "date": "20100516",
+        "descriptionText": "TEAS VOLUNTARY AMENDMENT RECEIVED"
+      },
+      {
+        "date": "20100225",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20100223",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "1250 Middletown-Eaton Rd., Middletown, OH, 45042",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Pate, Sarah",
+        "postalCode": "45042",
+        "stateName": "OHIO",
+        "street": "1250 Middletown-Eaton Rd."
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "1250 Middletown-Eaton Rd., Middletown, OH, 45042",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Pate, Sarah",
+        "postalCode": "45042",
+        "stateName": "OHIO",
+        "street": "1250 Middletown-Eaton Rd."
+      },
+      {
+        "address": "1250 Middletown-Eaton Rd., Middletown, OH, 45042",
+        "city": "Middletown",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Pate, Sarah",
+        "postalCode": "45042",
+        "stateName": "OHIO",
+        "street": "1250 Middletown-Eaton Rd."
+      }
+    ],
+    "recordLastUpdated": "20260109",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "SUITE 840, DAYTON, OH 45402, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "SUITE 840",
+          "DAYTON, OH 45402",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "STEPHEN D BEHNKE BEHNKE MARTIN & SCHULTE LLC, 131 NORTH LUDLOW STREET"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "SUITE 840, DAYTON, OH 45402, UNITED STATES",
+        "representativeAddressLines": [
+          "SUITE 840",
+          "DAYTON, OH 45402",
+          "UNITED STATES"
+        ]
+      }
+    ],
+    "status": {
+      "abandonmentDate": "20121206",
+      "active": false,
+      "application": {
+        "applicationDate": "20100219",
+        "applicationNumber": "77940363"
+      },
+      "cmNormalisedStatus": "ABANDONED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20041031"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20041031"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "ABANDONED-AFTER INTER-PARTES DECISION",
+        "markOfficialStatusCode": "604",
+        "markOfficialStatusDate": "20121206",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "ABANDONED",
+      "publicationDate": [
+        "20100713"
+      ]
+    },
+    "version": "20260109205319",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN RILEY"
+    }
+  },
+  "_uri": "/mark/us/cd1769c5-6dbd-406d-b5b8-2378ec570d73",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.199Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

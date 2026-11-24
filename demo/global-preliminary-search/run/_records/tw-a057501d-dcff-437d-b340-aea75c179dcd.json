@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/tw/a057501d-dcff-437d-b340-aea75c179dcd",
+  "provider": "clarivate",
+  "office": "tw",
+  "guid": "a057501d-dcff-437d-b340-aea75c179dcd",
+  "applicationNumber": "069030902",
+  "registrationNumber": "00154014",
+  "applicationDate": "1980-12-17",
+  "registrationDate": "1981-06-16",
+  "expiryDate": "1990-09-15",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "VEN RING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    7,
+    9,
+    11
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        7,
+        9,
+        11
+      ],
+      "language": "zh",
+      "description": "No goods available",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "wen ling qi ye you xian gong si",
+  "ownerNative": null,
+  "ownerCountry": "TW",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "TW",
+        "applicantAddressCountryName": "Taiwan",
+        "applicantName": "wen ling qi ye you xian gong si"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "07,09,11",
+          "intGoodsLanguageCode": "zh",
+          "intGoodsServicesDescription": "No goods available"
+        }
+      ]
+    },
+    "id": "a057501d-dcff-437d-b340-aea75c179dcd",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20260331",
+    "registrationOfficeCode": "TW",
+    "registrationOfficeName": "Taiwan",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "19801217",
+        "applicationNumber": "069030902"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "19900915",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "19810616",
+        "registrationNumber": "00154014"
+      }
+    },
+    "version": "20260331121110",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "VEN RING"
+    }
+  },
+  "_uri": "/mark/tw/a057501d-dcff-437d-b340-aea75c179dcd",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.203Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

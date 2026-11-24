@@ -13,7 +13,7 @@
     "JP"
   ],
   "cnipaEdition": null,
-  "frozenAt": "2026-09-18T15:14:08.081Z",
+  "frozenAt": "2026-11-20T21:18:56.997Z",
   "fold": {
     "executor": "engine",
     "lanes": {
@@ -22,18 +22,18 @@
         "degradedCause": null,
         "accepted": [
           {
-            "qid": "jx-ja-ヴェンコーリ",
-            "term": "ヴェンコーリ",
-            "romanization": "VENKOORI",
-            "kind": "phonetic",
-            "rationale": "A plausible market variant if the final vowel is pronounced with a long sound."
-          },
-          {
             "qid": "jx-ja-ベンコリ",
             "term": "ベンコリ",
             "romanization": "BENKORI",
             "kind": "phonetic",
-            "rationale": "A common simplified rendering that drops the less familiar ヴ sound in Japanese branding."
+            "rationale": "Japanese speakers may use the familiar B sound in place of the less natural V sound when reading or searching for the brand."
+          },
+          {
+            "qid": "jx-ja-ヴェンコーリ",
+            "term": "ヴェンコーリ",
+            "romanization": "VENKOORI",
+            "kind": "phonetic",
+            "rationale": "A long vowel may be used to make the final sequence sound closer to the English pronunciation of VENQORI."
           }
         ],
         "refused": [
@@ -44,11 +44,11 @@
         ]
       }
     },
-    "foldedAt": "2026-09-18T15:14:17.182Z",
+    "foldedAt": "2026-11-20T21:19:02.617Z",
     "models": [
-      "gpt-5.6-luna"
+      "gpt-6-luna"
     ],
-    "model": "gpt-5.6-luna",
+    "model": "gpt-6-luna",
     "executes": "candidates",
     "slices": {
       "candidates": {
@@ -58,7 +58,7 @@
           "ja": "ran"
         },
         "basis": "_driver/jx-lanes.json:fold.lanes",
-        "why": "every armed lane (1) carries a fold record stating degraded:false"
+        "why": "every lane (1) carries a fold record stating degraded:false"
       },
       "serp-grid": {
         "slice": 2,
@@ -83,10 +83,10 @@
         "ran": "candidates",
         "shortfall": true,
         "cause": "not-built-for-lane",
-        "why": "this build carries no deep slice for the ja lane — the SERP grid and native read are zh-only (JX_SLICES, SERP_LANES), so `full` cannot be delivered here by any environment. The lane ran as a slice-1 candidate lane, which is what it ships as.",
+        "why": "The requested full-depth Japanese-language search is not available in this version. Only the candidate search ran; the deeper web search and native-language review were not performed.",
         "basis": "_driver/jx-lanes.json:lanes[].depth (asked) vs fold.slices (ran)"
       }
     },
-    "statedAt": "2026-09-18T16:05:15.951Z"
+    "statedAt": "2026-11-20T21:50:39.769Z"
   }
 }

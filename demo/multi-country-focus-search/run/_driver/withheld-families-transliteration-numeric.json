@@ -1,0 +1,8 @@
+{
+  "axis": "transliteration-numeric",
+  "families": {
+    "transliteration-numeric:exact:q-a74a3a76": {
+      "reason": "Clarivate indexes this script by romanisation, and the planned VENKORI contains and exact Latin searches already cover that Japanese pronunciation; repeating its exact query would not add a distinct question."
+    }
+  }
+}

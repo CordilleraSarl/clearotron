@@ -1,0 +1,139 @@
+{
+  "uri": "/mark/kr/d0c815dd-a1b0-42f0-81c8-22b8754e96c8",
+  "provider": "clarivate",
+  "office": "kr",
+  "guid": "d0c815dd-a1b0-42f0-81c8-22b8754e96c8",
+  "applicationNumber": "40-1972-0001257",
+  "registrationNumber": "4000269890000",
+  "applicationDate": "1972-03-15",
+  "registrationDate": "1972-06-28",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "SEVEN-RING",
+  "markTransliteration": "SEVEN-RING",
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    6,
+    8,
+    9,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    25,
+    27,
+    28,
+    31
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        6,
+        8,
+        9,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        25,
+        27,
+        28,
+        31
+      ],
+      "language": "ko",
+      "description": "빙상용스케이트,새창으로 열림",
+      "translation_language": "en",
+      "translation": "Ice skating, opens in new window"
+    }
+  ],
+  "owner": "CHOI, Sang-Joon",
+  "ownerNative": null,
+  "ownerCountry": "KR",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "서울 종로구",
+        "applicantAddressCountryCode": "KR",
+        "applicantAddressCountryName": "South Korea",
+        "applicantName": "CHOI, Sang-Joon",
+        "applicantNativeName": "최상준"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Ice skating, opens in new window",
+          "intClassNumber": "06,08,09,17,18,19,20,21,22,25,27,28,31",
+          "intGoodsLanguageCode": "ko",
+          "intGoodsServicesDescription": "빙상용스케이트,새창으로 열림"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "043"
+        }
+      ]
+    },
+    "id": "d0c815dd-a1b0-42f0-81c8-22b8754e96c8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20250625",
+    "registrationOfficeCode": "KR",
+    "registrationOfficeName": "South Korea",
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19720315",
+        "applicationNumber": "40-1972-0001257"
+      },
+      "cmNormalisedStatus": "EXPIRED",
+      "markCurrentStatus": "ENDED",
+      "registration": {
+        "registrationDate": "19720628",
+        "registrationNumber": "4000269890000"
+      }
+    },
+    "version": "20250625201605",
+    "wordMarkSpecification": {
+      "markTransliteration": "SEVEN-RING",
+      "markVerbalElementText": "SEVEN-RING"
+    }
+  },
+  "_uri": "/mark/kr/d0c815dd-a1b0-42f0-81c8-22b8754e96c8",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.194Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -43,6 +43,7 @@ import { makeCountProbe } from "../../_shared/count.mjs";
 import { answerFromHeldList } from "./wider-list.js";
 import { CAPABILITY_GAP_MARKER, REFUSED_BEFORE_SENDING, defaultBuildEntryQuery, makeExecutePlan, makeRegionRequiredBuildEntryQuery, planPredicateParams } from "../../_shared/execute-plan.mjs";
 import { isNonLatinTerm } from "../../_shared/script-form.mjs";
+import { normalizeTerritory } from "../../_shared/territory-codes.mjs";
 import { CAPABILITIES, CLARIVATE_OFFICE_CODES } from "./capabilities.js";
 import { stripGoodsReservedWords } from "../../_shared/term-shape.mjs";   // the goods field parses these words as operators
 import { runDriverDirOf } from "../../_shared/follow-up-searches.mjs";   // the run's own folder, from its record log
@@ -648,16 +649,26 @@ export function joinOrValue(values) {
   return list.join(" OR ");
 }
 
+function officeOf(region) {
+  const c = CAPABILITIES.offices.translate(region);
+  if (!c || CLARIVATE_OFFICE_CODES.includes(c)) return c;
+  const code = normalizeTerritory(region);
+  return code ? CAPABILITIES.offices.translate(code) : c;
+}
+
 /**
  * Translate caller jurisdictions to Compumark registrationOfficeCodes (EU → EM, on EVERY request path)
  * and membership-check them. An office outside the provider's 186-code vocabulary is a genuine coverage
  * gap: it is reported, never silently dropped.
+ *
+ * A territory's name this register's aliases do not hold is read as the engine reads it before the
+ * office is looked up again, so a tool call that writes "Singapore" asks what a plan for it asks.
  */
 export function resolveOffices(regions) {
   const codes = [];
   const unknown = [];
   for (const r of (Array.isArray(regions) ? regions : [])) {
-    const c = CAPABILITIES.offices.translate(r);
+    const c = officeOf(r);
     if (!c) continue;
     if (!CLARIVATE_OFFICE_CODES.includes(c)) { unknown.push(String(r)); continue; }
     if (!codes.includes(c)) codes.push(c);
@@ -1768,18 +1779,28 @@ export async function doImageFetch(apiKey, base, params, tctx) {
 
 // ── One cited registration's logo, for the report ───────────────────────────────────────────────────────────────
 // The live image of one record: one image request, on the same `/image` call as the metadata fetch above and through
-// the same ledger. The answer's `image` field is a string; read here as base64, and the caller keeps the bytes only when
-// they open as a PNG, JPEG, GIF or WebP file, so a different encoding is reported rather than saved. `{ ok, bytes,
-// contentType }`, or `{ ok: false, cause }` for a call that did not land or held no image.
+// the same ledger. `{ ok, bytes, contentType }`, or `{ ok: false, cause }` for a call that did not land or held no image.
+//
+// THE ANSWER: `{ images: [{ content, id, type }] }`. `content` is the image as base64, and `type` names its media type.
+// The caller keeps the bytes only when they open as a PNG, JPEG, GIF or WebP file. An answer of any other shape fails
+// with its shape (key names, types and lengths, never a value), so a change of shape is read off the run, not guessed.
 export async function doMarkImage(apiKey, base, ref, tctx) {
   const guid = refToGuid(ref);
   const r = await clarivateFetch(apiKey, base, "/image", { body: { id: guid }, tctx: { ...tctx, target: guid } });
   if (!r.ok) return { ok: false, cause: `HTTP ${r.status}: ${String(errText(r)).slice(0, 120)}` };
   if (r.parseError) return { ok: false, cause: `unparseable body (HTTP ${r.status})` };
-  const imgs = Array.isArray(r.body?.images) ? r.body.images : Array.isArray(r.body) ? r.body : null;
-  const img = imgs?.find((i) => typeof i?.image === "string" && i.image.length > 0) ?? null;
-  if (!img) return { ok: false, cause: imgs ? "the answer held no image" : `not an image response (HTTP ${r.status})` };
-  return { ok: true, bytes: Buffer.from(img.image, "base64"), contentType: img.contentType ?? img.mimeType ?? null };
+  const imgs = Array.isArray(r.body?.images) ? r.body.images : null;
+  const img = imgs?.find((i) => typeof i?.content === "string" && i.content.length > 0) ?? null;
+  if (!img) return { ok: false, cause: imgs ? "the answer held no image" : `not an image response (HTTP ${r.status})`, shape: shapeOf(r.body) };
+  return { ok: true, bytes: Buffer.from(img.content, "base64"), contentType: typeof img.type === "string" ? img.type : null };
+}
+
+/** A value's shape: key names, types, string lengths and array sizes, never a value itself. PURE. */
+export function shapeOf(v, depth = 0) {
+  if (v === null) return "null";
+  if (Array.isArray(v)) return `[${v.length}x${v.length ? ` ${shapeOf(v[0], depth + 1)}` : ""}]`;
+  if (typeof v === "object") return depth > 4 ? "{...}" : `{${Object.entries(v).map(([k, x]) => `${k}: ${shapeOf(x, depth + 1)}`).join(", ")}}`;
+  return typeof v === "string" ? `string(${v.length})` : typeof v;
 }
 
 // ── Filing date (per-register data freshness)─────────────────────────────────────────────────────

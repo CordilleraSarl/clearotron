@@ -849,7 +849,7 @@ its own header says never to expose it, and nothing here starts it.
    **The example above is sized in minutes; a real clearance is sized in hours.**
    The engine sizes a knockout search at 5 to 10 minutes — which is what this job orders — and a clearance
    at up to 2.5 hours.
-   The three clearances in `demo/` took 64 to 74 minutes each, and its knockout search 4 minutes. A
+   The three clearances in `demo/` took 26 to 64 minutes each, and its knockout search 16 minutes. A
    single stage of a clearance can legitimately run 45 minutes — let it finish.
    [How long a run takes](#how-long-a-run-takes) below gives the provenance of each figure.
 
@@ -881,8 +881,8 @@ its internal refutation verdict, and then:
 Minutes for a knockout search, an hour or more for a clearance.
 
 **Four measured runs.** Each sample in `demo/` records its own wall, from `startedAt` to `deliveredAt`
-in `run/status.json`. The three clearances took **64 to 74 minutes** each, quicker than the quote
-below; the knockout search took **4 minutes**.
+in `run/status.json`. The three clearances took **26 to 64 minutes** each, quicker than the quote
+below; the knockout search took **16 minutes**.
 
 **What the engine quotes.** A knockout search is sized at 5 to 10 minutes. A clearance starts at 1.5 hours
 and runs to 2.5 hours — one range for every clearance, whichever lanes it carries

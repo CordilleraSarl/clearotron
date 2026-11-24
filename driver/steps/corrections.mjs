@@ -4,34 +4,31 @@
 // steps/corrections.mjs — the functions the correction steps share: how a review's flags name findings, the rollback
 // and repair of a corrective pass, and the correction after a repair's review.
 //
-// Moved out of pipeline.mjs unchanged. The names below are still held there, and this module must not import that one
-// back, so pipeline.mjs hands them in once, as it loads, through useThePipeline(); each moves here when the code that
-// shares it has moved.
+// Moved out of pipeline.mjs unchanged. It must not import that module back, so what it shares with pipeline.mjs lives in
+// the modules beside it, which it imports.
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { correctionTargets } from "../corrections-delivered.mjs";
 import { REPORT_LINE_KEY, REPORT_LINE_LABEL, answersLeftBehind, buildCorrectionsApplied, correctionScope, correctionsWorklist, flaggedPositions, linesOf, reportLines } from "../corrections-feedforward.mjs";
+import { prepareDeclinationSpec } from "../dispatch-extras.mjs";
 import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
 import { listedAddresses, listedExclusionPositions, readAcceptedFlags } from "../narrative-refutation-record.mjs";
 import { properNameCandidates } from "../predelivery-lint.mjs";
+import { recordSynthesisSeam } from "../record-carry-trace.mjs";
 import { atomicWrite } from "../run-record.mjs";
 import { foldAfterSave, modelRecordPath, restoreFold } from "../record-fold.mjs";
+import { extractRulingsTail } from "../register-digest-run.mjs";
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
+import { CORRECTIONS_DELIVERED_FILE, postRepairCorrectionsPath, postRepairStatePath, recordFromTheSaves, removalRepairedRow, reviewAfterRepairPath, snapshotFindingsForCorrections } from "../repair-review-run.mjs";
 import { NARRATIVE_PROSE, anyRenumbered, sectionText } from "../repair-scope.mjs";
+import { asPartNotCompleted, must, reviewExclusionsPaths, safeReadJson, stage, stageCharter } from "../stage-dispatch.mjs";
 import { writeFindings } from "../stage-freshness.mjs";
 import { paths } from "../stages.mjs";
 import { lastAcceptedCall, rebaseSynthesis, restoreSynthesisBase, snapshotSynthesisBase } from "../synthesis-record.mjs";
 import { parseCorrections } from "../verify.mjs";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
-
-let CORRECTIONS_DELIVERED_FILE, asPartNotCompleted, extractRulingsTail, must, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, recordSynthesisSeam, removalRepairedRow, reviewAfterRepairPath, reviewExclusionsPaths, safeReadJson, snapshotFindingsForCorrections, stage, stageCharter;
-
-/** Called once by pipeline.mjs as it loads, with the names above. */
-export function useThePipeline(held) {
-  ({ CORRECTIONS_DELIVERED_FILE, asPartNotCompleted, extractRulingsTail, must, postRepairCorrectionsPath, postRepairStatePath, prepareDeclinationSpec, recordFromTheSaves, recordSynthesisSeam, removalRepairedRow, reviewAfterRepairPath, reviewExclusionsPaths, safeReadJson, snapshotFindingsForCorrections, stage, stageCharter } = held);
-}
 
 /**
  * — `depth` IS A PARAMETER because the corrective pass re-emits the WHOLE narrative and was the
@@ -149,6 +146,32 @@ export function correctionReading(P) {   // @internal
   const named = flaggedPositions(rows);
   const scope = withLineLabels(withPositionLabels({ ...correctionScope(rows), ...(named.length ? { positions: named } : {}) }, P), rows, P);
   return { review, rulingsTail, worklist, scope, positions: named };
+}
+
+// A1 (F1): a correction must reach EVERY surface the client sees. The narrative alone is
+// not enough — report cards, the landscape and the client summary render from findings.json, so a
+// corrective pass that re-emits only the narrative lets a killed/mis-attributed card resurrect on
+// the delivered page (the VENZY case). The followup therefore mandates BOTH
+// files; the driver-side freshness gate below makes it enforceable.
+// AD-2 A9 (E2E-R2): the dispatch carries placement's rulings tail AS DATA — computed things reach
+// the next stage as data, not prose. A warm resume must not depend on the rulings having survived
+// context trimming, and the repair pass is NOT asked to re-read placement-recommendations.md (the
+// E2E-R2 dispatch history proves both halves: one corrective dispatch passed with no re-read, and
+// another made 7 targeted edits precisely when the tail was in front of it).
+
+export function correctionsExtra(P, depth = null, framework = null, reading = correctionReading(P)) {   // @internal
+  const { review, rulingsTail, worklist, scope } = reading;
+  // THE RUNG RIDES THE CORRECTIVE RE-EMISSION, byte-identically with the fresh dispatch. Appended rather
+  // than threaded through `repairFollowup`'s fields so both dispatches carry the SAME STRING from the
+  // SAME function, and an arm can compare them without knowing how either is assembled.
+  // THE RECORD ITS PATCH UPDATES. The save patches the writer's own record, and the flags name its findings in its
+  // numbering; from the delivery seam on, findings.json is the folded record, renumbered. So while a fold is in force,
+  // a correction re-armed on a later pass is handed the writer's record (record-fold.mjs), as the lint's repair is: a
+  // number read off the folded record names another finding there, and the next one after it a finding already held.
+  return repairFollowup("synthesis:corrective", {
+    narrative: P.narrative, findings: modelRecordPath(P.runDir, P.findings), placement: P.placement,
+    rulingsTail, scope, worklist, review,
+  }) + stageCharter("synthesis", depth, framework);
 }
 
 /**

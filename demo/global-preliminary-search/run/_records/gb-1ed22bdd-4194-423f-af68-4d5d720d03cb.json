@@ -4,9 +4,9 @@
   "office": "gb",
   "guid": "1ed22bdd-4194-423f-af68-4d5d720d03cb",
   "applicationNumber": "4409948",
-  "registrationNumber": null,
+  "registrationNumber": "4409948",
   "applicationDate": "2026-07-01",
-  "registrationDate": null,
+  "registrationDate": "2026-09-25",
   "expiryDate": "2036-07-01",
   "renewalDate": null,
   "lastPublicationDate": null,
@@ -14,7 +14,7 @@
   "abandonmentDate": null,
   "cancellationDate": null,
   "statusClass": "live",
-  "statusText": "PENDING",
+  "statusText": "REGISTERED",
   "markText": "VINCARA",
   "markTransliteration": null,
   "markTranslation": null,
@@ -106,7 +106,7 @@
         "publicationVolume": "2026/028"
       }
     ],
-    "recordLastUpdated": "20260723",
+    "recordLastUpdated": "20260930",
     "registrationOfficeCode": "GB",
     "registrationOfficeName": "United Kingdom",
     "status": {
@@ -115,18 +115,22 @@
         "applicationDate": "20260701",
         "applicationNumber": "4409948"
       },
-      "cmNormalisedStatus": "PENDING",
+      "cmNormalisedStatus": "REGISTERED",
       "expiryDate": "20360701",
-      "markCurrentStatus": "ADVERTISED"
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20260925",
+        "registrationNumber": "4409948"
+      }
     },
-    "version": "20260723020004",
+    "version": "20260930120004",
     "wordMarkSpecification": {
       "markVerbalElementText": "VINCARA"
     }
   },
   "_uri": "/mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb",
   "_receipt": {
-    "fetched_at": "2026-09-18T12:42:34.374Z",
+    "fetched_at": "2026-11-20T19:48:47.533Z",
     "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

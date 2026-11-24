@@ -110,7 +110,7 @@ function portable(a) {
 // The computed imports that are safe for a reason their shape cannot show. Keyed by file and by the
 // argument exactly as written, so a line moving does not stale an entry and the argument changing does.
 const ACCOUNTED = [
-  ["driver/driver.config.mjs", "mod",
+  ["driver/jx-providers.mjs", "mod",
     "a lane core named by a relative specifier in the fixed call-site table beside it — portable as written"],
   ["driver/engine/jx-turn.mjs", "engineAdapterSpecifier(engine)", "a file URL from pathToFileURL — driven below"],
   ["driver/engine/probe.mjs", "engineAdapterSpecifier(engine)", "a file URL from pathToFileURL — driven below"],

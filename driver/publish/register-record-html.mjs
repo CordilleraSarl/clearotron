@@ -12,9 +12,7 @@ import { REC, inPriorityWindow } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { normRegion } from './regions.mjs';
 import { REGISTER_RECORD as RR } from './strings.mjs';
-
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const escAttr = (s) => esc(s).replace(/"/g, '&quot;');
+import { escapeText as esc, escapeAttr as escAttr } from '../../shared/html-escape.mjs';
 
 /**
  * One register record entry: Mark, Goods and services, Owner, Country, Status and Register number, each row drawn

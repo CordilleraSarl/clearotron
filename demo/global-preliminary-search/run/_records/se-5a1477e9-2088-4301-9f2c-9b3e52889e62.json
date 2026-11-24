@@ -1,0 +1,109 @@
+{
+  "uri": "/mark/se/5a1477e9-2088-4301-9f2c-9b3e52889e62",
+  "provider": "clarivate",
+  "office": "se",
+  "guid": "5a1477e9-2088-4301-9f2c-9b3e52889e62",
+  "applicationNumber": "2023/01331",
+  "registrationNumber": "625980",
+  "applicationDate": "2023-03-07",
+  "registrationDate": "2023-07-17",
+  "expiryDate": "2033-03-07",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Fall Seven Rise Eight",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "sv",
+      "description": "Musikproduktion;Underhållning av musiker;Underhållning tillhandahållen av musiker",
+      "translation_language": "en",
+      "translation": "Music production; Entertainment by musicians; Entertainment provided by musicians"
+    }
+  ],
+  "owner": "Niclas Gramner",
+  "ownerNative": null,
+  "ownerCountry": "SE",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Snäckvägen 21 14139 Huddinge",
+        "applicantAddressCountryCode": "SE",
+        "applicantAddressCountryName": "Sweden",
+        "applicantName": "Niclas Gramner"
+      }
+    ],
+    "applicationLanguageCode": "sw",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Music production; Entertainment by musicians; Entertainment provided by musicians",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "sv",
+          "intGoodsServicesDescription": "Musikproduktion;Underhållning av musiker;Underhållning tillhandahållen av musiker"
+        }
+      ]
+    },
+    "id": "5a1477e9-2088-4301-9f2c-9b3e52889e62",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "recordLastUpdated": "20250707",
+    "registrationOfficeCode": "SE",
+    "registrationOfficeName": "Sweden",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20230307",
+        "applicationNumber": "2023/01331"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330307",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20230717",
+        "registrationNumber": "625980"
+      }
+    },
+    "version": "20250707122959",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Fall Seven Rise Eight"
+    }
+  },
+  "_uri": "/mark/se/5a1477e9-2088-4301-9f2c-9b3e52889e62",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.200Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -3484,7 +3484,8 @@ test("a script searched in one place and not in another is left open in the appr
   const unrecorded = run({ entries: [{ qid: "u", term: "ΒΟΛΤΑΡΙΣ" }, { qid: "g", term: "ΒΟΛΤΑΡΙΣ", regions: ["GR"] }] }, ["g"]);
   assert.deepEqual(notes(unrecorded), ["A planned search in Greek script did not complete. Its territory was not recorded."]);
   assert.equal(v(page(unrecorded), "Local-script spellings"), "Greek");
-  // One row per distinct gap, and the approved sentence stays for a script with no completed search anywhere.
+  // One row per distinct gap, and the approved sentence stays for a script with no completed search anywhere. A term
+  // with no territory on a stamped plan is asked the plan's whole list: it is the worldwide search, not a second gap.
   const mixed = run({ scope_basis: "worldwide", regions: world, entries: [
     { qid: "w", term: "볼타리스", regions: world }, { qid: "k", term: "볼타리스", regions: ["KR"] }, { qid: "j", term: "볼타리스", regions: ["JP"] },
     { qid: "u", term: "볼타리스" }, { qid: "c", term: "ВОЛТАРИС", regions: ["KR"] },
@@ -3493,9 +3494,8 @@ test("a script searched in one place and not in another is left open in the appr
     "No search in Cyrillic script was completed.",
     "No search in Hangul script was completed in Japan.",
     "The planned worldwide search in Hangul script did not complete.",
-    "A planned search in Hangul script did not complete. Its territory was not recorded.",
   ]);
-  // A worldwide search that completed covers a search whose territory was not recorded, and leaves no row.
+  // A worldwide search that completed, with a term asked the same list for want of its own, leaves no row.
   const covered = run({ scope_basis: "worldwide", regions: world, entries: [{ qid: "w", term: "볼타리스", regions: world }, { qid: "u", term: "볼타리스" }] }, ["w"]);
   assert.deepEqual(notes(covered), []);
   assert.equal(v(page(covered), "Local-script spellings"), "Hangul");

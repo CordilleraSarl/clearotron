@@ -1,0 +1,474 @@
+{
+  "uri": "/mark/us/bccdbc63-c0b2-4167-add7-b5e75a3df394",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "bccdbc63-c0b2-4167-add7-b5e75a3df394",
+  "applicationNumber": "86329502",
+  "registrationNumber": "5059980",
+  "applicationDate": "2014-07-07",
+  "registrationDate": "2016-10-11",
+  "expiryDate": null,
+  "renewalDate": "2026-10-11",
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2015-12-22"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ELEVEN RIVERS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": null,
+      "description": "INT. CL. 16 Paper goods, namely, book bindings; photographs; stationery; glue for stationery or for household use; artist brushes; typewriters; teacher instruction manuals in the field of farming and agriculture; packing paper cardboard, paper, and cardboard, containers; watercolor pictures; catalogs on the subject of farming and agriculture; paper tags, printed publications, namely, brochures, forms, manuals, magazines on the subject of farming and agriculture; self-adhesive tapes for stationery or for household use; flags of paper; paper pennants; printed tickets ; notebooks; bags of paper or plastic for packaging; boxes of cardboard or paper; decals; calendars; paper folders for documents and flyers; paper coasters; drawings; rubber and ink stamps; illustrations; graphic art prints; newspapers; paperweight; paper napkins; stationery seals, seals for office; desk mats; note cards",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "INT. CL. 42 Scientific and technological services, namely, Scientific research, analysis, and testing, in the field of industrial engineering; Design and development of computer hardware and software; Scientific research and development; Quality control for others; Developing quality control standards for others in the field of standing timber and horticulture; Quality management services, namely, quality evaluation and analysis, quality assurance, and quality control, in the field of agriculture and horticulture; Research and development of technology in the field of horticulture and agriculture; research and development of new products for others; Testing, analysis and evaluation of the goods and services of others for the purpose of certification in the field of agricultural environment quality of fruits, vegetables, and grains",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Caades Sinaloa, A.C.",
+  "ownerNative": null,
+  "ownerCountry": "MX",
+  "representative": "Paula B. Mays",
+  "priorities": [
+    {
+      "priorityApplicationDate": "20140402",
+      "priorityApplicationNumber": "1473241",
+      "priorityCountryCode": "MX",
+      "priorityCountryName": "Mexico"
+    },
+    {
+      "priorityApplicationDate": "20140402",
+      "priorityApplicationNumber": "1473233",
+      "priorityCountryCode": "MX",
+      "priorityCountryName": "Mexico"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "affidavit": {
+      "date": "20260604",
+      "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+    },
+    "applicants": [
+      {
+        "applicantAddress": "Culiacán, Sinaloa, 80015, MEXI",
+        "applicantAddressCity": "Culiacán, Sinaloa",
+        "applicantAddressCountryCode": "MX",
+        "applicantAddressCountryName": "Mexico",
+        "applicantAddressPostalCode": "80015",
+        "applicantJurisdictionOfIncorporation": "MEXICO",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Caades Sinaloa, A.C.",
+        "applicantSecondaryAddressUnit": "Juan Carrasco 787 NorteColonia Centro,"
+      }
+    ],
+    "associatedMarks": [
+      {
+        "registrationNumbers": [
+          "3933641"
+        ]
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "16",
+          "intGoodsServicesDescription": "INT. CL. 16 Paper goods, namely, book bindings; photographs; stationery; glue for stationery or for household use; artist brushes; typewriters; teacher instruction manuals in the field of farming and agriculture; packing paper cardboard, paper, and cardboard, containers; watercolor pictures; catalogs on the subject of farming and agriculture; paper tags, printed publications, namely, brochures, forms, manuals, magazines on the subject of farming and agriculture; self-adhesive tapes for stationery or for household use; flags of paper; paper pennants; printed tickets ; notebooks; bags of paper or plastic for packaging; boxes of cardboard or paper; decals; calendars; paper folders for documents and flyers; paper coasters; drawings; rubber and ink stamps; illustrations; graphic art prints; newspapers; paperweight; paper napkins; stationery seals, seals for office; desk mats; note cards"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "INT. CL. 42 Scientific and technological services, namely, Scientific research, analysis, and testing, in the field of industrial engineering; Design and development of computer hardware and software; Scientific research and development; Quality control for others; Developing quality control standards for others in the field of standing timber and horticulture; Quality management services, namely, quality evaluation and analysis, quality assurance, and quality control, in the field of agriculture and horticulture; Research and development of technology in the field of horticulture and agriculture; research and development of new products for others; Testing, analysis and evaluation of the goods and services of others for the purpose of certification in the field of agricultural environment quality of fruits, vegetables, and grains"
+        }
+      ]
+    },
+    "id": "bccdbc63-c0b2-4167-add7-b5e75a3df394",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20260604",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20260604",
+        "descriptionText": "REGISTERED - SEC. 8 (10-YR) ACCEPTED/SEC. 9 GRANTED"
+      },
+      {
+        "date": "20260604",
+        "descriptionText": "REGISTERED AND RENEWED (FIRST RENEWAL - 10 YRS)"
+      },
+      {
+        "date": "20260604",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 & 9 - E-MAILED"
+      },
+      {
+        "date": "20260401",
+        "descriptionText": "TEAS SECTION 8 & 9 RECEIVED"
+      },
+      {
+        "date": "20251011",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (10-YR)/SEC. 9 E-MAILED"
+      },
+      {
+        "date": "20221024",
+        "descriptionText": "REGISTERED - SEC. 8 (6-YR) ACCEPTED"
+      },
+      {
+        "date": "20221024",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF SEC. 8 - E-MAILED"
+      },
+      {
+        "date": "20220810",
+        "descriptionText": "CASE ASSIGNED TO POST REGISTRATION PARALEGAL"
+      },
+      {
+        "date": "20220314",
+        "descriptionText": "TEAS SECTION 8 RECEIVED"
+      },
+      {
+        "date": "20211011",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20161011",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20160908",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE E-MAILED"
+      },
+      {
+        "date": "20160907",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20160811",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20160810",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20160717",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20160717",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20160216",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20151222",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20151222",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20151202",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20151119",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20151113",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20151112",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20151112",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20151105",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20150620",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20150620",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20150620",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20150618",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20150618",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20150611",
+        "descriptionText": "TEAS RESPONSE TO SUSPENSION INQUIRY RECEIVED"
+      },
+      {
+        "date": "20150605",
+        "descriptionText": "SUSPENSION INQUIRY WRITTEN"
+      },
+      {
+        "date": "20150605",
+        "descriptionText": "INQUIRY TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20150605",
+        "descriptionText": "NOTIFICATION OF INQUIRY AS TO SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20141129",
+        "descriptionText": "SUSPENSION LETTER  WRITTEN"
+      },
+      {
+        "date": "20141129",
+        "descriptionText": "LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20141129",
+        "descriptionText": "NOTIFICATION OF LETTER OF SUSPENSION E-MAILED"
+      },
+      {
+        "date": "20141114",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20141114",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20141110",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20141106",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20141020",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20141020",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20141020",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20141017",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20140710",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20140710",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Juan Carrasco 787 NorteColonia Centro, Culiacán, Sinaloa, MEXI",
+        "city": "Culiacán, Sinaloa",
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "jurisdictionOfIncorporation": "MEXICO",
+        "legalEntity": "CORPORATION",
+        "name": "Caades Sinaloa, A.C.",
+        "street": "Juan Carrasco 787 NorteColonia Centro,"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Culiacán, Sinaloa, 80015, MEXI",
+        "city": "Culiacán, Sinaloa",
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "jurisdictionOfIncorporation": "MEXICO",
+        "legalEntity": "CORPORATION",
+        "name": "Caades Sinaloa, A.C.",
+        "postalCode": "80015",
+        "secondaryAddressUnit": "Juan Carrasco 787 NorteColonia Centro,"
+      },
+      {
+        "address": "Culiacán, Sinaloa, 80015, MEXI",
+        "city": "Culiacán, Sinaloa",
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "jurisdictionOfIncorporation": "MEXICO",
+        "legalEntity": "CORPORATION",
+        "name": "Caades Sinaloa, A.C.",
+        "postalCode": "80015",
+        "secondaryAddressUnit": "Juan Carrasco 787 NorteColonia Centro,"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Juan Carrasco 787 NorteColonia Centro, Culiacán, Sinaloa, MEXI",
+        "city": "Culiacán, Sinaloa",
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "jurisdictionOfIncorporation": "MEXICO",
+        "legalEntity": "CORPORATION",
+        "name": "Caades Sinaloa, A.C.",
+        "street": "Juan Carrasco 787 NorteColonia Centro,"
+      }
+    ],
+    "priorities": [
+      {
+        "priorityApplicationDate": "20140402",
+        "priorityApplicationNumber": "1473241",
+        "priorityCountryCode": "MX",
+        "priorityCountryName": "Mexico"
+      },
+      {
+        "priorityApplicationDate": "20140402",
+        "priorityApplicationNumber": "1473233",
+        "priorityCountryCode": "MX",
+        "priorityCountryName": "Mexico"
+      }
+    ],
+    "recordLastUpdated": "20260625",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "10411 Motor City Drive, Bethesda, MD 20817, United States",
+        "representativeCorrespondentAddressLines": [
+          "10411 Motor City Drive",
+          "Bethesda, MD 20817",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Paula B. Mays, 750"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "10411 Motor City Drive, Bethesda, MD 20817, United States",
+        "representativeAddressLines": [
+          "10411 Motor City Drive",
+          "Bethesda, MD 20817",
+          "United States"
+        ],
+        "representativeName": "Paula B. Mays"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20140707",
+        "applicationNumber": "86329502"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "16",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20130723"
+        },
+        {
+          "firstUsedClass": "42",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20130723"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "16",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20150204"
+        },
+        {
+          "firstUsedCommerceClass": "42",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20150204"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED AND RENEWED",
+        "markOfficialStatusCode": "800",
+        "markOfficialStatusDate": "20260604",
+        "markOfficialStatusEvents": [
+          "Section 44(D)",
+          "USE APPLICATION - CURRENT",
+          "Use Application - Filed",
+          "Section 44(d) Filed"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20151222"
+      ],
+      "registration": {
+        "registrationDate": "20161011",
+        "registrationNumber": "5059980"
+      },
+      "renewalDate": "20261011"
+    },
+    "version": "20260625071336",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "11 RIVERS",
+      "markVerbalElementText": "ELEVEN RIVERS"
+    }
+  },
+  "_uri": "/mark/us/bccdbc63-c0b2-4167-add7-b5e75a3df394",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.198Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

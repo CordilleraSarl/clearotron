@@ -1,23 +1,10 @@
-## Case-law grounding
-
-The assessment concerns Japan. Four targeted Japan searches were run for the two named owners and for likelihood-of-confusion precedent on the respective marks and goods. The enrolled Legal Data Hunter source suffered a runtime outage before it could return results or supply any decision text for review. Accordingly, no case-law authority is cited here and this pass does not support an absence-of-precedent conclusion.
-
-The Japan register findings in the narrative remain the factual basis for the watchlist assessment: VENKURI is phonetically close but recorded for electronics rather than the candidate's downloadable water software or instruction; QORIQ shares the QORI sequence but is recorded for semiconductor and processor goods in a different commercial field.
-
-### Grounded profile — VENQORI vs VENKURI / YIWU TENGDING UMBRELLA CO., LTD. (Japan)
+### Grounded profile — VENQORI vs Ｖｅｎｋｕｒｉ / YIWU TENGDING UMBRELLA CO., LTD. (Japan)
 - ord: 1
 
-**Question grounded:** Whether the VENKURI owner has Japan enforcement history, or Japan precedent bears on confusion between VENQORI and VENKURI for downloadable water software or training.
+**Question grounded:** How should the close recorded pronunciation be weighed when assessing a possible Japanese registration objection?
 
-**No on-point precedent could be assessed.** The enrolled Japan case-law source was unavailable at runtime before search results or full decision documents could be retrieved and read. The four targeted searches included the owner and mark-specific likelihood-of-confusion questions; none returned results.
+**On-point authority:**
+- *商標登録願拒絶査定抗告審判審決取消請求* (SINGER / SHINKA) · Supreme Court of Japan, Third Petty Bench · 4 October 1960 · holding: the court upheld a finding that the pronunciations were similar in the concrete trading circumstances, including the fame of SINGER sewing machines, even though an abstract comparison might not establish similarity · [judgment](https://www.courts.go.jp/hanrei/52938/detail2/index.html).
+  — relevance: pronunciation must be considered in the actual trading context. The decision involved a famous sewing-machine mark and an older statutory provision; it does not decide whether VENQORI and VenKuri are similar or whether the respective goods and services are related.
 
-**Coverage gaps:** Japan case law could not be searched because the enrolled Legal Data Hunter service had a runtime outage. EUIPO Boards of Appeal decisions were not searched because this deployment does not have that source. No citator was available, and no treatment or standing conclusion is made.
-
-### Grounded profile — VENQORI vs QORIQ / NXP USA, INC. (Japan)
-- ord: 2
-
-**Question grounded:** Whether the QORIQ owner has Japan enforcement history, or Japan precedent bears on confusion between VENQORI and QORIQ for software-related goods.
-
-**No on-point precedent could be assessed.** The enrolled Japan case-law source was unavailable at runtime before search results or full decision documents could be retrieved and read. The four targeted searches included the owner and mark-specific likelihood-of-confusion questions; none returned results.
-
-**Coverage gaps:** Japan case law could not be searched because the enrolled Legal Data Hunter service had a runtime outage. EUIPO Boards of Appeal decisions were not searched because this deployment does not have that source. No citator was available, and no treatment or standing conclusion is made.
+**Coverage gaps:** Legal Data Hunter's Japanese court collection was searched for the owner, VenKuri and trademark similarity. The returned owner and mark searches did not identify an on-point enforcement proceeding. This does not establish the owner's enforcement history or its absence. Japanese Patent Office opposition and appeal decisions were not searched; the court search is not exhaustive. No commercial citator was consulted.

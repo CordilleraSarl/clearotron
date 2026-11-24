@@ -12,7 +12,7 @@
 // ── THE THREE MODES, AND WHICH ARGUMENT CARRIES THE STATE ────────────────────────────────────────────
 //
 //   disposition-tool.mjs   prior = accumulator   submitted = this call's accepted   → `parkedIds` OPTION
-//   gateway.mjs            prior = accumulator   submitted = null                   → PRIOR ROWS' `parked`
+//   form-sync.mjs          prior = accumulator   submitted = null                   → PRIOR ROWS' `parked`
 //   pipeline.mjs           prior = half rows     submitted = null                   → PRIOR ROWS' `parked`
 //
 // Two routes, and which one is live depends on the mode. The tool computes `parkedIds` from the ledger
@@ -44,7 +44,7 @@ const CALL_SITES = [
   { file: "disposition-tool.mjs", route: "parkedIds",
     why: "the only mode with the ledger in scope, so the park is DECIDED here — before the union, and "
        + "including this call's refusals, so a row crossing the bound parks now rather than one call late" },
-  { file: "gateway.mjs", route: "prior-rows",
+  { file: "form-sync.mjs", route: "prior-rows",
     why: "prior-only regeneration on every attempt: no submission and no ledger, so the park is already on "
        + "the accumulator rows and the union's whole job is to carry it" },
   { file: "register-sweep.mjs", route: "prior-rows",

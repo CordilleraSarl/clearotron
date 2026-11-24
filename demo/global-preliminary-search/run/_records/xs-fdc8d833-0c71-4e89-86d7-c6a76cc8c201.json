@@ -1,0 +1,148 @@
+{
+  "uri": "/mark/xs/fdc8d833-0c71-4e89-86d7-c6a76cc8c201",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "fdc8d833-0c71-4e89-86d7-c6a76cc8c201",
+  "applicationNumber": null,
+  "registrationNumber": "20210084636",
+  "applicationDate": null,
+  "registrationDate": "2021-09-02",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN RIVERS DIGITAL",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    20,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        20
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Goods/services not listed",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "BLACK RIVER DISTRIBUTING LLC",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "809 ROLLING OAKS DR, ONALASKA, WI, 54650",
+        "applicantAddressCity": "ONALASKA",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "54650",
+        "applicantAddressStateName": "WISCONSIN",
+        "applicantAddressStreet": "809 ROLLING OAKS DR",
+        "applicantLegalEntity": "LIMITED LIABILITY COMPANY",
+        "applicantName": "BLACK RIVER DISTRIBUTING LLC"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "20",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Goods/services not listed"
+        }
+      ]
+    },
+    "id": "fdc8d833-0c71-4e89-86d7-c6a76cc8c201",
+    "ipRightKind": "tmk",
+    "kindMark": "TRADEMARK & SERVICE MARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "809 ROLLING OAKS DR, ONALASKA, WI, 54650",
+        "city": "ONALASKA",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "LIMITED LIABILITY COMPANY",
+        "name": "BLACK RIVER DISTRIBUTING LLC",
+        "postalCode": "54650",
+        "stateName": "WISCONSIN",
+        "street": "809 ROLLING OAKS DR"
+      }
+    ],
+    "recordLastUpdated": "20250517",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20210831"
+        }
+      ],
+      "firstUsedAnywhereDate": "20210831",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20210902",
+        "registrationNumber": "20210084636"
+      }
+    },
+    "usStateOfficeCode": "WI",
+    "usStateOfficeName": "WISCONSIN",
+    "version": "20250517074531",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "7 RIVERS DIGITAL",
+      "markVerbalElementText": "SEVEN RIVERS DIGITAL"
+    }
+  },
+  "_uri": "/mark/xs/fdc8d833-0c71-4e89-86d7-c6a76cc8c201",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.188Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

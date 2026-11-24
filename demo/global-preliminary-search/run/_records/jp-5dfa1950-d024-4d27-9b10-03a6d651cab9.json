@@ -1,0 +1,222 @@
+{
+  "uri": "/mark/jp/5dfa1950-d024-4d27-9b10-03a6d651cab9",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "5dfa1950-d024-4d27-9b10-03a6d651cab9",
+  "applicationNumber": "2026-101843",
+  "registrationNumber": null,
+  "applicationDate": "2026-08-31",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "Ｓｅｖｅｎｒｉｃｈ",
+  "markTransliteration": "SEBUNRICCHI",
+  "markTranslation": "SEVENRICH",
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "広告業，経営の診断又は経営に関する助言，市場調査又は分析，商品の販売に関する情報の提供，財務書類の作成又は監査若しくは証明",
+      "translation_language": "en",
+      "translation": "Advertisement industry, advising on management diagnosis or management, market research or analysis, information on sales of products, preparation of financial statements or audit or certification"
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": null,
+      "description": "建物の管理，建物の貸借の代理又は媒介，建物の貸与，建物の売買，建物の売買の代理又は媒介，建物又は土地の鑑定評価，土地の管理，土地の貸借の代理又は媒介，土地の貸与，土地の売買，土地の売買の代理又は媒介，税務相談，税務代理",
+      "translation_language": "en",
+      "translation": "Surrogate or mediation of buildings, substitution or mediation of buildings, lending of buildings, buying and selling of buildings, surrogates or intermediaries for the sale and purchase of buildings, appraisal of buildings or land, management of land, surrogation or mediation of land lease, land rental , Land trading, substitute or intermediary for the sale and purchase of land, tax consultation, tax representation"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Designing, creating or maintaining programs of electronic computers, providing programs for electronic computers"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "社会保険に関する手続の代理",
+      "translation_language": "en",
+      "translation": "Surrogacy of social insurance proceedings"
+    }
+  ],
+  "owner": "HATTORI SHUNSUKE",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "Watanabe, Shu",
+  "priorities": [
+    {
+      "priorityDate": "20260831"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHINJUKU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "HATTORI SHUNSUKE",
+        "applicantNativeAddress": "東京都新宿区",
+        "applicantNativeName": "服部峻介"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertisement industry, advising on management diagnosis or management, market research or analysis, information on sales of products, preparation of financial statements or audit or certification",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "広告業，経営の診断又は経営に関する助言，市場調査又は分析，商品の販売に関する情報の提供，財務書類の作成又は監査若しくは証明"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Surrogate or mediation of buildings, substitution or mediation of buildings, lending of buildings, buying and selling of buildings, surrogates or intermediaries for the sale and purchase of buildings, appraisal of buildings or land, management of land, surrogation or mediation of land lease, land rental , Land trading, substitute or intermediary for the sale and purchase of land, tax consultation, tax representation",
+          "intClassNumber": "36",
+          "intGoodsServicesDescription": "建物の管理，建物の貸借の代理又は媒介，建物の貸与，建物の売買，建物の売買の代理又は媒介，建物又は土地の鑑定評価，土地の管理，土地の貸借の代理又は媒介，土地の貸与，土地の売買，土地の売買の代理又は媒介，税務相談，税務代理"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Designing, creating or maintaining programs of electronic computers, providing programs for electronic computers",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Surrogacy of social insurance proceedings",
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "社会保険に関する手続の代理"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "35A01",
+          "natGoodsServicesDescription": "Advertising and publicity services"
+        },
+        {
+          "natClassNumber": "35B01",
+          "natGoodsServicesDescription": "Business management analysis or business consultancy; Business management; Marketing research or analysis; Providing information concerning commercial sales"
+        },
+        {
+          "natClassNumber": "35C01",
+          "natGoodsServicesDescription": "Preparation, auditing or attesting of financial statements"
+        },
+        {
+          "natClassNumber": "36D01",
+          "natGoodsServicesDescription": "Management of buildings; Agency services for the leasing or rental of buildings; Leasing or renting of buildings; Purchase and sale of buildings; Real estate agency services for the purchase or sales of buildings; Real estate appraisal; Providing information on buildings or land [real estate affairs]; Land management; Agency services for the leasing or rental of land; Leasing of land; Purchase and sale of land; Real estate agency services for the purchase or sales of land"
+        },
+        {
+          "natClassNumber": "36J01",
+          "natGoodsServicesDescription": "Advisory services relating to tax planning; Tax payment processing services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42R03",
+          "natGoodsServicesDescription": "Legal services relating to social insurance claims"
+        }
+      ]
+    },
+    "id": "5dfa1950-d024-4d27-9b10-03a6d651cab9",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "26.01.01.00",
+      "26.01.03.00",
+      "26.04.04.00",
+      "26.04.05.00",
+      "26.04.06.00",
+      "26.07.05.01",
+      "26.07.25.00",
+      "26.11.01.00",
+      "26.11.07.00",
+      "26.11.09.00",
+      "26.11.12.00",
+      "27.03.01.00",
+      "27.03.02.00",
+      "27.05.01.18",
+      "27.05.08.00",
+      "27.05.21.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20260831"
+      }
+    ],
+    "recordLastUpdated": "20261120",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "Watanabe, Shu",
+        "representativeNativeName": "渡辺　周"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260831",
+        "applicationNumber": "2026-101843"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "PENDING"
+    },
+    "version": "20261120090643",
+    "wordMarkSpecification": {
+      "markTranslation": "SEVENRICH",
+      "markTransliteration": "SEBUNRICCHI",
+      "markVerbalElementText": "Ｓｅｖｅｎｒｉｃｈ"
+    }
+  },
+  "_uri": "/mark/jp/5dfa1950-d024-4d27-9b10-03a6d651cab9",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.183Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

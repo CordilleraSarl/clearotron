@@ -1,0 +1,411 @@
+{
+  "plan_version": 4,
+  "executed": [
+    {
+      "qid": "primary-sweep:exact:venqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venkori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:vencory",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:vinkari",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venkri",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venkor",
+      "state": "enumerated",
+      "records": 1,
+      "total_hits": 1
+    },
+    {
+      "qid": "primary-sweep:default:venqorl",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqoir",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqori+goods",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:exact:aenqori+form",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:wildcard:v-nq-r",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:exact:venqori+merch",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "transliteration-numeric:exact:venq0ri",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "transliteration-numeric:exact:q-9292d4cb",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-venkori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-venqory",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-vinkari",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-venkor",
+      "state": "enumerated",
+      "records": 1,
+      "total_hits": 1
+    },
+    {
+      "qid": "xcheck-mark-ven-qori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-venqoir",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-venqori-systems",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-venqori-labs",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "xcheck-mark-tech-venqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:phonetic:venqori:eac756bf",
+      "state": "enumerated",
+      "records": 4,
+      "total_hits": 4
+    },
+    {
+      "qid": "supp:primary-sweep:default:ven-qori:1a6bd242",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venkuri:10472dc6",
+      "state": "enumerated",
+      "records": 1,
+      "total_hits": 1
+    },
+    {
+      "qid": "supp:primary-sweep:default:be-n-ko-ri:6673a270",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:transliteration-numeric:default:benkori:9e7aed33",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqor:95c1e801",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venqor:9128aca3",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venori:d53a8da3",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venori:91fb50fd",
+      "state": "enumerated",
+      "records": 2,
+      "total_hits": 2
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqri:4a43b651",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venqri:5e35ad87",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqo:b054e31b",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venqo:d8fe716d",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:enqori:344dc290",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:enqori:14469776",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:vencori:a462ddaa",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:vencori:d3b0d08c",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venquori:d462f449",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venquori:ee894ffb",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:vengori:41e663de",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:vengori:e84c1c60",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqroi:b7376742",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venqroi:91c42248",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqori:978b0b3b",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqori-form-neighbourhood:c4f74644",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    }
+  ],
+  "missing": [],
+  "skipped": [],
+  "deferred": [
+    {
+      "qid": "xcheck-mark-q-35a3bcae",
+      "reason": "capability-gap: term \"ベンコリ\" is not in Latin script, and the active register provider (clarivate) indexes non-Latin filings by their TRANSLITERATION, not their characters — searching the characters would return 0 with no error, which reads as CLEAN. So the slice is DEFERRED, never searched. Send the "
+    }
+  ],
+  "awaiting": [
+    {
+      "qid": "primary-sweep:exact:venqori-systems",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-tech",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-labs",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-academy",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:tech-venqori",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:academy-venqori",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:wildcard:v-r",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "transliteration-numeric:exact:q-a74a3a76",
+      "axis": "transliteration-numeric"
+    }
+  ],
+  "asked": [],
+  "unplanned": [],
+  "answered": 49,
+  "incomplete": 0,
+  "supplemental": [
+    "xcheck-mark-venkori",
+    "xcheck-mark-venqory",
+    "xcheck-mark-q-35a3bcae",
+    "xcheck-mark-vinkari",
+    "xcheck-mark-venkor",
+    "xcheck-mark-ven-qori",
+    "xcheck-mark-venqoir",
+    "xcheck-mark-venqori-systems",
+    "xcheck-mark-venqori-labs",
+    "xcheck-mark-tech-venqori",
+    "supp:primary-sweep:phonetic:venqori:eac756bf",
+    "supp:primary-sweep:default:ven-qori:1a6bd242",
+    "supp:primary-sweep:default:venkuri:10472dc6",
+    "supp:primary-sweep:default:be-n-ko-ri:6673a270",
+    "supp:transliteration-numeric:default:benkori:9e7aed33",
+    "supp:primary-sweep:exact:venqor:95c1e801",
+    "supp:primary-sweep:default:venqor:9128aca3",
+    "supp:primary-sweep:exact:venori:d53a8da3",
+    "supp:primary-sweep:default:venori:91fb50fd",
+    "supp:primary-sweep:exact:venqri:4a43b651",
+    "supp:primary-sweep:default:venqri:5e35ad87",
+    "supp:primary-sweep:exact:venqo:b054e31b",
+    "supp:primary-sweep:default:venqo:d8fe716d",
+    "supp:primary-sweep:exact:enqori:344dc290",
+    "supp:primary-sweep:default:enqori:14469776",
+    "supp:primary-sweep:exact:vencori:a462ddaa",
+    "supp:primary-sweep:default:vencori:d3b0d08c",
+    "supp:primary-sweep:exact:venquori:d462f449",
+    "supp:primary-sweep:default:venquori:ee894ffb",
+    "supp:primary-sweep:exact:vengori:41e663de",
+    "supp:primary-sweep:default:vengori:e84c1c60",
+    "supp:primary-sweep:exact:venqroi:b7376742",
+    "supp:primary-sweep:default:venqroi:91c42248",
+    "supp:primary-sweep:exact:venqori:978b0b3b",
+    "supp:primary-sweep:exact:venqori-form-neighbourhood:c4f74644"
+  ],
+  "main_markets": [
+    "JP",
+    "KR"
+  ],
+  "skeleton": [
+    {
+      "axis": "primary-sweep",
+      "state": "deferred",
+      "entries": 54,
+      "executed": 46,
+      "crowds": 0,
+      "skipped": 0,
+      "missing": [],
+      "awaiting": 7,
+      "deferred": [
+        "xcheck-mark-q-35a3bcae"
+      ]
+    },
+    {
+      "axis": "transliteration-numeric",
+      "state": "executed",
+      "entries": 4,
+      "executed": 3,
+      "crowds": 0,
+      "skipped": 0,
+      "missing": [],
+      "awaiting": 1
+    }
+  ]
+}

@@ -1,0 +1,457 @@
+{
+  "plan_version": 4,
+  "executed": [
+    {
+      "qid": "primary-sweep:exact:venqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venkori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:vencori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venkory",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venkri",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venkor",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:vankori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:vinkuri",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:benkori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venq0ri",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqor1",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqorl",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqoir",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:veqnori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:vemqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:default:venqori+goods",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:exact:aenqori+form",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:wildcard:v-nq-r",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "primary-sweep:exact:venqori+merch",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "transliteration-numeric:exact:v3nqori",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "transliteration-numeric:exact:venq0ri",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "transliteration-numeric:exact:venqor1",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "jx-ja-ベンコリ",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "jx-ja-ヴェンコーリ",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:phonetic:venqori:eac756bf",
+      "state": "enumerated",
+      "records": 2,
+      "total_hits": 2
+    },
+    {
+      "qid": "supp:primary-sweep:default:ven-qori:1a6bd242",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:ven-qori:a9d79f9b",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venkuri:1b385422",
+      "state": "enumerated",
+      "records": 1,
+      "total_hits": 1
+    },
+    {
+      "qid": "supp:primary-sweep:default:benkuri:ce965956",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:transliteration-numeric:default:venkoori:9812f2f9",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqor:95c1e801",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venqor:9128aca3",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqo:b054e31b",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venqo:d8fe716d",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venori:59a39aed",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venori:99d9976f",
+      "state": "enumerated",
+      "records": 1,
+      "total_hits": 1
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqri:de11c517",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venqri:a4204e55",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:enqori:344dc290",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:enqori:14469776",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:vencor:8c53e453",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:vencor:ba48f4b1",
+      "state": "enumerated",
+      "records": 5,
+      "total_hits": 5
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venkwori:1a0ebee9",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:default:venkwori:a66b8b4b",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:bencori:94ff2940",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:benqori:efe1d3ee",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venkoli:ef4c5382",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:vencoli:24f384ea",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:benkoli:1043c2ee",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venturi:dfd9b095",
+      "state": "enumerated",
+      "records": 8,
+      "total_hits": 8
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqori:a9da01c2",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    },
+    {
+      "qid": "supp:primary-sweep:exact:venqori-form-neighbourhood:c4f74644",
+      "state": "enumerated",
+      "records": 0,
+      "total_hits": 0
+    }
+  ],
+  "missing": [],
+  "skipped": [],
+  "deferred": [],
+  "awaiting": [
+    {
+      "qid": "primary-sweep:exact:venqori-software",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-systems",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-technologies",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-digital",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-analytics",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-labs",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-solutions",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-academy",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-learning",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-education",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-training",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:exact:venqori-media",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:default:digital-venqori",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:default:studio-venqori",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "primary-sweep:wildcard:v-r",
+      "axis": "primary-sweep"
+    },
+    {
+      "qid": "transliteration-numeric:exact:q-a74a3a76",
+      "axis": "transliteration-numeric"
+    }
+  ],
+  "asked": [],
+  "unplanned": [],
+  "answered": 54,
+  "incomplete": 0,
+  "supplemental": [
+    "supp:primary-sweep:phonetic:venqori:eac756bf",
+    "supp:primary-sweep:default:ven-qori:1a6bd242",
+    "supp:primary-sweep:default:ven-qori:a9d79f9b",
+    "supp:primary-sweep:default:venkuri:1b385422",
+    "supp:primary-sweep:default:benkuri:ce965956",
+    "supp:transliteration-numeric:default:venkoori:9812f2f9",
+    "supp:primary-sweep:exact:venqor:95c1e801",
+    "supp:primary-sweep:default:venqor:9128aca3",
+    "supp:primary-sweep:exact:venqo:b054e31b",
+    "supp:primary-sweep:default:venqo:d8fe716d",
+    "supp:primary-sweep:exact:venori:59a39aed",
+    "supp:primary-sweep:default:venori:99d9976f",
+    "supp:primary-sweep:exact:venqri:de11c517",
+    "supp:primary-sweep:default:venqri:a4204e55",
+    "supp:primary-sweep:exact:enqori:344dc290",
+    "supp:primary-sweep:default:enqori:14469776",
+    "supp:primary-sweep:exact:vencor:8c53e453",
+    "supp:primary-sweep:default:vencor:ba48f4b1",
+    "supp:primary-sweep:exact:venkwori:1a0ebee9",
+    "supp:primary-sweep:default:venkwori:a66b8b4b",
+    "supp:primary-sweep:exact:bencori:94ff2940",
+    "supp:primary-sweep:exact:benqori:efe1d3ee",
+    "supp:primary-sweep:exact:venkoli:ef4c5382",
+    "supp:primary-sweep:exact:vencoli:24f384ea",
+    "supp:primary-sweep:exact:benkoli:1043c2ee",
+    "supp:primary-sweep:exact:venturi:dfd9b095",
+    "supp:primary-sweep:exact:venqori:a9da01c2",
+    "supp:primary-sweep:exact:venqori-form-neighbourhood:c4f74644"
+  ],
+  "main_markets": [
+    "JP"
+  ],
+  "skeleton": [
+    {
+      "axis": "primary-sweep",
+      "state": "executed",
+      "entries": 63,
+      "executed": 48,
+      "crowds": 0,
+      "skipped": 0,
+      "missing": [],
+      "awaiting": 15
+    },
+    {
+      "axis": "transliteration-numeric",
+      "state": "executed",
+      "entries": 7,
+      "executed": 6,
+      "crowds": 0,
+      "skipped": 0,
+      "missing": [],
+      "awaiting": 1
+    }
+  ]
+}

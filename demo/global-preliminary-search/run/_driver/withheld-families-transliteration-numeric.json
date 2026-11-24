@@ -1,0 +1,17 @@
+{
+  "axis": "transliteration-numeric",
+  "families": {
+    "transliteration-numeric:exact:q-a74a3a76": {
+      "reason": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question."
+    },
+    "transliteration-numeric:exact:q-9dd0911b": {
+      "reason": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question."
+    },
+    "transliteration-numeric:exact:q-9ca7884b": {
+      "reason": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question."
+    },
+    "transliteration-numeric:exact:q-7a8e50b7": {
+      "reason": "These forms share the romanisation VENKORI, already searched in exact and broader Latin questions covering the relevant markets; repeating it would not add a distinct register question."
+    }
+  }
+}

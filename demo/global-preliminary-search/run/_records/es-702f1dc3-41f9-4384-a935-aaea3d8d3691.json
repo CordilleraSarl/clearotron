@@ -1,0 +1,152 @@
+{
+  "uri": "/mark/es/702f1dc3-41f9-4384-a935-aaea3d8d3691",
+  "provider": "clarivate",
+  "office": "es",
+  "guid": "702f1dc3-41f9-4384-a935-aaea3d8d3691",
+  "applicationNumber": "4270709 M9",
+  "registrationNumber": "4270709 M9",
+  "applicationDate": "2024-06-07",
+  "registrationDate": "2025-04-04",
+  "expiryDate": "2034-06-06",
+  "renewalDate": null,
+  "lastPublicationDate": "2024-08-09",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN RIVERS HOUSE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    38,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "es",
+      "description": "Grabaciones audiovisuales; dispositivos fotograficos y audiovisuales; equipos audiovisuales y de informacion tecnologica; software de realidad virtual; software para generar imagenes virtuales; archivos de musica descargables; hardware de realidad virtual; modelos de realidad virtual; archivos multimedia descargables para reproductores portatiles [podcasts]; aplicaciones informaticas descargables (apps); software para la comunicacion, las redes y las redes sociales; productos virtuales descargables, en concreto, programas y archivos informaticos descargables relacionados con la musica para usar en linea y en mundos virtuales en linea; publicaciones electronicas descargables; publicaciones electronicas interactivas; aplicaciones de software para telefonos moviles; software de realidad virtual para simuladores; software de esparcimiento interactivo; archivos digitales descargables autenticados por tokens no fungibles (nft); chips que contienen grabaciones musicales; cintas con musica grabada; cintas de audio con grabaciones no musicales; cintas de audio con musica; cintas de audio pregrabadas con musica; cintas de musica; cintas de video pregrabadas con musica; cintas grabadas con musica; cintas grabadas con videos no musicales; discos compactos con musica; discos compactos musicales; discos laser (ld) para su uso en el almacenamiento de musica; discos laser pregrabados con musica; discos opticos con grabaciones musicales; dvd pregrabados con musica; grabaciones de musica; grabaciones de sonido musical descargables; grabaciones de video musicales descargables; grabaciones de videos musicales; grabaciones musicales; grabaciones musicales en forma de discos; musica digital descargable; musica digital (descargable) desde internet; musica digital (descargable) facilitada desde internet; musica digital (descargable) facilitada desde sitios web de mp3 en internet; musica digital (descargable) facilitada desde una base de datos informatica o internet; programas de ordenador legibles por maquina para reproducir musica; programas informaticos de procesamiento de archivos de musica digital; series de grabaciones musicales; software informatico para el tratamiento de archivos digitales de musica; software musical; videos con musica grabada.",
+      "translation_language": "en",
+      "translation": "AUDIOVISUAL RECORDINGS; PHOTOGRAPHIC AND AUDIOVISUAL DEVICES; AUDIOVISUAL AND TECHNOLOGICAL INFORMATION EQUIPMENT; VIRTUAL REALITY SOFTWARE; SOFTWARE FOR GENERATING VIRTUAL IMAGES; DOWNLOADABLE MUSIC FILES; VIRTUAL REALITY HARDWARE; VIRTUAL REALITY MODELS; DOWNLOADABLE MULTIMEDIA FILES FOR PORTABLE PLAYERS [PODCASTS]; DOWNLOADABLE COMPUTER APPLICATIONS (APPS); SOFTWARE FOR COMMUNICATION, NETWORKS AND SOCIAL NETWORKS; DOWNLOADABLE VIRTUAL PRODUCTS, IN PARTICULAR, DOWNLOADABLE COMPUTER PROGRAMS AND FILES RELATED TO MUSIC FOR USE ONLINE AND IN ONLINE VIRTUAL WORLDS; DOWNLOADABLE ELECTRONIC PUBLICATIONS; INTERACTIVE ELECTRONIC PUBLICATIONS; SOFTWARE APPLICATIONS FOR MOBILE PHONES; VIRTUAL REALITY SOFTWARE FOR SIMULATORS; INTERACTIVE ENTERTAINMENT SOFTWARE; DOWNLOADABLE DIGITAL FILES AUTHENTICATED BY NON-FUNGIBLE TOKENS (NFT); CHIPS CONTAINING MUSICAL RECORDINGS; TAPES WITH RECORDED MUSIC; AUDIO TAPES WITH NON-MUSICAL RECORDINGS; AUDIO TAPES WITH MUSIC; PRE-RECORDED AUDIO TAPES WITH MUSIC; MUSIC TAPES; PRE-RECORDED VIDEO TAPES WITH MUSIC; TAPES RECORDED WITH MUSIC; TAPES RECORDED WITH NON-MUSIC VIDEOS; COMPACT DISCS WITH MUSIC; MUSICAL COMPACT DISCS; LASER DISCS (LD) FOR USE IN MUSIC STORAGE; LASER DISCS PRERECORDED WITH MUSIC; OPTICAL DISCS WITH MUSICAL RECORDINGS; PRERECORDED DVDS WITH MUSIC; MUSIC RECORDINGS; DOWNLOADABLE MUSICAL SOUND RECORDINGS; DOWNLOADABLE MUSIC VIDEO RECORDINGS; MUSIC VIDEO RECORDINGS; MUSICAL RECORDINGS; MUSICAL RECORDINGS IN THE FORM OF DISCS; DOWNLOADABLE DIGITAL MUSIC; DIGITAL MUSIC (DOWNLOADABLE) FROM THE INTERNET; DIGITAL MUSIC (DOWNLOADABLE) PROVIDED FROM THE INTERNET; DIGITAL MUSIC (DOWNLOADABLE) PROVIDED FROM MP3 WEBSITES ON THE INTERNET; DIGITAL MUSIC (DOWNLOADABLE) PROVIDED FROM A COMPUTER DATABASE OR THE INTERNET; MACHINE READABLE COMPUTER PROGRAMS FOR PLAYING MUSIC; COMPUTER PROGRAMS FOR PROCESSING DIGITAL MUSIC FILES; MUSICAL RECORDING SERIES; COMPUTER SOFTWARE FOR THE PROCESSING OF DIGITAL MUSIC FILES; MUSICAL SOFTWARE; VIDEOS WITH RECORDED MUSIC."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "es",
+      "description": "Servicios de comunicaciones; servicio de comunicacion audiovisual; servicios de difusion de emisiones; transmision de flujo continuo de datos [streaming]; transmision de archivos digitales; servicios de difusion de radio, cable y television; radiodifusion y transmision de programas de television; difusion y transmision de programas radiofonicos; servicios de transmision de television, transmision de radio y radiodifusion; transmision y distribucion de datos o imagenes audiovisuales mediante una red mundial informatica o internet; servicios de informacion en linea relacionados con servicios de radio, cable y difusion; difusion y transmision de programas de television, difusion y transmision de programas de radio; servicios de comunicacion por internet, en concreto transmision de sonido continuo y grabaciones audiovisuales a traves de internet; suministro de informacion sobre los servicios mencionados a traves de internet u otros servicios en linea y facilitacion de informacion a multiples usuarios sobre los servicios mencionados; facilitacion de foros de discusion [chats] en internet; suministro de salas de charlas en linea para la transmision de mensajes entre usuarios de ordenador.",
+      "translation_language": "en",
+      "translation": "COMMUNICATIONS SERVICES; AUDIOVISUAL COMMUNICATION SERVICE; BROADCASTING SERVICES; CONTINUOUS FLOW TRANSMISSION OF DATA [STREAMING]; TRANSMISSION OF DIGITAL FILES; RADIO, CABLE AND TELEVISION BROADCASTING SERVICES; BROADCASTING AND TRANSMISSION OF TELEVISION PROGRAMS; BROADCASTING AND TRANSMISSION OF RADIO PROGRAMS; TELEVISION TRANSMISSION, RADIO TRANSMISSION AND BROADCASTING SERVICES; TRANSMISSION AND DISTRIBUTION OF AUDIOVISUAL DATA OR IMAGES OVER A GLOBAL COMPUTER NETWORK OR THE INTERNET; ONLINE INFORMATION SERVICES RELATING TO RADIO, CABLE AND BROADCASTING SERVICES; BROADCASTING AND TRANSMISSION OF TELEVISION PROGRAMS, BROADCASTING AND TRANSMISSION OF RADIO PROGRAMS; INTERNET COMMUNICATION SERVICES, NAMELY TRANSMISSION OF CONTINUOUS SOUND AND AUDIOVISUAL RECORDINGS OVER THE INTERNET; PROVISION OF INFORMATION ON THE MENTIONED SERVICES THROUGH THE INTERNET OR OTHER ONLINE SERVICES AND PROVISION OF INFORMATION TO MULTIPLE USERS ON THE MENTIONED SERVICES; FACILITATION OF DISCUSSION FORUMS [CHATS] ON THE INTERNET; PROVISION OF ONLINE CHAT ROOMS FOR THE TRANSMISSION OF MESSAGES BETWEEN COMPUTER USERS."
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "es",
+      "description": "Produccion de grabaciones audiovisuales; presentaciones audiovisuales; servicios de esparcimiento en radio y television; servicios de esparcimiento con peliculas, musica, deporte, video y teatro; produccion, preparacion, presentacion, distribucion, conexion en red y alquiler de programas de television y radio y largometrajes y peliculas, peliculas animadas y grabaciones de sonido y video; produccion de actividades de esparcimiento en vivo; produccion de programas televisivos de entretenimiento; servicios relacionados con el esparcimiento cinematografico, con el esparcimiento televisivo y con actuaciones y espectaculos en directo; servicios relacionados con la produccion de libros, revistas y publicaciones periodicas; publicacion, organizacion, produccion y presentaciones de acontecimientos con fines educativos, culturales o de esparcimiento; facilitacion de musica digital (no descargable) desde internet; servicios de informacion en linea relacionada con el esparcimiento, eventos culturales prestados en linea desde una base de datos informatica o prestados por otros medios; servicios de juegos electronicos facilitados desde una base de datos o por medio de internet; facilitacion de publicaciones electronicas en linea; publicacion de textos en formato electronico o de otro tipo; servicios de exposiciones; servicios de diversiones; suministro de informacion sobre los servicios de esparcimiento del solicitante a multiples usuarios a traves de la web o de internet u otras bases de datos en linea; produccion de espectaculos de baile, espectaculos musicales; conciertos musicales en vivo; suministro de informacion en materia de entretenimiento por medio de una red informatica global; servicios de esparcimiento mediante un sistema de votacion en linea a traves de internet o un dispositivo de comunicacion inalambrico; servicios de organizacion de concursos y entrega de premios; entrevistas de personajes contemporaneos con fines de entretenimiento; servicios de artistas del espectaculo.",
+      "translation_language": "en",
+      "translation": "PRODUCTION OF AUDIOVISUAL RECORDINGS; AUDIOVISUAL PRESENTATIONS; RADIO AND TELEVISION ENTERTAINMENT SERVICES; ENTERTAINMENT SERVICES WITH FILMS, MUSIC, SPORTS, VIDEO AND THEATER; PRODUCTION, PREPARATION, PRESENTATION, DISTRIBUTION, NETWORKING AND RENTAL OF TELEVISION AND RADIO PROGRAMS AND FEATURE FILMS AND MOVIES, ANIMATED FILMS AND SOUND AND VIDEO RECORDINGS; PRODUCTION OF LIVE ENTERTAINMENT ACTIVITIES; PRODUCTION OF TELEVISION ENTERTAINMENT PROGRAMS; SERVICES RELATED TO FILM ENTERTAINMENT, TELEVISION ENTERTAINMENT AND LIVE PERFORMANCES AND SHOWS; SERVICES RELATED TO THE PRODUCTION OF BOOKS, MAGAZINES AND PERIODIC PUBLICATIONS; PUBLICATION, ORGANIZATION, PRODUCTION AND PRESENTATIONS OF EVENTS FOR EDUCATIONAL, CULTURAL OR LEISURE PURPOSES; PROVISION OF DIGITAL MUSIC (NOT DOWNLOADABLE) FROM THE INTERNET; ONLINE INFORMATION SERVICES RELATED TO LEISURE, CULTURAL EVENTS PROVIDED ONLINE FROM A COMPUTER DATABASE OR PROVIDED BY OTHER MEANS; ELECTRONIC GAMING SERVICES PROVIDED FROM A DATABASE OR THROUGH THE INTERNET; PROVISION OF ONLINE ELECTRONIC PUBLICATIONS; PUBLICATION OF TEXTS IN ELECTRONIC OR OTHER FORMAT; EXHIBITION SERVICES; AMUSEMENT SERVICES; PROVISION OF INFORMATION ABOUT THE APPLICANT&#39;S RECREATION SERVICES TO MULTIPLE USERS THROUGH THE WEB OR INTERNET OR OTHER ONLINE DATABASES; PRODUCTION OF DANCE SHOWS, MUSICAL SHOWS; LIVE MUSICAL CONCERTS; PROVISION OF ENTERTAINMENT INFORMATION THROUGH A GLOBAL COMPUTER NETWORK; ENTERTAINMENT SERVICES THROUGH AN ONLINE VOTING SYSTEM VIA THE INTERNET OR A WIRELESS COMMUNICATION DEVICE; CONTEST ORGANIZATION AND PRIZE DELIVERY SERVICES; INTERVIEWS OF CONTEMPORARY PEOPLE FOR ENTERTAINMENT PURPOSES; PERFORMANCE ARTIST SERVICES."
+    }
+  ],
+  "owner": "Martínez Lagarrigue Virginia",
+  "ownerNative": null,
+  "ownerCountry": null,
+  "representative": "María Covadonga Fernández-Vega Feijoo",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantName": "Martínez Lagarrigue Virginia"
+      }
+    ],
+    "applicationLanguageCode": "es",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "AUDIOVISUAL RECORDINGS; PHOTOGRAPHIC AND AUDIOVISUAL DEVICES; AUDIOVISUAL AND TECHNOLOGICAL INFORMATION EQUIPMENT; VIRTUAL REALITY SOFTWARE; SOFTWARE FOR GENERATING VIRTUAL IMAGES; DOWNLOADABLE MUSIC FILES; VIRTUAL REALITY HARDWARE; VIRTUAL REALITY MODELS; DOWNLOADABLE MULTIMEDIA FILES FOR PORTABLE PLAYERS [PODCASTS]; DOWNLOADABLE COMPUTER APPLICATIONS (APPS); SOFTWARE FOR COMMUNICATION, NETWORKS AND SOCIAL NETWORKS; DOWNLOADABLE VIRTUAL PRODUCTS, IN PARTICULAR, DOWNLOADABLE COMPUTER PROGRAMS AND FILES RELATED TO MUSIC FOR USE ONLINE AND IN ONLINE VIRTUAL WORLDS; DOWNLOADABLE ELECTRONIC PUBLICATIONS; INTERACTIVE ELECTRONIC PUBLICATIONS; SOFTWARE APPLICATIONS FOR MOBILE PHONES; VIRTUAL REALITY SOFTWARE FOR SIMULATORS; INTERACTIVE ENTERTAINMENT SOFTWARE; DOWNLOADABLE DIGITAL FILES AUTHENTICATED BY NON-FUNGIBLE TOKENS (NFT); CHIPS CONTAINING MUSICAL RECORDINGS; TAPES WITH RECORDED MUSIC; AUDIO TAPES WITH NON-MUSICAL RECORDINGS; AUDIO TAPES WITH MUSIC; PRE-RECORDED AUDIO TAPES WITH MUSIC; MUSIC TAPES; PRE-RECORDED VIDEO TAPES WITH MUSIC; TAPES RECORDED WITH MUSIC; TAPES RECORDED WITH NON-MUSIC VIDEOS; COMPACT DISCS WITH MUSIC; MUSICAL COMPACT DISCS; LASER DISCS (LD) FOR USE IN MUSIC STORAGE; LASER DISCS PRERECORDED WITH MUSIC; OPTICAL DISCS WITH MUSICAL RECORDINGS; PRERECORDED DVDS WITH MUSIC; MUSIC RECORDINGS; DOWNLOADABLE MUSICAL SOUND RECORDINGS; DOWNLOADABLE MUSIC VIDEO RECORDINGS; MUSIC VIDEO RECORDINGS; MUSICAL RECORDINGS; MUSICAL RECORDINGS IN THE FORM OF DISCS; DOWNLOADABLE DIGITAL MUSIC; DIGITAL MUSIC (DOWNLOADABLE) FROM THE INTERNET; DIGITAL MUSIC (DOWNLOADABLE) PROVIDED FROM THE INTERNET; DIGITAL MUSIC (DOWNLOADABLE) PROVIDED FROM MP3 WEBSITES ON THE INTERNET; DIGITAL MUSIC (DOWNLOADABLE) PROVIDED FROM A COMPUTER DATABASE OR THE INTERNET; MACHINE READABLE COMPUTER PROGRAMS FOR PLAYING MUSIC; COMPUTER PROGRAMS FOR PROCESSING DIGITAL MUSIC FILES; MUSICAL RECORDING SERIES; COMPUTER SOFTWARE FOR THE PROCESSING OF DIGITAL MUSIC FILES; MUSICAL SOFTWARE; VIDEOS WITH RECORDED MUSIC.",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Grabaciones audiovisuales; dispositivos fotograficos y audiovisuales; equipos audiovisuales y de informacion tecnologica; software de realidad virtual; software para generar imagenes virtuales; archivos de musica descargables; hardware de realidad virtual; modelos de realidad virtual; archivos multimedia descargables para reproductores portatiles [podcasts]; aplicaciones informaticas descargables (apps); software para la comunicacion, las redes y las redes sociales; productos virtuales descargables, en concreto, programas y archivos informaticos descargables relacionados con la musica para usar en linea y en mundos virtuales en linea; publicaciones electronicas descargables; publicaciones electronicas interactivas; aplicaciones de software para telefonos moviles; software de realidad virtual para simuladores; software de esparcimiento interactivo; archivos digitales descargables autenticados por tokens no fungibles (nft); chips que contienen grabaciones musicales; cintas con musica grabada; cintas de audio con grabaciones no musicales; cintas de audio con musica; cintas de audio pregrabadas con musica; cintas de musica; cintas de video pregrabadas con musica; cintas grabadas con musica; cintas grabadas con videos no musicales; discos compactos con musica; discos compactos musicales; discos laser (ld) para su uso en el almacenamiento de musica; discos laser pregrabados con musica; discos opticos con grabaciones musicales; dvd pregrabados con musica; grabaciones de musica; grabaciones de sonido musical descargables; grabaciones de video musicales descargables; grabaciones de videos musicales; grabaciones musicales; grabaciones musicales en forma de discos; musica digital descargable; musica digital (descargable) desde internet; musica digital (descargable) facilitada desde internet; musica digital (descargable) facilitada desde sitios web de mp3 en internet; musica digital (descargable) facilitada desde una base de datos informatica o internet; programas de ordenador legibles por maquina para reproducir musica; programas informaticos de procesamiento de archivos de musica digital; series de grabaciones musicales; software informatico para el tratamiento de archivos digitales de musica; software musical; videos con musica grabada."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "COMMUNICATIONS SERVICES; AUDIOVISUAL COMMUNICATION SERVICE; BROADCASTING SERVICES; CONTINUOUS FLOW TRANSMISSION OF DATA [STREAMING]; TRANSMISSION OF DIGITAL FILES; RADIO, CABLE AND TELEVISION BROADCASTING SERVICES; BROADCASTING AND TRANSMISSION OF TELEVISION PROGRAMS; BROADCASTING AND TRANSMISSION OF RADIO PROGRAMS; TELEVISION TRANSMISSION, RADIO TRANSMISSION AND BROADCASTING SERVICES; TRANSMISSION AND DISTRIBUTION OF AUDIOVISUAL DATA OR IMAGES OVER A GLOBAL COMPUTER NETWORK OR THE INTERNET; ONLINE INFORMATION SERVICES RELATING TO RADIO, CABLE AND BROADCASTING SERVICES; BROADCASTING AND TRANSMISSION OF TELEVISION PROGRAMS, BROADCASTING AND TRANSMISSION OF RADIO PROGRAMS; INTERNET COMMUNICATION SERVICES, NAMELY TRANSMISSION OF CONTINUOUS SOUND AND AUDIOVISUAL RECORDINGS OVER THE INTERNET; PROVISION OF INFORMATION ON THE MENTIONED SERVICES THROUGH THE INTERNET OR OTHER ONLINE SERVICES AND PROVISION OF INFORMATION TO MULTIPLE USERS ON THE MENTIONED SERVICES; FACILITATION OF DISCUSSION FORUMS [CHATS] ON THE INTERNET; PROVISION OF ONLINE CHAT ROOMS FOR THE TRANSMISSION OF MESSAGES BETWEEN COMPUTER USERS.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Servicios de comunicaciones; servicio de comunicacion audiovisual; servicios de difusion de emisiones; transmision de flujo continuo de datos [streaming]; transmision de archivos digitales; servicios de difusion de radio, cable y television; radiodifusion y transmision de programas de television; difusion y transmision de programas radiofonicos; servicios de transmision de television, transmision de radio y radiodifusion; transmision y distribucion de datos o imagenes audiovisuales mediante una red mundial informatica o internet; servicios de informacion en linea relacionados con servicios de radio, cable y difusion; difusion y transmision de programas de television, difusion y transmision de programas de radio; servicios de comunicacion por internet, en concreto transmision de sonido continuo y grabaciones audiovisuales a traves de internet; suministro de informacion sobre los servicios mencionados a traves de internet u otros servicios en linea y facilitacion de informacion a multiples usuarios sobre los servicios mencionados; facilitacion de foros de discusion [chats] en internet; suministro de salas de charlas en linea para la transmision de mensajes entre usuarios de ordenador."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "PRODUCTION OF AUDIOVISUAL RECORDINGS; AUDIOVISUAL PRESENTATIONS; RADIO AND TELEVISION ENTERTAINMENT SERVICES; ENTERTAINMENT SERVICES WITH FILMS, MUSIC, SPORTS, VIDEO AND THEATER; PRODUCTION, PREPARATION, PRESENTATION, DISTRIBUTION, NETWORKING AND RENTAL OF TELEVISION AND RADIO PROGRAMS AND FEATURE FILMS AND MOVIES, ANIMATED FILMS AND SOUND AND VIDEO RECORDINGS; PRODUCTION OF LIVE ENTERTAINMENT ACTIVITIES; PRODUCTION OF TELEVISION ENTERTAINMENT PROGRAMS; SERVICES RELATED TO FILM ENTERTAINMENT, TELEVISION ENTERTAINMENT AND LIVE PERFORMANCES AND SHOWS; SERVICES RELATED TO THE PRODUCTION OF BOOKS, MAGAZINES AND PERIODIC PUBLICATIONS; PUBLICATION, ORGANIZATION, PRODUCTION AND PRESENTATIONS OF EVENTS FOR EDUCATIONAL, CULTURAL OR LEISURE PURPOSES; PROVISION OF DIGITAL MUSIC (NOT DOWNLOADABLE) FROM THE INTERNET; ONLINE INFORMATION SERVICES RELATED TO LEISURE, CULTURAL EVENTS PROVIDED ONLINE FROM A COMPUTER DATABASE OR PROVIDED BY OTHER MEANS; ELECTRONIC GAMING SERVICES PROVIDED FROM A DATABASE OR THROUGH THE INTERNET; PROVISION OF ONLINE ELECTRONIC PUBLICATIONS; PUBLICATION OF TEXTS IN ELECTRONIC OR OTHER FORMAT; EXHIBITION SERVICES; AMUSEMENT SERVICES; PROVISION OF INFORMATION ABOUT THE APPLICANT&#39;S RECREATION SERVICES TO MULTIPLE USERS THROUGH THE WEB OR INTERNET OR OTHER ONLINE DATABASES; PRODUCTION OF DANCE SHOWS, MUSICAL SHOWS; LIVE MUSICAL CONCERTS; PROVISION OF ENTERTAINMENT INFORMATION THROUGH A GLOBAL COMPUTER NETWORK; ENTERTAINMENT SERVICES THROUGH AN ONLINE VOTING SYSTEM VIA THE INTERNET OR A WIRELESS COMMUNICATION DEVICE; CONTEST ORGANIZATION AND PRIZE DELIVERY SERVICES; INTERVIEWS OF CONTEMPORARY PEOPLE FOR ENTERTAINMENT PURPOSES; PERFORMANCE ARTIST SERVICES.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "es",
+          "intGoodsServicesDescription": "Produccion de grabaciones audiovisuales; presentaciones audiovisuales; servicios de esparcimiento en radio y television; servicios de esparcimiento con peliculas, musica, deporte, video y teatro; produccion, preparacion, presentacion, distribucion, conexion en red y alquiler de programas de television y radio y largometrajes y peliculas, peliculas animadas y grabaciones de sonido y video; produccion de actividades de esparcimiento en vivo; produccion de programas televisivos de entretenimiento; servicios relacionados con el esparcimiento cinematografico, con el esparcimiento televisivo y con actuaciones y espectaculos en directo; servicios relacionados con la produccion de libros, revistas y publicaciones periodicas; publicacion, organizacion, produccion y presentaciones de acontecimientos con fines educativos, culturales o de esparcimiento; facilitacion de musica digital (no descargable) desde internet; servicios de informacion en linea relacionada con el esparcimiento, eventos culturales prestados en linea desde una base de datos informatica o prestados por otros medios; servicios de juegos electronicos facilitados desde una base de datos o por medio de internet; facilitacion de publicaciones electronicas en linea; publicacion de textos en formato electronico o de otro tipo; servicios de exposiciones; servicios de diversiones; suministro de informacion sobre los servicios de esparcimiento del solicitante a multiples usuarios a traves de la web o de internet u otras bases de datos en linea; produccion de espectaculos de baile, espectaculos musicales; conciertos musicales en vivo; suministro de informacion en materia de entretenimiento por medio de una red informatica global; servicios de esparcimiento mediante un sistema de votacion en linea a traves de internet o un dispositivo de comunicacion inalambrico; servicios de organizacion de concursos y entrega de premios; entrevistas de personajes contemporaneos con fines de entretenimiento; servicios de artistas del espectaculo."
+        }
+      ]
+    },
+    "id": "702f1dc3-41f9-4384-a935-aaea3d8d3691",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6717"
+      }
+    ],
+    "recordLastUpdated": "20260427",
+    "registrationOfficeCode": "ES",
+    "registrationOfficeName": "Spain",
+    "representatives": [
+      {
+        "representativeAddress": "C/ Bretón de los Herreros 66-1º B 28003 Madrid MADRID",
+        "representativeName": "María Covadonga Fernández-Vega Feijoo"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20240607",
+        "applicationNumber": "4270709 M9"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340606",
+      "lastPublicationDate": "20240809",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20250404",
+        "registrationNumber": "4270709 M9"
+      }
+    },
+    "version": "20260427171320",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN RIVERS HOUSE"
+    }
+  },
+  "_uri": "/mark/es/702f1dc3-41f9-4384-a935-aaea3d8d3691",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.196Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

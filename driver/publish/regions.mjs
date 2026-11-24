@@ -11,37 +11,12 @@
 //
 // PURE (no node imports) so tests run offline and any surface (render, email, xlsx) can import it.
 
-export const COMMON_LAW = 'C/L';
-
-export const REGION_NAMES = {
-  US: 'United States', EU: 'European Union', UK: 'United Kingdom', CN: 'China', JP: 'Japan',
-  KR: 'South Korea', CA: 'Canada', AU: 'Australia', IN: 'India', BR: 'Brazil', RU: 'Russia',
-  BX: 'Benelux', CH: 'Switzerland', DE: 'Germany', FR: 'France', ES: 'Spain', IT: 'Italy',
-  NL: 'Netherlands', SE: 'Sweden', NO: 'Norway', SG: 'Singapore', WO: 'WIPO (Madrid)',
-  TR: 'Turkey', NZ: 'New Zealand', PH: 'Philippines', ID: 'Indonesia', ZA: 'South Africa',
-  MX: 'Mexico', TW: 'Taiwan', HK: 'Hong Kong', SA: 'Saudi Arabia', AE: 'United Arab Emirates',
-  DK: 'Denmark', FI: 'Finland', PL: 'Poland', PT: 'Portugal', AT: 'Austria', BE: 'Belgium',
-  IE: 'Ireland', GR: 'Greece', IL: 'Israel', TK: 'Tokelau',
-  // XS is no country: it is the code the US state registers are filed under beside the federal one, read as they are
-  // named (owner, 2026-11-18). It printed as "XS".
-  XS: 'US state registers',
-  // Two regional offices and a user-assigned code, by the names a lawyer knows them (owner, 2026-11-19). They printed
-  // as codes in a report's list of places where nothing was found. XA, XG and XW stay as the register records them
-  // until the register's own names for them are verified.
-  AP: 'ARIPO', OA: 'OAPI', XK: 'Kosovo',
-  CL: 'Chile', [COMMON_LAW]: 'Common-law',
-};
-
-// doc-55 B — Madrid/WIPO international records surface from corsearch as jurisdiction "INT" (URI
-// /mark/int/…); normalize them to the existing WO ('WIPO (Madrid)') so the WIPO international register
-// reads consistently everywhere (one recent run showed "WO", another "INT"). NOTE: we do NOT alias "IR"
-// — IR is ISO-3166 Iran, not "international registration" (the same CL=Chile collision this file guards
-// against). euipo IR-designating-EU records already carry jurisdiction "EU"; corsearch Madrid = "INT".
-export const REGION_ALIAS = { GB: 'UK', EM: 'EU', EUTM: 'EU', EUIPO: 'EU', INT: 'WO' };
+import { COMMON_LAW, REGION_NAMES, REGION_ALIAS } from "../../shared/jurisdiction-tables.mjs";   // a jurisdiction's tables live in one home
+export { COMMON_LAW, REGION_NAMES, REGION_ALIAS };
 
 export const normRegion = (c) => { const u = String(c || '').toUpperCase(); return REGION_ALIAS[u] || u; };
 
-// THE NAME A READER SEES. The table above wins; a two-letter country code it lacks takes the name the runtime's own
+// THE NAME A READER SEES. REGION_NAMES wins; a two-letter country code it lacks takes the name the runtime's own
 // region names give it (Intl.DisplayNames, a global, so this file stays import-free); anything else is printed as
 // the code itself, so a new register still surfaces without a change here. 128 of 320 country rows on delivered
 // reports printed a bare code (AR, CO, CZ) because the table is hand-kept.

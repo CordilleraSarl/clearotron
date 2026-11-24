@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "level": "global-preliminary-search",
+  "pipeline": "clearance",
+  "stageLabel": "Global preliminary search",
+  "components": {
+    "registerProbe": false,
+    "jxLanes": false,
+    "commonLawGrid": true
+  },
+  "recipe": null,
+  "extras": null,
+  "origins": {
+    "level": "job.product"
+  },
+  "caseLaw": false,
+  "recipeScope": null,
+  "deliveryRoute": null,
+  "enqueuedVia": "mcp/start_run",
+  "enqueuedBy": "demo",
+  "parentRunId": null,
+  "frozenAt": "2026-09-18T12:35:08.518Z"
+}

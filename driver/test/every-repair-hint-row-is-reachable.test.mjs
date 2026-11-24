@@ -3,8 +3,9 @@
 // every-repair-hint-row-is-reachable.test.mjs — each row of the repair-hint table answers a failure that no
 // row above it already answers.
 //
-// The table is read in order and the first matching row answers. A row placed below a broader pattern never
-// fires, and nothing else notices: the corrective turn is handed the broader row's sentence and the run goes on.
+// The table is read in order and the first row answering one of a failure's codes answers. A row placed below one
+// that answers the same code never fires, and nothing else notices: the corrective turn is handed the other row's
+// sentence and the run goes on.
 // So every row carries one example failure here, and the example must select its own row. A new row needs an
 // example before this passes.
 import { test } from "node:test";

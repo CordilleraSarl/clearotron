@@ -98,5 +98,5 @@ test("the committed demo audits: every term with a reviewed candidate reads as a
       assert.doesNotMatch(r.Outcome, /^No conflict/, `${demo}: a term with reviewed candidates`);
     }
   }
-  assert.equal(terms, 27 + 17 + 10, "every hit term of the three demos was read");
+  assert.equal(terms, 36 + 46 + 21, "every hit term of the three demos was read");
 });

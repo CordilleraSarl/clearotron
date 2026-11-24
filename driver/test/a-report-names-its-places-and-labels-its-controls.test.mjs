@@ -17,7 +17,8 @@ import { parseReport } from "../publish/parse.mjs";
 import { renderHtml } from "../publish/render.mjs";
 import { parseFindingsJson } from "../findings-model.mjs";
 
-const RUN = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "demo", "multi-country-focus-search", "run");
+// The previous multi-country demo capture: a real run with several cards, ruled-out ones among them.
+const RUN = join(dirname(fileURLToPath(import.meta.url)), "fixtures", "demo-2026-09-18", "multi-country-focus-search", "run");
 const V = parseFindingsJson(readFileSync(join(RUN, "findings.json"), "utf8"));
 const page = (opts) => renderHtml(parseReport(join(RUN, "report.md")), V.findings, V.coverage, { runId: "demo", ...opts });
 const row = (html, panel, k) => {

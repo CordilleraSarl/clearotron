@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "policy": "open-item",
+  "rows": [
+    {
+      "ordinal": 1,
+      "mark": "Ｖｅｎｋｕｒｉ",
+      "applicable": false,
+      "reason": "single leg — seniority trivial"
+    }
+  ]
+}

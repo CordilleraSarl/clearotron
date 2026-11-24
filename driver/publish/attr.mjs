@@ -12,13 +12,13 @@
 // beside the report). A browser drops tabs, newlines and other control characters from a URL before it
 // reads the scheme, so the scheme is read with those removed: `java` + newline + `script:` is `javascript:`.
 
+import { escapeAttr } from "../../shared/html-escape.mjs";
+
 // Every C0 control character, space and DEL — what a URL parser strips or ignores before the scheme.
 const IGNORED_BEFORE_SCHEME = /[\x00-\x20\x7f]/g;
 
 /** A value safe between the quotes of an HTML attribute: & < > " and ' all encoded. PURE. */
-export const attrValue = (s) => String(s ?? "")
-  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-  .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+export const attrValue = escapeAttr;
 
 /**
  * An href value, attribute-safe, or null when it must not be a link — the caller then renders its text

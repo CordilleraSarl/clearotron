@@ -1,0 +1,123 @@
+{
+  "uri": "/mark/in/b8148c50-792b-4d89-977c-a03b06acd2e8",
+  "provider": "clarivate",
+  "office": "in",
+  "guid": "b8148c50-792b-4d89-977c-a03b06acd2e8",
+  "applicationNumber": "5087601",
+  "registrationNumber": "3291619",
+  "applicationDate": "2021-08-13",
+  "registrationDate": "2023-10-24",
+  "expiryDate": "2031-08-13",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SCHOOL SERV enriching education",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Education; providing of training; entertainment; sporting and cultural activities.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "VINOD KUMAR KAKUMANU Single Firm",
+  "ownerNative": null,
+  "ownerCountry": "IN",
+  "representative": "SNEHA MANJOORAN[32262]",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Opp Mims Crescenta, Ground, School Serv India Solutions Pvt Ltd, Main Road, Kannaman, Bengaluru, Karnataka, India, 560115",
+        "applicantAddressCountryCode": "IN",
+        "applicantAddressCountryName": "India",
+        "applicantName": "VINOD KUMAR KAKUMANU Single Firm"
+      }
+    ],
+    "applicationLanguageCode": "in",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Education; providing of training; entertainment; sporting and cultural activities."
+        }
+      ]
+    },
+    "id": "b8148c50-792b-4d89-977c-a03b06acd2e8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2107"
+      }
+    ],
+    "recordLastUpdated": "20250710",
+    "registrationOfficeCode": "IN",
+    "registrationOfficeName": "India",
+    "representatives": [
+      {
+        "representativeAddress": "F-97, 4th Floor, Anna Nagar (East), Chennai - 600102, Tamil Nadu.",
+        "representativeName": "SNEHA MANJOORAN[32262]"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20210813",
+        "applicationNumber": "5087601"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20310813",
+      "firstUsed": [
+        {
+          "firstUsedDate": "20081204"
+        }
+      ],
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20231024",
+        "registrationNumber": "3291619"
+      }
+    },
+    "version": "20250710154447",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SCHOOL SERV enriching education"
+    }
+  },
+  "_uri": "/mark/in/b8148c50-792b-4d89-977c-a03b06acd2e8",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.177Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

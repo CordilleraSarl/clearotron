@@ -1,0 +1,1847 @@
+{
+ "document": "report-document/clearance-1",
+ "build": {
+  "engineCommit": "ec67f36544f3e684c67f930195d97ebf4f379cde",
+  "renderedAt": "2026-11-22T15:23:47.546Z",
+  "tokens": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "attempts": 0,
+   "thoughtTurns": 0
+  }
+ },
+ "run": {
+  "runId": "tmpdemo2014multicountryfocussearch-venqori-2026-11-20-sample-capture",
+  "codename": "sample-capture",
+  "customerKey": "demo-brand-owner",
+  "organisation": null,
+  "project": {
+   "key": "japan-and-korea-app-launch",
+   "name": "Japan and Korea app launch"
+  },
+  "markName": "VENQORI",
+  "issued": "2026-11-20 · 22:14 GMT+1",
+  "issuedAt": "2026-11-20T21:14:49.087Z",
+  "asOf": "2026-11-22T15:23:47.548Z",
+  "url": null,
+  "auditFile": "tmpdemo2014multicountryfocussearch-venqori-2026-11-20-sample-capture-audit.xlsx",
+  "product": {
+   "name": "Multi-country focus search",
+   "level": "multi-country-focus-search",
+   "stageLabel": "Multi-country focus search",
+   "frozenStageLabel": "Multi-country focus search",
+   "depthNote": "Multi-country focus search — covers registered rights and unregistered (common-law) use; the per-jurisdiction native-script deep dive is not part of this search."
+  },
+  "provenance": {
+   "recipe": null,
+   "enqueuedVia": null,
+   "enqueuedBy": null,
+   "parentRunId": null
+  },
+  "provider": {
+   "label": "Clarivate Compumark",
+   "citation": "placeholder",
+   "origin": null,
+   "origins": []
+  },
+  "findingsVersion": 7
+ },
+ "scope": {
+  "jurisdiction": "JP/KR/WO (register) + common-law (Western web / marketplace / social)",
+  "scopeBasis": null,
+  "searchedJurisdictions": [
+   "JP",
+   "KR",
+   "WO"
+  ],
+  "planTerritories": {
+   "searched": [
+    "JP",
+    "KR",
+    "WO"
+   ],
+   "unreached": []
+  },
+  "registerReach": null,
+  "registerScope": "named",
+  "registerOnly": false,
+  "noMarketplacesPicked": false,
+  "searchDepth": {
+   "schemaVersion": 1,
+   "cleared": {
+    "register": [
+     {
+      "term": "7 ELEVEN KOREA-SEVEN",
+      "mark": "7 ELEVEN KOREA-SEVEN",
+      "owner": "",
+      "country": "KR",
+      "classes": "35, 36, 37, 39, 40, 41, 42, 43, 44, 45",
+      "status": "EXPIRED",
+      "group": "dead-filing",
+      "uri": "/mark/kr/7ccd0bb4-b371-4bd1-9085-a088c468b3fc"
+     },
+     {
+      "term": "K-VANKorea PASSENGER TRANSPORTATION EXPERT",
+      "mark": "K-VANKorea PASSENGER TRANSPORTATION EXPERT",
+      "owner": "",
+      "country": "KR",
+      "classes": "9",
+      "status": "CANCELLED",
+      "group": "dead-filing",
+      "uri": "/mark/kr/e47b7d74-11ed-4f3d-a669-907240120a8c"
+     },
+     {
+      "term": "バンバンカラ",
+      "mark": "バンバンカラ",
+      "owner": "",
+      "country": "JP",
+      "classes": "1, 2, 4, 5, 8, 9, 16, 17, 19, 20, 21, 24, 27, 28, 34",
+      "status": "CANCELLED",
+      "group": "dead-filing",
+      "uri": "/mark/jp/d21095b6-e079-467d-9715-cf40ca880822"
+     },
+     {
+      "term": "LEPORCELLANE DILAVENO RICHARD-GINORI",
+      "mark": "LEPORCELLANE DILAVENO RICHARD-GINORI",
+      "owner": "",
+      "country": "KR",
+      "classes": "1, 5, 6, 7, 8, 9, 11, 14, 16, 18, 19, 20, 21, 24, 26, 27, 28",
+      "status": "EXPIRED",
+      "group": "dead-filing",
+      "uri": "/mark/kr/89b0d421-68fa-4077-9f2a-d8ec8ad7814d"
+     },
+     {
+      "term": "sevenOrients",
+      "mark": "sevenOrients",
+      "owner": "",
+      "country": "WO",
+      "classes": "9, 41",
+      "status": "EXPIRED",
+      "group": "dead-filing",
+      "uri": "/mark/wo/0926e81f-d7aa-455f-8d19-bd475b7f9fde"
+     },
+     {
+      "term": "주식회사 스타밴코리아",
+      "mark": "주식회사 스타밴코리아",
+      "owner": "",
+      "country": "KR",
+      "classes": "9",
+      "status": "EXPIRED",
+      "group": "dead-filing",
+      "uri": "/mark/kr/02558506-a07b-4503-a974-35b5331ceb35"
+     }
+    ],
+    "web": [
+     {
+      "title": "“Vencore” and “Vencor” names",
+      "url": "[PR Newswire: Introducing Vencore](https://www.prnewswire.com/news-releases/introducing-vencore-268258302.html); [Vencor company profile](https://www.referenceforbusiness.com/history2/79/Vencor-Inc.html)",
+      "type": ""
+     },
+     {
+      "title": "“Velqory”",
+      "url": "[Velqory platform](https://velqory.com/platform)",
+      "type": ""
+     },
+     {
+      "title": "“VENQORI” / “QUORI” app-developer search results",
+      "url": "[QUORI Limited developer page](https://apps.apple.com/us/developer/quori-limited/id1577801356); [Vennory developer page](https://apps.apple.com/es/developer/vennory/id1801632552)",
+      "type": ""
+     },
+     {
+      "title": "“Venkor”",
+      "url": "https://www.linkedin.com/company/venkor-ai",
+      "type": "Potentially close software name"
+     },
+     {
+      "title": "“VinKari Safari” children’s indoor playground",
+      "url": "https://www.vinkarisafari.com/wp/",
+      "type": ""
+     },
+     {
+      "title": "“Venqo” business-card scanner",
+      "url": "https://apps.apple.com/gb/app/venqo-business-card-scanner/id6777042694",
+      "type": ""
+     },
+     {
+      "title": "“QORI” product-provenance solution",
+      "url": "https://www.incert.lu/resources/qori-product-provenance",
+      "type": ""
+     },
+     {
+      "title": "“Vencore Labs” historical research organization",
+      "url": "https://www.edn.com/vencore-inc-launches-its-transformative-new-research-organization-vencore-labs/",
+      "type": ""
+     },
+     {
+      "title": "Similar-name noise across app/course and commerce platforms",
+      "url": "https://play.google.com/store/apps?hl=en-us",
+      "type": ""
+     }
+    ],
+    "groups": {
+     "dead-filing": 6,
+     "different-goods": 0,
+     "other": 0
+    }
+   },
+   "counts": {
+    "recordsByCountry": {
+     "JP": 2,
+     "KR": 4,
+     "WO": 1
+    },
+    "recordsRead": 7,
+    "sweep": {
+     "checks": 77,
+     "platforms": 9,
+     "spellings": 21,
+     "reputation": 0
+    },
+    "localScripts": {
+     "searched": [
+      "Hang"
+     ],
+     "missed": [
+      "Kana"
+     ],
+     "territories": {
+      "Hang": {
+       "searched": [
+        "KR",
+        "WO"
+       ],
+       "missed": []
+      },
+      "Kana": {
+       "searched": [],
+       "missed": [
+        "JP",
+        "KR",
+        "WO"
+       ]
+      }
+     }
+    },
+    "courtDecisions": "not-in-scope",
+    "localLanguage": {
+     "state": "not-in-scope",
+     "lanes": {}
+    }
+   }
+  }
+ },
+ "framework": {
+  "manifest": {
+   "schema_version": 1,
+   "framework_key": "house-default",
+   "title": "Standard risk scale",
+   "source_deck": "Cordillera house risk framework, authored in-house and reviewed by counsel; 2026-08-31 revision",
+   "entity_label": "the company",
+   "bands": [
+    {
+     "label": "Very High",
+     "tone": "severe"
+    },
+    {
+     "label": "High",
+     "tone": "high"
+    },
+    {
+     "label": "Moderate",
+     "tone": "medium"
+    },
+    {
+     "label": "Manageable",
+     "tone": "low"
+    }
+   ],
+   "structure": {
+    "kind": "bands"
+   }
+  },
+  "method": null
+ },
+ "verdict": {
+  "record": {
+   "ts": "2026-11-20T21:14:06.344Z",
+   "verdict": "CONDITIONAL",
+   "reasons": [
+    "the lawyer judged a material slice not fully cleared: The unassessed local spellings could conceal close Japanese or Korean names for the company's software and training.",
+    "the blind frame-diff flagged a dominant-element omission the reopen pass did not close",
+    "register coverage deferred on primary-sweep — the search did not finish and must be re-run before this can be relied on"
+   ],
+   "clauses": [
+    null,
+    null,
+    "register coverage deferred — the search did not finish and must be re-run before this can be relied on"
+   ],
+   "kinds": {
+    "coverage": true,
+    "frame": true,
+    "registerGap": true
+   },
+   "tier": "Manageable",
+   "badge": "l2",
+   "gaugeIndex": 1,
+   "maxComposite": 0,
+   "band": {
+    "label": "Manageable",
+    "rankFromTop": 4,
+    "scale": 4
+   },
+   "statement": "Manageable — conditional on: Register coverage deferred — the search did not finish and must be re-run before this can be relied on.",
+   "stance": "conditional"
+  },
+  "written": {
+   "ts": "2026-11-20T21:14:06.344Z",
+   "verdict": "CONDITIONAL",
+   "reasons": [
+    "the lawyer judged a material slice not fully cleared: The unassessed local spellings could conceal close Japanese or Korean names for the company's software and training.",
+    "the blind frame-diff flagged a dominant-element omission the reopen pass did not close",
+    "register coverage deferred on primary-sweep — the search did not finish and must be re-run before this can be relied on"
+   ],
+   "clauses": [
+    null,
+    null,
+    "register coverage deferred — the search did not finish and must be re-run before this can be relied on"
+   ],
+   "kinds": {
+    "coverage": true,
+    "frame": true,
+    "registerGap": true
+   },
+   "tier": "Manageable",
+   "badge": "l2",
+   "gaugeIndex": 1,
+   "maxComposite": 0,
+   "band": {
+    "label": "Manageable",
+    "rankFromTop": 4,
+    "scale": 4
+   },
+   "statement": "Manageable — conditional on: Register coverage deferred — the search did not finish and must be re-run before this can be relied on.",
+   "stance": "conditional"
+  },
+  "assessmentNotCompleted": false
+ },
+ "client": {
+  "findings": [
+   {
+    "ordinal": 1,
+    "mark": "Ｖｅｎｋｕｒｉ",
+    "owner": {
+     "name": "YIWU TENGDING UMBRELLA CO., LTD.",
+     "country": "CN",
+     "registrations": [
+      {
+       "uri": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+       "classes": [
+        "9"
+       ],
+       "status": "REGISTERED",
+       "filed": "2019-04-02",
+       "expiry": "2030-03-02"
+      }
+     ],
+     "nameRaw": "YIWU TENGDING UMBRELLA CO., LTD."
+    },
+    "band": "Manageable",
+    "disposition": "adversarial",
+    "net": "YIWU TENGDING UMBRELLA CO., LTD.’s Ｖｅｎｋｕｒｉ would probably lose against VENQORI for water-quality software in Japan.",
+    "legal_position": "The company is more likely to win: the close VENKURI/BENKURI name covers surveillance apparatus with a monitor and other electronics, not downloadable software or instruction. Device/app relatedness leaves a real Japanese registration risk, which would increase if the intended app controls or accompanies monitoring hardware.",
+    "practical_position": "The scoped owner/mark search did not confirm Japanese use in the registered electronics or water-related software and identified no public enforcement record. These results do not prove non-use or unwillingness to enforce, and no cancellation defence is assumed.",
+    "meters": {
+     "mark_similarity": {
+      "token": "high",
+      "basis": "verified-from-record",
+      "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+      "_status": "confirmed"
+     },
+     "goods_proximity": {
+      "token": "medium",
+      "basis": "verified-from-record",
+      "source": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+      "_status": "confirmed"
+     },
+     "use": {
+      "token": "not-confirmed",
+      "basis": "inferred-from-signal",
+      "source": "",
+      "_status": "inferred"
+     },
+     "enforcer": {
+      "token": "low",
+      "basis": "inferred-from-signal",
+      "source": "",
+      "_status": "inferred"
+     }
+    },
+    "quadrant": {
+     "x": 0.4,
+     "y": 0.85
+    },
+    "source": {
+     "source_type": "register-vendor",
+     "resolved_link": ""
+    },
+    "use_check": {
+     "source": "perplexity_research — no result",
+     "question": "Check YIWU TENGDING UMBRELLA CO., LTD. (義烏市騰鼎傘業有限公司), mark Venkuri / BENKURI / Ｖｅｎｋｕｒｉ, Japanese consumer electronics, especially surveillance/monitoring apparatus and water-quality devices or companion software. Identify current marketplace use in Japan and any public oppositions, trademark disputes or court actions over this or similar marks. Distinguish actual product evidence from registry mirrors; cite sources. Do not infer activity from its company name."
+    }
+   }
+  ],
+  "coverage": [
+   {
+    "area": "Japan / ベンコリ in Classes 9, 42 and 41",
+    "state": "not-searched",
+    "note": "Character searching was unsupported, and an equivalent completed spelling search is not established."
+   },
+   {
+    "area": "Japan / ヴェンコリー and ヴェンクォリ",
+    "state": "not-searched",
+    "note": "The character queries were rejected because the register search uses romanised names."
+   },
+   {
+    "area": "South Korea / 벤쿼리",
+    "state": "not-searched",
+    "note": "The character query was rejected because the register search uses romanised names."
+   },
+   {
+    "area": "Japan / further long-vowel and KW spellings",
+    "state": "open",
+    "note": "No concrete alternative spellings were specified for these additional register questions."
+   },
+   {
+    "area": "Japanese and Korean marketplace coverage",
+    "state": "coverage-limited",
+    "note": "Local-language results were noisy and sometimes language-mismatched, so they do not establish local marketplace absence."
+   },
+   {
+    "area": "Professional and industrial water monitoring",
+    "state": "not-searched",
+    "note": "No additional search question was specified for this broader field; consumer-app conclusions do not clear it."
+   },
+   {
+    "area": "Registers outside Japan and South Korea, and additional goods classes",
+    "state": "not-searched",
+    "note": "We did not extend the search worldwide or beyond Classes 9, 42 and 41. The request covers Japan and South Korea."
+   },
+   {
+    "area": "Specialist water-industry directories and procurement",
+    "state": "not-searched",
+    "note": "These sources were not searched; professional procurement was outside the consumer-channel search."
+   },
+   {
+    "area": "Developer ecosystems and package registries",
+    "state": "not-searched",
+    "note": "These sources were not searched; no developer-distribution product is stated."
+   },
+   {
+    "area": "Cloud marketplaces and industrial integration catalogues",
+    "state": "not-searched",
+    "note": "These sources were not searched."
+   },
+   {
+    "area": "Microsoft Store and specialist desktop-software directories",
+    "state": "not-searched",
+    "note": "These sources were not searched."
+   },
+   {
+    "area": "Local technical-learning and professional communities",
+    "state": "not-searched",
+    "note": "These sources were not searched."
+   },
+   {
+    "area": "Meaning-based and grammatical name variants",
+    "state": "not-searched",
+    "note": "Compound, translation, plural-root and other semantic families were omitted because no meaning or separable root is established."
+   },
+   {
+    "area": "Other software fields and standalone treatment, reagent, retail or medical offerings",
+    "state": "not-searched",
+    "note": "Games, enterprise tools, specialist AI and these additional goods were omitted as separate fields, rather than cleared."
+   },
+   {
+    "area": "The company's own prior rights",
+    "state": "not-searched",
+    "note": "We did not separately search for the applicant's own filings because the request does not identify the applicant."
+   },
+   {
+    "area": "Follow-up / ヴェンコリー",
+    "state": "open",
+    "note": "ヴェンコリー — not completed this run — the searches proposed for it could not be put to this register, so it was never searched"
+   },
+   {
+    "area": "Follow-up / ヴェンクォリ",
+    "state": "open",
+    "note": "ヴェンクォリ — not completed this run — the searches proposed for it could not be put to this register, so it was never searched"
+   },
+   {
+    "area": "Follow-up / 벤쿼리",
+    "state": "open",
+    "note": "벤쿼리 — not completed this run — the searches proposed for it could not be put to this register, so it was never searched"
+   },
+   {
+    "area": "Follow-up / japanese long-vowel and kw alternatives",
+    "state": "open",
+    "note": "japanese long-vowel and kw alternatives — not completed this run — no search could be built for it: the item names a category rather than a name a register can be searched for, so searching the wording literally would return nothing and read as clean, and it is left open here"
+   },
+   {
+    "area": "Follow-up / worldwide registers and related classes",
+    "state": "open",
+    "note": "worldwide registers and related classes — not completed this run — the source it needed was not searched, so nothing is known about it either way"
+   },
+   {
+    "area": "Japanese-script and Korean-script register equivalents (JP / KR)",
+    "state": "coverage-limited",
+    "note": "Japanese-script and Korean-script same-meaning/phonetic register equivalents not searched on this search — The native-language investigation is offered on a Multi-country focus search and runs automatically on a Full country search."
+   }
+  ],
+  "contextNotes": [],
+  "markAssessment": {
+   "distinctiveness": {
+    "read": "VENQORI appears coined and strong for water-quality software and attached instruction. The whole name carries distinctiveness.",
+    "spectrum": "Coined",
+    "per_market": [
+     {
+      "market": "Japan",
+      "note": "The provisional Japanese spellings have no established semantic derivation in the supplied material; their local-language distinctiveness remains unassessed."
+     },
+     {
+      "market": "South Korea",
+      "note": "The provisional Korean spellings have no established semantic derivation in the supplied material; their local-language distinctiveness remains unassessed."
+     }
+    ]
+   },
+   "connotation": "No dedicated meaning search was specified, so Japanese and Korean connotations remain unassessed."
+  },
+  "fourAnswers": {
+   "third_party_rights": {
+    "read": "The identified earlier right presents a limited obstacle because it covers electronics rather than the stated software or instruction.",
+    "token": "weak",
+    "basis": "Finding 1: the Japanese goods list and the company's stated water-quality software and attached training.",
+    "ordinals": [
+     1
+    ]
+   }
+  },
+  "askAnswers": null,
+  "actions": {
+   "conditions": [],
+   "advisories": [
+    {
+     "id": 1,
+     "kind": "client-fact",
+     "text": "Confirm the intended Japanese and Korean spellings and pronunciation of VENQORI.",
+     "ordinals": []
+    },
+    {
+     "id": 2,
+     "kind": "client-fact",
+     "text": "Confirm whether VENQORI controls a sensor, accompanies a device, displays entered results or only explains readings.",
+     "ordinals": [
+      1
+     ]
+    },
+    {
+     "id": 3,
+     "kind": "client-fact",
+     "text": "Confirm the applicant's legal identity, affiliates and any earlier filings or unregistered use of VENQORI.",
+     "ordinals": []
+    }
+   ]
+  },
+  "coverageJudgment": {
+   "sufficient": false,
+   "reason": "The unassessed local spellings could conceal close Japanese or Korean names for the company's software and training — main register search / default: ベンコリ [cl 9, 42, 41]: deferred — The ベンコリ question in Classes 9, 42 and 41 was never searched because the register indexes local-script marks by transliteration and cannot accept this character."
+  },
+  "caseLaw": {
+   "byOrdinal": []
+  },
+  "enforcerSignals": [],
+  "seniorRights": [
+   {
+    "ordinal": 1,
+    "mark": "Ｖｅｎｋｕｒｉ",
+    "applicable": false,
+    "reason": "single leg — seniority trivial"
+   }
+  ],
+  "records": [
+   "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+   "/mark/jp/d21095b6-e079-467d-9715-cf40ca880822",
+   "/mark/kr/02558506-a07b-4503-a974-35b5331ceb35",
+   "/mark/kr/7ccd0bb4-b371-4bd1-9085-a088c468b3fc",
+   "/mark/kr/89b0d421-68fa-4077-9f2a-d8ec8ad7814d",
+   "/mark/kr/e47b7d74-11ed-4f3d-a669-907240120a8c",
+   "/mark/wo/0926e81f-d7aa-455f-8d19-bd475b7f9fde"
+  ],
+  "recordLinks": {
+   "byUri": [
+    [
+     "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+     {
+      "office": "jp",
+      "label": "JP 2019-046708",
+      "href": null,
+      "reason": "unknown-office"
+     }
+    ]
+   ],
+   "tally": {
+    "linked": {},
+    "cited": {
+     "jp": {
+      "unknown-office": 1
+     }
+    },
+    "notRetrieved": 0
+   },
+   "summary": "linked 0 · cited by number 1 (jp 1 unknown-office) · record not retrieved 0"
+  },
+  "logos": [],
+  "followUpKinds": [],
+  "servedModels": null
+ },
+ "reviewer": {
+  "withdrawn": [],
+  "quarantined": [],
+  "coverageJudgment": {
+   "sufficient": false,
+   "reason": "The unassessed local spellings could conceal close Japanese or Korean names for the company's software and training.",
+   "rows": [
+    {
+     "area": "primary-sweep / default: ベンコリ [cl 9, 42, 41]",
+     "areaLabel": "main register search / default: ベンコリ [cl 9, 42, 41]",
+     "note": "deferred — The ベンコリ question in Classes 9, 42 and 41 was never searched because the register indexes local-script marks by transliteration and cannot accept this character"
+    }
+   ]
+  },
+  "corrections": {
+   "applied": true,
+   "note": "The coverage line for \"Registers outside Japan and South Korea, and additional goods classes\": corrected to the requested plain wording; scope and not-searched status preserved.\nThe coverage line for \"The company's own prior rights\": corrected to the requested plain wording; applicant identity gap and not-searched status preserved."
+  },
+  "lint": [
+   {
+    "id": "four-answers-rights-vs-findings",
+    "family": "content-model",
+    "detail": "four_answers.third_party_rights reads \"weak\", but this run rated 1 finding(s) ADVERSARIAL (ordinal 1) — the hero answer contradicts the cards under it; either the answer is wrong or those dispositions are"
+   }
+  ],
+  "droppedConditions": [],
+  "undispatchedProbes": [],
+  "withheldFamilies": [
+   {
+    "area": "main register search / exact: VENQORI SYSTEMS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI TECH [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI LABS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: VENQORI ACADEMY [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: TECH VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / exact: ACADEMY VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "done": "The completed unrestricted VENQORI contains list in all ordered classes and JP/KR scope is empty and includes each of these exact descriptor compounds. Repeating narrower exact compound queries would add no records or information about possible objectors.",
+    "left": ""
+   },
+   {
+    "area": "main register search / wildcard: v*r [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The pattern v*r retains only two letters and loses VENQORI's distinctive syllables. The focused vowel skeleton, complete edit-one band and explicit sound/visual neighbours address buyer recognition; this remote pattern would add unrelated strings without a supported confusion theory. No count was obtained for it.",
+    "done": "The pattern v*r retains only two letters and loses VENQORI's distinctive syllables. The focused vowel skeleton, complete edit-one band and explicit sound/visual neighbours address buyer recognition; this remote pattern would add unrelated strings without a supported confusion theory. No count was obtained for it.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: ヴェンコリ [cl 9, 42, 41]",
+    "state": "note",
+    "note": "Clarivate indexes this script by romanisation, and the planned VENKORI contains and exact Latin searches already cover that Japanese pronunciation; repeating its exact query would not add a distinct question.",
+    "done": "Clarivate indexes this script by romanisation, and the planned VENKORI contains and exact Latin searches already cover that Japanese pronunciation; repeating its exact query would not add a distinct question.",
+    "left": ""
+   },
+   {
+    "area": "g2.com",
+    "state": "not-searched",
+    "note": "Enterprise software reviews do not match the stated consumer app-store purchase journey.",
+    "done": "",
+    "left": "Enterprise software reviews do not match the stated consumer app-store purchase journey."
+   },
+   {
+    "area": "capterra.com",
+    "state": "not-searched",
+    "note": "Business software procurement directory; no enterprise sales are stated.",
+    "done": "",
+    "left": "Business software procurement directory; no enterprise sales are stated."
+   },
+   {
+    "area": "aquatechtrade.com",
+    "state": "not-searched",
+    "note": "Water-industry trade exhibition channel; the request expressly places distribution outside the trade.",
+    "done": "",
+    "left": "Water-industry trade exhibition channel; the request expressly places distribution outside the trade."
+   },
+   {
+    "area": "wateronline.com",
+    "state": "not-searched",
+    "note": "Professional water-treatment trade publication rather than a consumer app or attached-training channel.",
+    "done": "",
+    "left": "Professional water-treatment trade publication rather than a consumer app or attached-training channel."
+   },
+   {
+    "area": "waterworld.com",
+    "state": "not-searched",
+    "note": "Municipal and industrial water-sector readership does not match this consumer app's buyers.",
+    "done": "",
+    "left": "Municipal and industrial water-sector readership does not match this consumer app's buyers."
+   },
+   {
+    "area": "smartwatermagazine.com",
+    "state": "not-searched",
+    "note": "Professional water-sector publication; no trade-facing offering is stated.",
+    "done": "",
+    "left": "Professional water-sector publication; no trade-facing offering is stated."
+   },
+   {
+    "area": "iwa-network.org",
+    "state": "not-searched",
+    "note": "Professional water association and technical education channel; no professional credential or association distribution is stated.",
+    "done": "",
+    "left": "Professional water association and technical education channel; no professional credential or association distribution is stated."
+   },
+   {
+    "area": "line.me",
+    "state": "not-searched",
+    "note": "Messaging and social distribution could promote an app, but no LINE integration, mini-app or official-account channel is supplied.",
+    "done": "",
+    "left": "Messaging and social distribution could promote an app, but no LINE integration, mini-app or official-account channel is supplied."
+   }
+  ],
+  "releasedFamilies": [
+   {
+    "area": "main register search / default: VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The identical list is empty, but its goods-limited contains query cannot exclude descriptor-bearing or prefixed/suffixed VENQORI marks elsewhere in the ordered classes. Reading the unrestricted root band could identify an additional objector.",
+    "done": "The identical list is empty, but its goods-limited contains query cannot exclude descriptor-bearing or prefixed/suffixed VENQORI marks elsewhere in the ordered classes. Reading the unrestricted root band could identify an additional objector.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENCORY [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VINKARI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKRI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKOR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORL [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQOIR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / wildcard: v?nq?r? [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "done": "The empty identical and edit-one lists do not answer sound-led K/C, vowel variation, shortened forms, or longer marks containing visual neighbours. These recognisable neighbours and the focused vowel skeleton could identify different owners relevant to consumer app discovery.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These web-named forms preserve the coined mark's likely sound through K/Q and final I/Y spelling changes. JP/KR rights in classes 9, 42 or 41 could identify a different objector and change filing or naming advice; web use alone does not establish those rights.",
+    "done": "These web-named forms preserve the coined mark's likely sound through K/Q and final I/Y spelling changes. JP/KR rights in classes 9, 42 or 41 could identify a different objector and change filing or naming advice; web use alone does not establish those rights.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: venqory [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These web-named forms preserve the coined mark's likely sound through K/Q and final I/Y spelling changes. JP/KR rights in classes 9, 42 or 41 could identify a different objector and change filing or naming advice; web use alone does not establish those rights.",
+    "done": "These web-named forms preserve the coined mark's likely sound through K/Q and final I/Y spelling changes. JP/KR rights in classes 9, 42 or 41 could identify a different objector and change filing or naming advice; web use alone does not establish those rights.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: ベンコリ [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The web-named Japanese ベンコリ form tests the local /b/ approximation of the proposed name. A JP-effective software or training right could change the advice even without a Latin-name match; Clarivate requires a contains search by romanization.",
+    "done": "The web-named Japanese ベンコリ form tests the local /b/ approximation of the proposed name. A JP-effective software or training right could change the advice even without a Latin-name match; Clarivate requires a contains search by romanization.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VINKARI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The vowel-family and spoken-shortening roots are distinct from the full VENQORI token. Their web appearance makes effective JP/KR rights in the ordered classes material to identifying potential objectors; a full-root search alone cannot answer them.",
+    "done": "The vowel-family and spoken-shortening roots are distinct from the full VENQORI token. Their web appearance makes effective JP/KR rights in the ordered classes material to identifying potential objectors; a full-root search alone cannot answer them.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENKOR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The vowel-family and spoken-shortening roots are distinct from the full VENQORI token. Their web appearance makes effective JP/KR rights in the ordered classes material to identifying potential objectors; a full-root search alone cannot answer them.",
+    "done": "The vowel-family and spoken-shortening roots are distinct from the full VENQORI token. Their web appearance makes effective JP/KR rights in the ordered classes material to identifying potential objectors; a full-root search alone cannot answer them.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VEN QORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The observed spacing and adjacent-letter transposition preserve the visual identity consumers may recognize in app listings. Checking their JP/KR rights in the ordered classes could connect the observed uses to a proprietor or earlier filing and change advice.",
+    "done": "The observed spacing and adjacent-letter transposition preserve the visual identity consumers may recognize in app listings. Checking their JP/KR rights in the ordered classes could connect the observed uses to a proprietor or earlier filing and change advice.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQOIR [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The observed spacing and adjacent-letter transposition preserve the visual identity consumers may recognize in app listings. Checking their JP/KR rights in the ordered classes could connect the observed uses to a proprietor or earlier filing and change advice.",
+    "done": "The observed spacing and adjacent-letter transposition preserve the visual identity consumers may recognize in app listings. Checking their JP/KR rights in the ordered classes could connect the observed uses to a proprietor or earlier filing and change advice.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORI SYSTEMS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "done": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: VENQORI LABS [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "done": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "left": ""
+   },
+   {
+    "area": "main register search / default: TECH VENQORI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "done": "These web-named software/technical descriptor compounds retain the whole distinctive root. Checking their JP/KR rights in classes 9, 42 and 41 could link observed traders to effective earlier rights and affect who must be investigated before launch; no local right is inferred from web use.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: VENQ0RI [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The zero-for-O spelling could reveal a visually indistinguishable digital brand that the identical word search misses.",
+    "done": "The zero-for-O spelling could reveal a visually indistinguishable digital brand that the identical word search misses.",
+    "left": ""
+   },
+   {
+    "area": "transliterations and numeric forms / exact: 벤코리 [cl 9, 42, 41]",
+    "state": "note",
+    "note": "The Korean B rendering may identify locally effective sound-alike rights missed by the identical Latin spelling.",
+    "done": "The Korean B rendering may identify locally effective sound-alike rights missed by the identical Latin spelling.",
+    "left": ""
+   }
+  ],
+  "setAside": [
+   {
+    "area": "Set aside: https://apps.apple.com/us/developer/quori-limited/id1577801356",
+    "note": "Placement retained QUORI because a developer page did not establish product overlap. The scoped follow-up identifies operational risk reporting and professional environmental field intelligence, with training on that system, not household water-quality readings or attached water instruction (https://apps.apple.com/jp/app/quori/id1577801354; https://quori.io/services/mission-applications/). Japanese storefront presence is commercial context, not an independent local rights conflict."
+   },
+   {
+    "area": "Set aside: https://apps.apple.com/es/developer/vennory/id1801632552",
+    "note": "Placement's verification reason was that 'actual app functions' were not established. The follow-up identifies weather/air-quality information and navigation utilities, rather than water-quality readings or water instruction (https://apps.apple.com/jp/app/weather-terminal/id6758122087; https://apps.apple.com/jp/app/forcemaps/id6748969920?l=en-US). Shared Japanese app-store availability alone does not establish the instructed product overlap or a local registered right."
+   },
+   {
+    "area": "Set aside: https://www.prnewswire.com/news-releases/introducing-vencore-268258302.html",
+    "note": "Adopt placement's ground: this historical Vencore business reference establishes no current consumer water-reading product, attached water instruction or JP/KR offering. The different whole name and absence of a concrete relevant product make the contextual page insufficient for a finding; no present corporate activity or rights-negative is inferred."
+   },
+   {
+    "area": "Set aside: https://www.referenceforbusiness.com/history2/79/Vencor-Inc.html",
+    "note": "Adopt placement's ground: the Vencor company-history page does not establish a present consumer water-monitoring app, attached course or Japan/Korea offering. It supplies historical near-name context, not a party/right relevant enough to drive this assessment."
+   },
+   {
+    "area": "Set aside: https://velqory.com/platform",
+    "note": "Placement retained Velqory because 'concrete products' were unestablished and specialist AI would be off-field. The follow-up establishes business document, cash-flow and VAT software under development, alongside AI/cybersecurity training, rather than household water readings or water instruction (https://velqory.com/platform; https://velqory.com/training). This resolves the product question on placement's own off-field ground."
+   },
+   {
+    "area": "Set aside: https://www.linkedin.com/company/venkor-ai",
+    "note": "Placement's 'potential software overlap' depended on an unspecified product. Venkor's own site describes business sales automation, lead conversion and customer reactivation, not consumer water-quality monitoring or instruction (https://venkor.ai/). Its unidentified legal operator does not require a rated or open conflict when the evidenced trade is outside the relevant field; no JP/KR rights-negative is asserted."
+   },
+   {
+    "area": "Set aside: https://www.vinkarisafari.com/wp/",
+    "note": "Adopt placement's ground: VinKari Safari is identified as a US physical children's playground, serving venue visitors rather than consumer water-reading apps or attached online water instruction. Recreation does not become relevant education merely through a possible Class 41 label."
+   },
+   {
+    "area": "Set aside: https://apps.apple.com/gb/app/venqo-business-card-scanner/id6777042694",
+    "note": "Adopt placement's ground: the identified Venqo business-card scanner serves contact capture, not water-quality readings or attached instruction. The UK storefront does not establish JP/KR availability or a local right; general app-store distribution does not make those functions meet."
+   },
+   {
+    "area": "Set aside: https://www.incert.lu/resources/qori-product-provenance",
+    "note": "Adopt placement's ground: QORI product provenance concerns supply-chain authentication and its professional users, not household water-quality readings or instruction. No relevant product-convergence evidence was supplied, and the page is not a source of an identified JP/KR right."
+   },
+   {
+    "area": "Set aside: https://www.edn.com/vencore-inc-launches-its-transformative-new-research-organization-vencore-labs/",
+    "note": "Adopt placement's ground: the Vencore Labs historical research-organization reference establishes no current household water app, attached course or local consumer channel. Its different compound name and absent concrete relevant offering do not justify a finding or an assumed ownership relationship."
+   },
+   {
+    "area": "Set aside: https://play.google.com/store/apps?hl=en-us",
+    "note": "The cited Google Play address is a generic storefront. The supplied candidate notes identify platform pages, personal names and weakly similar strings, not an attributable water-monitoring app or water-instruction offering; there is no specific competing mark or party to rate from this page."
+   }
+  ],
+  "fetchState": {
+   "/mark/jp/310027f2-0562-46fe-abea-385f068a8150": "retrieved",
+   "/mark/jp/d21095b6-e079-467d-9715-cf40ca880822": "retrieved",
+   "/mark/kr/02558506-a07b-4503-a974-35b5331ceb35": "retrieved",
+   "/mark/kr/7ccd0bb4-b371-4bd1-9085-a088c468b3fc": "retrieved",
+   "/mark/kr/89b0d421-68fa-4077-9f2a-d8ec8ad7814d": "retrieved",
+   "/mark/kr/e47b7d74-11ed-4f3d-a669-907240120a8c": "retrieved",
+   "/mark/wo/0926e81f-d7aa-455f-8d19-bd475b7f9fde": "retrieved"
+  },
+  "clientGate": {
+   "released": true,
+   "reasons": [],
+   "reasonCodes": [],
+   "inputsAbsent": [
+    "_driver/escalation-state.json",
+    "_driver/corrections-state.json"
+   ],
+   "notClosing": [
+    {
+     "input": "_driver/escalation-state.json",
+     "declared": "optional",
+     "why": "declared optional: a run that legitimately has no such store, and every archived run, must still publish"
+    },
+    {
+     "input": "_driver/corrections-state.json",
+     "declared": "optional",
+     "why": "declared optional: a run that legitimately has no such store, and every archived run, must still publish"
+    }
+   ]
+  },
+  "degradedParts": [
+   {
+    "area": "Follow-up / Register",
+    "state": "open",
+    "note": "Register — not completed this run — it could not be completed this run, so it is left open here rather than reported as clean"
+   }
+  ],
+  "commonLawJoinedTerms": [],
+  "audit": {
+   "findings": [
+    {
+     "_title": "Ｖｅｎｋｕｒｉ",
+     "source_layer": "Register",
+     "owner": "YIWU TENGDING UMBRELLA CO., LTD.",
+     "owner_country": "CN",
+     "classes": "9",
+     "status": "REGISTERED",
+     "dates": "Filed 2019-04-02; Expiry 2030-03-02",
+     "url": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+     "key_factors": "Close sound to the proposed coined name warrants Japanese review. The held specification includes non-medical monitoring/surveillance apparatus with monitors and other consumer electronics, rather than downloadable software. The possible device/app relationship changes the advice: confirm sensor integration and obtain a Japanese specification and pronunciation assessment before adoption or filing. The internal vowel difference and hardware wording mitigate proximity; no active water-app business or enforcement appetite is established.",
+     "verify": "yes",
+     "resolution": "adversarial / Manageable — see finding #1"
+    },
+    {
+     "_title": "“Vencore” and “Vencor” names",
+     "source_layer": "Common-law",
+     "url": "[PR Newswire: Introducing Vencore](https://www.prnewswire.com/news-releases/introducing-vencore-268258302.html); [Vencor company profile](https://www.referenceforbusiness.com/history2/79/Vencor-Inc.html)",
+     "description": "Similar-looking names appear in business/technical contexts, including historical company references. No evidence in these results of consumer water-quality apps or attached water instruction; no JP/KR rights conclusion is drawn.",
+     "source": "General web"
+    },
+    {
+     "_title": "“Velqory”",
+     "source_layer": "Common-law",
+     "url": "[Velqory platform](https://velqory.com/platform)",
+     "description": "A visually nearby coined software/AI platform name appeared. The returned page does not establish VENQORI use or the client’s consumer water-monitoring goods; monitor only.",
+     "source": "General web"
+    },
+    {
+     "_title": "“VENQORI” / “QUORI” app-developer search results",
+     "source_layer": "Common-law",
+     "url": "[QUORI Limited developer page](https://apps.apple.com/us/developer/quori-limited/id1577801356); [Vennory developer page](https://apps.apple.com/es/developer/vennory/id1801632552)",
+     "description": "Returned through broad app-store search, but no exact VENQORI listing or relevant product overlap is shown. App-store presence is commercial context only in JP/KR, where the register decides priority.",
+     "source": "Apple App Store"
+    },
+    {
+     "_title": "“Venkor”",
+     "source_layer": "Common-law",
+     "type": "Potentially close software name",
+     "url": "https://www.linkedin.com/company/venkor-ai",
+     "description": "Search result labels the organization “Venkor",
+     "source": "Web / software development"
+    },
+    {
+     "_title": "“VinKari Safari” children’s indoor playground",
+     "source_layer": "Common-law",
+     "url": "https://www.vinkarisafari.com/wp/",
+     "description": "A US children’s play venue returned for VINKARI. It is a different service, outside the instructed territories, and not a conflict on these facts.",
+     "source": "Web"
+    },
+    {
+     "_title": "“Venqo” business-card scanner",
+     "source_layer": "Common-law",
+     "url": "https://apps.apple.com/gb/app/venqo-business-card-scanner/id6777042694",
+     "description": "Short, visually distinct software name. Result is a UK App Store page; no JP/KR reach or water-monitoring relation established.",
+     "source": "Web / App Store"
+    },
+    {
+     "_title": "“QORI” product-provenance solution",
+     "source_layer": "Common-law",
+     "url": "https://www.incert.lu/resources/qori-product-provenance",
+     "description": "QORI appears within the spaced query, but the mark’s distinctive VENQORI whole is not present. No relevant conflict established.",
+     "source": "Web"
+    },
+    {
+     "_title": "“Vencore Labs” historical research organization",
+     "source_layer": "Common-law",
+     "url": "https://www.edn.com/vencore-inc-launches-its-transformative-new-research-organization-vencore-labs/",
+     "description": "Returned for VENQORI LABS; materially different name and organization, no relevant product or territorial link shown.",
+     "source": "Web"
+    },
+    {
+     "_title": "Similar-name noise across app/course and commerce platforms",
+     "source_layer": "Common-law",
+     "url": "https://play.google.com/store/apps?hl=en-us",
+     "description": "Reviewed the returned candidate lists for the dictated cells. Results were unrelated personal names, platform pages, products, or weakly similar strings; no on-field VENQORI listing surfaced.",
+     "source": "Google Play, Apple App Store, Udemy, Coursera, Rakuten, Kakaku, Naver, Coupang"
+    }
+   ],
+   "negatives": [
+    {
+     "_title": "NR1",
+     "source_layer": "Register",
+     "search_term": "7 ELEVEN KOREA-SEVEN",
+     "result": "The long 7 ELEVEN/KOREA-SEVEN composite differs in overall appearance, sound and meaning; incidental VEN within ELEVEN does not reproduce the coined whole. This mark-comparison ground stands independently of expiry.",
+     "notes": "URI /mark/kr/7ccd0bb4-b371-4bd1-9085-a088c468b3fc; screen_verdict=drop:dead; class=35, 36, 37, 39, 40, 41, 42, 43, 44, 45; status=EXPIRED"
+    },
+    {
+     "_title": "NR2",
+     "source_layer": "Register",
+     "search_term": "K-VANKorea PASSENGER TRANSPORTATION EXPERT",
+     "result": "K-VAN/Korea and the transport descriptor have a materially different opening, structure and ending. Broad mobile, IoT and data-processing software wording was read; the exclusion rests on the sign rather than cancellation or goods distance.",
+     "notes": "URI /mark/kr/e47b7d74-11ed-4f3d-a669-907240120a8c; screen_verdict=drop:dead; class=9; status=CANCELLED"
+    },
+    {
+     "_title": "NR3",
+     "source_layer": "Register",
+     "search_term": "バンバンカラ",
+     "result": "The read BANBANKARA/VAN VAN KARA sequence repeats its opening and ends KARA, with a materially different rhythm from VENQORI or VENKORI/BENKORI. The ground does not depend on lapse.",
+     "notes": "URI /mark/jp/d21095b6-e079-467d-9715-cf40ca880822; screen_verdict=drop:dead; class=1, 2, 4, 5, 8, 9, 16, 17, 19, 20, 21, 24, 27, 28, 34; status=CANCELLED"
+    },
+    {
+     "_title": "NR4",
+     "source_layer": "Register",
+     "search_term": "LEPORCELLANE DILAVENO RICHARD-GINORI",
+     "result": "DILAVENO and RICHARD-GINORI are fragments of a long multiword whole, not a reproduction of VENQORI or its proposed sound. Excluded on the sign independently of expiry.",
+     "notes": "URI /mark/kr/89b0d421-68fa-4077-9f2a-d8ec8ad7814d; screen_verdict=drop:dead; class=1, 5, 6, 7, 8, 9, 11, 14, 16, 18, 19, 20, 21, 24, 26, 27, 28; status=EXPIRED"
+    },
+    {
+     "_title": "NR5",
+     "source_layer": "Register",
+     "search_term": "sevenOrients",
+     "result": "SEVEN ORIENTS differs in word structure, length, sound and meaning. Broad recorded-software and educational-event goods and the explicit Japanese designation were considered; neither the international office nor expiry supplies the exclusion.",
+     "notes": "URI /mark/wo/0926e81f-d7aa-455f-8d19-bd475b7f9fde; screen_verdict=drop:dead; class=9, 41; status=EXPIRED"
+    },
+    {
+     "_title": "NR6",
+     "source_layer": "Register",
+     "search_term": "주식회사 스타밴코리아",
+     "result": "The read Hangul sign and STAR VAN KOREA transliteration have a different STAR opening and separate VAN KOREA sequence. The comparison does not depend on the Latin classifier or expiry.",
+     "notes": "URI /mark/kr/02558506-a07b-4503-a974-35b5331ceb35; screen_verdict=drop:dead; class=9; status=EXPIRED"
+    },
+    {
+     "_title": "NR7",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI",
+     "platform": "apps.apple.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://apps.apple.com/es/developer/vennory/id1801632552 ; https://apps.apple.com/us/developer/quori-limited/id1577801356 ; https://apps.apple.com/us/developer/%E5%8A%BC-%E8%B5%B5/id1552332001?l=ar"
+    },
+    {
+     "_title": "NR8",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI",
+     "platform": "naver.com",
+     "result": "20 candidates reviewed",
+     "notes": "http://en.dict.naver.com/ ; https://dict.naver.com/english-dictionary/ ; https://korean.dict.naver.com/koendict/"
+    },
+    {
+     "_title": "NR9",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI",
+     "platform": "play.google.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://play.google.com/books ; https://play.google.com/store/apps?hl=en_US ; https://play.google.com/store/apps/collection/cluster?gsr=SlJqGFFCbmh0c1BGbnRhUGt3a2YzQm8rd0E9PbICMgoVChFjb20udm9yLmRyZXNzbWVhaRAHEhcIARITNjc4ODc1ODA0MDg2MDgyNTIxORgAsBIA:S:ANO1ljLJpFE"
+    },
+    {
+     "_title": "NR10",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI",
+     "platform": "coursera.org",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.coursera.org/search ; https://www.coursera.org/browse/free ; https://www.coursera.org/projects/retrieval-optimization-tokenization-to-vector-quantization"
+    },
+    {
+     "_title": "NR11",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI",
+     "platform": "udemy.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.udemy.com/ ; https://www.udemy.com/user/weily-ngui/ ; https://www.udemy.com/courses/free/"
+    },
+    {
+     "_title": "NR12",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI",
+     "platform": "kakaku.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://search.kakaku.com/%E9%8E%AE%E7%97%9B%E5%89%A4(%E7%97%9B%E3%81%BF%E6%AD%A2%E3%82%81)%20%E3%82%BF%E3%82%A4%E3%83%AC%E3%83%8E%E3%83%BC%E3%83%AB/ ; https://search.kakaku.com/%E3%82%A2%E3%82%BF%E3%83%83%E3%82%AF%E3%82%B6%E3%83%83%E3%82%AF%20%E9%98%B2%E6%B0%B4/ ; https://search.kakaku.com/%E7%B4%A0%E6%95%B0%E3%82%B9%E3%83%94%E3%83%BC%E3%83%89/"
+    },
+    {
+     "_title": "NR13",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI",
+     "platform": "rakuten.co.jp",
+     "result": "20 candidates reviewed",
+     "notes": "https://brandavenue.rakuten.co.jp/brandlist/ ; https://brandavenue.rakuten.co.jp/ranking/ ; https://globalexpress.rakuten.co.jp/onlineshop/?lang=en"
+    },
+    {
+     "_title": "NR14",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI",
+     "platform": "coupang.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://shop.coupang.com/A01096565/444779?platform=p ; https://shop.coupang.com/A00811300/54979?platform=p ; https://shop.tw.coupang.com/A158000SZG/24549?platform=p"
+    },
+    {
+     "_title": "NR15",
+     "source_layer": "Common-law",
+     "search_term": "vencori",
+     "platform": "udemy.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.udemy.com/ ; https://www.udemy.com/courses/free/ ; https://teach.udemy.com/"
+    },
+    {
+     "_title": "NR16",
+     "source_layer": "Common-law",
+     "search_term": "vencori",
+     "platform": "apps.apple.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://apps.apple.com/gb/developer/vencru-corp/id1501690720 ; https://apps.apple.com/to/developer/vencer-health-technologies-inc/id1478401919 ; https://apps.apple.com/us/developer/venco-inc/id1645502949"
+    },
+    {
+     "_title": "NR17",
+     "source_layer": "Common-law",
+     "search_term": "vencori",
+     "platform": "coursera.org",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.coursera.org/specializations/packt-encor-video-training-series ; https://www.coursera.org/browse/free ; https://www.coursera.org/"
+    },
+    {
+     "_title": "NR18",
+     "source_layer": "Common-law",
+     "search_term": "vencori",
+     "platform": "play.google.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://play.google.com/store/apps/details?id=venecol.express ; https://play.google.com/store/apps/details?id=com.gamefactory.vengencesoul ; https://play.google.com/store/games?hl=en"
+    },
+    {
+     "_title": "NR19",
+     "source_layer": "Common-law",
+     "search_term": "vencori",
+     "platform": "naver.com",
+     "result": "20 candidates reviewed",
+     "notes": "http://en.dict.naver.com/ ; https://english.dict.naver.com/ ; https://booking.naver.com/"
+    },
+    {
+     "_title": "NR20",
+     "source_layer": "Common-law",
+     "search_term": "vencori",
+     "platform": "kakaku.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://search.kakaku.com/%E7%B4%A0%E6%95%B0%E3%82%B9%E3%83%94%E3%83%BC%E3%83%89/ ; https://search.kakaku.com/43a6k/ ; https://search.kakaku.com/%E6%8B%A1%E5%A4%A7%E9%8F%A1%20%E3%83%AB%E3%83%BC%E3%83%9A%20%E6%AD%AF%E7%A7%91%E7%94%A8%E3%83%AB%E3%83%BC%E3%83%9A%E3%80%80%E3%83%A9%E3%82%A4%E3%83%88/"
+    },
+    {
+     "_title": "NR21",
+     "source_layer": "Common-law",
+     "search_term": "vencori",
+     "platform": "rakuten.co.jp",
+     "result": "20 candidates reviewed",
+     "notes": "https://globalexpress.rakuten.co.jp/?lang=en ; https://brandavenue.rakuten.co.jp/brandlist/ ; https://globalexpress.rakuten.co.jp/onlineshop/?lang=en"
+    },
+    {
+     "_title": "NR22",
+     "source_layer": "Common-law",
+     "search_term": "ヴェンコリ",
+     "platform": "udemy.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://community.udemy.com/en/kb ; https://www.udemy.com/ ; https://www.udemy.com/courses/free/"
+    },
+    {
+     "_title": "NR23",
+     "source_layer": "Common-law",
+     "search_term": "ヴェンコリ",
+     "platform": "coursera.org",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.coursera.org/instructor/~100693647 ; https://www.coursera.org/instructor/~47143839 ; https://www.coursera.org/browse/free"
+    },
+    {
+     "_title": "NR24",
+     "source_layer": "Common-law",
+     "search_term": "ヴェンコリ",
+     "platform": "play.google.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://play.google.com/store/books/details?id=0yRvEAAAQBAJ ; https://play.google.com/store/apps/details?id=venecol.express ; https://play.google.com/store/games?hl=en_US"
+    },
+    {
+     "_title": "NR25",
+     "source_layer": "Common-law",
+     "search_term": "ヴェンコリ",
+     "platform": "apps.apple.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://apps.apple.com/jp/developer/venkon-group-llc/id1560122380?l=en-US ; https://apps.apple.com/hn/developer/venko-sas/id1502751280 ; https://apps.apple.com/us/developer/venco-inc/id1645502949"
+    },
+    {
+     "_title": "NR26",
+     "source_layer": "Common-law",
+     "search_term": "vencori",
+     "platform": "coupang.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://shop.coupang.com/A00237509 ; https://shop.coupang.com/A00473090/369186?locale=ko_KR&platform=p ; https://shop.coupang.com/vitagram/252108?locale=ko_KR&platform=m"
+    },
+    {
+     "_title": "NR27",
+     "source_layer": "Common-law",
+     "search_term": "ヴェンコリ",
+     "platform": "naver.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://dict.naver.com/korean/ ; https://korean.dict.naver.com/koendict/ ; http://en.dict.naver.com/"
+    },
+    {
+     "_title": "NR28",
+     "source_layer": "Common-law",
+     "search_term": "벤코리",
+     "platform": "apps.apple.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://apps.apple.com/us/developer/antonio-vanacore/id1678501790 ; https://apps.apple.com/br/app/benko/id6755138632?l=en-GB ; https://apps.apple.com/us/developer/bcore-software/id1703576390"
+    },
+    {
+     "_title": "NR29",
+     "source_layer": "Common-law",
+     "search_term": "ヴェンコリ",
+     "platform": "rakuten.co.jp",
+     "result": "20 candidates reviewed",
+     "notes": "https://brandavenue.rakuten.co.jp/brandlist/ ; https://www.rakuten.co.jp/venturer/ ; https://brandavenue.rakuten.co.jp/ranking/"
+    },
+    {
+     "_title": "NR30",
+     "source_layer": "Common-law",
+     "search_term": "벤코리",
+     "platform": "udemy.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.udemy.com/course/ai-tools-course/ ; https://www.udemy.com/ ; https://community.udemy.com/en/kb"
+    },
+    {
+     "_title": "NR31",
+     "source_layer": "Common-law",
+     "search_term": "벤코리",
+     "platform": "coursera.org",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.coursera.org/instructor/~6974073 ; https://www.coursera.org/instructor/~116204895 ; https://www.coursera.org/instructor/bentlindow"
+    },
+    {
+     "_title": "NR32",
+     "source_layer": "Common-law",
+     "search_term": "ヴェンコリ",
+     "platform": "kakaku.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://search.kakaku.com/%E3%82%B8%E3%83%96%E3%83%AA%E7%BE%8E%E8%A1%93%E9%A4%A8%20%E3%83%9D%E3%82%B9%E3%83%88%E3%82%AB%E3%83%BC%E3%83%89/ ; https://search.kakaku.com/%E9%8E%AE%E7%97%9B%E5%89%A4(%E7%97%9B%E3%81%BF%E6%AD%A2%E3%82%81)%20%E3%82%BF%E3%82%A4%E3%83%AC%E3%83%8E%E3%83%BC%E3%83%AB/ ; https://search.kakaku.com/%E3%83%A2%E3%83%90%E3%82%A4%E3%83%AB%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%BC%20%E6%9C%89%E6%A9%9F/"
+    },
+    {
+     "_title": "NR33",
+     "source_layer": "Common-law",
+     "search_term": "벤코리",
+     "platform": "play.google.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://play.google.com/store/games?hl=en_US ; https://play.google.com/store/apps/details?id=au.com.workingsoftware.benko&hl=en_US ; https://play.google.com/books"
+    },
+    {
+     "_title": "NR34",
+     "source_layer": "Common-law",
+     "search_term": "ヴェンコリ",
+     "platform": "coupang.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://shop.coupang.com/A01128868/410627?locale=ko_KR&platform=p ; https://shop.coupang.com/A00613410 ; https://shop.coupang.com/A01319664/429113?locale=ko_KR&platform=p"
+    },
+    {
+     "_title": "NR35",
+     "source_layer": "Common-law",
+     "search_term": "벤코리",
+     "platform": "naver.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://dict.naver.com/home/ ; https://dict.naver.com/english-dictionary/ ; https://korean.dict.naver.com/koendict/"
+    },
+    {
+     "_title": "NR36",
+     "source_layer": "Common-law",
+     "search_term": "벤코리",
+     "platform": "rakuten.co.jp",
+     "result": "20 candidates reviewed",
+     "notes": "https://brandavenue.rakuten.co.jp/brandlist/ ; https://item.rakuten.co.jp/benque/c/ ; https://brandavenue.rakuten.co.jp/ranking/"
+    },
+    {
+     "_title": "NR37",
+     "source_layer": "Common-law",
+     "search_term": "벤코리",
+     "platform": "coupang.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://shop.coupang.com/A00233535 ; https://shop.coupang.com/A01297044 ; https://shop.coupang.com/A00239960/133994?platform=p"
+    },
+    {
+     "_title": "NR38",
+     "source_layer": "Common-law",
+     "search_term": "벤코리",
+     "platform": "kakaku.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://search.kakaku.com/%E3%82%A2%E3%83%AA%E3%82%A8%E3%83%BC%E3%83%AB%20%E3%83%80%E3%83%8B%E3%82%88%E3%81%91%E3%83%97%E3%83%A9%E3%82%B9/ ; https://search.kakaku.com/%E7%B4%A0%E6%95%B0%E3%82%B9%E3%83%94%E3%83%BC%E3%83%89/ ; https://search.kakaku.com/%E5%A4%AB%E5%A9%A6%E8%8C%B6%E7%A2%97%20%E6%9C%89%E7%94%B0%E7%84%BC%20%E3%81%94%E9%A3%AF%E8%8C%B6%E7%A2%97/"
+    },
+    {
+     "_title": "NR39",
+     "source_layer": "Common-law",
+     "search_term": "VENCORY",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.prnewswire.com/news-releases/introducing-vencore-268258302.html ; https://www.bouwbeurs.nl/en/artikelen/biobased-keuken-voor-projectmatige-afname ; https://www.linkedin.com/company/vencore-llc"
+    },
+    {
+     "_title": "NR40",
+     "source_layer": "Common-law",
+     "search_term": "VENKRI",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.linkedin.com/company/venkris ; https://venkri.netlify.app/ ; https://venkris.com/"
+    },
+    {
+     "_title": "NR41",
+     "source_layer": "Common-law",
+     "search_term": "벤코리",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://bencor-llc.com/recreation-sports/ ; https://bencor-llc.com/ ; https://literature.interactiveatlas.org/authors/ben-okri"
+    },
+    {
+     "_title": "NR42",
+     "source_layer": "Common-law",
+     "search_term": "VENQ0RI",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.venousforum.org/research/vqi-registry/ ; https://robinhood.com/us/en/stocks/vnqi/ ; https://www.getapp.com/all-software/a/venqon/"
+    },
+    {
+     "_title": "NR43",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://github.com/CordilleraSarl/clearotron ; https://velqory.com/platform ; https://vsearch.nlm.nih.gov/vivisimo/cgi-bin/query-meta?v:file=viv_YkuLNq&server=pvlb7srch10&v:state=root%7Croot-90-10%7C0"
+    },
+    {
+     "_title": "NR44",
+     "source_layer": "Common-law",
+     "search_term": "ヴェンコリ",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://commons.wikimedia.org/wiki/Category:Vincenzo_Coronelli ; https://www.wikidata.org/wiki/Q1739124 ; https://www.swaen.com/mapmakers/vincenzo-coronelli"
+    },
+    {
+     "_title": "NR45",
+     "source_layer": "Common-law",
+     "search_term": "VENQORL",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://npra.gov.my/index.php/en/consumer-medication-information-leaflets-rimup.raw?task=callelement&item_id=2521&element=76165e5e-8b5d-415d-9b44-8a37b21112fa&method=download&args[0]=abb7748c23944c8f2f765bb91b08e60c ; https://www.1mg.com/drugs/venlor-75mg-tablet-741445 ; https://pi-pil-repository.sahpra.org.za/wp-content/uploads/2024/11/Venlor-XR-pi.pdf"
+    },
+    {
+     "_title": "NR46",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI TECH",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://github.com/CordilleraSarl/clearotron ; https://www.gsaelibrary.gsa.gov/ElibMain/home.dohttp:/www.gsaelibrary.gsa.gov/ElibMain/contractorList.do?contractorListFor=D ; https://coloradosprings.gov/procurement-services/page/contract-award-information"
+    },
+    {
+     "_title": "NR47",
+     "source_layer": "Common-law",
+     "search_term": "ACADEMY VENQORI",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.yaptracker.com/posts/paride-venturi-2020/ ; https://www.wikidata.org/wiki/Q338505?uselang=ast ; https://origin.frommers.com/destinations/venice/attractions/gallerie-dellaccademia-academy-gallery/"
+    },
+    {
+     "_title": "NR48",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI ACADEMY",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://tcm-sec.com/academy/ ; https://virginia-academy.com/academics-virginia-academy/ ; https://academicplanningguide.henricoschools.us/page/general-information"
+    },
+    {
+     "_title": "NR49",
+     "source_layer": "Common-law",
+     "search_term": "vencori",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.cbinsights.com/company/vencor ; https://www.referenceforbusiness.com/history2/79/Vencor-Inc.html ; https://steamcommunity.com/id/cornholix"
+    },
+    {
+     "_title": "NR50",
+     "source_layer": "Common-law",
+     "search_term": "VENKORI",
+     "platform": "naver.com",
+     "result": "20 candidates reviewed",
+     "notes": "http://korean.dict.naver.com/koendict/?/main ; https://dict.naver.com/english/ ; https://dict.naver.com/english-dictionary/"
+    },
+    {
+     "_title": "NR51",
+     "source_layer": "Common-law",
+     "search_term": "VENKORI",
+     "platform": "play.google.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://play.google.com/store/apps/developer?id=Vankiros ; https://play.google.com/store/apps/developer?id=Veromtec ; https://play.google.com/books"
+    },
+    {
+     "_title": "NR52",
+     "source_layer": "Common-law",
+     "search_term": "VENKORI",
+     "platform": "udemy.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.udemy.com/ ; https://www.udemy.com/courses/free/ ; https://support.udemy.com/hc/en-us/sections/206457427-Your-Instructor-Account"
+    },
+    {
+     "_title": "NR53",
+     "source_layer": "Common-law",
+     "search_term": "VENKORI",
+     "platform": "apps.apple.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://apps.apple.com/ru/developer/vitalii-kornei/id1450593434?l=en-GB ; https://apps.apple.com/by/developer/hamilton-medical/id1440816817 ; https://apps.apple.com/hn/developer/venko-sas/id1502751280"
+    },
+    {
+     "_title": "NR54",
+     "source_layer": "Common-law",
+     "search_term": "VENKORI",
+     "platform": "coursera.org",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.coursera.org/instructor/~36507449 ; https://www.coursera.org/instructor/~134130291 ; https://www.coursera.org/instructor/~151652382"
+    },
+    {
+     "_title": "NR55",
+     "source_layer": "Common-law",
+     "search_term": "VENKORI",
+     "platform": "rakuten.co.jp",
+     "result": "20 candidates reviewed",
+     "notes": "https://brandavenue.rakuten.co.jp/brandlist/ ; https://globalexpress.rakuten.co.jp/onlineshop/?lang=en ; https://brandavenue.rakuten.co.jp/ranking/"
+    },
+    {
+     "_title": "NR56",
+     "source_layer": "Common-law",
+     "search_term": "VENKORI",
+     "platform": "kakaku.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://search.kakaku.com/%E9%8E%AE%E7%97%9B%E5%89%A4(%E7%97%9B%E3%81%BF%E6%AD%A2%E3%82%81)%20%E3%82%BF%E3%82%A4%E3%83%AC%E3%83%8E%E3%83%BC%E3%83%AB/ ; https://search.kakaku.com/%E7%B4%A0%E6%95%B0%E3%82%B9%E3%83%94%E3%83%BC%E3%83%89/ ; https://kakaku.com/card/item.asp?id=007110"
+    },
+    {
+     "_title": "NR57",
+     "source_layer": "Common-law",
+     "search_term": "VENKORI",
+     "platform": "coupang.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://shop.coupang.com/A00135664/202547?platform=p ; https://shop.coupang.com/A00974259/412431?locale=ko_KR&platform=p ; https://shop.coupang.com/A00271276"
+    },
+    {
+     "_title": "NR58",
+     "source_layer": "Common-law",
+     "search_term": "venqory",
+     "platform": "udemy.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.udemy.com/ ; https://community.udemy.com/en/kb ; https://support.udemy.com/hc/en-us"
+    },
+    {
+     "_title": "NR59",
+     "source_layer": "Common-law",
+     "search_term": "venqory",
+     "platform": "coursera.org",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.coursera.org/ ; https://www.coursera.org/browse/free ; https://www.coursera.org/browse"
+    },
+    {
+     "_title": "NR60",
+     "source_layer": "Common-law",
+     "search_term": "venqory",
+     "platform": "apps.apple.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://apps.apple.com/es/developer/vennory/id1801632552 ; https://apps.apple.com/us/developer/vintory-llc/id1577168704?l=es-MX ; https://apps.apple.com/us/app/vintory/id1577168702"
+    },
+    {
+     "_title": "NR61",
+     "source_layer": "Common-law",
+     "search_term": "venqory",
+     "platform": "play.google.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://play.google.com/store/apps/details?id=com.veyordigital.veyorapp&hl=en_US ; https://play.google.com/store/games?hl=en ; https://status.play.google.com/"
+    },
+    {
+     "_title": "NR62",
+     "source_layer": "Common-law",
+     "search_term": "venqory",
+     "platform": "naver.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://dict.naver.com/english-dictionary/ ; http://en.dict.naver.com/ ; https://dict.naver.com/korean/"
+    },
+    {
+     "_title": "NR63",
+     "source_layer": "Common-law",
+     "search_term": "venqory",
+     "platform": "rakuten.co.jp",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.rakuten.co.jp/sitemap/en/index.html ; https://globalexpress.rakuten.co.jp/?lang=en ; https://globalexpress.rakuten.co.jp/onlineshop/?lang=en"
+    },
+    {
+     "_title": "NR64",
+     "source_layer": "Common-law",
+     "search_term": "venqory",
+     "platform": "kakaku.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://search.kakaku.com/%E3%83%91%E3%83%96%E3%83%AD%E3%83%B3%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89A%E5%BE%AE%E7%B2%92/ ; https://search.kakaku.com/%E9%8E%AE%E7%97%9B%E5%89%A4(%E7%97%9B%E3%81%BF%E6%AD%A2%E3%82%81)%20%E3%82%BF%E3%82%A4%E3%83%AC%E3%83%8E%E3%83%BC%E3%83%AB/ ; https://search.kakaku.com/%E7%B4%A0%E6%95%B0%E3%82%B9%E3%83%94%E3%83%BC%E3%83%89/"
+    },
+    {
+     "_title": "NR65",
+     "source_layer": "Common-law",
+     "search_term": "ベンコリ",
+     "platform": "udemy.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.udemy.com/course/videocr01/ ; https://www.udemy.com/course/sikuli-show-and-tell/ ; https://teach.udemy.com/"
+    },
+    {
+     "_title": "NR66",
+     "source_layer": "Common-law",
+     "search_term": "ベンコリ",
+     "platform": "apps.apple.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://apps.apple.com/br/app/benko/id6755138632?l=en-GB ; https://apps.apple.com/ag/app/%E5%80%8D%E6%A8%82%E9%86%87-%E8%BC%95%E9%AC%86%E9%98%BB%E9%9A%94%E8%86%BD%E5%9B%BA%E9%86%87/id925970802 ; https://apps.apple.com/us/developer/accordware-llc/id715190118"
+    },
+    {
+     "_title": "NR67",
+     "source_layer": "Common-law",
+     "search_term": "ベンコリ",
+     "platform": "coursera.org",
+     "result": "20 candidates reviewed",
+     "notes": "https://www-cloudfront-alias.coursera.org/ ; https://www.coursera.org/browse ; https://www.coursera.org/courses?query=benchmarking"
+    },
+    {
+     "_title": "NR68",
+     "source_layer": "Common-law",
+     "search_term": "ベンコリ",
+     "platform": "play.google.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://play.google.com/store/apps/details?id=com.Maestro.BenColoring ; https://play.google.com/store/apps/details?id=au.com.workingsoftware.benko&hl=en_US ; https://play.google.com/store/apps/details?id=com.cartooncoloring.ben10&hl=en_GB"
+    },
+    {
+     "_title": "NR69",
+     "source_layer": "Common-law",
+     "search_term": "venqory",
+     "platform": "coupang.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://shop.coupang.com/A00592547/286890?locale=ko_KR&platform=m ; https://shop.coupang.com/A00239960/133994?platform=p ; https://shop.coupang.com/A00106361/289274?locale=ko_KR&platform=p"
+    },
+    {
+     "_title": "NR70",
+     "source_layer": "Common-law",
+     "search_term": "ベンコリ",
+     "platform": "naver.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://korean.dict.naver.com/koendict/ ; https://dict.naver.com/home/ ; https://dict.naver.com/korean/"
+    },
+    {
+     "_title": "NR71",
+     "source_layer": "Common-law",
+     "search_term": "ベンコリ",
+     "platform": "rakuten.co.jp",
+     "result": "20 candidates reviewed",
+     "notes": "https://brandavenue.rakuten.co.jp/brandlist/ ; https://www.rakuten.co.jp/sitemap/en/index.html ; https://item.rakuten.co.jp/benque/c/"
+    },
+    {
+     "_title": "NR72",
+     "source_layer": "Common-law",
+     "search_term": "ベンコリ",
+     "platform": "kakaku.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://search.kakaku.com/%E3%82%AD%E3%83%A8%E3%83%BC%E3%83%AC%E3%82%AA%E3%83%94%E3%83%B3%E3%82%AD%E3%83%A3%E3%83%97%E3%83%AC%E3%83%83%E3%83%88S%20200%E9%8C%A0/ ; https://search.kakaku.com/%E7%B4%A0%E6%95%B0%E3%82%B9%E3%83%94%E3%83%BC%E3%83%89/ ; https://search.kakaku.com/%E3%82%AB%E3%83%BC%E3%82%B4%E3%83%91%E3%83%B3%E3%83%84%20%E5%86%AC/"
+    },
+    {
+     "_title": "NR73",
+     "source_layer": "Common-law",
+     "search_term": "VENKORI",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://worldofwarcraft.blizzard.com/en-us/character/eu/blackmoore/Venkori/achievements/characters ; https://worldofwarcraft.blizzard.com/en-us/character/eu/blackmoore/Venkori/achievements ; https://www.linkedin.com/in/venkorpharma-venkor-11bb451ba"
+    },
+    {
+     "_title": "NR74",
+     "source_layer": "Common-law",
+     "search_term": "VINKARI",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.yelp.com/biz/vinkari-safari-woburn-2 ; https://www.mapquest.com/us/massachusetts/vinkari-safari-304130107 ; https://www.vinkarisafari.com/wp/"
+    },
+    {
+     "_title": "NR75",
+     "source_layer": "Common-law",
+     "search_term": "VENKOR",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.linkedin.com/in/venkorpharma-venkor-11bb451ba ; https://www.venkor.ca/ ; https://www.linkedin.com/company/venkor-specialty-prodcuts"
+    },
+    {
+     "_title": "NR76",
+     "source_layer": "Common-law",
+     "search_term": "ベンコリ",
+     "platform": "coupang.com",
+     "result": "20 candidates reviewed",
+     "notes": "https://shop.coupang.com/homall/29819?platform=p ; https://shop.coupang.com/A00635174?pid=8452966179&viid=93108320327&platform=p&brandId=0&btcEnableForce=false ; https://shop.coupang.com/A00018126/124099?locale=ko_KR&platform=p"
+    },
+    {
+     "_title": "NR77",
+     "source_layer": "Common-law",
+     "search_term": "VEN QORI",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://qoria.es/ ; https://x.com/HelloQori ; https://www.youtube.com/watch?v=qTRUHK-tGTM"
+    },
+    {
+     "_title": "NR78",
+     "source_layer": "Common-law",
+     "search_term": "VENQOIR",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://apps.apple.com/gb/app/venqo-business-card-scanner/id6777042694 ; https://www.venminder.com/products/software/questionnaires ; http://www.linkedin.com/company/vendoir/"
+    },
+    {
+     "_title": "NR79",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI SYSTEMS",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://github.com/CordilleraSarl/clearotron ; http://www.ventcor.com/about-us/its-a-team-approach/ ; https://velqory.com/platform"
+    },
+    {
+     "_title": "NR80",
+     "source_layer": "Common-law",
+     "search_term": "VENQORI LABS",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://x.com/Venzolabs ; https://www.edn.com/vencore-inc-launches-its-transformative-new-research-organization-vencore-labs/ ; https://www.linkedin.com/company/venmonk"
+    },
+    {
+     "_title": "NR81",
+     "source_layer": "Common-law",
+     "search_term": "venqory",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://velqory.com/platform ; https://prod-ccroc-direct.merriam-webster.com/dictionary/venography ; https://www.yourdictionary.com/venography"
+    },
+    {
+     "_title": "NR82",
+     "source_layer": "Common-law",
+     "search_term": "ベンコリ",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://en.wikipedia.org/wiki/Benicarl%C3%B3 ; https://yokaiwatch.fandom.com/wiki/Benkei ; https://bencor-llc.com/"
+    },
+    {
+     "_title": "NR83",
+     "source_layer": "Common-law",
+     "search_term": "TECH VENQORI",
+     "platform": "web",
+     "result": "20 candidates reviewed",
+     "notes": "https://www.theverge.com/tech ; https://menlovc.com/focus-areas/defense/ ; https://techventurellc.com/aboutus/"
+    }
+   ],
+   "audit": [
+    {
+     "_title": "AT1",
+     "source_layer": "Register"
+    },
+    {
+     "_title": "AT2",
+     "source_layer": "Register"
+    },
+    {
+     "_title": "AT3",
+     "source_layer": "Register"
+    },
+    {
+     "_title": "AT4",
+     "source_layer": "Register"
+    },
+    {
+     "_title": "AT5",
+     "source_layer": "Register"
+    },
+    {
+     "_title": "AT6",
+     "source_layer": "Register",
+     "step": "placement",
+     "query": "7 ELEVEN KOREA-SEVEN — 7-ELEVEN, lnc (/mark/kr/7ccd0bb4-b371-4bd1-9085-a088c468b3fc)",
+     "rationale": "7 ELEVEN KOREA-SEVEN is a long composite dominated by 7 ELEVEN and KOREA-SEVEN, unlike VENQORI in appearance, pronunciation and overall impression; the incidental VEN sequence inside ELEVEN does not make it a close neighbour. Set aside on the mark comparison, independently of its expired status."
+    },
+    {
+     "_title": "AT7",
+     "source_layer": "Register",
+     "step": "placement",
+     "query": "K-VANKorea PASSENGER TRANSPORTATION EXPERT — K-Van Korea Inc. (/mark/kr/e47b7d74-11ed-4f3d-a669-907240120a8c)",
+     "rationale": "K-VANKorea PASSENGER TRANSPORTATION EXPERT presents K-VAN/Korea with a transport descriptor, rather than the coined VENQORI whole. The different opening, word structure and ending support setting it aside on mark comparison even though its read specification includes mobile, IoT and general data-processing software; cancellation is not the sole ground."
+    },
+    {
+     "_title": "AT8",
+     "source_layer": "Register",
+     "step": "placement",
+     "query": "バンバンカラ — MANEI PAPER MFG. K.K. (/mark/jp/d21095b6-e079-467d-9715-cf40ca880822)",
+     "rationale": "バンバンカラ is transliterated BANBANKARA (also translated VAN VAN KARA), with a repeated BAN/VAN opening and a KARA ending. That sequence and rhythm differ materially from VENQORI and the provisional VENKORI/BENKORI readings. Set aside on the read mark, independently of its cancelled/lapsed status."
+    },
+    {
+     "_title": "AT9",
+     "source_layer": "Register",
+     "step": "placement",
+     "query": "LEPORCELLANE DILAVENO RICHARD-GINORI — Richard-Ginori 1735 S. blood. a. (/mark/kr/89b0d421-68fa-4077-9f2a-d8ec8ad7814d)",
+     "rationale": "LEPORCELLANE DILAVENO RICHARD-GINORI is a multiword composite whose DILAVENO and GINORI elements do not reproduce VENQORI as a whole or its proposed sound. Shared fragments in a long name are insufficient to raise this position; set aside on mark comparison, independently of expiry."
+    },
+    {
+     "_title": "AT10",
+     "source_layer": "Register",
+     "step": "placement",
+     "query": "sevenOrients — SEVENORIENTS (/mark/wo/0926e81f-d7aa-455f-8d19-bd475b7f9fde)",
+     "rationale": "sevenOrients reads as SEVEN ORIENTS, a different word combination, length, sound and meaning from coined VENQORI. Set aside on mark comparison despite the read broad recorded-software and educational-event wording. The official record names JP as a Madrid designation, so WO is not treated as automatically outside territory; the record is also expired with cancellation dated 2023-04-06."
+    },
+    {
+     "_title": "AT11",
+     "source_layer": "Register",
+     "step": "placement",
+     "query": "주식회사 스타밴코리아 — Starvan Korea CO., LTD. (/mark/kr/02558506-a07b-4503-a974-35b5331ceb35)",
+     "rationale": "주식회사 스타밴코리아 is indexed STAR VAN KOREA: its STAR opening and VAN KOREA word sequence differ materially from VENQORI and 벤코리. Set aside on the read Hangul mark and supplied transliteration; this is not a Latin-classifier negative and does not depend on its expired status."
+    },
+    {
+     "_title": "AT12",
+     "source_layer": "Register",
+     "step": "placement",
+     "query": "group (rest)",
+     "rationale": "All seven lines and all seven official records were read. The live Ｖｅｎｋｕｒｉ position is placed separately; each of the other six lines is named separately with its own mark-comparison ground, including those with broad software or education wording. No additional line remains to carry under this group row; this is not a blanket no-goods-match or dead-status exclusion.",
+     "result_summary": "7 records"
+    }
+   ]
+  }
+ },
+ "staff": {
+  "inputsAbsent": [
+   "_driver/escalation-state.json",
+   "_driver/corrections-state.json"
+  ],
+  "publishParts": [],
+  "findingsError": null,
+  "auditError": null
+ },
+ "prose": {
+  "frontMatter": {
+   "type": "clearance-clearance",
+   "matter": "DEMO-2014-multi-country-focus-search",
+   "title": "VENQORI",
+   "client": "Demo Brand Owner",
+   "use": "Downloadable software for water-quality monitoring with online training services attached",
+   "classes": "9, 42, 41",
+   "run": "2026-11-20 · Clarivate Compumark + common-law",
+   "overall_label": "Manageable",
+   "overall_badge": "l2",
+   "overall_caption": "VENQORI presents Manageable risk: YIWU TENGDING’s Latin-script Ｖｅｎｋｕｒｉ registration poses a Japanese obstacle for related electronics. Unsearched Japanese and Korean spellings could conceal closer rights for the company’s software and instruction.",
+   "coverage_line": "Classes 9 and 42: 48 of 49 searches completed — the remaining 1 is a non-Latin script form; Class 41: 47 of 48 searches completed — the remaining 1 is a non-Latin script form · registers: JP, KR, WO",
+   "rated_under": "Demo Brand Owner · Standard risk scale",
+   "run_under_project": "Japan and Korea app launch (Demo Brand Owner)",
+   "origins_json": "[{\"field\":\"Marketplaces\",\"value\":\"16 stores + web\",\"origin\":\"customer+project\"},{\"field\":\"Default classes\",\"value\":\"9, 42\",\"origin\":\"project\"},{\"field\":\"Default jurisdictions\",\"value\":\"JP, KR\",\"origin\":\"project\"},{\"field\":\"Marketplace density\",\"value\":\"sparse\",\"origin\":\"project\"},{\"field\":\"Delivery format\",\"value\":\"summary, privileged\",\"origin\":\"project\"},{\"field\":\"Risk posture\",\"value\":\"set\",\"origin\":\"project\"},{\"field\":\"Sector\",\"value\":\"consumer mobile app for water-quality readings,…\",\"origin\":\"project\"}]",
+   "envelope_note": "These searches cannot be carried out because the register does not support this kind of search; no run can close this gap."
+  },
+  "sections": {
+   "Left open": "**Partially covered (2)**\n\n- **Japanese and Korean marketplace coverage**: Local-language results were noisy and sometimes language-mismatched, so they do not establish local marketplace absence.\n- **Japanese-script and Korean-script register equivalents (JP / KR)**: Japanese-script and Korean-script same-meaning/phonetic register equivalents not searched on this search — The native-language investigation is offered on a Multi-country focus search and runs automatically on a Full country search.\n\n**Open item (6)**\n\n- **Japan / further long-vowel and KW spellings**: No concrete alternative spellings were specified for these additional register questions.\n- **Follow-up / ヴェンコリー**: ヴェンコリー — not completed this run — the searches proposed for it could not be put to this register, so it was never searched\n- **Follow-up / ヴェンクォリ**: ヴェンクォリ — not completed this run — the searches proposed for it could not be put to this register, so it was never searched\n- **Follow-up / 벤쿼리**: 벤쿼리 — not completed this run — the searches proposed for it could not be put to this register, so it was never searched\n- **Follow-up / japanese long-vowel and kw alternatives**: japanese long-vowel and kw alternatives — not completed this run — no search could be built for it: the item names a category rather than a name a register can be searched for, so searching the wording literally would return nothing and read as clean, and it is left open here\n- **Follow-up / worldwide registers and related classes**: worldwide registers and related classes — not completed this run — the source it needed was not searched, so nothing is known about it either way\n\n**Not searched (14)**\n\n- **Japan / ベンコリ in Classes 9, 42 and 41**: Character searching was unsupported, and an equivalent completed spelling search is not established.\n- **Japan / ヴェンコリー and ヴェンクォリ**: The character queries were rejected because the register search uses romanised names.\n- **South Korea / 벤쿼리**: The character query was rejected because the register search uses romanised names.\n- **Professional and industrial water monitoring**: No additional search question was specified for this broader field; consumer-app conclusions do not clear it.\n- **Registers outside Japan and South Korea, and additional goods classes**: We did not extend the search worldwide or beyond Classes 9, 42 and 41. The request covers Japan and South Korea.\n- **Specialist water-industry directories and procurement**: These sources were not searched; professional procurement was outside the consumer-channel search.\n- **Developer ecosystems and package registries**: These sources were not searched; no developer-distribution product is stated.\n- **Cloud marketplaces and industrial integration catalogues**: These sources were not searched.\n- **Microsoft Store and specialist desktop-software directories**: These sources were not searched.\n- **Local technical-learning and professional communities**: These sources were not searched.\n- **Meaning-based and grammatical name variants**: Compound, translation, plural-root and other semantic families were omitted because no meaning or separable root is established.\n- **Other software fields and standalone treatment, reagent, retail or medical offerings**: Games, enterprise tools, specialist AI and these additional goods were omitted as separate fields, rather than cleared.\n- **The company's own prior rights**: We did not separately search for the applicant's own filings because the request does not identify the applicant.\n- **Local-script spellings**: No search in Katakana script was completed.",
+   "Marks": "## YIWU TENGDING UMBRELLA CO., LTD. — ＶＥＮＫＵＲＩ\n- ord: 1\n- open: true\n- net: YIWU TENGDING UMBRELLA CO., LTD.’s Ｖｅｎｋｕｒｉ would probably lose against VENQORI for water-quality software in Japan.\n- group: on-field\n- source: Register\n### Full detail\n\n- **Risk assessment.** The similar Latin-script name covers surveillance apparatus with a monitor and other electronics, rather than downloadable software or instruction. Relatedness between devices and apps leaves a real risk to registration in Japan. That risk would increase if the app controls or accompanies monitoring hardware.\n- **Use.** The owner and mark search did not confirm Japanese use in the registered electronics or water-related software. This does not establish non-use, and no cancellation defence is assumed.\n- **Enforcement.** The search identified no public enforcement record. This does not establish that the owner would be unwilling to enforce its rights.",
+   "Reasoned negatives": "None. Every retrieved close match on this run is an on-field conflict above — nothing was cleared into this section."
+  },
+  "cards": [
+   {
+    "who": "YIWU TENGDING UMBRELLA CO., LTD. — ＶＥＮＫＵＲＩ",
+    "meta": {
+     "ord": "1",
+     "open": "true",
+     "net": "YIWU TENGDING UMBRELLA CO., LTD.’s Ｖｅｎｋｕｒｉ would probably lose against VENQORI for water-quality software in Japan.",
+     "group": "on-field",
+     "source": "Register"
+    },
+    "blocks": [
+     {
+      "label": "Full detail",
+      "body": "- **Risk assessment.** The similar Latin-script name covers surveillance apparatus with a monitor and other electronics, rather than downloadable software or instruction. Relatedness between devices and apps leaves a real risk to registration in Japan. That risk would increase if the app controls or accompanies monitoring hardware.\n- **Use.** The owner and mark search did not confirm Japanese use in the registered electronics or water-related software. This does not establish non-use, and no cancellation defence is assumed.\n- **Enforcement.** The search identified no public enforcement record. This does not establish that the owner would be unwilling to enforce its rights."
+     }
+    ]
+   }
+  ]
+ }
+}

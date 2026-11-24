@@ -35,7 +35,7 @@ import { recordCoverage, MAX_ROWS_PER_CALL } from "../coverage-tool.mjs";
 // them — and the suite exercises the transport e2e measured as never having executed.
 import { recordBlindFrame } from "../blind-frame-record.mjs";
 import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
-import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
+import { recordKnockoutFrame, requestText } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordKnockoutRegisterRead } from "../knockout-register-record.mjs";
 import { recordKnockoutCorrection } from "../knockout-correction-record.mjs";
@@ -58,7 +58,7 @@ import { recordDeclinations } from "../declination-tool.mjs";   // — the mock 
 import { contradictionFor } from "../declination-call.mjs";      // — and reads the refusal it would meet, rather than guessing
 import { findingUris } from "../record-carry.mjs";
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
-import { requestCancel } from "../cancel.mjs";   // MOCK_KO_REVIEW_STOP: a stop pressed while the last stage runs
+import { requestCancel } from "../cancel.mjs";   // MOCK_KO_REVIEW_STOP and MOCK_KO_CORRECT_CANCEL_AT: a stop pressed while a stage runs
 import { recordClosures } from "../doubt-closure-tool.mjs";           // conversion 6 — the closure transport
 import { recordRefutation } from "../narrative-refutation-record.mjs"; // conversion 9 — the reviewer transport
 import { parseManifestVariants } from "../common-law-receipts.mjs";   // the terms the receipts gate joins on
@@ -2425,11 +2425,11 @@ export function applyStageWrites(msg, argv) {
       // link was laid out by hand. Every one of those is the driver's now, so what the mock sends is what
       // the seat sends: the caption, the checks, and the notes.
       recordMockToolCall(runDir, "record_report_overview", "recording-report-overview");
-      // MOCK_PERMISSION_PROSE RIDES `methodology`, and it has to ride SOMETHING. It is PR-5's gate-closing
+      // MOCK_PERMISSION_PROSE RIDES AN ACTION LINE, and it has to ride SOMETHING. It is PR-5's gate-closing
       // scenario — a false "tool was blocked" line in the shell that evaluateClientGate must catch — so a
       // conversion that quietly dropped it would retire a live lint scenario while every test still
-      // passed. The seat can no longer author a stray section, but it can still say this in a scope note,
-      // which is the honest post-conversion shape of the same defect.
+      // passed. It rode the methodology note until that field retired (2026-11-19); a check line is the
+      // seat's own prose in the shell, and the same defect can be written there.
       const permNote = process.env.MOCK_PERMISSION_PROSE
         ? "Register note: register_enumerate was blocked by a tool-permission gate this run." : "";
       // MOCK_OVERVIEW_SCOPE_COUNT=1 — the overview's FIRST rendering states a search count in its own prose, the sibling
@@ -2440,16 +2440,15 @@ export function applyStageWrites(msg, argv) {
       // is clean. Keyed on the overview's own file, as MOCK_OVERVIEW_SCOPE_COUNT is.
       const citeNote = process.env.MOCK_OVERVIEW_CITES && !existsSync(join(runDir, "report-overview.md"))
         ? `Finding ${process.env.MOCK_OVERVIEW_CITES} remains an open question on its goods.` : "";
-      // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption, an empty actions list, and
-      // no methodology. The driver renders it with no section heading.
+      // MOCK_OVERVIEW_BARE=1 — the call a seat may send and the acceptance takes: a caption and an empty actions list.
+      // The driver renders it with no section heading.
       const r = recordReportOverview(runDir, process.env.MOCK_OVERVIEW_BARE ? {
         overall_caption: "The identical registration in class 9 is the one finding that conditions reliance on this mark; nothing else in the field blocks it.",
         actions: [],
       } : {
         overall_caption: "mock composite 3",
-        actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" }],
-        methodology: [permNote, scopeCountNote, citeNote, "Common-law: marketplace storefronts + web/social/press; variant families swept; one listing surfaced, remainder clean."]
-          .filter(Boolean).join(" "),
+        actions: [{ text: "Mock use-check: none found", source_link: "https://x.example" },
+          ...[[permNote, scopeCountNote, citeNote].filter(Boolean).join(" ")].filter(Boolean).map((text) => ({ text }))],
       });
       // A REFUSED CALL MUST NOT READ AS A CLEAN TURN — the sibling rule, stated at every branch.
       // The redo turn stales findings.json exactly as it did before the conversion — the incident shape
@@ -2563,19 +2562,28 @@ export function applyStageWrites(msg, argv) {
     const scopePath = msg.match(/quote mark names verbatim from it\):\s*((?:[A-Za-z]:)?[\\/]\S+instructed-scope\.json)/)?.[1];
     let names = ["MOCKMARK"];
     try { const sc = JSON.parse(readFileSync(scopePath, "utf8")); if (Array.isArray(sc.marks) && sc.marks.length) names = sc.marks; } catch { /* fallback */ }
+    // THE USE PHRASE IS COPIED FROM THE REQUEST (owner, 2026-11-24), as a real intake must: the record refuses a phrase the
+    // request does not hold. The order's phrase is the request's first two words, and a name's own the next two.
+    const words = String(requestText(runDir) ?? "").split("\n")[0].split(" ").filter(Boolean);
+    const orderUse = words.length >= 2 ? words.slice(0, 2).join(" ") : "product line";
+    const ownUse = words.length >= 4 ? words.slice(2, 4).join(" ") : null;
     const plan = {
       schema: 1,
       // NO BATCH PLACES from ruling 570 on: each mark names its own, below. The old shape (one list here,
       // none on the marks) is driven by the plan validator's own arms, not by this mock.
       batch: { productContext: "mock consumer product line", inUseAs: "a product line, a character or a place",
-        umbrellaBrandNote: null, executionOrder: [...names] },
+        // THE ORDER'S USE PHRASE (design, 2026-11-24), and a name's own below only where its use differs.
+        useKind: orderUse,
+        umbrellaBrandNote: null, executionOrder: [...names],
+        // MOCK_KO_FAMILIES — the intake's families, `[["<name>", …], …]`; without it the intake groups nothing.
+        ...(process.env.MOCK_KO_FAMILIES ? { families: JSON.parse(process.env.MOCK_KO_FAMILIES) } : {}) },
       marks: names.map((n, i) => ({ ref: null, name: n, classes: [9], beltAndBraces: [35],
         classesPlain: "software (9); retail services (35, belt-and-braces)",
         contextFraming: /[aeiou]{2}|q[^u]/i.test(n) ? "coined/fanciful term" : "brand-like compound",
-        // THE KIND OF USE, and DERIVED FROM THE MARK for the same reason contextFraming above it is: an
+        // A NAME'S OWN USE, and DERIVED FROM THE MARK for the same reason contextFraming above it is: an
         // arm asserting that a mark's cells carry THAT mark's use cannot fail against a fixture that
-        // gives every mark the same word. A real frame judges this; the mock only has to differ per mark.
-        useKind: /[aeiou]{2}|q[^u]/i.test(n) ? "character" : "product line",
+        // gives every mark the same word. The others take the order's phrase above.
+        ...(ownUse && /[aeiou]{2}|q[^u]/i.test(n) ? { useKind: ownUse } : {}),
         // THIS NAME'S OWN PLACES (ruling 570), and DERIVED FROM THE MARK'S POSITION rather than from its
         // spelling. An arm asserting a mark's cells ran on THAT mark's places cannot fail against a fixture
         // that gives every mark the same list, so any two marks in a batch must differ — and a predicate on
@@ -2588,8 +2596,7 @@ export function applyStageWrites(msg, argv) {
           : i % 2 === 0
             ? ["web", "shop.example.com"]
             : ["web", "shop.example.com", "wiki.example.com"],
-        // the name as instructed, and one misspelling: its last letter doubled, which no name can equal
-        spellings: [n, `${n}${n.slice(-1)}`],
+        // NO SPELLINGS: the driver builds them from the name (task 2e).
         priorKnowledge: null, priority: i + 1 })),
     };
     // THE NOTE'S BYTES ARE UNCHANGED, deliberately. This conversion moves who writes the file and not
@@ -2635,6 +2642,12 @@ export function applyStageWrites(msg, argv) {
     const boundChunk = recordAxisFromWiring(argv);
     if (boundChunk === null) return "mock knockout-assess: no chunk ordinal bound in the engine wiring — the driver binds CLEAROTRON_RECORD_AXIS per fanned turn, and a mock that picked its own chunk would author the identity the membership join checks";
     recordMockToolCall(runDir, "record_knockout_assess", "recording-knockout-assess");
+    // MOCK_KO_ASSESS_HOLD_MS: hold the turn and log when it ran (MOCK_KO_ASSESS_LOG), so a test can see the groups overlap.
+    if (process.env.MOCK_KO_ASSESS_HOLD_MS) {
+      const start = Date.now();
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, Number(process.env.MOCK_KO_ASSESS_HOLD_MS));
+      if (process.env.MOCK_KO_ASSESS_LOG) appendFileSync(process.env.MOCK_KO_ASSESS_LOG, JSON.stringify({ chunk: Number(boundChunk), start, end: Date.now() }) + "\n");
+    }
     let ladder = ["Very High", "High", "Medium", "Manageable", "Low"];
     let fwKey = "house-triage";
     try { const fw = JSON.parse(readFileSync(driverDir(runDir, "framework.json"), "utf8")); ladder = fw.bands.map((b) => b.label); fwKey = fw.framework_key; } catch { /* default */ }
@@ -2643,11 +2656,16 @@ export function applyStageWrites(msg, argv) {
     const degradedSet = new Set([...msg.matchAll(/^- (.+?):\s+(?:[A-Za-z]:)?[\\/]\S+\s+\(DEGRADED/gm)].map((m) => m[1]));
     const band = process.env.MOCK_KO_BAND || ladder[ladder.length - 2] || ladder[0];   // second-lowest by default
     const chunk = {
+      // MOCK_KO_GROUP_CONTEXT: the first group narrows the batch's scope. MOCK_KO_LATER_CAVEAT: a later group sends a batch-wide caveat.
+      // MOCK_KO_FIRST_FRAMEWORK / MOCK_KO_LATER_FRAMEWORK: the first group's, or a later group's, framework echo differs from the frozen one.
       ...(Number(boundChunk) === 0 ? {
-        framework: { source: fwKey, ladder },
-        batch: { productContext: "mock consumer product line",
+        framework: { source: fwKey, ladder, ...JSON.parse(process.env.MOCK_KO_FIRST_FRAMEWORK || "{}") },
+        batch: { productContext: process.env.MOCK_KO_GROUP_CONTEXT || "mock consumer product line",
           standardCaveats: ["Ratings reflect our common law assessment. Register analysis may adjust ratings in either direction."] },
-      } : {}),
+      } : {
+        ...(process.env.MOCK_KO_LATER_CAVEAT ? { batch: { standardCaveats: [process.env.MOCK_KO_LATER_CAVEAT] } } : {}),
+        ...(process.env.MOCK_KO_LATER_FRAMEWORK ? { framework: { source: fwKey, ladder, ...JSON.parse(process.env.MOCK_KO_LATER_FRAMEWORK) } } : {}),
+      }),
       // EVERY chunk narrates its own marks — code composes the batch executive summary from these
       chunkSummary: `Based on the knockout search results, ${rows.join(", ")} present${rows.length === 1 ? "s" : ""} no obvious blockers in this chunk; see per-mark rows.`,
       marks: rows.map((n) => {
@@ -2762,48 +2780,24 @@ export function applyStageWrites(msg, argv) {
     if (!verdict.written) return `mock knockout-register-read: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
     return "mock knockout register reading ok";
   }
-  // ── THE REVIEWING PASS ────────────────────────────────────────────────────────────────────────────
+  // ── THE REVIEWING PASS ───────────────────────────────────────────────────────────────
   //
-  // THE ADDRESSES ARE READ BACK OUT OF THE DISPATCH, never invented. The driver measured them and put
-  // them in the message; a mock that composed its own would be asserting that the addresses it makes up
-  // resolve, which is a fact about the mock. Reading them back is also what a seat does, so a dispatch
-  // that stopped carrying addresses fails here rather than passing on fabricated ones.
-  //
-  // IT DECLINES RATHER THAN REWRITES. A fixture inventing replacement prose would put mock sentences on
-  // the record every knockout e2e then asserts against, and the rewrite path is driven by its own arms
-  // against a real record. What the e2e needs from this branch is that the stage COMPLETES through the
-  // real transport, which a declined row does exactly as well. It records the clean read ONCE, as the
-  // check is told to: one row, at the first address the dispatch carries.
+  // THE REVIEW ANSWERS ITS QUESTION AND SENDS ITS DEFECTS, through the real transport: a clean read is the question answered and an
+  // empty list. It reads the opinion summaries back out of the dispatch, as a seat does, so a dispatch that stopped carrying them
+  // fails here rather than passing on a record the mock read for itself.
   if (/record_knockout_review/.test(msg)) {
     const runDir = runDirFromWiring(argv);
     if (!runDir) return "mock knockout-review: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guessing one";
     recordMockToolCall(runDir, "record_knockout_review", "recording-knockout-review");
-    const declined = [];
-    for (const m of msg.matchAll(/address (\{"field":[^}]*\})/g)) {
-      try { declined.push({ at: JSON.parse(m[1]), why: "mock review: the lines read plainly enough in context" }); break; }
-      catch { /* a row whose address will not parse is not one this mock can answer */ }
-    }
-    if (!declined.length) return "mock knockout-review: the dispatch carried no address to answer — the driver measures them and puts them in the message";
-    // MOCK_KO_MATERIAL: the defects a first look raises, as JSON. MOCK_KO_MATERIAL_OPEN: what the look at the corrected record
-    // still finds. That look says what it read off the record on disk, so a test can see the corrected record reached it.
-    const pass = recordAxisFromWiring(argv);
-    const raised = pass ? process.env.MOCK_KO_MATERIAL_OPEN : process.env.MOCK_KO_MATERIAL;
-    const material = raised ? JSON.parse(raised) : [];
-    const reads = pass ? ((JSON.parse(readFileSync(join(runDir, "knockout-findings.json"), "utf8")).marks ?? []).map((m) => `${m.name}: ${m.rating}`).join("; ")) : "the report answers the client's question";
-    // MOCK_KO_REWRITE_AT=<name>: the first look also rewrites that name's first line the dispatch offers, so a test can see
-    // whether that old rewrite lands over what a correction then changed there.
-    const rewrites = [];
-    if (!pass && process.env.MOCK_KO_REWRITE_AT) {
-      for (const m of msg.matchAll(/address (\{"field":[^}]*\})/g)) {
-        let at; try { at = JSON.parse(m[1]); } catch { continue; }
-        if (at.mark === process.env.MOCK_KO_REWRITE_AT && JSON.stringify(at) !== JSON.stringify(declined[0].at)) { rewrites.push({ at, text: "An old rewrite from the first look.", why: "mock review: plainer" }); break; }
-      }
-    }
-    const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${reads}`, material, declined, ...(rewrites.length ? { rewrites } : {}) }, { boundOrdinal: pass });
+    const summaries = [...msg.matchAll(/^### "([^"]+)": ([^\n]+)$/gm)].map((m) => `${m[1]}: ${m[2]}`);
+    if (!summaries.length) return "mock knockout-review: the dispatch carried no opinion summary to read — the driver composes them and puts them in the message";
+    // MOCK_KO_MATERIAL: the defects the review raises, as JSON.
+    const material = process.env.MOCK_KO_MATERIAL ? JSON.parse(process.env.MOCK_KO_MATERIAL) : [];
+    const verdict = recordKnockoutReview(runDir, { first_question: `mock review: ${summaries.join("; ")}`, material }, { boundOrdinal: recordAxisFromWiring(argv) });
     if (!verdict.written) return `mock knockout-review: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
-    // MOCK_KO_REVIEW_STOP: the operator presses Stop while the review, the lane's last stage, is running. The turn still
-    // finishes, as a dispatched turn does, and only a read after it can see the stop.
-    if (process.env.MOCK_KO_REVIEW_STOP && !pass) requestCancel(runDir, { via: "mock/review", by: "mock" });
+    // MOCK_KO_REVIEW_STOP: the operator presses Stop while the review is running. The turn still finishes, as a dispatched turn does,
+    // and only a read after it can see the stop.
+    if (process.env.MOCK_KO_REVIEW_STOP) requestCancel(runDir, { via: "mock/review", by: "mock" });
     return "mock knockout review ok";
   }
   // ── A MATERIAL DEFECT'S REPAIR ──────────────────────────────────────────────
@@ -2816,6 +2810,10 @@ export function applyStageWrites(msg, argv) {
     const boundChunk = recordAxisFromWiring(argv);
     if (boundChunk === null) return "mock knockout-correct: no chunk ordinal bound in the engine wiring";
     recordMockToolCall(runDir, "record_knockout_correction", "recording-knockout-correct");
+    // MOCK_KO_CORRECT_CANCEL_AT: the correction of that chunk asks the run to stop, as a person would while it runs.
+    // MOCK_KO_CORRECT_HOLD_MS holds every other correction, so a group is still queued when the stop lands.
+    if (process.env.MOCK_KO_CORRECT_CANCEL_AT === String(boundChunk)) requestCancel(runDir, { via: "mock", by: "a test" });
+    else if (process.env.MOCK_KO_CORRECT_HOLD_MS) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, Number(process.env.MOCK_KO_CORRECT_HOLD_MS));
     const work = JSON.parse(readFileSync(driverDir(runDir, "knockout-correction-work.json"), "utf8"));
     const held = JSON.parse(readFileSync(join(runDir, `knockout-assess-${Number(boundChunk)}.json`), "utf8"));
     const defects = work.defects.filter((d) => d.chunk === Number(boundChunk));

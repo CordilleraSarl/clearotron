@@ -1,0 +1,221 @@
+{
+  "uri": "/mark/us/6c113d37-3bbc-47e9-9973-fb43edd850fc",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "6c113d37-3bbc-47e9-9973-fb43edd850fc",
+  "applicationNumber": "99763510",
+  "registrationNumber": null,
+  "applicationDate": "2026-04-14",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2026-08-18"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "THE GIVEN RIGHT NEVER APOLOGIZE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment services, namely, continuing video programs featuring hunting, fishing, camping, and firearms distributed via various platforms across multiple forms of transmission media",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Xpedition Enterprises, LLC",
+  "ownerNative": null,
+  "ownerCountry": "USAM",
+  "representative": "Bobby W. Braxton",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "668 Route 70, Lakehurst, NJ, 08733, USAM",
+        "applicantAddressCity": "Lakehurst",
+        "applicantAddressCountryCode": "USAM",
+        "applicantAddressCountryName": "United States",
+        "applicantAddressPostalCode": "08733",
+        "applicantAddressStateName": "NEW JERSEY",
+        "applicantAddressStreet": "668 Route 70",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "LIMITED LIABILITY CO.",
+        "applicantName": "Xpedition Enterprises, LLC"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment services, namely, continuing video programs featuring hunting, fishing, camping, and firearms distributed via various platforms across multiple forms of transmission media"
+        }
+      ]
+    },
+    "id": "6c113d37-3bbc-47e9-9973-fb43edd850fc",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20261013",
+        "descriptionText": "NOA E-MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20260818",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20260818",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20260812",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20260720",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20260716",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20260414",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      },
+      {
+        "date": "20260414",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20260414",
+        "descriptionText": "APPLICATION FILING RECEIPT MAILED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "668 Route 70, Lakehurst, NJ, 08733, USAM",
+        "city": "Lakehurst",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Xpedition Enterprises, LLC",
+        "postalCode": "08733",
+        "stateName": "NEW JERSEY",
+        "street": "668 Route 70"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "668 Route 70, Lakehurst, NJ, 08733, USAM",
+        "city": "Lakehurst",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Xpedition Enterprises, LLC",
+        "postalCode": "08733",
+        "stateName": "NEW JERSEY",
+        "street": "668 Route 70"
+      },
+      {
+        "address": "668 Route 70, Lakehurst, NJ, 08733, USAM",
+        "city": "Lakehurst",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "LIMITED LIABILITY CO.",
+        "name": "Xpedition Enterprises, LLC",
+        "postalCode": "08733",
+        "stateName": "NEW JERSEY",
+        "street": "668 Route 70"
+      }
+    ],
+    "recordLastUpdated": "20261015",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "Montrose, CO 81402, United States",
+        "representativeCorrespondentAddressLines": [
+          "Montrose, CO 81402",
+          "United States"
+        ],
+        "representativeCorrespondentName": "Bobby W. Braxton Braxton IP PLLC, PO Box 91"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "Montrose, CO 81402, United States",
+        "representativeAddressLines": [
+          "Montrose, CO 81402",
+          "United States"
+        ],
+        "representativeName": "Bobby W. Braxton"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260414",
+        "applicationNumber": "99763510"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "ipOffice": {
+        "markOfficialStatus": "NOTICE OF ALLOWANCE - ISSUED",
+        "markOfficialStatusCode": "688",
+        "markOfficialStatusDate": "20261013",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "Intent to Use"
+        ]
+      },
+      "markCurrentStatus": "PUBLISHED",
+      "publicationDate": [
+        "20260818"
+      ]
+    },
+    "version": "20261015130921",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "THE GIVEN RIGHT NEVER APOLOGIZE"
+    }
+  },
+  "_uri": "/mark/us/6c113d37-3bbc-47e9-9973-fb43edd850fc",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.196Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

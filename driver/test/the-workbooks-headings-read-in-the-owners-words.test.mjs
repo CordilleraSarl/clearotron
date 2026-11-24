@@ -5,8 +5,8 @@
 // headed "Enforcer" while the report calls the same meter "Likely to enforce"; it now takes the report's words. The
 // Knockout workbook headed its columns in title case ("Finding Reference", "Result Summary") beside a clearance
 // workbook in sentence case; it now uses the clearance's case, and the clearance's words where a column holds the same
-// thing: the conflicting mark, its risk band, the note. Read from the workbooks as built, on the committed Knockout
-// demo and an invented finding.
+// thing: the conflicting mark, its risk band, the note. Its link list is headed "Sources", as its page heads the same
+// list. Read from the workbooks as built, on the committed Knockout demo and an invented finding.
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -15,8 +15,9 @@ import assert from "node:assert/strict";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
 import { buildAudit } from "../publish/xlsx.mjs";
 
-// The committed demo rated its name Low and carries no conflict, so one invented conflict is added to its first mark.
-const DEMO = JSON.parse(readFileSync(join(import.meta.dirname, "..", "..", "demo", "knockout-search", "run", "knockout-findings.json"), "utf8"));
+// The previous Knockout demo capture rated its name Low and carries no conflict, so one invented conflict is added to its
+// first mark. It writes no working notes, so its workbook has the four sheets named below.
+const DEMO = JSON.parse(readFileSync(join(import.meta.dirname, "fixtures", "demo-2026-09-18", "knockout-search", "run", "knockout-findings.json"), "utf8"));
 const CONFLICT = { ordinal: 1, name: "BRISKVALE", owner: "Briskvale Trading Ltd", band: "Serious", type: "Active Business",
   net: "An invented conflict.", evidence: ["https://example.test/briskvale"], basis: "An invented basis." };
 const KNOCKOUT = { ...DEMO, marks: [{ ...DEMO.marks[0], findings: [CONFLICT] }, ...DEMO.marks.slice(1)] };
@@ -46,7 +47,7 @@ test("the clearance workbook heads its enforcement column in the report's words"
 
 test("the Knockout workbook heads its columns in the clearance workbook's case and words", async (t) => {
   const heads = await headings(t, (out) => buildKnockoutWorkbook(KNOCKOUT, [{ mark: KNOCKOUT.marks[0].name, ok: true, bytes: 10 }], out, COUNTS));
-  assert.deepEqual(heads.Findings, ["Mark", "Finding reference", "Conflicting mark", "Owner", "Risk band", "Type", "Net", "Basis", "Evidence"]);
+  assert.deepEqual(heads.Findings, ["Mark", "Finding reference", "Conflicting mark", "Owner", "Risk band", "Type", "Net", "Basis", "Sources"]);
   assert.deepEqual(heads["Audit Trail"], ["Mark", "Search term", "Source / context", "Result summary", "Finding reference"]);
   assert.ok(heads["Register Counts"].includes("Note"), `Register Counts: ${heads["Register Counts"].join(" | ")}`);
   assert.deepEqual(Object.keys(heads), ["Findings", "Negative Results", "Audit Trail", "Register Counts"]);

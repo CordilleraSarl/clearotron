@@ -144,14 +144,14 @@
         "registrationNumber": "3514257"
       }
     },
-    "version": "20250627201137",
+    "version": "20250627201138",
     "wordMarkSpecification": {
       "markVerbalElementText": "VENCURO VENCURO"
     }
   },
   "_uri": "/mark/gb/2663cfa1-16ff-4795-ba2c-ce8b0d508011",
   "_receipt": {
-    "fetched_at": "2026-09-18T12:42:34.373Z",
+    "fetched_at": "2026-11-20T19:48:47.532Z",
     "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
   }
 }

@@ -100,6 +100,9 @@ export const COUNTED_EVENTS = {
   "jx-serp-grid-skipped": { kind: FAILED, when: (e) => !isDesignedJxCause(e.cause) },
   "knockout-owner-checks": { kind: FAILED, when: (e) => Number(e.unanswered) > 0 },
   "knockout-register-counts": { kind: FAILED, when: (e) => Number(e.counted) < Number(e.marks) },
+  // The calibration every rating group carries, read once per run: a worked-examples file that could not be read leaves every
+  // rating without it, and this record is its only one. Read, it is a record of which file and how much.
+  "knockout-calibration": { kind: FAILED, when: (e) => e.unreadable === true },
   // A part of the report that failed and still shipped. Its failure is counted where it happened, except a
   // court-decisions file that arrived absent or empty from a stage that ended ok: this record is its only one.
   "degraded-parts": { kind: FAILED, when: (e) => (Array.isArray(e.parts) ? e.parts : [])
@@ -206,6 +209,9 @@ export const NOT_COUNTED_EVENTS = {
     "jx-serp-grid", "jx-serp-grid-overflow", "jx-serp-grid-spec", "jx-slices-stated",
     "knockout-published", "knockout-receipts", 
     "knockout-register-records", "knockout-register-read",
+    // The intake's families as the schedule read them, and each rating group's own file of filings: RECORDS of how the run was
+    // split. A grouping the schedule refuses rates every name alone, which is the order still rated, not a step repeated.
+    "knockout-families", "knockout-families-refused", "knockout-group-records",
     // The run's own span against the ten-minute target, written at delivery because that is the first
     // point at which the run's span is known. Same class as the sweep's line below: a RECORD, never a
     // failure. `overBar: null` on it means the span could not be measured, which is a gap in the record

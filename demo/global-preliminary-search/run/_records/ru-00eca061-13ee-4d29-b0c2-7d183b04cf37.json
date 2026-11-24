@@ -1,0 +1,170 @@
+{
+  "uri": "/mark/ru/00eca061-13ee-4d29-b0c2-7d183b04cf37",
+  "provider": "clarivate",
+  "office": "ru",
+  "guid": "00eca061-13ee-4d29-b0c2-7d183b04cf37",
+  "applicationNumber": "2026811215",
+  "registrationNumber": null,
+  "applicationDate": "2026-09-16",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "AVENCORE",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    37,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": "ru",
+      "description": "презентация товаров на всех медиасредствах с целью розничной продажи; продвижение продаж для третьих лиц; реклама; услуги агентства по импорту-экспорту; услуги продажи транспортных средств и запчастей для них; услуги розничной продажи товаров; услуги оптовой продажи товаров; услуги розничной продажи товаров посредством торговых площадок в сети Интернет; услуги оптовой продажи товаров посредством торговых площадок в сети Интернет.",
+      "translation_language": "en",
+      "translation": "presentation of goods in all media for the purpose of retail sale; sales promotion for third parties; advertising; import-export agency services; services for the sale of vehicles and spare parts therefor; services for the retail sale of goods; services for the wholesale sale of goods; services for the retail sale of goods through online trading platforms; services for the wholesale sale of goods through online trading platforms."
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": "ru",
+      "description": "консультации по вопросам страхования; посредничество при страховании; предоставление информации по вопросам страхования; страхование.",
+      "translation_language": "en",
+      "translation": "consultations on insurance issues; insurance mediation; providing information on insurance issues; insurance."
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "ru",
+      "description": "восстановление двигателей полностью или частично изношенных; восстановление протектора на шинах; вулканизация покрышек [ремонт]; обслуживание техническое транспортных средств; ремонт и техническое обслуживание автотранспортных средств; смазка транспортных средств; тюнинг кузовов автомобилей; услуги по балансировке колес; услуги по ремонту неисправностей транспортных средств; установка на заказ внешних, внутренних и механических частей транспортных средств [тюнинг].",
+      "translation_language": "en",
+      "translation": "restoration of completely or partially worn-out engines; retreading of tires; vulcanization of tires [repair]; technical maintenance of vehicles; repair and technical maintenance of motor vehicles; lubrication of vehicles; tuning of car bodies; wheel balancing services; repair services for vehicle faults; custom installation of external, internal and mechanical parts of vehicles [tuning]."
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "ru",
+      "description": "обеспечение доступа к базам данных; услуги по передаче потока данных.",
+      "translation_language": "en",
+      "translation": "providing access to databases; services for the transmission of data flow."
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "ru",
+      "description": "консультации по вопросам программного обеспечения; модернизация программного обеспечения; написание компьютерных кодов; обеспечение программное как услуга [SaaS]; обслуживание компьютерного программного обеспечения; платформа как услуга [PaaS]; предоставление онлайн незагружаемого компьютерного программного обеспечения; преобразование данных и информационных программ, за исключением физического преобразования; разработка программного обеспечения; услуги компьютерного программирования для обработки данных.",
+      "translation_language": "en",
+      "translation": "Software consulting; Software upgrading; Computer coding; Providing software as a service [SaaS]; Computer software maintenance; Platform as a Service [PaaS]; Providing online, non-downloadable computer software; Transformation of data and information programs, excluding physical transformation; Software development; Computer programming services for data processing."
+    }
+  ],
+  "owner": "TIMOFEEV SEMEN MICHAJLOVITSJ",
+  "ownerNative": null,
+  "ownerCountry": "RU",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddressCountryCode": "RU",
+        "applicantAddressCountryName": "Russian Federation",
+        "applicantName": "TIMOFEEV SEMEN MICHAJLOVITSJ"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "presentation of goods in all media for the purpose of retail sale; sales promotion for third parties; advertising; import-export agency services; services for the sale of vehicles and spare parts therefor; services for the retail sale of goods; services for the wholesale sale of goods; services for the retail sale of goods through online trading platforms; services for the wholesale sale of goods through online trading platforms.",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "презентация товаров на всех медиасредствах с целью розничной продажи; продвижение продаж для третьих лиц; реклама; услуги агентства по импорту-экспорту; услуги продажи транспортных средств и запчастей для них; услуги розничной продажи товаров; услуги оптовой продажи товаров; услуги розничной продажи товаров посредством торговых площадок в сети Интернет; услуги оптовой продажи товаров посредством торговых площадок в сети Интернет."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "consultations on insurance issues; insurance mediation; providing information on insurance issues; insurance.",
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "консультации по вопросам страхования; посредничество при страховании; предоставление информации по вопросам страхования; страхование."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "restoration of completely or partially worn-out engines; retreading of tires; vulcanization of tires [repair]; technical maintenance of vehicles; repair and technical maintenance of motor vehicles; lubrication of vehicles; tuning of car bodies; wheel balancing services; repair services for vehicle faults; custom installation of external, internal and mechanical parts of vehicles [tuning].",
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "восстановление двигателей полностью или частично изношенных; восстановление протектора на шинах; вулканизация покрышек [ремонт]; обслуживание техническое транспортных средств; ремонт и техническое обслуживание автотранспортных средств; смазка транспортных средств; тюнинг кузовов автомобилей; услуги по балансировке колес; услуги по ремонту неисправностей транспортных средств; установка на заказ внешних, внутренних и механических частей транспортных средств [тюнинг]."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "providing access to databases; services for the transmission of data flow.",
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "обеспечение доступа к базам данных; услуги по передаче потока данных."
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Software consulting; Software upgrading; Computer coding; Providing software as a service [SaaS]; Computer software maintenance; Platform as a Service [PaaS]; Providing online, non-downloadable computer software; Transformation of data and information programs, excluding physical transformation; Software development; Computer programming services for data processing.",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "ru",
+          "intGoodsServicesDescription": "консультации по вопросам программного обеспечения; модернизация программного обеспечения; написание компьютерных кодов; обеспечение программное как услуга [SaaS]; обслуживание компьютерного программного обеспечения; платформа как услуга [PaaS]; предоставление онлайн незагружаемого компьютерного программного обеспечения; преобразование данных и информационных программ, за исключением физического преобразования; разработка программного обеспечения; услуги компьютерного программирования для обработки данных."
+        }
+      ]
+    },
+    "id": "00eca061-13ee-4d29-b0c2-7d183b04cf37",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "recordLastUpdated": "20261027",
+    "registrationOfficeCode": "RU",
+    "registrationOfficeName": "Russian Federation",
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260916",
+        "applicationNumber": "2026811215"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20261027020145",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "AVENCORE"
+    }
+  },
+  "_uri": "/mark/ru/00eca061-13ee-4d29-b0c2-7d183b04cf37",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:13.885Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -31,13 +31,13 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { warmEligible, repairTarget, correctionHint } from "../gateway.mjs";
 
-// The token exactly as validateNetShape throws it, and the wire shape judgeArtifacts() in gateway.mjs mints it into:
+// The token exactly as validateNetShape throws it, and the wire shape judgeArtifacts() in judge.mjs mints it into:
 // `invalid_file:<relative path>:<validator reason>`. Anything reaching the ladder any other way — a
 // bespoke StageFailure, a top-level `fail` that is not a validator reason — matches none of the three.
 const TOKEN = "findings_net_chained";
 const WIRE = `invalid_file:findings.json:${TOKEN}:3`;
 
-const GATEWAY_SRC = readFileSync(new URL("../gateway.mjs", import.meta.url), "utf8");
+const GATEWAY_SRC = driverSource("gateway.mjs");   // with the ladder modules carved from it
 const PIPELINE_SRC = driverSource("pipeline.mjs");
 
 /** Pull a literal regex out of shipped source by an anchoring prefix, so the test applies the real one. */

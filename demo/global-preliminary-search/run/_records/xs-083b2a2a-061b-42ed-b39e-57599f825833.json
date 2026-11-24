@@ -1,0 +1,126 @@
+{
+  "uri": "/mark/xs/083b2a2a-061b-42ed-b39e-57599f825833",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "083b2a2a-061b-42ed-b39e-57599f825833",
+  "applicationNumber": null,
+  "registrationNumber": null,
+  "applicationDate": null,
+  "registrationDate": "1995-09-13",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "EXPIRED",
+  "markText": "HEAVENRICH & COMPANY, INC.",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Merger and acquistions",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "HEAVENRICH & COMPANY, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "68 E WACKER PLACE, SUITE 800, CHICAGO, IL",
+        "applicantAddressCity": "CHICAGO",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressStateName": "ILLINOIS",
+        "applicantAddressStreet": "68 E WACKER PLACE, SUITE 800",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "HEAVENRICH & COMPANY, INC.",
+        "applicantPhoneNumber": "312-853-4750"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Merger and acquistions"
+        }
+      ]
+    },
+    "id": "083b2a2a-061b-42ed-b39e-57599f825833",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "68 E WACKER PLACE, SUITE 800, CHICAGO, IL",
+        "city": "CHICAGO",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "HEAVENRICH & COMPANY, INC.",
+        "phoneNumber": "312-853-4750",
+        "stateName": "ILLINOIS",
+        "street": "68 E WACKER PLACE, SUITE 800"
+      }
+    ],
+    "recordLastUpdated": "20240305",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "status": {
+      "active": false,
+      "cmNormalisedStatus": "EXPIRED",
+      "firstUsedAnywhereDate": "199405",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "NONRENEWED"
+        ]
+      },
+      "markCurrentStatus": "NONRENEWED",
+      "registration": {
+        "registrationDate": "19950913"
+      }
+    },
+    "usStateOfficeCode": "WI",
+    "usStateOfficeName": "WISCONSIN",
+    "version": "20240305084558",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "HEAVENRICH & COMPANY, INC."
+    }
+  },
+  "_uri": "/mark/xs/083b2a2a-061b-42ed-b39e-57599f825833",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.189Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

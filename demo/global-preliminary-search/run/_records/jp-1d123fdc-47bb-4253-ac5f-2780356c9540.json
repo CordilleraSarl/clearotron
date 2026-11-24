@@ -1,0 +1,172 @@
+{
+  "uri": "/mark/jp/1d123fdc-47bb-4253-ac5f-2780356c9540",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "1d123fdc-47bb-4253-ac5f-2780356c9540",
+  "applicationNumber": "H08-120377",
+  "registrationNumber": null,
+  "applicationDate": "1996-10-23",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "ＶＥＮＲＩＳ",
+  "markTransliteration": "BENRISU",
+  "markTranslation": "VENRIS",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "宿泊施設の提供，飲食物の提供，写真の撮影，オフセット印刷，グラビア印刷，スクリーン印刷，石版印刷，凸版印刷，気象情報の提供，求人情報の提供，結婚又は交際を希望する者への異性の紹介，通訳，翻訳，施設の警備，身辺の警備，衣服の貸与，植木の貸与，自動販売機の貸与",
+      "translation_language": "en",
+      "translation": "Providing accommodation facilities, providing food and drinks, photographing, offset printing, gravure printing, screen printing, lithographic printing, letterpress printing, providing weather information, offering job information, offering marriage or relationship Introduction, interpretation, translation, security of facilities, security of people around, lending of clothes, lending of planting trees, lending of vending machines"
+    }
+  ],
+  "owner": "K.K. VENRIS",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "YAMAMOTO YOSHIKI",
+  "priorities": [
+    {
+      "priorityDate": "19961023"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "CHIYODA TOKYO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "K.K. VENRIS",
+        "applicantNativeAddress": "東京都千代田区麹町３丁目７番６号",
+        "applicantNativeName": "株式会社ヴェンリス"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Providing accommodation facilities, providing food and drinks, photographing, offset printing, gravure printing, screen printing, lithographic printing, letterpress printing, providing weather information, offering job information, offering marriage or relationship Introduction, interpretation, translation, security of facilities, security of people around, lending of clothes, lending of planting trees, lending of vending machines",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "宿泊施設の提供，飲食物の提供，写真の撮影，オフセット印刷，グラビア印刷，スクリーン印刷，石版印刷，凸版印刷，気象情報の提供，求人情報の提供，結婚又は交際を希望する者への異性の紹介，通訳，翻訳，施設の警備，身辺の警備，衣服の貸与，植木の貸与，自動販売機の貸与"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "42A01",
+          "natGoodsServicesDescription": "Providing accommodation, lodgings"
+        },
+        {
+          "natClassNumber": "42B01",
+          "natGoodsServicesDescription": "Restaurant services"
+        },
+        {
+          "natClassNumber": "42E01",
+          "natGoodsServicesDescription": "Photography"
+        },
+        {
+          "natClassNumber": "42F01",
+          "natGoodsServicesDescription": "Offset, photogravure, screen, lithographic, typographic printing"
+        },
+        {
+          "natClassNumber": "42G01",
+          "natGoodsServicesDescription": "Providing meteorological information"
+        },
+        {
+          "natClassNumber": "42G02",
+          "natGoodsServicesDescription": "Providing employment information"
+        },
+        {
+          "natClassNumber": "42H01",
+          "natGoodsServicesDescription": "Marriage partner introduction, Dating services"
+        },
+        {
+          "natClassNumber": "42S01",
+          "natGoodsServicesDescription": "Interpretation, translation services"
+        },
+        {
+          "natClassNumber": "42T01",
+          "natGoodsServicesDescription": "Facility or personal guard services"
+        },
+        {
+          "natClassNumber": "42X02",
+          "natGoodsServicesDescription": "Clothing rental"
+        },
+        {
+          "natClassNumber": "42X03",
+          "natGoodsServicesDescription": "Renting or leasing of decorative plants"
+        },
+        {
+          "natClassNumber": "42X07",
+          "natGoodsServicesDescription": "Renting or leasing of vending machines"
+        }
+      ]
+    },
+    "id": "1d123fdc-47bb-4253-ac5f-2780356c9540",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "19961023"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "YAMAMOTO YOSHIKI",
+        "representativeNativeName": "山本　喜幾"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "19961023",
+        "applicationNumber": "H08-120377"
+      },
+      "cmNormalisedStatus": "CANCELLED",
+      "markCurrentStatus": "LAPSED [EXPIRED]"
+    },
+    "version": "20230427111842",
+    "wordMarkSpecification": {
+      "markTranslation": "VENRIS",
+      "markTransliteration": "BENRISU",
+      "markVerbalElementText": "ＶＥＮＲＩＳ"
+    }
+  },
+  "_uri": "/mark/jp/1d123fdc-47bb-4253-ac5f-2780356c9540",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.185Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

@@ -116,11 +116,12 @@ const GUARD = "321-send-packets-are-classified";
 
 // file:line → why it is or is not routed. The COMPLETION notices must route; the rest must not.
 const RULED = {
-  "driver/run-delivered.mjs": "the clearance completion packet — routed",
+  "driver/delivery-handoff.mjs": "deliveryPacket, the completion packet both products send — routed",
+  "driver/run-delivered.mjs": "the clearance completion packet, built by deliveryPacket — routed",
   "driver/run-outcome.mjs": "buildFailurePacket, the failure notice both products send — routed to whoever "
     + "asked, as the completion notice is; the operator keeps the page as the copy beside it",
-  "driver/pipeline-knockout.mjs": "the knockout completion packet — routed; its failure notice is "
-    + "buildFailurePacket's",
+  "driver/pipeline-knockout.mjs": "the knockout completion packet, built by deliveryPacket — routed; its failure "
+    + "notice is buildFailurePacket's",
   "driver/publish/knockout.mjs": "prose about the courier contract, not a packet",
   "mcp-server/server.mjs": "a tool description naming the field, not a packet",
 };
@@ -156,7 +157,10 @@ test("every file that builds a send packet has been ruled on", (ctx) => {
 });
 
 test("both completion packets route through whatsappRouting, and neither picks the agent directly", () => {
-  for (const f of ["driver/run-delivered.mjs", "driver/pipeline-knockout.mjs"]) {
+  // Both products build their completion packet with deliveryPacket (delivery-handoff.mjs), which routes it.
+  for (const f of ["driver/run-delivered.mjs", "driver/pipeline-knockout.mjs"])
+    assert.match(readFileSync(join(ROOT, f), "utf8"), /deliveryPacket\(\{/, `${f} no longer builds its completion packet with deliveryPacket`);
+  for (const f of ["driver/delivery-handoff.mjs"]) {
     const src = readFileSync(join(ROOT, f), "utf8");
     assert.match(src, /\.\.\.whatsappRouting\(job, agent\)/,
       `${f} no longer spreads whatsappRouting into its completion packet — the notice goes to whoever `
@@ -164,7 +168,7 @@ test("both completion packets route through whatsappRouting, and neither picks t
     // The failure packet in each file may still read AGENT_WHATSAPP; a completion packet may not. The
     // discriminator is the send-packet object itself, so this reads the line rather than the file.
     const lines = src.split("\n");
-    const emailAt = lines.findIndex((l) => /^\s*emailBodyHtml:/.test(l) && !/clientRun/.test(l));
+    const emailAt = lines.findIndex((l) => /^\s*(?:subject, )?emailBodyHtml[:,]/.test(l) && !/clientRun/.test(l));
     assert.ok(emailAt > 0, `${f}: no completion packet found to check`);
     const window = lines.slice(emailAt, emailAt + 14).filter((l) => !/^\s*\/\//.test(l)).join("\n");
     assert.ok(!/AGENT_WHATSAPP\[/.test(window),

@@ -1,14 +1,17 @@
 {
-  "ts": "2026-09-18T16:05:15.962Z",
+  "ts": "2026-11-20T21:50:39.784Z",
   "verdict": "CONDITIONAL",
   "reasons": [
-    "Have the Japanese register checked for the exact vεηqοrι, vеnqоri, ベンコリ, ヴェンクォリ and VENCORE forms and for Vencora UK Limited rights before relying unconditionally on this clearance."
+    "the lawyer judged a material slice not fully cleared: The most relevant local consumer-app and training names remain unresolved, so the available evidence cannot support an unconditional adoption assessment.",
+    "follow-ups left open this run: japanese pronunciation alternatives, professional environmental monitoring and water testing services, worldwide registers and madrid monitor"
   ],
   "clauses": [
-    "The two exact mixed-script forms, two Japanese spellings, exact VENCORE search and Vencora UK Limited owner search remain unresolved."
+    null,
+    null
   ],
   "kinds": {
-    "legalActions": true
+    "coverage": true,
+    "frame": true
   },
   "tier": "Manageable",
   "badge": "l2",
@@ -19,6 +22,6 @@
     "rankFromTop": 4,
     "scale": 4
   },
-  "statement": "Manageable — conditional on: The two exact mixed-script forms, two Japanese spellings, exact VENCORE search and Vencora UK Limited owner search remain unresolved.",
+  "statement": "Manageable",
   "stance": "conditional"
 }

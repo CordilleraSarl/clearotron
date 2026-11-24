@@ -1,0 +1,279 @@
+{
+  "uri": "/mark/us/0785e1d9-024f-4be8-b43f-404769513fa1",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "0785e1d9-024f-4be8-b43f-404769513fa1",
+  "applicationNumber": "97622462",
+  "registrationNumber": "7246507",
+  "applicationDate": "2022-10-06",
+  "registrationDate": "2023-12-19",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2023-10-03"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "OVENRIDER",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": null,
+      "description": "INT. CL. 9 Electronic devices comprised of electronic data loggers and sensors for sensing, storing and transmitting data on temperature, heat transfer, zone, speed and timing from reflow solder oven systems and downloadable computer software for analyzing data generated from said systems",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "ELECTRONIC CONTROLS DESIGN, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Robert F. Scotti",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "4287-B SE INTERNATIONAL WAY, MILWAUKIE, OR, 97222",
+        "applicantAddressCity": "MILWAUKIE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "97222",
+        "applicantAddressStateName": "OREGON",
+        "applicantAddressStreet": "4287-B SE INTERNATIONAL WAY",
+        "applicantJurisdictionOfIncorporation": "OREGON",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "ELECTRONIC CONTROLS DESIGN, INC."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsServicesDescription": "INT. CL. 9 Electronic devices comprised of electronic data loggers and sensors for sensing, storing and transmitting data on temperature, heat transfer, zone, speed and timing from reflow solder oven systems and downloadable computer software for analyzing data generated from said systems"
+        }
+      ]
+    },
+    "id": "0785e1d9-024f-4be8-b43f-404769513fa1",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20231219",
+        "descriptionText": "NOTICE OF REGISTRATION CONFIRMATION EMAILED"
+      },
+      {
+        "date": "20231219",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20231003",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20231003",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20230913",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20230828",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20230826",
+        "descriptionText": "TEAS/EMAIL CORRESPONDENCE ENTERED"
+      },
+      {
+        "date": "20230825",
+        "descriptionText": "TEAS RESPONSE TO OFFICE ACTION RECEIVED"
+      },
+      {
+        "date": "20230825",
+        "descriptionText": "CORRESPONDENCE RECEIVED IN LAW OFFICE"
+      },
+      {
+        "date": "20230720",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20230720",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20230720",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20230718",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20221023",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20221010",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "4287-B SE INTERNATIONAL WAY, MILWAUKIE, OR, 97222",
+        "city": "MILWAUKIE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "CORPORATION",
+        "name": "ELECTRONIC CONTROLS DESIGN, INC.",
+        "postalCode": "97222",
+        "stateName": "OREGON",
+        "street": "4287-B SE INTERNATIONAL WAY"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "4287-B SE INTERNATIONAL WAY, MILWAUKIE, OR, 97222",
+        "city": "MILWAUKIE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "CORPORATION",
+        "name": "ELECTRONIC CONTROLS DESIGN, INC.",
+        "postalCode": "97222",
+        "stateName": "OREGON",
+        "street": "4287-B SE INTERNATIONAL WAY"
+      },
+      {
+        "address": "4287-B SE INTERNATIONAL WAY, MILWAUKIE, OR, 97222",
+        "city": "MILWAUKIE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "CORPORATION",
+        "name": "ELECTRONIC CONTROLS DESIGN, INC.",
+        "postalCode": "97222",
+        "stateName": "OREGON",
+        "street": "4287-B SE INTERNATIONAL WAY"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "4287-B SE INTERNATIONAL WAY, MILWAUKIE, OR, 97222",
+        "city": "MILWAUKIE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "OREGON",
+        "legalEntity": "CORPORATION",
+        "name": "ELECTRONIC CONTROLS DESIGN, INC.",
+        "postalCode": "97222",
+        "stateName": "OREGON",
+        "street": "4287-B SE INTERNATIONAL WAY"
+      }
+    ],
+    "recordLastUpdated": "20260113",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "121 SW SALMON STREET, SUITE 1600, PORTLAND, OR 97204, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "121 SW SALMON STREET, SUITE 1600",
+          "PORTLAND, OR 97204",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "Robert F. Scotti KLARQUIST SPARKMAN, LLP, ONE WORLD TRADE CENTER"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "121 SW SALMON STREET, SUITE 1600, PORTLAND, OR 97204, UNITED STATES",
+        "representativeAddressLines": [
+          "121 SW SALMON STREET, SUITE 1600",
+          "PORTLAND, OR 97204",
+          "UNITED STATES"
+        ],
+        "representativeName": "Robert F. Scotti"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20221006",
+        "applicationNumber": "97622462"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "09",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "19980303"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "09",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "19980303"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "REGISTERED",
+        "markOfficialStatusCode": "700",
+        "markOfficialStatusDate": "20231219",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "publicationDate": [
+        "20231003"
+      ],
+      "registration": {
+        "registrationDate": "20231219",
+        "registrationNumber": "7246507"
+      }
+    },
+    "version": "20260113174010",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "OVEN RIDER",
+      "markVerbalElementText": "OVENRIDER"
+    }
+  },
+  "_uri": "/mark/us/0785e1d9-024f-4be8-b43f-404769513fa1",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.199Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

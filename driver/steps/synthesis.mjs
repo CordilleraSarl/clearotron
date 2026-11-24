@@ -3,20 +3,22 @@
 //
 // steps/synthesis.mjs — the writer, the case-law grounding and the first review.
 //
-// One phase of a run, moved out of pipelineInner unchanged. `helpers` are functions still held in pipeline.mjs, handed in
-// because this module must not import that one back; each moves here when the other phases that share it have moved.
+// One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
+// that module lives in the modules beside it, which it imports.
 import { caseLawSourceRows } from "../case-law-sources.mjs";
 import { caseLawInventory } from "../config-inventory.mjs";
+import { composeDispatchExtra, decideCaseLaw, prepareDeclinationSpec, readCoverageJudgment, refute, settleDerivedBases } from "../dispatch-extras.mjs";
 import { parseFindingsJsonLenient } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
 import { readPartNotCompleted } from "../parts-not-completed.mjs";
+import { recordSynthesisSeam } from "../record-carry-trace.mjs";
 import { readJson } from "../run-record.mjs";
 import { assembleRunRecords, extractEnforcerSignals } from "../registry-fidelity.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
+import { asPartNotCompleted, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, quarantineSynth, stage, stageCharter } from "../stage-dispatch.mjs";
 import { readFileSync, renameSync, writeFileSync } from "node:fs";
 
-export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }, helpers) {
-  const { asPartNotCompleted, composeDispatchExtra, decideCaseLaw, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, prepareDeclinationSpec, quarantineSynth, readCoverageJudgment, recordSynthesisSeam, refute, settleDerivedBases, stage, stageCharter } = helpers;
+export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }) {
   // Steps 3/3.5/4 synthesis → optional 4.5 case-law grounding ∥ Step 4.7 refutation.
   // case-law and refutation are independent siblings of synthesis (case-law reads narrative.md;
   // refutation reads the source files, NOT case-law), so they run concurrently — saves ~one stage's

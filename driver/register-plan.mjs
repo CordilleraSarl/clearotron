@@ -1034,6 +1034,136 @@ export function withoutHouseElementTerms(entry, house) {
 }
 
 export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [], houseElement = null, addedClasses = [], frameMarkets = null, marketList = null }) {
+  form = formWithoutHouseElement(form, houseElement);
+  const { classes, addedClassRows } = planClassScope(job, addedClasses);
+  const caps = capabilities ?? null;
+  const { scopeIsWorldwide, deferredJurisdictions, regions, allJurisdictionsDeferred } = planRegionScope(job, caps, unavailableOffices);
+  const romanStamp = romanisationStampFor(manifest);
+  const { entries, push } = planEntryFunnel({ caps, classes, regions, allJurisdictionsDeferred, romanStamp });
+  const { markPredicate, variantPredicate, literalStamp } = entryPredicateRules();
+  pushSaturationProbes(manifest, caps, push);
+
+  // primary-sweep — the dangerous NAMED band, all enumerates:
+  //   exact mark, each non-transliteration variant (core/phonetic/visual/composite/other),
+  //   the dominant-element contains slice (the crowd-gate PARENT), the machine FORM band
+  //   (exact OR-stack + when-guarded wildcard fringe), and the cross-class merch check.
+  pushIdenticalAndVariantSweeps({ manifest, push, markPredicate, variantPredicate, literalStamp });
+  const { goodsAnswered, goodsRewritten, goodsOmitted, goodsOmittedReason } = pushGoodsNarrowedSweeps(manifest, caps, push);
+  pushFormBandSweeps(manifest, form, caps, push);
+  pushCrossClassQuestions({ manifest, addedClassRows, push, markPredicate, literalStamp });
+  const { scriptMarkets, scriptPlan, scriptsSetAside } = pushTransliterationNumeric({ manifest, job, caps, scopeIsWorldwide, regions, frameMarkets, marketList, push, markPredicate });
+
+  // ── THE INCUMBENT'S-CLASSES ANCHOR IS GONE (ruled 2026-09-25) ──────────────────────────────────
+  //
+  // What stood here searched the client's main word in the incumbent's own classes, on every matter
+  // with an incumbent alert. It asked nothing about any company, and it was not held to the client's
+  // classes: on a measured matter it asked a class wider than the client's and counted a crowd it never
+  // fetched. Held to the client's classes it would repeat the main sweep, so it goes rather than
+  // narrows: one fewer counted search per run. `incumbent_classes` is still recorded as the variants
+  // stage's market read; it compiles nothing. The incumbent step keeps the house-mark confirmation, and
+  // the owner searches its unit proposes from the records the sweeps return.
+
+  // ── THE GUESSED OWNER LANE IS GONE (2026-09-20) ────────────────────────────────────────────────
+  //
+  // What stood here compiled, for every name on the variants model's `watchlist_owners` list, one
+  // owner × formative slice per formative plus one bare-owner count. On a measured run that was 54 of
+  // the plan's 129 queries — 42% of everything the plan asked — and it returned 54 of the 2,146
+  // records the run read, 2.5%.
+  //
+  // THE MEASUREMENT THAT ENDED IT, and it is not "the axis was quiet". Every conflict the run placed
+  // rested on a record the close-form sweep found: 1,161 record references across every tier of the
+  // report, all of them from the primary sweep. The owner records were not ineligible — all 2,146
+  // records sat in the selection index the placement stage reads — they were simply never chosen.
+  // And none of the eighteen watched owners appeared in a single live in-class close-form record;
+  // four appeared anywhere in the run at all. The list was a guess about who mattered, made before
+  // any record existed to check it against, and the records did not agree with it.
+  //
+  // WHAT WENT WITH IT, stated because it is a real loss and not a free win: 26 of those 54 queries
+  // crowded out and were disclosed as coverage gaps, one of them explicitly as "never a clean
+  // negative about this owner". Those disclosures go too. The judgment behind the change is that a
+  // disclosure about a guessed owner is worth less than the queries it costs, and that owners are
+  // better found by grouping the records the close forms actually return.
+  //
+  // The axis is NOT gone, though the plan may now dictate nothing on it: an incumbent alert still
+  // spawns its unit (decideAxes), and the coverage form carries an axis row for every unit that ran,
+  // so no clean is ever claimed over an axis that vanished.
+
+  awaitReadingTurnForWidenings(manifest, entries);
+
+  // stable ordering: axis (REGISTER_AXES order) then insertion order within the axis
+  const axisRank = new Map(REGISTER_AXES.map((a, i) => [a, i]));
+  const ordered = entries.map((e, i) => [e, i]).sort((a, b) =>
+    (axisRank.get(a[0].axis) ?? 99) - (axisRank.get(b[0].axis) ?? 99) || a[1] - b[1]).map(([e]) => e);
+
+  return {
+    schema_version: PLAN_SCHEMA_VERSION,
+    plan_version: 1,
+    derived_from: {
+      job_key: String(job?.jobKey ?? ""),
+      variants_fingerprint: variantsFingerprint(manifest),
+      skill_version: String(skillVersion ?? ""),
+    },
+    nice_classes: classes,
+    // THE TERRITORIES THE MATTER ORDERED, before translation into the provider's office vocabulary
+    //. `regions` below is the post-translate result and cannot stand in for this: on a
+    // regions-required provider a France order and an EU order both arrive as office codes, and the
+    // binding-layer disclosure has to know which territory was ORDERED to know which registers bind it.
+    //
+    // Recorded rather than re-derived, because the alternative is inferring the order back out of the
+    // office codes — which is exactly the one-to-one assumption exists to remove.
+    ordered_jurisdictions: (job?.jurisdictions ?? []).map((j) => String(j).trim()).filter(Boolean),
+    regions,
+    // WHY `regions` looks the way it does. On a regions-required provider a worldwide matter compiles
+    // to the provider's full office list, which is indistinguishable — by shape alone — from a matter
+    // that hand-picked 186 territories. Publish needs to tell them apart: the first must still READ as
+    // "worldwide" (one chip + the sweep disclosures), the second as a named list. Recorded as data so
+    // no downstream reader has to infer scope from prose. Absent unless the matter was unrestricted,
+    // so corsearch plans stay byte-identical.
+    ...(scopeIsWorldwide ? { scope_basis: "worldwide" } : {}),
+    // Only present when the active provider genuinely does not cover a requested jurisdiction — a
+    // DEFERRED coverage row for the ledger, never a dropped filter. Absent on a fully-covered plan, so
+    // corsearch plans stay byte-identical to the pre-phase-3 compiler.
+    ...(deferredJurisdictions.length ? { deferred_coverage: deferredJurisdictions } : {}),
+    // THE CLASSES THE FRAME ADDED, BESIDE THE INSTRUCTED ONES, EACH WITH ITS REASON (decision 18). A
+    // widening nobody can read back is one nobody can check the bound on: this is where a reviewer sees
+    // which classes the order did not name, why each was judged to be reached by the client's own
+    // goods, and — by their absence from `classes` — that no instructed class was traded for one.
+    // Absent where the frame added none, which is the ordinary answer, so those plans stay identical.
+    ...(addedClassRows.length ? { added_classes: addedClassRows } : {}),
+    // A GOODS TERM THE COMPILER DROPPED IS A DISCLOSURE, NOT A DETAIL. The words in this list are
+    // OR-ed, so removing one makes the clause NARROWER: the search returns fewer records and a
+    // conflict that term would have surfaced is simply never found. The model was asked for these
+    // words and one of them did not reach the wire — if nothing says so, the run is quietly less
+    // thorough than the list it was given, and it is our own compiler doing the dropping.
+    //
+    // It rides the plan rather than only the entry so a reader looking for what this search did NOT
+    // ask does not have to walk the entries to find out. Absent when nothing was dropped, so every
+    // plan that sends its whole list stays byte-identical.
+    ...(goodsOmitted.length ? { goods_text_not_asked: goodsOmitted, goods_text_not_asked_reason: goodsOmittedReason } : {}),
+    // THE SCRIPT FORMS NOT ASKED, EACH WITH ITS REASON, AND THE MARKETS A SCRIPT QUESTION SERVES, whenever they are known,
+    // with or without a script form in the manifest. The propose tool reads the markets and the questions already asked,
+    // to hold a worker's own script proposal to the same rule.
+    ...(scriptsSetAside.length ? { scripts_set_aside: scriptsSetAside } : {}),
+    ...(scriptMarkets ? { script_markets: scriptMarkets, script_questions_asked: (scriptPlan?.asked ?? []).flatMap((q) => q.keys) } : {}),
+    // A term the compiler ASKED IN A DIFFERENT SHAPE than it was written. The register reads AND, OR,
+    // NOT, ADJ and NEAR as operators inside the value and has no escape syntax, so the word comes out
+    // and the rest of the item is still asked — "near field communication" goes as "field
+    // communication". That is a narrower ask than the model wrote, and it must be visible: a reader
+    // comparing the word list to what was searched would otherwise find a term that appears to have
+    // been asked and was not, exactly.
+    ...(goodsRewritten.length ? { goods_text_rewritten: goodsRewritten } : {}),
+    // THE STAGE WAS ASKED FOR GOODS WORDS AND DID NOT ANSWER. Recorded on the plan because it is a
+    // fact about the run, not about the matter: a matter with no goods words to give answers with an
+    // empty list, and that is a different thing from a stage that never answered at all. Absent when
+    // the stage answered, so every plan whose stage did its job stays byte-identical.
+    ...(goodsAnswered ? {} : { goods_words_unanswered: true }),
+    ...(caps ? { provider: caps.id } : {}),
+    entries: ordered,
+  };
+}
+
+/** The form document every band lookup in a compile reads, with the excluded house element's band taken out. */
+function formWithoutHouseElement(form, houseElement) {
   // ── AN EXCLUDED ELEMENT'S FORM BAND MUST BE UNREACHABLE, NOT MERELY UNASKED-FOR ─────────────────
   //
   // THE DEFECT THIS CLOSES, found by following the seam rather than by a failing arm. `bandFor` falls
@@ -1051,6 +1181,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     const kept = form.elements.filter((e) => String(e?.element ?? "").trim().toLowerCase() !== lcHouse);
     form = { ...form, elements: kept };
   }
+  return form;
+}
+
+/** The instructed classes, which every plan must have, and the classes the frame added that pass the bound. */
+function planClassScope(job, addedClasses) {
   const classes = (job?.classes ?? []).map(String).filter(Boolean);
   if (!classes.length) throw new Error("register_plan_classes_missing: a plan is always class-scoped — compile with the matter's in-scope Nice classes");
   // ── DECISION 18's BOUND, APPLIED WHERE THE CLASSES COME IN ──────────────────────────────────────
@@ -1080,7 +1215,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     if (addedClassRows.some((r) => r.class === cls)) continue;
     addedClassRows.push({ class: cls, reason });
   }
-  const caps = capabilities ?? null;
+  return { classes, addedClassRows };
+}
+
+/** The office filter every entry carries, the jurisdictions the plan defers, and the reason stamped on every entry when nothing is left to search. */
+function planRegionScope(job, caps, unavailableOffices) {
   const maxOrWidth = planMaxOrWidth(caps);
   const resolved = resolveRegions(job?.jurisdictions, caps);
   const scopeIsWorldwide = resolved.worldwide;
@@ -1153,7 +1292,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
         unreachable.get(String(deferredJurisdictions[0].jurisdiction)))
       : uncoveredJurisdictionReason(deferredJurisdictions.map((d) => d.jurisdiction), caps?.id ?? "unknown"))
     : null;
+  return { scopeIsWorldwide, deferredJurisdictions, regions, allJurisdictionsDeferred };
+}
 
+/** The romanised spellings an entry for a non-Latin term carries, looked up by the term's value. */
+function romanisationStampFor(manifest) {
   // ── THE ENTRY CARRIES BOTH FORMS (2026-07-30) ────────────────────────────────────────────────────
   // A non-Latin term compiles to an entry that states the question in the native characters AND in the
   // manifest's romanisation of them, because the two register providers we ship index non-Latin marks
@@ -1223,7 +1366,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     const spellings = [...new Set((romanByValue.get(formKey(e.term)) ?? []).flatMap(romanizationSpellings))];
     return spellings.length ? { romanizedTerms: spellings } : {};
   };
+  return romanStamp;
+}
 
+/** The plan's entry list, and the one function every entry the compiler emits goes through to reach it. */
+function planEntryFunnel({ caps, classes, regions, allJurisdictionsDeferred, romanStamp }) {
   const entries = [];
   const seen = new Set();
   const push = (e) => {
@@ -1266,7 +1413,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       ...(gap ? { unsupported: true, unsupported_reason: gap } : {}) });
     return qid;
   };
+  return { entries, push };
+}
 
+/** How a manifest value maps to a search predicate, and when it is stamped as the mark verbatim. */
+function entryPredicateRules() {
   // ── A1, fixed at the EMITTER (the freeze-lint below must never refuse the compiler's own output) ──
   // The 2026-07-28 plan carried {predicate:"exact", term:"WAVO*"} ×4: wildcard-shaped VARIANT values
   // (`WAVO*`, `*WAVO`, `SLUSH*`, `*SLUSH`) paired with the hardcoded exact — dispatched literally,
@@ -1326,7 +1477,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // and stamping it would carry the shield all the way to the executor, which runs the same walk.
   // The row instead falls to push()'s markupGap and becomes a disclosed deferred row.
   const literalStamp = (t) => (!termMarkupIssue(t) && termShapeIssue(t) ? { term_literal: true } : {});
+  return { markPredicate, variantPredicate, literalStamp };
+}
 
+/** The count-only crowd probes for the manifest's common elements. */
+function pushSaturationProbes(manifest, caps, push) {
   // saturation-probe — count-only crowd descriptors for every common/saturated element. These
   // enumerate NOTHING (limit:1 probes); they describe the crowd for judgment. Never the anchor.
   // A term shorter than the register's contains floor is probed on the exact form instead, and the
@@ -1338,11 +1493,10 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
         provenance: "model", ...(sub ? { contains_substituted: sub } : {}) });
     }
   }
+}
 
-  // primary-sweep — the dangerous NAMED band, all enumerates:
-  //   exact mark, each non-transliteration variant (core/phonetic/visual/composite/other),
-  //   the dominant-element contains slice (the crowd-gate PARENT), the machine FORM band
-  //   (exact OR-stack + when-guarded wildcard fringe), and the cross-class merch check.
+/** The identical mark, each variant outside the transliteration axis, and the dominant element's contains sweep. */
+function pushIdenticalAndVariantSweeps({ manifest, push, markPredicate, variantPredicate, literalStamp }) {
   // ── THE IDENTICAL QUESTION, AND WHAT WAITS BEHIND IT ────────────────────────────────────────────
   //
   // This is the question the whole crowded-field design turns on: is the client's own mark already
@@ -1390,7 +1544,10 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // closed when present, like `provenance`: a frozen pre-2050 plan carries none and its reader falls
   // back to the old rule, so a resumed run does not change its answer because a field arrived.
   push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element, expected_kind: "enumerate", provenance: "mark", crowd_gate_parent: true });
+}
 
+/** The dominant element's sweep narrowed by the goods words, and what the plan records about the words it did not send. */
+function pushGoodsNarrowedSweeps(manifest, caps, push) {
   // ── THE SAME SWEEP, NARROWED TO WHAT THE FILINGS COVER ──────────────────────────────────────────
   //
   // The parent above is the whole reason this entry exists. On a measured run it asked for the mark's
@@ -1540,6 +1697,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       });
     }
   }
+  return { goodsAnswered, goodsRewritten, goodsOmitted, goodsOmittedReason };
+}
+
+/** The machine form bands' exact spellings and the dominant element's wildcard fringe. */
+function pushFormBandSweeps(manifest, form, caps, push) {
   // — EVERY seeded band, not just the dominant element's (see bandsFor). The wildcard fringe stays
   // on the dominant band alone. The oracle does not ask for more — coverageGaps' family arm counts ANY
   // dispatched wildcard as the family being reached, so the dominant's fringe answers it for all seeds.
@@ -1582,6 +1744,10 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // never a decision point. The turn releases or withholds it with its reason (the wait loop below).
     push({ axis: "primary-sweep", predicate: "wildcard", term: w, expected_kind: "enumerate", provenance: "floor" });
   }
+}
+
+/** The identical mark asked outside the instructed classes: the merchandise probe and one question per added class. */
+function pushCrossClassQuestions({ manifest, addedClassRows, push, markPredicate, literalStamp }) {
   push({ axis: "primary-sweep", predicate: markPredicate(manifest.mark), term: manifest.mark, expected_kind: "enumerate",
     nice_classes: ["25"], qidSuffix: "+merch", provenance: "mark", ...literalStamp(manifest.mark) });
 
@@ -1613,7 +1779,10 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       expected_kind: "enumerate", nice_classes: [row.class], qidSuffix: `+class${row.class}`,
       provenance: "mark", added_class_reason: row.reason, ...literalStamp(manifest.mark) });
   }
+}
 
+/** The transliteration and numeric variants, each script question sent only to the markets that read its script. */
+function pushTransliterationNumeric({ manifest, job, caps, scopeIsWorldwide, regions, frameMarkets, marketList, push, markPredicate }) {
   // ✕ THIS AXIS IS NOT WIDENED BY, AND THAT IS THE KNOWN REMAINDER. The doctrine's
   // strip rule covers the transliteration branch, so a transliteration variant's Value is a root too —
   // but it compiles HERE, where `exact enumerates` is the axis's stated design and the provider indexes
@@ -1658,42 +1827,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     const scoped = markets.length ? resolveRegions(markets, caps).regions.filter((r) => !regions.length || regions.includes(r)) : [];
     push(scoped.length ? { ...entry, regions: scoped } : entry);
   }
+  return { scriptMarkets, scriptPlan, scriptsSetAside };
+}
 
-  // ── THE INCUMBENT'S-CLASSES ANCHOR IS GONE (ruled 2026-09-25) ──────────────────────────────────
-  //
-  // What stood here searched the client's main word in the incumbent's own classes, on every matter
-  // with an incumbent alert. It asked nothing about any company, and it was not held to the client's
-  // classes: on a measured matter it asked a class wider than the client's and counted a crowd it never
-  // fetched. Held to the client's classes it would repeat the main sweep, so it goes rather than
-  // narrows: one fewer counted search per run. `incumbent_classes` is still recorded as the variants
-  // stage's market read; it compiles nothing. The incumbent step keeps the house-mark confirmation, and
-  // the owner searches its unit proposes from the records the sweeps return.
-
-  // ── THE GUESSED OWNER LANE IS GONE (2026-09-20) ────────────────────────────────────────────────
-  //
-  // What stood here compiled, for every name on the variants model's `watchlist_owners` list, one
-  // owner × formative slice per formative plus one bare-owner count. On a measured run that was 54 of
-  // the plan's 129 queries — 42% of everything the plan asked — and it returned 54 of the 2,146
-  // records the run read, 2.5%.
-  //
-  // THE MEASUREMENT THAT ENDED IT, and it is not "the axis was quiet". Every conflict the run placed
-  // rested on a record the close-form sweep found: 1,161 record references across every tier of the
-  // report, all of them from the primary sweep. The owner records were not ineligible — all 2,146
-  // records sat in the selection index the placement stage reads — they were simply never chosen.
-  // And none of the eighteen watched owners appeared in a single live in-class close-form record;
-  // four appeared anywhere in the run at all. The list was a guess about who mattered, made before
-  // any record existed to check it against, and the records did not agree with it.
-  //
-  // WHAT WENT WITH IT, stated because it is a real loss and not a free win: 26 of those 54 queries
-  // crowded out and were disclosed as coverage gaps, one of them explicitly as "never a clean
-  // negative about this owner". Those disclosures go too. The judgment behind the change is that a
-  // disclosure about a guessed owner is worth less than the queries it costs, and that owners are
-  // better found by grouping the records the close forms actually return.
-  //
-  // The axis is NOT gone, though the plan may now dictate nothing on it: an incumbent alert still
-  // spawns its unit (decideAxes), and the coverage form carries an axis row for every unit that ran,
-  // so no clean is ever claimed over an axis that vanished.
-
+/** Sets every widening to wait for the reading turn; the exceptions listed inside run without waiting. */
+function awaitReadingTurnForWidenings(manifest, entries) {
   // ── DECISION 10, AS AMENDED 2026-09-21: THE WIDER FAMILIES WAIT FOR THE READING TURN ────────────
   //
   // THE WAIT IS NOT ON A RESULT, AND THAT IS THE WHOLE OF THE AMENDMENT. These families used to wait
@@ -1753,77 +1891,6 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     if (e.unsupported === true) continue;
     e.when = { ...AWAITS_READING_TURN };
   }
-
-  // stable ordering: axis (REGISTER_AXES order) then insertion order within the axis
-  const axisRank = new Map(REGISTER_AXES.map((a, i) => [a, i]));
-  const ordered = entries.map((e, i) => [e, i]).sort((a, b) =>
-    (axisRank.get(a[0].axis) ?? 99) - (axisRank.get(b[0].axis) ?? 99) || a[1] - b[1]).map(([e]) => e);
-
-  return {
-    schema_version: PLAN_SCHEMA_VERSION,
-    plan_version: 1,
-    derived_from: {
-      job_key: String(job?.jobKey ?? ""),
-      variants_fingerprint: variantsFingerprint(manifest),
-      skill_version: String(skillVersion ?? ""),
-    },
-    nice_classes: classes,
-    // THE TERRITORIES THE MATTER ORDERED, before translation into the provider's office vocabulary
-    //. `regions` below is the post-translate result and cannot stand in for this: on a
-    // regions-required provider a France order and an EU order both arrive as office codes, and the
-    // binding-layer disclosure has to know which territory was ORDERED to know which registers bind it.
-    //
-    // Recorded rather than re-derived, because the alternative is inferring the order back out of the
-    // office codes — which is exactly the one-to-one assumption exists to remove.
-    ordered_jurisdictions: (job?.jurisdictions ?? []).map((j) => String(j).trim()).filter(Boolean),
-    regions,
-    // WHY `regions` looks the way it does. On a regions-required provider a worldwide matter compiles
-    // to the provider's full office list, which is indistinguishable — by shape alone — from a matter
-    // that hand-picked 186 territories. Publish needs to tell them apart: the first must still READ as
-    // "worldwide" (one chip + the sweep disclosures), the second as a named list. Recorded as data so
-    // no downstream reader has to infer scope from prose. Absent unless the matter was unrestricted,
-    // so corsearch plans stay byte-identical.
-    ...(scopeIsWorldwide ? { scope_basis: "worldwide" } : {}),
-    // Only present when the active provider genuinely does not cover a requested jurisdiction — a
-    // DEFERRED coverage row for the ledger, never a dropped filter. Absent on a fully-covered plan, so
-    // corsearch plans stay byte-identical to the pre-phase-3 compiler.
-    ...(deferredJurisdictions.length ? { deferred_coverage: deferredJurisdictions } : {}),
-    // THE CLASSES THE FRAME ADDED, BESIDE THE INSTRUCTED ONES, EACH WITH ITS REASON (decision 18). A
-    // widening nobody can read back is one nobody can check the bound on: this is where a reviewer sees
-    // which classes the order did not name, why each was judged to be reached by the client's own
-    // goods, and — by their absence from `classes` — that no instructed class was traded for one.
-    // Absent where the frame added none, which is the ordinary answer, so those plans stay identical.
-    ...(addedClassRows.length ? { added_classes: addedClassRows } : {}),
-    // A GOODS TERM THE COMPILER DROPPED IS A DISCLOSURE, NOT A DETAIL. The words in this list are
-    // OR-ed, so removing one makes the clause NARROWER: the search returns fewer records and a
-    // conflict that term would have surfaced is simply never found. The model was asked for these
-    // words and one of them did not reach the wire — if nothing says so, the run is quietly less
-    // thorough than the list it was given, and it is our own compiler doing the dropping.
-    //
-    // It rides the plan rather than only the entry so a reader looking for what this search did NOT
-    // ask does not have to walk the entries to find out. Absent when nothing was dropped, so every
-    // plan that sends its whole list stays byte-identical.
-    ...(goodsOmitted.length ? { goods_text_not_asked: goodsOmitted, goods_text_not_asked_reason: goodsOmittedReason } : {}),
-    // THE SCRIPT FORMS NOT ASKED, EACH WITH ITS REASON, AND THE MARKETS A SCRIPT QUESTION SERVES, whenever they are known,
-    // with or without a script form in the manifest. The propose tool reads the markets and the questions already asked,
-    // to hold a worker's own script proposal to the same rule.
-    ...(scriptsSetAside.length ? { scripts_set_aside: scriptsSetAside } : {}),
-    ...(scriptMarkets ? { script_markets: scriptMarkets, script_questions_asked: (scriptPlan?.asked ?? []).flatMap((q) => q.keys) } : {}),
-    // A term the compiler ASKED IN A DIFFERENT SHAPE than it was written. The register reads AND, OR,
-    // NOT, ADJ and NEAR as operators inside the value and has no escape syntax, so the word comes out
-    // and the rest of the item is still asked — "near field communication" goes as "field
-    // communication". That is a narrower ask than the model wrote, and it must be visible: a reader
-    // comparing the word list to what was searched would otherwise find a term that appears to have
-    // been asked and was not, exactly.
-    ...(goodsRewritten.length ? { goods_text_rewritten: goodsRewritten } : {}),
-    // THE STAGE WAS ASKED FOR GOODS WORDS AND DID NOT ANSWER. Recorded on the plan because it is a
-    // fact about the run, not about the matter: a matter with no goods words to give answers with an
-    // empty list, and that is a different thing from a stage that never answered at all. Absent when
-    // the stage answered, so every plan whose stage did its job stays byte-identical.
-    ...(goodsAnswered ? {} : { goods_words_unanswered: true }),
-    ...(caps ? { provider: caps.id } : {}),
-    entries: ordered,
-  };
 }
 
 const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "");

@@ -1,0 +1,140 @@
+{
+  "uri": "/mark/cn/30096bde-8fde-4654-b596-47010ac20748",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "30096bde-8fde-4654-b596-47010ac20748",
+  "applicationNumber": "62411976",
+  "registrationNumber": "62411976",
+  "applicationDate": "2022-01-26",
+  "registrationDate": "2022-08-21",
+  "expiryDate": "2032-08-20",
+  "renewalDate": null,
+  "lastPublicationDate": "2022-05-20",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "SEVEN RIGHT",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "cn",
+      "description": "技术研究咨询,工程设计服务,科学研究和开发,计算机编程,软件即服务(SaaS),信息技术咨询服务,平台即服务(PaaS),软件设计和开发,建筑学咨询,城市规划",
+      "translation_language": "en",
+      "translation": "Technical research consulting, engineering design services, scientific research and development, computer programming, software as a service (SaaS), information technology consulting services, platform as a service (PaaS), software design and development, architecture consulting, urban planning"
+    }
+  ],
+  "owner": "Beijing Siteng Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "北京市大兴区华佗路9号院2号楼8层840室",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Beijing Siteng Technology Co., Ltd.",
+        "applicantNativeName": "北京思腾科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Technical research consulting, engineering design services, scientific research and development, computer programming, software as a service (SaaS), information technology consulting services, platform as a service (PaaS), software design and development, architecture consulting, urban planning",
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "技术研究咨询,工程设计服务,科学研究和开发,计算机编程,软件即服务(SaaS),信息技术咨询服务,平台即服务(PaaS),软件设计和开发,建筑学咨询,城市规划"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Research and development service",
+        "Design and information service for architecture",
+        "Computer programming, and concerned services"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "4209",
+          "subNatGoodsServicesDescription": "Research and development service"
+        },
+        {
+          "subNatClassNumber": "4217",
+          "subNatGoodsServicesDescription": "Design and information service for architecture"
+        },
+        {
+          "subNatClassNumber": "4220",
+          "subNatGoodsServicesDescription": "Computer programming, and concerned services"
+        }
+      ]
+    },
+    "id": "30096bde-8fde-4654-b596-47010ac20748",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "1792"
+      }
+    ],
+    "recordLastUpdated": "20251004",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "邮寄办理"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220126",
+        "applicationNumber": "62411976"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20320820",
+      "lastPublicationDate": "20220520",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationDate": "20220821",
+        "registrationNumber": "62411976"
+      }
+    },
+    "version": "20251004192052",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN RIGHT"
+    }
+  },
+  "_uri": "/mark/cn/30096bde-8fde-4654-b596-47010ac20748",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.187Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

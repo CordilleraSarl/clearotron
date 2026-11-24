@@ -1,0 +1,158 @@
+{
+  "uri": "/mark/xs/adad5d4f-4250-4c42-aa5c-b44c3c40db45",
+  "provider": "clarivate",
+  "office": "xs",
+  "guid": "adad5d4f-4250-4c42-aa5c-b44c3c40db45",
+  "applicationNumber": null,
+  "registrationNumber": null,
+  "applicationDate": null,
+  "registrationDate": "2012-04-18",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "MISS SEVEN RIVERS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    36,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        36
+      ],
+      "language": "en",
+      "description": "Scholarship program/scholarship pageant",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "en",
+      "description": "Scholarship program/scholarship pageant",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "MISS SEVEN RIVERS, INC.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "5500 MORMON COULEE ROAD #313, LA CROSSE, WI, 54601",
+        "applicantAddressCity": "LA CROSSE",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "54601",
+        "applicantAddressStateName": "WISCONSIN",
+        "applicantAddressStreet": "5500 MORMON COULEE ROAD #313",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "MISS SEVEN RIVERS, INC.",
+        "applicantPhoneNumber": "608-317-3293",
+        "applicantStateOfIncorporation": "WISCONSIN"
+      }
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "36",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scholarship program/scholarship pageant"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Scholarship program/scholarship pageant"
+        }
+      ]
+    },
+    "id": "adad5d4f-4250-4c42-aa5c-b44c3c40db45",
+    "ipRightKind": "tmk",
+    "kindMark": "SERVICE MARK",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": false,
+    "originalRegistrants": [
+      {
+        "address": "5500 MORMON COULEE ROAD #313, LA CROSSE, WI, 54601",
+        "city": "LA CROSSE",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "legalEntity": "CORPORATION",
+        "name": "MISS SEVEN RIVERS, INC.",
+        "phoneNumber": "608-317-3293",
+        "postalCode": "54601",
+        "stateName": "WISCONSIN",
+        "stateOfIncorporation": "WISCONSIN",
+        "street": "5500 MORMON COULEE ROAD #313"
+      }
+    ],
+    "recordLastUpdated": "20240305",
+    "registrationOfficeCode": "XS",
+    "registrationOfficeName": "U.S. State",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "505 KING STREET, SUITE 300, P.O. BOX 1927, LA CROSSE, WI, 546021927",
+        "representativeCorrespondentAddressCity": "LA CROSSE",
+        "representativeCorrespondentAddressPostalCode": "546021927",
+        "representativeCorrespondentAddressStateName": "WISCONSIN",
+        "representativeCorrespondentAddressStreet": "505 KING STREET, SUITE 300, P.O. BOX 1927",
+        "representativeCorrespondentFirmName": "HALE, SKEMP, HANSON, SKEMP & SLEIK",
+        "representativeCorrespondentName": "KEVIN J. ROOP",
+        "representativeCorrespondentPhoneNumber": "606-784-3540"
+      }
+    ],
+    "status": {
+      "active": true,
+      "cmNormalisedStatus": "REGISTERED",
+      "firstUsedAnywhereDate": "20101111",
+      "ipOffice": {
+        "markOfficialStatusEvents": [
+          "REGISTERED"
+        ]
+      },
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20120418"
+      }
+    },
+    "usStateOfficeCode": "WI",
+    "usStateOfficeName": "WISCONSIN",
+    "version": "20240305094844",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "MISS 7 RIVERS",
+      "markVerbalElementText": "MISS SEVEN RIVERS"
+    }
+  },
+  "_uri": "/mark/xs/adad5d4f-4250-4c42-aa5c-b44c3c40db45",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.189Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

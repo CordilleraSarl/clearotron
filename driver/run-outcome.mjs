@@ -12,6 +12,7 @@ import { abbrev } from "./repair-contract.mjs";
 import { REFUSAL_TERMINAL_KIND, humanWait } from "./repairs.mjs";
 import { reportIdentityFor } from "./search-policy.mjs";
 import { whatsappRouting } from "./stages.mjs";
+import { escapeText } from "../shared/html-escape.mjs";
 
 export class StageFailure extends Error {
   // opts (repair-first, 2026-07-05): `failClass` — "transient" | "deterministic" | "factual" — set by
@@ -112,7 +113,7 @@ export function terminalReasonFields(reason, { cap = 200, fullCap = 4000 } = {})
 // and the CLIENT body are untouched; the staff body gets it in its own <pre>, beside the verbatim reason
 // that body already quotes.
 export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, reasonDetail = null, reasonQuantity = null, capWait = null }) {
-  const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const esc = escapeText;
   const detail = typeof reasonDetail === "string" && reasonDetail.trim() ? reasonDetail.trim() : null;
   const quantity = Number.isFinite(reasonQuantity) ? reasonQuantity : null;
   // WHAT FAILED, named as ALL of it. A knockout batch is one job, one run and one price over up to

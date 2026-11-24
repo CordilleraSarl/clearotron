@@ -1,0 +1,128 @@
+{
+  "uri": "/mark/gb/16d18d78-a974-4fb2-939b-b1dac8fdd2c8",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "16d18d78-a974-4fb2-939b-b1dac8fdd2c8",
+  "applicationNumber": "2364785",
+  "registrationNumber": "2364785",
+  "applicationDate": "2004-06-02",
+  "registrationDate": "2005-07-29",
+  "expiryDate": "2034-06-02",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "Wine Expression bone dry, delicate, neutral whites Dry, herbaceous or aramatic whites Juicy, fruit-driven, ripe whites Full-flavoured, nutty, oaked whites Light, simple, delicate reds Juicy, medium-bodied, fruit-led reds Spicy, peppery, warming reds Oaked, intense, concentrated reds Rosé wines Refreshing, racy, medium-sweet whites Luscious, rich, sticky, sweet wines White sparkling wines Rosé sparking wines Red sparkling wines",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Consideration and classification of goods and/or services; consideration and categorisation of goods and/or services; testing, assessment and evaluation services; products approvals; issuing of standards; advisory, information and consultancy services relating to the aforementioned services.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Matthew Clark Bibendum Limited",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "HGF Limited",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Pavilion 2, The Pavilions, Bridgwater Road, Bristol, BS99 6ZZ",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Matthew Clark Bibendum Limited"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "19.19.00",
+      "26.04.02",
+      "26.04.22"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Consideration and classification of goods and/or services; consideration and categorisation of goods and/or services; testing, assessment and evaluation services; products approvals; issuing of standards; advisory, information and consultancy services relating to the aforementioned services."
+        }
+      ]
+    },
+    "id": "16d18d78-a974-4fb2-939b-b1dac8fdd2c8",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "11.07.00"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "6577"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "1 City Walk, Leeds LS11 9DX",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "HGF Limited"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20040602",
+        "applicationNumber": "2364785"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20340602",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20050729",
+        "registrationNumber": "2364785"
+      }
+    },
+    "version": "20250627190905",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "Wine Expression bone dry, delicate, neutral whites Dry, herbaceous or aramatic whites Juicy, fruit-driven, ripe whites Full-flavoured, nutty, oaked whites Light, simple, delicate reds Juicy, medium-bodied, fruit-led reds Spicy, peppery, warming reds Oaked, intense, concentrated reds Rosé wines Refreshing, racy, medium-sweet whites Luscious, rich, sticky, sweet wines White sparkling wines Rosé sparking wines Red sparkling wines"
+    }
+  },
+  "_uri": "/mark/gb/16d18d78-a974-4fb2-939b-b1dac8fdd2c8",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.201Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

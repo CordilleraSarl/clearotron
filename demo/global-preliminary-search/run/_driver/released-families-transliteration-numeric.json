@@ -1,0 +1,20 @@
+{
+  "axis": "transliteration-numeric",
+  "families": {
+    "transliteration-numeric:exact:v3nqori": {
+      "reason": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea."
+    },
+    "transliteration-numeric:exact:venq0ri": {
+      "reason": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea."
+    },
+    "transliteration-numeric:exact:venqor1": {
+      "reason": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea."
+    },
+    "transliteration-numeric:exact:q-828d0bdb": {
+      "reason": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea."
+    },
+    "transliteration-numeric:exact:q-9292d4cb": {
+      "reason": "Digit substitutions and distinct Chinese and Korean romanisations may reveal visually or phonetically similar rights missed by the identical spelling, including in priority Korea."
+    }
+  }
+}

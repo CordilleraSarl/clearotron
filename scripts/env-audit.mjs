@@ -576,7 +576,7 @@ export function auditEnv(root = ROOT) {
 //                            envValue("CLEAROTRON_MAX_RETRIES") and
 //                            envValue("CLEAROTRON_RATE_LIMIT_DEFAULT_BACKOFF_MS") (the maxRetries and
 //                            rateLimitDefaultBackoffMs getters in driver.config.mjs),
-//                            envOn("CLEAROTRON_DUMP_JSON") (runStageLadder() in gateway.mjs), and
+//                            envOn("CLEAROTRON_DUMP_JSON") (writeAttemptRow() in attempt-record.mjs), and
 //                            `export const API_KEY_ENV = "USPTO_API_KEY"` (providers/uspto-local/src/sync.js:77).
 //                            The name is a STRING LITERAL in every one; it just never sits beside an
 //                            `env` token. USPTO_API_KEY is a credential.

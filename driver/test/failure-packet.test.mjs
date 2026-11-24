@@ -27,7 +27,7 @@ test("deterministic kind: says retry will not help, quotes the reason verbatim (
   assert.match(p.emailBodyHtml, /retrying will not help/);
   assert.doesNotMatch(p.emailBodyHtml, /cause is systemic/);
   assert.match(p.emailBodyHtml, /The driver reported, verbatim:/);
-  assert.match(p.emailBodyHtml, /HTTP 414 &lt;URI Too Long>/, "verbatim reason, HTML-escaped (< and & suffice for safety)");
+  assert.match(p.emailBodyHtml, /HTTP 414 &lt;URI Too Long&gt;/, "verbatim reason, HTML-escaped as text");
   assert.match(p.emailBodyHtml, /What the machine already attempted:/);
   assert.match(p.emailBodyHtml, /plan-direct-execute → failed: HTTP 414/);
   assert.match(p.whatsappText, /\[deterministic\]/);

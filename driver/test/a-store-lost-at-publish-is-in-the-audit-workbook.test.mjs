@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// @tier full — drives the real publisher over copies of the committed full country demo, and reads what it wrote
+// @tier full — drives the real publisher over copies of the previous full country demo capture, and reads what it wrote
 //
 // A STORE LOST WHERE ONLY THE PUBLISHER SEES IT IS IN THE AUDIT WORKBOOK (ruled 2026-09-25). A store that is
 // present and unreadable when the report is published, or one delivery read and a republish finds missing,
@@ -27,7 +27,7 @@ const { publishReport } = await import("../publish/index.mjs");
 const { writeDegradedParts, PART_NAMES, RULED_WORDS } = await import("../degraded-parts.mjs");
 after(() => rmSync(ROOT, { recursive: true, force: true }));
 
-const DEMO = join(import.meta.dirname, "..", "..", "demo", "full-country-search", "run");
+const DEMO = join(import.meta.dirname, "fixtures", "demo-2026-09-18", "full-country-search", "run");
 
 let seq = 0;
 /** Publish a copy of the demo, changed only by `mutate`, and read the gaps sheet, meta.json and the run log. */
@@ -80,9 +80,9 @@ test("a store delivery read and a republish finds missing is a row", async () =>
   assert.deepEqual(r.meta.degradedAtPublish?.map((d) => d.cause), ["case-law-findings.md was read at delivery and is missing now"]);
 });
 
-test("THE CONTROLS: the demo as committed, and a store it never had, publish the workbook they published before", async () => {
+test("THE CONTROLS: the capture as committed, and a store it never had, publish the workbook they published before", async () => {
   const asIs = await publish();
-  assert.deepEqual(followUps(asIs), [], "the committed demo gained a row");
+  assert.deepEqual(followUps(asIs), [], "the capture as committed gained a row");
   assert.equal(asIs.meta.degradedAtPublish, undefined, "meta.json gained a field on a run with nothing to record");
   assert.equal(asIs.events.length, 0);
   // Absent, with no delivery record to say it was ever there: an older run, never a loss.

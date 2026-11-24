@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "id": "mcp-mu7128kg-deb02f6c",
-  "runId": "tmpdemo2014multicountryfocussearch-venqori-2026-09-18-sample-capture",
+  "id": "demo-0-7-multi-country-focus-search",
+  "runId": "tmpdemo2014multicountryfocussearch-venqori-2026-11-20-sample-capture",
   "slug": "tmpdemo2014multicountryfocussearch-venqori",
   "codename": "sample-capture",
-  "date": "2026-09-18",
+  "date": "2026-11-20",
   "agent": "localagent",
   "forwarder": "e2e",
   "ref": "DEMO-2014-multi-country-focus-search",
@@ -15,26 +15,39 @@
     41
   ],
   "demoRun": false,
-  "demoDataProfile": false,
+  "demoDataProfile": true,
   "state": "delivered",
-  "pid": 3394435,
-  "pidStarttime": "76921605",
-  "engineCommit": "bc3f30a81f7cd7862e82ccd383485d56891825de",
+  "pid": 1886293,
+  "pidStarttime": "384118177",
+  "engineCommit": "f4c545317fd5398eeaecb70f9ee661d1e25189f6",
   "engineCommitSource": "git",
   "stepIndex": 8,
   "stepLabel": "Sending to you",
   "stepN": 9,
   "stepTotal": 9,
+  "currentStep": {
+    "index": 7,
+    "label": "Publishing",
+    "n": 8,
+    "total": 9
+  },
   "lastStage": "publish",
-  "verdict": "CONDITIONAL",
-  "url": "/portal/report/tmpdemo2014multicountryfocussearch-venqori-2026-09-18-sample-capture/",
+  "review": {
+    "signoff": "CONDITIONAL"
+  },
+  "url": "/portal/report/tmpdemo2014multicountryfocussearch-venqori-2026-11-20-sample-capture/",
   "failedStage": null,
   "reason": null,
-  "deliveredAt": "2026-09-18T15:07:12.783Z",
+  "deliveredAt": "2026-11-20T21:14:49.087Z",
   "attempts": 1,
-  "updatedAt": "2026-09-18T15:07:12.783Z",
-  "startedAt": "2026-09-18T14:03:02.807Z",
+  "updatedAt": "2026-11-20T21:14:49.087Z",
+  "startedAt": "2026-11-20T20:48:22.339Z",
+  "tier": "Manageable",
+  "statement": "Manageable — conditional on: Register coverage deferred — the search did not finish and must be re-run before this can be relied on.",
   "stoppable": false,
+  "registersServed": [
+    "clarivate"
+  ],
   "providerUsage": {
     "clarivate": {
       "search": 0,
@@ -43,24 +56,28 @@
       "phoneme": 0,
       "batch_screen": 0,
       "enumerate": 0,
-      "execute_plan": 174,
-      "propose_supplemental": 37,
-      "total": 211,
+      "execute_plan": 91,
+      "propose_supplemental": 12,
+      "total": 103,
       "by_tool": {
-        "execute_plan": 174,
-        "propose_supplemental": 37
+        "execute_plan": 91,
+        "propose_supplemental": 12
       },
       "unclassified": 0,
+      "providers": [
+        "clarivate"
+      ],
       "ledger": {
         "configured": true,
         "present": true,
         "readable": true,
-        "rowsScanned": 21317
+        "rowsScanned": 44244
       },
       "retries": 0,
       "errors": 0,
-      "cache_hits": 0,
-      "bytes": 1203000,
+      "cache_hits": 12,
+      "records_reused": 2,
+      "bytes": 20550,
       "duplicate_fetches": 0,
       "duplicate_fetches_same_session": 0,
       "duplicate_fetches_cross_session": 0
@@ -68,116 +85,108 @@
   },
   "tokens": {
     "total": {
-      "input": 1749567,
-      "output": 169573,
-      "cacheRead": 20692224,
+      "input": 835581,
+      "output": 62812,
+      "cacheRead": 8955392,
       "cacheWrite": 0,
-      "attempts": 30,
+      "attempts": 21,
       "thoughtTurns": 0
     },
     "byStage": {
       "blind-frame": {
-        "input": 15609,
-        "output": 3268,
-        "cacheRead": 54912,
+        "input": 5425,
+        "output": 3003,
+        "cacheRead": 40576,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "clearance-variants": {
-        "input": 40812,
-        "output": 7622,
-        "cacheRead": 246144,
+        "input": 27734,
+        "output": 5383,
+        "cacheRead": 70272,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "common-law-half:a": {
-        "input": 115352,
-        "output": 5764,
-        "cacheRead": 797440,
+        "input": 95954,
+        "output": 3824,
+        "cacheRead": 797824,
         "cacheWrite": 0,
-        "attempts": 2,
+        "attempts": 1,
         "thoughtTurns": 0
       },
       "common-law-half:b": {
-        "input": 100588,
-        "output": 9433,
-        "cacheRead": 1419264,
+        "input": 85626,
+        "output": 3653,
+        "cacheRead": 857600,
         "cacheWrite": 0,
-        "attempts": 2,
+        "attempts": 1,
         "thoughtTurns": 0
       },
       "common-law-half:m": {
-        "input": 38889,
-        "output": 3610,
-        "cacheRead": 295424,
+        "input": 26946,
+        "output": 542,
+        "cacheRead": 71680,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "doubt-closure": {
-        "input": 25148,
-        "output": 2344,
-        "cacheRead": 90880,
+        "input": 10328,
+        "output": 1114,
+        "cacheRead": 43008,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "frame-diff": {
-        "input": 52921,
-        "output": 4420,
-        "cacheRead": 394240,
+        "input": 22528,
+        "output": 1266,
+        "cacheRead": 139392,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "matter-frame": {
-        "input": 19924,
-        "output": 4724,
-        "cacheRead": 81920,
+        "input": 10586,
+        "output": 2391,
+        "cacheRead": 67200,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "narrative-refutation": {
-        "input": 268518,
-        "output": 29584,
-        "cacheRead": 3315200,
+        "input": 108639,
+        "output": 7644,
+        "cacheRead": 1488768,
         "cacheWrite": 0,
-        "attempts": 3,
+        "attempts": 2,
         "thoughtTurns": 0
       },
       "placement-inquiry": {
-        "input": 162564,
-        "output": 23759,
-        "cacheRead": 2062720,
+        "input": 55980,
+        "output": 9490,
+        "cacheRead": 651776,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "register-digest": {
-        "input": 180835,
-        "output": 16380,
-        "cacheRead": 4380032,
-        "cacheWrite": 0,
-        "attempts": 2,
-        "thoughtTurns": 0
-      },
-      "register-unit:incumbent-class": {
-        "input": 48705,
-        "output": 2371,
-        "cacheRead": 338688,
+        "input": 56765,
+        "output": 2721,
+        "cacheRead": 330624,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "register-unit:primary-sweep": {
-        "input": 166506,
-        "output": 9221,
-        "cacheRead": 1037312,
+        "input": 82535,
+        "output": 4543,
+        "cacheRead": 837120,
         "cacheWrite": 0,
-        "attempts": 3,
+        "attempts": 2,
         "thoughtTurns": 0
       },
       "register-unit:saturation-probe": {
@@ -189,77 +198,69 @@
         "thoughtTurns": 0
       },
       "register-unit:transliteration-numeric": {
-        "input": 46853,
-        "output": 2260,
-        "cacheRead": 395776,
+        "input": 35010,
+        "output": 1682,
+        "cacheRead": 419584,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-card:1": {
-        "input": 20161,
-        "output": 1008,
-        "cacheRead": 81920,
-        "cacheWrite": 0,
-        "attempts": 1,
-        "thoughtTurns": 0
-      },
-      "report-card:2": {
-        "input": 36041,
-        "output": 945,
-        "cacheRead": 65536,
+        "input": 14621,
+        "output": 270,
+        "cacheRead": 56576,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "report-overview": {
-        "input": 86109,
-        "output": 3815,
-        "cacheRead": 417280,
+        "input": 42480,
+        "output": 250,
+        "cacheRead": 108800,
         "cacheWrite": 0,
-        "attempts": 2,
+        "attempts": 1,
         "thoughtTurns": 0
       },
       "skeptic": {
-        "input": 33601,
-        "output": 2789,
-        "cacheRead": 178432,
+        "input": 22564,
+        "output": 925,
+        "cacheRead": 156800,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       },
       "synthesis": {
-        "input": 290431,
-        "output": 36256,
-        "cacheRead": 5039104,
+        "input": 131860,
+        "output": 14111,
+        "cacheRead": 2817792,
         "cacheWrite": 0,
-        "attempts": 3,
+        "attempts": 2,
         "thoughtTurns": 0
       }
     },
     "byModel": {
-      "gpt-5.6-sol": {
-        "input": 978693,
-        "output": 121593,
-        "cacheRead": 15180032,
+      "gpt-6.1-sol": {
+        "input": 479524,
+        "output": 49286,
+        "cacheRead": 6304128,
         "cacheWrite": 0,
-        "attempts": 12,
+        "attempts": 11,
         "thoughtTurns": 0
       },
-      "gpt-5.6-luna": {
-        "input": 254829,
-        "output": 18807,
-        "cacheRead": 2512128,
+      "gpt-6-luna": {
+        "input": 208526,
+        "output": 8019,
+        "cacheRead": 1727104,
         "cacheWrite": 0,
-        "attempts": 5,
+        "attempts": 3,
         "thoughtTurns": 0
       },
-      "gpt-5.6-terra": {
-        "input": 516045,
-        "output": 29173,
-        "cacheRead": 3000064,
+      "gpt-6.1-terra": {
+        "input": 147531,
+        "output": 5507,
+        "cacheRead": 924160,
         "cacheWrite": 0,
-        "attempts": 12,
+        "attempts": 6,
         "thoughtTurns": 0
       },
       "code:execute-plan": {
@@ -273,11 +274,11 @@
     },
     "byEngine": {
       "openai-agent": {
-        "input": 1749567,
-        "output": 169573,
-        "cacheRead": 20692224,
+        "input": 835581,
+        "output": 62812,
+        "cacheRead": 8955392,
         "cacheWrite": 0,
-        "attempts": 29,
+        "attempts": 20,
         "thoughtTurns": 0
       },
       "code": {
@@ -291,11 +292,11 @@
     },
     "byAuthMode": {
       "subscription": {
-        "input": 1749567,
-        "output": 169573,
-        "cacheRead": 20692224,
+        "input": 835581,
+        "output": 62812,
+        "cacheRead": 8955392,
         "cacheWrite": 0,
-        "attempts": 29,
+        "attempts": 20,
         "thoughtTurns": 0
       },
       "not-provider-billed": {
@@ -313,55 +314,55 @@
     "schemaVersion": 1,
     "modelBasis": "requested",
     "dispatchCensus": {
-      "total": 30,
-      "measured": 29,
+      "total": 21,
+      "measured": 20,
       "streamed": 0,
       "unmeasured": 0,
       "codeSide": 1
     },
     "dispatchCensusReconciles": true,
     "tokens": {
-      "input": 1749567,
-      "output": 169573,
+      "input": 835581,
+      "output": 62812,
       "cacheWrite": 0,
-      "cacheRead": 20692224
+      "cacheRead": 8955392
     },
     "tokensComplete": true,
     "byBilling": {
-      "openai-agent|subscription|gpt-5.6-sol": {
+      "openai-agent|subscription|gpt-6.1-sol": {
         "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "gpt-5.6-sol",
-        "dispatches": 12,
+        "model": "gpt-6.1-sol",
+        "dispatches": 11,
         "tokens": {
-          "input": 978693,
-          "output": 121593,
+          "input": 479524,
+          "output": 49286,
           "cacheWrite": 0,
-          "cacheRead": 15180032
+          "cacheRead": 6304128
         }
       },
-      "openai-agent|subscription|gpt-5.6-luna": {
+      "openai-agent|subscription|gpt-6-luna": {
         "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "gpt-5.6-luna",
-        "dispatches": 5,
+        "model": "gpt-6-luna",
+        "dispatches": 3,
         "tokens": {
-          "input": 254829,
-          "output": 18807,
+          "input": 208526,
+          "output": 8019,
           "cacheWrite": 0,
-          "cacheRead": 2512128
+          "cacheRead": 1727104
         }
       },
-      "openai-agent|subscription|gpt-5.6-terra": {
+      "openai-agent|subscription|gpt-6.1-terra": {
         "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "gpt-5.6-terra",
-        "dispatches": 12,
+        "model": "gpt-6.1-terra",
+        "dispatches": 6,
         "tokens": {
-          "input": 516045,
-          "output": 29173,
+          "input": 147531,
+          "output": 5507,
           "cacheWrite": 0,
-          "cacheRead": 3000064
+          "cacheRead": 924160
         }
       },
       "code|not-provider-billed|code:execute-plan": {
@@ -397,65 +398,68 @@
       "statement": "this run spent on one vendor (openai) under one billing mode (subscription)"
     },
     "emittedVsLanded": {
-      "emittedOutputTokens": 169573,
-      "landedBytes": 295740,
-      "landedBytesFromStages": 20,
+      "emittedOutputTokens": 62812,
+      "landedBytes": 110798,
+      "landedBytesFromStages": 18,
       "stagesWithoutLandedRecord": [
         "engine-turn",
+        "follow-up-searches",
         "reading-log",
         "record-discard",
+        "register-answer-watch",
         "register-record-bodies",
         "register-repair",
+        "research-answers",
         "tool-calls"
       ],
       "landedShareIsFloor": true,
-      "landedShare": 0.436,
+      "landedShare": 0.441,
       "landedShareBasis": "landedBytes / (emittedOutputTokens * bytesPerOutputTokenAssumed)",
       "bytesPerOutputTokenAssumed": 4,
-      "emittedOnDispatchesThatWroteNothing": 0,
+      "emittedOnDispatchesThatWroteNothing": 2221,
       "thinkingNotSeparable": "thinking is billed inside output_tokens and is never broken out (engine/CONTRACT.md §2) — it sits inside the not-landed share and cannot be split from discarded prose",
       "thoughtTurns": 0
     },
     "emittedVsLandedByStage": {
       "blind-frame": {
-        "emittedOutputTokens": 3268,
-        "landedBytes": 10121,
-        "landedShare": 0.7743,
+        "emittedOutputTokens": 3003,
+        "landedBytes": 12988,
+        "landedShare": 1.0813,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "clearance-variants": {
-        "emittedOutputTokens": 7622,
-        "landedBytes": 9679,
-        "landedShare": 0.3175,
+        "emittedOutputTokens": 5383,
+        "landedBytes": 15139,
+        "landedShare": 0.7031,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "common-law-half:a": {
-        "emittedOutputTokens": 5764,
-        "landedBytes": 8011,
-        "landedShare": 0.3475,
+        "emittedOutputTokens": 3824,
+        "landedBytes": 8482,
+        "landedShare": 0.5545,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "common-law-half:b": {
-        "emittedOutputTokens": 9433,
-        "landedBytes": 15639,
-        "landedShare": 0.4145,
+        "emittedOutputTokens": 3653,
+        "landedBytes": 8616,
+        "landedShare": 0.5897,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "common-law-half:m": {
-        "emittedOutputTokens": 3610,
-        "landedBytes": 3164,
-        "landedShare": 0.2191,
+        "emittedOutputTokens": 542,
+        "landedBytes": 219,
+        "landedShare": 0.101,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "doubt-closure": {
-        "emittedOutputTokens": 2344,
-        "landedBytes": 5131,
-        "landedShare": 0.5472,
+        "emittedOutputTokens": 1114,
+        "landedBytes": 2866,
+        "landedShare": 0.6432,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -466,31 +470,38 @@
         "landedShareReason": "no dispatch row on this stage journalled an output record",
         "tokensComplete": true
       },
+      "follow-up-searches": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
       "frame-diff": {
-        "emittedOutputTokens": 4420,
-        "landedBytes": 5932,
-        "landedShare": 0.3355,
+        "emittedOutputTokens": 1266,
+        "landedBytes": 5445,
+        "landedShare": 1.0752,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "matter-frame": {
-        "emittedOutputTokens": 4724,
-        "landedBytes": 8694,
-        "landedShare": 0.4601,
+        "emittedOutputTokens": 2391,
+        "landedBytes": 8457,
+        "landedShare": 0.8843,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "narrative-refutation": {
-        "emittedOutputTokens": 29584,
-        "landedBytes": 4403,
-        "landedShare": 0.0372,
+        "emittedOutputTokens": 7644,
+        "landedBytes": 3943,
+        "landedShare": 0.129,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "placement-inquiry": {
-        "emittedOutputTokens": 23759,
-        "landedBytes": 74837,
-        "landedShare": 0.7875,
+        "emittedOutputTokens": 9490,
+        "landedBytes": 26093,
+        "landedShare": 0.6874,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -508,10 +519,17 @@
         "landedShareReason": "no dispatch row on this stage journalled an output record",
         "tokensComplete": true
       },
+      "register-answer-watch": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
       "register-digest": {
-        "emittedOutputTokens": 16380,
-        "landedBytes": 138930,
-        "landedShare": 2.1204,
+        "emittedOutputTokens": 2721,
+        "landedBytes": 8556,
+        "landedShare": 0.7861,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -529,17 +547,10 @@
         "landedShareReason": "no dispatch row on this stage journalled an output record",
         "tokensComplete": true
       },
-      "register-unit:incumbent-class": {
-        "emittedOutputTokens": 2371,
-        "landedBytes": 313,
-        "landedShare": 0.033,
-        "landedShareReason": null,
-        "tokensComplete": true
-      },
       "register-unit:primary-sweep": {
-        "emittedOutputTokens": 9221,
-        "landedBytes": 395,
-        "landedShare": 0.0107,
+        "emittedOutputTokens": 4543,
+        "landedBytes": 695,
+        "landedShare": 0.0382,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -551,44 +562,44 @@
         "tokensComplete": true
       },
       "register-unit:transliteration-numeric": {
-        "emittedOutputTokens": 2260,
-        "landedBytes": 325,
-        "landedShare": 0.036,
+        "emittedOutputTokens": 1682,
+        "landedBytes": 372,
+        "landedShare": 0.0553,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-card:1": {
-        "emittedOutputTokens": 1008,
-        "landedBytes": 621,
-        "landedShare": 0.154,
-        "landedShareReason": null,
-        "tokensComplete": true
-      },
-      "report-card:2": {
-        "emittedOutputTokens": 945,
-        "landedBytes": 585,
-        "landedShare": 0.1548,
+        "emittedOutputTokens": 270,
+        "landedBytes": 699,
+        "landedShare": 0.6472,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "report-overview": {
-        "emittedOutputTokens": 3815,
-        "landedBytes": 1320,
-        "landedShare": 0.0865,
+        "emittedOutputTokens": 250,
+        "landedBytes": 612,
+        "landedShare": 0.612,
         "landedShareReason": null,
         "tokensComplete": true
       },
+      "research-answers": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
       "skeptic": {
-        "emittedOutputTokens": 2789,
-        "landedBytes": 814,
-        "landedShare": 0.073,
+        "emittedOutputTokens": 925,
+        "landedBytes": 272,
+        "landedShare": 0.0735,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "synthesis": {
-        "emittedOutputTokens": 36256,
-        "landedBytes": 5993,
-        "landedShare": 0.0413,
+        "emittedOutputTokens": 14111,
+        "landedBytes": 6511,
+        "landedShare": 0.1154,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -621,8 +632,8 @@
       "dimensions": {
         "turnaroundHours": {
           "quoted": 2.5,
-          "actual": 1.07,
-          "ratio": 0.43,
+          "actual": 0.44,
+          "ratio": 0.18,
           "actualBasis": "wall:status.startedAt→terminal",
           "actualIncludesParked": true,
           "reason": null
@@ -662,7 +673,7 @@
       "unmeasurable": 6
     }
   },
-  "statement": "Moderate — conditional on: Pending ENQOR applications cover mobile apps and SaaS, and the use check did not confirm Align Networks Inc.'s current ENQOR use.",
+  "caption": "VENQORI presents Manageable risk: YIWU TENGDING’s Latin-script Ｖｅｎｋｕｒｉ registration poses a Japanese obstacle for related electronics. Unsearched Japanese and Korean spellings could conceal closer rights for the company’s software and instruction.",
   "sendPending": true,
-  "endedAt": "2026-09-18T15:07:12.783Z"
+  "endedAt": "2026-11-20T21:14:49.087Z"
 }

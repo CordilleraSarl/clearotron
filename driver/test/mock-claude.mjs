@@ -11,6 +11,7 @@
 //      noise without having spoken its protocol, which is)
 //   MOCK_CLAUDE_STALL=1   — emit init then go SILENT forever (no result) → the engine stall-watchdog must kill it
 //   MOCK_CLAUDE_USAGE_THEN_STALL=1 — one assistant turn WITH usage, then silence → the kill must carry streamed usage
+//     (+ MOCK_STALL_TREE_PIDFILE=<file> to leave a grandchild running and name both pids; mock-stall-tree.mjs)
 //   MOCK_CLAUDE_KILLED_MULTICALL=<n> — <n> completed calls streamed in the CLI's order, then silence → the kill's
 //     reconstruction must count each call's FINAL output (+ MOCK_CLAUDE_EMITTED_LOG=<file>: what was streamed)
 //   MOCK_CLAUDE_JUNK_STREAM=<ms>   — byte-alive non-progress chatter forever → the NO-PROGRESS watchdog must kill it
@@ -19,6 +20,7 @@
 //     (+ MOCK_CLAUDE_ASK_DELAY_MS=<ms> to hold that ask <ms> after init, pipe warm throughout: the gap
 //      between the FIRST BYTE and the first PROGRESS event — a timer, not a block, see the call site)
 //   MOCK_CLAUDE_TOKEN_STREAM=<ms> (+ _COUNT) — usage-bearing partials then a clean result (token movement = progress)
+//   MOCK_CLAUDE_STDERR_STREAM=<ms> (+ _COUNT) — after init, only stderr lines, then a clean result (stderr is not liveness)
 //   MOCK_CLAUDE_FAIL=1    — emit a result with is_error/subtype:error (a failed turn)
 //   MOCK_CLAUDE_OVERLOADED=1 — the Anthropic 529 overload shape (failed result carrying overloaded_error, exit 1)
 //   MOCK_CLAUDE_REFRESH_LOCKED=<file> — while <file> does not exist, create it and answer as the program does on an
@@ -61,6 +63,7 @@ import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, wri
 import { dirname } from "node:path";
 import { applyStageWrites, beforeForcedFailure, breakFindingsAfterWrites } from "./mock-stage-fixtures.mjs";
 import { stageTextOf } from "../manuals-inline.mjs";
+import { stallTree } from "./mock-stall-tree.mjs";
 
 const argv = process.argv.slice(2);
 
@@ -162,6 +165,8 @@ const probeWord = probeWords ? probeWords.join(" ") : null;
 // PARENT sees the stderr byte EARLY, so the write has to have happened before the block, not merely
 // have been requested.
 if (process.env.MOCK_CLAUDE_STDERR_FIRST) writeSync(2, "mock-claude: an early notice on stderr\n");
+// The stall tree is started and named before any output, so a stall kill can never land before its pidfile exists.
+if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) stallTree();
 
 const bootMs = Number(process.env.MOCK_CLAUDE_BOOT_MS || 0);
 if (bootMs > 0) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, bootMs);
@@ -391,6 +396,22 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
       process.exit(0);
     }
     send({ type: "system", subtype: "ping", t: Date.now() });   // bytes, parseable — but NOT progress
+  }, gap);
+} else if (process.env.MOCK_CLAUDE_STDERR_STREAM) {
+  // Spoken on stdout (the init above), then only STDERR: a notice every <ms>, then a clean result. This engine's
+  // protocol is stdout alone, so the notices are not liveness and the stall watchdog still ends the turn.
+  const gap = Number(process.env.MOCK_CLAUDE_STDERR_STREAM);
+  const total = Number(process.env.MOCK_CLAUDE_STDERR_COUNT || 20);
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i++ >= total) {
+      clearInterval(iv);
+      send({ type: "result", subtype: "success", is_error: false, duration_ms: 5, num_turns: 1, result: "mock claude ok",
+        stop_reason: "end_turn", session_id: session, total_cost_usd: 0.001,
+        usage: { input_tokens: 10, output_tokens: 1, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } });
+      process.exit(0);
+    }
+    process.stderr.write(`mock-claude: a notice ${i}\n`);
   }, gap);
 } else if (process.env.MOCK_CLAUDE_TOKEN_STREAM) {
   // Token-movement substrate: usage-bearing message_delta partials every <ms> (honest progress), then a

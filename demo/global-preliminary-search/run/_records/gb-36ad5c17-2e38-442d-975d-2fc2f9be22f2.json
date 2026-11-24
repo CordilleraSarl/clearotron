@@ -1,0 +1,188 @@
+{
+  "uri": "/mark/gb/36ad5c17-2e38-442d-975d-2fc2f9be22f2",
+  "provider": "clarivate",
+  "office": "gb",
+  "guid": "36ad5c17-2e38-442d-975d-2fc2f9be22f2",
+  "applicationNumber": "4160998",
+  "registrationNumber": "4160998",
+  "applicationDate": "2025-02-16",
+  "registrationDate": "2025-05-09",
+  "expiryDate": "2035-02-16",
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "RIGHTBUILD AI-POWERED, EXPERT-DRIVEN RIGHTBUILD AI-POWERED, EXPERT-DRIVEN",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD AND DESIGN",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9,
+    35,
+    37,
+    38,
+    42
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "en",
+      "description": "Downloadable software for Architectural design, planning, and structural engineering. AI-powered feasibility assessments and compliance checks; Building Information Modeling (BIM) and 3D visualisation software.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "en",
+      "description": "Online marketplace for architects, engineers, and builders. Connecting customers with tradespeople for home extensions and construction. Business networking, procurement, and contractor matching services.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        37
+      ],
+      "language": "en",
+      "description": "Project management services in the field of construction; Coordination of renovation, repair, and installation of building structures, fixtures, and fittings\".",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        38
+      ],
+      "language": "en",
+      "description": "Provision of an online platform for facilitating access to vetted builders, structural engineers, and contractors.",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": "en",
+      "description": "Providing temporary use of online non-downloadable AI based software for feasibility assessments and compliance checks in the construction industry; Providing an online platform for Building Information Modeling (BIM) and 3D visualisation services; providing architectural and engineering consultancy services, including feasibility assessments and compliance checks; advisory services in Building Information; Modeling (BIM) and 3D visualisation.",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Kashmir Singh",
+  "ownerNative": null,
+  "ownerCountry": "GB",
+  "representative": "Roy Colba",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Ark Aurora Ltd, 1 The Maltings Court, 2 Anderson Road, SMETHWICK b66 4ar, West Midlands",
+        "applicantAddressCountryCode": "GB",
+        "applicantAddressCountryName": "United Kingdom",
+        "applicantName": "Kashmir Singh"
+      }
+    ],
+    "applicationLanguageCode": "en",
+    "cmMarkImageEUclassification": [
+      "26.03.23",
+      "26.04.02",
+      "26.04.22"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Downloadable software for Architectural design, planning, and structural engineering. AI-powered feasibility assessments and compliance checks; Building Information Modeling (BIM) and 3D visualisation software."
+        },
+        {
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Online marketplace for architects, engineers, and builders. Connecting customers with tradespeople for home extensions and construction. Business networking, procurement, and contractor matching services."
+        },
+        {
+          "intClassNumber": "37",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Project management services in the field of construction; Coordination of renovation, repair, and installation of building structures, fixtures, and fittings\"."
+        },
+        {
+          "intClassNumber": "38",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Provision of an online platform for facilitating access to vetted builders, structural engineers, and contractors."
+        },
+        {
+          "intClassNumber": "42",
+          "intGoodsLanguageCode": "en",
+          "intGoodsServicesDescription": "Providing temporary use of online non-downloadable AI based software for feasibility assessments and compliance checks in the construction industry; Providing an online platform for Building Information Modeling (BIM) and 3D visualisation services; providing architectural and engineering consultancy services, including feasibility assessments and compliance checks; advisory services in Building Information; Modeling (BIM) and 3D visualisation."
+        }
+      ]
+    },
+    "id": "36ad5c17-2e38-442d-975d-2fc2f9be22f2",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD AND DESIGN",
+    "markImageViennaClassification": [
+      "24.15.02"
+    ],
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationVolume": "2025/009"
+      }
+    ],
+    "recordLastUpdated": "20250627",
+    "registrationOfficeCode": "GB",
+    "registrationOfficeName": "United Kingdom",
+    "representatives": [
+      {
+        "representativeAddress": "Sydney Mitchell Solicitors, Aspley House, 35 Waterloo Street, BIRMINGHAM B2 5TJ",
+        "representativeAddressCountryCode": "GB",
+        "representativeAddressCountryName": "United Kingdom",
+        "representativeName": "Roy Colba"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20250216",
+        "applicationNumber": "4160998"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20350216",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20250509",
+        "registrationNumber": "4160998"
+      }
+    },
+    "version": "20250627223936",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RIGHTBUILD AI-POWERED, EXPERT-DRIVEN RIGHTBUILD AI-POWERED, EXPERT-DRIVEN"
+    }
+  },
+  "_uri": "/mark/gb/36ad5c17-2e38-442d-975d-2fc2f9be22f2",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.202Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

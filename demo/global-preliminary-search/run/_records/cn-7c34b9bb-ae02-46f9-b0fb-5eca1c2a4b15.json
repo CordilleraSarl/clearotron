@@ -1,0 +1,125 @@
+{
+  "uri": "/mark/cn/7c34b9bb-ae02-46f9-b0fb-5eca1c2a4b15",
+  "provider": "clarivate",
+  "office": "cn",
+  "guid": "7c34b9bb-ae02-46f9-b0fb-5eca1c2a4b15",
+  "applicationNumber": "92142973",
+  "registrationNumber": null,
+  "applicationDate": "2026-06-01",
+  "registrationDate": null,
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": "2026-10-27",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "PENDING",
+  "markText": "SEVEN RIVERS",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    9
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        9
+      ],
+      "language": "cn",
+      "description": "集成电路",
+      "translation_language": "en",
+      "translation": "integrated circuit"
+    }
+  ],
+  "owner": "Dongguan Jiashengyuan Electronic Technology Co., Ltd.",
+  "ownerNative": null,
+  "ownerCountry": "CN",
+  "representative": null,
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "广东省东莞市常平镇土塘塘东路93号",
+        "applicantAddressCountryCode": "CN",
+        "applicantAddressCountryName": "China",
+        "applicantName": "Dongguan Jiashengyuan Electronic Technology Co., Ltd.",
+        "applicantNativeName": "东莞嘉盛源电子科技有限公司"
+      }
+    ],
+    "applicationLanguageCode": "cn",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "integrated circuit",
+          "intClassNumber": "09",
+          "intGoodsLanguageCode": "cn",
+          "intGoodsServicesDescription": "集成电路"
+        }
+      ],
+      "natSubClassDescriptions": [
+        "Transistors and carbons used in electrical equipments; components of electron and electricity"
+      ],
+      "natSubClasses": [
+        {
+          "subNatClassNumber": "0913",
+          "subNatGoodsServicesDescription": "Transistors and carbons used in electrical equipments; components of electron and electricity"
+        }
+      ]
+    },
+    "id": "7c34b9bb-ae02-46f9-b0fb-5eca1c2a4b15",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "publications": [
+      {
+        "publicationVolume": "2005"
+      }
+    ],
+    "recordLastUpdated": "20261106",
+    "registrationOfficeCode": "CN",
+    "registrationOfficeName": "China",
+    "representatives": [
+      {
+        "representativeNativeName": "深圳市智联信知识产权服务有限公司"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20260601",
+        "applicationNumber": "92142973"
+      },
+      "cmNormalisedStatus": "PENDING",
+      "lastPublicationDate": "20261027",
+      "markCurrentStatus": "APPLICATION"
+    },
+    "version": "20261106020242",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "SEVEN RIVERS"
+    }
+  },
+  "_uri": "/mark/cn/7c34b9bb-ae02-46f9-b0fb-5eca1c2a4b15",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.187Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

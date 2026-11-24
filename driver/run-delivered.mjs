@@ -5,12 +5,13 @@
 // whether or not the overall assessment completed.
 //
 // The clearance pipeline's delivery end state, moved out of pipelineInner unchanged. It hands back the two ways a run
-// delivers. `helpers` are functions still held in pipeline.mjs, handed in because this module must not import that
-// one back.
+// delivers. It must not import pipeline.mjs back, so what it shares with that module lives in the modules beside it,
+// which it imports.
 import { assessmentNotCompletedNote } from "../shared/client-failure-note.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { assertNotCancelledBeforePublish } from "./cancel.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
+import { localLanguageStateOf } from "./coverage-rows-run.mjs";
 import { degradedParts, writeDegradedParts } from "./degraded-parts.mjs";
 import { config } from "./driver.config.mjs";
 import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
@@ -21,19 +22,21 @@ import { deliveryForRun } from "./profiles.mjs";
 import { finalStepFields, readRunStatus, recordTransition, signoffPatch, writeRunStatus } from "./progress.mjs";
 import { DEFAULT_LEDGER_PATH, tallyRegisterCalls } from "./provider-usage.mjs";
 import { composeCoverNote, coverNoteInputs, deliverySubject, publishReport } from "./publish/index.mjs";
+import { leftOpenSectionOfRun } from "./left-open-md.mjs";
 import { noteRegisterServed, providerUsageCaveat, registersServedFrom } from "./register-served.mjs";
 import { renderReportOverview } from "./report-overview-record.mjs";
+import { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf } from "./run-end-state.mjs";
 import { atomicWrite } from "./run-record.mjs";
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { endTheDeliveredRun } from "./run-shell.mjs";
 import { reportIdentityFor } from "./search-policy.mjs";
-import { paths, whatsappRouting } from "./stages.mjs";
+import { paths } from "./stages.mjs";
+import { deliveryPacket, handOffDelivery } from "./delivery-handoff.mjs";
 import { stampTokenRollup } from "./tokens.mjs";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }, helpers) {
-  const { applyScopeFrontMatterOf, archive, assessmentCoverageOfRun, localLanguageStateOf, reportIdentityRecord, searchLogAuditMd, sentinel, setAsideTheAssessment, writeScopeFactsOf } = helpers;
+export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }) {
   // ── PUBLISHING AND DELIVERING: ONE PATH, FOR EVERY RUN THAT DELIVERS ─────────────────────────────────
   //
   // The run's last steps, from publishing the report to the delivered state, the packet and the archive. A run whose
@@ -237,49 +240,17 @@ export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }, h
       // across the archive move). The courier sends EXACTLY this — same subject, text and recipient the
       // deleted send stages composed, now composed in code.
       // ONE report: the packet carries no readiness bits — every delivered run routes the same way.
-      const packet = {
-        // ONE canonical runId form (charter P1 §3): `<slug>-<date>-<codename>` — the same id status.json,
-        // the pool and the knockout lane carry ("one format across every consumer"). The packet's runId
-        // NAMES the outbox marker below, and the dateless `<slug>-<codename>` form this lane used to mint
-        // is what split one delivery into TWO markers two minutes apart (the outbox rescan re-drops from
-        // status.runId, saw no marker under the dated name, and minted a second one — the 2026-07-19
-        // runId-form split recurring). resolveRun still accepts the dateless legacy form for historical
-        // packets; the .sent orphan guard (outbox-backoff.mjs) stays as defence and matches both forms.
-        runId: `${run.slug}-${run.date}-${run.codename}`, agent,
-        forwarder: job.forwarder, forwarderEmail: job.forwarderEmail, msgId: job.msgId,
-        conversationId: job.conversationId ?? null,   // reply-lane fallback when msgId is not a Graph id
-        subject: deliverySubject(emailProductName, job),
-        emailBodyHtml: readFileSync(P.emailBody, "utf8"),
-        // — the notice goes to whoever ASKED, with the operator's copy beside it and a
-        // stated reason when no number is held. It used to go to AGENT_WHATSAPP[agent], which is the
-        // operator on every run because every user shares one agent id.
-        ...whatsappRouting(job, agent),
+      // ONE canonical runId form (charter P1 §3): `<slug>-<date>-<codename>` — the same id status.json, the pool and the
+      // knockout lane carry ("one format across every consumer"). The packet's runId NAMES the outbox marker, and the
+      // dateless `<slug>-<codename>` form this lane used to mint is what split one delivery into TWO markers two minutes
+      // apart (the outbox rescan re-drops from status.runId, saw no marker under the dated name, and minted a second one —
+      // the 2026-07-19 runId-form split recurring). resolveRun still accepts the dateless legacy form for historical
+      // packets; the .sent orphan guard (outbox-backoff.mjs) stays as defence and matches both forms.
+      const packet = deliveryPacket({ runId: `${run.slug}-${run.date}-${run.codename}`, agent, job,
+        subject: deliverySubject(emailProductName, job), emailBodyHtml: readFileSync(P.emailBody, "utf8"),
         whatsappText: `✅ Clearotron search for ${mark}${ref} is done.${vtag} Report: ${published.url}`,
-        url: published.url, verdict, markName: job.markName ?? job.name ?? null,
-      };
-      // A NEW send supersedes any previous one: .sent is PER-SEND idempotence, not per-run-lifetime.
-      // A run that terminally failed (notice sent → .sent written) and was then resumed to success
-      // would otherwise be SKIPPED by clearotron-deliver's .sent guard — the report would never send.
-      // The stale failure packet goes too, so the run dir tells exactly one delivery story. B4: the
-      // per-channel send receipts are per-SEND state exactly like .sent — a stale email receipt from
-      // the superseded send would make clearotron-deliver skip THIS packet's email, so they reset together.
-      try { rmSync(join(run.runDir, ".sent")); } catch { /* none */ }
-      try { rmSync(paths(run.runDir).sendReceipts, { force: true }); } catch { /* none */ }
-      try { rmSync(paths(run.runDir).failure); } catch { /* none */ }
-      writeFileSync(paths(run.runDir).delivery, JSON.stringify(packet, null, 2) + "\n");
-      note(`delivery: handoff → wrote _driver/delivery.json (the forwarding agent's completion-watch sends email${packet.whatsappTo ? " + WhatsApp" : ""})`);
-      // Workstream B — instant delivery: drop a marker in the fixed outbox so the prelim-outbox.path unit
-      // wakes the forwarder agent NOW (vs ≤55m on the HEARTBEAT completion-watch, which stays as the
-      // backstop). The marker only names the agent to wake; status.sendPending + the run's .sent guard
-      // remain the source of truth, so a lost/cleared marker never double-sends nor loses a delivery.
-      // Best-effort — a marker-write failure must never break the run (the backstop still delivers).
-      try {
-        mkdirSync(config.outboxDir, { recursive: true });
-        writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
-        note(`delivery: outbox marker → ${join(config.outboxDir, `${packet.runId}.pending`)} (instant wake)`);
-      } catch (e) {
-        note(`delivery: outbox marker write skipped (${String(e.message).slice(0, 100)}) — HEARTBEAT backstop still delivers`);
-      }
+        url: published.url, verdict, markName: job.markName ?? job.name ?? null });
+      handOffDelivery(run.runDir, packet);   // delivery-handoff.mjs: the packet written, the outbox marker dropped
     }
 
     // Final status BEFORE archive so the renamed status.json carries the delivered state into the archive;
@@ -334,8 +305,13 @@ export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }, h
     } catch (e) { runLog(run.runDir, { event: "audit-build-failed", reason: String(e?.message ?? e).slice(0, 160) }); }
     const coverageRows = assessmentCoverageOfRun(run.runDir);
     atomicWrite(driverDir(run.runDir, NOT_COMPLETED_DIR, "assessment-coverage.json"), JSON.stringify({ rows: coverageRows }, null, 2) + "\n");
-    writeFileSync(P.report, renderReportOverview({ overall_caption: assessmentNotCompletedNote(), handling_note: null, actions: [], methodology: null },
-      reportIdentityRecord(job, ctx, run.runDir, null)));
+    const shell = renderReportOverview({ overall_caption: assessmentNotCompletedNote(), handling_note: null, actions: [] },
+      reportIdentityRecord(job, ctx, run.runDir, null));
+    // The page's Left open rows, as an assembled report carries them (left-open-md.mjs), from the rows written above.
+    let leftOpen = "";
+    try { leftOpen = leftOpenSectionOfRun(run.runDir, coverageRows, { verdict: false, already: shell }); }
+    catch (e) { note(`[assessment] the report's Left open section was not written: ${String(e?.message ?? e).slice(0, 160)}`); }
+    writeFileSync(P.report, leftOpen ? `${shell.replace(/\s*$/, "")}\n\n${leftOpen}\n` : shell);
     writeScopeFactsOf(ctx, P, run.runDir);
     applyScopeFrontMatterOf(P, run.runDir);
     runLog(run.runDir, { event: "assessment-not-completed-delivery", stage: open.stage ?? null, sig: open.sig ?? null,

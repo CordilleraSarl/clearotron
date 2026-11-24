@@ -1,0 +1,156 @@
+{
+  "uri": "/mark/fr/df11d0a8-dea3-4bbd-8b88-a1db4d0bd32d",
+  "provider": "clarivate",
+  "office": "fr",
+  "guid": "df11d0a8-dea3-4bbd-8b88-a1db4d0bd32d",
+  "applicationNumber": "10 3728082",
+  "registrationNumber": "10 3728082",
+  "applicationDate": "2010-04-07",
+  "registrationDate": null,
+  "expiryDate": "2030-04-06",
+  "renewalDate": "2019-12-11",
+  "lastPublicationDate": "2010-05-14",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "PREVENRISK",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    16,
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        16
+      ],
+      "language": "fr",
+      "description": ": Produits de l'imprimerie ; articles pour reliures ; photographies ; articles de papeterie ; adhésifs (matières collantes) pour la papeterie ou le ménage ; matériel pour les artistes ; pinceaux ; machines à écrire et articles de bureau (à l'exception des meubles) ; matériel d'instruction ou d'enseignement (à l'exception des appareils) ; caractères d'imprimerie ; clichés ; Papier ; carton ; boîtes en carton ou en papier ; affiches ; albums ; cartes ; livres ; journaux ; prospectus ; brochures ; calendrier ; instruments d'écriture ; objets d'art gravés ou lithographiés ; tableaux (peintures) encadrés ou non ; aquarelles ; patrons pour la couture ; dessins ; instruments de dessin ; mouchoirs de poche en papier ; serviettes de toilette en papier ; linge de table en papier ; papier hygiénique ; couches en papier ou en cellulose (à jeter) ; sacs et sachets (enveloppes, pochettes) en papier ou en matières plastiques pour l'emballage ; sacs à ordures en papier ou en matières plastiques",
+      "translation_language": "en",
+      "translation": "Printed matter; bookbinding materials; photographs; stationery; adhesives (sticky materials) for stationery or household use; materials for artists; paint brushes ; typewriters and office requisites (except furniture); instructional or teaching material (except apparatus); printing characters; cliches; Paper ; cardboard; cardboard or paper boxes; posters; scrapbooks; cards; books ; newspapers; flyers; pamphlets; calendar ; writing instruments; engraved or lithographed works of art; pictures (paintings) framed or not; watercolors; sewing patterns; drawings; drawing instruments; paper pocket tissues; paper towels; paper table linen; toilet paper ; paper or cellulose diapers (disposable); bags and sachets (envelopes, pouches) of paper or plastic for packaging; paper or plastic garbage bags"
+    },
+    {
+      "classes": [
+        35
+      ],
+      "language": "fr",
+      "description": ": Publicité ; gestion des affaires commerciales ; administration commerciale ; travaux de bureau ; Diffusion de matériel publicitaire (tracts, prospectus, imprimés, échantillons) ; Services d'abonnement à des journaux (pour des tiers) ; Conseils en organisation et direction des affaires ; Comptabilité ; Reproduction de documents ; Bureaux de placement ; Gestion de fichiers informatiques ; Organisation d'expositions à buts commerciaux ou de publicité ; Publicité en ligne sur un réseau informatique ; Location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; locations d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques",
+      "translation_language": "en",
+      "translation": "Advertising; business management; business administration; office work; Dissemination of advertising material (leaflets, prospectuses, printed matter, samples); newspaper subscription services (for others); Advice on organization and business management; Accounting ; Reproduction of documents; employment offices; Computer file management; Organization of exhibitions for commercial or advertising purposes; Online advertising on a computer network; Rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations"
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": "fr",
+      "description": ": Éducation ; formation ; divertissement ; activités sportives et culturelles ; Informations en matière de divertissement ou d'éducation ; Services de loisir ; Publication de livres ; Prêts de livres ; Dressage d'animaux ; Production de films sur bandes vidéo ; Location de films cinématographiques ; Location d'enregistrements sonores ; Location de magnétoscopes ou de postes de radio et de télévision ; Location de décors de spectacles ; Montage de bandes vidéo ; Services de photographie ; Organisation de concours (éducation ou divertissement) ; Organisation et conduite de colloques, conférences ou congrès ; Organisation d'expositions à buts culturels ou éducatifs ; Réservation de places de spectacles ; Services de jeu proposés en ligne à partir d'un réseau informatique ; Service de jeux d'argent ; Publication électronique de livres et de périodiques en ligne ; Micro-édition.",
+      "translation_language": "en",
+      "translation": "Education; training; entertainment ; sports and cultural activities; entertainment or educational information; Leisure services; Publication of books; Book loans; Animal training; Production of films on videotape; Rental of cinematographic films; Rental of sound recordings; Rental of video recorders or radio and television sets; Rental of show sets; Editing of videotapes; photography services; organization of competitions (education or entertainment); Organization and conduct of symposiums, conferences or congresses; Organization of exhibitions for cultural or educational purposes; Reservation of seats for shows; gaming services provided online from a computer network; Gambling service; Electronic publication of books and periodicals online; Micro-editing."
+    }
+  ],
+  "owner": "GRAPHITO CREATION, SAS",
+  "ownerNative": null,
+  "ownerCountry": "FR",
+  "representative": "Mme REBOULLET PASCALE",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": false,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "120 IMPASSE DES PRELES, 84000 AVIGNON",
+        "applicantAddressCountryCode": "FR",
+        "applicantAddressCountryName": "France",
+        "applicantName": "GRAPHITO CREATION, SAS"
+      }
+    ],
+    "applicationLanguageCode": "fr",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Printed matter; bookbinding materials; photographs; stationery; adhesives (sticky materials) for stationery or household use; materials for artists; paint brushes ; typewriters and office requisites (except furniture); instructional or teaching material (except apparatus); printing characters; cliches; Paper ; cardboard; cardboard or paper boxes; posters; scrapbooks; cards; books ; newspapers; flyers; pamphlets; calendar ; writing instruments; engraved or lithographed works of art; pictures (paintings) framed or not; watercolors; sewing patterns; drawings; drawing instruments; paper pocket tissues; paper towels; paper table linen; toilet paper ; paper or cellulose diapers (disposable); bags and sachets (envelopes, pouches) of paper or plastic for packaging; paper or plastic garbage bags",
+          "intClassNumber": "16",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Produits de l'imprimerie ; articles pour reliures ; photographies ; articles de papeterie ; adhésifs (matières collantes) pour la papeterie ou le ménage ; matériel pour les artistes ; pinceaux ; machines à écrire et articles de bureau (à l'exception des meubles) ; matériel d'instruction ou d'enseignement (à l'exception des appareils) ; caractères d'imprimerie ; clichés ; Papier ; carton ; boîtes en carton ou en papier ; affiches ; albums ; cartes ; livres ; journaux ; prospectus ; brochures ; calendrier ; instruments d'écriture ; objets d'art gravés ou lithographiés ; tableaux (peintures) encadrés ou non ; aquarelles ; patrons pour la couture ; dessins ; instruments de dessin ; mouchoirs de poche en papier ; serviettes de toilette en papier ; linge de table en papier ; papier hygiénique ; couches en papier ou en cellulose (à jeter) ; sacs et sachets (enveloppes, pochettes) en papier ou en matières plastiques pour l'emballage ; sacs à ordures en papier ou en matières plastiques"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertising; business management; business administration; office work; Dissemination of advertising material (leaflets, prospectuses, printed matter, samples); newspaper subscription services (for others); Advice on organization and business management; Accounting ; Reproduction of documents; employment offices; Computer file management; Organization of exhibitions for commercial or advertising purposes; Online advertising on a computer network; Rental of advertising time on any means of communication; publication of publicity texts; rental of advertising space; dissemination of advertisements; public relations",
+          "intClassNumber": "35",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Publicité ; gestion des affaires commerciales ; administration commerciale ; travaux de bureau ; Diffusion de matériel publicitaire (tracts, prospectus, imprimés, échantillons) ; Services d'abonnement à des journaux (pour des tiers) ; Conseils en organisation et direction des affaires ; Comptabilité ; Reproduction de documents ; Bureaux de placement ; Gestion de fichiers informatiques ; Organisation d'expositions à buts commerciaux ou de publicité ; Publicité en ligne sur un réseau informatique ; Location de temps publicitaire sur tout moyen de communication ; publication de textes publicitaires ; locations d'espaces publicitaires ; diffusion d'annonces publicitaires ; relations publiques"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Education; training; entertainment ; sports and cultural activities; entertainment or educational information; Leisure services; Publication of books; Book loans; Animal training; Production of films on videotape; Rental of cinematographic films; Rental of sound recordings; Rental of video recorders or radio and television sets; Rental of show sets; Editing of videotapes; photography services; organization of competitions (education or entertainment); Organization and conduct of symposiums, conferences or congresses; Organization of exhibitions for cultural or educational purposes; Reservation of seats for shows; gaming services provided online from a computer network; Gambling service; Electronic publication of books and periodicals online; Micro-editing.",
+          "intClassNumber": "41",
+          "intGoodsLanguageCode": "fr",
+          "intGoodsServicesDescription": ": Éducation ; formation ; divertissement ; activités sportives et culturelles ; Informations en matière de divertissement ou d'éducation ; Services de loisir ; Publication de livres ; Prêts de livres ; Dressage d'animaux ; Production de films sur bandes vidéo ; Location de films cinématographiques ; Location d'enregistrements sonores ; Location de magnétoscopes ou de postes de radio et de télévision ; Location de décors de spectacles ; Montage de bandes vidéo ; Services de photographie ; Organisation de concours (éducation ou divertissement) ; Organisation et conduite de colloques, conférences ou congrès ; Organisation d'expositions à buts culturels ou éducatifs ; Réservation de places de spectacles ; Services de jeu proposés en ligne à partir d'un réseau informatique ; Service de jeux d'argent ; Publication électronique de livres et de périodiques en ligne ; Micro-édition."
+        }
+      ]
+    },
+    "id": "df11d0a8-dea3-4bbd-8b88-a1db4d0bd32d",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": false,
+    "markPublicationCopiesAvailable": true,
+    "publications": [
+      {
+        "publicationPage": "00269",
+        "publicationVolume": "19"
+      }
+    ],
+    "recordLastUpdated": "20250426",
+    "registrationOfficeCode": "FR",
+    "registrationOfficeName": "France",
+    "representatives": [
+      {
+        "representativeName": "Mme REBOULLET PASCALE"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20100407",
+        "applicationNumber": "10 3728082"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20300406",
+      "lastPublicationDate": "20100514",
+      "markCurrentStatus": "REGISTRATION",
+      "registration": {
+        "registrationNumber": "10 3728082"
+      },
+      "renewalDate": "20191211",
+      "renewalPublishedDate": "20201120"
+    },
+    "version": "20250426153701",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "PREVENRISK"
+    }
+  },
+  "_uri": "/mark/fr/df11d0a8-dea3-4bbd-8b88-a1db4d0bd32d",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.191Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

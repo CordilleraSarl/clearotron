@@ -1,0 +1,354 @@
+{
+  "uri": "/mark/us/0ad5b192-ebf3-4f7d-a1a8-cc8acecc14fa",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "0ad5b192-ebf3-4f7d-a1a8-cc8acecc14fa",
+  "applicationNumber": "85658135",
+  "registrationNumber": "4323345",
+  "applicationDate": "2012-06-21",
+  "registrationDate": "2013-04-23",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2013-02-05"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2019-11-29",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "RAVEN RILEY",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Entertainment services, namely, providing a web site featuring photographic, video and prose presentations featuring adult oriented subject matter",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Pate, Sarah F.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "David D. Brannon",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "2867 Pekin Rd., Springboro, OH, 45066",
+        "applicantAddressCity": "Springboro",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "45066",
+        "applicantAddressStateName": "OHIO",
+        "applicantAddressStreet": "2867 Pekin Rd.",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Pate, Sarah F."
+      },
+      {
+        "applicantAddress": "2867 Pekin Rd., Spirngboro, OH, 45066",
+        "applicantAddressCity": "Spirngboro",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "45066",
+        "applicantAddressStateName": "OHIO",
+        "applicantAddressStreet": "2867 Pekin Rd.",
+        "applicantJurisdictionOfIncorporation": "UNITED STATES",
+        "applicantLegalEntity": "INDIVIDUAL",
+        "applicantName": "Leach, Thomas D."
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Entertainment services, namely, providing a web site featuring photographic, video and prose presentations featuring adult oriented subject matter"
+        }
+      ]
+    },
+    "id": "0ad5b192-ebf3-4f7d-a1a8-cc8acecc14fa",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20191129",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20180423",
+        "descriptionText": "COURTESY REMINDER - SEC. 8 (6-YR) E-MAILED"
+      },
+      {
+        "date": "20130423",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20130205",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20130205",
+        "descriptionText": "OFFICIAL GAZETTE PUBLICATION CONFIRMATION E-MAILED"
+      },
+      {
+        "date": "20130116",
+        "descriptionText": "NOTIFICATION OF NOTICE OF PUBLICATION E-MAILED"
+      },
+      {
+        "date": "20121228",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20121227",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20121207",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20121207",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20121207",
+        "descriptionText": "EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20121207",
+        "descriptionText": "NOTIFICATION OF EXAMINERS AMENDMENT E-MAILED"
+      },
+      {
+        "date": "20121207",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20121009",
+        "descriptionText": "NON-FINAL ACTION  WRITTEN"
+      },
+      {
+        "date": "20121009",
+        "descriptionText": "NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20121009",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20121009",
+        "descriptionText": "NOTIFICATION OF NON-FINAL ACTION E-MAILED"
+      },
+      {
+        "date": "20120629",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20120625",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "2867 Pekin Rd., Springboro, OH, 45066",
+        "city": "Springboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Pate, Sarah F.",
+        "postalCode": "45066",
+        "stateName": "OHIO",
+        "street": "2867 Pekin Rd."
+      },
+      {
+        "address": "2867 Pekin Rd., Spirngboro, OH, 45066",
+        "city": "Spirngboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Leach, Thomas D.",
+        "postalCode": "45066",
+        "stateName": "OHIO",
+        "street": "2867 Pekin Rd."
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "2867 Pekin Rd., Springboro, OH, 45066",
+        "city": "Springboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Pate, Sarah F.",
+        "postalCode": "45066",
+        "stateName": "OHIO",
+        "street": "2867 Pekin Rd."
+      },
+      {
+        "address": "2867 Pekin Rd., Spirngboro, OH, 45066",
+        "city": "Spirngboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Leach, Thomas D.",
+        "postalCode": "45066",
+        "stateName": "OHIO",
+        "street": "2867 Pekin Rd."
+      },
+      {
+        "address": "2867 Pekin Rd., Springboro, OH, 45066",
+        "city": "Springboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Pate, Sarah F.",
+        "postalCode": "45066",
+        "stateName": "OHIO",
+        "street": "2867 Pekin Rd."
+      },
+      {
+        "address": "2867 Pekin Rd., Spirngboro, OH, 45066",
+        "city": "Spirngboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Leach, Thomas D.",
+        "postalCode": "45066",
+        "stateName": "OHIO",
+        "street": "2867 Pekin Rd."
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "2867 Pekin Rd., Springboro, OH, 45066",
+        "city": "Springboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Pate, Sarah F.",
+        "postalCode": "45066",
+        "stateName": "OHIO",
+        "street": "2867 Pekin Rd."
+      },
+      {
+        "address": "2867 Pekin Rd., Spirngboro, OH, 45066",
+        "city": "Spirngboro",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "UNITED STATES",
+        "legalEntity": "INDIVIDUAL",
+        "name": "Leach, Thomas D.",
+        "postalCode": "45066",
+        "stateName": "OHIO",
+        "street": "2867 Pekin Rd."
+      }
+    ],
+    "recordLastUpdated": "20260912",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "DAYTON, OH 45402-1590, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "DAYTON, OH 45402-1590",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "DAVID D. BRANNON BRANNON & ASSOCIATES, 130 W 2ND ST STE 900"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "DAYTON, OH 45402-1590, UNITED STATES",
+        "representativeAddressLines": [
+          "DAYTON, OH 45402-1590",
+          "UNITED STATES"
+        ],
+        "representativeName": "David D. Brannon"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120621",
+        "applicationNumber": "85658135"
+      },
+      "cancellationDate": "20191129",
+      "cancellationPublicationDate": "20200107",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20050101"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20050101"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20191129",
+        "markOfficialStatusEvents": [
+          "FILED AS USE APPLICATION",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20130205"
+      ],
+      "registration": {
+        "registrationDate": "20130423",
+        "registrationNumber": "4323345"
+      }
+    },
+    "version": "20260912154429",
+    "wordMarkSpecification": {
+      "markVerbalElementText": "RAVEN RILEY"
+    }
+  },
+  "_uri": "/mark/us/0ad5b192-ebf3-4f7d-a1a8-cc8acecc14fa",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.197Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

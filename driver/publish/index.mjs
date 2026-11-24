@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, chmodS
 import { grpRead, publishRun } from './shell.mjs';
 import { join, dirname } from 'node:path';
 import { readFold } from '../record-fold.mjs'; import { parseReport, parseAudit, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
-import { renderClearanceDocument } from './render.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
+import { renderReport } from './render-report.mjs'; import { emailConditionsOf } from './email-conditions.mjs';   // the box's conditions, read the same way by the delivery check
 import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degradedPartRows, degradedAtPublish, storeStates, readDeliveredStores, mergeDegradedRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, projectCoverageJudgment, COVERAGE_AREA_STATES } from '../findings-model.mjs';
 import { recordsOfDeliveredPositions } from '../declination-duty.mjs'; import { findingUris } from '../record-carry.mjs';   // — a position a finding delivers is not listed as set aside
@@ -19,7 +19,7 @@ import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.
 import { clearanceReportDocument, clearanceReportDataOf, clearanceRatingOf, clearanceWorkbookOf } from './report-document.mjs';   // the run's report as one document, and what it carries
 import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
 import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
-import { rollupTokens, servedModels } from '../tokens.mjs';
+import { rollupTokens } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
 import { deliveredFailure } from '../predelivery-lint.mjs';
@@ -28,14 +28,14 @@ import { runLog } from '../log.mjs';   // — one line in the run record when on
 import { PROVIDERS, config } from '../driver.config.mjs';
 import { declaredRecordOrigins } from '../record-origins.mjs';
 import { NEUTRAL_DELIVERY, loadProfiles } from '../profiles.mjs';
-import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   // — one demo question, every product; 2134 — every SURFACE
-import { engineCommit } from '../engine-build.mjs';
+import { demoBannerMd } from './demo-marking.mjs';   // 2134 — every SURFACE
+import { readReportDocument } from './read-document.mjs';   // the one document reader: the reads every report makes, then the clearance's
 import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND, EMAIL_TIER, EMAIL_COLOURS as EC, BAND_BY_TONE } from '../../shared/brand.mjs'; import { TEXT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the text face, carried in the page rather than fetched
 import { NAV_CSS, siteNav, siteFab } from '../../shared/site-nav.mjs';
 import { anonAssets, anonClient, anonMark } from '../../shared/anon-overlay.mjs';
 
-const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const escAttr = s => esc(s).replace(/"/g, '&quot;');   // attribute sink — esc alone is quote-blind
+import { escapeText as esc, escapeAttr as escAttr } from '../../shared/html-escape.mjs';
+// esc for text, escAttr for an attribute's value: esc alone is quote-blind
 const dateOf = run => (String(run).match(/\d{4}-\d{2}-\d{2}/) || ['undated'])[0];
 
 // Newest-first run order for every pool listing (staff index, per-customer indexes, pool-admin list).
@@ -641,31 +641,41 @@ export function normalizeRecordLinks(findings, origins) {
  * workbook, the page, the data file and `meta.json`. Where two surfaces state one fact two ways today, each way is its
  * own field, so every surface prints what it printed before; which way is right is not this function's to decide. It
  * writes nothing to the pool. It does append to the run's own log what the read found dropped or missing, as before.
+ *
+ * It reads through the one document reader (read-document.mjs): the reads every report makes, then the clearance's
+ * own, in the order `CLEARANCE_READS` lists them.
  */
 export async function readClearanceDocument({ runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir }) {
+  return readReportDocument(CLEARANCE_READING, { runId, reportMd, auditMd, findingsJson, poolRoot, poolUrl, customerKey, delivery, runDir });
+}
+
+// ── The clearance's reads, in order ───────────────────────────────────────────────────────────────────────────────
+//
+// Each read is handed every fact read before it and returns the ones it adds (read-document.mjs). Each block below is
+// the part of the one reader function it was, unchanged but for the facts it takes and returns: the stores, the base
+// directories, the catches and the order of the log lines are as they were.
+export const CLEARANCE_READS = [
+  readTheReport, readTheAssessment, readTheRecords, readTheVerdict, readTheChecksNotMade, readTheFramework, readTheScope,
+  readTheCaseLaw, readTheEvidence, readTheReviewReceipts, readTheRecordFetches, readTheProduct, readTheCommonLawJoin,
+  readTheProductName, readThePartsAtPublish, readTheSearchDepth, readTheRunRecord,
+];
+
+// A republish from a report directory has no workspace, so the clearance's directory for the run is then the report's.
+// Its issue time carries the zone.
+const CLEARANCE_READING = { base: ({ runDir, reportMd }) => runDir ?? dirname(reportMd), issuedZone: true, reads: CLEARANCE_READS, result: clearanceRead };
+
+/** The report the synthesis wrote, the delivery overlay, the publish's own clock, and the report.md demo note. */
+function readTheReport({ reportMd, delivery, demoData }) {
   const parsed = parseReport(reportMd);
   const { fm } = parsed;
   const deliv = delivery || NEUTRAL_DELIVERY;
-  // §2.9 issue timestamp — the FIRST issue, read from the record (report-dates.mjs), in the firm locale
-  // (Europe/Zurich; Intl picks CET/CEST by DST, no hard-coded offset). e.g. "2026-06-16 · 14:32 CEST".
-  //
-  // A REPUBLISH IS NOT A NEW ISSUE. This was bound to generation time, so the page restamped on every render
-  // while meta.json kept the first issue for the index: a report's page disagreed with its own record, and a
-  // demo's example read as issued today. The two are now one value, and the render's own time is `renderedAt`,
-  // recorded apart from both.
-  //
-  // Computed HERE (publishReport is already non-deterministic — cf. the staff-page/status pages below) and
-  // passed to renderHtml as opts.issued, so the renderer stays a pure function (unit tests + replay diff its
-  // output).
-  const dates = reportDates({ runDir: runDir ?? dirname(reportMd), poolRunDir: join(poolRoot, runId) });
-  const issued = zurichStamp(dates.issuedAt, { zone: true });
   const asOf = new Date().toISOString();   // C2 — publish-time clock for the priority-window flag (render stays pure)
 
   // T6 (H7): the POOL copy of report.md is written through the stripInternal choke point —
   // markers consumed, internal tails labelled "[internal]" — so no raw ::p:: token ever reaches a
   // reader surface. The RAW report.md stays in the
   // run dir as the render/audit source of truth.
-  // ── — THE MARKING IS RESOLVED HERE, ABOVE THE FIRST CLIENT SURFACE ──────────────
+  // ── — THE MARKING IS RESOLVED ABOVE THE FIRST CLIENT SURFACE ─────────────────────────
   //
   // IS THIS RUN DEMO DATA? (; moved to publish/demo-marking.mjs for 2122.) The
   // resolution and the whole argument for it — why the roster is RE-READ rather than trusted from the
@@ -679,9 +689,13 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // carried "Demonstration report" in its hero, report.md carried it zero times, and both files sit in
   // the same served pool directory. Resolved once, above every client surface, so a surface added later
   // cannot be written before the question is asked.
-  const demoData = resolveDemoData({ runDir, customerKey });
+  // It is resolved with the reads every report makes (read-document.mjs), ahead of this one.
   const demoMd = demoBannerMd(demoData);
+  return { parsed, fm, deliv, asOf, demoMd };
+}
 
+/** The assessment the run delivers, its coverage rows, and the stores this publish did not find. */
+function readTheAssessment({ runDir, reportMd, findingsJson }) {
   // The per-finding machine contract drives the data-driven report + Excel. BEST-EFFORT — a bad or
   // absent findings.json never blocks the report (the render degrades to a structured-light report); the
   // defect is surfaced as findingsError, never as raw QC on a client surface.
@@ -750,14 +764,18 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // the one-sentence `read` with the typed rows collapsed. projectAssessmentField/projectMarkAssessment
   // remain the projection for the workbook, report-data's client text, the lint and legacy string runs.
   const coverageJudgmentDisplay = projectCoverageJudgment(coverageJudgment);
+  return { findings, coverage, contextNotes, quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc, fourAnswers, findingsSchemaVersion, inputsAbsent, assessmentNotCompleted, findingsKept, coverageJudgmentDisplay };
+}
 
+/** The register records the run fetched, its fetch receipts, and the record links its register publishes. */
+function readTheRecords({ runDir, findings }) {
   // doc-31 Tier-2 — bind each finding's structured registry fields (classes/status/filed/expiry/jurisdiction)
   // + owner from the run's fetched record set BEFORE the audit + render read them, so NO delivery artifact
   // (report.html OR audit.xlsx) carries a model-typed/​invented value. Loaded from the SOURCE runDir/_records/
   // (materialized by the lint-pass assembleRunRecords); absent ⇒ empty map ⇒ a NO-OP (back-compat: archived /
   // replay runs with no record set keep the model's fields). The persisted findings.json copy above is the
   // model's original (kept for forensics); the records are archived alongside in _records/.
-  const recordsByUri = runDir ? readRecordArtifacts(runDir) : new Map(), logos = logosForReport(runDir), followUpKinds = followUpKindsOf(runDir);   // and each cited registration's saved logo; none on a run that fetched none
+  const recordsByUri = runDir ? readRecordArtifacts(runDir) : new Map(), followUpKinds = followUpKindsOf(runDir);
   // WP-receipts W2 — the run's fetch-receipt index (written by assembleRunRecords). Its `provider` names
   // the register THIS run actually used — the link origin + label come from THAT provider's config, never
   // the currently-configured one (a re-published archive keeps its own register). Legacy runs: null ⇒
@@ -786,6 +804,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // now it did that from a scraped origin rather than from this list. One list, both consumers.
   if (foreignRecordLinks.length)
     console.warn(`[record-link-host] ${foreignRecordLinks.length} record link(s) named a host ${providerLabel ?? 'this provider'} does not publish and were reduced to the record's own path: ${foreignRecordLinks.slice(0, 5).map(d => `F${d.ordinal} ${d.field}=${d.was.slice(0, 60)}`).join(' | ')}`);
+  return { recordsByUri, followUpKinds, runProviderConf, recordOrigin, providerLabel, runOrigins };
+}
+
+/** The senior-right rows, the verdict record, and the conditions that reach no page. */
+function readTheVerdict({ runDir, assessmentNotCompleted }) {
   // WP-receipts W3/W4 — the senior-right sidecar: the render code-adds the plain-English open item on
   // any verdict-driving card whose senior right went unverified. Absent on legacy runs → no lines.
   let seniorRights = null;
@@ -822,6 +845,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
         reasons: droppedConditions.map((c) => c.note) });
     } catch { /* the workbook row is the record that matters; this line is the second copy */ }
   }
+  return { seniorRights, verdictInfo, droppedConditions };
+}
+
+/** The checks the run decided on and did not make, the families withheld, and the records set aside. */
+function readTheChecksNotMade({ runDir, reportMd, assessmentNotCompleted, findings }) {
   // ── THE CHECKS THE RUN DECIDED ON AND DID NOT MAKE ─────────────────────────────────────────────
   //
   // A run from before the recall store's removal (2026-09-24) carries its recall receipt; a newer run
@@ -884,7 +912,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   const withheldFamilies = [...withheldFamilyRows(runDir ?? dirname(reportMd)), ...frameSetAsideRows(runDir ?? dirname(reportMd))]; // The records the assessment set aside are the assessment's own: in the state where it did not complete, an earlier
   // draft's set-asides are not its answer, so none is listed.
   const setAside = assessmentNotCompleted ? [] : setAsideRows(runDir ?? dirname(reportMd), { findings });
+  return { undispatchedProbes, withheldFamilies, setAside };
+}
 
+/** The frozen framework and method, and the display fields an older verdict record gains from them. */
+function readTheFramework({ runDir, findings, verdictInfo }) {
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
   let framework = null, frameworkMethod = null;   // + the frozen method, where the framework states one (framework-method.mjs): the card and workbook show its inputs
@@ -900,6 +932,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     // framework ladder; legacy composite sidecars have no band ⇒ null, and render treats null as before.
     verdictInfo = { ...verdictInfo, tier: d.tier, badge: d.badge, gaugeIndex: d.gaugeIndex, maxComposite: d.maxComposite, band: d.band ?? null };
   }
+  return { framework, frameworkMethod, verdictInfo };
+}
+
+/** What was searched: the plan's territories, the scope basis, and the register service's reach. */
+function readTheScope({ runDir, reportMd }) {
   // T6 (D4) — the SEARCHED jurisdiction set, derived from the authoritative machine artifacts:
   // the frozen register plan's per-entry regions (what the executor actually ran), falling back to the
   // instructed scope. copper-spire's header showed "CN/EU" (a per-finding fallback) while its methodology
@@ -962,6 +999,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   const registerScope = scopeBasis === 'worldwide' ? 'worldwide'
     : searchedJurisdictions.length && searchedJurisdictions.every((j) => !/^(worldwide|world|ww|global)$/i.test(String(j).trim())) ? 'named'
       : null;
+  return { scopeBasis, searchedJurisdictions, planTerritories, registerReach, registerScope };
+}
+
+/** The case-law layer and the enforcement telemetry. */
+function readTheCaseLaw({ runDir, reportMd, findings }) {
   // T7 (E5) — the case-law layer joins DETERMINISTICALLY (was: a prompt fished in the md and
   // hit 2 of 3 copper-spire cards): parse the grounded profiles, join by ordinal (fresh runs dictate
   // "- ord:") falling back to mark/owner (archived runs) — every matched card gets its strand.
@@ -983,6 +1025,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     const esPath = paths(runDir ?? dirname(reportMd)).enforcerSignals;
     if (existsSync(esPath)) { const es = readJson(esPath); if (Array.isArray(es)) enforcerSignals = es; }
   } catch { /* absent — no telemetry lines */ }
+  return { caseLawByOrdinal, caseLawNotice, enforcerSignals };
+}
+
+/** Each finding bound to its records, its office links, and its evidence status. */
+function readTheEvidence({ reportMd, findings, recordsByUri, runOrigins }) {
   const officeLinks = officeLinksFor(findings, recordsByUri, runOrigins); bindFindingsToRecords(findings, recordsByUri);
   // 404-card caveat (2026-07-22): the V4-2 closure pass persisted every cited record its targeted
   // fetch definitively could not retrieve (predelivery-lint.json artifactSet.recordFetchFailures);
@@ -998,7 +1045,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // register mirror is never use evidence). Display-only mutation; the demotion IS the fix (
   // T4/F2: it no longer ALSO shouts on a banner — the receipt rides the audit workbook).
   const evidenceFlags = joinEvidenceStatus(findings, recordsByUri, recordFetchFailures);
+  return { officeLinks, evidenceFlags };
+}
 
+/** The delivery sinks, the review receipts the workbook carries, and the machine QC. */
+function readTheReviewReceipts({ runDir, reportMd, inputsAbsent, evidenceFlags, coverage, findingsError, quarantined }) {
   // T4 (H1/H2): the _driver sinks feed the AUDIT surfaces and the client gate — never a
   // rendered caveat. The old integrityFlags/lintFlags "verify before relying" review-bar assembly is
   // dead; the same receipts now land on the audit workbook's Review-receipts sheet below and stay in
@@ -1062,7 +1113,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     // understood — an absence reading as nothing, inside the guard against absences reading as nothing.
     clientGate = gateCouldNotEvaluate(e, inputsAbsent);
   }
+  return { reviewReceipts, clientGate };
+}
 
+/** Whether each cited record was retrieved, for the workbook. */
+function readTheRecordFetches({ findings, recordsByUri, seniorRights, reviewReceipts }) {
   // ── audit-workbook inputs (all from artifacts already loaded above) ──────────────────────────────────
   // Record-fetch state per cited URI, for the Findings "Record retrieved?" column: a record we actually
   // pulled is `retrieved`; a URI named in a fetch-failure cause (senior-rights) or the record-coverage lint
@@ -1077,7 +1132,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   if (covLint) for (const u of (String(covLint.detail).match(/uri=\/mark\/[a-z]{2,6}\/[a-z0-9][a-z0-9_-]*/ig) || [])) failedUris.add(u.replace(/^uri=/, '').toLowerCase());
   for (const u of failedUris) if (fetchState[u] !== 'retrieved') fetchState[u] = 'failed';
   for (const f of findings) for (const r of (f.owner?.registrations || [])) { const u = String(r.uri || '').toLowerCase(); if (u && !fetchState[u]) fetchState[u] = 'not-attempted'; }
+  return { fetchState };
+}
 
+/** The frozen product shape, and the Summary's jurisdiction line. */
+function readTheProduct({ runDir, searchedJurisdictions, profile }) {
   // The frozen product shape. Read HERE rather than at the meta.json write below, because the Summary's
   // jurisdiction line is composed before that point and must not claim a surface this run never touched.
   let searchPolicy = null;
@@ -1093,11 +1152,8 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // covered by the general web search, and by any stores the engine chose for the matter, so the lines that
   // describe the common-law layer say that instead of naming a marketplace search nobody picked. Read from
   // the frozen profile, which is the list the run actually searched; absent (a legacy run) reads as picked.
-  let noMarketplacesPicked = false;
-  try {
-    const frozenProfile = runDir ? readJson(paths(runDir).profile) : null;
-    noMarketplacesPicked = Array.isArray(frozenProfile?.platforms) && frozenProfile.platforms.length === 0;
-  } catch { /* no frozen profile — a legacy run keeps its wording */ }
+  // The frozen profile is the shared reads' (read-document.mjs); none, on a legacy run, keeps its wording.
+  const noMarketplacesPicked = Array.isArray(profile?.platforms) && profile.platforms.length === 0;
 
   // Jurisdiction line for the Summary — searched register scope + the common-law surface layer.
   const regScope = (searchedJurisdictions && searchedJurisdictions.length) ? searchedJurisdictions.join('/') : W.jurisdictionLine.worldwide;
@@ -1106,7 +1162,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     : noMarketplacesPicked
       ? W.jurisdictionLine.noMarketplaces(regScope)
       : W.jurisdictionLine.withCommonLaw(regScope);
+  return { searchPolicy, registerOnly, noMarketplacesPicked, jurisdiction };
+}
 
+/** Which common-law search terms became findings. */
+function readTheCommonLawJoin({ runDir, reportMd, findings }) {
   // Common-law URL-join: a grid hit whose candidate URL resolves to a finding's own link PROVES that search
   // term became a finding (rescues an anchor term whose finding wears a different name). Best-effort; absent
   // grid ⇒ the workbook falls back to the pure token-join. Never a guessed finding number.
@@ -1117,7 +1177,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     commonLawJoinedTerms = new Set();
     for (const c of (grid.cells || [])) for (const cand of (c.candidates || [])) if (cand?.url && links.has(cand.url)) commonLawJoinedTerms.add(String(c.term).toUpperCase());
   } catch { /* no grid this run — token-join only */ }
+  return { commonLawJoinedTerms };
+}
 
+/** The product's name, stage label and coverage note, off today's registry row for the level that ran. */
+function readTheProductName({ runDir }) {
   // The audit workbook is BEST-EFFORT: the try/catch is a last-resort guard for a genuine EXCEPTION (a real
   // bug), never a quality gate. buildAudit ALWAYS writes the .xlsx and returns any advisory gate findings in
   // `gateViolations` — those are LOGGED for observability but never a reason to drop the download. (An earlier
@@ -1152,7 +1216,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     // from the run's OWN frozen components. No sidecar ⇒ undefined ⇒ no strip (archived byte-identity).
     depthNote = productCoverageNote(pol) ?? undefined;
   } catch { stageLabel = undefined; depthNote = undefined; productName = undefined; }
+  return { stageLabel, depthNote, productName };
+}
 
+/** The parts only publishing sees, the audit log, and the workbook's two further reads. */
+function readThePartsAtPublish({ runDir, reportMd, auditMd }) {
   // DERIVED BEFORE THE WORKBOOK, not after: buildAudit below reads productName, and this block used
   // to sit under it. A `let` read above its declaration is a temporal-dead-zone throw, and the one
   // test that exercises publishReport has no findings — so buildAudit was skipped and the suite went
@@ -1170,12 +1238,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // The workbook's two further reads, made here with the rest. Neither throws.
   const degradedRows = mergeDegradedRows(runDir ? readDegradedPartRows(runDir) : [], degradedPartRows(publishParts));
   const releasedFamilies = releasedFamilyRows(runDir ?? dirname(reportMd));
-  // The models that served this run, named as a client may read them (tokens.mjs servedModels). The closing
-  // line of the report's scope section, the data file and the meta below all take this one read; a read
-  // that throws records nothing rather than failing the publish.
-  let served = null;
-  try { served = runDir ? servedModels(runDir) : null; } catch { served = null; }
-  // `demoData` is resolved above the report.md write — one answer, every surface.
+  return { publishParts, auditParsed, degradedRows, releasedFamilies };
+}
+
+/** How much was read to reach the answer. */
+async function readTheSearchDepth({ runDir, reportMd, auditMd, recordsByUri, noMarketplacesPicked }) {
   // ── HOW MUCH WAS READ TO REACH THE ANSWER ──────────────────────────────────────────────────────
   // Derived here rather than in a stage so a REPUBLISH of an archived run picks the fields up with no
   // re-run: every source below is something the run already wrote. Best-effort per source, in the house
@@ -1244,6 +1311,11 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
       noMarketplacesPicked,
     });
   } catch { /* the depth record is additive — a publish never fails for want of it */ }
+  return { searchDepth };
+}
+
+/** The run's dates, the mark as typed, its project and organisation, and its token rollup. */
+function readTheRunRecord({ runDir, dates, profile }) {
   // Write-once publish timestamp: the index sorts same-day runs by it, and a republish (same runId) keeps the FIRST
   // issue time so re-rendering an old run never bumps it to the top. The render's own time is `renderedAt`.
   const { issuedAt, renderedAt } = dates;
@@ -1281,13 +1353,28 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
   // not gain a project retroactively, it gains one on republish or not at all.
   let project = null;
   let organisation = null;
-  try {
-    const frozen = runDir ? readJson(paths(runDir).profile) : null;
+  {
+    const frozen = profile;   // the shared reads' frozen profile (read-document.mjs): none on a pre-WS-B run, or a republish with no workspace
     if (frozen?.projectKey) project = { key: String(frozen.projectKey), name: String(frozen.projectName ?? frozen.projectKey) };
     if (typeof frozen?.organisation === 'string' && frozen.organisation) organisation = frozen.organisation;
-  } catch { /* no frozen profile — pre-WS-B run, or a republish with no workspace */ }
+  }
   let tokenRollup;
   try { tokenRollup = runDir ? rollupTokens(runDir) : undefined; } catch { tokenRollup = undefined; }
+  return { issuedAt, renderedAt, markName, project, organisation, tokenRollup };
+}
+
+/** What readClearanceDocument returns: the facts every read made, under the names the surfaces take them by. */
+function clearanceRead(r) {
+  const { parsed, fm, deliv, dates, issued, asOf, demoData, demoMd, inputsAbsent, findings, coverage, contextNotes,
+    quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc,
+    fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri,
+    logos, followUpKinds, runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo,
+    droppedConditions, undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis,
+    searchedJurisdictions, registerReach, registerScope, planTerritories, caseLawByOrdinal, caseLawNotice,
+    enforcerSignals, officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly,
+    noMarketplacesPicked, jurisdiction, commonLawJoinedTerms, stageLabel, depthNote, productName, publishParts,
+    auditParsed, degradedRows, releasedFamilies, served, searchDepth, issuedAt, renderedAt, markName, project,
+    organisation, tokenRollup, runDir, reportMd, poolUrl, runId, engineCommit } = r;
   return {
     parsed, fm, deliv, dates, issued, asOf, demoData, demoMd, inputsAbsent, findings, coverage, contextNotes,
     quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc,
@@ -1299,7 +1386,7 @@ export async function readClearanceDocument({ runId, reportMd, auditMd, findings
     depthNote, productName, publishParts, auditParsed, degradedRows, releasedFamilies, served, searchDepth, issuedAt,
     renderedAt, markName, project, organisation, tokenRollup,
     // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
-    engineCommit: engineCommit(),
+    engineCommit,
     // THE REPORT'S LINK, ONE WAY: the portal route the email, the run record and the data file all name. The data file
     // used to name the pool path, which production serves as "not found" (see reportRouteFor).
     reportRoute: reportRouteFor(poolUrl, runId),
@@ -1381,7 +1468,7 @@ const CLEARANCE_SHAPE = {
     // fails for want of it).
     if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
-    writeRO('report.html', renderClearanceDocument(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
+    writeRO('report.html', renderReport(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
     // ONE report: report.client.html is no longer written. The knockout lane's own
     // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
     // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -2030,9 +2117,7 @@ function composeEmailHtmlFrom({ fm, secs }, url, auditFile, names = [], delivery
 // numbers never fit shows up as a count rather than as silence. Kept down here, below every line the rest
 // of the tree cites by number.
 import { recordLinksFor } from './office-record-links.mjs';
-import { reportDates, zurichStamp } from './report-dates.mjs';   // the dates a report prints, from its record
 import { driverDir, paths, readJson } from "../run-record.mjs";
-import { logosForReport } from "../mark-logos.mjs";   // the saved logo of each cited registration, embedded in the report
 import { followUpKindsOf } from "../follow-up-twins.mjs";   // the search each deferred directive recorded
 function officeLinksFor(findings, recordsByUri, runOrigins) {
   const links = recordLinksFor(findings, recordsByUri, runOrigins);

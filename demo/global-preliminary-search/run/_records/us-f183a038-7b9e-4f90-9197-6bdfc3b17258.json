@@ -1,0 +1,333 @@
+{
+  "uri": "/mark/us/f183a038-7b9e-4f90-9197-6bdfc3b17258",
+  "provider": "clarivate",
+  "office": "us",
+  "guid": "f183a038-7b9e-4f90-9197-6bdfc3b17258",
+  "applicationNumber": "85626930",
+  "registrationNumber": "4318819",
+  "applicationDate": "2012-05-16",
+  "registrationDate": "2013-04-09",
+  "expiryDate": null,
+  "renewalDate": null,
+  "lastPublicationDate": null,
+  "publicationDates": [
+    "2012-10-30"
+  ],
+  "abandonmentDate": null,
+  "cancellationDate": "2019-11-15",
+  "statusClass": "dead",
+  "statusText": "CANCELLED",
+  "markText": "SEVEN RIGHTS OF FUNDRAISING",
+  "markTransliteration": null,
+  "markTranslation": null,
+  "markFeature": "BLOCK LETTERS",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    41
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "INT. CL. 35 Business strategic planning services for non-profit organizations; business consulting services, namely, consulting regarding business structure and personnel practices to enable non-profit organizations to more effectively engage in fundraising",
+      "translation_language": null,
+      "translation": null
+    },
+    {
+      "classes": [
+        41
+      ],
+      "language": null,
+      "description": "INT. CL. 41 Professional coaching and training services in the field of fundraising",
+      "translation_language": null,
+      "translation": null
+    }
+  ],
+  "owner": "Case Consulting Services, Inc.",
+  "ownerNative": null,
+  "ownerCountry": "US",
+  "representative": "Dana O. Lynch",
+  "priorities": null,
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "Suite 202-C, Great Falls, VA, 22066",
+        "applicantAddressCity": "Great Falls",
+        "applicantAddressCountryCode": "US",
+        "applicantAddressPostalCode": "22066",
+        "applicantAddressStateName": "VIRGINIA",
+        "applicantAddressStreet": "Suite 202-C",
+        "applicantJurisdictionOfIncorporation": "VIRGINIA",
+        "applicantLegalEntity": "CORPORATION",
+        "applicantName": "Case Consulting Services, Inc.",
+        "applicantSecondaryAddressUnit": "9912 Georgetown Pike"
+      }
+    ],
+    "cmMarkImageUSclassification": [
+      "99.99.99"
+    ],
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "INT. CL. 35 Business strategic planning services for non-profit organizations; business consulting services, namely, consulting regarding business structure and personnel practices to enable non-profit organizations to more effectively engage in fundraising"
+        },
+        {
+          "intClassNumber": "41",
+          "intGoodsServicesDescription": "INT. CL. 41 Professional coaching and training services in the field of fundraising"
+        }
+      ]
+    },
+    "id": "f183a038-7b9e-4f90-9197-6bdfc3b17258",
+    "ipRightKind": "tmk",
+    "markEvents": [
+      {
+        "date": "20191115",
+        "descriptionText": "CANCELLED SEC. 8 (6-YR)"
+      },
+      {
+        "date": "20130409",
+        "descriptionText": "REGISTERED-PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20130302",
+        "descriptionText": "NOTICE OF ACCEPTANCE OF STATEMENT OF USE MAILED"
+      },
+      {
+        "date": "20130301",
+        "descriptionText": "LAW OFFICE REGISTRATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20130227",
+        "descriptionText": "ALLOWED PRINCIPAL REGISTER - SOU ACCEPTED"
+      },
+      {
+        "date": "20130130",
+        "descriptionText": "CASE ASSIGNED TO INTENT TO USE PARALEGAL"
+      },
+      {
+        "date": "20130130",
+        "descriptionText": "STATEMENT OF USE PROCESSING COMPLETE"
+      },
+      {
+        "date": "20130109",
+        "descriptionText": "TEAS STATEMENT OF USE RECEIVED"
+      },
+      {
+        "date": "20130109",
+        "descriptionText": "USE AMENDMENT FILED"
+      },
+      {
+        "date": "20121225",
+        "descriptionText": "NOA MAILED - SOU REQUIRED FROM APPLICANT"
+      },
+      {
+        "date": "20121030",
+        "descriptionText": "PUBLISHED FOR OPPOSITION"
+      },
+      {
+        "date": "20121010",
+        "descriptionText": "NOTICE OF PUBLICATION"
+      },
+      {
+        "date": "20120926",
+        "descriptionText": "LAW OFFICE PUBLICATION REVIEW COMPLETED"
+      },
+      {
+        "date": "20120925",
+        "descriptionText": "APPROVED FOR PUB - PRINCIPAL REGISTER"
+      },
+      {
+        "date": "20120917",
+        "descriptionText": "EXAMINER'S AMENDMENT MAILED"
+      },
+      {
+        "date": "20120917",
+        "descriptionText": "EXAMINER'S AMENDMENT ENTERED"
+      },
+      {
+        "date": "20120915",
+        "descriptionText": "ASSIGNED TO LIE"
+      },
+      {
+        "date": "20120914",
+        "descriptionText": "EXAMINERS AMENDMENT -WRITTEN"
+      },
+      {
+        "date": "20120907",
+        "descriptionText": "ASSIGNED TO EXAMINER"
+      },
+      {
+        "date": "20120522",
+        "descriptionText": "NEW APPLICATION OFFICE SUPPLIED DATA ENTERED"
+      },
+      {
+        "date": "20120519",
+        "descriptionText": "NEW APPLICATION ENTERED"
+      }
+    ],
+    "markFeature": "BLOCK LETTERS",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "originalApplicants": [
+      {
+        "address": "Suite 202-C, Great Falls, VA, 22066",
+        "city": "Great Falls",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "VIRGINIA",
+        "legalEntity": "CORPORATION",
+        "name": "Case Consulting Services, Inc.",
+        "postalCode": "22066",
+        "secondaryAddressUnit": "9912 Georgetown Pike",
+        "stateName": "VIRGINIA",
+        "street": "Suite 202-C"
+      }
+    ],
+    "originalRegistrants": [
+      {
+        "address": "Suite 202-C, Great Falls, VA, 22066",
+        "city": "Great Falls",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "VIRGINIA",
+        "legalEntity": "CORPORATION",
+        "name": "Case Consulting Services, Inc.",
+        "postalCode": "22066",
+        "secondaryAddressUnit": "9912 Georgetown Pike",
+        "stateName": "VIRGINIA",
+        "street": "Suite 202-C"
+      },
+      {
+        "address": "Suite 202-C, Great Falls, VA, 22066",
+        "city": "Great Falls",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "VIRGINIA",
+        "legalEntity": "CORPORATION",
+        "name": "Case Consulting Services, Inc.",
+        "postalCode": "22066",
+        "secondaryAddressUnit": "9912 Georgetown Pike",
+        "stateName": "VIRGINIA",
+        "street": "Suite 202-C"
+      }
+    ],
+    "ownersAtPublication": [
+      {
+        "address": "Suite 202-C, Great Falls, VA, 22066",
+        "city": "Great Falls",
+        "countryCode": "US",
+        "countryName": "USA - Federal Marks",
+        "jurisdictionOfIncorporation": "VIRGINIA",
+        "legalEntity": "CORPORATION",
+        "name": "Case Consulting Services, Inc.",
+        "postalCode": "22066",
+        "secondaryAddressUnit": "9912 Georgetown Pike",
+        "stateName": "VIRGINIA",
+        "street": "Suite 202-C"
+      }
+    ],
+    "recordLastUpdated": "20260110",
+    "registrationOfficeCode": "US",
+    "registrationOfficeName": "USPTO",
+    "representativeCorrespondents": [
+      {
+        "representativeCorrespondentAddress": "BALTIMORE, MD 21202, UNITED STATES",
+        "representativeCorrespondentAddressLines": [
+          "BALTIMORE, MD 21202",
+          "UNITED STATES"
+        ],
+        "representativeCorrespondentName": "DANA O. LYNCH WHITEFORD, TAYLOR & PRESTON L.L.P., 7 SAINT PAUL ST"
+      }
+    ],
+    "representatives": [
+      {
+        "representativeAddress": "BALTIMORE, MD 21202, UNITED STATES",
+        "representativeAddressLines": [
+          "BALTIMORE, MD 21202",
+          "UNITED STATES"
+        ],
+        "representativeName": "Dana O. Lynch"
+      }
+    ],
+    "status": {
+      "active": false,
+      "application": {
+        "applicationDate": "20120516",
+        "applicationNumber": "85626930"
+      },
+      "cancellationDate": "20191115",
+      "cancellationPublicationDate": "20191224",
+      "cancellationSection": "8",
+      "cmNormalisedStatus": "CANCELLED",
+      "firstUsed": [
+        {
+          "firstUsedClass": "35",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20121130"
+        },
+        {
+          "firstUsedClass": "41",
+          "firstUsedClassKind": "International Class",
+          "firstUsedDate": "20121130"
+        }
+      ],
+      "firstUsedCommerce": [
+        {
+          "firstUsedCommerceClass": "35",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20121130"
+        },
+        {
+          "firstUsedCommerceClass": "41",
+          "firstUsedCommerceClassKind": "International Class",
+          "firstUsedCommerceDate": "20121130"
+        }
+      ],
+      "ipOffice": {
+        "markOfficialStatus": "CANCELLED - SECTION 8",
+        "markOfficialStatusCode": "710",
+        "markOfficialStatusDate": "20191115",
+        "markOfficialStatusEvents": [
+          "Intent to Use - Filed",
+          "USE APPLICATION - CURRENT"
+        ]
+      },
+      "markCurrentStatus": "CANCELLED",
+      "publicationDate": [
+        "20121030"
+      ],
+      "registration": {
+        "registrationDate": "20130409",
+        "registrationNumber": "4318819"
+      }
+    },
+    "version": "20260110144246",
+    "wordMarkSpecification": {
+      "markVerbalElementCrossReferences": "7 RIGHTS OF FUNDRAISING",
+      "markVerbalElementText": "SEVEN RIGHTS OF FUNDRAISING"
+    }
+  },
+  "_uri": "/mark/us/f183a038-7b9e-4f90-9197-6bdfc3b17258",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.198Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

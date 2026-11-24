@@ -5,72 +5,243 @@
     "ladder": [
       "Very High",
       "High",
-      "Medium",
+      "Moderate",
       "Manageable",
       "Low"
     ]
   },
   "batch": {
-    "productContext": "A consumer mobile app provides water-quality readings and attached online training and is sold through app stores rather than through the trade.",
+    "productContext": "Consumer mobile app for water-quality readings, downloadable monitoring software, related software services and attached online training in Classes 9, 42 and 41.",
     "standardCaveats": [
-      "App-store and social-platform indexing can vary by country and may omit newly published or login-restricted uses.",
       "This is a Knockout search, not a clearance. A mark not knocked out here is not clear — it is not knocked out at this screen's depth, and proceeds to clearance. Nothing above is a finding of availability."
     ],
-    "executiveSummary": "One name screened: VENQORI, rated Low.\n\n## VENQORI — Low\n\n- VENQORI is a coined product name for a consumer water-quality app with attached online training.\n- The screened marketplace showed no exact on-field use or famous cultural echo that creates an obvious blocker."
+    "executiveSummary": "One name assessed for the Japan and Korea launch, limited to the supplied Latin spellings.\n\n## VENQORI\n\n**Low for Classes 9, 42 and 41 in Japan and Korea.** Japan's Ｖｅｎｋｕｒｉ electronics differ from the requested app and training. The Korean records returned are cancelled or expired. They do not settle whether those businesses still trade. The overseas marks rated Moderate do not establish protection or related trade in either launch market. Japanese and Korean versions of the proposed name remain unassessed."
   },
+  "cardOrder": "filings-first",
   "marks": [
     {
-      "ref": "DEMO-2014-knockout-search",
+      "ref": null,
       "name": "VENQORI",
       "classesSearched": [
         9,
         42,
         41
       ],
-      "beltAndBraces": [
-        35
-      ],
-      "contextFraming": "VENQORI is intended as the product/app name for a consumer mobile water-quality monitoring application with attached online training, and reads as a coined term.",
+      "beltAndBraces": [],
+      "contextFraming": "VENQORI reads as a coined whole word for the requested water-quality software and attached training. Its precise role remains unstated. App-name use is possible, but no confirmed house mark or secondary presentation narrows the assessment.",
       "rating": "Low",
       "ratingQualifier": null,
-      "classesDriving": [],
-      "bullets": [
-        "As a standalone product/app name, VENQORI would function as the source identifier for the software and training rather than as an in-app descriptive label."
+      "classesDriving": [
+        9,
+        42,
+        41
       ],
-      "purpleNotes": [],
+      "bullets": [
+        "The Q spelling does not guarantee a different spoken name from versions written with K."
+      ],
+      "purpleNotes": [
+        "Clarify the request's Japanese and Korean scripts, intended presentation and any earlier client use of VENQORI.",
+        "Check whether YIWU TENGDING UMBRELLA CO., LTD. supplies related software in Japan."
+      ],
       "parodyNote": null,
       "crowdedField": false,
-      "registerReads": [],
-      "basis": "VENQORI is rated Low because the reviewed consumer-app, water-quality, training, and software sources identified no exact on-field use or confusingly close commercial name.",
+      "basis": "What we found establishes no blocker to launch because the Japanese goods differ and the Korean records are cancelled or expired.",
       "factors": [
-        "No exact VENQORI use appeared for consumer water-quality apps, related software, online training, or app-store distribution in the reviewed sources.",
-        "The closest app-related spelling differs in sight and sound, and the evidence shows no water-quality connection.",
-        "No famous brand, cultural property, or adverse meaning was identified for VENQORI."
+        "Japan's full-width Latin registration covers electronics rather than the requested app, software service or attached training.",
+        "The Korean records returned are cancelled or expired, so they do not establish an objection based on a current registration.",
+        "Overseas software and training rights do not establish rights or related trade in Japan or Korea."
       ],
       "counterFactors": [
-        "App-store indexing varies by country and may omit newly published or unindexed products.",
-        "The observed domain failure can change and does not establish long-term availability."
+        "The cancelled and expired Korean records do not settle whether trade continues or whether use supports rights without registration.",
+        "The supplied Latin forms do not settle Japanese or Korean versions of the name."
       ],
-      "mitigation": "An earlier identical use for related consumer software or training would change this rating.",
-      "assessment": "## Overall read\n\nVENQORI is a coined name intended to travel as the standalone product name for a consumer water-quality app and its attached online training. The reviewed marketplace and common-law material did not identify an exact commercial use in that field, a famous mark it evokes, or a cultural property that changes the trademark read. The resulting knockout rating is Low.\n\n## What drives the result\n\nThe closest visible spellings do not create the same overall impression and were tied to different commercial or cultural settings. The app-related result used a materially different name, and the material reviewed did not connect it to water-quality monitoring or the attached training. Other similar-looking terms appeared in industrial, pharmaceutical, or fictional contexts rather than in the client’s consumer-app market.\n\n- The intended use makes VENQORI a source name for downloadable software and related training.\n- The relevant sources showed different branding for existing water-quality apps and services.\n- The meaning sweep did not identify a famous-brand echo, offensive meaning, or notable negative association.\n\n## Limits\n\nApp-store visibility can vary by territory and indexing, and the observed failure of the matching domain does not prove continuing availability. The rating reflects the evidence reviewed for this triage screen.",
+      "mitigation": "Evidence of related trade or rights an owner could enforce in Japan or Korea would change this assessment.",
+      "assessment": "## Reading the name\n\nVENQORI reads as a coined whole word for the consumer water-quality app, its software services and attached online training. The profile identifies Japan and Korea as the launch markets. The plan supplies only Latin VENQORI and VENKORI. No intended Japanese or Korean version, confirmed house-mark presentation or earlier client use is supplied.\n\n## Japan and Korea\n\n**Low for Classes 9, 42 and 41 in Japan and Korea, on the held Latin-name evidence.** The evidence does not establish a material objection to the requested launch.\n\n- Japan's live Ｖｅｎｋｕｒｉ registration belongs to YIWU TENGDING UMBRELLA CO., LTD. The mark uses full-width Latin letters, with BENKURI recorded as its transliteration. Its full goods wording includes batteries, cameras, projection equipment, earphones, plugs and surveillance equipment with monitors. These goods differ from the requested downloadable app, software service and attached training. Selling sensors or surveillance hardware is outside the request. Similar pronunciation does not itself establish related trade, and the held material does not establish related software sales in Japan. The Japanese バンバンカラ paper registration is cancelled and adds no live objection on its held status.\n- Korea's returned K-VANKorea PASSENGER TRANSPORTATION EXPERT filing is cancelled. Its goods include mobile apps, data processing and Internet-of-Things software, but the whole composite name differs. The returned 주식회사 스타밴코리아 registration is expired and covers cash registers, card terminals and related payment equipment. Neither record establishes a live register objection on its held status. Those statuses do not decide whether use continues or whether unregistered rights remain. This is a bounded conclusion about the returned records, not a general absence of Korean rights.\n\nThe web and app-store payload provides listing titles and links, with little information about products, customers or territorial reach. It does not establish a competing water-quality offering under the material similar names in either launch market. No separate class conclusion is supported for the attached training or software service.\n\n## Overseas cards and their limits\n\nThe overseas cards retain their comparisons of similar names and relevant goods in the offices shown. They do not supply the missing link to Japan or Korea.\n\n- VINCARA's UK registration covers unrestricted software in Class 9. VENCORA's UK registration and EU application include general software development and training. VINCORA's EU registration includes IT services, testing and science training. Those terms support the Moderate cards in those territories, without establishing protection in either launch market.\n- The Argentine VINKARA, Swiss vencura, New Zealand VENKARO and Indian Vincora records also retain their broader software, data or training concerns in their respective territories. The remaining national records likewise establish only the rights or applications held in their named offices.\n- VENCORE's held international designation is the United States only. VONCORE's held international designations are AT, DE, ES, FR, GB, IT, LI, SG and BX. Neither international record extends to Japan or Korea.\n\nThe held owner checks do not establish relevant trade in Japan or Korea. Legado IT's public software business is not verified as the Argentine holders. The Swiss insurance-purpose material and Vontobel's financial-business material do not establish a competing local water-quality offering. The owner questions name VENQORI although the held marks differ, so their answers support only the business facts they actually contain.\n\nVENQORI's launch rating is below the Moderate VINCARA, VENCORA and VINCORA cards because those cards concern overseas rights without an evidenced launch-market connection. The same territorial limit applies to the other overseas cards. Their broad goods are preserved rather than narrowed by assumptions about current trade. Different vowels and endings remain relevant to the whole-name comparison in those territories. Their enforcement appetite remains unresolved.\n\n## Scope still open\n\nThe inherited register questions covered multiple offices, including Japan and Korea. Their literal zeroes and returned sound-alike list do not establish every pronunciation, root or local-script equivalent. The Korean native-script result is a returned candidate, not a search for an intended Korean version of VENQORI. No Japanese or Korean version of the proposed name has been assessed. Clarivate's transliteration indexing does not establish native-character exclusivity.\n\nVINKORY's German goods wording remains absent from its full held record. Its relevance in Germany remains unresolved, and it supplies no demonstrated Japan/Korea connection. No evident famous-property echo emerges from the supplied name or results. No dedicated meaning or sensitivity search is recorded, so local-language connotations remain unassessed.",
       "findings": [],
-      "negatives": [
+      "registerReads": [
         {
-          "term": "VENQORI — consumer water-quality apps and related training",
-          "source": "https://stroudcenter.org/virtual-learning-resource/waterquality-mobile-app/",
-          "note": "Accessible water-quality app results used different branding and showed no exact VENQORI use."
+          "recordId": "/mark/gb/1ed22bdd-4194-423f-af68-4d5d720d03cb",
+          "band": "Moderate",
+          "read": "United Kingdom comparison only. “Software” includes the requested Class 9 app and is not limited by the separate recruitment services. VINCARA has a similar sound but different vowels and ending. Vinctos Ltd's actual products and enforcement appetite are not established. The September 2026 registration is too recent for an ordinary five-year non-use defence. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
         },
         {
-          "term": "VENQORI — app-store software",
-          "source": "https://apps.apple.com/us/developer/vennory/id1801632552",
-          "note": "The closest accessible app-store result used a materially different name and showed no water-quality connection."
+          "recordId": "/mark/em/346d96db-15d6-40f8-a707-c87059712771",
+          "band": "Moderate",
+          "read": "European Union comparison only. IT services, testing, computer training and science courses overlap Classes 42 and 41. VINCORA differs in its opening vowel and final letter. The full wording supports the overlap without evidence of the individual's actual trade or enforcement appetite. The February 2026 registration remains within the ordinary five-year non-use grace period. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
         },
         {
-          "term": "venqori.com",
-          "source": "https://venqori.com/",
-          "note": "The domain failed to resolve when checked, so no active commercial site was identified at that address."
+          "recordId": "/mark/gb/c3154106-158a-4756-b8f6-116bc310172f",
+          "band": "Moderate",
+          "read": "United Kingdom comparison only. General software development and training overlap Classes 42 and 41 despite the separate finance-specific services. VENCORA differs mainly in its final vowel. The company's actual products, wider portfolio and enforcement appetite are not established here. The May 2026 registration remains within the ordinary five-year non-use grace period. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/em/dc47debd-f2b2-44d5-aa83-50743a2cc274",
+          "band": "Moderate",
+          "read": "European Union comparison only. The full wording includes general software development, non-downloadable software and training, alongside finance-specific services. These meet Classes 42 and 41 under a similar-sounding name. Actual products and enforcement appetite are not established. This is a pending application, so registration-based non-use cancellation is not yet applicable. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/ch/75b855ee-314b-4713-8e3e-4e8ac1b10461",
+          "band": "Moderate",
+          "read": "Switzerland comparison only. The owner material establishes insurance advice and arranging insurance as the company's declared purpose, but does not establish current products or sales. Class 9 is limited to healthcare and insurance. The full wording separately covers general training, scientific-data evaluation and software services relevant to Classes 41 and 42. Those terms are not narrowed by the owner's declared purpose. The changed vowels and ending distinguish vencura from VENQORI. The November 2022 registration remains within the ordinary five-year non-use grace period. Enforcement appetite is unresolved. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/ar/47492ce5-1f6d-4d5a-bea3-93cfae9eb8ff",
+          "band": "Moderate",
+          "read": "Argentina comparison only. The held goods claim the whole of Class 9, potentially including the requested app. VINKARA has a similar consonant pattern but different vowels. The owner material describes custom software, GeneXus services and K2BTools licensing by Legado IT. It does not verify that business's identity with the named holders. Actual VINKARA use and enforcement appetite remain unresolved. The 2019 registration may face non-use cancellation if Argentine use requirements have not been met, but non-use is not established. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/ar/84f5c85b-798b-4e42-ac08-e30d4b02f0d5",
+          "band": "Moderate",
+          "read": "Argentina comparison only. The held goods claim the whole of Class 42, potentially including the requested software service. VINKARA's changed vowels provide a distinguishing argument. The owner material describes software development, GeneXus services and licensing, but does not verify the public business's connection to these holders. Use under VINKARA and enforcement appetite remain unresolved. Non-use cancellation may be available against the 2019 registration if Argentine requirements are met, but missing use evidence does not prove non-use. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/nz/51e372ff-5dbf-4c35-a168-b0a027a99551",
+          "band": "Moderate",
+          "read": "New Zealand comparison only. The full wording includes general online training, software development and hosted software services relevant to Classes 41 and 42. Property-specific items do not limit those separate terms. VENKARO's altered final vowels help distinguish the names. Actual products and enforcement appetite are not established. The July 2026 registration is too recent for an ordinary three-year non-use challenge. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/in/d4702fdd-f353-476c-8874-eedc36d6a582",
+          "band": "Moderate",
+          "read": "India comparison only. The full wording expressly includes software for collecting, transmitting and analysing data, which can meet the requested Class 42 service. Vincora has different vowels and ending. The individual holder's actual products and enforcement appetite are not established. This pending application is not yet subject to registration-based non-use cancellation. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/cn/2795cefe-fb74-4a92-a4b6-2643c19cfc2f",
+          "band": "Manageable",
+          "read": "China comparison only. Downloadable mobile application software overlaps Class 9. VANCARO's different first vowel and final two vowels make the whole name less close. The owner's actual products are not established by its name. The 2019 registration could face cancellation after the required three-year non-use period, but sustained non-use is not established. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/cn/71246c53-f5f7-44ab-ac9d-730dffd96771",
+          "band": "Manageable",
+          "read": "China comparison only. Computer software consulting can overlap Class 42 despite the separate design and architecture services. VANCORE's opening vowel and shorter ending distinguish the names. Actual trade is not established. The 2017 registration could face three-year non-use cancellation if the required facts are proved. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/gb/5043fc0d-ca64-4987-a605-d2d018b2262f",
+          "band": "Manageable",
+          "read": "United Kingdom comparison only. Computer software and software development are not restricted to recruitment in this record. They overlap Classes 9 and 42. vencuro's different final vowels make the whole name less close. Actual use is not established. The 2013 registration may face partial cancellation for five years of non-use, but that factual defence is unproved. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/gb/2663cfa1-16ff-4795-ba2c-ce8b0d508011",
+          "band": "Manageable",
+          "read": "United Kingdom comparison only. Class 9 software is limited to recruitment, but Class 42 software development is broader. That broader wording can meet the requested software service. The repeated VENCURO wording and changed ending distinguish the whole mark. Actual use is not established. The 2020 registration may face partial five-year non-use cancellation if the relevant non-use is proved. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/em/a1858458-6b0d-401a-879b-e1bcb67554fd",
+          "band": "Manageable",
+          "read": "European Union comparison only. The full Class 41 wording includes distance learning and practical training, which can meet the attached online lessons. vancore differs in its first vowel and ending. The individual's actual services are not established. The 2011 registration may face partial five-year non-use cancellation, but the evidence does not establish non-use. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/gb/798b935a-8e9a-4ade-be98-e79c66c9a16e",
+          "band": "Manageable",
+          "read": "United Kingdom comparison only. The full Class 41 wording includes distance learning and training, creating overlap with the attached online lessons. vancore's different opening vowel and shorter ending distinguish the names. Actual services are not established. This older registration may face partial five-year non-use cancellation, subject to proof of relevant non-use. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/de/c5b0c781-8444-4731-a082-9159c81fbe3d",
+          "band": "Manageable",
+          "read": "Germany comparison only. Education and training can include Class 41 lessons about the app. VIANCORA's additional syllable and changed ending reduce the similarity. The individual owner's actual trade is not established. The July 2026 registration remains within the ordinary five-year non-use grace period. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/kz/6f261ecf-f457-4ef8-8408-1ced784a6ead",
+          "band": "Manageable",
+          "read": "Kazakhstan comparison only. The full Class 41 wording includes distance learning, practical instruction and educational services. Those terms can include the attached lessons despite the separate clothing goods. Ven Kara's two-word form and changed vowels distinguish it. Actual trade is not established. The 2022 registration could face three-year non-use cancellation if the required non-use is proved. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/tr/a80d04af-30db-4f6b-aca7-2749a7ff06e7",
+          "band": "Manageable",
+          "read": "Turkey comparison only. The full wording includes software design, rental, updating and scientific testing relevant to Class 42. V vancora adds an initial element and changes the vowels and ending. Actual trade is not established. The pending application is not yet subject to registration-based non-use cancellation. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/em/481679a2-c6f6-4b6f-8aa4-1e49414b5140",
+          "band": "Manageable",
+          "read": "European Union comparison only. The wording chiefly concerns venue data and facility consulting, but also includes computer-system integration. That creates a limited connection to Class 42 software services. VENCORE lacks VENQORI's final vowel. Actual trade is not established. The September 2026 registration remains within the ordinary five-year non-use grace period. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/us/5a9e5373-b07e-43c9-88c1-a73fb2b61cfd",
+          "band": "Manageable",
+          "read": "United States comparison only. Venue data and facility consulting differ from the consumer app, while the separate computer-system integration wording creates a limited Class 42 connection. VENCORE's shorter ending distinguishes it. Actual trade is not established. This pending application has no registration-based non-use cancellation defence yet. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/wo/9a9d3dd9-5014-4ce1-b2bd-5a73c93cfc13",
+          "band": "Manageable",
+          "read": "United States designation only. The wording concerns venue data, facility consulting and computer-system integration, creating a limited Class 42 connection. VENCORE has a shorter ending than VENQORI. The held designation is the United States. Actual trade is not established. The May 2026 international registration does not itself establish a mature US non-use cancellation defence. This record establishes no protection in Japan or Korea. The held owner material does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/jp/310027f2-0562-46fe-abea-385f068a8150",
+          "band": "Low",
+          "read": "Japan: the full-width Latin Ｖｅｎｋｕｒｉ registration covers electronics, including surveillance equipment with monitors. The held transliteration is BENKURI. Those goods differ from the requested downloadable water-quality app, software service and attached training. The request does not include selling hardware. Similar sound alone does not establish overlapping trade, and related Japanese software sales are not established."
+        },
+        {
+          "recordId": "/mark/cn/817a4fcd-a0f3-4048-b0de-2d9b598ca7f5",
+          "band": "Low",
+          "read": "China comparison only. Power banks, projection equipment, sockets and rangefinders differ from the requested software. VENKURI sounds similar, but this Class 9 wording does not establish a water-quality app conflict. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/cn/90eef81e-2b6f-4f84-8b9f-ac78dd65a11f",
+          "band": "Low",
+          "read": "China comparison only. The pending goods include non-medical monitoring devices among cameras and other electronics. The wording does not identify water-quality software. The requested use concerns an app, not selling monitoring hardware, which limits the connection despite the similar name. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/ch/a1b37fae-9606-4298-891e-6e27fbce482b",
+          "band": "Low",
+          "read": "Switzerland comparison only. The owner material documents securities and investment services, lending, trading and structured products. The registration also covers measuring apparatus and computing equipment without a banking restriction. Those goods differ from the requested downloadable app and attached lessons. VONCORE's different opening vowel and ending further reduce confusion. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/wo/df442737-643e-42ae-bfc5-783bd7b49eea",
+          "band": "Low",
+          "read": "Designations in AT, DE, ES, FR, GB, IT, LI, SG and BX only. The owner material documents investment services, lending, trading and structured products. The broad measuring-apparatus and computing-equipment wording remains broader than that actual trade. Compared with the requested app and training, the goods and VONCORE's shorter ending limit confusion. This international right's stated designations do not include Japan or Korea. This record establishes no protection in Japan or Korea. The held owner material does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/hk/b38f8a5b-dcf5-4072-b599-bbe75f6cb4c7",
+          "band": "Low",
+          "read": "Hong Kong comparison only. Measuring apparatus and computing equipment differ from the requested app and training, and VONCORE has a different opening vowel and ending. The Bank Vontobel owner material documents financial products, but does not independently establish Vontobel Holding AG's own trade. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/ae/29742280-0b1c-4bf5-869b-1b572d14ac7f",
+          "read": "United Arab Emirates comparison only. The translated Class 9 wording mentions monitoring machines, data-processing equipment and computers. It does not clearly identify the requested software. The owner is not held, and the translation leaves precise scope uncertain. Neither Bank Vontobel AG's trade nor its ownership can be attributed to this pending application. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/de/8539231b-7e79-4c64-983c-a2af5da4d771",
+          "read": "Germany comparison only. The full held record contains no goods wording. VINKORY is close enough in sound to merit attention, but Classes 9 and 41 cannot establish overlapping goods. Its relevance remains unresolved and receives no band. This filing does not establish rights in Japan or Korea. The held evidence does not establish related trade there."
+        },
+        {
+          "recordId": "/mark/kr/e47b7d74-11ed-4f3d-a669-907240120a8c",
+          "read": "Korea: K-VANKorea PASSENGER TRANSPORTATION EXPERT is cancelled. Its goods include mobile apps, data-processing and Internet-of-Things software. This different composite name supplies no live register objection on the held status. Cancellation does not establish whether trading continues or whether unregistered rights remain."
+        },
+        {
+          "recordId": "/mark/kr/02558506-a07b-4503-a974-35b5331ceb35",
+          "read": "Korea: 주식회사 스타밴코리아 is expired. Its goods are cash registers, card terminals and related payment equipment, rather than the requested app and training. This record supplies no live register objection on the held status. Continuing use and unregistered rights are not established."
         }
       ],
+      "setAside": [
+        {
+          "url": "https://github.com/CordilleraSarl/clearotron",
+          "ground": "The title describes the trademark research engine, rather than a third-party water-quality offering under VENQORI."
+        },
+        {
+          "url": "https://www.venq.com.au/",
+          "ground": "The title identifies venue quotation software under the shorter VENQ name, a different product purpose and whole name."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/venxora/id6818755155",
+          "ground": "The listing title supplies a different app name without product details establishing related water-quality services; this ground also covers its repeated storefront listings."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/quori/id6758670761",
+          "ground": "The whole name omits VEN, and the listing title does not establish related water-quality goods; this also covers the separate QUORI developer and community titles."
+        },
+        {
+          "url": "https://apps.apple.com/es/developer/vennory/id1801632552",
+          "ground": "The returned item identifies a developer rather than an app's goods, so the title alone does not establish a conflicting water-quality offering."
+        },
+        {
+          "url": "https://play.google.com/store/apps?hl=en",
+          "ground": "This is a general storefront page rather than a named competing product; the same ground covers generic search, games and status pages."
+        },
+        {
+          "url": "https://play.google.com/store/apps/details?id=com.mirai_apps.ventori",
+          "ground": "The title identifies Ventori: Catat Barang, a different whole name, without evidence establishing water-quality monitoring or attached training."
+        }
+      ],
+      "negatives": [],
       "degraded": null
     }
   ]

@@ -1,0 +1,210 @@
+{
+  "uri": "/mark/jp/5427775a-9445-460a-a297-d118d66345de",
+  "provider": "clarivate",
+  "office": "jp",
+  "guid": "5427775a-9445-460a-a297-d118d66345de",
+  "applicationNumber": "2022-108940",
+  "registrationNumber": "6678752",
+  "applicationDate": "2022-09-21",
+  "registrationDate": "2023-03-08",
+  "expiryDate": "2033-03-08",
+  "renewalDate": null,
+  "lastPublicationDate": "2023-03-16",
+  "publicationDates": null,
+  "abandonmentDate": null,
+  "cancellationDate": null,
+  "statusClass": "live",
+  "statusText": "REGISTERED",
+  "markText": "ＳＥＶＥＮＲＩＣＨ",
+  "markTransliteration": "SEBUNRICCHI",
+  "markTranslation": "SEVENRICH",
+  "markFeature": "WORD ONLY",
+  "markDisclaimers": null,
+  "niceClasses": [
+    35,
+    36,
+    42,
+    45
+  ],
+  "goodsServices": [
+    {
+      "classes": [
+        35
+      ],
+      "language": null,
+      "description": "広告業，経営の診断又は経営に関する助言，市場調査又は分析，商品の販売に関する情報の提供，財務書類の作成又は監査若しくは証明",
+      "translation_language": "en",
+      "translation": "Advertisement industry, advising on management diagnosis or management, market research or analysis, information on sales of products, preparation of financial statements or audit or certification"
+    },
+    {
+      "classes": [
+        36
+      ],
+      "language": null,
+      "description": "建物の管理，建物の貸借の代理又は媒介，建物の貸与，建物の売買，建物の売買の代理又は媒介，建物又は土地の鑑定評価，土地の管理，土地の貸借の代理又は媒介，土地の貸与，土地の売買，土地の売買の代理又は媒介，税務相談，税務代理",
+      "translation_language": "en",
+      "translation": "Surrogate or mediation of buildings, substitution or mediation of buildings, lending of buildings, buying and selling of buildings, surrogates or intermediaries for the sale and purchase of buildings, appraisal of buildings or land, management of land, surrogation or mediation of land lease, land rental , Land trading, substitute or intermediary for the sale and purchase of land, tax consultation, tax representation"
+    },
+    {
+      "classes": [
+        42
+      ],
+      "language": null,
+      "description": "電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供",
+      "translation_language": "en",
+      "translation": "Designing, creating or maintaining programs of electronic computers, providing programs for electronic computers"
+    },
+    {
+      "classes": [
+        45
+      ],
+      "language": null,
+      "description": "社会保険に関する手続の代理",
+      "translation_language": "en",
+      "translation": "Surrogacy of social insurance proceedings"
+    }
+  ],
+  "owner": "Hattori, Shunsuke",
+  "ownerNative": null,
+  "ownerCountry": "JP",
+  "representative": "OUMOTO TAKESHI",
+  "priorities": [
+    {
+      "priorityDate": "20220921"
+    }
+  ],
+  "seniorities": null,
+  "basicRegistrationApplications": null,
+  "madridDesignations": {
+    "protocol": null,
+    "agreement": null,
+    "aripo": null
+  },
+  "imageAvailable": true,
+  "resolved_link": null,
+  "oppositions": null,
+  "_provenance": {
+    "opposition": "unavailable:clarivate-compumark-content"
+  },
+  "_raw": {
+    "contentType": "trademark",
+    "applicants": [
+      {
+        "applicantAddress": "SHINJUKU TOKYO TO",
+        "applicantAddressCountryCode": "JP",
+        "applicantAddressCountryName": "Japan",
+        "applicantName": "Hattori, Shunsuke",
+        "applicantNativeAddress": "東京都新宿区",
+        "applicantNativeName": "服部　峻介"
+      }
+    ],
+    "applicationLanguageCode": "jp",
+    "goodsServices": {
+      "intClassDescriptions": [
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Advertisement industry, advising on management diagnosis or management, market research or analysis, information on sales of products, preparation of financial statements or audit or certification",
+          "intClassNumber": "35",
+          "intGoodsServicesDescription": "広告業，経営の診断又は経営に関する助言，市場調査又は分析，商品の販売に関する情報の提供，財務書類の作成又は監査若しくは証明"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Surrogate or mediation of buildings, substitution or mediation of buildings, lending of buildings, buying and selling of buildings, surrogates or intermediaries for the sale and purchase of buildings, appraisal of buildings or land, management of land, surrogation or mediation of land lease, land rental , Land trading, substitute or intermediary for the sale and purchase of land, tax consultation, tax representation",
+          "intClassNumber": "36",
+          "intGoodsServicesDescription": "建物の管理，建物の貸借の代理又は媒介，建物の貸与，建物の売買，建物の売買の代理又は媒介，建物又は土地の鑑定評価，土地の管理，土地の貸借の代理又は媒介，土地の貸与，土地の売買，土地の売買の代理又は媒介，税務相談，税務代理"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Designing, creating or maintaining programs of electronic computers, providing programs for electronic computers",
+          "intClassNumber": "42",
+          "intGoodsServicesDescription": "電子計算機のプログラムの設計・作成又は保守，電子計算機用プログラムの提供"
+        },
+        {
+          "cmComputerTranslationIntGoodsLanguageCode": "en",
+          "cmComputerTranslationIntGoodsServicesDescription": "Surrogacy of social insurance proceedings",
+          "intClassNumber": "45",
+          "intGoodsServicesDescription": "社会保険に関する手続の代理"
+        }
+      ],
+      "natClassDescriptions": [
+        {
+          "natClassNumber": "35A01",
+          "natGoodsServicesDescription": "Advertising and publicity services"
+        },
+        {
+          "natClassNumber": "35B01",
+          "natGoodsServicesDescription": "Business management analysis or business consultancy; Business management; Marketing research or analysis; Providing information concerning commercial sales"
+        },
+        {
+          "natClassNumber": "35C01",
+          "natGoodsServicesDescription": "Preparation, auditing or attesting of financial statements"
+        },
+        {
+          "natClassNumber": "36D01",
+          "natGoodsServicesDescription": "Management of buildings; Agency services for the leasing or rental of buildings; Leasing or renting of buildings; Purchase and sale of buildings; Real estate agency services for the purchase or sales of buildings; Real estate appraisal; Providing information on buildings or land [real estate affairs]; Land management; Agency services for the leasing or rental of land; Leasing of land; Purchase and sale of land; Real estate agency services for the purchase or sales of land"
+        },
+        {
+          "natClassNumber": "36J01",
+          "natGoodsServicesDescription": "Advisory services relating to tax planning; Tax payment processing services"
+        },
+        {
+          "natClassNumber": "42P02",
+          "natGoodsServicesDescription": "Computer software design, computer programming, or maintenance of computer software"
+        },
+        {
+          "natClassNumber": "42X11",
+          "natGoodsServicesDescription": "Rental of computers; Providing computer programs on data networks"
+        },
+        {
+          "natClassNumber": "42R03",
+          "natGoodsServicesDescription": "Legal services relating to social insurance claims"
+        }
+      ]
+    },
+    "id": "5427775a-9445-460a-a297-d118d66345de",
+    "ipRightKind": "tmk",
+    "markFeature": "WORD ONLY",
+    "markImagesAvailable": true,
+    "markPublicationCopiesAvailable": false,
+    "priorities": [
+      {
+        "priorityDate": "20220921"
+      }
+    ],
+    "recordLastUpdated": "20230427",
+    "registrationOfficeCode": "JP",
+    "registrationOfficeName": "Japan",
+    "representatives": [
+      {
+        "representativeName": "OUMOTO TAKESHI",
+        "representativeNativeName": "應本　健"
+      }
+    ],
+    "status": {
+      "active": true,
+      "application": {
+        "applicationDate": "20220921",
+        "applicationNumber": "2022-108940"
+      },
+      "cmNormalisedStatus": "REGISTERED",
+      "expiryDate": "20330308",
+      "lastPublicationDate": "20230316",
+      "markCurrentStatus": "REGISTERED",
+      "registration": {
+        "registrationDate": "20230308",
+        "registrationNumber": "6678752"
+      }
+    },
+    "version": "20230427183732",
+    "wordMarkSpecification": {
+      "markTranslation": "SEVENRICH",
+      "markTransliteration": "SEBUNRICCHI",
+      "markVerbalElementText": "ＳＥＶＥＮＲＩＣＨ"
+    }
+  },
+  "_uri": "/mark/jp/5427775a-9445-460a-a297-d118d66345de",
+  "_receipt": {
+    "fetched_at": "2026-11-20T19:48:08.184Z",
+    "context": "clearance-tmpdemo2014globalpreliminarysearch-venqori-sample-capture-register-unit-primary-sweep"
+  }
+}

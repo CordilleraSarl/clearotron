@@ -1,21 +1,22 @@
 {
   "schema": 1,
-  "id": "mcp-mu75vozj-4e141066",
-  "runId": "tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture",
+  "id": "demo-0-7-knockout-search",
+  "runId": "tmpdemo2014knockoutsearch-venqori-2026-11-20-sample-capture",
   "slug": "tmpdemo2014knockoutsearch-venqori",
   "codename": "sample-capture",
-  "date": "2026-09-18",
+  "date": "2026-11-20",
   "agent": "localagent",
   "forwarder": "e2e",
   "ref": "DEMO-2014-knockout-search",
   "state": "delivered",
   "lane": "knockout",
-  "pid": 4131792,
-  "pidStarttime": "77771180",
-  "engineCommit": "7f7f7668374023298def34129e3007303163c5ed",
+  "attempts": 1,
+  "pid": 2537589,
+  "pidStarttime": "384886451",
+  "engineCommit": "3abb8e62f7673a5f6d59056edccaffccb08882e6",
   "engineCommitSource": "git",
-  "updatedAt": "2026-09-18T16:22:31.816Z",
-  "startedAt": "2026-09-18T16:18:15.965Z",
+  "updatedAt": "2026-11-20T23:11:48.806Z",
+  "startedAt": "2026-11-20T22:56:10.194Z",
   "markName": "VENQORI",
   "marks": [
     {
@@ -32,66 +33,105 @@
   "stepLabel": "Sending to you",
   "stepN": 6,
   "stepTotal": 6,
-  "verdict": "Low",
-  "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture/",
+  "review": null,
+  "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-11-20-sample-capture/",
   "failedStage": null,
   "reason": null,
-  "deliveredAt": "2026-09-18T16:22:31.816Z",
+  "deliveredAt": "2026-11-20T23:11:48.805Z",
+  "lastStage": "knockout-review",
+  "currentStep": {
+    "index": 5,
+    "label": "Sending to you",
+    "n": 6,
+    "total": 6
+  },
   "stoppable": false,
   "tokens": {
     "total": {
-      "input": 95235,
-      "output": 8269,
-      "cacheRead": 748928,
+      "input": 441941,
+      "output": 34910,
+      "cacheRead": 3687680,
       "cacheWrite": 0,
-      "attempts": 3,
+      "attempts": 6,
       "thoughtTurns": 0
     },
     "byStage": {
       "knockout-assess#0": {
-        "input": 87513,
-        "output": 7328,
-        "cacheRead": 689280,
+        "input": 75554,
+        "output": 9786,
+        "cacheRead": 753280,
         "cacheWrite": 0,
-        "attempts": 2,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "knockout-correct#0": {
+        "input": 92110,
+        "output": 4587,
+        "cacheRead": 501760,
+        "cacheWrite": 0,
+        "attempts": 1,
         "thoughtTurns": 0
       },
       "knockout-frame": {
-        "input": 7722,
-        "output": 941,
-        "cacheRead": 59648,
+        "input": 6846,
+        "output": 880,
+        "cacheRead": 40448,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "knockout-register-read": {
+        "input": 98673,
+        "output": 9451,
+        "cacheRead": 1239040,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "knockout-review#1": {
+        "input": 67339,
+        "output": 4739,
+        "cacheRead": 518784,
+        "cacheWrite": 0,
+        "attempts": 1,
+        "thoughtTurns": 0
+      },
+      "knockout-review": {
+        "input": 101419,
+        "output": 5467,
+        "cacheRead": 634368,
         "cacheWrite": 0,
         "attempts": 1,
         "thoughtTurns": 0
       }
     },
     "byModel": {
-      "gpt-5.6-sol": {
-        "input": 95235,
-        "output": 8269,
-        "cacheRead": 748928,
+      "gpt-6.1-sol": {
+        "input": 441941,
+        "output": 34910,
+        "cacheRead": 3687680,
         "cacheWrite": 0,
-        "attempts": 3,
+        "attempts": 6,
         "thoughtTurns": 0
       }
     },
     "byEngine": {
       "openai-agent": {
-        "input": 95235,
-        "output": 8269,
-        "cacheRead": 748928,
+        "input": 441941,
+        "output": 34910,
+        "cacheRead": 3687680,
         "cacheWrite": 0,
-        "attempts": 3,
+        "attempts": 6,
         "thoughtTurns": 0
       }
     },
     "byAuthMode": {
       "subscription": {
-        "input": 95235,
-        "output": 8269,
-        "cacheRead": 748928,
+        "input": 441941,
+        "output": 34910,
+        "cacheRead": 3687680,
         "cacheWrite": 0,
-        "attempts": 3,
+        "attempts": 6,
         "thoughtTurns": 0
       }
     }
@@ -101,31 +141,31 @@
     "schemaVersion": 1,
     "modelBasis": "requested",
     "dispatchCensus": {
-      "total": 3,
-      "measured": 3,
+      "total": 6,
+      "measured": 6,
       "streamed": 0,
       "unmeasured": 0,
       "codeSide": 0
     },
     "dispatchCensusReconciles": true,
     "tokens": {
-      "input": 95235,
-      "output": 8269,
+      "input": 441941,
+      "output": 34910,
       "cacheWrite": 0,
-      "cacheRead": 748928
+      "cacheRead": 3687680
     },
     "tokensComplete": true,
     "byBilling": {
-      "openai-agent|subscription|gpt-5.6-sol": {
+      "openai-agent|subscription|gpt-6.1-sol": {
         "engine": "openai-agent",
         "authMode": "subscription",
-        "model": "gpt-5.6-sol",
-        "dispatches": 3,
+        "model": "gpt-6.1-sol",
+        "dispatches": 6,
         "tokens": {
-          "input": 95235,
-          "output": 8269,
+          "input": 441941,
+          "output": 34910,
           "cacheWrite": 0,
-          "cacheRead": 748928
+          "cacheRead": 3687680
         }
       }
     },
@@ -149,16 +189,20 @@
       "statement": "this run spent on one vendor (openai) under one billing mode (subscription)"
     },
     "emittedVsLanded": {
-      "emittedOutputTokens": 8269,
-      "landedBytes": 5758,
-      "landedBytesFromStages": 2,
+      "emittedOutputTokens": 34910,
+      "landedBytes": 50868,
+      "landedBytesFromStages": 6,
       "stagesWithoutLandedRecord": [
+        "follow-up-searches",
         "knockout-sweep",
+        "owner-check",
+        "register-answer-watch",
         "register-count",
+        "register-record-bodies",
         "tool-calls"
       ],
       "landedShareIsFloor": true,
-      "landedShare": 0.1741,
+      "landedShare": 0.3643,
       "landedShareBasis": "landedBytes / (emittedOutputTokens * bytesPerOutputTokenAssumed)",
       "bytesPerOutputTokenAssumed": 4,
       "emittedOnDispatchesThatWroteNothing": 0,
@@ -166,17 +210,52 @@
       "thoughtTurns": 0
     },
     "emittedVsLandedByStage": {
+      "follow-up-searches": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
       "knockout-assess#0": {
-        "emittedOutputTokens": 7328,
-        "landedBytes": 4846,
-        "landedShare": 0.1653,
+        "emittedOutputTokens": 9786,
+        "landedBytes": 22642,
+        "landedShare": 0.5784,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "knockout-correct#0": {
+        "emittedOutputTokens": 4587,
+        "landedBytes": 1626,
+        "landedShare": 0.0886,
         "landedShareReason": null,
         "tokensComplete": true
       },
       "knockout-frame": {
-        "emittedOutputTokens": 941,
-        "landedBytes": 912,
-        "landedShare": 0.2423,
+        "emittedOutputTokens": 880,
+        "landedBytes": 1180,
+        "landedShare": 0.3352,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "knockout-register-read": {
+        "emittedOutputTokens": 9451,
+        "landedBytes": 17633,
+        "landedShare": 0.4664,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "knockout-review#1": {
+        "emittedOutputTokens": 4739,
+        "landedBytes": 3689,
+        "landedShare": 0.1946,
+        "landedShareReason": null,
+        "tokensComplete": true
+      },
+      "knockout-review": {
+        "emittedOutputTokens": 5467,
+        "landedBytes": 4098,
+        "landedShare": 0.1874,
         "landedShareReason": null,
         "tokensComplete": true
       },
@@ -187,7 +266,28 @@
         "landedShareReason": "no dispatch row on this stage journalled an output record",
         "tokensComplete": true
       },
+      "owner-check": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "register-answer-watch": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
       "register-count": {
+        "emittedOutputTokens": 0,
+        "landedBytes": null,
+        "landedShare": null,
+        "landedShareReason": "no dispatch row on this stage journalled an output record",
+        "tokensComplete": true
+      },
+      "register-record-bodies": {
         "emittedOutputTokens": 0,
         "landedBytes": null,
         "landedShare": null,
@@ -210,7 +310,7 @@
       "dimensions": {
         "turnaroundHours": {
           "quoted": null,
-          "actual": 0.07,
+          "actual": 0.26,
           "ratio": null,
           "actualBasis": "wall:status.startedAt→terminal",
           "actualIncludesParked": true,
@@ -251,13 +351,14 @@
       "unmeasurable": 6
     }
   },
+  "tier": "Low",
   "statement": "Knockout screen — 1 mark: 1 Low.",
   "reports": [
     {
       "mark": "VENQORI",
-      "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-09-18-sample-capture/"
+      "url": "/portal/report/tmpdemo2014knockoutsearch-venqori-2026-11-20-sample-capture/"
     }
   ],
   "sendPending": true,
-  "endedAt": "2026-09-18T16:22:31.816Z"
+  "endedAt": "2026-11-20T23:11:48.806Z"
 }

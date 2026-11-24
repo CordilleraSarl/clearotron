@@ -31,7 +31,7 @@ import { createHash } from "node:crypto";
 import { kebab } from "./search-policy.mjs";
 import { resolveRegions } from "./register-plan.mjs";
 import { reachableRegions } from "./register-availability.mjs";
-import { RECORD_BASIS, fixtureLister, toRecord } from "./register-records.mjs";
+import { RECORD_BASIS, fixtureLister, imageFactsOf, toRecord } from "./register-records.mjs";
 import { ENUMERATE_CEILING_DEFAULT } from "../providers/_shared/enumerate.mjs";
 export { writeFixtureMarker } from "./register-fixture-marker.mjs";
 import { withFilingGoods } from "./filing-goods.mjs";
@@ -308,7 +308,7 @@ function identicalRow({ term: form, qid, cell, block, plainRead = false, narrowe
  * hold, so the rating step still has what the run paid for, and the step's absence is on the record.
  */
 export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null, provider, capabilities = null, unreachable = [],
-  counts = null, reading = null, readBlocks, readProposals, framedMarks = [], now = () => new Date() }) {
+  counts = null, reading = null, readBlocks, readProposals, framedMarks = [], images = null, now = () => new Date() }) {
   const { regions: covered, deferred, worldwide } = resolveRegions(jurisdictions, capabilities);
   const { regions, dropped } = reachableRegions(covered, unreachable, capabilities?.offices?.covered, worldwide === true);
   const officeScope = dropped.length
@@ -394,6 +394,8 @@ export function knockoutRecordsDoc({ marks, classes = null, jurisdictions = null
       for (const raw of rowsOf(block)) {
         const id = String(raw?.record_id ?? "");
         if (!id || found.has(id)) continue;
+        // The mark's image facts go to `images`, the logo step's own map, and never onto the record the rater reads.
+        if (images && !images.has(id)) { const facts = imageFactsOf(raw); if (facts) images.set(id, facts); }
         const row = { ...toRecord(neutralRow(raw), { term, basis, provider }), question: qid };
         if (carried && !carried.has(id)) { if (!setAside.has(id)) setAside.set(id, row); continue; }
         found.set(id, { ...row, ...(groupOf.get(id)?.why ? { carriedBecause: groupOf.get(id).why } : {}) });
@@ -591,14 +593,35 @@ export function knockoutListView(runDir, { qid, record_id: recordId = null }, go
     if (!one) return { error: `no filing "${String(recordId).slice(0, 120)}" under question "${want}". Copy record_id from that question's list.` };
     return { qid: want, record_id: one.recordId, goods_state: one.goodsState, goods_from: one.goodsFrom, ...heldWording(one, runDir) };
   }
+  // THE LIST IS A TABLE, one filing a line, and its goods are the wording in the classes this name searches, cut at LIST_GOODS_CHARS a
+  // class. Measured in testing, 2026-11-23: the held lists halved, 268k to 135k characters over 31 lists. Every filing's whole held
+  // wording stays one call away by its record_id, so the judgment against the name's goods keeps its evidence.
+  const scope = listClassesInScope(runDir, want);
+  const cell = (v) => (Array.isArray(v) ? v.join(",") : String(v ?? "")).replace(/[|\n]+/g, " ");
+  const goodsInScope = (g) => (Array.isArray(g) ? g : [g]).filter(Boolean).map(String)
+    .filter((t) => !scope || scope.has(Number(t.split(":")[0]))).map((t) => (t.length > LIST_GOODS_CHARS ? `${t.slice(0, LIST_GOODS_CHARS)}…` : t)).join(" / ");
   return {
     qid: want, state: found.state ?? null, total_hits: found.total_hits ?? null,
     ...(found.reason ? { reason: String(found.reason).slice(0, 300) } : {}),
     ...(found.error ? { error_answer: true } : {}),
     ...(found.per_office_counts ? { per_office_counts: found.per_office_counts } : {}),
-    rows: held.map((r) => ({ record_id: r.recordId, mark: r.mark, owner: r.owner, owner_country: r.ownerCountry, status: r.status, office: r.territory, classes: r.classes,
-      filed: r.applicationDate, registered: r.registrationDate, goods: r.goods, goods_state: r.goodsState, goods_from: r.goodsFrom, goods_shortened: r.goodsShortened })),
+    columns: LIST_COLUMNS.join(" | "),
+    rows: held.map((r) => [r.recordId, r.mark, r.owner, r.status, r.territory, r.classes, r.applicationDate, r.registrationDate, r.goodsState, goodsInScope(r.goods)].map(cell).join(" | ")),
   };
+}
+
+export const LIST_GOODS_CHARS = 200;
+const LIST_COLUMNS = ["record_id", "mark", "owner", "status", "office", "classes", "filed", "registered", "goods_state", "goods in this name's classes"];
+
+/** The classes the name behind a question searches, from the question's axis and the run's plan; null when the plan does not say. */
+function listClassesInScope(runDir, qid) {
+  const axis = String(qid).replace(/^supp:/, "").split(":")[0];
+  try {
+    const plan = readJson(join(String(runDir ?? ""), "knockout-plan.json"));
+    const row = (plan?.marks ?? []).find((m) => knockoutAxis(m?.name ?? "") === axis);
+    const classes = ints(row?.classes);
+    return classes.length ? new Set(classes) : null;
+  } catch { return null; }
 }
 
 /** All the wording held for one filing: its whole held record where one was written, else the statements its view carries. */

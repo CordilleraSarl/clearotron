@@ -2,8 +2,8 @@
 
 Frozen by `scripts/freeze-example-run.mjs` from one finished clearance run.
 
-- Run id: `tmpdemo2014multicountryfocussearch-venqori-2026-09-18-sample-capture`
-- Frozen inputs: 279 file(s), the subset `publishReport` reads
+- Run id: `tmpdemo2014multicountryfocussearch-venqori-2026-11-20-sample-capture`
+- Frozen inputs: 36 file(s), the subset `publishReport` reads
 - Dropped: stage dispatch payloads, per-stage telemetry, stage inputs, run event log, history
 
 `npx clearotron demo` republishes this directory into a local pool and serves it. Nothing here calls a
