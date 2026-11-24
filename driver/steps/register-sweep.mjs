@@ -12,8 +12,8 @@ import { GRID_HALVES, GRID_SEATS, MEANING_SEAT, balanceClosureCells, findCoverag
 import { connotationObligations, parseDispositionForm, parsePrRiskResults, renderDispositionTable } from "../connotation-search.mjs";
 import { NON_MATERIAL_AXES } from "../coverage-ledger.mjs";
 import { undecidedCrossChecks, waitingCrossCheck, withoutWait } from "../cross-check-wait.mjs";
-import { plainCause, plainDeferralReason } from "../deferral-row.mjs";
-import { productFaultOf } from "../product-fault.mjs";
+import { plainDeferralReason } from "../deferral-row.mjs";
+import { productFaultOf, productFaultReason } from "../product-fault.mjs";
 import { formSidecarPath, outstandingRows, unionDispositionForm } from "../disposition-union.mjs";
 import { config, envGateOn } from "../driver.config.mjs";
 import { registerAdapter } from "../engine/run-choices.mjs";   // the run's register adapter, from ctx.register
@@ -279,10 +279,15 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
   gather.forEach((g, i) => { if (!unfinished.includes(i)) must(gatherResults[i], g.name + (g.axis ? `:${g.axis}` : "")); });
   if (unfinished.length) {
     const axesOut = unfinished.map((i) => gather[i].axis), first = gatherResults[unfinished[0]];
-    throw Object.assign(new StageFailure(`register-unit:${axesOut[0]}`, first?.fail ?? "failed", undefined, { quantity: first?.quantity }),
+    // A PRODUCT FAULT IS ALREADY SPENT. Stamped deterministic, the run-level catch buys no recovery park for it, which
+    // would send the unit again and make the call again; it records the searches as not completed at once. A sibling
+    // unit that failed on its own work loses its fresh attempt with it, and is delivered open, as it would be anyway.
+    const fault = unfinished.some(killedCall);
+    throw Object.assign(new StageFailure(`register-unit:${axesOut[0]}`, first?.fail ?? "failed", undefined,
+      { quantity: first?.quantity, ...(fault ? { failClass: "deterministic" } : {}) }),
       { notCompletedPart: "searches", unfinishedUnits: axesOut,
         excludedSlices: unfinished.flatMap((i) => slicesUnitNeverReached(P, ctx.registerPlan, gather[i].axis,
-          ...(killedCall(i) ? [plainCause("tool_timeout")] : []))) });
+          ...(killedCall(i) ? [productFaultReason(gatherResults[i]?.fail)] : []))) });
   }
   // winning session key per axis → a later escalation resumes the EXACT key the unit succeeded on.
   // (register units only — a common-law half's axis is its half id, tracked in clHalves, never here.)

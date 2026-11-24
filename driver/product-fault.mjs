@@ -15,6 +15,7 @@
 import { existsSync } from "node:fs";
 import { paths } from "./run-record.mjs";
 import { registerPlanCallKilled } from "./tool-calls.mjs";
+import { plainCause } from "./deferral-row.mjs";
 
 export const PRODUCT_FAULT_MESSAGE =
   "This failed because of a product fault, not your work. Don't repeat the call. Finish the rest of your task and hand back what you have.";
@@ -42,3 +43,12 @@ export function productFaultOf({ fail, runDir = null, label = null } = {}) {
   }
   return null;
 }
+
+/**
+ * The reader's line for a slice a product fault left open, from the attempt's own failure. A call the engine cut off
+ * inside a turn that completed timed out: the unit's note says so (`tool_timeout`), or the note is missing because the
+ * call never returned. A turn that ended with the call still out shows no timeout, so it takes the line for a search
+ * left open. Both are shipped sentences (deferral-row.mjs). PURE.
+ */
+export const productFaultReason = (fail) =>
+  plainCause(/(?:^|:)tool_timeout:|^missing_file:/.test(String(fail ?? "")) ? "tool_timeout" : "unfinished");
