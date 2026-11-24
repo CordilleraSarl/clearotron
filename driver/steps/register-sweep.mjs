@@ -20,7 +20,7 @@ import { registerAdapter } from "../engine/run-choices.mjs";   // the run's regi
 import { readStickyGaps, receiptSettled, settleReceipt } from "../envelope-settle.mjs";
 import { note, runLog } from "../log.mjs";
 import { findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks } from "../named-band.mjs";
-import { readPartNotCompleted } from "../parts-not-completed.mjs";
+import { readPartNotCompleted, slicesNotYetRecorded, unitsNotYetRecorded, writePartNotCompleted } from "../parts-not-completed.mjs";
 import { gridBatchFor } from "../profiles.mjs";
 import { countLaneCalls } from "../provider-usage.mjs";
 import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
@@ -269,25 +269,34 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
       runLog(run.runDir, { event: "connotation-reissue-failed", error: String(err?.message ?? err).slice(0, 160) });
     }
   }
-  // A REGISTER UNIT THAT WROTE NO RESULT is the searches not completed, after every other member has been held to its
-  // own failure as before (unfinishedUnitAsItStands, above). A rate limit keeps its own path. So is a unit whose plan
-  // call was sent and never came back, whether or not its note was filed: that is a product fault, the unit was not
-  // asked to repeat the call, and its slices are delivered open as having timed out (product-fault.mjs).
+  // A REGISTER UNIT WHOSE PLAN CALL NEVER CAME BACK is a product fault (product-fault.mjs): it is not sent again, by a retry,
+  // a recovery pass or a resume. It is recorded at once in the searches' record and taken as its band stands, so the run
+  // goes on, and its slices are delivered open. Only that unit: a sibling that failed on its own work keeps its own
+  // failure and its normal recovery below.
   const killedCall = (i) => Boolean(productFaultOf({ fail: gatherResults[i]?.fail, runDir: run.runDir, label: `register-unit:${gather[i].axis}` }));
+  const faulted = gather.map((g, i) => i).filter((i) => gather[i].name === "register-unit" && gather[i].axis
+    && !gatherResults[i]?.ok && !gatherResults[i]?.resetsAt && killedCall(i));
+  if (faulted.length) {
+    const held = readPartNotCompleted(run.runDir, "searches");
+    const axes = faulted.map((i) => gather[i].axis);
+    const slices = faulted.flatMap((i) => slicesUnitNeverReached(P, ctx.registerPlan, gather[i].axis, productFaultReason()));
+    writePartNotCompleted(run.runDir, "searches", { stage: `register-unit:${axes[0]}`, reason: gatherResults[faulted[0]]?.fail ?? "product fault",
+      slices: [...(Array.isArray(held?.slices) ? held.slices : []), ...slicesNotYetRecorded(held, slices)],
+      disclosedAxes: Array.isArray(held?.disclosed_axes) ? held.disclosed_axes : [],
+      unfinishedUnits: [...(Array.isArray(held?.unfinished_units) ? held.unfinished_units : []), ...unitsNotYetRecorded(held, axes)] });
+    runLog(run.runDir, { event: "unit-product-fault", units: axes, slices: slices.length });
+    for (const i of faulted) gatherResults[i] = unfinishedUnitAsItStands({ ...ctx, axis: gather[i].axis });
+  }
+  // A REGISTER UNIT THAT WROTE NO RESULT is the searches not completed, after every other member has been held to its
+  // own failure as before (unfinishedUnitAsItStands, above). A rate limit keeps its own path.
   const unfinished = gather.map((g, i) => i).filter((i) => gather[i].name === "register-unit" && gather[i].axis
-    && !gatherResults[i]?.ok && !gatherResults[i]?.resetsAt && (!existsSync(P.registerUnit(gather[i].axis)) || killedCall(i)));
+    && !gatherResults[i]?.ok && !gatherResults[i]?.resetsAt && !existsSync(P.registerUnit(gather[i].axis)));
   gather.forEach((g, i) => { if (!unfinished.includes(i)) must(gatherResults[i], g.name + (g.axis ? `:${g.axis}` : "")); });
   if (unfinished.length) {
     const axesOut = unfinished.map((i) => gather[i].axis), first = gatherResults[unfinished[0]];
-    // A PRODUCT FAULT IS ALREADY SPENT. Stamped deterministic, the run-level catch buys no recovery park for it, which
-    // would send the unit again and make the call again; it records the searches as not completed at once. A sibling
-    // unit that failed on its own work loses its fresh attempt with it, and is delivered open, as it would be anyway.
-    const fault = unfinished.some(killedCall);
-    throw Object.assign(new StageFailure(`register-unit:${axesOut[0]}`, first?.fail ?? "failed", undefined,
-      { quantity: first?.quantity, ...(fault ? { failClass: "deterministic" } : {}) }),
+    throw Object.assign(new StageFailure(`register-unit:${axesOut[0]}`, first?.fail ?? "failed", undefined, { quantity: first?.quantity }),
       { notCompletedPart: "searches", unfinishedUnits: axesOut,
-        excludedSlices: unfinished.flatMap((i) => slicesUnitNeverReached(P, ctx.registerPlan, gather[i].axis,
-          ...(killedCall(i) ? [productFaultReason()] : []))) });
+        excludedSlices: axesOut.flatMap((a) => slicesUnitNeverReached(P, ctx.registerPlan, a)) });
   }
   // winning session key per axis → a later escalation resumes the EXACT key the unit succeeded on.
   // (register units only — a common-law half's axis is its half id, tracked in clHalves, never here.)

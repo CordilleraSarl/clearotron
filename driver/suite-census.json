@@ -1798,8 +1798,8 @@
           "todos": 0
         },
         "a-parked-coverage-ruling-is-exempt-and-reaches-the-reader.test.mjs": {
-          "tests": 4,
-          "asserts": 17,
+          "tests": 3,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -2242,8 +2242,8 @@
           "todos": 0
         },
         "a-register-search-that-cannot-finish-is-delivered-as-not-searched.pipeline.test.mjs": {
-          "tests": 4,
-          "asserts": 34,
+          "tests": 5,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
