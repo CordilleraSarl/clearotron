@@ -47,8 +47,8 @@ record:
   specific to the goods. It runs dozens of queries and rules every result it gets back, including the
   ones it discards. A clearance that reports nothing troubling here has *read* the question and
   answered it — it has not skipped it.
-- **Native-language lanes**, where the territories call for them: the name read in the language and
-  script of the market, not only in English.
+- **Native-language lanes**, on a full country search, and on a multi-country focus search that added
+  them: the name read in the language and script of the market, not only in English.
 
 Case law and oppositions are read on a full country search and are not part of the other three.
 

@@ -9860,6 +9860,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-connector-says-what-its-handlers-do.test.mjs": {
+          "tests": 6,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "the-evidence-list-says-retrieved-only-for-the-saved-record.test.mjs": {
           "tests": 2,
           "asserts": 3,
