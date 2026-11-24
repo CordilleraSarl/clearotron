@@ -530,7 +530,7 @@ export const INNER_CODES = Object.freeze([
   // ONE CODE, TWO TOKENS, and the split is by `cause` rather than by code: verify.mjs peels the
   // `axis_invalid` cause into its own family before counting the rest. A ruling naming only
   // `coverage_no_status` would be true of most `no_status` records and false of the ones that matter most.
-  { code: "no_status", mints: ["driver/coverage-form.mjs:998"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
+  { code: "no_status", mints: ["driver/coverage-form.mjs:1002"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
     why: "Two composites, split on the record's `cause`: coverageFormFail() in verify.mjs for cause `axis_invalid`, and the same function for the rest. NOT the `@returns` annotation of findCoverageFormViolations() in coverage-form.mjs — that is the annotation, not the mint." },
   { code: "engine_vocabulary", mints: ["driver/coverage-form.mjs:988"], rollsUpTo: ["coverage_form_engine_vocabulary"],
     why: "#669 — the seat wrote an engine token into the `reason` sentence that reaches the reader's page. Checked on settled rows too, because a row the seat considers finished is exactly the one whose sentence gets printed. Namespaced by coverageFormFail() in verify.mjs; the bare code names a row, never a stage." },
