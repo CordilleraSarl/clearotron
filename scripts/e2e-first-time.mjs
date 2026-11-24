@@ -100,6 +100,9 @@ export const COUNTED_EVENTS = {
   "jx-serp-grid-skipped": { kind: FAILED, when: (e) => !isDesignedJxCause(e.cause) },
   "knockout-owner-checks": { kind: FAILED, when: (e) => Number(e.unanswered) > 0 },
   "knockout-register-counts": { kind: FAILED, when: (e) => Number(e.counted) < Number(e.marks) },
+  // The calibration every rating group carries, read once per run: a worked-examples file that could not be read leaves every
+  // rating without it, and this record is its only one. Read, it is a record of which file and how much.
+  "knockout-calibration": { kind: FAILED, when: (e) => e.unreadable === true },
   // A part of the report that failed and still shipped. Its failure is counted where it happened, except a
   // court-decisions file that arrived absent or empty from a stage that ended ok: this record is its only one.
   "degraded-parts": { kind: FAILED, when: (e) => (Array.isArray(e.parts) ? e.parts : [])
