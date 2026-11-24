@@ -41,6 +41,7 @@
 import { serve } from "./stdio-server.mjs";
 import { recordUnitNote } from "../../register-unit-record.mjs";
 import { recordWithheldFamilies, recordReleasedFamilies, WITHHELD_REASON_MAX } from "../../withheld-families.mjs";
+import { PRODUCT_FAULT_MESSAGE } from "../../product-fault.mjs";
 
 async function record_unit_note(params) {
   const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
@@ -57,6 +58,7 @@ async function record_unit_note(params) {
   try {
     const r = recordUnitNote(runDir, { ...(params ?? {}), axis: bound });
     if (r.refused) return { isError: true, text: `REFUSED: ${r.refused}` };
+    if (r.product_fault) return { isError: true, text: PRODUCT_FAULT_MESSAGE };
     if (r.write_failed) return { isError: true, text: `ERROR: the driver could not store this note (${r.write_failed}). This is a driver fault, not a fault in your observation — do not re-type it.` };
     // THE COUNTS ARE REPORTED BACK, because they are the note's substance and the seat never saw them:
     // they are derived from the band the tools wrote. A seat that reads them back can tell at once that

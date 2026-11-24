@@ -3145,6 +3145,16 @@ export function breakFindingsAfterWrites(msg, argv) {
 }
 
 export function beforeForcedFailure(argv, msg) {
+  // A register call sent and never returned: the server logged its start, and the turn ended with it still out.
+  const killedAxis = process.env.MOCK_KILLED_REGISTER_CALL;
+  if (killedAxis) {
+    const dir = runDirFromWiring(argv);
+    if (dir) {
+      mkdirSync(driverDir(dir), { recursive: true });
+      appendFileSync(driverDir(dir, "tool-calls.jsonl"), JSON.stringify({ ts: new Date().toISOString(), event: "started",
+        server: "register", seq: Date.now(), tool: "register_execute_plan", axis: killedAxis }) + "\n");
+    }
+  }
   if (process.env.MOCK_POST_REPAIR_OWES_MORE !== "persist" || !/After the delivery check, that record was repaired/.test(msg)) return;
   const dir = runDirFromWiring(argv);
   if (!dir) return;

@@ -616,7 +616,7 @@ const DECLARES_NONE_BY_DESIGN = Object.freeze({
   record_unit_note:
     "The one field its acceptor demands, `axis`, is never the caller's to send: the driver binds it per "
     + "seat and unit-note-server.mjs injects it, so the seat is told to omit it. Every other field merges "
-    + "onto the axis's last accepted note (register-unit-record.mjs:233). Measured: acceptUnitNote "
+    + "onto the axis's last accepted note (mergeUnitNoteCall() in register-unit-record.mjs). Measured: acceptUnitNote "
     + "accepts a call carrying nothing but the bound axis.",
   record_knockout_review:
     "What its acceptor demands is a DISJUNCTION — at least one of `rewrites` or `declined` — and "
