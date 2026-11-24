@@ -110,7 +110,7 @@ test("both manuals stop on a lawyer's judgment, and the register manuals carry t
   assert.ok(recipes.includes(RECIPES_SENTENCES.thenTheMajorsTakenFrom));
   assert.ok(recipes.includes(RECIPES_SENTENCES.scopeTheSearchTextClass));
   // the billing and price words the approved set takes out
-  const all = ["SKILL.md", "unit.md", "digest.md", "register-recipes.md", "providers/clarivate.md", "providers/corsearch.md", "providers/euipo.md",
+  const all = ["SKILL.md", "unit.md", "digest.md", "register-recipes.md", "providers/clarivate.md", "providers/clarivate-questions.md", "providers/corsearch.md", "providers/euipo.md",
     "providers/free-tier.md", "providers/uspto-local.md"].map((f) => flat(`skills/clearance-register/${f}`)).join(" ");
   for (const gone of ["wastes a paid call", "one billable search", "both paid vendors", "Queries are free", "metered provider", "cheap `/count`",
     "cost breakdown", "send one cheap", "(cheap tiers)", "(cheap, informational", "(cheap — tells", "cheapest, always enumerates"])

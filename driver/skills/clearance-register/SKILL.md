@@ -35,7 +35,7 @@ Companion files:
 - [status-rules.md](status-rules.md) — live-status keep-list, Madrid handling, Chinese-status normalisation
 - [stealth-filer-indicators.md](stealth-filer-indicators.md) — law-firm / stealth-filer owner detection
 - [providers/corsearch.md](providers/corsearch.md) — Corsearch-specific operator vocabulary
-- [providers/clarivate.md](providers/clarivate.md) — Clarivate-specific operator vocabulary + its capability gaps
+- [providers/clarivate.md](providers/clarivate.md) and [providers/clarivate-questions.md](providers/clarivate-questions.md) — Clarivate-specific operator vocabulary + its capability gaps
 
 ## Model
 

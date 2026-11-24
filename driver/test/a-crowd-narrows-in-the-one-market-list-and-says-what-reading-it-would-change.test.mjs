@@ -49,8 +49,8 @@ test("the shared manual and the provider notes carry no price words", () => {
   const corsearch = flat("providers/corsearch.md");
   assert.ok(corsearch.includes(CORSEARCH_SENTENCES.donRunMultipleSeparatePhonetic));
   assert.ok(corsearch.includes("## Request limits"));
-  assert.ok(flat("providers/signa.md").includes(SIGNA_SENTENCES.oneCallNotThree));
-  const all = ["SKILL.md", "register-recipes.md", "providers/corsearch.md", "providers/signa.md"].map(flat).join(" ");
+  assert.ok(flat("providers/signa-questions.md").includes(SIGNA_SENTENCES.oneCallNotThree));
+  const all = ["SKILL.md", "register-recipes.md", "providers/corsearch.md", "providers/signa.md", "providers/signa-questions.md"].map(flat).join(" ");
   for (const gone of ["and is free", "the honest trade", "costs more", "## API budget", "no extra spend", "do NOT spend"])
     assert.ok(!all.includes(gone), `the register manuals still say "${gone}"`);
 });

@@ -36,7 +36,7 @@ import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the run
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { attachFramework } from "./run-attachments.mjs";   // the one framework freeze, both products'
-import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc, filingsOnce, expandFilingsOnce, sameRecord, calibrationExcerptOf } from "./stages-knockout.mjs";
+import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc, filingsOnce, expandFilingsOnce, sameRecord, calibrationExcerptOf, readerProviderDoc } from "./stages-knockout.mjs";
 import { workedExamplesFor } from "./framework.mjs";   // which worked examples the rating's calibration comes from
 import { familiesDefect } from "./knockout-frame-record.mjs";
 import { registerTable, writeRegisterTable } from "./ko-register-tables.mjs";
@@ -676,7 +676,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
         try {
           await koStage("knockout-register-read", ctx, { chunkNo: c, msgCtx: {
             readingLines: readingTableLines({ marks: fam, counts, classes: job.classes ?? null, framedMarks: plan.marks, runDir: run.runDir }),
-            providerDoc: adapterForRegister(ctx.register)?.skillDoc ?? null, inScope, familySize: fam.length,
+            providerDoc: readerProviderDoc(adapterForRegister(ctx.register)), inScope, familySize: fam.length,
             ...knockoutReaderFiles(run.runDir, plan, scopeDoc, fam[0].name, { family: fam.map((m) => m.name), tag: c }),
           } });
         } catch (e) { readerFailures.push({ c, e }); }

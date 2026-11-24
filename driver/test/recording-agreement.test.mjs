@@ -38,7 +38,7 @@ import { fileURLToPath } from "node:url";
 import { join, basename } from "node:path";
 import { NARRATIVE_FILE, FINDINGS_FILE, synthesisCallPaths } from "../synthesis-record.mjs";
 
-import { STAGES, paths as stagePaths, resolveSkillReads, writeReturn } from "../stages.mjs";
+import { STAGES, paths as stagePaths, providerManuals, resolveSkillReads, writeReturn } from "../stages.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 import { providerUnavailableRegisterTools, RECORDING_STAGES, RECORDING_TOOLS, allowedToolsFor, toolGroupsForStage } from "../engine/mcp/gather-config.mjs";
 import { REGISTER_PROVIDER } from "../driver.config.mjs";
@@ -277,8 +277,9 @@ function unionFor(stage, artifacts) {
  * THE SURFACES THAT ARE PROVIDER-CONDITIONAL BY CONSTRUCTION —.
  *
  * The active provider's own deck is selected BY the provider (the dispatch names
- * `skills/clearance-register/providers/<name>.md` at runtime), so it cannot assert a capability of a
- * deployment it does not describe. Derived from the provider name, never a list anyone maintains.
+ * `skills/clearance-register/providers/<name>.md` at runtime, and its questions file where it splits one
+ * out), so it cannot assert a capability of a deployment it does not describe. Derived from the manuals the
+ * provider's adapter declares, never a list anyone maintains.
  *
  * An UNRESOLVED provider yields an empty set — no guess. And the derivation fails LOUD rather than
  * silent: if decks move, this stops matching and the findings come BACK, which is the safe direction
@@ -286,7 +287,7 @@ function unionFor(stage, artifacts) {
  */
 function providerConditionalSurfacesFor() {
   if (!REGISTER_PROVIDER) return new Set();
-  return new Set([`pointer:driver/skills/clearance-register/providers/${REGISTER_PROVIDER}.md`]);
+  return new Set(providerManuals(REGISTER_PROVIDER).map((doc) => `pointer:driver/${doc}`));
 }
 
 /** Everything the guard needs for one stage, resolved once. */

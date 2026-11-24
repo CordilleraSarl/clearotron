@@ -47,7 +47,7 @@ const FIXTURES = {
   "driver/skills/matter-frame/SKILL.md": MATTER_FRAME_SENTENCES,
   "driver/skills/blind-frame/SKILL.md": BLIND_FRAME_SENTENCES,
   "driver/skills/clearance-register/providers/corsearch.md": CORSEARCH_SENTENCES,
-  "driver/skills/clearance-register/providers/signa.md": SIGNA_SENTENCES,
+  "driver/skills/clearance-register/providers/signa-questions.md": SIGNA_SENTENCES,
   "driver/skills/clearance-search/firm-wide-reasoning.md": FIRM_WIDE_SENTENCES,
   "driver/skills/knockout-frame/SKILL.md": KO_FRAME_SENTENCES,
 };
