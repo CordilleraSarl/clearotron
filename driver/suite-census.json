@@ -1419,6 +1419,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-searches-each-name-as-written-joined-and-hyphenated.test.mjs": {
+          "tests": 8,
+          "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-stage-keeps-the-rating-it-replaces-and-records-what-it-read.test.mjs": {
           "tests": 6,
           "asserts": 52,

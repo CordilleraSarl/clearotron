@@ -65,6 +65,7 @@ import { REGISTER_AXES } from "../../coverage-ledger.mjs";
 import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
+import { USE_PHRASE } from "../../verify-knockout.mjs";   // the use phrase, defined once
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
 import { recordKnockoutCorrection } from "../../knockout-correction-record.mjs";
 import { recordKnockoutRegisterRead } from "../../knockout-register-record.mjs";
@@ -1624,9 +1625,11 @@ serve({
         },
         batch: {
           type: "object",
-          required: ["productContext", "inUseAs"],   // places are per name (ruling 570): the batch list is optional, as in the acceptor and the manual
+          required: ["productContext", "inUseAs", "useKind"],   // places are per name (ruling 570): the batch list is optional, as in the acceptor and the manual
           properties: {
             productContext: { type: "string", description: "One sentence: what the batch is for. Every mark's contextFraming is read against it." },
+            // THE ORDER'S USE PHRASE (design, 2026-11-24): one for the names with the order's proposed use, so two runs of one order ask the same questions.
+            useKind: { type: "string", description: USE_PHRASE },
             inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The places the batch is searched on include the sites where these uses are listed." },
             places: {
               type: "array", items: { type: "string" },
@@ -1648,9 +1651,9 @@ serve({
           description: "One row per instructed mark, names verbatim. Two names that differ only in spacing, punctuation or case are REFUSED: they would share one research payload, and one of them would be rated on the other's evidence.",
           items: {
             type: "object",
-            // The six the acceptor refuses a row without, by name. `classes` is NOT among them: a plan
+            // The four the acceptor refuses a row without, by name. `classes` is NOT among them: a plan
             // row may legitimately carry none, and the acceptor only constrains its shape when present.
-            required: ["name", "classesPlain", "contextFraming", "useKind", "places", "spellings"],
+            required: ["name", "classesPlain", "contextFraming", "places"],
             properties: {
               ref: { type: "string", description: "The requester's own reference for this mark, or omit it." },
               name: { type: "string", description: "The mark, verbatim from the instructed scope." },
@@ -1658,12 +1661,12 @@ serve({
               beltAndBraces: { type: "array", items: { type: "number" }, description: "Adjacent Nice classes swept as a precaution, integers 1-45." },
               classesPlain: { type: "string", description: "The plain-language class line — what these classes are, in words the rating step reads beside the numbers." },
               contextFraming: { type: "string", description: "What THIS name is for — a character, a location, a product line. The rating hangs off it: the assess stage is told to rate WITH this field, per mark, and two names in one batch can sit at different bands on identical evidence because they are used differently." },
-              useKind: { type: "string", description: "In one to three words, the kind of use this name most plausibly already has in this field, in your judgment (task 2c). Every search of the name adds it: each spelling is searched on each place as the spelling followed by those words. Keep it short — it goes into every one of that name's searches — but a longer answer is accepted." },
+              useKind: { type: "string", description: "A different use the request gives this name, copied as batch.useKind is (task 2c). Leave it out otherwise." },
               // PER NAME, NOT PER BATCH (ruling 570). Declared here as well as in the driver's allowlist
               // because a field the prose asks for and the schema omits is a contradiction the seat
               // resolves whichever way it happens to trust.
               places: { type: "array", items: { type: "string" }, description: "The places THIS name is searched on: two or more, one of them \"web\" (the whole web) and each other a site's bare host. No upper limit — name as many as this name needs, and no more, because every place is another search of every spelling. Two names in one batch may have different lists." },
-              spellings: { type: "array", items: { type: "string" }, description: "2 or 3 ways this name is written, the name as instructed among them. Each is searched on every place THIS name names." },
+              // NO SPELLINGS: the driver builds them from the name (task 2e). A held answer that sends them is accepted, as the record says.
               alternatives: { type: "array", items: { type: "string" }, description: "Each written form of this one item, where the request gives more than one spelling or word order. Omit otherwise." },
               priorKnowledge: { type: "string", description: "What the requester already told you about this name, or omit it." },
               priority: { type: "number", description: "This mark's position in the execution order." },

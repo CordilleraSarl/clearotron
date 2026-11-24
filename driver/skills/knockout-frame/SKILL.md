@@ -7,7 +7,7 @@ description: Frame a KNOCKOUT batch — scope, belt-and-braces classes, context 
 
 You are framing a **knockout batch**: a Stage-0 triage screen of several candidate names at once —
 broad-not-deep, kill/no-kill. Your output drives a CODE-side web search and the assessment turn. The
-search runs every spelling you name for a mark (task 2e), with the kind of use you name for it (task 2c),
+search runs each name's spellings (task 2e), with its use phrase (task 2c),
 on every place you name for it (task 2d), and keeps what each search returned, with no summary. Nothing you write here searches anything.
 
 ## Tasks, per the batch
@@ -37,12 +37,7 @@ on every place you name for it (task 2d), and keeps what each search returned, w
    or a product line for a pharma client. Judge it from the client's field and the batch's context;
    these examples are not a list to copy. The places you name in task 2d include the sites where these
    uses are listed, so a kind of use you leave out has no place searched for it.
-   Then, per mark, **`useKind`**: in **one to three words**, the one kind of use THIS name most plausibly
-   already has in this field ("character", "app", "achievement"), judged from its `contextFraming` and the
-   batch's context; the examples are not a list to copy either. Every search of the name adds it: each
-   spelling is searched on each place as the spelling followed by those words, so a name that reads as a
-   character is looked for as one. Keep it short because it goes into every one of that name's searches
-   and a long phrase buries the spelling — but a longer answer is accepted, never refused.
+   Then **`batch.useKind`**, the use phrase: One to three words copied exactly from the request, saying what the client will use the names for. Every web search adds them after the name. Give a name its own useKind only when the request gives that name a different use, copied the same way; otherwise leave the field out.
 2d. **`places` — per mark, the places THIS name is searched on: two or more, and as many as the name needs.** The places that matter for
    this client: its stores, and the sites where the kinds of use in task 2c are listed. One of them is
    `web`, the whole web, where famous names and cultural references surface. Every other place is a
@@ -53,9 +48,9 @@ on every place you name for it (task 2d), and keeps what each search returned, w
    name that reads as a game character wants the wikis, a name that reads as an app wants the app stores,
    and neither should carry the other's list. Name as many as the name needs and no more — every place you
    add is another search of every spelling, so a list nobody needs costs minutes and finds nothing.
-2e. **`spellings` — 2 or 3 ways each name is written.** The name exactly as instructed is always one of
-   them. Add the forms a buyer would type or a seller would list: the words joined or split, a hyphen, a
-   common misspelling, a transliteration a market uses. Each spelling is searched on every place in
+2e. **Spellings — the driver writes them, and you send none.** For marketplace searches, use each
+   submitted name as written and its distinct joined and hyphenated forms. Keep every expressly
+   instructed alternative tied to its submitted name. Each spelling is searched on every place in
    task 2d.
 2f. **`alternatives` — where the request gives one item in more than one spelling or word order ("LAKE MOON / MOON LAKE"), list each form as written.** `name` stays verbatim. Each form is searched on its own and stays tied to this row. Leave it out where the request gives one form. A slash does not make alternatives by itself, and two separate items stay two rows.
 
@@ -82,19 +77,18 @@ on every place you name for it (task 2d), and keeps what each search returned, w
 
 ```json
 { "schema": 1,
-  "batch": { "productContext": "<one sentence>", "inUseAs": "<task 2c>",
+  "batch": { "productContext": "<one sentence>", "inUseAs": "<task 2c>", "useKind": "<task 2c: the use phrase>",
              "umbrellaBrandNote": null, "executionOrder": ["<mark>", "..."] },
   "marks": [ { "ref": "<or null>", "name": "<verbatim>", "classes": [8, 21],
                "beltAndBraces": [35], "classesPlain": "<plain-language line>",
                "contextFraming": "<what THIS name is for — see task 2b>",
-               "useKind": "<one to three words: this name's kind of use — see task 2c>",
+               "useKind": "<task 2c: only where the request gives this name a different use, or leave out>",
                "places": ["web", "<host>", "..."],
-               "spellings": ["<the name>", "<another form>"], "alternatives": ["<task 2f, or leave out>"], "priorKnowledge": null,
+               "alternatives": ["<task 2f, or leave out>"], "priorKnowledge": null,
                "priority": 1 } ] }
 ```
 
 Exactly one row per instructed mark (name parity vs instructed-scope, byte-exact after trim);
 `beltAndBraces` are Nice ints; `executionOrder` is a permutation of the names. Each mark's `places` holds
-two or more entries, with no upper limit, one of them `web` and each other a bare host; `spellings` holds 2 or 3 strings, the name among
-them. No searching, no register speculation beyond the framing sentence. Also send a
+two or more entries, with no upper limit, one of them `web` and each other a bare host. No searching, no register speculation beyond the framing sentence. Also send a
 2–3 sentence scope note as `scope_note` (what the batch is, which classes, anything flagged).
