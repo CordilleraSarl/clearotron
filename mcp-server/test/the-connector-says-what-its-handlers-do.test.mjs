@@ -21,7 +21,7 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", WORK);
 pinEnv(process.env, "CLEAROTRON_DEFAULT_AGENT", "intake-agent");
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(WORK, "pool"));
 
-const { TOOL_DEFS, describeForAudience, BRIEFING_NOTE, tools, promptText } = await import("../server.mjs");
+const { TOOL_DEFS, describeForAudience, BRIEFING_NOTE, tools } = await import("../server.mjs");
 const { feedContext } = await import("../lib/ops.mjs");
 const { visibleTools, authorize } = await import("../../shared/scope.mjs");
 const { buildFixture, buildKnockoutRun, RUN_ID, RUN_ID_KO } = await import("./_fixture.mjs");
@@ -79,19 +79,11 @@ test("a report link lists a clearance's cards by group, and is sent to the brief
   assert.equal(knockout.available, false);
   assert.match(knockout.note, /Read this run's findings in brief and in the report\.$/);
   assert.doesNotMatch(knockout.note, /without `group`/, "a Knockout report link is sent to a call its gate refuses");
+  // Where it is sent is there: the delivered Knockout's report opens through the same link.
+  const report = await tools.read_artifact(authorize({ kind: "user", runId: RUN_ID_KO }, "read_artifact", { runId: RUN_ID_KO, name: "report" }));
+  assert.ok(report.text?.length > 0, "a Knockout report link is sent to a report it cannot open");
   const operator = await tools.list_findings({ runId: RUN_ID_KO, group: "on-field" }, { scope: { kind: "ops" } });
   assert.match(operator.note, /Call list_findings without `group`/, "an operator lost the pointer to the call it may make");
-});
-
-test("the report link's two evidence prompts answer from what the link holds, and the account's keep the evidence it can read", () => {
-  for (const name of ["walk-me-through-the-risks", "what-wasnt-covered"]) {
-    assert.ok(promptText("user", name), `${name} is no longer offered on a report link`);
-    assert.doesNotMatch(promptText("user", name), /the searches that returned nothing before you answer|Say for each whether the underlying record was actually retrieved/,
-      `${name} asks a report link for evidence it cannot read`);
-    assert.match(promptText("user", name), /this connection cannot show/, `${name} does not tell a report link to state the limit`);
-  }
-  assert.match(promptText("account", "walk-me-through-the-risks"), /Say for each whether the underlying record was actually retrieved/);
-  assert.match(promptText("account", "what-wasnt-covered"), /Read the coverage statement and the searches that returned nothing/);
 });
 
 test("a run-failed notice is settled with mark_sent, as the courier's instructions and the outbox both say", () => {

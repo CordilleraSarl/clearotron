@@ -765,9 +765,6 @@ const PROMPTS = [
     description: "The conflicts in order of how much they actually threaten the filing, with the evidence behind each.",
     audiences: ["user", "account"],
     text: "Take me through the risks in this search, most material first. For each: who holds the right, where, over what goods or services, how close it is to my mark, and what it would take to get past it. Keep the report's ranking — an on-field conflict outranks a watchlist note, and do not promote one into the other. Say for each whether the underlying record was actually retrieved or the citation rests on a write-up.",
-    // A REPORT LINK HOLDS THE REPORT, ITS BRIEF AND ITS CARDS, and no record or search list (design, 2026-11-24): it is
-    // asked to answer from those and to say where they stop, never to certify a retrieval from a summary.
-    textFor: { user: "Take me through the risks in this search, most material first. For each: who holds the right, where, over what goods or services, how close it is to my mark, and what it would take to get past it. Keep the report's ranking — an on-field conflict outranks a watchlist note, and do not promote one into the other. Answer from the delivered report, its briefing and the report cards you can read. Where they do not show whether the underlying record was retrieved, say that this connection cannot show it." },
   },
   {
     name: "what-wasnt-covered",
@@ -775,7 +772,6 @@ const PROMPTS = [
     description: "The honest edges of this search: what it did not reach, and what came back empty rather than clean.",
     audiences: ["user", "account"],
     text: "Tell me what this search did NOT cover, and be precise about the difference between an area that was searched and came back empty and an area that was never reached. Read the coverage statement and the searches that returned nothing before you answer. A reading that ran and found nothing is a result — report it as one, and do not describe it as a gap. Then state the real gaps plainly, in one place, without burying them under the clean parts.",
-    textFor: { user: "Tell me what this search did NOT cover, and be precise about the difference between an area that was searched and came back empty and an area that was never reached. Read the report's coverage statement before you answer. Where the report does not list the searches that returned nothing, say that this connection cannot show them. A reading that ran and found nothing is a result — report it as one, and do not describe it as a gap. Then state the real gaps plainly, in one place, without burying them under the clean parts." },
   },
   {
     name: "compare-the-search-options",
@@ -802,7 +798,7 @@ export function promptsFor(kind) {
 /** One prompt's text, or null when this audience is not offered it. */
 export function promptText(kind, name) {
   const p = PROMPTS.find((x) => x.name === name && x.audiences.includes(kind));
-  return p ? p.textFor?.[kind] ?? p.text : null;
+  return p ? p.text : null;
 }
 
 // ---- the client-facing cut of a tool description ---------------------------------
