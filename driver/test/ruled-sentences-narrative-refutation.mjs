@@ -5,6 +5,7 @@
 // purpose, and a test that guards one names it from here rather than writing it out, so a ruled wording change is one edit.
 // the-ruled-sentences-tests-hold-are-in-their-manuals.test.mjs checks each one is still in the manual, word for word.
 export const REFUTATION_SENTENCES = Object.freeze({
+  listEveryCorrectableDefect: "List every correctable defect. Choose the verdict by the severity grounds below.",
   theDriverChecksTheStructured: "The driver checks the structured finding record. A required use-check source belongs in that record. An "
     + "unknown use status does not require an invented source. The reviewer checks whether the available "
     + "evidence supports the claim.",

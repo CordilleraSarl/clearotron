@@ -12,12 +12,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
 
 const MANUAL = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "narrative-refutation", "SKILL.md"), "utf8");
 const logic = MANUAL.slice(MANUAL.indexOf("## Verdict logic"), MANUAL.indexOf("## What NOT to do"));
 
 test("the verdict is chosen by severity, never by how many flags there are", () => {
-  assert.ok(logic.startsWith("## Verdict logic\n\nList every correctable defect. Choose the verdict by the severity grounds below.\n"));
+  assert.ok(logic.startsWith(`## Verdict logic\n\n${REFUTATION_SENTENCES.listEveryCorrectableDefect}\n`), "the verdict logic does not open on the one rule");
   assert.doesNotMatch(logic, /\b1-3 flags|one to three flags|up to three flags/i, "a count still decides CONDITIONAL");
   assert.match(logic, /\*\*CONDITIONAL\*\*: every flag is fixable with a small narrative edit .*and none is a BLOCKING ground below\./);
   // Four minor defects are CONDITIONAL, and one material defect is BLOCKING: the paragraph that says so stays.
