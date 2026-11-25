@@ -8,6 +8,9 @@ export const adapter = {
   label: "Clarivate Compumark",
   credEnv: "CLARIVATE_API_KEY",
   skillDoc: "skills/clearance-register/providers/clarivate.md",
+  // How a question is asked and how its answer reads, split from the manual above: the Knockout reader holds only the
+  // propose tool, so it reads this file alone; the clearance unit reads both.
+  questionsDoc: "skills/clearance-register/providers/clarivate-questions.md",
   hasPublicRecordUrl: false, // Compumark Content has no public record URL — cite the office register
   //, ruling 2026-08-20 — WHAT A CARD SHOWS WHERE A LINK CANNOT GO. A UI exists for this
   // provider and we do not know its per-record URL, so the card says so and says it is unfinished.
