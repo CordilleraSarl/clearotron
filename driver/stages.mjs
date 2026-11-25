@@ -865,6 +865,15 @@ const reportCardSkillReads = ({ profile }) =>
 // handed none of them: on a test run with Codex, a review that had not been given the framework went looking for one in
 // folders outside its run. So it reads the writer's own resolved framework and the shared reasoning, and the field module
 // on a pharma matter. The writer's level-specific rules (synthesis-rules.md) and its worked examples stay the writer's.
+// THE COMMON-LAW MANUAL IN TWO PARTS (design, tracker issue 1447 item 3.1). The spine is what every seat shares; the
+// grid seats read the grid part, the meaning seat the meaning part, and the single-member stage, which does both
+// jobs, reads all three. With no seat named (the registry's whole-stage view) a split stage reads every part.
+const COMMON_LAW_SPINE = "skills/clearance-common-law/SKILL.md";
+const COMMON_LAW_GRID = "skills/clearance-common-law/grid.md";
+const COMMON_LAW_MEANING = "skills/clearance-common-law/meaning.md";
+const COMMON_LAW_WHOLE = Object.freeze([COMMON_LAW_SPINE, COMMON_LAW_GRID, COMMON_LAW_MEANING]);
+const commonLawSeatReads = ({ axis } = {}) => axis === MEANING_SEAT ? [COMMON_LAW_SPINE, COMMON_LAW_MEANING]
+  : axis ? [COMMON_LAW_SPINE, COMMON_LAW_GRID] : [...COMMON_LAW_WHOLE];
 const reviewSkillReads = ({ profile, job }) => [
   "skills/narrative-refutation/SKILL.md", frameworkFor(profile), SPINE_DOC,
   ...(pharmaMatter(job) ? ["skills/clearance-search/field-doctrine-pharma.md"] : []),
@@ -1592,7 +1601,7 @@ export const STAGES = {
     // The upstream fix for gather COST is still in-class scoping + the 600 enumerate ceiling; this wall just
     // stops killing a gather that is legitimately working. Ship WITH the scoping/ceiling levers, not alone.
     model: "haiku", thinking: "low", timeoutSec: 2250, stallSec: 1100,
-    skillReads: ["skills/clearance-common-law/SKILL.md"],
+    skillReads: COMMON_LAW_WHOLE,
     out: (P) => P.commonLaw,
     validate: declaredValidator("common-law", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -1726,7 +1735,7 @@ export const STAGES = {
       // is gone with the program itself, which the manual no longer teaches; a dispatch is pointed at the run's own spec.
       const specPath = gridSpecPath ?? P.gridSpec;
       return lines(
-        reads(["skills/clearance-common-law/SKILL.md"]),
+        reads(COMMON_LAW_WHOLE),
         `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
         systemScope,
         asksBlock,
@@ -1767,7 +1776,7 @@ export const STAGES = {
     // dead while looking authoritative. The wall and the stall stay here — they are the same for every
     // seat and are about the grid tool's silence, not about the judgment tier.
     timeoutSec: 2250, stallSec: 1100,
-    skillReads: ["skills/clearance-common-law/SKILL.md"],
+    skillReadsFor: commonLawSeatReads,
     out: (P, half) => P.commonLawHalf(half),
     validate: declaredValidator("common-law-half", validators),
     // — the run's own receipt of which prompt vintage minted this dispatch, written at DISPATCH
@@ -1876,7 +1885,7 @@ export const STAGES = {
       // asking for those sections would be demanding ceremony a seat has no material for — which is how
       // a floor teaches a model to fabricate rows to pass it.
       if (half === MEANING_SEAT) return lines(
-        reads(["skills/clearance-common-law/SKILL.md"]),
+        reads(commonLawSeatReads({ axis: half })),
         USE_THE_INPUTS,
         systemScope,
         `You own this matter's MEANING SWEEP and nothing else. Two sibling members are running the marketplace grid concurrently and the driver merges all three in code — do NOT sweep marketplaces, do NOT judge listings, and do NOT widen beyond your dictated queries.`,
@@ -1901,7 +1910,7 @@ export const STAGES = {
         ...ownedAsks.map((a, i) => `  ${i + 1}. "${a.ask}"`),
       ) : "";
       return lines(
-        reads(["skills/clearance-common-law/SKILL.md"]),
+        reads(commonLawSeatReads({ axis: half })),
         USE_THE_INPUTS,
         systemScope,
         `You are running ONE HALF of this matter's marketplace grid — a sibling member runs the other half concurrently, and the driver merges the two in code. Cover ONLY your half's dictated terms; never widen to terms outside your spec.`,
@@ -2539,7 +2548,7 @@ export const STAGES = {
     // resource it. (It already ran on sonnet in-engine: anthropic-agent maps gemini-flash→sonnet, so the
     // old "gemini-flash, fall back to sonnet" never fired; this just makes the config honest + lifts effort.)
     model: "sonnet", thinking: "high", timeoutSec: 600, stallSec: 600,
-    skillReads: ["skills/clearance-search/phase2-execution.md"],
+    skillReads: ["skills/skeptic/SKILL.md"],
     out: (P) => P.skepticFlags,
     validate: declaredValidator("skeptic", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2547,7 +2556,7 @@ export const STAGES = {
     contractElements: {
       "flags — one bullet per flag, citing the affected worker / axis / finding": {
         class: "judgment", tokens: ["too_short"],
-        why: "A fresh-eyes audit by a reader that did not write the findings — 'ask what's wrong here, not is this right' (phase2-execution.md:139-142). Nothing on disk holds a second opinion. #850 keeps it J.",
+        why: "A fresh-eyes audit by a reader that did not write the findings — 'ask what's wrong here, not is this right' (skeptic/SKILL.md, its Posture paragraph). Nothing on disk holds a second opinion. #850 keeps it J.",
       },
       "\"no flags surfaced\" — the clean sentinel phrase": {
         class: "mechanical:code-rendered", tokens: ["too_short"],
@@ -2583,7 +2592,8 @@ export const STAGES = {
       },
     },
     message: ({ paths: P, axes, registerOnly, depth }) => lines(
-      `Read skills/clearance-search/phase2-execution.md, section "Step 2.6 — Skeptic review", and perform that fresh-eyes audit.`,
+      reads(["skills/skeptic/SKILL.md"]),
+      `Perform the fresh-eyes audit that manual describes.`,
       // lever 3 — the flagging rung. Empty on a one-country run; `lines` drops it.
       skepticRungDirective(depth),
       // A2 (addendum 2026-07-30): the two MACHINE artifacts are named as inputs beside the prose. The
