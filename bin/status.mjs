@@ -20,7 +20,7 @@ import { CLIENT_DOOR_UNIT, clientDoorPort } from "../shared/client-door.mjs";
 import { invoke } from "../shared/invocation.mjs";
 import { readRunning, probe } from "../shared/running-start.mjs";
 import { configStaleness, stalenessWarning, parseSystemdTimestamp } from "../driver/config-staleness.mjs";   // — F48
-import { engineCheckDir, failedCheckLines, readEngineCheck } from "../driver/engine/health.mjs";
+import { engineCheckDir, failedCheckLines, lastEngineAnswer, readEngineCheck } from "../driver/engine/health.mjs";
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
 const say = (s = "") => console.log(s);
@@ -135,7 +135,7 @@ if (existsSync(join(UNIT_DIR, CLIENT_DOOR_UNIT))) {
   try { unitsEnv = { ...process.env, ...parseEnvFile(readFileSync(join(homedir(), ".env"), "utf8")) }; } catch { /* the shell's */ }
   const engine = String(unitsEnv.CLEAROTRON_AI ?? "").trim();
   const dir = unitsEnv.CLEAROTRON_WORK_DIR ? join(unitsEnv.CLEAROTRON_WORK_DIR, "engine-check") : engineCheckDir();
-  const lines = engine ? failedCheckLines(readEngineCheck(engine, { dir })) : [];
+  const lines = engine ? failedCheckLines(readEngineCheck(engine, { dir }), lastEngineAnswer(engine, { dir })) : [];
   if (lines.length) say(`\n  ⚠ ${lines.join("\n    ")}`);
 }
 say(`\n  Configuration questions: ${invoke("doctor")}`);

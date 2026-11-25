@@ -2292,7 +2292,7 @@ function hasQueuedWork() {
 
 // THE ENGINE IS PROVEN BETWEEN JOBS TOO (engine/health.mjs): when the worker starts, after the installed build
 // changes, and when it has had no successful call for the routine interval. Only on a tick with nothing to run, so
-// it never delays a job, and it is due rarely enough that an empty tick stays free. Isolated: a check that throws
+// it never delays a job; an empty tick costs one read of the installed build. Isolated: a check that throws
 // must not end the activation. `checkOnStart` is set by the watch entrypoint alone: a systemd one-shot starts a
 // process every tick, and a start there is not a restart.
 let checkOnStart = false;

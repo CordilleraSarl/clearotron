@@ -23,10 +23,11 @@ const T0 = Date.parse("2026-11-25T10:00:00Z");
 function bench() {
   const dir = mkdtempSync(join(tmpdir(), "engine-check-"));
   const engines = deadLoginEngines(dir);
-  const sent = [], logged = [];
+  const sent = [], logged = [], withdrawn = [];
   return {
-    dir, engines, sent, logged,
+    dir, engines, sent, logged, withdrawn,
     write: (name, packet) => { sent.push({ name, packet }); return join(dir, `${name}.pending`); },
+    withdraw: (engine) => { withdrawn.push(engine); return true; },
     log: (line) => logged.push(line),
     done: () => rmSync(dir, { recursive: true, force: true }),
   };
@@ -58,6 +59,8 @@ test("when a check is due: a new build, the routine interval since the last answ
   assert.equal(engineCheckDue({ now: T0 + FAILING_RECHECK_MS - 1, build: "bbb", intervalMs: 7 * DAY, lastAnswer: T0, record: failed }), null,
     "a failing engine is not re-checked on every tick");
   assert.equal(engineCheckDue({ now: T0 + FAILING_RECHECK_MS, build: "aaa", intervalMs: 7 * DAY, lastAnswer: T0, record: failed }), "recheck");
+  assert.equal(engineCheckDue({ now: T0 + 60_000, build: "aaa", intervalMs: 7 * DAY, lastAnswer: T0 + 30_000, record: failed }), "recheck",
+    "a turn the engine completed since the failure says it was fixed, and the check confirms it at once");
   assert.equal(engineCheckDue({ now: T0 + 30 * DAY, build: "aaa", intervalMs: 7 * DAY, lastAnswer: null, record: null }), null,
     "an install with no record is not checked on sight");
 });
@@ -72,7 +75,7 @@ for (const which of ["claude", "codex"]) {
     try {
       const env = b.engines[which];
       const engine = env.CLEAROTRON_AI;
-      const check = (judge) => runEngineCheck({ env, reason: "routine", now: () => T0, dir: b.dir, write: b.write, log: b.log, wait: noWait, ...(judge ? { judge } : {}) });
+      const check = (judge) => runEngineCheck({ env, reason: "routine", now: () => T0, dir: b.dir, write: b.write, withdraw: b.withdraw, log: b.log, wait: noWait, ...(judge ? { judge } : {}) });
 
       const first = await check();
       assert.equal(first.lane, "configuration", JSON.stringify(first.verdict));
@@ -90,8 +93,11 @@ for (const which of ["claude", "codex"]) {
       await check();
       assert.equal(b.sent.length, 1, "a second failure of the same kind is not a second alert");
 
+      assert.deepEqual(failedCheckLines(readEngineCheck(engine, { dir: b.dir }), T0 + 1), [], "a turn completed since the failure hides it");
+      assert.deepEqual(b.withdrawn, [], "nothing is withdrawn while the failure stands");
       await check(passes);
       assert.deepEqual(failedCheckLines(readEngineCheck(engine, { dir: b.dir })), [], "a passing check clears it");
+      assert.deepEqual(b.withdrawn, [engine], "and takes back the alert if nothing has collected it");
       assert.ok(lastEngineAnswer(engine, { dir: b.dir }) >= T0, "and moves the clock");
 
       await check();
@@ -163,7 +169,7 @@ test("a turn the engine completed moves the clock; a refused or stopped one does
   }
 });
 
-test("the alert lands in the outbox as one packet per engine", async () => {
+test("the alert lands in the outbox as one packet per engine, and a passing check takes it back", async () => {
   const b = bench();
   const outbox = join(b.dir, "outbox");
   const saved = process.env.CLEAROTRON_OUTBOX_DIR;
@@ -174,6 +180,8 @@ test("the alert lands in the outbox as one packet per engine", async () => {
     const packet = JSON.parse(readFileSync(join(outbox, "engine-check-anthropic-agent.failed.pending"), "utf8"));
     assert.equal(packet.kind, "engine-check-failed");
     assert.match(packet.text, /anthropic-agent is not signed in/);
+    await runEngineCheck({ env: b.engines.claude, now: () => T0 + HOUR, dir: b.dir, log: b.log, judge: passes });
+    assert.deepEqual(readdirSync(outbox), [], "a fixed fault is not left waiting to be delivered");
   } finally {
     if (saved === undefined) delete process.env.CLEAROTRON_OUTBOX_DIR; else process.env.CLEAROTRON_OUTBOX_DIR = saved;
     b.done();

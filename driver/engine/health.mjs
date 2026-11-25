@@ -19,7 +19,7 @@
 // THE PRODUCT SENDS NOTHING (docs/DELIVERY.md). The alert is a packet in the outbox, for whatever drains it,
 // and the same lines in the worker's log; `doctor` and `status` show the last failure until a check passes.
 
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { config, DEFAULT_ENGINE_ID } from "../driver.config.mjs";
 import { judgeEngineTurn, probeFailureText, probeVerdictLane } from "./probe.mjs";
@@ -29,8 +29,11 @@ import { note } from "../log.mjs";
 /** The routine check's setting, and its value when unset. */
 export const ROUTINE_SETTING = "CLEAROTRON_ENGINE_CHECK_ROUTINE";
 export const ROUTINE_DEFAULT = "7d";
-/** While a check is failing it runs again at most this often, not on every 90-second tick. */
-export const FAILING_RECHECK_MS = 60 * 60 * 1000;
+/**
+ * While a check is failing it runs again at most this often, not on every 90-second tick. A refused turn costs
+ * nothing and ends in seconds, and this is how soon `status` stops showing a failure the operator has fixed.
+ */
+export const FAILING_RECHECK_MS = 15 * 60 * 1000;
 
 const UNIT_MS = { h: 60 * 60 * 1000, d: 24 * 60 * 60 * 1000 };
 
@@ -108,7 +111,8 @@ export const readEngineCheck = (engine, { dir = engineCheckDir() } = {}) => read
  * Why a check is due now, or null. PURE.
  *
  * - `build`: the installed build is not the one last checked, so a deploy by any route is proven within a tick.
- * - `recheck`: the last check failed, an hour or more ago.
+ * - `recheck`: the last check failed, FAILING_RECHECK_MS or more ago, or the engine has completed a turn since,
+ *   a stage's or the door's, which says it was fixed: the check confirms it and withdraws the alert.
  * - `routine`: the engine has had no successful call for the routine interval. `off` turns this one off alone.
  *
  * An install with no record yet starts its clock at `seen`, the first time the worker looked, and is not
@@ -117,7 +121,7 @@ export const readEngineCheck = (engine, { dir = engineCheckDir() } = {}) => read
  */
 export function engineCheckDue({ now, build, intervalMs, lastAnswer, record }) {
   if (!record) return null;
-  if (record.ok === false) return now - Date.parse(record.at) >= FAILING_RECHECK_MS ? "recheck" : null;
+  if (record.ok === false) return now - Date.parse(record.at) >= FAILING_RECHECK_MS || (lastAnswer ?? 0) > Date.parse(record.at) ? "recheck" : null;
   if (build && record.build && build !== record.build) return "build";
   if (intervalMs == null) return null;
   const since = Math.max(lastAnswer ?? 0, Date.parse(record.at) || 0);
@@ -147,11 +151,13 @@ export function engineCheckFailureText(verdict, at) {
 }
 
 /**
- * What `status` and `doctor` print while the last check failed for a configuration fault: the alert's own lines,
- * rebuilt from the record. Nothing once a check has passed, or when the failure was not this install's to fix.
+ * What `status` prints while the last check failed for a configuration fault: the alert's own lines, rebuilt from
+ * the record. Nothing once a check has passed, once the engine has completed a turn since (`lastAnswer`), or when
+ * the failure was not this install's to fix.
  */
-export function failedCheckLines(record) {
+export function failedCheckLines(record, lastAnswer = null) {
   if (record?.ok !== false || record.lane !== "configuration") return [];
+  if ((lastAnswer ?? 0) > Date.parse(record.at)) return [];
   return engineCheckFailureText({ headline: record.headline, fix: record.fix }, Date.parse(record.at)).split("\n");
 }
 
@@ -159,15 +165,25 @@ export function failedCheckLines(record) {
 export const engineCheckPacketName = (engine) => `engine-check-${engineOf(engine)}.failed`;
 
 /**
+ * Take back an alert nothing has collected yet. A fault already fixed must not be delivered later: whatever drains
+ * the outbox would tell the operator of a failure that no longer stands. Best-effort; one already collected is gone.
+ */
+export function withdrawEngineCheckPacket(engine) {
+  try { rmSync(join(config.outboxDir, `${engineCheckPacketName(engine)}.pending`), { force: true }); return true; }
+  catch { return false; }
+}
+
+/**
  * Run the check once and record it. Returns `{ verdict, lane, alerted, text }`.
  *
  * ONE ALERT PER FAILURE. A failed check whose previous check had already alerted for a configuration fault
- * writes no second packet; a check that passes clears it, so the next failure alerts again. Weather is logged
+ * writes no second packet; a check that passes clears it and withdraws the packet if it is still waiting, so the
+ * next failure alerts again. Weather is logged
  * and never alerted: "no search can run" is not true of an overload, and the run's park recovers from it.
  */
 export async function runEngineCheck({
   env = process.env, reason = "routine", now = () => Date.now(), build = null, dir = engineCheckDir(),
-  judge = judgeEngineTurn, write = writeOutboxPacket, log = note, wait,
+  judge = judgeEngineTurn, write = writeOutboxPacket, withdraw = withdrawEngineCheckPacket, log = note, wait,
 } = {}) {
   const engine = engineOf(env.CLEAROTRON_AI);
   const previous = readEngineCheck(engine, { dir });
@@ -179,6 +195,7 @@ export async function runEngineCheck({
   let alerted = false, text = null;
   if (verdict.ok) {
     recordEngineAnswered(engine, { now: at, dir });
+    withdraw(engine);
     log(`[engine-check] ${engine} answered (${reason})`);
   } else if (lane === "configuration") {
     text = engineCheckFailureText(verdict, at);

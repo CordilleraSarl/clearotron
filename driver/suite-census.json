@@ -7865,7 +7865,7 @@
         },
         "the-engine-is-checked-between-jobs.test.mjs": {
           "tests": 7,
-          "asserts": 49,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -9671,6 +9671,12 @@
         "ack-event-account-gate.test.mjs": {
           "tests": 7,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-engine-check-alert-sits-beside-the-run-packets.test.mjs": {
+          "tests": 1,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
