@@ -29,7 +29,7 @@ import { acceptKnockoutRegister, recordKnockoutRegisterRead, settledKnockoutRead
 import { readingDoc } from "./knockout-reading-fixture.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 import { beginAnswerMemory } from "../../providers/_shared/answer-memory.mjs";
-import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 
 const CLARIVATE = capabilitiesFor("clarivate");
 const NAME = "QUILLBRAE";
@@ -735,12 +735,14 @@ test("the opening message hands over the request, the counts, and the tools by n
 test("the manual carries the clearance's reading rule word for word, narrows the goods in its own words, and sets no number on reading", () => {
   const read = (rel) => readFileSync(fileURLToPath(new URL(`../skills/${rel}`, import.meta.url)), "utf8");
   const manual = read("knockout-register-read/SKILL.md");
-  const unit = read("clearance-register/unit.md");
-  for (const heading of [UNIT_SENTENCES.everyStepLookWhatYou, UNIT_SENTENCES.readTheIdenticalMarkFirst])
-    assert.ok(manual.includes(heading) && unit.includes(heading), heading);
-  const step = (text) => text.slice(text.indexOf("3. Still a crowd?"), text.indexOf(UNIT_SENTENCES.listYouHaveReadAnswers));
+  // The clearance's reading rule is in the shared register manual. Its headings sit a level higher there, and the words match.
+  const spine = read("clearance-register/SKILL.md");
+  const headed = (text, heading) => text.split("\n").some((l) => /^#+ /.test(l) && l.replace(/^#+ /, "") === heading.replace(/^#+ /, ""));
+  for (const heading of [REGISTER_SENTENCES.everyStepLookWhatYou, REGISTER_SENTENCES.readTheIdenticalMarkFirst])
+    assert.ok(headed(manual, heading) && spine.includes(heading), heading);
+  const step = (text) => text.slice(text.indexOf("3. Still a crowd?"), text.indexOf(REGISTER_SENTENCES.listYouHaveReadAnswers));
   assert.ok(step(manual).length > 0);
-  assert.equal(step(manual), step(unit), "the market steps drifted from the clearance's");
+  assert.equal(step(manual), step(spine), "the market steps drifted from the clearance's");
   assert.match(manual, /Use the provider's supported OR form\. Read that list\.\n2\. Still a crowd\? Split the goods question by its dominant goods terms/);
   assert.doesNotMatch(manual, /record cap|100 records|first \d+ /i);
 });

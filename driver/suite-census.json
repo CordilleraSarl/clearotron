@@ -599,13 +599,13 @@
         },
         "a-crowd-is-decided-not-a-fixed-stop.test.mjs": {
           "tests": 6,
-          "asserts": 31,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
         "a-crowd-is-narrowed-by-goods-and-class-then-by-market.test.mjs": {
           "tests": 5,
-          "asserts": 20,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -617,7 +617,7 @@
         },
         "a-crowd-narrows-in-the-one-market-list-and-says-what-reading-it-would-change.test.mjs": {
           "tests": 3,
-          "asserts": 12,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -9077,13 +9077,13 @@
         },
         "the-wider-families-wait-for-the-reading-turn-on-every-matter.test.mjs": {
           "tests": 7,
-          "asserts": 23,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
         "the-wider-families-wait-on-the-identical-question.test.mjs": {
           "tests": 13,
-          "asserts": 50,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -9137,7 +9137,7 @@
         },
         "the-write-up-reads-what-placement-carried-forward.test.mjs": {
           "tests": 1,
-          "asserts": 3,
+          "asserts": 2,
           "skips": 0,
           "todos": 0
         },

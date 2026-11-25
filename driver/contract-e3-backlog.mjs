@@ -192,7 +192,7 @@ export const E3_BACKLOG = [
     //   receipt_id — M1 LANDED. stages.mjs states it outright: "No seat-facing text displays an id shape
     //     any more", and connotation-search.mjs carries " M1, FINISHED" over the retired text. The
     //     seat now gives `receipt_index`, a POSITION, and the driver resolves position to id.
-    //   quote      — M2 LANDED. The live field is `anchor` (clearance-common-law/SKILL.md:197).
+    //   quote      — M2 LANDED. The live field is `anchor` (clearance-common-law/grid.md).
     // Neither was reworded. Both were removed, and this row is discharged of them.
     //
     // ── (b) THE NEW, NARROWER CLAIM — RE-EVIDENCED for B (the form path is DELETED, ruling
@@ -209,7 +209,7 @@ export const E3_BACKLOG = [
   {
     stage: "common-law",
     kind: "literal-json-skeleton",
-    where: "driver/skills/clearance-common-law/SKILL.md:117-164",
+    where: "driver/skills/clearance-common-law/grid.md:47-150",
     surface: "skill-file",
     evidence: "### Format\\n```markdown\\n# Common-law findings — Dusk: Tales of Thornmantle (2026-05-11)\\n\\n## Summary\\n\\n- Perplexity calls executed: 4 …",
     reparsedBy: "driver/publish/audit-from-spine.mjs:15 parseTables → parseSpineFindingBlocks (audit-from-spine.mjs:124) re-parses the common-law finding tables into audit.md",
@@ -218,7 +218,7 @@ export const E3_BACKLOG = [
   {
     stage: "common-law",
     kind: "dictated-line-shape",
-    where: "driver/skills/clearance-common-law/SKILL.md:186 (restated at driver/skills/clearance-search/synthesis-rules.md)",
+    where: "driver/skills/clearance-common-law/meaning.md:19 (restated at driver/skills/clearance-search/synthesis-rules.md)",
     surface: "skill-file",
     evidence: "A clean PR/connotation row MUST cite its search — add a `**Connotation-search source:** <URL | \"perplexity_research — no result\">` line.",
     reparsedBy: "driver/connotation-search.mjs — validators.commonLaw rejects a clean claim with no such line (connotation_search_missing); the hint is re-dictated by correctionHint() in repair-messages.mjs",
@@ -259,7 +259,7 @@ export const E3_BACKLOG = [
     where: "driver/stages.mjs:2147 (the non-supplemental-lane branch)",
     surface: "stage-message",
     evidence: "BAND ARTIFACT (MANDATORY): ALSO write the COMPLETE NAMED BAND for this axis to <path> — a JSON ARRAY, one block per register_enumerate / count-probe call, in the named-band contract: {\"state\":\"enumerated\",\"query\":\"<what was searched>\",\"total_hits\":N,\"records\":[{record_id, mark_text, classes, status,",
-    reparsedBy: "driver/named-band.mjs parseNamedBand / bandRecords / bandCrowds / mergeNamedBands (named in driver/skills/clearance-register/unit.md:60-62); validators.registerUnit",
+    reparsedBy: "driver/named-band.mjs parseNamedBand / bandRecords / bandCrowds / mergeNamedBands (named in driver/skills/clearance-register/unit.md:162-164); validators.registerUnit",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
@@ -274,16 +274,16 @@ export const E3_BACKLOG = [
   {
     stage: "register-unit",
     kind: "literal-json-skeleton",
-    where: "driver/skills/clearance-register/unit.md:120-134",
+    where: "driver/skills/clearance-register/unit.md:167-181",
     surface: "skill-file",
     evidence: "Two block shapes (no third):\\n```json\\n[\\n { \"state\":\"enumerated\", \"query\":\"…\", \"total_hits\": 12, \"records\": [ { \"record_id\":\"/mark/eu/018…\", \"mark_text\":\"…\", … } ] },\\n { \"state\":\"incomplete\", \"query\":\"…\", \"total_hits\": 2416, \"fetched\": 1, \"sample\":[ … ], \"reason\":\"…\" }\\n]\\n```",
-    reparsedBy: "driver/named-band.mjs parseNamedBand — named in the skill file itself at unit.md:60-62",
+    reparsedBy: "driver/named-band.mjs parseNamedBand — named in the skill file itself at unit.md:162-164",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
     stage: "register-unit",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:4147 (the frame-reopen / scoped-retry message builder). A second number stood here and had been stale for some time: it pointed at a contract-element description rather than a builder, at its old line and at every mechanical shift of it. Two candidate builders sit beside 4164 and picking one would be a guess, so the wrong pointer is removed rather than moved a third time — one accurate citation beats one accurate and one invented.",
+    where: "driver/stages.mjs:4157 (the frame-reopen / scoped-retry message builder). A second number stood here and had been stale for some time: it pointed at a contract-element description rather than a builder, at its old line and at every mechanical shift of it. Two candidate builders sit beside 4164 and picking one would be a guess, so the wrong pointer is removed rather than moved a third time — one accurate citation beats one accurate and one invented.",
     surface: "stage-message",
     evidence: "Every block you append MUST carry \"state\":\"enumerated\" (ONLY if paged to has_more:false) or \"state\":\"incomplete\" — EXACTLY those two strings … (re-dispatch builders, which REPLACE def.message)",
     reparsedBy: "driver/named-band.mjs parseNamedBand. Scope warning: these builders replace def.message on every escalation / envelope-close / frame-reopen dispatch, so an E3 lint that walks STAGES[*].message only never sees them",
@@ -365,7 +365,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-digest",
     kind: "dictated-line-shape",
-    where: "driver/skills/clearance-register/digest.md:164 (Dominant-element reconciliation — the crowd row's `unit` grammar)",
+    where: "driver/skills/clearance-register/digest.md:140 (Dominant-element reconciliation — the crowd row's `unit` grammar)",
     surface: "skill-file",
     evidence: "`<axis> / dominant-element crowd (<N> members): <one-line label for the residual class>`",
     reparsedBy: "driver/coverage-ledger.mjs crowdRulingCount reads `<N>` back out of the `unit` cell, and driver/recall-reconciliation.mjs parseCrowdRulings turns it into the residual denominator the delivery gate blocks on",
@@ -374,7 +374,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-digest",
     kind: "exactly-these-keys",
-    where: "driver/skills/clearance-register/digest.md:236-244",
+    where: "driver/skills/clearance-register/digest.md:264-272",
     surface: "skill-file",
     evidence: "- `axis` — EXACTLY one bare token of: `saturation-probe` / `primary-sweep` / `transliteration-numeric` / `incumbent-class`. **That vocabulary is CLOSED** and a row whose axis is outside it is refused.",
     reparsedBy: "driver/coverage-form.mjs (seat-row contract; SEAT_ROW_CONTRACT rides the accumulator) — and, since the typed-transport conversion, driver/coverage-call.mjs validateCoverageCall refuses an off-vocabulary axis AT CALL TIME (axis_invalid), so the dictation is receiver-checked in the same turn it is obeyed",
@@ -394,7 +394,7 @@ export const E3_BACKLOG = [
     // closed vocabulary sent through the `record_coverage` typed call (the transport conversion, B's
     // pattern). The seat opens no file and writes no table; the dictated shape is the call's own two
     // values, receiver-validated as they arrive.
-    where: "driver/skills/clearance-register/digest.md:219-221",
+    where: "driver/skills/clearance-register/digest.md:247-249",
     surface: "skill-file",
     evidence: "- `status` — EXACTLY one bare token: `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment`. Qualifiers never go in the status; they go in the reason.",
     reparsedBy: "driver/coverage-call.mjs validateCoverageCall (status_invalid at call time) + driver/coverage-form.mjs rowIsSettled via validators.registerFindings; the archived-era prose-table reader (coverage-ledger.mjs parseCoverageLedgerFull) survives for replay only",
@@ -403,10 +403,10 @@ export const E3_BACKLOG = [
   {
     stage: "register-digest",
     kind: "exactly-these-keys",
-    where: "driver/skills/clearance-register/SKILL.md:228-229",
+    where: "driver/skills/clearance-register/digest.md:179-180",
     surface: "skill-file",
     evidence: "**The status vocabulary is CLOSED: EXACTLY one bare token of: `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment`.** Qualifiers never go in a status cell; they go in the reason.",
-    reparsedBy: "driver/coverage-form.mjs / driver/coverage-ledger.mjs. Since the typed-transport conversion the STAGE MESSAGE no longer restates the enum; the surviving copies are SKILL.md (here), digest.md:207, the dispatch brief (coverage-form.mjs coverageFormBrief), the record_coverage schema (coverage-server.mjs) and gateway.mjs's repair hints — still one enum spelled at five sites",
+    reparsedBy: "driver/coverage-form.mjs / driver/coverage-ledger.mjs. Since the typed-transport conversion the STAGE MESSAGE no longer restates the enum; the surviving copies are digest.md (here, moved from the shared SKILL.md), digest.md:247, the dispatch brief (coverage-form.mjs coverageFormBrief), the record_coverage schema (coverage-server.mjs) and gateway.mjs's repair hints — still one enum spelled at five sites",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   // ── DISCHARGED 2026-08-17 by (skeptic's conversion) ───────────────────────────────────────────
@@ -749,7 +749,7 @@ export const E3_BACKLOG = [
   {
     stage: "report-card",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:3871",
+    where: "driver/stages.mjs:3881",
     surface: "stage-message",
     evidence: "The finding's OWN record — the ONLY source for this card …:\\n```json\\n<JSON.stringify(finding, null, 2)>\\n```",
     reparsedBy: "none — this is the INPUT side, and that is why it belongs in the survey: a full JSON object rendered into the prompt is exactly the mechanism #850 proves produced R-RECEIPT (the model pattern-matches a shown shape). E3's clause 1 as written (\"a code fence or inline example showing the exact object shape the model must emit\") does not reach an injected record, so the lint needs an explicit rule for shown-but-not-owed structure",
@@ -839,7 +839,7 @@ export const E3_EVIDENCE_UNRESOLVED = [
   // absorbed. It was the narrative "## Answers to your instructions" row deleted above: its dictation is
   // gone, so there is no un-anchorable quote left to be unresolved. The one that REMAINS is a live row
   // whose quote spans a template line. Measured before deleting, not predicted — two rows shared
-  // `where: "driver/stages.mjs:2860"`, so which one occupied this slot could not be read off the strings.
+  // `where: "driver/stages.mjs:2870"`, so which one occupied this slot could not be read off the strings.
   "synthesis|driver/stages.mjs",
 ];
 

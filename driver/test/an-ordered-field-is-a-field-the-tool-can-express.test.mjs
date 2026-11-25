@@ -53,7 +53,7 @@ const ORDER_SOURCES = Object.freeze(["repair-composers.mjs", "gateway.mjs", "sta
 // retry text for `no_coverage_status_row`; the owner ruled on 2026-10-01 that no retry is spent on that token
 // and the retry text goes, so the manual's line under the Coverage ledger is now its one order, and the
 // census reads it there rather than reporting a stage that lost its dispatch.
-const MANUAL_ORDERS = Object.freeze({ record_coverage_status: "skills/clearance-common-law/SKILL.md" });
+const MANUAL_ORDERS = Object.freeze({ record_coverage_status: "skills/clearance-common-law/grid.md" });
 
 const IDENT = /\\?`([a-z][a-z0-9]*(?:_[a-z0-9]+)+)\\?`/g;
 const QUOTED = /(?:carrying only|send|sending|with)\s+\\?"([a-z][a-z0-9_]*)\\?"/g;

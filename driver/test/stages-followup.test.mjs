@@ -105,9 +105,11 @@ test("A-1 — resolveSkillReads equals what message() emits, for every stage, un
   const withMessage = Object.entries(STAGES).filter(([, d]) => typeof d.message === "function");
   for (const [name, def] of withMessage) {
     for (const { label, ctx } of ctxs) {
-      const emitted = skillRefsIn(def.message({ ...ctx, paths: P, axis: "primary", finding: {}, run: { slug: "s", codename: "c" } }));
+      // One context for both call sites: a seat's reads depend on its axis.
+      const stageCtx = { ...ctx, paths: P, axis: "primary", finding: {}, run: { slug: "s", codename: "c" } };
+      const emitted = skillRefsIn(def.message(stageCtx));
       rendered++;
-      const resolved = resolveSkillReads(name, ctx);
+      const resolved = resolveSkillReads(name, stageCtx);
       for (const s of resolved)
         assert.ok(emitted.includes(s), `${name} (${label}): skillReadsFor names ${s} but the stage prompt never does — the two call sites have drifted`);
     }

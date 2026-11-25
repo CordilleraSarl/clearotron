@@ -17,17 +17,17 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveSkillReads } from "../stages.mjs";
-import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { MATTER_FRAME_SENTENCES } from "./ruled-sentences-matter-frame.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(DRIVER, rel), "utf8");
-const HEADING = UNIT_SENTENCES.everyStepLookWhatYou2;
+const HEADING = REGISTER_SENTENCES.everyStepLookWhatYou2;
 
 /** The paragraph as the register manual ships it: the text between its heading and the next heading. */
 function shippedParagraph() {
   const src = read("skills/clearance-register/SKILL.md");
-  const at = src.indexOf(`### ${HEADING}`);
+  const at = src.indexOf(`## ${HEADING}`);
   assert.ok(at > 0, "the register manual no longer carries the ruled paragraph under its heading");
   const after = src.slice(at).split("\n").slice(1);
   const end = after.findIndex((l, i) => i > 0 && l.startsWith("#"));

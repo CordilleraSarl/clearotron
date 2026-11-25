@@ -24,8 +24,8 @@ import { frameWebChoice, frameAskedForWebGrid, webGridOf, closureBlocksOf, frame
 import { acceptMatterFrame } from "../matter-frame-record.mjs";
 import { validateGridSpec, dictatedCells, buildGridProgramTask, captureGridFromResponse } from "../../providers/perplexity/src/core.js";
 import { findUnranDictatedCells, splitGridSpec, mergeGrids } from "../common-law-receipts.mjs";
-import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
 import { MATTER_FRAME_SENTENCES } from "./ruled-sentences-matter-frame.mjs";
+import { GRID_SENTENCES } from "./ruled-sentences-common-law-grid.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = mkdtempSync(join(tmpdir(), "frame-web-grid-"));
@@ -279,16 +279,18 @@ test("a store the frame set aside reaches the audit workbook with the frame's re
 const SENTENCE_5 = MATTER_FRAME_SENTENCES.theStoresThatSellThe;
 const skill = (rel) => readFileSync(join(HERE, "..", "skills", rel), "utf8");
 const count = (hay, needle) => hay.split(needle).length - 1;
+// The web sweep's manual: its shared spine, the grid and the meaning sweep.
+const webManual = () => ["SKILL.md", "grid.md", "meaning.md"].map((f) => skill(`clearance-common-law/${f}`)).join("\n");
 
 test("sentence 5 is in the frame's manual once, word for word, and nowhere in the web sweep's", () => {
   const frame = skill("matter-frame/SKILL.md");
   assert.equal(count(frame, SENTENCE_5), 1);
   assert.equal(count(frame, MATTER_FRAME_SENTENCES.searchChannelsConfusableFormsAnd), 1);
-  assert.equal(count(skill("clearance-common-law/SKILL.md"), SENTENCE_5), 0);
+  assert.equal(count(webManual(), SENTENCE_5), 0);
 });
 
 test("the web sweep's manual no longer says every variant runs on every store", () => {
-  const web = skill("clearance-common-law/SKILL.md");
+  const web = webManual();
   for (const gone of ["the gaming default is 6 stores", "every one is mandatory for every variant", "The dictated platform list is the floor",
     "(the program searches them on every platform)", "full variant × platform matrix", "every variant × platform combination",
     // and the leftovers of the same full grid: every spelling on every store, and a mandatory store list
@@ -296,8 +298,8 @@ test("the web sweep's manual no longer says every variant runs on every store", 
     "term-by-term", "each mandatory platform"])
     assert.equal(count(web, gone), 0, gone);
   assert.equal(count(skill("clearance-search/phase2-execution.md"), "the 6 gaming platforms"), 0, "the skeptic still checks a fixed store list");
-  for (const kept of [COMMON_LAW_SENTENCES.theDictatedPlatformsTheGrid,
-    COMMON_LAW_SENTENCES.negativeResultsOneRowPer, COMMON_LAW_SENTENCES.negativeResultsDocumentedForEvery])
+  for (const kept of [GRID_SENTENCES.theDictatedPlatformsTheGrid,
+    GRID_SENTENCES.negativeResultsOneRowPer, GRID_SENTENCES.negativeResultsDocumentedForEvery])
     assert.equal(count(web, kept), 1, kept);
 });
 

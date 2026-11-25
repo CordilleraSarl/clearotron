@@ -4,21 +4,21 @@
 // THE WRITE-UP READS WHAT PLACEMENT CARRIED FORWARD, NOT THE WHOLE BAND.
 //
 // The register manual's mode lines told the write-up to read the complete merged band through the band tools, where
-// the same manual says it reads the candidates placement carried forward. The mode lines now say so too. This holds the
-// ruled line in both places and that the old one is gone.
+// the same manual says it reads the candidates placement carried forward. The shared manual no longer has mode lines:
+// each mode's session is described in its own file. This holds the line in the write-up's own manual, and that no
+// register manual tells it to read the whole band.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
-test("the write-up's mode lines read the candidates placement carried forward and their evidence", () => {
-  const manual = flat("SKILL.md");
-  assert.ok(manual.includes(REGISTER_SENTENCES.readTheCandidatesPlacementCarried));
-  assert.ok(manual.includes(REGISTER_SENTENCES.readTheCandidatesPlacementCarried2));
-  assert.ok(!/read the complete merged band/i.test(manual), "the register manual still tells the write-up to read the whole band");
+test("the write-up's session reads the candidates placement carried forward and their evidence", () => {
+  assert.ok(flat("digest.md").includes(DIGEST_SENTENCES.workerReadsTheCandidatesPlacementCarried));
+  for (const f of ["SKILL.md", "unit.md", "digest.md"])
+    assert.ok(!/read the complete merged band/i.test(flat(f)), `${f} still tells the write-up to read the whole band`);
 });
