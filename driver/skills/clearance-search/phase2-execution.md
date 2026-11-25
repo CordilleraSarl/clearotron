@@ -64,7 +64,7 @@ After the gather units complete, run `placement-inquiry` (read [skills/placement
 
 ### Variant execution strategy (register layer)
 
-The register units follow clearance-register/SKILL.md: the identical mark first, a crowd narrowed by its steps, and a
+The register units follow clearance-register/unit.md: the identical mark first, a crowd narrowed by its steps, and a
 wider question only where reading it would change what you tell the client. A family the reading turn did not ask is
 recorded withheld-by-judgment with its reason; that is a documented decision, not a shortcut.
 

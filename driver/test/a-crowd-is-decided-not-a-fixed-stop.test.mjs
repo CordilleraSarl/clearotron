@@ -58,12 +58,12 @@ test("the unit's manual and dispatch decide on a crowd, and point at the order t
     /STOP the per-major \/ phonetic fan-out/, /tractable distinctive/, /\(tractable distinctive token only\)/])
     assert.doesNotMatch(unit, stop, `the unit manual still stops on a crowd: ${stop}`);
   assert.ok(read("skills/clearance-register/SKILL.md").includes(REGISTER_SENTENCES.readTheIdenticalMarkFirst), "guard: the order the crowd rule points at");
-  assert.match(unit, /the ceiling is a call limit, never a decision point: decide on that crowd with \[the same steps\]\(SKILL\.md#read-the-identical-mark-first-look-at-the-count-before-you-read-anything\),\s+only as far as reading it would change what you tell the client; record what stays a crowd with its count\./);
+  assert.match(unit, /the ceiling is a call limit, never a decision point: decide on that crowd with \[the same steps\]\(#read-the-identical-mark-first-look-at-the-count-before-you-read-anything\),\s+only as far as reading it would change what you tell the client; record what stays a crowd with its count\./);
   const plan = compile("clarivate");
   const P = { variantManifest: "vm.json", matterContext: "mc.md", registerBand: (a) => `band-${a}.json`, registerUnit: (a) => `unit-${a}.md`, registerPlan: "plan.json" };
   const dispatch = STAGES["register-unit"].message({ paths: P, axis: "primary-sweep", job: { classes: [9] }, registerPlan: plan, capabilities: null });
   assert.doesNotMatch(dispatch, /TERMINAL: STOP|do NOT fan it out per-major|do NOT phonetic-fringe it/, "the dispatch still stops on a crowd");
-  assert.match(dispatch, /→ the ceiling is a call limit, never a decision point: decide on that crowd with the same steps \(SKILL\.md, "Read the identical mark first"\), only as far as reading it would change what you tell the client; record what stays a crowd with its count\./);
+  assert.match(dispatch, /→ the ceiling is a call limit, never a decision point: decide on that crowd with the same steps \(unit\.md, "Read the identical mark first"\), only as far as reading it would change what you tell the client; record what stays a crowd with its count\./);
   // The fringe is listed to the turn as a family it decides.
   const fringeLine = dispatch.split("\n").find((l) => /: wildcard "/.test(l)) ?? "";
   assert.match(fringeLine, /WAITING FOR YOU/, `the fringe is not handed to the turn: ${fringeLine}`);

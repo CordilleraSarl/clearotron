@@ -141,7 +141,7 @@ weigh materiality. (Exception: a `names` stack wider than the 496 chunk bound is
 window-by-window, so no whole-stack per-office count exists — the field is then null with a stated
 reason, because a mislabelled per-jurisdiction figure is worse than none.)
 
-Narrow a crowd by the steps in `SKILL.md` (*Read the identical mark first*). Never by "take the first N".
+Narrow a crowd by the steps in `unit.md` (*Read the identical mark first*). Never by "take the first N".
 
 ## Status — read `statusClass`, and let it fail open
 

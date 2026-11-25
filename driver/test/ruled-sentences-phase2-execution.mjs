@@ -14,7 +14,7 @@ export const PHASE2_SENTENCES = Object.freeze({
   recordItsResultThatFinding: "record its result in that finding's `use_check.source`",
   namesNonUseRevocationCancellation: "names non-use revocation/cancellation as the mitigant),",
   theActiveRegisterProviderAnd: "the **active register provider** and its output path (`register-units/<axis>.md`).",
-  variantExecutionStrategyRegisterLayer: "### Variant execution strategy (register layer) The register units follow clearance-register/SKILL.md: "
+  variantExecutionStrategyRegisterLayer: "### Variant execution strategy (register layer) The register units follow clearance-register/unit.md: "
     + "the identical mark first, a crowd narrowed by its steps, and a wider question only where reading it "
     + "would change what you tell the client. A family the reading turn did not ask is recorded "
     + "withheld-by-judgment with its reason; that is a documented decision, not a shortcut. ## Step 2.6",
