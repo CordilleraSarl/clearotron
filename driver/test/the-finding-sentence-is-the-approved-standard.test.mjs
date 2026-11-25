@@ -20,7 +20,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { STAGES, paths, composeFollowup } from "../stages.mjs";
-import { parseFindingsJson } from "../findings-model.mjs";
+import { parseFindingsJson, FINDING_FIELDS } from "../findings-model.mjs";
 import { composeDispatchExtra } from "../pipeline.mjs";
 import { plainRegisterFlags, SENTENCE_WORD_LIMIT } from "../plain-register.mjs";
 import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
@@ -42,8 +42,9 @@ test("the writer is given the approved paragraph in place of the old one-sentenc
   assert.ok(msg.split("\n").includes(`- net: ${PARAGRAPH}`), "the net line is the approved paragraph, word for word");
   assert.doesNotMatch(msg, /There is NO length cap/, "the claim that there is no length limit is gone");
   assert.doesNotMatch(msg, /IT IS A CONCLUSION, NOT A CHAIN: ONE sentence/, "the old one-sentence order is gone");
-  assert.match(msg, /"net" \(MANDATORY on every finding a reader sees\),"borderline_between"/,
-    "the field list no longer calls it the one-clause read or points at a heading that does not exist");
+  // The keys' list moved to the tool's schema, built from FINDING_FIELDS: it calls the field the finding sentence.
+  assert.equal(FINDING_FIELDS.net.about, "REQUIRED on every finding except a withdrawn or ruled-out one: the finding sentence.",
+    "the schema no longer calls it the finding sentence, or points at a heading that does not exist");
   assert.doesNotMatch(msg, /ONE-CLAUSE NET|one-clause read/);
 });
 

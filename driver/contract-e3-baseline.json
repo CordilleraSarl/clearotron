@@ -52,7 +52,7 @@
     },
     "synthesis": {
       "literal-json-skeleton": 10,
-      "exactly-these-keys": 8,
+      "exactly-these-keys": 7,
       "dictated-line-shape": 5
     },
     "case-law": {
@@ -189,7 +189,7 @@
     }
   },
   "totals": {
-    "stages": 41,
+    "stages": 40,
     "files": 50
   }
 }

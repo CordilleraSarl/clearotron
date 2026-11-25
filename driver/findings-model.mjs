@@ -836,6 +836,60 @@ const findingKeysFor = (mode) => (mode.v7 ? FINDING_KEYS_V7 : mode.v6 ? FINDING_
  * the first time this ladder gains a key. It is derived, so they cannot.
  */
 export const FINDING_KEYS_CURRENT = Object.freeze([...FINDING_KEYS_V7]);
+
+/**
+ * EACH KEY OF THE CURRENT FINDING: when it is required, its shape and the values it takes, as the record_synthesis
+ * schema serves them (recording-server.mjs) and the dispatch's checklist names the keys every new finding carries
+ * (`always`). The values are this file's own lists, so the text says what the parser accepts. A key is required where
+ * the parser, the record's own check (verify.mjs `checkFindingsSibling`) or the dispatch requires it; `manageable` and
+ * `bears_on` are required by the dispatch and flagged before delivery, and the parser leaves them optional so archived
+ * records still read. The judgments a field needs stay in the dispatch, and so do the framework's band words, its
+ * material band and its inputs. A test holds the keys to FINDING_KEYS_CURRENT.
+ */
+const quoted = (list) => list.map((k) => `"${k}"`);
+const andList = (list) => (list.length > 1 ? `${list.slice(0, -1).join(", ")} and ${list.at(-1)}` : list.join(""));
+const REQUIRED_ON_READ = "REQUIRED on every finding except a withdrawn or ruled-out one";
+export const FINDING_FIELDS = Object.freeze({
+  ordinal: { type: "integer", always: true, about: 'REQUIRED. A whole number from 1, unique in the record: this finding\'s number in your "Finding N" order.' },
+  mark: { type: "string", always: true, about: "REQUIRED. The conflicting mark text, verbatim as it appears in the narrative." },
+  owner: { type: "object", always: true, about: `REQUIRED. {"name"}, non-empty, with optional ${andList(quoted(OWNER_KEYS.filter((k) => k !== "name")))}. `
+    + "Name each registration relied on for this finding by its held URI. Use an empty list for a finding with no registration. "
+    + `Each registration is {"uri"}, with optional ${andList(quoted(REGISTRATION_KEYS.filter((k) => k !== "uri")))}; "classes" is a list of strings.` },
+  band: { type: "string", about: `REQUIRED on ${andList(BAND_REQUIRED_DISPOSITIONS)} findings, FORBIDDEN on off-field, allowed on withdrawn. `
+    + "The framework's band word, exactly as the framework writes it: never a number or code." },
+  borderline_between: { type: "array", about: "OPTIONAL, on a finding with a band only: exactly two different band words, one of them this finding's band, "
+    + "the two the framework's criteria do not decide between. Omit it where they decide." },
+  inputs: { type: "object", about: "Only on a run whose framework states a method: there REQUIRED on every finding with a band except a withdrawn one, "
+    + "and FORBIDDEN on one without. An object naming each of the framework's inputs and its value. A withdrawn finding keeps the inputs it had; "
+    + "every other finding follows this run's method. FORBIDDEN on every other run." },
+  net: { type: "string", about: `${REQUIRED_ON_READ}: the finding sentence.` },
+  disposition: { type: "string", always: true, about: `REQUIRED. Exactly one of: ${DISPOSITIONS.join(" / ")}. withdrawn is a correction to an existing finding, never the disposition of a new one.` },
+  meters: { type: "object", always: true, about: `REQUIRED. All four of ${andList(METERS)}, each {"token", "basis"} with an optional "source". `
+    + `token: ${METERS.map((m) => `${m} is ${METER_TOKENS[m].join(" / ")}`).join("; ")}. basis: ${BASIS_VALUES.join(" / ")}. `
+    + "source is the record URI or URL behind the meter, and a verified-from-record meter must name one." },
+  quadrant: { type: "object", always: true, about: 'REQUIRED. {"x", "y"}, numbers from 0 to 1. x = goods/services proximity (0 = distant, 1 = identical). y = mark similarity (0 = distinct, 1 = identical).' },
+  source: { type: "object", always: true, about: `REQUIRED. {"source_type", "resolved_link"}. source_type is exactly one of: ${SOURCE_TYPES.join(" / ")}. `
+    + 'resolved_link is the record URL actually fetched or cited for this finding. Where the provider publishes no page for the record, it is "", and the office register is cited in the text.' },
+  use_check: { type: "object", about: `REQUIRED where your instructions' USE-CHECK rule asks for one, OPTIONAL otherwise. {"source"}, with optional "quality" (${USE_SOURCE_QUALITY.join(" / ")}) and "question". `
+    + `source is a result URL or "${USE_CHECK_NO_RESULT}". A no-result needs "question": the completed research question it rests on, copied exactly.` },
+  own_rights: { type: "object", about: 'REQUIRED whenever this finding relies on the applicant\'s own rights, OPTIONAL otherwise. {"source"}: the applicant\'s own record URI(s), or "no applicant-owned registrations in the searched register material".' },
+  bears_on: { type: "string", about: "REQUIRED whenever the enforcer meter is high, OPTIONAL otherwise. One line on what the evidence proves about this conflict." },
+  impact: { type: "string", about: "OPTIONAL. One line on the consequences if the rights-holder enforced, for the client to weigh. It never moves the band." },
+  deadline: { type: "object", about: 'OPTIONAL. {"date"}, with an optional "kind": a date by which the client must act because of this conflict. date is the ISO date; kind names it, such as opposition, statement-of-use or renewal.' },
+  withdrawn_reason: { type: "string", about: "REQUIRED on a withdrawn finding, FORBIDDEN on every other: the review flag that withdrew it." },
+  ruled_out: { type: "boolean", about: "OPTIONAL. true for a name that surfaced but shares no word or sound with the mark. It is listed as considered and ruled out, not as a conflict." },
+  ruled_out_reason: { type: "string", about: "REQUIRED when ruled_out is true: the specific point that settled it." },
+  legal_position: { type: "string", about: `${REQUIRED_ON_READ}: the legal read alone.` },
+  practical_position: { type: "string", about: `${REQUIRED_ON_READ}: the enforcement reality, stated beside the legal read and never averaged into the band.` },
+  manageable: { type: "object", about: `REQUIRED on ${andList(MANAGEABLE_DISPOSITIONS)} findings, FORBIDDEN on adversarial and off-field. `
+    + `{"category", "reason"}: category is exactly one of ${MANAGEABLE_CATEGORIES.join(" / ")}; reason says why this finding is manageable for this client.` },
+  off_field_ground: { type: "string", about: `REQUIRED on an off-field finding that is not ruled out, FORBIDDEN on every other disposition. Exactly one of: ${OFF_FIELD_GROUNDS.join(" / ")}. `
+    + 'different-field needs a goods_proximity of "low".' },
+  rating_withdrawn_ground: { type: "string", about: `OPTIONAL on a withdrawn finding, FORBIDDEN on every other. Exactly: ${RATING_WITHDRAWN_GROUNDS.join(" / ")}. `
+    + "Send it where the right stands and only its rating is withdrawn." },
+});
+/** The keys every newly written finding carries: the dispatch's checklist. The tool's schema explains the rest. */
+export const FINDING_KEYS_ALWAYS = Object.freeze(Object.keys(FINDING_FIELDS).filter((k) => FINDING_FIELDS[k].always));
 const isPlainObject = (v) => v && typeof v === "object" && !Array.isArray(v);
 const onlyKeys = (obj, allowed, tokenFor) => {
   for (const k of Object.keys(obj)) if (!allowed.includes(k)) throw new Error(`${tokenFor(k)} (keys are EXACTLY: ${allowed.join(", ")})`);

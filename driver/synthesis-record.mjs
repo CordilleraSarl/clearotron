@@ -45,7 +45,7 @@
 import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync, renameSync, rmSync } from "node:fs";
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
-import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion, validateFindingForSave, isUseCheckNoResult, findingOrdinalInvalid } from "./findings-model.mjs";
+import { parseFindingsJson, COVERAGE_AREA_STATES, topKeysForVersion, validateFindingForSave, isUseCheckNoResult, findingOrdinalInvalid, FINDINGS_SCHEMA_VERSION } from "./findings-model.mjs";
 import { heldResearchAnswers, isResearchAnswer, questionKey, NO_SEARCH_RESULT } from "./research-answers.mjs";   // a "no result" names a question that completed
 import { writeResearchChecks } from "./research-checks.mjs";   // the research behind the use checks, written for the review
 import { normalizeRecordUri } from "./registry-fidelity.mjs";   // the duty's own reading of a record uri
@@ -1118,6 +1118,24 @@ export function synthesisDutyForRun(runDir) {
  * `correction` is the positions a correction's flags name, as the driver handed them to the tool's server for that
  * correction's dispatch; absent on every other call, which adds no finding (`correctionPositions`).
  */
+/**
+ * A NEWLY WRITTEN RECORD IS AT THE CURRENT VERSION. A call carrying a whole findings document, a first call or a full
+ * replacement, below FINDINGS_SCHEMA_VERSION is refused in the turn, so the writer repairs its first answer in its own
+ * session: one at 4 to 6 would read under its own version's rules, with the later versions' checks off. A patch keeps
+ * the version of the record it patches (`registerPatchOf` refuses any other envelope), so a record accepted at an
+ * earlier version keeps it on resume and under a repair that only patches it. Nothing here re-stamps a version. PURE.
+ */
+export const VERSION_STALE_TOKEN = "synthesis_schema_version_stale";
+export function staleVersionRefusal(call) {
+  const doc = call?.findings;
+  if (!isPlainObject(doc) || !Array.isArray(doc.findings)) return null;
+  const sv = doc.schema_version;
+  if (Number.isInteger(sv) && sv >= FINDINGS_SCHEMA_VERSION) return null;
+  return `${VERSION_STALE_TOKEN}:${String(sv ?? "none").slice(0, 20)} — a newly written findings record is "schema_version": ${FINDINGS_SCHEMA_VERSION}. `
+    + `Send the whole record again at ${FINDINGS_SCHEMA_VERSION}, with the fields that version requires. `
+    + "A correction to a record already accepted is sent as a patch and keeps that record's version.";
+}
+
 export function recordSynthesis(runDir, received, opts = {}) {
   const dir0 = String(runDir ?? "");
   // The driver's reads default to the RUN's, and stay overridable for tests. A call site that had to
@@ -1189,7 +1207,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
   };
 
   // A PATCH THE RECORD CANNOT TAKE FOR ITS ROWS is refused for the row, and the accepted record stands (`rejectedRow`).
-  const rejected = asRegisters === null ? rejectedRow(stored, call, { positions }) : null;
+  const rejected = (asRegisters === null ? rejectedRow(stored, call, { positions }) : null) ?? staleVersionRefusal(call);
   if (rejected) {
     noteRefusal(rejected);
     recordReading(false);
