@@ -865,7 +865,7 @@ const reportCardSkillReads = ({ profile }) =>
 // handed none of them: on a test run with Codex, a review that had not been given the framework went looking for one in
 // folders outside its run. So it reads the writer's own resolved framework and the shared reasoning, and the field module
 // on a pharma matter. The writer's level-specific rules (synthesis-rules.md) and its worked examples stay the writer's.
-// THE COMMON-LAW MANUAL IN TWO PARTS (design, tracker issue 1447 item 3.1). The spine is what every seat shares; the
+// THE COMMON-LAW MANUAL IN TWO PARTS. The spine is what every seat shares; the
 // grid seats read the grid part, the meaning seat the meaning part, and the single-member stage, which does both
 // jobs, reads all three. With no seat named (the registry's whole-stage view) a split stage reads every part.
 const COMMON_LAW_SPINE = "skills/clearance-common-law/SKILL.md";
