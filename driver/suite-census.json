@@ -503,7 +503,7 @@
         },
         "a-correction-patches-what-it-carries.test.mjs": {
           "tests": 49,
-          "asserts": 88,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },
@@ -1709,7 +1709,7 @@
         },
         "a-near-spelling-no-buyer-could-confuse-is-set-aside-with-its-reason.test.mjs": {
           "tests": 5,
-          "asserts": 25,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -4668,6 +4668,12 @@
         "each-finding-card-is-a-heading-inside-the-main-landmark.test.mjs": {
           "tests": 3,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "each-finding-key-is-defined-once-and-the-tool-serves-it.test.mjs": {
+          "tests": 7,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -8255,7 +8261,13 @@
         },
         "the-native-language-reader-is-given-the-chinese-register-records.test.mjs": {
           "tests": 3,
-          "asserts": 19,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-native-language-reader-is-told-what-each-records-goods-rest-on.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -8568,6 +8580,12 @@
         "the-register-claims-check-reads-the-records-the-run-holds.test.mjs": {
           "tests": 10,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-register-digest-tool-and-its-orders-name-what-the-recorder-takes.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

@@ -58,4 +58,6 @@ export const DIGEST_SENTENCES = Object.freeze({
     + "count and a reason). Its reason goes into the audit workbook, not the report.",
   workerReadsTheCandidatesPlacementCarried: "The worker reads the candidates placement carried forward and their supporting evidence "
     + "**through the band tools**",
+  whenInDoubtKeepSetVerify: "**When in doubt, KEEP and set `verify` to `yes`**",
+  ownerConflictsFlaggedVerify: "owner-identity conflicts flagged with `verify` set to `yes` (never silently picked)",
 });

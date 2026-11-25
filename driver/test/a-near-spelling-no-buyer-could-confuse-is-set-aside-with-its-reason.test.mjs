@@ -67,9 +67,12 @@ test("sentence 2 is in the register unit's manual as written, and nothing there 
 test("the digest's tool offers the sign ground the record accepts, and says what it means", () => {
   const src = read("engine/mcp/recording-server.mjs");
   const at = src.indexOf("negative_rows: {");
+  // The list is the record's own constant; the served list is checked against it in
+  // the-register-digest-tool-and-its-orders-name-what-the-recorder-takes.test.mjs.
   const enumMatch = /enum: (\[[^\]]*\])/.exec(src.slice(at));
   assert.ok(at > 0 && enumMatch, "no ground list found on the digest tool's negative rows");
-  assert.deepEqual(JSON.parse(enumMatch[1]), [...DIGEST_DROP_REASON_TOKENS], "the tool offers a different ground list from the one the record accepts");
+  assert.equal(enumMatch[1], "[...DIGEST_DROP_REASON_TOKENS]", "the tool offers a ground list other than the one the record accepts");
+  assert.ok(DIGEST_DROP_REASON_TOKENS.includes("sign"), "the record accepts no sign ground");
   assert.ok(src.slice(at, at + 3000).replace(/"\s*\+\s*"/g, "").includes("`sign` (a near spelling a buyer in this market could not take for the mark, by sound, by look or by meaning)"),
     "the tool does not say what the sign ground means");
   assert.equal(DIGEST_DROP_REASONS.sign?.seatJudged, true, "a sign drop is the reader's judgment, not the screen's");

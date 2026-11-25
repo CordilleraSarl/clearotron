@@ -60,6 +60,8 @@ export function buildNativereadRequest({ mark, lane = "zh", payload }) {
     ``,
     `Read the Chinese-language evidence supplied below. A shortened section states how many records or rows were omitted.`,
     `Base each conclusion on the details shown.`,
+    `Each goods entry identifies its source and states how much wording is shown.`,
+    `Missing goods do not establish that the goods are unrelated.`,
     `Read it as a Chinese trademark practitioner would and emit up to ${MAX_ITEMS} items:`,
     `- "conflict-read": what a specific register record actually is (goods coverage, sub-class overlap,`,
     `  status nuance a Latin-only read misses) — record_uri REQUIRED, from the slice;`,
