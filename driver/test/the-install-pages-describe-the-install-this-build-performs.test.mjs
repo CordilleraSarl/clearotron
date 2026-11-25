@@ -383,19 +383,22 @@ test("the release notes say which machines a sentence holds on, where the code d
   assert.match(warning, /On a Claude install/, "the upgrade warning says a cloud's switch stops every search, and a Codex search reads no switch");
 });
 
-test("the pages say doctor contacts nothing outside this machine, not that it calls nobody", () => {
+test("the pages say doctor makes one real engine call and changes no setting, not that it contacts nothing", () => {
   // Doctor opens one connection on this machine, to the client door's port, and asks this user's service manager
-  // about that door's service; it reaches nothing outside the machine (measured in a stranger walk of a beta,
-  // 2026-11-10). "Calls nobody" was not true of it.
+  // about that door's service (measured in a stranger walk of a beta, 2026-11-10). Since 2026-11-25 it also makes
+  // one real engine call when an engine is configured, because a dead sign-in passes every check the disk can
+  // answer. So it does contact something outside this machine, and "contacts nothing" is no longer true of it.
   for (const page of ["README.md", "INSTALL.md", "AGENTS.md", "bin/README.md"]) {
     const text = flat(read(page));
-    assert.match(text, /[Ww]rites nothing and contacts nothing outside this machine/, `${page} does not say what doctor reaches`);
+    assert.match(text, /one real engine call when an engine is configured/, `${page} does not say doctor makes the engine call`);
+    assert.match(text, /changes no setting/, `${page} does not say doctor changes no setting`);
+    assert.doesNotMatch(text, /contacts nothing outside this machine/, `${page} still says doctor contacts nothing outside this machine`);
     assert.doesNotMatch(text, /calls nobody/, `${page} still says doctor calls nobody`);
   }
   const help = read("bin/clearotron.mjs");
-  assert.match(help, /doctor: {2}"report what this machine is configured for\. Writes nothing and contacts nothing outside this machine"/,
-    "`clearotron --help` does not say what doctor reaches");
-  assert.doesNotMatch(help, /calls nobody/, "`clearotron --help` still says doctor calls nobody");
+  assert.match(help, /doctor: {2}"report what this machine is configured for, and make one real engine call when an engine is configured\. Changes no setting of this install"/,
+    "`clearotron --help` does not say what doctor does");
+  assert.doesNotMatch(help, /contacts nothing outside this machine|calls nobody/, "`clearotron --help` still says doctor reaches nothing");
 });
 
 test("the guides and the help say what the walk found, in the words approved for them", () => {
@@ -403,10 +406,11 @@ test("the guides and the help say what the walk found, in the words approved for
   // `npx` after a global install; INSTALL §3 called an engine turn free that §1 says costs one; QUICKSTART went
   // straight to a doctor that spends; §2a called a folder a record and left an empty one behind; `install --help` spoke of a clone; `start --help` left out --background.
   const quick = read("QUICKSTART.md"), install = flat(read("INSTALL.md"));
-  assert.match(quick, /^clearotron doctor {2}# reads only; add --probe-engine to spend one cheap turn proving the AI$/m);
-  assert.doesNotMatch(quick, /^clearotron doctor --probe-engine$/m, "the quickstart still sends a newcomer straight to a turn that spends");
-  // Plain doctor runs no turn; only --probe-engine does.
-  assert.match(flat(quick), /`clearotron doctor` reports the configuration without running an AI turn\. Add `--probe-engine` to run a proof turn\./);
+  // Since 2026-11-25 plain doctor makes one real engine call when an engine is configured; --probe-engine is still
+  // accepted and adds nothing, so the quickstart no longer offers it.
+  assert.match(quick, /^clearotron doctor {2}# makes one real engine call when an engine is configured; changes no setting$/m);
+  assert.doesNotMatch(quick, /--probe-engine/, "the quickstart still offers a flag that adds nothing");
+  assert.match(flat(quick), /`clearotron doctor` also makes one real engine call when an engine is configured, because an executable that is signed out passes every other check and fails at the first stage\./);
   assert.doesNotMatch(flat(quick), /by running a turn rather than by finding the executable/, "the quickstart still says plain doctor runs a turn");
   assert.match(install, /`npm install -g clearotron`, then `clearotron install`\. For the beta,/);
   assert.match(install, /Before saving your settings, setup checks what it can: an offered engine turn, an EUIPO token exchange, and an offered Perplexity ping\. It does not probe a paid register key\./);

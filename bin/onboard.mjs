@@ -2232,8 +2232,8 @@ async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, e
     // asked to check.
     //
     // It is the same short call setup's engine menu already makes (menuVersion): `--version`, two
-    // seconds, no session and no network. That is within "contacts nothing outside this machine" — what that promises is no
-    // provider call and no spend, not that nothing on this machine may be asked its own version.
+    // seconds, no session and no network. Doctor's one engine call is the only provider call it makes and the only
+    // spend; nothing else on this machine is barred from being asked its own version.
     const versionOf = (b) => {
       if (b.version) return b.version;
       if (!b.executable || b.relative || !b.path) return null;

@@ -78,8 +78,8 @@ says which one holds your reports so you can keep them deliberately.
 
 ## Quick start
 
-With it installed, check what it found before it does anything. `doctor` only reads — it writes nothing and contacts
-nothing outside this machine, and names whatever is still missing:
+With it installed, check what it found before it does anything. `doctor` changes no setting of this install, makes
+one real engine call when an engine is configured, and names whatever is still missing:
 
 ```bash
 clearotron doctor
