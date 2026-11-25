@@ -94,7 +94,8 @@ const withdrawnCitationLine = (ordinal) => `Your text cites finding ${ordinal}, 
  */
 export function writersCitationFaults(fault, toModel) {
   if (!["four_answers", "actions", "coverage"].includes(fault?.register) || !Array.isArray(fault.cites)) return [fault];
-  const number = (c) => toModel(c.ordinal) ?? c.ordinal;
+  // A coverage row's numbers are the writer's already (predelivery-lint.mjs coverageCitationChecks); the others are mapped.
+  const number = fault.writersNumbering ? (c) => c.ordinal : (c) => toModel(c.ordinal) ?? c.ordinal;
   if (fault.register === "actions") {
     const seen = new Map(fault.cites.map((c) => [`${c.action}:${number(c)}`, { action: c.action, ordinal: number(c), withdrawn: Boolean(c.withdrawn) }]));
     return [{ ...fault, detail: actionCitationDetail([...seen.values()]) }];

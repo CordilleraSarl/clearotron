@@ -1914,6 +1914,9 @@ export function actionCitationChecks({ actionsRegister, findings }) {
 // its title, though no card carries that number: measured on a delivered report, 2026-11-25, sixteen such rows. The
 // row is the writer's record, so it goes to the writer's repair as the four answers' citations do, read with the word
 // "finding" before the number, as a writer's ground is read, so that a class written after a hash sign is never one.
+// THE WRITER'S NUMBERING. The rows are the writer's prose, which the delivery seam's fold copies and does not renumber,
+// so they are judged against the record the writer wrote (`narrativeFindings` while a fold is in force), and the
+// numbers they carry reach the writer's repair as written.
 // ABSENT ⇒ SILENT: a record with no coverage register emits nothing, and the replay harness passes none.
 export function coverageCitationChecks({ coverageRegister, findings }) {
   if (!Array.isArray(coverageRegister)) return [];
@@ -1926,7 +1929,7 @@ export function coverageCitationChecks({ coverageRegister, findings }) {
   });
   const c = check("coverage-citations", "reference", "report", cites.length === 0, cites.length
     ? `open coverage row(s) cite finding(s) that are not there: ${cites.map((x) => `"${x.area}" cites #${x.ordinal}, which ${x.withdrawn ? "the review WITHDREW" : "this run has no finding for"}`).join("; ")}` : "");
-  if (cites.length) Object.assign(c, { register: "coverage", cites });
+  if (cites.length) Object.assign(c, { register: "coverage", cites, writersNumbering: true });
   return [c];
 }
 
@@ -2673,7 +2676,7 @@ export function runLint({ followUpKinds = null, depth, commonLawGrid, matterCont
   // meant a down-level file switched off the check that reports a down-level file.
   checks.push(...schemaVersionChecks({ schemaVersion: findingsSchemaVersion }));   // — the declared contract version
   checks.push(...actionCitationChecks({ actionsRegister, findings }));   // a forward step resting on a finding that is gone: the writer's repair
-  checks.push(...coverageCitationChecks({ coverageRegister, findings }));   // an open coverage row citing a finding that is gone: the writer's repair
+  checks.push(...coverageCitationChecks({ coverageRegister, findings: narrativeFindings ?? findings }));   // an open coverage row citing a finding that is gone: the writer's repair, in its numbering
   checks.push(...fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }));   // P5 review — the four answers must not contradict the verdict or the findings (flag-only, absent ⇒ silent)
   checks.push(...placementsChecks({ placements }));   // B2 — an empty structured mirror is a flag a human reads, never an unrepairable validator kill
   checks.push(...recordCarryChecks({ recordCarry }));   // — a retrieved record dropped with no recorded ground, and a drop that is really an incomplete stage
