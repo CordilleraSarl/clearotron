@@ -676,7 +676,7 @@ export const REPAIR_COMPOSERS = [
         // the one case where the id alone does not locate the fault in the seat's own reading.
         ...bad.map((q) => `- action id ${q.id ?? "(unreadable)"}${q.kind ? ` (kind "${String(q.kind).slice(0, 40)}")` : ""} at index ${q.index}: ${String(q.error ?? "invalid shape").slice(0, 160)}`),
         `THE ACTION CONTRACT IS CLOSED — MINIMAL EDIT ONLY. Each action is EXACTLY {"id","kind","text","ordinals"} plus an OPTIONAL "deadline" {"kind","date"} and an OPTIONAL "condition" (CONDITION kinds only). A deadline, when present, needs a date and may include a kind. Change the smallest set of existing fields these errors require and NEVER invent a key. Do not resolve a defect by DELETING the action: a forward legal step your own opinion names must survive this edit, and a dropped condition changes the delivered verdict.`,
-        `Send the complete actions list in \`findings.actions\` through \`record_synthesis\`. Include every existing action, with the requested corrections. The driver is holding your findings and re-renders from them; nothing else moves, and there is no file for you to write or edit.`,
+        `Send the complete actions list in \`findings.actions\` through \`record_synthesis\`. Send every existing action and all its fields, including any condition and deadline. Change only the fields this repair identifies. The driver is holding your findings and re-renders from them; nothing else moves, and there is no file for you to write or edit.`,
       ),
     samples: [{ name: "one malformed action", tail: "tool", args: { findings: "findings.json", bad: [{ id: "a1", kind: "consent", index: 0, error: "no ordinals" }] } }],
   },

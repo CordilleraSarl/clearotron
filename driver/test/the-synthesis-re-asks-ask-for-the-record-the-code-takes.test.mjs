@@ -47,7 +47,7 @@ test("an action shaped as both action re-asks say is accepted, and one that brea
     assert.ok(text.includes(LIST_SENTENCE), `${name}: where the actions go`);
     assert.doesNotMatch(text, /PATCH call carrying only "actions"/);
   }
-  assert.ok(reemit.includes(`${LIST_SENTENCE} Include every existing action, with the requested corrections.`));
+  assert.ok(reemit.includes(`${LIST_SENTENCE} Send every existing action and all its fields, including any condition and deadline. Change only the fields this repair identifies.`));
   assert.ok(missing.includes('Add ONE "actions": [...] field to the findings document'));
   assert.doesNotThrow(() => validateAction({ id: 1, kind: "consent", text: "Consent from the invented owner is needed.", ordinals: [1],
     condition: "Consent from the invented owner is not yet in hand.", deadline: { date: "2027-01-31" } }, 0));
@@ -57,9 +57,10 @@ test("an action shaped as both action re-asks say is accepted, and one that brea
   assert.throws(() => validateAction({ id: 1, kind: "consent", text: "Consent.", ordinals: [1], owner: "Invented Owner" }, 0), /^Error: finding_action_key_unknown:owner/);
 });
 
-test("the complete actions list in findings.actions keeps every action's condition and the rest of the record", () => {
+test("two actions sent whole with a correction to one keep both and the untouched condition, and the rest of the record", () => {
   const doc = JSON.parse(synthesisFindings(null));
-  const kept = { id: 1, kind: "consent", text: "Consent from the invented owner is needed.", ordinals: [1], condition: "Consent from the invented owner is not yet in hand." };
+  const kept = { id: 1, kind: "consent", text: "Consent from the invented owner is needed.", ordinals: [1], condition: "Consent from the invented owner is not yet in hand.",
+    deadline: { date: "2027-01-31" } };
   const other = { id: 2, kind: "monitoring", text: "Watch the invented register for new filings.", ordinals: [] };
   const narrative = { spine: "Invented spine.", verdict: "Invented verdict." };
   const stored = { narrative, findings: { ...doc, actions: [kept, other] } };
