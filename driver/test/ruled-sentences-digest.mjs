@@ -50,4 +50,6 @@ export const DIGEST_SENTENCES = Object.freeze({
   theAuditTrailAndThe: "#### The audit trail and the status-filter summary are the DRIVER's",
   saturatedFieldWithEnumeratedExact: "saturated field with no enumerated exact-owner slice, and no narrowed list that was read answering it, "
     + "ruled a material gap",
+  whenInDoubtKeepSetVerify: "**When in doubt, KEEP and set `verify` to `yes`**",
+  ownerConflictsFlaggedVerify: "owner-identity conflicts flagged with `verify` set to `yes` (never silently picked)",
 });

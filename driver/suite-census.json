@@ -1709,7 +1709,7 @@
         },
         "a-near-spelling-no-buyer-could-confuse-is-set-aside-with-its-reason.test.mjs": {
           "tests": 5,
-          "asserts": 25,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -8574,6 +8574,12 @@
         "the-register-claims-check-reads-the-records-the-run-holds.test.mjs": {
           "tests": 10,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-register-digest-tool-and-its-orders-name-what-the-recorder-takes.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
