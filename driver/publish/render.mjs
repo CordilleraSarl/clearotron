@@ -2460,8 +2460,8 @@ function markAssessmentBlock(ma) {
     if (!dist && !conn) return '';
     return `${SEC}
   <div class="markassess">
-    ${dist ? `<p><strong>${R.markItself.distinctiveness}</strong> ${esc(dist)}</p>` : ''}
-    ${conn ? `<p><strong>${esc(R.markItself.connotation)}</strong> ${esc(conn)}</p>` : ''}
+    ${dist ? `<p><strong>${R.markItself.distinctiveness}</strong> ${inline(dist)}</p>` : ''}
+    ${conn ? `<p><strong>${esc(R.markItself.connotation)}</strong> ${inline(conn)}</p>` : ''}
   </div>`;
   }
   const lead = (v) => {
@@ -2487,8 +2487,8 @@ function markAssessmentBlock(ma) {
   const toggle = (label, rows) => rows.length ? `<details class="ma-more"><summary>${label} (${rows.length})</summary><ul class="ma-rows">${rows.join('')}</ul></details>` : '';
   return `${SEC}
   <div class="markassess">
-    ${dist ? `<p><strong>${R.markItself.distinctiveness}</strong> ${esc(dist)}</p>` : ''}
-    ${conn ? `<p><strong>${esc(R.markItself.connotation)}</strong> ${esc(conn)}</p>` : ''}
+    ${dist ? `<p><strong>${R.markItself.distinctiveness}</strong> ${inline(dist)}</p>` : ''}
+    ${conn ? `<p><strong>${esc(R.markItself.connotation)}</strong> ${inline(conn)}</p>` : ''}
     ${toggle(R.markItself.byClassAndMarket, cmRows)}
     ${toggle(R.markItself.registrationsConsidered, crRows)}
   </div>`;

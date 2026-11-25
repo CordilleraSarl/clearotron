@@ -5,7 +5,8 @@
 //
 // The model writes links, bold, italic and code into the fields a report prints. The clearance renderer read links but
 // not code, the Knockout read code but not links, and five clearance fields were escaped and nothing else, so a
-// model-written `[label](https://…)` reached a delivered page as those characters. Both renderers now read the forms
+// model-written `[label](https://…)` reached a delivered page as those characters. The assessment's two opening
+// paragraphs were escaped and nothing else after that, and one printed a link raw on a delivered page. Both renderers now read the forms
 // through shared/inline-markdown.mjs. Each site below is given its own tokens, so a pass names the site that rendered
 // them, and the demo runs supply everything else a page needs.
 import { test } from "node:test";
@@ -45,9 +46,17 @@ test("every clearance field the model writes prints its links, bold and code as 
     per_market: [{ market: "EU", note: md("permarket") }],
     counter_registrations: [{ mark: "ZENTROVA", owner: "Zentrova LLC", note: md("counter") }],
   });
+  // The assessment's two opening paragraphs, measured on a delivered page on 2026-11-25: a link of their own printed raw.
+  ma.distinctiveness.read = md("opening");
+  if (ma.connotation && typeof ma.connotation === "object") ma.connotation.read = md("connotation");
+  else ma.connotation = { read: md("connotation") };
   const html = renderHtml(parseReport(join(run, "report.md")), v.findings, v.coverage,
     { runId: "demo", contextNotes: v.contextNotes || [], markAssessment: ma, fourAnswers: v.fourAnswers || null });
-  for (const site of ["legal", "practical", "coverage", "perclass", "permarket", "counter"]) rendered(html, site);
+  for (const site of ["legal", "practical", "coverage", "perclass", "permarket", "counter", "opening", "connotation"]) rendered(html, site);
+  // The older form, two plain strings, prints its paragraphs the same way.
+  const plain = renderHtml(parseReport(join(run, "report.md")), v.findings, v.coverage,
+    { runId: "demo", contextNotes: v.contextNotes || [], markAssessment: { distinctiveness: md("plainopening"), connotation: md("plainconnotation") }, fourAnswers: v.fourAnswers || null });
+  for (const site of ["plainopening", "plainconnotation"]) rendered(plain, site);
 });
 
 test("the Knockout's assessment fold prints links, bold and code as the clearance does", () => {
