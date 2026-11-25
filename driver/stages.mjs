@@ -36,7 +36,7 @@ import { frameworkFor, workedExamplesFor, materialBandPhrase } from "./framework
 import { requiredScriptsFor } from "./registration-scripts.mjs";   // item 21 — which scripts a territory registers marks in
 import { resolveTerritories, defaultJurisdictionsLine, narrowingOrderLine } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the defaults-never-widen rule (2160)
 import { profileSelectionDirective } from "./profile-selection.mjs";   //  lever 3 — driver selection  //  — the one product-name resolver
-import { FINDINGS_SCHEMA_VERSION, OFF_FIELD_GROUNDS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";   // — the dictated findings contract version + off-field's declared grounds; — and the disposition vocabulary itself, which was typed out here while its two neighbours were interpolated
+import { FINDINGS_SCHEMA_VERSION, OFF_FIELD_GROUNDS, POSITION_REQUIRED_DISPOSITIONS, FINDING_KEYS_ALWAYS } from "./findings-model.mjs";   // — the dictated findings contract version + off-field's declared grounds; — and the disposition vocabulary itself, which was typed out here while its two neighbours were interpolated
 import { STATEMENT_CLAUSE_MAX } from "./findings-model.mjs";   // — the ask is dictated against the clause that clips it
 // The ledger's closed vocabularies, so the dispatch cannot teach an order or a member the code refuses.
 import { SCOPE_LAYERS, SCOPE_STATUSES } from "./scope-ledger.mjs";
@@ -865,6 +865,15 @@ const reportCardSkillReads = ({ profile }) =>
 // handed none of them: on a test run with Codex, a review that had not been given the framework went looking for one in
 // folders outside its run. So it reads the writer's own resolved framework and the shared reasoning, and the field module
 // on a pharma matter. The writer's level-specific rules (synthesis-rules.md) and its worked examples stay the writer's.
+// THE COMMON-LAW MANUAL IN TWO PARTS. The spine is what every seat shares; the
+// grid seats read the grid part, the meaning seat the meaning part, and the single-member stage, which does both
+// jobs, reads all three. With no seat named (the registry's whole-stage view) a split stage reads every part.
+const COMMON_LAW_SPINE = "skills/clearance-common-law/SKILL.md";
+const COMMON_LAW_GRID = "skills/clearance-common-law/grid.md";
+const COMMON_LAW_MEANING = "skills/clearance-common-law/meaning.md";
+const COMMON_LAW_WHOLE = Object.freeze([COMMON_LAW_SPINE, COMMON_LAW_GRID, COMMON_LAW_MEANING]);
+const commonLawSeatReads = ({ axis } = {}) => axis === MEANING_SEAT ? [COMMON_LAW_SPINE, COMMON_LAW_MEANING]
+  : axis ? [COMMON_LAW_SPINE, COMMON_LAW_GRID] : [...COMMON_LAW_WHOLE];
 const reviewSkillReads = ({ profile, job }) => [
   "skills/narrative-refutation/SKILL.md", frameworkFor(profile), SPINE_DOC,
   ...(pharmaMatter(job) ? ["skills/clearance-search/field-doctrine-pharma.md"] : []),
@@ -1592,7 +1601,7 @@ export const STAGES = {
     // The upstream fix for gather COST is still in-class scoping + the 600 enumerate ceiling; this wall just
     // stops killing a gather that is legitimately working. Ship WITH the scoping/ceiling levers, not alone.
     model: "haiku", thinking: "low", timeoutSec: 2250, stallSec: 1100,
-    skillReads: ["skills/clearance-common-law/SKILL.md"],
+    skillReads: COMMON_LAW_WHOLE,
     out: (P) => P.commonLaw,
     validate: declaredValidator("common-law", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -1726,7 +1735,7 @@ export const STAGES = {
       // is gone with the program itself, which the manual no longer teaches; a dispatch is pointed at the run's own spec.
       const specPath = gridSpecPath ?? P.gridSpec;
       return lines(
-        reads(["skills/clearance-common-law/SKILL.md"]),
+        reads(COMMON_LAW_WHOLE),
         `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
         systemScope,
         asksBlock,
@@ -1767,7 +1776,7 @@ export const STAGES = {
     // dead while looking authoritative. The wall and the stall stay here — they are the same for every
     // seat and are about the grid tool's silence, not about the judgment tier.
     timeoutSec: 2250, stallSec: 1100,
-    skillReads: ["skills/clearance-common-law/SKILL.md"],
+    skillReadsFor: commonLawSeatReads,
     out: (P, half) => P.commonLawHalf(half),
     validate: declaredValidator("common-law-half", validators),
     // — the run's own receipt of which prompt vintage minted this dispatch, written at DISPATCH
@@ -1876,7 +1885,7 @@ export const STAGES = {
       // asking for those sections would be demanding ceremony a seat has no material for — which is how
       // a floor teaches a model to fabricate rows to pass it.
       if (half === MEANING_SEAT) return lines(
-        reads(["skills/clearance-common-law/SKILL.md"]),
+        reads(commonLawSeatReads({ axis: half })),
         USE_THE_INPUTS,
         systemScope,
         `You own this matter's MEANING SWEEP and nothing else. Two sibling members are running the marketplace grid concurrently and the driver merges all three in code — do NOT sweep marketplaces, do NOT judge listings, and do NOT widen beyond your dictated queries.`,
@@ -1901,7 +1910,7 @@ export const STAGES = {
         ...ownedAsks.map((a, i) => `  ${i + 1}. "${a.ask}"`),
       ) : "";
       return lines(
-        reads(["skills/clearance-common-law/SKILL.md"]),
+        reads(commonLawSeatReads({ axis: half })),
         USE_THE_INPUTS,
         systemScope,
         `You are running ONE HALF of this matter's marketplace grid — a sibling member runs the other half concurrently, and the driver merges the two in code. Cover ONLY your half's dictated terms; never widen to terms outside your spec.`,
@@ -2539,7 +2548,7 @@ export const STAGES = {
     // resource it. (It already ran on sonnet in-engine: anthropic-agent maps gemini-flash→sonnet, so the
     // old "gemini-flash, fall back to sonnet" never fired; this just makes the config honest + lifts effort.)
     model: "sonnet", thinking: "high", timeoutSec: 600, stallSec: 600,
-    skillReads: ["skills/clearance-search/phase2-execution.md"],
+    skillReads: ["skills/skeptic/SKILL.md"],
     out: (P) => P.skepticFlags,
     validate: declaredValidator("skeptic", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2547,7 +2556,7 @@ export const STAGES = {
     contractElements: {
       "flags — one bullet per flag, citing the affected worker / axis / finding": {
         class: "judgment", tokens: ["too_short"],
-        why: "A fresh-eyes audit by a reader that did not write the findings — 'ask what's wrong here, not is this right' (phase2-execution.md:139-142). Nothing on disk holds a second opinion. #850 keeps it J.",
+        why: "A fresh-eyes audit by a reader that did not write the findings — 'ask what's wrong here, not is this right' (skeptic/SKILL.md, its Posture paragraph). Nothing on disk holds a second opinion. #850 keeps it J.",
       },
       "\"no flags surfaced\" — the clean sentinel phrase": {
         class: "mechanical:code-rendered", tokens: ["too_short"],
@@ -2583,7 +2592,8 @@ export const STAGES = {
       },
     },
     message: ({ paths: P, axes, registerOnly, depth }) => lines(
-      `Read skills/clearance-search/phase2-execution.md, section "Step 2.6 — Skeptic review", and perform that fresh-eyes audit.`,
+      reads(["skills/skeptic/SKILL.md"]),
+      `Perform the fresh-eyes audit that manual describes.`,
       // lever 3 — the flagging rung. Empty on a one-country run; `lines` drops it.
       skepticRungDirective(depth),
       // A2 (addendum 2026-07-30): the two MACHINE artifacts are named as inputs beside the prose. The
@@ -3068,7 +3078,7 @@ export const STAGES = {
       // findings must be mirrored into it. Same compose-instruction style as the register MACHINE COVERAGE
       // LEDGER: dictate the keys + closed enums; qualifiers/nuance stay in the prose. The driver validates
       // it (validators.narrative) and the render consumes it; an absent file falls back to prose (legacy).
-      `MACHINE FINDINGS (MANDATORY): beside the narrative sections, your record_synthesis call carries the findings record — a JSON OBJECT {"schema_version":${FINDINGS_SCHEMA_VERSION},"rated_under_framework":"${framework?.framework_key ?? "house-default"}","findings":[...],"coverage":[...],"context_notes":[...],"actions":[...],"ask_answers":[...]} (context_notes OPTIONAL — see the FAMOUS-NEIGHBOUR rule below; actions MANDATORY — see the ACTIONS REGISTER rule below; ask_answers — see the INTAKE ASKS rule: MANDATORY when the run carries intake asks, omit otherwise). Put ONE object in findings[] per finding in your narrative — RATED findings (they carry a band) AND the unrated off-field commercial-awareness items (disposition "off-field", NO band). What you do NOT deliver you DECLINE, by name — see DECLINATIONS below; there is no silent omission left. Each finding object has EXACTLY these keys: {"ordinal","mark","owner","band" (rated findings only),"net" (MANDATORY on every finding a reader sees),"borderline_between" (OPTIONAL, rated findings only — see THE BAND below),${frameworkMethod ? `"inputs" (rated findings only),` : ""}"disposition","meters","quadrant","source","legal_position","practical_position" (BOTH, on EVERY finding),"off_field_ground" (off-field findings only),"manageable" (notable-but-manageable findings only)}. The retired composite/level/dispute_type keys are FORBIDDEN — the validator rejects them.`,
+      `MACHINE FINDINGS (MANDATORY): beside the narrative sections, your record_synthesis call carries the findings record — a JSON OBJECT {"schema_version":${FINDINGS_SCHEMA_VERSION},"rated_under_framework":"${framework?.framework_key ?? "house-default"}","findings":[...],"coverage":[...],"context_notes":[...],"actions":[...],"ask_answers":[...]} (context_notes OPTIONAL — see the FAMOUS-NEIGHBOUR rule below; actions MANDATORY — see the ACTIONS REGISTER rule below; ask_answers — see the INTAKE ASKS rule: MANDATORY when the run carries intake asks, omit otherwise). Put ONE object in findings[] per finding in your narrative — RATED findings (they carry a band) AND the unrated off-field commercial-awareness items (disposition "off-field", NO band). What you do NOT deliver you DECLINE, by name — see DECLINATIONS below; there is no silent omission left. Each finding object takes only the keys the \`record_synthesis\` schema lists, each with its shape and the findings it is required on. Every newly written finding carries: ${FINDING_KEYS_ALWAYS.join(", ")}. The retired composite/level/dispute_type keys are FORBIDDEN — the validator rejects them.`,
       `- ordinal: 1-based integer in your "Finding N" order, unique. mark: the conflicting mark text, verbatim as it appears in the narrative.`,
       `- owner: {"name","country","registrations":[...]}. registrations = ONE object PER REGISTRATION the owner holds for this mark — ONE registration = ONE record "uri" (one owner with two Class-41 regs = two registration objects). Each registration: {"uri", optionally "classes":["9","41"],"status","filed","expiry","jurisdiction"}. The "uri" is the ONLY field that matters: the driver BINDS classes/status/filed/expiry/jurisdiction AND the owner name from the FETCHED record keyed by that uri, so you do NOT need to fill them and must NEVER invent or transpose a number, date, status or class. Any structured field you do include is a HINT and is OVERWRITTEN by the record; a uri with no fetched record shows "register-index entry — full record not pulled this run", never your typed values. A common-law finding with no registration → "registrations":[].`,
       `- band: the framework's band WORD, EXACTLY as the framework writes it${framework ? ` (one of: ${framework.bands.map((b) => b.label).join(" / ")})` : ""} — the band your reasoning through the framework's own definitions yields. THE BAND FOLLOWS THE WORDS: your prose likelihood read and the band may not disagree. Never a number, never a code, never a word from another framework's ladder. Where the framework states ceilings or a matrix, the band is what its stated method produces${frameworkMethod ? " from the inputs you recorded" : ""} — an aggressive enforcer / owner size / partnership moves the framework's INPUTS (the legal or practical read), never the output band. Emit band ONLY on rated findings (dispositions adversarial / coexistence-partner / distinguished); an off-field awareness item carries NO band.`,

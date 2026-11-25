@@ -58,7 +58,7 @@ const ENGINES = {
   codex: { CLEAROTRON_AI: "openai-agent", CLEAROTRON_CODEX_PATH: CODEX, CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-dummy" },
 };
 const ENGINE_KEYS = ["CLEAROTRON_CLAUDE_PATH", "CLEAROTRON_CODEX_PATH", "CLEAROTRON_AI_BILLING", "CODEX_API_KEY"];
-const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FINDINGS_N", "MOCK_ACTIONS", "MOCK_RECORD_WITHDRAWS", "MOCK_ANSWERS_CITE", "MOCK_OVERVIEW_CITES", "MOCK_ACTION_CITES", "MOCK_LINT_REPAIR_ACTIONS"];
+const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_FINDINGS_N", "MOCK_ACTIONS", "MOCK_RECORD_WITHDRAWS", "MOCK_ANSWERS_CITE", "MOCK_OVERVIEW_CITES", "MOCK_ACTION_CITES", "MOCK_LINT_REPAIR_ACTIONS", "MOCK_COVERAGE_CITES"];
 const SCENARIO = { MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FINDINGS_N: "3", MOCK_RECORD_WITHDRAWS: "3" };
 
 async function runPipeline(engine, knobs) {
@@ -122,6 +122,26 @@ for (const engine of Object.keys(ENGINES)) {
     assert.ok(!msg.includes("finding 9, which the review withdrew"), "a finding the run never had was called withdrawn");
     assert.ok(!JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8")).failures.includes("four-answers-ordinals"), "the delivery check still finds the citation");
     assert.deepEqual(saved(res.runDir, "accepted.json").four_answers.third_party_rights.ordinals, [1]);
+    assert.equal(res.ok, true, JSON.stringify(res));
+  });
+
+  // Measured on a delivered report, 2026-11-25: the writer wrote open coverage rows while their findings stood, the review
+  // withdrew the findings, and "Left open" printed every row with its owner, though no card carries those numbers.
+  test(`${engine}: an open coverage row citing a withdrawn finding goes to the writer's repair, which removes it`, async () => {
+    const { res, events, root } = await runPipeline(engine, { ...SCENARIO, MOCK_COVERAGE_CITES: "3" });
+    const lintFailed = events.findIndex((e) => e.event === "predelivery-lint-failed");
+    assert.ok(lintFailed >= 0 && events[lintFailed].failures.includes("coverage-citations"), "the delivery check did not find the coverage row");
+    assert.deepEqual(events.find((e) => e.event === "report-repair-targets")?.record, ["coverage-citations"], "the row's fault was not placed in the writer's record");
+    assert.deepEqual(repairsAfter(events, lintFailed), ["synthesis"], "the repair did not go to the writer alone");
+    const msg = dispatches(res.runDir, "synthesis").find((m) => m.includes("The deterministic pre-delivery checks found these faults"));
+    assert.ok(msg?.split("\n").includes(`- ${WRITER_LINE}`), "the writer was not handed its ruled line for the withdrawn finding");
+    assert.ok(!JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8")).failures.includes("coverage-citations"), "the delivery check still finds the row");
+    const before = saved(res.runDir, "accepted-before-repair.json"), after = saved(res.runDir, "accepted.json");
+    assert.deepEqual(after.findings, before.findings, "the correction changed findings it was not asked to change");
+    assert.deepEqual(after.coverage, before.coverage.filter((r) => !/finding 3 /.test(r.note ?? "")), "the repair changed coverage rows it was not asked to change");
+    const { runId } = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
+    const page = readFileSync(join(root, "pool", runId, "report.html"), "utf8");
+    assert.ok(!page.includes("Velloquin Kestrel Ltd"), "the delivered page still names the withdrawn finding's owner under Left open");
     assert.equal(res.ok, true, JSON.stringify(res));
   });
 

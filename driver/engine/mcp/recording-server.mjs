@@ -39,7 +39,7 @@ import { serve } from "./stdio-server.mjs";
 import { recordSynthesis } from "../../synthesis-record.mjs";   // the writer
 import { correctionPositionsFrom } from "./correction-positions.mjs";   // the positions a correction's dispatch hands its save
 import { recordRegisterDigest, DIGEST_DROP_REASON_TOKENS, VERIFY_VALUES, ADJUDICATION_DECISIONS } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
-import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES, KNOCKOUT_FINDING_KEYS, KNOCKOUT_FINDING_TYPES } from "../../findings-model.mjs";
+import { FINDING_FIELDS, COVERAGE_AREA_STATES, KNOCKOUT_FINDING_KEYS, KNOCKOUT_FINDING_TYPES } from "../../findings-model.mjs";
 import { recordBlindFrame } from "../../blind-frame-record.mjs";
 import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
 import { recordSkeptic } from "../../skeptic-record.mjs";
@@ -318,6 +318,16 @@ const KNOCKOUT_CORRECTION_FINDING_FIELDS = {
 const QUALIFIER_VALUES = `null or ${KNOCKOUT_RATING_QUALIFIERS.map((q) => `"${q}"`).join(" or ")}`;
 const knockoutFindingProperties = (fields) =>
   Object.fromEntries(KNOCKOUT_FINDING_KEYS.filter((k) => k in fields).map((k) => [k, fields[k]]));
+
+// ── THE CLEARANCE FINDING, DECLARED FROM ITS ONE DEFINITION ────────────────────────────────────────────
+//
+// Both lists that carry a finding (`save_findings`, `findings_patch`) declare each key with its type and the words
+// findings-model.mjs `FINDING_FIELDS` gives it: when it is required, its shape and the values it takes. A patch row
+// keeps its own `ordinal`, which names the finding it replaces. No key is `required` here: the record's own checks
+// refuse a missing field by name, in the turn, and a refusal at the schema leaves no call file.
+const FINDING_ITEM = "One complete finding object, as the findings record carries it. It takes the keys below and no others.";
+const findingProperties = (except = []) => Object.fromEntries(Object.entries(FINDING_FIELDS)
+  .filter(([k]) => !except.includes(k)).map(([k, f]) => [k, { type: f.type, description: f.about }]));
 
 serve({
   name: "recording",
@@ -1164,8 +1174,8 @@ serve({
             "COMPLETED FINDINGS, saved before the whole record exists. Send one or a few complete finding objects as the findings record carries them, and nothing else on the call. Each is checked as the record checks a finding and kept as soon as it passes; one that is refused leaves the others saved. A finding saved again for the same position replaces the earlier one. Saving writes no report: the record is complete only when you send `narrative` with `findings`, and that call takes every saved finding for a position it does not carry.",
           items: {
             type: "object",
-            description: "One complete finding object, as the findings record carries it.",
-            properties: Object.fromEntries(FINDING_KEYS_CURRENT.map((k) => [k, { description: `Part of the finding record; see findings-model.mjs for what \`${k}\` carries.` }])),
+            description: FINDING_ITEM,
+            properties: findingProperties(),
           },
         },
         findings_patch: {
@@ -1187,11 +1197,9 @@ serve({
               // schema without refusing the traffic it was meant to police.
               //
               // DERIVED, NEVER COPIED. The authority for what a finding carries is findings-model.mjs's
-              // key ladder. A hand-written list here would be a second definition of the record's shape
-              // and the two would drift the first time that ladder gains a key. The schema declares that
-              // these keys EXIST; what each one means stays where it is defined.
-              ...Object.fromEntries(FINDING_KEYS_CURRENT.filter((k) => k !== "ordinal")
-                .map((k) => [k, { description: `Part of the finding record; see findings-model.mjs for what \`${k}\` carries.` }])),
+              // `FINDING_FIELDS`, held to the key ladder by a test. A hand-written list here would be a second
+              // definition of the record's shape, and the two would drift the first time that ladder gains a key.
+              ...findingProperties(["ordinal"]),
             },
           },
         },

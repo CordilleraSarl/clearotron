@@ -5,7 +5,7 @@
 //
 // It was told it had "CNIPA register rows" and was given the register unit's note, a count. No register reading it
 // made could be grounded, so every one became a lead. It now reads the transliteration and numeric search's own band:
-//   · the Chinese records only, once each, live ones first, each with its held goods text where the run holds one;
+//   · the Chinese records only, once each, live ones first, each with the goods text the run holds for it;
 //   · a missing band, an unreadable one and one holding no Chinese record stay three different states, and none of
 //     them makes an otherwise empty input a reading;
 //   · a capped list says how many it shows of how many, and a record or a platform row the cap left out cannot ground
@@ -38,11 +38,12 @@ test("only the Chinese records are given, once each, live ones first, with their
     const { state, records } = chineseRegisterRecords(dir);
     assert.equal(state, "read");
     assert.deepEqual(records.map((r) => r.id), ["/mark/cn/10", "/mark/cn/20", "/mark/cn/30"], "not the Chinese records, once each, live first");
-    assert.match(records.find((r) => r.id === "/mark/cn/20").goods, /invented software/);
+    assert.match(records.find((r) => r.id === "/mark/cn/20").goods[0].text, /invented software/);
     assert.equal(records.find((r) => r.id === "/mark/cn/10").goods, null);
+    assert.equal(records.find((r) => r.id === "/mark/cn/10").goodsFrom, "nothing held");
     const { payload } = buildNativereadPayload({ registerRecords: { state, records } });
     assert.match(payload, /^## Chinese register records supplied \(3 of 3\)$/m);
-    assert.match(payload, /\/mark\/cn\/10 \| INVENTED 10 \| owner: Invented Owner Co \| Registered \| classes 9 \| goods: no goods text held/);
+    assert.match(payload, /\/mark\/cn\/10 \| INVENTED 10 \| owner: Invented Owner Co \| Registered \| classes 9 \| goods: nothing held/);
     assert.doesNotMatch(payload, /\/mark\/(jp|kr)\//, "another office's record was given as Chinese");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
