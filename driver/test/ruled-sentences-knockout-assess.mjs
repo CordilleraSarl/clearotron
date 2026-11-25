@@ -43,4 +43,5 @@ export const ASSESS_SENTENCES = Object.freeze({
   crowdingMitigatesOnlyOnShownCrowd: "Give crowding mitigating weight only when the marketplace evidence you read shows the "
     + "crowd in the conflict’s goods and territory. State what you counted, how you narrowed it, and which relevant live "
     + "conflicts remain.",
+  degradedMarkMustCarryTrue: "(no research payload on disk) MUST carry `degraded: true` + the doctrine's purple",
 });

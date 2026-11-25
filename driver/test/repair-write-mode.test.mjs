@@ -31,6 +31,7 @@ import { buildEscalationFollowup, buildEnvelopeCloseFollowup,
 // — the one registry. Every assertion about repair text below reads what a composer COMPOSES,
 // never a window of pipeline.mjs source.
 import { REPAIR_COMPOSERS } from "../repair-composers.mjs";
+import { FINDINGS_SCHEMA_VERSION } from "../findings-model.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const src = (f) => readFileSync(join(DRIVER, f), "utf8");
@@ -344,7 +345,7 @@ test("no composer carries a whole-file re-emission order except the two that exp
   assert.deepEqual([...new Set(reemit.map((s) => s.key))].sort(),
     ["synthesis:schema-downlevel"],
     "a full re-emission may reach a seat only from the schema migration");
-  assert.match(reemit.find((s) => s.key === "synthesis:schema-downlevel").text, /at schema_version 4/);
+  assert.match(reemit.find((s) => s.key === "synthesis:schema-downlevel").text, new RegExp(`at schema_version ${FINDINGS_SCHEMA_VERSION},`));
 });
 
 
