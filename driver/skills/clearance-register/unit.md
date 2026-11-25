@@ -62,7 +62,7 @@ states, and **the state IS the coverage signal**:
 × in-scope class slice is the identical-mark question of the narrowing steps; a complete answer covers every
 jurisdiction in it. A bare-exact incumbent in a filed class is the highest-relevance category — it can
 **never** be sampled or rolled into a count; if it comes back `incomplete`, it is narrowed by the steps in
-`unit.md`, and what stays a crowd after the last step stays on its coverage row with its count, as a required
+`SKILL.md`, and what stays a crowd after the last step stays on its coverage row with its count, as a required
 read not completed. (The funnel does not author a "closeable vs accepted" judgment on it — it just enumerates it.)
 
 **Count-only crowd descriptors describe, they do not clear.** The `saturation-probe` axis (`limit:1`, no
