@@ -50,6 +50,7 @@ import { whatsappRouting } from "./stages.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { maybeCheckEngine } from "./engine/health.mjs";   // the engine proven between jobs, on a tick with nothing to run
 import { engineCommit } from "./engine-build.mjs";
+import { clientNotStartedText } from "./run-outcome.mjs";
 import { writeRunStatus, terminalRunState } from "./progress.mjs";   // A5 — grace-exit park + reclaim-bound terminal go through the guarded status writer; terminalRunState is the run record's own terminal vocabulary (2155)
 import { identitySeed } from "./progress.mjs";   // — the same stamp a run seeds, for the process that runs them
 import { writeDrainerStamp } from "./drainer-identity.mjs";   // — deploy health cannot interrogate a running process; it says so itself
@@ -348,6 +349,18 @@ function dropMatter(qdir, msgId) {
 // Exported for unit tests (the integration path exercises them via claimAndRun).
 export { matterSignature, matterLedgerPath, findDuplicateMatter, recordMatter, dropMatter, readMatterLedger };
 
+// WHOSE NOTICE THIS IS, for the three notices filed before any run exists. A run's account is read from
+// the profile frozen into it; these notices have no run, so the door could not tell whose they were and
+// dropped every one for a token scoped to named companies (server.mjs filterByAccounts) — which is how a
+// failure before start reached no courier at all. The account is the one the order NAMED: a scoped door
+// always writes it (resolveScopedProfileKey). An order that named none carries null, which only a full
+// grant sees, because the runner may still resolve such an order to a company from the sender's domain.
+function noticeAccount(job) {
+  const account = typeof job?.profileKey === "string" && job.profileKey.trim() ? job.profileKey.trim() : null;
+  const organisation = account === "generic" && typeof job?.tenant === "string" && job.tenant ? job.tenant : null;
+  return { account, organisation };
+}
+
 // Best-effort intake-reject notice. The silent-intake failure mode (live slogan-mark matter, 2026-06-10): a
 // job that dies at validation never reaches pipeline(), so no run-level failure event fires and the
 // requester hears nothing. This is the runner-side backstop: the rejection rides the outbox as a
@@ -365,6 +378,7 @@ async function intakeNotify(agentId, base, job, v) {
     `Job parked as ${base}.failed in the ${agentId} queue.`;
   const p = writeOutboxPacket(`intake-${base}.failed`, {
     kind: "intake-rejected", classify: v?.classify ?? "reject", base, agent: agentId,
+    ...noticeAccount(job),
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
@@ -636,6 +650,7 @@ async function duplicateNotify(agentId, base, job, prior = null, sig = null) {
     + ` command line) and it will go through.`;
   const p = writeOutboxPacket(`intake-${base}.duplicate`, {
     kind: "duplicate-skipped", base, agent: agentId,
+    ...noticeAccount(job),
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
@@ -698,13 +713,19 @@ function preRunFailNotify(agentId, base, job, reason) {
   // terminalReasonFields `reason`, so this cut is a no-op today — which is exactly why it survived: a
   // latent second cap, unmarked, waiting for the next caller to pass a raw reason. It collapses and
   // trims identically, so this is the same string with the cut made visible when there is one.
-  const text = `❌ Clearotron request "${mark}" FAILED before the run could start: ${terminalReasonFields(reason).reason} — ` +
-    `nothing has been searched or delivered. Job parked as ${base}.failed in the ${agentId} queue.`;
+  // A CLIENT'S ORDER IS TOLD IN THE CLIENT'S WORDS. Once a courier scoped to the client's company can see
+  // this notice, `text` can reach the client, and the staff line quotes the machine reason and the queue.
+  // The client gets the shipped not-started sentence the failure email uses; the reason stays a field.
+  const text = job?.clientPrincipal === true
+    ? clientNotStartedText(job, mark)
+    : `❌ Clearotron request "${mark}" FAILED before the run could start: ${terminalReasonFields(reason).reason} — ` +
+      `nothing has been searched or delivered. Job parked as ${base}.failed in the ${agentId} queue.`;
   // `intake-${base}.` PREFIX, not a third scheme: scripts/e2e.mjs's outboxPackets matches by runId
   // first and by that prefix second, so a name outside it is a notice the harness reports as
   // never sent. The queue base is the routing key; `kind` carries what actually happened.
   const p = writeOutboxPacket(`intake-${base}.prerun-failed`, {
     kind: "pre-run-failed", base, agent: agentId,
+    ...noticeAccount(job),
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
@@ -714,6 +735,8 @@ function preRunFailNotify(agentId, base, job, reason) {
   note(`[runner] pre-run failure ${p ? `packet \u2192 ${p}` : "packet write FAILED"} for ${base}`);
   return Boolean(p);
 }
+
+export { intakeNotify, duplicateNotify, preRunFailNotify };   // exported for the run-less notice test
 
 // B3 — guaranteed failure-notice backstop for PRE-TRY throws. The run-level catch in `runShell` owns every
 // failure inside its try{} (it RETURNS {ok:false, failedStage, …} after notifying — the

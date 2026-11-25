@@ -1133,8 +1133,9 @@ function sanitizeRunForClient(r) {
 
 // ---- GRANTS result filtering (INSTALL.md §8) -----------------------------------------------------
 // Narrow enumeration results to an account-scoped session's grant. Exported for the unit test.
-// Anything without a resolvable account (an intake rejection before any run exists, a pre-grants run)
-// is dropped for scoped sessions — visible only to full grants.
+// Anything without a resolvable account (a pre-grants run, a notice for an order that named no account)
+// is dropped for scoped sessions — visible only to full grants. A notice filed before any run exists has
+// no run to resolve; it carries the account its order named (runner.mjs noticeAccount) and is judged on that.
 export function filterByAccounts(scope, name, result) {
   if (!Array.isArray(scope?.accounts)) return result;
   // one status-scan per call builds runId → account for the array filters
@@ -1160,7 +1161,8 @@ export function filterByAccounts(scope, name, result) {
   }
   if (name === "list_outbox_events" && result && Array.isArray(result.events)) {
     const map = accountOf();
-    const events = result.events.filter((ev) => seen(map, ev.runId ?? null));
+    const events = result.events.filter((ev) => (ev.runId != null
+      ? seen(map, ev.runId) : accountVisible(scope, ev.account ?? null, ev.organisation ?? null)));
     return { ...result, events, count: events.length };
   }
   return result;
