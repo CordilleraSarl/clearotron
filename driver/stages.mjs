@@ -301,6 +301,8 @@ const PROVIDER = REGISTER_PROVIDER;
 // the provider half is this label. It was a driver fact the seat retyped out of the dispatch; the driver
 // stamps it now, and it reads the label from here rather than re-deriving it from CLEAROTRON_DATABASE
 // — a second derivation of a provider name is how a masthead ends up naming a register the run never used.
+// THE PROVIDER'S MANUALS, as a clearance seat reads them: the manual, then the questions file where the provider splits one out.
+export const providerManuals = (register) => [providerMeta(register).skillDoc, providerMeta(register).questionsDoc].filter(Boolean);
 export const providerMeta = (register) => PROVIDERS[register] ?? {   // a run's register (ctx.register), or the machine's
   label: register ?? "(none configured)",
   skillDoc: null,
@@ -721,7 +723,7 @@ export const SKILL_COMPANIONS = Object.freeze({
   "clearance-common-law": Object.freeze(["perplexity-prompts.md"]),
   "clearance-register": Object.freeze([
     "register-recipes.md", "status-rules.md", "stealth-filer-indicators.md",
-    "providers/corsearch.md", "providers/clarivate.md",
+    "providers/corsearch.md", "providers/clarivate.md", "providers/clarivate-questions.md",
   ]),
   "case-law-citation": Object.freeze(["sources/courtlistener.md", "sources/legaldatahunter.md", "sources/eurlex.md"]),
 });
@@ -1955,7 +1957,7 @@ export const STAGES = {
     // Every follow-up is a fresh session that calls the same register tools, so its methodology line also names the
     // active provider's manual, which holds THIS provider's tool names and operator vocabulary and which the opening
     // message tells the first session to read and follow.
-    followupSkillReads: (ctx) => (providerMeta(ctx?.register ?? PROVIDER).skillDoc ? [providerMeta(ctx?.register ?? PROVIDER).skillDoc] : []),
+    followupSkillReads: (ctx) => (providerMeta(ctx?.register ?? PROVIDER).skillDoc ? providerManuals(ctx?.register ?? PROVIDER) : []),
     out: (P, axis) => P.registerUnit(axis),
     validate: declaredValidator("register-unit", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2069,7 +2071,7 @@ export const STAGES = {
         // Leaving the clause in would tell every unit on every vendor that a second EU source was
         // available to it, and a unit that believes it has a cross-check it does not have will report
         // agreement it never obtained.
-        ? ` Read and follow ${providerMeta(register).skillDoc} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
+        ? ` Read and follow ${providerManuals(register).join(" and ")} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
         : " NO provider vocabulary doc is registered for it, so there is nothing to read for its tool names — treat that as a fault and say so rather than improvising an operator vocabulary."),
       USE_THE_INPUTS,
       planEntries.length
