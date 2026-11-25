@@ -1909,6 +1909,30 @@ export function actionCitationChecks({ actionsRegister, findings }) {
   return [c];
 }
 
+// An open coverage row citing a finding that is gone. A row written while its finding stood ("the position in finding
+// 12 remains unresolved") outlives the review that withdraws the finding, and "Left open" prints it with the owner in
+// its title, though no card carries that number: measured on a delivered report, 2026-11-25, sixteen such rows. The
+// row is the writer's record, so it goes to the writer's repair as the four answers' citations do, read with the word
+// "finding" before the number, as a writer's ground is read, so that a class written after a hash sign is never one.
+// THE WRITER'S NUMBERING. The rows are the writer's prose, which the delivery seam's fold copies and does not renumber,
+// so they are judged against the record the writer wrote (`narrativeFindings` while a fold is in force), and the
+// numbers they carry reach the writer's repair as written.
+// ABSENT ⇒ SILENT: a record with no coverage register emits nothing, and the replay harness passes none.
+export function coverageCitationChecks({ coverageRegister, findings }) {
+  if (!Array.isArray(coverageRegister)) return [];
+  const live = new Set((findings ?? []).filter((f) => f && f.disposition !== "withdrawn").map((f) => Number(f.ordinal)));
+  const withdrawn = new Set((findings ?? []).filter((f) => f && f.disposition === "withdrawn").map((f) => Number(f.ordinal)));
+  const cites = [];
+  coverageRegister.forEach((row, i) => {
+    for (const ord of citedFindingNumbers(`${row?.area ?? ""}\n${row?.note ?? ""}`, { bare: false }))
+      if (!live.has(ord)) cites.push({ row: i, area: String(row?.area ?? ""), ordinal: ord, withdrawn: withdrawn.has(ord) });
+  });
+  const c = check("coverage-citations", "reference", "report", cites.length === 0, cites.length
+    ? `open coverage row(s) cite finding(s) that are not there: ${cites.map((x) => `"${x.area}" cites #${x.ordinal}, which ${x.withdrawn ? "the review WITHDREW" : "this run has no finding for"}`).join("; ")}` : "");
+  if (cites.length) Object.assign(c, { register: "coverage", cites, writersNumbering: true });
+  return [c];
+}
+
 export function fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }) {
   if (!fourAnswers || typeof fourAnswers !== "object") return [];
   const out = [];
@@ -2503,7 +2527,7 @@ export function cardBudgetChecks({ cardFolds }) {
     `assembly folded ${folds.length} surface(s) to the level budgets (moved, never deleted): ${folds.map((f) => `${f.surface} → +${f.movedSentences} sentence(s)/${f.movedWords} word(s) into depth`).join("; ")}`)];
 }
 
-export function runLint({ followUpKinds = null, depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, emailConditions = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null, goodsEvidence = null, goodsHanded = null }) {
+export function runLint({ followUpKinds = null, depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, emailConditions = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, coverageRegister = null, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null, goodsEvidence = null, goodsHanded = null }) {
   // WS-B: the run's profile platforms join the vocabulary for this run. Profiles carry store
   // DOMAINS by contract, so derive the name tokens a report would actually print: the raw norm
   // ("thomasnetcom"), the separator-spaced phrase ("thomasnet com" / "made in china com"), and the
@@ -2652,6 +2676,7 @@ export function runLint({ followUpKinds = null, depth, commonLawGrid, matterCont
   // meant a down-level file switched off the check that reports a down-level file.
   checks.push(...schemaVersionChecks({ schemaVersion: findingsSchemaVersion }));   // — the declared contract version
   checks.push(...actionCitationChecks({ actionsRegister, findings }));   // a forward step resting on a finding that is gone: the writer's repair
+  checks.push(...coverageCitationChecks({ coverageRegister, findings: narrativeFindings ?? findings }));   // an open coverage row citing a finding that is gone: the writer's repair, in its numbering
   checks.push(...fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }));   // P5 review — the four answers must not contradict the verdict or the findings (flag-only, absent ⇒ silent)
   checks.push(...placementsChecks({ placements }));   // B2 — an empty structured mirror is a flag a human reads, never an unrepairable validator kill
   checks.push(...recordCarryChecks({ recordCarry }));   // — a retrieved record dropped with no recorded ground, and a drop that is really an incomplete stage

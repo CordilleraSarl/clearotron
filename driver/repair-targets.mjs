@@ -16,8 +16,8 @@
 // single part holds (two cards counting one owner's registrations differently), or one whose check cannot be run on a
 // part, keeps the overview's repair it always had.
 //
-// Two faults are placed by what they cite. A citation held in a register of the record (the four answers' findings) is
-// the writer's, since no card or overview repair can change the record. A citation of a withdrawn or absent finding in
+// Two faults are placed by what they cite. A citation held in a register of the record (the four answers' findings, a
+// forward step's, an open coverage row's) is the writer's, since no card or overview repair can change the record. A citation of a withdrawn or absent finding in
 // the overview's own prose is the overview's: a check of its own reads the overview as its writer wrote it.
 import { readFileSync } from "node:fs";
 import { prescriptionProseChecks, scopeNumberProseChecks, wipoLanguageChecks, countingChecks, countsFromFindings, OVERVIEW_CITATION_ID } from "./predelivery-lint.mjs";
@@ -88,13 +88,14 @@ const withdrawnCitationLine = (ordinal) => `Your text cites finding ${ordinal}, 
  * The faults the writer's repair is given for one a register of the record holds, each finding named by the number the
  * writer's record carries. The check judged the delivered record, which the fold may have renumbered; `toModel` maps a
  * delivered ordinal to the writer's, or to null for one the fold does not know, which keeps its number as written.
- * In the four answers each withdrawn finding gets its ruled line, and the findings the run does not have get the general
- * instruction together, since the ruled line says "withdrew". A forward step gets the general instruction, with the
+ * In the four answers and the coverage rows each withdrawn finding gets its ruled line, and the findings the run does not
+ * have get the general instruction together, since the ruled line says "withdrew". A forward step gets the general instruction, with the
  * step it concerns named, because the step's support is what is rechecked. PURE.
  */
 export function writersCitationFaults(fault, toModel) {
-  if (!["four_answers", "actions"].includes(fault?.register) || !Array.isArray(fault.cites)) return [fault];
-  const number = (c) => toModel(c.ordinal) ?? c.ordinal;
+  if (!["four_answers", "actions", "coverage"].includes(fault?.register) || !Array.isArray(fault.cites)) return [fault];
+  // A coverage row's numbers are the writer's already (predelivery-lint.mjs coverageCitationChecks); the others are mapped.
+  const number = fault.writersNumbering ? (c) => c.ordinal : (c) => toModel(c.ordinal) ?? c.ordinal;
   if (fault.register === "actions") {
     const seen = new Map(fault.cites.map((c) => [`${c.action}:${number(c)}`, { action: c.action, ordinal: number(c), withdrawn: Boolean(c.withdrawn) }]));
     return [{ ...fault, detail: actionCitationDetail([...seen.values()]) }];

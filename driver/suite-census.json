@@ -256,8 +256,8 @@
           "todos": 0
         },
         "a-citation-of-a-withdrawn-finding-is-repaired-by-the-part-that-wrote-it.test.mjs": {
-          "tests": 10,
-          "asserts": 50,
+          "tests": 11,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -268,8 +268,8 @@
           "todos": 0
         },
         "a-cited-registrations-logo-is-fetched-once-from-the-runs-own-register.test.mjs": {
-          "tests": 15,
-          "asserts": 73,
+          "tests": 16,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -552,6 +552,12 @@
         "a-coverage-row-carries-the-count-it-was-given.test.mjs": {
           "tests": 4,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-coverage-row-is-read-in-the-writers-numbering.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
