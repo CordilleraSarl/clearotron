@@ -12,7 +12,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
-import { acceptKnockoutReview, recordKnockoutReview } from "../knockout-review-record.mjs";
+import { acceptKnockoutReview, knockoutReviewFile, recordKnockoutReview, validateKnockoutReviewFile } from "../knockout-review-record.mjs";
 import { builtinToolsFor } from "../engine/mcp/gather-config.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -59,6 +59,11 @@ test("a clean review is an answer; a call with neither an answer nor a defect li
   assert.match(String(r.refused), /rewords nothing, so it takes no `rewrites`/, "a rewrite is refused for what it is, not for the line it names");
   assert.equal(acceptKnockoutReview({ first_question: "Yes.", material: [], declined: [{ why: "x" }] }).ok, false, "a declined line was accepted");
   assert.equal(acceptKnockoutReview({ first_question: "Yes.", material: [], rewrites: [], declined: [] }).ok, true, "an empty retired list was refused");
+  // A review an earlier build accepted and saved, rewrites and all, still stands on resume: nothing in it is applied, and no reviewer
+  // is summoned to drop the old lists.
+  const saved = { schema_version: 1, first_question: "Yes.", material: [], rewrites: [{ at: { field: "basis", mark: "QUILLBRAE" }, text: "x" }], declined: [{ at: { field: "basis", mark: "QUILLBRAE" }, why: "y" }] };
+  writeFileSync(knockoutReviewFile(dir), JSON.stringify(saved));
+  assert.deepEqual(validateKnockoutReviewFile(knockoutReviewFile(dir), JSON.stringify(saved)), { ok: true }, "a saved historical review was refused on resume");
 });
 
 test("the correction answers its defect in the approved words, with what it rests on and no whole research payload", () => {

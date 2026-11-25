@@ -110,7 +110,9 @@ export function mergeKnockoutReviewCall(was, now) {
 export function validateKnockoutReviewFile(file, text) {
   let doc;
   try { doc = JSON.parse(text); } catch (e) { return { ok: false, reason: `not valid JSON: ${e.message}` }; }
-  const shape = acceptKnockoutReview(doc);
+  // A SAVED FILE IS NOT A FRESH CALL. One an earlier build accepted may still carry the retired lists; they are read past and never
+  // applied, so a resumed run keeps its review without summoning a reviewer to drop them. A fresh call carrying one is still refused.
+  const shape = acceptKnockoutReview(Object.fromEntries(Object.entries(doc ?? {}).filter(([k]) => !RETIRED_KEYS.includes(k))));
   if (!shape.ok) return shape;
 
   // The run dir, from the artifact's own path rather than a fixed depth — the assumption that bit the
