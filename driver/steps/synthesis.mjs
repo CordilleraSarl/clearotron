@@ -8,7 +8,7 @@
 import { caseLawSourceRows } from "../case-law-sources.mjs";
 import { caseLawInventory } from "../config-inventory.mjs";
 import { composeDispatchExtra, decideCaseLaw, prepareDeclinationSpec, readCoverageJudgment, refute, settleDerivedBases } from "../dispatch-extras.mjs";
-import { parseFindingsJsonLenient } from "../findings-model.mjs";
+import { parseFindingsJsonLenient, FINDINGS_SCHEMA_VERSION } from "../findings-model.mjs";
 import { note, runLog } from "../log.mjs";
 import { readPartNotCompleted } from "../parts-not-completed.mjs";
 import { recordSynthesisSeam } from "../record-carry-trace.mjs";
@@ -17,6 +17,15 @@ import { assembleRunRecords, extractEnforcerSignals } from "../registry-fidelity
 import { repairFollowup } from "../repair-composers.mjs";
 import { asPartNotCompleted, goodsEvidenceForTheWriter, keepGoodsEvidenceAsWritten, quarantineSynth, stage, stageCharter } from "../stage-dispatch.mjs";
 import { readFileSync, renameSync, writeFileSync } from "node:fs";
+
+/**
+ * WHAT THE RECORD SAYS WHEN THE VERSION RE-ASK'S REPLY IS STILL SHORT: the version the findings file declares after the
+ * re-ask, against the one it asked for. A reply below it is recorded at any version: one at 4 to 6 still reads, under
+ * its own version's rules, and is not the record the re-ask demanded. null where the file meets it or could not be read.
+ * No further attempt follows from it. PURE.
+ */
+export const versionStillShort = (declared) => (declared !== null && declared !== undefined && declared < FINDINGS_SCHEMA_VERSION
+  ? { event: "findings-schema-downlevel", declared, required: FINDINGS_SCHEMA_VERSION } : null);
 
 export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }) {
   // Steps 3/3.5/4 synthesis → optional 4.5 case-law grounding ∥ Step 4.7 refutation.
@@ -122,7 +131,8 @@ export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }) {
       }) + stageCharter("synthesis", ctx.depth, ctx.framework),
     });
     const afterSv = readSchemaVersion();
-    if (afterSv !== null && afterSv < 3) runLog(run.runDir, { event: "findings-schema-downlevel", declared: afterSv });
+    const short = versionStillShort(afterSv);
+    if (short) runLog(run.runDir, short);
   }
 
   // spec 64 — the typed forward-action register. The disposition derivation (legalActions arm of the
