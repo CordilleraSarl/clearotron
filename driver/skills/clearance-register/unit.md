@@ -62,7 +62,7 @@ states, and **the state IS the coverage signal**:
 × in-scope class slice is the identical-mark question of the narrowing steps; a complete answer covers every
 jurisdiction in it. A bare-exact incumbent in a filed class is the highest-relevance category — it can
 **never** be sampled or rolled into a count; if it comes back `incomplete`, it is narrowed by the steps in
-`unit.md`, and what stays a crowd after the last step stays on its coverage row with its count, as a required
+`SKILL.md`, and what stays a crowd after the last step stays on its coverage row with its count, as a required
 read not completed. (The funnel does not author a "closeable vs accepted" judgment on it — it just enumerates it.)
 
 **Count-only crowd descriptors describe, they do not clear.** The `saturation-probe` axis (`limit:1`, no
@@ -219,7 +219,7 @@ predicate, and each per-major and phonetic slice built on it — is **attempted 
 its own result**. If it returns `enumerated` (tractable — a real named band: e.g. ≈257 exact-in-class-live; the phrase
 "QUIET FIELD" ≈ 99), keep it, take its majors from it by `jurisdictions`, and run its phonetic pass. If it returns `incomplete` because the
 slice is **itself a crowd over the ceiling** (a hyper-common word — GREAT ≈ 28k, OUTDOORS ≈ 2.7k),
-the ceiling is a call limit, never a decision point: decide on that crowd with [the same steps](#read-the-identical-mark-first-look-at-the-count-before-you-read-anything),
+the ceiling is a call limit, never a decision point: decide on that crowd with [the same steps](SKILL.md#read-the-identical-mark-first-look-at-the-count-before-you-read-anything),
 only as far as reading it would change what you tell the client; record what stays a crowd with its count. Gate on the *result*, never the label: a token the manifest calls
 "dominant" is enumerated only if class-scoping makes it tractable (the colour-word mark COLORA→色彩), and a hyper-common word is
 counted whether or not it is the dominant unit. **On a crowd slice, what you WRITE depends on which slice it is:**
