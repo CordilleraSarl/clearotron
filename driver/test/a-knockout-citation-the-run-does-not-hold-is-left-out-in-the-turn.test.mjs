@@ -73,7 +73,7 @@ test("a finding's source is held the same way: a recorded payload for this batch
   const r = send(run, mark({ findings: [{ ...finding([]), evidence: [...held, "https://shop.example.test/owner-unlinked", "https://shop.example.test/raw-only", "https://shop.example.test/nowhere"] }] }));
   assert.deepEqual(stored(run).findings[0].evidence, held);
   assert.equal(r.not_kept.length, 3, "an owner check linked to no held filing, a URL only in raw web results, and an address held nowhere");
-  assert.match(r.not_kept[0], /"https:\/\/shop\.example\.test\/owner-unlinked" is not traceable to a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing\. Cite a source from that held evidence\./);
+  assert.match(r.not_kept[0], /"https:\/\/shop\.example\.test\/owner-unlinked" is not traceable to a recorded research payload for this order, a filing held for this order, or a recorded owner check linked to a held filing\. Cite a source from that held evidence\./);
 });
 
 test("a source left out stays open until the finding is amended or gains held support, and an unchanged resend answers nothing", () => {

@@ -2,11 +2,11 @@
 
 How synthesis turns two findings files (one per layer) into a single risk assessment per finding, with the `Source Layer` column on the unified Findings sheet driving the final read.
 
-## Reasoning posture — default to senior-lawyer judgment as ground truth
+## Reasoning posture — default to the reviewing lawyer's judgment as ground truth
 
 Across the synthesis, two postures are load-bearing:
 
-1. **If synthesis rates a candidate higher than the staff lawyer's calibration would** (e.g. promoting a sheet-2 candidate to client-facing headline), it MUST defend the promotion explicitly with reasoning rooted in `matter-context.md` and placement's own record — the structured `placements.json` (tier **and its stated reason**, per candidate) plus the rulings tail in `placement-recommendations.md`. A defence ENGAGES the reason placement gave: quote it and say why it does not hold. Divergences require defense, not assumption. The Touchpoint 3 (`narrative-refutation`) gate enforces this at delivery: a promotion above `placement-inquiry`'s placement without "promotion defended" reasoning is a BLOCKING flag.
+1. **If synthesis rates a candidate higher than the reviewing lawyer's calibration would** (e.g. promoting a sheet-2 candidate to client-facing headline), it MUST defend the promotion explicitly with reasoning rooted in `matter-context.md` and placement's own record — the structured `placements.json` (tier **and its stated reason**, per candidate) plus the rulings tail in `placement-recommendations.md`. A defence ENGAGES the reason placement gave: quote it and say why it does not hold. Divergences require defense, not assumption. The Touchpoint 3 (`narrative-refutation`) gate enforces this at delivery: a promotion above `placement-inquiry`'s placement without "promotion defended" reasoning is a BLOCKING flag.
 
 2. **Carry forward matter-context and placement-recommendations.** Synthesis reads `matter-context.md` (the strategic anchor produced at Phase 0 by `matter-frame`) and `placement-recommendations.md` (the per-candidate placements produced at Phase 2 Step 2C by `placement-inquiry`). The off-field reasoning, the named jurisdictions, the watchlist seeds, and the per-candidate placements are inputs to synthesis — not optional context. Disagreements with either MUST be surfaced explicitly ("matter-context flagged X as off-field; this candidate may warrant re-evaluation because Y"), not silently reframed.
 
@@ -53,8 +53,8 @@ both attach to the same source in one report: *"searched — none found"* for a 
 queried, *"not searched this run"* / *"could not be searched — <reason>"* for one it did not reach. (The
 delivered WAVO report said both about TTAB decisions, which **are** searchable — the reader could not tell
 which had happened.) Coverage prose is also the **longest-running prose in the report** — two of its four
-longest sentences were coverage/gap prose — so it is held to the house budgets like everything else:
-~20–25 words a sentence, each coverage fact stated **once**, in one place (an area's state in its
+longest sentences were coverage/gap prose — so it is held to the prose rules like everything else:
+no visible sentence over 25 words, each coverage fact stated **once**, in one place (an area's state in its
 `coverage[]` row, the sufficiency read in `coverage_judgment.reason`, neither re-narrated in the other).
 And **the numbers are code's**: the reader-facing register coverage line is computed from the run record
 (`scope-facts.mjs`) and stamped as `coverage_line:` front-matter, which sits **outside** the prose scan —
@@ -89,7 +89,7 @@ Each finding's `source.source_type` names its actual source.
 | **Common-law** | Surfaced by `clearance-common-law` only. Marketplace presence, no register evidence. |
 | **Register** | Surfaced by `clearance-register` only. Filed protection, no visible marketplace use yet (or no marketplace evidence captured). |
 | **Both** | Same entity / mark / owner surfaced on BOTH sides. Strongest evidence type. |
-| **Cross-pollination** | Surfaced by a deterministic cross-check (Option D Triggers 1-4) — not in either layer's primary first-pass. Audit-trail proof-of-work. |
+| **Cross-pollination** | Surfaced by a deterministic cross-check (one of the four cross-check triggers) — not in either layer's primary first-pass. Audit-trail proof-of-work. |
 
 `Both` rows get cluster-aggregated during synthesis: one row per matched entity, with both layers' evidence merged in the Description column.
 
@@ -117,7 +117,7 @@ Cross-pollination rows (Source Layer = "Cross-pollination") follow special rules
 > own this word?*), never only of the words below.
 
 Before rating individual findings, **rank and select them by the consumer-confusion gate** (see *The consumer confusion test — the governing gate* in `firm-wide-reasoning.md`), centred on the proposed mark's
-**dominant element** (from the variant manifest). This is what turns a pile of hits into the staff lawyer's analysis:
+**dominant element** (from the variant manifest). This is what turns a pile of hits into the reviewing lawyer's analysis:
 
 1. **Centre on the dominant element.** Rank by: shares the dominant element (no distinguishing affix) ×
    same/related G&S. Bare-dominant-element-in-field = top; dominant-element-plus-distinctive-matter
@@ -360,8 +360,8 @@ A synthesis attempt that gets it wrong costs the run the whole attempt.
 Cancelled, expired, or otherwise invalid register hits are **included on the Findings sheet only when the mark text is an exact match to the proposed mark.** Treatment:
 
 - Put them on the Findings sheet with the status accurately reflected (Cancelled / Expired / Abandoned).
-- **Do not write them up in the narrative summary** unless the staff lawyer's upfront instructions say otherwise.
-- They serve as historical context — the staff lawyer wants to see them but they don't drive risk for this clearance.
+- **Do not write them up in the narrative summary** unless the reviewing lawyer's upfront instructions say otherwise.
+- They serve as historical context — the reviewing lawyer wants to see them but they don't drive risk for this clearance.
 - Class / field is irrelevant for this rule — an exact-match cancelled mark in an unrelated class (e.g. adult products, Class 10) still goes on the sheet without narrative commentary; the PR / brand-safety angle is handled separately under `firm-wide-reasoning.md` (*PR / reputational risk*).
 
 Non-exact-match cancelled hits are excluded from the Findings sheet entirely.
@@ -370,7 +370,7 @@ Non-exact-match cancelled hits are excluded from the Findings sheet entirely.
 
 **Read it, don't just receipt it — the search running is not the work being done.** The receipt proves the meaning search *ran*; it does not mean anyone *read* it. Do not accept the common-law layer's bottom-line `clean` / `None identified` at face value — read the actual readings it surfaced for the mark **and each near-form** like a skeptical lawyer: **is the obvious meaning the whole story, or is there an odd, loaded, or unresolved secondary reading the tidy gloss skipped past?** (`mara` = "crowd" is the tidy gloss; `Mara` is the street gang the same word carries — the colloquial reading does not clear it.) This is a **general habit, not a meaning-only checklist**: wherever a result resolves to a tidy answer, the question is whether one cheap thread is worth pulling before you accept it — meaning is simply where it bites first.
 
-**Pull the thread in-run; don't defer what one search would settle.** When a secondary reading looks loaded or unresolved and a single check would settle it, run **one scoped `perplexity_research` query** now (the same tool you already use for the actual-use check). This is judgment-gated, **not** a new per-run requirement — pull only the one thread that is both *worth it* and *checkable*. If it resolves, say so; if it surfaces something real, carry it. This settle-don't-defer rule is **general**: a live question a single cheap search would close is closed in this run, not written down as homework. The honest *"a human should look"* outcome (a staff-lawyer purple bullet / `coverage_judgment.sufficient:false`) is reserved for a question **genuinely unanswerable now** — never for one a single search would have closed.
+**Pull the thread in-run; don't defer what one search would settle.** When a secondary reading looks loaded or unresolved and a single check would settle it, run **one scoped `perplexity_research` query** now (the same tool you already use for the actual-use check). This is judgment-gated, **not** a new per-run requirement — pull only the one thread that is both *worth it* and *checkable*. If it resolves, say so; if it surfaces something real, carry it. This settle-don't-defer rule is **general**: a live question a single cheap search would close is closed in this run, not written down as homework. The honest *"a human should look"* outcome (a purple bullet for the reviewing lawyer / `coverage_judgment.sufficient:false`) is reserved for a question **genuinely unanswerable now** — never for one a single search would have closed.
 
 ## The mark itself — standing assessment (every run)
 
@@ -422,9 +422,9 @@ mark is later renewed, remains fully non-use-vulnerable — the renewal is upkee
 **Actual-use assessment results:**
 - **Use confirmed in the searched field** — risk weight stands; cite the marketplace evidence in `legal_position` and `practical_position`.
 - **Use not found in the searched field** — **do NOT automatically downgrade.** Assess whether the registration is also vulnerable to non-use revocation (see the Revocability rule in `firm-wide-reasoning.md`). If vulnerable, note the combination as a mitigating factor in `legal_position` and `practical_position`. If not yet vulnerable (registration is within the non-use grace period), note the lack of use as context only — the registration is still legally enforceable. The staff lawyer's rule: "Lack of use does not always downgrade the risk, as the registration may not yet be vulnerable to revocation. Always assess the use for 3+ marks and comment on the use (or lack thereof), but do not automatically downgrade for lack of use."
-- **Use unclear / ambiguous** — note in `legal_position` and `practical_position` and flag for the staff lawyer with a purple bullet: "Staff lawyer — confirm whether [owner] actually uses [mark] for [field]."
+- **Use unclear / ambiguous** — note in `legal_position` and `practical_position` and flag for the reviewing lawyer with a purple bullet: "Staff lawyer — confirm whether [owner] actually uses [mark] for [field]."
 
-**Rule on downgrade quantum:** There is no automatic downgrade rule. Use is one factor among several in Stage 2. A registration with no identifiable marketplace use may still carry full legal risk if the registration is not yet vulnerable to revocation (e.g. within the 5-year non-use window in many jurisdictions). Document the use assessment and revocability status together in `legal_position` and `practical_position`; let the staff lawyer weigh the combination.
+**Rule on downgrade quantum:** There is no automatic downgrade rule. Use is one factor among several in Stage 2. A registration with no identifiable marketplace use may still carry full legal risk if the registration is not yet vulnerable to revocation (e.g. within the 5-year non-use window in many jurisdictions). Document the use assessment and revocability status together in `legal_position` and `practical_position`; let the reviewing lawyer weigh the combination.
 
 ## Prosecution history — mandatory for identical-mark hits in relevant classes
 
@@ -478,7 +478,7 @@ When judging which common-law hits to include in the Findings sheet:
 
 - Include: identical mark in the same field, near-identical mark (one-word swap, plural variation, phonetic equivalent) in the same field, identical mark in a directly-adjacent field with channel overlap.
 - Exclude: conceptually similar but lexically different marks (e.g. "Set My Pace" surfacing for a "Set Your Pace" clearance is borderline — include only with very-similar / same-field overlap).
-- Document the scope decision in `coverage.read` so the staff lawyer can see what was and wasn't searched.
+- Document the scope decision in `coverage.read` so the reviewing lawyer can see what was and wasn't searched.
 
 ## Watchlist findings
 
@@ -513,60 +513,19 @@ The principle is the famous-mark URI guard at the metadata level: **no registry 
 
 ## Synthesis output
 
-### Distil for the reviewing lawyer — one reader, read in order of what she needs
+### Distil for the reviewing lawyer — read in order of what she needs
 
-The report has a single audience: the reviewing lawyer. Optimise for a fast, high-trust review (the `delivery-contract.md` shape encodes the layout — set it, don't re-explain it):
-- **Bottom line first** — `overall_caption` is ≤3 sentences of plain legal English, ~20–25 words each: risk level + the one finding that drives it + **the fact that conditions reliance**. **Never the recommended action** (ruled 2026-07-30 — facts, evidence, assessment, weakest point, deadlines and process facts; no mitigation advice, no disclaimers): the forward asks are typed into the `actions` register and rendered by code, and a caption restating one as an instruction is a delivery defect. No engineering register ("Composite N" / "Level C" codes from the retired scale, "axes", "Option D", query/fetch counts) — the overall risk is stated in the framework in force’s band words.
+The report is written for the reviewing lawyer, and her client reads its default-visible text too: the two levels in [report-prose.md](report-prose.md). Optimise for a fast, high-trust review (the `delivery-contract.md` shape encodes the layout — set it, don't re-explain it):
+- **Bottom line first** — `overall_caption` is ≤3 sentences in plain words a client reads, none over 25 words: risk level + the one finding that drives it + **the fact that conditions reliance**. **Never the recommended action** (ruled 2026-07-30 — facts, evidence, assessment, weakest point, deadlines and process facts; no mitigation advice, no disclaimers): the forward asks are typed into the `actions` register and rendered by code, and a caption restating one as an instruction is a delivery defect. No engineering register ("Composite N" / "Level C" codes from the retired scale, "axes", "Option D", query/fetch counts) — the overall risk is stated in the framework in force’s band words.
 - **Open external actions promoted** — the registry/renewal/owner-identity checks are typed into the `actions` register (the report's forward-ask section is code-built from it), never buried in coverage prose. Write each one in **lawyer English**, as something a lawyer would say aloud to a client — *"Investigate whether the owner is using the mark in Germany"*, never *"test for non-use"*, and never an engine mechanism as the ask (*"rerun the owner-by-owner screen"*, *"close the script gaps by the transliteration index route"*, *"read the unread registry documents"*). Reading this run's own records is the engine's job, owed before delivery — it is never printed as something the reader must do.
 - **Telemetry + debug out of the body** — run counts, axis mechanics, and any internal calibration note (e.g. an A–E framing correction) live in the run-dir / audit.
 
 Distillation is *removal and relocation*, not added prose.
 
-### House prose contract (P6 — spec §7 + the lawyer walk-through, 2026-07-30)
+### Prose
 
-Guidance, deliberately **not** a gate — a code gate on prose adds redelivery cycles and removes the
-flexibility the judgment needs. The stage message carries this contract; the two levels must never
-teach different rules.
-
-**This section is the PROHIBITIONS.** What a good finding positively reads like is
-[report-prose.md](report-prose.md), which every prose stage reads: fact · assessment · prescription;
-hedge the assessment, never the fact; numbers do the work adjectives would; say it once; concision never
-trades away a fact; the controlled assessment vocabulary. Read both — a report that breaks none of the
-rules below can still be unreadable.
-
-- **Word budgets.** ~20–25 words a sentence, ~80 a paragraph. The one hard cap is the 3-sentence caption; it is a limit, not a target
-  — three 60-word sentences obey it
-  and defeat it.
-- **Each fact once, at its rank.** A finding is stated in its own row; the caption names the decisive one and
-  no other; a later section **cross-references by ordinal**, never retells. One delivered report told a
-  single mark in six of nine sections — repetition, not sentence length, is what made it undigestible.
-- **No prescriptions (ruled).** Facts, evidence, assessment, the weakest point, deadlines and process facts.
-  No *"we recommend / advise / suggest"*, no *"you should"*, no *"the practical path is"*. Forward steps are
-  typed into the `actions` register and rendered by code — nowhere else.
-- **No disclaimers (ruled).** A real limit is a **fact**, stated once, in consequence terms.
-- **One reader, one posture.** Every surface is written for the reviewing lawyer, in the calibrated register
-  of an advisory preliminary assessment. Never hedge *more* on one surface than another, and never flatten
-  one to bald assertion — the hedge is calibration, never a stand-in for a fact the run holds.
-- **The reader owns every noun.** Every noun on a reader surface is a word the reader already holds — from
-  their business, their market, or the law said plainly. Where the run has no reader-facing word for a
-  thing, **describe** it rather than name it: *"the full variant band enumerated to zero"* → *"we searched
-  every spelling of the name and found no live rights"*. The bar is one pass — a smart reader who is not a
-  lawyer takes the meaning the first time. Judge the sentence, never the word: a mark genuinely called AXIS
-  or BAND is written exactly as it is named. The positive standard is
-  [report-prose.md](report-prose.md) → *The reader owns every noun*.
-- **Say the level, not its neighbours.** *"a manageable risk"*, never *"sits below that level"*.
-- **Name third-party rights as rights.** *"<MARK>-formative rights"*, *"rights that contain <MARK>"* — never
-  *"<MARK>-branded"*, which mis-attributes the right to the client.
-- **Never assert a fact about the client.** *"Consent is not in hand"* claims something about the client's own
-  file that no search reached; write *"no consent appears on the record searched"*.
-- **A private act's absence proves nothing.** C&D letters, settlements, licences and consents are unreachable
-  by any search — *"no enforcement history surfaced"* is never written, or positioned, as *"the owner does
-  not enforce"*.
-- **Name the legal test in plain words.** *"applying the well-accepted framework for confusion — the marks as
-  wholes against the goods and services"*; never a court's factor template recited as the structure of the
-  analysis, and never a decision this run did not fetch.
-- **Cut filler.** *"session-wide notice coverage"*, *"it is worth noting that"*, and any sentence whose
-  deletion loses nothing.
+Every line a reader sees follows the prose rules in [report-prose.md](report-prose.md), which this stage
+reads. They are not restated here.
 
 The narrative is the cross-finding read; it does not retell each finding, and it must agree with the findings it relies on.
 

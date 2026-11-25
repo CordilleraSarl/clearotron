@@ -1241,7 +1241,7 @@
         },
         "a-knockout-batch-is-rated-a-family-at-a-time-side-by-side.test.mjs": {
           "tests": 10,
-          "asserts": 59,
+          "asserts": 60,
           "skips": 0,
           "todos": 0
         },
@@ -2818,8 +2818,8 @@
           "todos": 0
         },
         "a-stage-meets-each-paragraph-its-manual-carries-once.test.mjs": {
-          "tests": 5,
-          "asserts": 14,
+          "tests": 7,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -6179,7 +6179,7 @@
         },
         "prose-voice.test.mjs": {
           "tests": 8,
-          "asserts": 59,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
@@ -8730,6 +8730,12 @@
         "the-reviewer-asks-the-clients-question-first.test.mjs": {
           "tests": 3,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-reviewer-has-one-severity-rule.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },

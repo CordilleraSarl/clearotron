@@ -67,7 +67,7 @@ test("a family's reader is told it reads a family, and is handed only its family
 
   const K = koPaths(dir);
   const read = (familySize) => KO_STAGES["knockout-register-read"].message({ K, job: {}, planFile: "/run/plan.family.json", familySize });
-  assert.match(read(2), /^You are reading the register for a family of 2 names of a KNOCKOUT screen: close variations the client chose for one proposed use\. Read each distinct filing once, and keep for each name its own source, goods, status, relevance and follow-up questions\./m);
+  assert.match(read(2), /^You are reading the register for a group of 2 names of a KNOCKOUT screen: close variations the client chose for one proposed use\. Read each distinct filing once, and keep for each name its own source, goods, status, relevance and follow-up questions\./m);
   assert.match(read(2), /^The plan for these names, with what it is for: \/run\/plan\.family\.json$/m);
   assert.match(read(1), /^You are reading the register for one name of a KNOCKOUT screen\. You rate nothing;/m);
   assert.match(read(1), /^The plan for this name, with what it is for: \/run\/plan\.family\.json$/m);

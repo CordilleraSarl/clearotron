@@ -1232,12 +1232,12 @@ serve({
     // offered a field it may not use can fill it, and the check that refuses it runs after the whole step.
     schemaNow: (schema) => knockoutAssessSchemaFor(schema, process.env.CLEAROTRON_BAND_RUN_DIR),
     description:
-      "Hand back THIS CHUNK's rated assessment as VALUES. The driver serializes knockout-assess-<n>.json, " +
-      "so you never format JSON and never write the file. WHICH CHUNK IS NOT YOURS TO SAY — the driver " +
+      "Hand back THIS GROUP's rated assessment as VALUES. The driver serializes knockout-assess-<n>.json, " +
+      "so you never format JSON and never write the file. WHICH GROUP IS NOT YOURS TO SAY — the driver " +
       "bound it when it dispatched you, and there is no parameter for it. Rate every mark assigned to " +
-      "this chunk and no others. " +
+      "this group and no others. " +
       // The repair contract, in the dispatch's approved words: the recorder merges field by field (knockout-assess-record.mjs).
-      "On the first call, send the complete assessment. Once the tool has confirmed a written record for this chunk, correct a name by sending its exact name and only the fields you changed. Omitted names and omitted fields within a name keep their recorded values. A field you send replaces that whole field: send a changed list or object complete, including unchanged entries. Update the chunk summary when the correction changes it. If the tool has written no record, send the complete corrected assessment.",
+      "On the first call, send the complete assessment. Once the tool has confirmed a written record for this group, correct a name by sending its exact name and only the fields you changed. Omitted names and omitted fields within a name keep their recorded values. A field you send replaces that whole field: send a changed list or object complete, including unchanged entries. Update the group summary when the correction changes it. If the tool has written no record, send the complete corrected assessment.",
     inputSchema: {
       type: "object",
       // `schema_version` is accepted and ignored: the driver writes its own. Declared so a seat that
@@ -1273,7 +1273,7 @@ serve({
         },
         marks: {
           type: "array", minItems: 1,
-          description: "One row per mark assigned to THIS chunk — no invention, no neighbour-chunk overrun.",
+          description: "One row per mark assigned to THIS group — no invention, no neighbour-group overrun.",
           items: {
             type: "object", additionalProperties: false,
             required: ["name"],
@@ -1380,7 +1380,7 @@ serve({
     name: "record_knockout_review",
     description:
       "Hand back the MATERIAL DEFECTS you found, as VALUES, and your answer to the question the dispatch opens with. A material " +
-      "defect goes to the step that rated the batch, and you repair nothing. Send an empty `material` list when you found none.",
+      "defect goes to the step that rated the order, and you repair nothing. Send an empty `material` list when you found none.",
     inputSchema: {
       type: "object",
       additionalProperties: false,
@@ -1413,7 +1413,7 @@ serve({
     schemaNow: (schema) => knockoutAssessSchemaFor(schema, process.env.CLEAROTRON_BAND_RUN_DIR),
     description:
       "Hand back your repair of the defects you were given, as VALUES, sending only what changes. The driver merges it onto " +
-      "the chunk it holds and checks the result as it checks a rated chunk. It refuses a change to a name no defect concerns, except a finding a defect names that also stands on that name. " +
+      "the group it holds and checks the result as it checks a rated group. It refuses a change to a name no defect concerns, except a finding a defect names that also stands on that name. " +
       "It refuses a moved finding no answer accounts for, and a rating that moves without its dependent answers. A repair turn may send " +
       "only what it corrects, and what it has repaired is kept.",
     inputSchema: {
@@ -1431,7 +1431,7 @@ serve({
             findings: { type: "array", items: { type: "integer" }, description: "OPTIONAL: the ordinal of any finding this repair moved beyond the one the defect names." },
           } },
         },
-        chunkSummary: { type: "string", description: "The whole of this chunk's summary as it now reads, where the repair changes it. Required when a rating moves." },
+        chunkSummary: { type: "string", description: "The whole of this group's summary as it now reads, where the repair changes it. Required when a rating moves." },
         marks: {
           type: "array",
           description: "One row per name you repair, carrying only the fields that change.",
@@ -1547,7 +1547,7 @@ serve({
   }, {
     name: "record_knockout_frame",
     description:
-      "Hand back the batch FRAME as VALUES: the plan, and the scope note. The driver serializes " +
+      "Hand back the order's FRAME as VALUES: the plan, and the scope note. The driver serializes " +
       "knockout-plan.json and writes knockout-frame.md, so you never format JSON and never write either " +
       "file. `scope_note` is written EXACTLY as you send it, so write the finished 2-3 sentences — the " +
       "driver adds no heading and composes nothing into it. One row per instructed mark, names verbatim " +
@@ -1567,17 +1567,17 @@ serve({
         scope_note: {
           type: "string",
           description:
-            "The 2-3 sentence scope note, written to knockout-frame.md EXACTLY as sent. What the batch " +
+            "The 2-3 sentence scope note, written to knockout-frame.md EXACTLY as sent. What the order " +
             "is, which classes, anything flagged. Name the search that was configured — this document is " +
             "read to check that what ran is what the client ordered.",
         },
         batch: {
           type: "object",
           properties: {
-            productContext: { type: "string", description: "One sentence: what the batch is for. Every mark's contextFraming is read against it." },
+            productContext: { type: "string", description: "One sentence: what the order is for. Every mark's contextFraming is read against it." },
             // THE ORDER'S USE PHRASE (design, 2026-11-24): one for the names with the order's proposed use, so two runs of one order ask the same questions.
             useKind: { type: "string", description: USE_PHRASE },
-            inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The places the batch is searched on include the sites where these uses are listed." },
+            inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The places the order is searched on include the sites where these uses are listed." },
             places: {
               type: "array", items: { type: "string" },
               description: "THE PLACES ARE PER NAME (task 2d) and go on each mark, not here.",
@@ -1607,12 +1607,12 @@ serve({
               classes: { type: "array", items: { type: "number" }, description: "Nice classes, integers 1-45." },
               beltAndBraces: { type: "array", items: { type: "number" }, description: "Adjacent Nice classes swept as a precaution, integers 1-45." },
               classesPlain: { type: "string", description: "The plain-language class line — what these classes are, in words the rating step reads beside the numbers." },
-              contextFraming: { type: "string", description: "What THIS name is for — a character, a location, a product line. The rating hangs off it: the assess stage is told to rate WITH this field, per mark, and two names in one batch can sit at different bands on identical evidence because they are used differently." },
+              contextFraming: { type: "string", description: "What THIS name is for — a character, a location, a product line. The rating hangs off it: the assess stage is told to rate WITH this field, per mark, and two names in one order can sit at different bands on identical evidence because they are used differently." },
               useKind: { type: "string", description: "A different use the request gives this name, copied as batch.useKind is (task 2c). Leave it out otherwise." },
               // PER NAME, NOT PER BATCH (ruling 570). Declared here as well as in the driver's allowlist
               // because a field the prose asks for and the schema omits is a contradiction the seat
               // resolves whichever way it happens to trust.
-              places: { type: "array", items: { type: "string" }, description: "The places THIS name is searched on: two or more, one of them \"web\" (the whole web) and each other a site's bare host. No upper limit — name as many as this name needs, and no more, because every place is another search of every spelling. Two names in one batch may have different lists." },
+              places: { type: "array", items: { type: "string" }, description: "The places THIS name is searched on: two or more, one of them \"web\" (the whole web) and each other a site's bare host. No upper limit — name as many as this name needs, and no more, because every place is another search of every spelling. Two names in one order may have different lists." },
               // NO SPELLINGS: the driver builds them from the name (task 2e). A held answer that sends them is accepted, as the record says.
               alternatives: { type: "array", items: { type: "string" }, description: "Each written form of this one item, where the request gives more than one spelling or word order. Omit otherwise." },
               priorKnowledge: { type: "string", description: "What the requester already told you about this name, or omit it." },

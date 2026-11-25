@@ -11,7 +11,7 @@ export const ASSESS_SENTENCES = Object.freeze({
     + "advice",
   divideTheRequestedGoodsAnd: "Divide on the requested goods and evidence, never to soften a rating.",
   whatThoseFilingsShowWhat: "what those filings show, what the screened field adds to that reading",
-  citedUrlMustComeFrom: "A cited URL must come from a recorded research payload for this batch, a filing held for this batch, or "
+  citedUrlMustComeFrom: "A cited URL must come from a recorded research payload for this order, a filing held for this order, or "
     + "a recorded owner check linked to a held filing.",
   howItsGoodsMeetThe2: "how its goods meet the goods the client asked about, whether it bears on the rating, and why.",
   useTheMissingGoodsNote: "Use the missing-goods note only when no wording is held; open a shortened held record before concluding "

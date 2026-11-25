@@ -29,7 +29,8 @@ const BOTH = [["the clearance prose standard", CLEARANCE], ["the knockout doctri
 
 test("both products state the rule, and neither is the only one that does", () => {
   for (const [what, text] of BOTH) {
-    assert.match(text, /two-register rule|Two registers/i, `${what} does not state the rule`);
+    // Named "two levels" since the owner's ruling of 2026-11-24, and the same in both copies.
+    assert.match(text, /the two levels|Two levels/, `${what} does not state the rule`);
     assert.match(text, new RegExp(`${SENTENCE_WORD_LIMIT} words`),
       `${what} does not carry the sentence limit — a rule without its number is advice`);
   }

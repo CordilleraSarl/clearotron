@@ -101,7 +101,7 @@ export function knockoutCitedUrls(f) {
  * content bears on the name is the model's to explain and the check's to read, and a source's presence supports nothing by itself.
  * A URL only in raw web results, or any other file the step was not given as evidence, stays outside.
  */
-export const PERMITTED_SOURCES = "a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing";
+export const PERMITTED_SOURCES = "a recorded research payload for this order, a filing held for this order, or a recorded owner check linked to a held filing";
 export const urlNotHeld = (mark, url) => `knockout_url_unreceipted:${mark}: "${url}" is not traceable to ${PERMITTED_SOURCES}. Cite a source from that held evidence.`;
 const OWNER_PAYLOAD = /^owner-.+-[0-9a-f]{10}\.md$/;   // the name `ownerPayloadFile` gives a check's answer
 export function urlHeldFor(runDir) {

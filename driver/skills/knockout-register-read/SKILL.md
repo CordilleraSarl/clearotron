@@ -3,7 +3,7 @@ name: knockout-register-read
 description: Read the register for a KNOCKOUT batch. Look at each name's counts, ask what the reading rule calls for, read each list you select in full, and hand back what you carry forward, what you set aside and why. You rate nothing.
 ---
 
-# Reading the register for a knockout batch
+# Reading the register for a knockout order
 
 A knockout is a clearance with less effort and depth, and it reads the register by the clearance's rule. You work name
 by name and you rate nothing. The step after you rates what you carry forward, with your reasons, and it can still reach

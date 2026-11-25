@@ -90,10 +90,12 @@ test("a group's message is its own job: one name's words or a family's, and no b
   const CAVEAT_DUTY = ASSESS_SENTENCES.caveatsForTheOrderQualificationsForTheName;
   assert.ok(one.includes(`You send \`marks\` and \`chunkSummary\`. ${CAVEAT_DUTY} Use the supplied frozen framework. Open your \`chunkSummary\` with a line for this name`), "a name rated alone is told where an order-wide and a name's own qualification go");
   const family = message(["QUILLBRAE", "QUILBRAE", "QUILL BRAE"]);
-  assert.match(family, /^You are rating a family of 3 names for a Knockout screen\. Each name is a client choice and gets its own rating and reasons\.$/m);
+  assert.match(family, /^You are rating a group of closely related names for a Knockout screen\. Each name is a client choice and gets its own rating and reasons\.$/m);
   assert.ok(family.includes(`You send \`marks\` and \`chunkSummary\`. ${CAVEAT_DUTY} Use the supplied frozen framework. Open your \`chunkSummary\` with a line for each name`), "a family is told the same");
   for (const m of [one, family]) assert.doesNotMatch(m, /whole report/, "the earlier caveat clause is gone");
   for (const m of [one, family]) assert.doesNotMatch(m, /As the FIRST chunk|CONTINUATION chunk|groups side by side/, "a group carries no duty for the batch");
+  // A source the order holds still has to bear on the particular name (design, 2026-11-24), alone or in a group.
+  for (const m of [one, family]) assert.match(m, /A source's presence in the order does not establish that it supports the claim\./, "the order-wide caveat on sources is missing");
 });
 
 test("the groups run side by side, at most eight at once, and the record composed from them is the whole batch's", async () => {

@@ -283,7 +283,7 @@ For any candidate the narrative escalates above a "distinguished by its own dist
 This audits *recall of the imagination*, not execution — the catch a narrative-vs-files read alone cannot make. The blind frame-diff now re-derives the neighbour set independently and reopens what the manifest missed; you remain the **backstop** for anything the diff did not catch. Read the proposed mark + its dominant element in `variant-manifest.md`, then ask, with fresh eyes and your own world knowledge: **what obvious neighbours of the dominant element did the manifest NOT include?** Specifically:
 - a **one-letter-off real word** (e.g. for `ZUUM` → `ZOOM`),
 - a **homophone** or near-homophone,
-- a **famous / well-known mark** sitting one or two edits from the anchor (a senior lawyer reaches for these on sight).
+- a **famous / well-known mark** sitting one or two edits from the anchor (the reviewing lawyer reaches for these on sight).
 
 For each obvious neighbour missing from the manifest, **FLAG (missing-variant)** and name it. A missing one-letter-off *famous mark* in the proposed mark's field is **BLOCKING** — that is the canonical recall miss (e.g. failing to search ZOOM on a ZUUM clearance). Do not enumerate edit-distance mechanically; name the few neighbours a knowledgeable human would obviously check.
 
@@ -395,8 +395,10 @@ forbids a word, and a word list would catch the brand and miss the next coinage.
 
 ## Verdict logic
 
+List every correctable defect. Choose the verdict by the severity grounds below.
+
 - **CLEAR**: nothing you want corrected. A flag on a CLEAR review is never applied; return CONDITIONAL to have a minor error put right.
-- **CONDITIONAL**: 1-3 flags, each fixable with a small narrative edit (correct an attribution to what the evidence supports, demote a tier, remove a sentence). List the edits. `demotion-unreceipted` on a finding that does not drive the verdict, and `response-band-incoherent`, are CONDITIONAL-class flags (the fix is the missing receipt / reconciliation line — or the band correction an unwritable receipt implies). `actions-unregistered`, `card-record-mismatch` and `plain-english` are CONDITIONAL-class too: the fix is registering / re-kinding the typed action, reconciling the card's sentence with the record (or stating the disagreement), or the plain-English rewording. `unowned-noun` is CONDITIONAL-class as well — the fix is the rewrite that describes the thing in words the reader owns, keeping every fact. NOTE: fixing your flags clears YOUR verdict, but the delivered disposition is then DERIVED from the corrected `actions[]` — a run whose opinion still names condition-kind actions ships CONDITIONAL by code even when your re-review is CLEAR; that derivation is correct, not a defect to flag.
+- **CONDITIONAL**: every flag is fixable with a small narrative edit (correct an attribution to what the evidence supports, demote a tier, remove a sentence), and none is a BLOCKING ground below. List the edits. `demotion-unreceipted` on a finding that does not drive the verdict, and `response-band-incoherent`, are CONDITIONAL-class flags (the fix is the missing receipt / reconciliation line — or the band correction an unwritable receipt implies). `actions-unregistered`, `card-record-mismatch` and `plain-english` are CONDITIONAL-class too: the fix is registering / re-kinding the typed action, reconciling the card's sentence with the record (or stating the disagreement), or the plain-English rewording. `unowned-noun` is CONDITIONAL-class as well — the fix is the rewrite that describes the thing in words the reader owns, keeping every fact. NOTE: fixing your flags clears YOUR verdict, but the delivered disposition is then DERIVED from the corrected `actions[]` — a run whose opinion still names condition-kind actions ships CONDITIONAL by code even when your re-review is CLEAR; that derivation is correct, not a defect to flag.
 - **BLOCKING**: any of —
   - Headline-candidate promotion that contradicts `placement-inquiry` without defense reasoning
   - **Self-conflict headline** — the top conflict is the applicant's own / affiliate / named-partner mark presented as an adversarial block
@@ -411,7 +413,7 @@ forbids a word, and a word list would catch the brand and miss the next coinage.
   - `use-negative-unsupported` — a finding, at any band, whose conclusion relies on an absence of use with no supporting completed search in `use_check.source` (check the structured source, not a prose source line; unknown use is not a searched negative): the pivotal use question inferred from the owner's profile instead of searched
   - `missing-coverage-row` — a `matter-context` material jurisdiction no question reached at all
   - `missing-variant` on a **one-letter-off famous mark in the proposed mark's field** that the manifest never searched (the canonical recall miss)
-  - Missing-named-owner on a senior-lawyer-required incumbent
+  - Missing-named-owner on an incumbent the reviewing lawyer requires
 
 Total flag count is NOT itself a blocking criterion. A run with many flags that are individually minor (formatting / wording / non-material attribution) is CONDITIONAL with all corrections applied. A run with one material flag (tier inversion, confabulation, overconfident negative, missing required incumbent) is BLOCKING regardless of total count. A high flag count without any material flag is a soft signal that the narrative may be sloppy at a deeper level — surface it in the review's verdict explanation but do not block on it.
 
@@ -421,7 +423,7 @@ Total flag count is NOT itself a blocking criterion. A run with many flags that 
 - **Don't approve marginal calls silently.** If the narrative makes a defensible-but-aggressive choice, name it as "defensible but worth surfacing" rather than ignoring.
 - **Use `matter-frame`'s material-jurisdiction list as your coverage checklist.** Confirm that the run searched every jurisdiction it called material — by its own question, by a complete worldwide answer, or inside the count of a crowd the identical mark's narrowing left — or honestly deferred it. Check the grounds of validated placement decisions against the evidence; flag an unsupported decision.
 - **Take placement-inquiry's per-candidate *facts* as input — but DO independently re-derive the headline and the top tiers.** You trust its factual inquiry, not its conclusions: if the top risk is a partner / own mark, a distinguished house-mark rated above a bare identical, or an optics-driven escalation, challenge it *even though placement-inquiry agreed* (see *Headline sanity*). Consistency with an upstream step is never, by itself, a defence.
-- **Don't soften your verdict to avoid recomposition.** If something's wrong, say BLOCKING.
+- **Don't soften your verdict to avoid recomposition.** Report every defect and apply the verdict grounds above, even when correcting it requires another pass.
 
 ## Failure fallback
 

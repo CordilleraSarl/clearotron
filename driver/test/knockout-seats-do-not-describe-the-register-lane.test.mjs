@@ -190,6 +190,6 @@ test("…and the arm FIRES on a planted dispatch string, so it cannot rot into a
 
   // …and it does not fire on the replacement, which is the half that says the fix is a fix rather than
   // a rewording that happens to dodge the matcher.
-  const live = "You are framing a KNOCKOUT SEARCH batch — a triage pass. You frame, you do NOT search.";
+  const live = "You are framing a KNOCKOUT SEARCH order — a triage pass. You frame, you do NOT search.";
   assert.deepEqual(RETIRED_RUNGS.filter((rung) => live.includes(rung)), []);
 });
