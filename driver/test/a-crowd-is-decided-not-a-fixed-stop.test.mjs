@@ -19,7 +19,7 @@ import { fileURLToPath } from "node:url";
 import { compileRegisterPlan, awaitsReadingTurn } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { formNeighbourhood } from "../form-neighbourhood.mjs";
-import { STAGES } from "../stages.mjs";
+import { STAGES, resolveSkillReads } from "../stages.mjs";
 import { mechanicalFormGapDirectives } from "../pipeline.mjs";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
@@ -57,7 +57,7 @@ test("the unit's manual and dispatch decide on a crowd, and point at the order t
   for (const stop of [/\*\*TERMINAL\*\*/, /do not narrow it further/, /no further narrow/, /run per-major only\s+when the worldwide slice was tractable/,
     /STOP the per-major \/ phonetic fan-out/, /tractable distinctive/, /\(tractable distinctive token only\)/])
     assert.doesNotMatch(unit, stop, `the unit manual still stops on a crowd: ${stop}`);
-  assert.ok(unit.includes(UNIT_SENTENCES.readTheIdenticalMarkFirst), "guard: the order the crowd rule points at");
+  assert.ok(read("skills/clearance-register/SKILL.md").includes(REGISTER_SENTENCES.readTheIdenticalMarkFirst), "guard: the order the crowd rule points at");
   assert.match(unit, /the ceiling is a call limit, never a decision point: decide on that crowd with \[the same steps\]\(#read-the-identical-mark-first-look-at-the-count-before-you-read-anything\),\s+only as far as reading it would change what you tell the client; record what stays a crowd with its count\./);
   const plan = compile("clarivate");
   const P = { variantManifest: "vm.json", matterContext: "mc.md", registerBand: (a) => `band-${a}.json`, registerUnit: (a) => `unit-${a}.md`, registerPlan: "plan.json" };
@@ -87,30 +87,32 @@ test("a fringe the reading turn withheld is an explained absence to the form ora
   assert.deepEqual(family(mechanicalFormGapDirectives(ctx)), [], "a fringe withheld with its reason was ordered searched over the turn's decision");
 });
 
-test("the write-up settles a crowd the narrowing steps closed as withheld by judgment, and the shared manual narrows a crowded name-list", () => {
+test("the write-up settles a crowd the narrowing steps closed as withheld by judgment, and the unit's manual narrows a crowded name-list", () => {
   const digest = read("skills/clearance-register/digest.md").replace(/\s+/g, " ");
   assert.ok(digest.includes(DIGEST_SENTENCES.thereAreThreeKindsAnd), "the open-row paragraph still names two kinds");
   assert.ok(digest.includes(DIGEST_SENTENCES.crowdTheNarrowingStepsClosed));
   assert.ok(digest.includes(DIGEST_SENTENCES.forTheFirstTwoKinds));
-  const skill = read("skills/clearance-register/SKILL.md").replace(/\s+/g, " ");
-  assert.ok(skill.includes(UNIT_SENTENCES.theExactNameListRead));
-  assert.doesNotMatch(skill, /left as a crowd descriptor|small and cheap by construction/, "the shared manual still says the name-list can never stay a crowd");
+  const unit = read("skills/clearance-register/unit.md").replace(/\s+/g, " ");
+  assert.ok(unit.includes(UNIT_SENTENCES.theExactNameListRead));
+  assert.doesNotMatch(unit, /left as a crowd descriptor|small and cheap by construction/, "the unit's manual still says the name-list can never stay a crowd");
 });
 
 test("both manuals stop on a lawyer's judgment, and the register manuals carry the approved words with no billing words", () => {
   const flat = (rel) => read(rel).replace(/\s+/g, " ");
-  const STOP = UNIT_SENTENCES.onceTheIdenticalMarkFor;
-  for (const m of ["skills/clearance-register/SKILL.md", "skills/clearance-register/unit.md"]) {
-    assert.ok(flat(m).includes(STOP), `${m} does not stop on a lawyer's judgment`);
+  const STOP = REGISTER_SENTENCES.onceTheIdenticalMarkFor;
+  // One copy, in the shared manual both modes read.
+  assert.ok(flat("skills/clearance-register/SKILL.md").includes(STOP), "the shared register manual does not stop on a lawyer's judgment");
+  for (const stage of ["register-unit", "register-digest"])
+    assert.ok(resolveSkillReads(stage, {}).includes("skills/clearance-register/SKILL.md"), `${stage} does not read the shared register manual`);
+  for (const m of ["skills/clearance-register/SKILL.md", "skills/clearance-register/unit.md"])
     assert.doesNotMatch(flat(m), /Having read the list, ask whether looking wider/, `${m} keeps the old stopping paragraph`);
-  }
   assert.ok(flat("skills/clearance-register/unit.md").includes(UNIT_SENTENCES.theExactNameListRead2));
-  assert.ok(flat("skills/clearance-register/SKILL.md").includes(REGISTER_SENTENCES.theNarrowingStepsBoundThe));
+  assert.ok(flat("skills/clearance-register/unit.md").includes(UNIT_SENTENCES.theNarrowingStepsBoundThe));
   const recipes = flat("skills/clearance-register/register-recipes.md");
   assert.ok(recipes.includes(RECIPES_SENTENCES.thenTheMajorsTakenFrom));
   assert.ok(recipes.includes(RECIPES_SENTENCES.scopeTheSearchTextClass));
   // the billing and price words the approved set takes out
-  const all = ["SKILL.md", "unit.md", "digest.md", "register-recipes.md", "providers/clarivate.md", "providers/corsearch.md", "providers/euipo.md",
+  const all = ["SKILL.md", "unit.md", "digest.md", "register-recipes.md", "providers/clarivate.md", "providers/clarivate-questions.md", "providers/corsearch.md", "providers/euipo.md",
     "providers/free-tier.md", "providers/uspto-local.md"].map((f) => flat(`skills/clearance-register/${f}`)).join(" ");
   for (const gone of ["wastes a paid call", "one billable search", "both paid vendors", "Queries are free", "metered provider", "cheap `/count`",
     "cost breakdown", "send one cheap", "(cheap tiers)", "(cheap, informational", "(cheap — tells", "cheapest, always enumerates"])
@@ -122,8 +124,8 @@ test("judgment on a crowd narrows by the steps or records it with its count and 
   const skill = flat("skills/clearance-register/SKILL.md");
   const unit = flat("skills/clearance-register/unit.md");
   const recipes = flat("skills/clearance-register/register-recipes.md");
-  assert.ok(skill.includes(DIGEST_SENTENCES.theUnitNarrowsCrowdRecords));
-  assert.ok(skill.includes(REGISTER_SENTENCES.crossesJudgmentTheUnitNarrows));
+  assert.ok(unit.includes(DIGEST_SENTENCES.theUnitNarrowsCrowdRecords));
+  assert.ok(unit.includes(UNIT_SENTENCES.crossesJudgmentTheUnitNarrows));
   assert.ok(unit.includes(UNIT_SENTENCES.incompleteResultCrossesTheFirewall));
   assert.ok(recipes.includes(RECIPES_SENTENCES.thatIncompleteBlockNeverClean));
   for (const [name, text] of [["SKILL.md", skill], ["unit.md", unit], ["register-recipes.md", recipes]])

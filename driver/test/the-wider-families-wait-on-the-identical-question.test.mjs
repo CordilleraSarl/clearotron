@@ -22,7 +22,8 @@ import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { CAPABILITIES as CLARIVATE } from "../../providers/clarivate/src/capabilities.js";
 import { defaultBuildEntryQuery, planPredicateParams } from "../../providers/_shared/execute-plan.mjs";
 import { buildSearchRequest, GOODS_FIELD } from "../../providers/clarivate/src/core.js";
-import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { resolveSkillReads } from "../stages.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const MARK = "INVENTEDMARK";
@@ -124,13 +125,16 @@ test("a goods narrowing is refused where it would mean nothing", () => {
 });
 
 test("the manual tells the model the order of moves, in the shipping tree", () => {
-  for (const f of ["SKILL.md", "unit.md"]) {
+  // The narrowing doctrine is written once, in the shared manual, and both register modes read it.
+  for (const stage of ["register-unit", "register-digest"])
+    assert.ok(resolveSkillReads(stage, {}).includes("skills/clearance-register/SKILL.md"), `${stage} does not read the shared register manual`);
+  for (const f of ["SKILL.md"]) {
     const manual = readFileSync(join(ROOT, "driver", "skills", "clearance-register", f), "utf8");
     assert.match(manual, /Look at the count before you read anything/, `${f} does not carry the crowd-narrow doctrine`);
     assert.match(manual, /limited to the client's goods words/, `${f} does not state the first move`);
     assert.match(manual, /one question per market/, `${f} does not state the market move`);
     // The ruled order (2026-09-26): goods and class before any market.
-    const goods = manual.indexOf(UNIT_SENTENCES.limitedTheClientGoodsWords);
+    const goods = manual.indexOf(REGISTER_SENTENCES.limitedTheClientGoodsWords);
     const byClass = manual.indexOf("one class at a time");
     const byMarket = manual.indexOf("one question per market");
     assert.ok(goods < byClass && byClass < byMarket, `${f} does not narrow by goods, then class, then market`);
@@ -237,7 +241,10 @@ test("a narrowing names the crowd it replaced, and the name survives the fold", 
 });
 
 test("the doctrine teaches both, in the shipping tree", () => {
-  for (const f of ["SKILL.md", "unit.md"]) {
+  // The narrowing doctrine is written once, in the shared manual, and both register modes read it.
+  for (const stage of ["register-unit", "register-digest"])
+    assert.ok(resolveSkillReads(stage, {}).includes("skills/clearance-register/SKILL.md"), `${stage} does not read the shared register manual`);
+  for (const f of ["SKILL.md"]) {
     const manual = readFileSync(join(ROOT, "driver", "skills", "clearance-register", f), "utf8");
     assert.match(manual, /withheld-by-judgment/, `${f} does not name the withheld state`);
     assert.match(manual, /`narrows`/, `${f} does not tell the model to name the crowd it replaced`);

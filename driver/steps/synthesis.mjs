@@ -24,6 +24,13 @@ import { readFileSync, renameSync, writeFileSync } from "node:fs";
  * its own version's rules, and is not the record the re-ask demanded. null where the file meets it or could not be read.
  * No further attempt follows from it. PURE.
  */
+/**
+ * WHAT A FINDINGS FILE BELOW THE CURRENT VERSION GETS AFTER SYNTHESIS: on a synthesis that ran this turn, the bounded
+ * re-ask for the whole record ("reask"); on a resumed one, its accepted record kept as it is, at its own version
+ * ("keep"). null where the file is at the current version or could not be read. PURE.
+ */
+export const versionRecovery = (declared, skipped) => (declared === null || declared === undefined || declared >= FINDINGS_SCHEMA_VERSION
+  ? null : skipped ? "keep" : "reask");
 export const versionStillShort = (declared) => (declared !== null && declared !== undefined && declared < FINDINGS_SCHEMA_VERSION
   ? { event: "findings-schema-downlevel", declared, required: FINDINGS_SCHEMA_VERSION } : null);
 
@@ -104,17 +111,17 @@ export async function runSynthesis({ P, checkLateBind, ctx, job, opts, run }) {
     try { return parseFindingsJsonLenient(readFileSync(P.findings, "utf8")).schemaVersion ?? 1; } catch { return null; }
   };
   const declaredSv = readSchemaVersion();
-  // doc 50 — the dictation demands schema_version 4 (band-rated under the framework in force).
-  // The demand fires ONLY when synthesis actually RAN this turn: a skip-resumed stage (a parked run
-  // whose prior v3 findings.json still validates on the legacy path) keeps its declared version —
-  // forcing a mid-run contract switch across the deploy boundary would burn a followup fighting
-  // the run's own frozen artifact. Logged loudly instead; that run's gates judge it as v3.
-  if (declaredSv !== null && declaredSv < 4 && synth.skipped) {
-    note(`[findings] schema_version ${declaredSv} retained on a resumed run (pre-doc-50 artifact) — v${declaredSv} gates apply; no re-emit demanded`);
+  // The dictation demands the current schema_version (`versionRecovery`). The demand fires ONLY when synthesis
+  // actually RAN this turn: a skip-resumed stage keeps the version its accepted record declares — forcing a mid-run
+  // contract switch across the deploy boundary would burn a followup fighting the run's own frozen artifact. Logged
+  // loudly instead; that run's gates judge it at its own version.
+  const recovery = versionRecovery(declaredSv, synth.skipped);
+  if (recovery === "keep") {
+    note(`[findings] schema_version ${declaredSv} retained on a resumed run — v${declaredSv} gates apply; no re-emit demanded`);
     runLog(run.runDir, { event: "findings-schema-legacy", declared: declaredSv });
   }
-  if (declaredSv !== null && declaredSv < 4 && !synth.skipped) {
-    note(`[findings] schema_version ${declaredSv} < 4 — the dictated band rating is missing; demanding the re-emit`);
+  if (recovery === "reask") {
+    note(`[findings] schema_version ${declaredSv} < ${FINDINGS_SCHEMA_VERSION} — not the dictated record; demanding the re-emit`);
     // This one keeps the FULL re-emission on purpose, against the targeted-edit rule the other corrective
     // followups now follow. A down-level file is not a valid document with one defect in it — it is the
     // WRONG CONTRACT throughout: every rated object's vocabulary changes, the retired composite/level/

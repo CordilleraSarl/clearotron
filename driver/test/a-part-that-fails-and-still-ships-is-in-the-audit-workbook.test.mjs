@@ -234,7 +234,7 @@ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env })) pinEnv(proc
 }
 
 test("at the door: a run whose reviewer stage failed publishes a workbook that says so, and a clean run's does not", async (t) => {
-  const failed = await runOffline({ MOCK_FAIL_STAGE: "Step 2.6 — Skeptic review" });
+  const failed = await runOffline({ MOCK_FAIL_STAGE: "Perform the fresh-eyes audit that manual describes" });
   t.after(() => rmSync(failed.root, { recursive: true, force: true }));
   assert.ok(failed.areas.includes("Follow-up / Machine QC"), `no row for the failed reviewer pass: ${failed.areas.join(" | ")}`);
   const record = JSON.parse(readFileSync(driverDir(failed.res.runDir, "degraded-parts.json"), "utf8"));

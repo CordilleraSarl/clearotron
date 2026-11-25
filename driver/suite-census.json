@@ -256,8 +256,8 @@
           "todos": 0
         },
         "a-citation-of-a-withdrawn-finding-is-repaired-by-the-part-that-wrote-it.test.mjs": {
-          "tests": 10,
-          "asserts": 50,
+          "tests": 11,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -268,8 +268,8 @@
           "todos": 0
         },
         "a-cited-registrations-logo-is-fetched-once-from-the-runs-own-register.test.mjs": {
-          "tests": 15,
-          "asserts": 73,
+          "tests": 16,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -503,7 +503,7 @@
         },
         "a-correction-patches-what-it-carries.test.mjs": {
           "tests": 49,
-          "asserts": 88,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },
@@ -555,6 +555,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-coverage-row-is-read-in-the-writers-numbering.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-coverage-row-not-added-or-a-check-that-threw-is-in-the-audit-workbook.test.mjs": {
           "tests": 11,
           "asserts": 32,
@@ -599,13 +605,13 @@
         },
         "a-crowd-is-decided-not-a-fixed-stop.test.mjs": {
           "tests": 6,
-          "asserts": 31,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
         "a-crowd-is-narrowed-by-goods-and-class-then-by-market.test.mjs": {
           "tests": 5,
-          "asserts": 20,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -617,7 +623,7 @@
         },
         "a-crowd-narrows-in-the-one-market-list-and-says-what-reading-it-would-change.test.mjs": {
           "tests": 3,
-          "asserts": 12,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -1709,7 +1715,7 @@
         },
         "a-near-spelling-no-buyer-could-confuse-is-set-aside-with-its-reason.test.mjs": {
           "tests": 5,
-          "asserts": 25,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -1759,6 +1765,12 @@
           "tests": 2,
           "asserts": 3,
           "skips": 1,
+          "todos": 0
+        },
+        "a-notice-filed-before-a-run-names-the-company-its-order-named.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
           "todos": 0
         },
         "a-package-install-is-not-told-to-use-git.test.mjs": {
@@ -2513,7 +2525,7 @@
         },
         "a-run-keeps-the-engine-it-started-on.test.mjs": {
           "tests": 14,
-          "asserts": 55,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -3909,6 +3921,12 @@
           "skips": 0,
           "todos": 0
         },
+        "codex-is-shown-each-recording-tools-field-text.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "common-law-coverage-is-coverage-the-run-searched.test.mjs": {
           "tests": 5,
           "asserts": 8,
@@ -4662,6 +4680,18 @@
         "each-finding-card-is-a-heading-inside-the-main-landmark.test.mjs": {
           "tests": 3,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "each-finding-key-is-defined-once-and-the-tool-serves-it.test.mjs": {
+          "tests": 7,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "each-instructed-answer-names-the-records-it-relies-on.test.mjs": {
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -8169,6 +8199,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-tools-take-what-their-validator-takes.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-workbook-s-long-text-columns-are-at-least-40-wide.test.mjs": {
           "tests": 2,
           "asserts": 7,
@@ -8243,7 +8279,13 @@
         },
         "the-native-language-reader-is-given-the-chinese-register-records.test.mjs": {
           "tests": 3,
-          "asserts": 19,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-native-language-reader-is-told-what-each-records-goods-rest-on.test.mjs": {
+          "tests": 6,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -8559,9 +8601,21 @@
           "skips": 0,
           "todos": 0
         },
+        "the-register-digest-tool-and-its-orders-name-what-the-recorder-takes.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "the-register-probe-reads-the-install-env-file.test.mjs": {
           "tests": 3,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-register-reader-reads-the-part-of-the-provider-manual-it-can-use.test.mjs": {
+          "tests": 3,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -8957,7 +9011,7 @@
         },
         "the-summary-carries-structure.test.mjs": {
           "tests": 14,
-          "asserts": 37,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -9047,13 +9101,13 @@
         },
         "the-wider-families-wait-for-the-reading-turn-on-every-matter.test.mjs": {
           "tests": 7,
-          "asserts": 23,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
         "the-wider-families-wait-on-the-identical-question.test.mjs": {
           "tests": 13,
-          "asserts": 50,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -9107,7 +9161,7 @@
         },
         "the-write-up-reads-what-placement-carried-forward.test.mjs": {
           "tests": 1,
-          "asserts": 3,
+          "asserts": 2,
           "skips": 0,
           "todos": 0
         },
@@ -9584,6 +9638,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-notice-before-start-reaches-a-courier-scoped-to-its-company.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-removed-person-loses-their-assistant-too.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -9629,6 +9689,12 @@
         "ack-event-account-gate.test.mjs": {
           "tests": 7,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-accepted-order-is-submitted-not-started.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -9795,8 +9861,8 @@
           "todos": 0
         },
         "ops.test.mjs": {
-          "tests": 40,
-          "asserts": 170,
+          "tests": 41,
+          "asserts": 174,
           "skips": 0,
           "todos": 0
         },

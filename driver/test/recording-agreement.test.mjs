@@ -38,7 +38,7 @@ import { fileURLToPath } from "node:url";
 import { join, basename } from "node:path";
 import { NARRATIVE_FILE, FINDINGS_FILE, synthesisCallPaths } from "../synthesis-record.mjs";
 
-import { STAGES, paths as stagePaths, resolveSkillReads, writeReturn } from "../stages.mjs";
+import { STAGES, paths as stagePaths, providerManuals, resolveSkillReads, writeReturn } from "../stages.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 import { providerUnavailableRegisterTools, RECORDING_STAGES, RECORDING_TOOLS, allowedToolsFor, toolGroupsForStage } from "../engine/mcp/gather-config.mjs";
 import { REGISTER_PROVIDER } from "../driver.config.mjs";
@@ -277,8 +277,9 @@ function unionFor(stage, artifacts) {
  * THE SURFACES THAT ARE PROVIDER-CONDITIONAL BY CONSTRUCTION —.
  *
  * The active provider's own deck is selected BY the provider (the dispatch names
- * `skills/clearance-register/providers/<name>.md` at runtime), so it cannot assert a capability of a
- * deployment it does not describe. Derived from the provider name, never a list anyone maintains.
+ * `skills/clearance-register/providers/<name>.md` at runtime, and its questions file where it splits one
+ * out), so it cannot assert a capability of a deployment it does not describe. Derived from the manuals the
+ * provider's adapter declares, never a list anyone maintains.
  *
  * An UNRESOLVED provider yields an empty set — no guess. And the derivation fails LOUD rather than
  * silent: if decks move, this stops matching and the findings come BACK, which is the safe direction
@@ -286,7 +287,7 @@ function unionFor(stage, artifacts) {
  */
 function providerConditionalSurfacesFor() {
   if (!REGISTER_PROVIDER) return new Set();
-  return new Set([`pointer:driver/skills/clearance-register/providers/${REGISTER_PROVIDER}.md`]);
+  return new Set(providerManuals(REGISTER_PROVIDER).map((doc) => `pointer:driver/${doc}`));
 }
 
 /** Everything the guard needs for one stage, resolved once. */
@@ -955,28 +956,17 @@ test("a tool named in a multi-reader doc is granted to every reader of it", () =
   //
   // A row LEAVING this list is good news and still wants the entry removed in the same commit, or the
   // list slowly becomes a licence rather than a record.
+  //
+  // The register spine's eight rows left when the spine split by mode: unit.md and digest.md each hold their
+  // own mode's tools, and the shared SKILL.md names none a reader of it lacks. The three left are
+  // synthesis-rules.md's, served to report-overview, which is tool-free by design.
   const MODE_SCOPED = [
-    "skills/clearance-register/SKILL.md names band_lookup, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names band_record, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names band_shape, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names record_coverage, not held by: register-unit",
-    // Conversion 11 — the TENTH row, and it is the same mode-scoped shape as the four above it rather
-    // than the finding this list was left open for. The mention sits in SKILL.md's **Digest mode
-    // (judgment — Layer B)** bullet, the same sentence that already names `record_coverage` and the band
-    // tools; register-unit reads the shared spine and is dispatched as the FUNNEL, which that bullet is
-    // explicitly not addressing. Scoping it further is not available — the spine is one file by design,
-    // and the section labels are the scoping.
-    "skills/clearance-register/SKILL.md names record_register_digest, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names register_enumerate, not held by: register-digest",
-    // The approved Unit-mode sentence that names the unit's note tool: the mirror of record_register_digest above.
-    "skills/clearance-register/SKILL.md names record_unit_note, not held by: register-digest",
-    "skills/clearance-register/SKILL.md names register_execute_plan, not held by: register-digest",
     "skills/clearance-search/synthesis-rules.md names band_lookup, not held by: report-overview",
     "skills/clearance-search/synthesis-rules.md names band_record, not held by: report-overview",
     "skills/clearance-search/synthesis-rules.md names perplexity_research, not held by: report-overview",
   ];
   assert.deepEqual(offenders.sort(), [...MODE_SCOPED].sort(),
-    "a shared document names a tool that some of its readers cannot call, and it is not one of the ten "
+    "a shared document names a tool that some of its readers cannot call, and it is not one of the three "
     + "mode-scoped rows recorded above. Every reader is ORDERED by that document, so the call is "
     + "impossible for the ones without the grant and the shortfall reads as a model that chose not to. "
     + "Scope the sentence to the seat that holds the tool, grant it to the others, or drop the name — and "

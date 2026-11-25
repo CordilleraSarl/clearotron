@@ -32,7 +32,7 @@
 // against. Mode names are declared, in each tool's input schema.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -40,7 +40,9 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const MANUALS = join(ROOT, "driver", "skills", "clearance-register", "providers");
 const PROVIDERS = ["clarivate", "corsearch", "euipo", "free-tier", "signa", "uspto-local"];
 
-const manual = (p) => readFileSync(join(MANUALS, `${p}.md`), "utf8");
+// A provider's manual as the clearance unit reads it: the manual, then the questions file where the provider splits one out.
+const manual = (p) => [`${p}.md`, `${p}-questions.md`].filter((f) => existsSync(join(MANUALS, f)))
+  .map((f) => readFileSync(join(MANUALS, f), "utf8")).join("\n");
 const capabilities = async (p) => (await import(pathToFileURL(join(ROOT, "providers", p, "src", "capabilities.js")).href)).CAPABILITIES;
 
 /** Digit groups folded, so "30 000", "30,000" and "30 000" all read as 30000. */

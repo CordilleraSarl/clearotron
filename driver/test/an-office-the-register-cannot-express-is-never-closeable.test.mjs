@@ -17,7 +17,7 @@ import { territoryOfRow, rowOutsideProviderOffices } from "../register-plan.mjs"
 import { splitDeferredByCloseability } from "../coverage-ledger.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { officeGapOf } from "../pipeline.mjs";
-import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 const row = (scope, reason = "the write-up's own words") => ({ axis: "primary-sweep", scope, status: "deferred", reason });
 
@@ -50,7 +50,9 @@ test("the run's split reads the plan's provider, and a register that publishes n
 });
 
 test("the register manual says an office the provider cannot express is never closeable", () => {
-  const skill = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "SKILL.md"), "utf8").replace(/\s+/g, " ");
-  assert.ok(skill.includes(REGISTER_SENTENCES.providerErrorBlockedFetchCloseable));
-  assert.ok(!skill.includes("It is a CLOSEABLE gap — escalate and disclose — and it clamps the verdict"), "the manual still calls every deferral closeable");
+  const manual = (f) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", f), "utf8").replace(/\s+/g, " ");
+  // The digest rules coverage, so its manual carries the rule.
+  assert.ok(manual("digest.md").includes(DIGEST_SENTENCES.providerErrorBlockedFetchCloseable));
+  for (const f of ["SKILL.md", "unit.md", "digest.md"])
+    assert.ok(!manual(f).includes("It is a CLOSEABLE gap — escalate and disclose — and it clamps the verdict"), `${f} still calls every deferral closeable`);
 });

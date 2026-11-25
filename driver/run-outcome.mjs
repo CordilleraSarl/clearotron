@@ -98,6 +98,14 @@ export function terminalReasonFields(reason, { cap = 200, fullCap = 4000 } = {})
   return { reason: abbrev(full, cap), reasonTruncated: truncated, reasonFull: truncated ? abbrev(full, fullCap) : null };
 }
 
+// The client's sentence for an order that never became a run: the words of the client failure email's
+// `refused` branch below, without its markup, because a notice filed before any run exists is relayed as
+// text. It names what was ordered from `job.product` exactly as that branch does.
+export function clientNotStartedText(job, mark) {
+  const ordered = reportIdentityFor(job?.product ?? null).identity;
+  return `${ordered ? `The ${ordered}` : "The search"} for ${mark} was not started, and nothing was delivered. ${CLIENT_ACTION}`;
+}
+
 // (enforcement check E11 in the family) — `reasonDetail` and `reasonQuantity` are PACKET FIELDS.
 //
 // The merge gate computes WHICH dictated connotation query dropped and hands it over as StageFailure.detail

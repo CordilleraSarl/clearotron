@@ -5,32 +5,15 @@
 // purpose, and a test that guards one names it from here rather than writing it out, so a ruled wording change is one edit.
 // the-ruled-sentences-tests-hold-are-in-their-manuals.test.mjs checks each one is still in the manual, word for word.
 export const UNIT_SENTENCES = Object.freeze({
-  readTheIdenticalMarkFirst: "### Read the identical mark first. Look at the count before you read anything",
   theExactNameListRead: "**The exact name-list is read first, and narrowed when it crowds.**",
-  onceTheIdenticalMarkFor: "Once the identical mark for the client's goods has been read, decide as a lawyer would whether you have "
-    + "enough. Would more searching change what you tell the client: who could object, how weak the word is in "
-    + "this market, or what the client should do? If it would, widen one step, read, and decide again. If it "
-    + "would not, you are done. Write in one line why more searching would not change the advice, record which "
-    + "questions you did not ask and why, and move on. That is complete work.",
   theExactNameListRead2: "**The exact name-list is read first, and narrowed when it crowds.** The exact mark token × in-scope "
     + "class (`match_mode:exact`) is the identical-mark question of the narrowing steps",
   incompleteResultCrossesTheFirewall: "an incomplete result crosses the firewall as an incomplete block, and you decide on it by the narrowing "
     + "steps: narrow it, or record it with its count and move on.",
-  stillCrowdAskAgainWith: "Still a crowd? Ask again with the dominant goods word alone, then one class at a time, in the "
-    + "instructed classes. Read each list.",
-  stillCrowdAskAgainOne: "Still a crowd? Ask again one question per market, from the one list your opening message names. Read "
-    + "those lists.",
-  stillCrowdAfterStepThe: "4. Still a crowd after step 3? The narrowing ends. Record it with its count: the field is crowded there.",
   whenTheWorldwideQuestionCrowd: "When the worldwide question is a crowd, its market step uses the one list your opening message names; a "
     + "major the list does not name is not asked on its own and stays in the crowd's count.",
   theIdenticalMarkForThe: "The identical mark for the client's goods, still a crowd in a market on the one list your opening "
     + "message names, is not done.",
-  theSameStepsServeAny: "The same steps serve any other question that comes back as a crowd, when reading it would change what "
-    + "you tell the client. Before you narrow a wider crowd, write in the proposal what reading it would "
-    + "change. If you cannot, set it aside with its count and your reason. You need not take every step on "
-    + "every crowd.",
-  everyStepLookWhatYou: "### At every step: look at what you have before you work on it",
-  listYouHaveReadAnswers: "A list you have read answers",
   theSpellingBandAskedThe: "The spelling band is asked as the machine writes it. What it returns is a pile like any other: look at "
     + "how much, read what a buyer in this market could take for the mark by sound, by look or by meaning, "
     + "carry only that, and record the rest as set aside with your reason. Where the mark's dominant element "
@@ -49,9 +32,9 @@ export const UNIT_SENTENCES = Object.freeze({
   youDecideEachIncompleteThe: "you decide on each `incomplete` by the narrowing steps, and the write-up rules each slice's coverage.",
   sampleSelfAcceptTopPer: "- **sample or self-accept** — no top-N, no per-jurisdiction 3-fetch ceiling, no "
     + "switch-to-exact-standalone-as-enumeration. The tool enumerates or reports incomplete; a crowd is "
-    + "narrowed by the steps above, and the narrowing stops at the first list you can read.",
+    + "narrowed by the steps in *Read the identical mark first*, and the narrowing stops at the first list you can read.",
   thereGoodEnoughForSearch: "There is **no \"good enough\" for a search that did not run** — no sampling, no top-N, no \"narrow to "
-    + "tractable and call it clean\". A crowd is narrowed by the steps below, and what stays a crowd is "
+    + "tractable and call it clean\". A crowd is narrowed by the steps in *Read the identical mark first*, and what stays a crowd is "
     + "recorded with its count. Placement reads your **complete named band**.",
   theScopeClassesAcrossThe: "in the in-scope classes, across the order's scope (per-axis specifics below)",
   searchTheOrderScopeWorldwide: "Search **the order's scope**: worldwide on a worldwide order, otherwise the instructed territories + "
@@ -60,6 +43,10 @@ export const UNIT_SENTENCES = Object.freeze({
   theExactMarkClassUsually: "\"The exact mark, in-class\" is *usually* small",
   namedSliceItsMajorsTaken: "named slice, its majors taken from it by jurisdictions, plus the phonetic fringe",
   exactMarkEachManifestVariant: "(exact mark + each manifest variant × in-scope class, across the order's scope)",
-  everyStepLookWhatYou2: "At every step: look at what you have before you work on it",
-  limitedTheClientGoodsWords: "limited to the client's goods words",
+  theNarrowingStepsBoundThe: "The narrowing steps bound the searching: each keeps the limits before it, and they end.",
+  crossesJudgmentTheUnitNarrows: "crosses to judgment. The unit narrows a crowd or records it with its count.",
+  whenTheScopeSweepReturns: "When the in-scope sweep returns `incomplete` as a crowd, narrow it by the steps in *Read the identical "
+    + "mark first*: their market step uses the one list your opening message names, and a major or material "
+    + "jurisdiction the list does not name is not asked on its own; it stays in the crowd's count.",
+  toolCallBudgetAndWhy: "## Tool call budget — and why it is NOT a sufficiency lever",
 });

@@ -14,6 +14,7 @@ import { fileURLToPath } from "node:url";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { GRID_SENTENCES } from "./ruled-sentences-common-law-grid.mjs";
 import { VARIANTS_SENTENCES } from "./ruled-sentences-variants.mjs";
 import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
 import { INQUIRY_SENTENCES } from "./ruled-sentences-placement-inquiry.mjs";
@@ -21,6 +22,7 @@ import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 import { REFUTATION_SENTENCES } from "./ruled-sentences-narrative-refutation.mjs";
 import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
+import { SKEPTIC_SENTENCES } from "./ruled-sentences-skeptic.mjs";
 import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
 import { MATTER_FRAME_SENTENCES } from "./ruled-sentences-matter-frame.mjs";
 import { BLIND_FRAME_SENTENCES } from "./ruled-sentences-blind-frame.mjs";
@@ -36,6 +38,7 @@ const FIXTURES = {
   "driver/skills/clearance-register/unit.md": UNIT_SENTENCES,
   "driver/skills/clearance-register/digest.md": DIGEST_SENTENCES,
   "driver/skills/clearance-common-law/SKILL.md": COMMON_LAW_SENTENCES,
+  "driver/skills/clearance-common-law/grid.md": GRID_SENTENCES,
   "driver/skills/clearance-variants/SKILL.md": VARIANTS_SENTENCES,
   "driver/skills/knockout-assess/SKILL.md": ASSESS_SENTENCES,
   "driver/skills/placement-inquiry/SKILL.md": INQUIRY_SENTENCES,
@@ -43,11 +46,12 @@ const FIXTURES = {
   "driver/skills/narrative-refutation/SKILL.md": REFUTATION_SENTENCES,
   "driver/skills/clearance-register/register-recipes.md": RECIPES_SENTENCES,
   "driver/skills/clearance-search/phase2-execution.md": PHASE2_SENTENCES,
+  "driver/skills/skeptic/SKILL.md": SKEPTIC_SENTENCES,
   "driver/skills/clearance-search/synthesis-rules.md": SYNTHESIS_SENTENCES,
   "driver/skills/matter-frame/SKILL.md": MATTER_FRAME_SENTENCES,
   "driver/skills/blind-frame/SKILL.md": BLIND_FRAME_SENTENCES,
   "driver/skills/clearance-register/providers/corsearch.md": CORSEARCH_SENTENCES,
-  "driver/skills/clearance-register/providers/signa.md": SIGNA_SENTENCES,
+  "driver/skills/clearance-register/providers/signa-questions.md": SIGNA_SENTENCES,
   "driver/skills/clearance-search/firm-wide-reasoning.md": FIRM_WIDE_SENTENCES,
   "driver/skills/knockout-frame/SKILL.md": KO_FRAME_SENTENCES,
 };

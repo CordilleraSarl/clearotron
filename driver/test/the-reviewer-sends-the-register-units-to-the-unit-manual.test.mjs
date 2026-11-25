@@ -14,9 +14,12 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
+import { SKEPTIC_SENTENCES } from "./ruled-sentences-skeptic.mjs";
 
-const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-search", "phase2-execution.md"), "utf8")
-  .replace(/\s+/g, " ");
+const read = (...rel) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", ...rel), "utf8").replace(/\s+/g, " ");
+const manual = read("clearance-search", "phase2-execution.md");
+// The review's own steps are in its own manual.
+const skeptic = read("skeptic", "SKILL.md");
 
 test("the reviewer's manual sends the register units to the unit manual's steps, and orders no fixed set of searches", () => {
   assert.ok(manual.includes(PHASE2_SENTENCES.variantExecutionStrategyRegisterLayer),
@@ -27,11 +30,13 @@ test("the reviewer's manual sends the register units to the unit manual's steps,
 });
 
 test("the reviewer's coverage check asks only for a material market no question reached", () => {
-  assert.ok(manual.includes(PHASE2_SENTENCES.coverageLedgerAnyDeferredCoverage));
-  assert.ok(!manual.includes("carry a row for **every** jurisdiction"), "the reviewer still asks for a row on every material market");
+  assert.ok(skeptic.includes(SKEPTIC_SENTENCES.coverageLedgerAnyDeferredCoverage));
+  for (const text of [manual, skeptic])
+    assert.ok(!text.includes("carry a row for **every** jurisdiction"), "the reviewer still asks for a row on every material market");
 });
 
 test("the reviewer re-runs only a deferral the table lists as closeable", () => {
-  assert.ok(manual.includes(PHASE2_SENTENCES.deferredCoverageLedgerRowThe));
-  assert.ok(!manual.includes("runs the missing per-jurisdiction sub-query"), "the reviewer still re-runs a deferral per material market");
+  assert.ok(skeptic.includes(SKEPTIC_SENTENCES.deferredCoverageLedgerRowThe));
+  for (const text of [manual, skeptic])
+    assert.ok(!text.includes("runs the missing per-jurisdiction sub-query"), "the reviewer still re-runs a deferral per material market");
 });

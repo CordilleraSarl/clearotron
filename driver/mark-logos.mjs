@@ -10,8 +10,10 @@
 // reads, and the images under `_driver/logos/`.
 //
 // WHICH REGISTRATIONS. The ones the report shows and no others: a clearance's findings, withdrawn ones left out, and
-// the registrations each cites; a Knockout's listed filings. Measured on a 55-finding global preliminary of 2026-11-03:
-// 28 of the 3,497 records it held, so 28 image requests (that count approved 2026-11-18).
+// the registrations each card draws, which are at most eight (publish/render.mjs, `shownRegistrations`); a Knockout's
+// listed filings. Measured on a 55-finding global preliminary of 2026-11-03: 28 of the 3,497 records it held, so 28 image
+// requests (that count approved 2026-11-18). Every registration a finding cited was asked about, though, and on two
+// delivered reports of 2026-11-25, 9 of 40 and 6 of 58 image requests were for registrations past a card's eighth.
 //
 // WHAT A ROW SAYS, and only `failed` reads as "Logo not retrieved" on the page:
 //   fetched   the image is saved; `file` is relative to the run folder, `contentType` PNG, JPEG, GIF or WebP
@@ -74,13 +76,17 @@ export function imageTypeOf(bytes) {
  * few (publish/render-knockout.mjs, `shownFilings`), and on a demo re-run 8 of a Knockout's 9 image requests were for
  * filings no page listed (2026-11-20). `shown(entry, mark)` is that rule and `knockoutMarks` the run's rated names; given
  * them, only those filings are asked about, and a run whose names could not be read asks about none.
+ *
+ * A CLEARANCE'S ARE THE REGISTRATIONS EACH CARD DRAWS, by the same token: `cardShows(finding)` is the card's rule; without
+ * it, every registration a finding cites.
  */
-export function citedRefs({ findings = null, registerRecords = null, knockoutMarks = null, shown = null } = {}) {
+export function citedRefs({ findings = null, registerRecords = null, knockoutMarks = null, shown = null, cardShows = null } = {}) {
   const out = [];
   const add = (ref) => { const k = normalizeRecordUri(ref); if (k && !out.includes(k)) out.push(k); };
   for (const f of Array.isArray(findings) ? findings : []) {
     if (f?.disposition === "withdrawn") continue;
-    for (const r of Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []) add(r?.uri);
+    const regs = typeof cardShows === "function" ? cardShows(f) : f?.owner?.registrations;
+    for (const r of Array.isArray(regs) ? regs : []) add(r?.uri);
   }
   if (typeof shown === "function") {
     for (const m of Array.isArray(knockoutMarks) ? knockoutMarks : [])
@@ -194,7 +200,16 @@ export async function markLogos(runDir, { findingsPath = null, registerRecordsPa
     // unless the caller names another file: left to each caller, a pass run by hand that forgot them asked about nothing.
     const shown = registerRecordsPath ? (await import("./publish/render-knockout.mjs")).shownFilings : null;
     const namesPath = knockoutFindingsPath ?? (registerRecordsPath ? (await import("./stages-knockout.mjs")).koPaths(runDir).findings : null);
-    const refs = citedRefs({ findings, registerRecords, knockoutMarks: read(namesPath)?.marks ?? null, shown });
+    // A clearance card's own rule for which registrations it draws, over the records the run saved, as the page reads them.
+    // A registration past the card's eighth is left out; one the run holds no record of stays, and asks nothing, as before.
+    const held = registerRecordsPath ? null : readRecordArtifacts(runDir);
+    const shownOnCard = held ? (await import("./publish/render.mjs")).shownRegistrations : null;
+    const cardShows = held ? (f) => {
+      const has = (uri) => held.has(uri);
+      const drawn = new Set(shownOnCard(f, has));
+      return (f?.owner?.registrations ?? []).filter((r) => drawn.has(r) || !(r?.uri && has(String(r.uri).toLowerCase())));
+    } : null;
+    const refs = citedRefs({ findings, registerRecords, knockoutMarks: read(namesPath)?.marks ?? null, shown, cardShows });
     const at = driverDir(runDir, LOGOS_FILE);
     const prior = read(at)?.rows ?? [];
     const register = provider?.id ?? null;

@@ -51,8 +51,9 @@ test("a lawyer's word in a finding's ONE sentence is flagged, and the field is n
 });
 
 test("the same word inside a FOLD is not flagged — that is rule 2, not an oversight", () => {
-  // A finding's `basis` is behind "Why this band" and the long `assessment` is behind its own fold.
-  // Precision is wanted there; a check that flagged it would trade precision for vagueness.
+  // A finding's `basis` is behind "Why this band". Precision is wanted there; a check that flagged it would trade precision
+  // for vagueness. This check does not read the `assessment`: where it opens a name's page the manual asks for plain words,
+  // and nothing refuses it.
   const c = flagged(FINDINGS({
     findings: [{ ordinal: 1, net: "Same name, same goods, and they were first.",
       basis: "The proprietor holds a subsisting registration and would prevail on every limb." }],

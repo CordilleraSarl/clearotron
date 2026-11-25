@@ -1853,6 +1853,16 @@ export function applyStageWrites(msg, argv) {
           return r.refused ? `mock writer's four-answers patch refused: ${r.refused}` : "mock writer patched the four answers";
         }
       }
+      // MOCK_COVERAGE_CITES — the writer's delivery-check repair removes the open coverage row citing the withdrawn finding,
+      // as its ruled line orders: ONE patch carrying the corrected coverage register alone.
+      if (process.env.MOCK_COVERAGE_CITES && WRITER_LINT_REPAIR.test(msg)) {
+        const rows = structuredClone(lastAcceptedCall(runDir)?.findings?.coverage ?? null);
+        if (Array.isArray(rows)) {
+          recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+          const r = recordSynthesis(runDir, { findings: { coverage: rows.filter((row) => !String(row?.note ?? "").includes(`finding ${process.env.MOCK_COVERAGE_CITES} `)) } });
+          return r.refused ? `mock writer's coverage patch refused: ${r.refused}` : "mock writer patched the coverage rows";
+        }
+      }
       // MOCK_GOODS_REPAIR=correct|first|ignore — the writer's delivery-check repair, handed a record's complete goods
       // statements for a finding that says they are cut (MOCK_GOODS_CUT_CLAIM). "correct": ONE patch carrying each
       // finding a goods line names for the claim ("Correct the claim in finding <A>", or "Finding <N> cites" where one
@@ -1939,6 +1949,11 @@ export function applyStageWrites(msg, argv) {
         const cites = String(process.env.MOCK_ANSWERS_CITE).split(",").map(Number);
         for (const a of Object.values(doc.four_answers ?? {})) if (a && typeof a === "object") a.ordinals = cites;
       }
+      // MOCK_COVERAGE_CITES=<ordinal> — every whole save carries an open coverage row citing that finding, written as a
+      // writer writes one while the finding stands (the writer's delivery-check repair patches it away, above).
+      if (process.env.MOCK_COVERAGE_CITES && Array.isArray(doc.coverage))
+        doc.coverage.push({ area: "Velloquin Kestrel Ltd — prior position", state: "open",
+          note: `The position in finding ${process.env.MOCK_COVERAGE_CITES} on the invented earlier filing remains unresolved.` });
       // THE MOCK CARRIES THE RUN'S OWN LIMITS, because a compliant seat does. The receiver refuses a
       // coverage account that is clean throughout when the register ledger records a slice as less than
       // clean — doctrine, not a new rule: "a unit recorded coverage-limited can never be written as a
@@ -2715,7 +2730,8 @@ export function applyStageWrites(msg, argv) {
           // MOCK_KO_CITE_NOWHERE: a source the run does not hold, on the mark's first finding, the way a model's bad citation lands.
           findings: koMockFindings(runDir, n, band).map((f, j) => (process.env.MOCK_KO_CITE_NOWHERE && j === 0 ? { ...f, evidence: [...f.evidence, process.env.MOCK_KO_CITE_NOWHERE] } : f)),
           negatives: deg ? [] : [{ term: n, source: "web, marketplaces, app stores", note: "no results of significance" }],
-          degraded: deg ? { reason: "research unavailable" } : null };
+          // The flag the rater sends; the cause is the driver's, already in the plan the dispatch shows.
+          degraded: deg ? true : null };
       }),
     };
     // THE DRIVER WRITES THE CHUNK, THROUGH THE REAL TRANSPORT. The mock composes values and hands them
