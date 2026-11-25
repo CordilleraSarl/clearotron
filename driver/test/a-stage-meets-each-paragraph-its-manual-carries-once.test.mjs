@@ -114,6 +114,46 @@ for (const engine of Object.keys(ENGINES)) {
     } finally { rmSync(overlay, { recursive: true, force: true }); }
   });
 
+  test(`${engine}: the rulebook states the visible 25-word limit once, and no writer is left without it`, async () => {
+    // The limit was stated three times in the rulebook: in TWO LEVELS, in WORD BUDGETS and in the default-visible paragraph.
+    // It stays in TWO LEVELS only. A company's rulebook that lacks it still gets it from the stage text's fallback, and an
+    // older rulebook that still states it keeps it. Other manuals a writer reads are not counted here.
+    const LIMIT = /no visible sentence over 25 words/gi;
+    const limits = (text) => (text.match(LIMIT) ?? []).length;
+    const block = (wire) => wire.match(/=== MANUAL: [^\n]*report-prose\.md ===\n[\s\S]*?\n=== END MANUAL: [^\n]*report-prose\.md ===/)?.[0] ?? "";
+    const outside = (wire) => limits(wire) - limits(block(wire));
+    for (const label of WRITERS) {
+      const wire = await wireOf(engine, label);
+      assert.ok(block(wire), `premise: ${label} carried the rulebook`);
+      assert.equal(limits(block(wire)), 1, `${label}: the shipped rulebook states the limit once`);
+    }
+    const overlay = mkdtempSync(join(tmpdir(), "manual-paragraphs-limit-overlay-"));
+    try {
+      mkdirSync(join(overlay, "skills", "clearance-search"), { recursive: true });
+      const own = join(overlay, "skills", "clearance-search", "report-prose.md");
+      writeFileSync(own, "An invented firm's own prose guide.\nINVENTED-FIRM-SENTINEL sits in its middle.\n");
+      for (const label of WRITERS) {
+        const shipped = await wireOf(engine, label);
+        const wire = await wireOf(engine, label, { CLEAROTRON_INSTRUCTIONS_DIR: join(overlay, "skills") });
+        assert.ok(wire.includes("INVENTED-FIRM-SENTINEL"), `premise: ${label} carried the company's own copy`);
+        assert.equal(limits(block(wire)), 0, `premise: ${label}'s company rulebook does not state the limit`);
+        assert.equal(outside(wire), outside(shipped) + 1, `${label}: the stage text's fallback gives the limit back once`);
+      }
+      // An older rulebook: today's, with the two restatements the limit used to have put back.
+      const shippedText = readFileSync(join(DRIVER, "skills", "clearance-search", "report-prose.md"), "utf8");
+      const older = shippedText
+        .replace("about 20-25 words a sentence behind a fold, about 80 words a paragraph.",
+          "about 20-25 words a sentence behind a fold, no visible sentence over 25 words (TWO LEVELS), about 80 words a paragraph.")
+        .replace("One idea per sentence. The conclusion first.", "One idea per sentence. **No visible sentence over 25 words.** The conclusion first.");
+      assert.notEqual(older, shippedText, "premise: the older rulebook differs from the shipped one");
+      writeFileSync(own, older);
+      for (const label of WRITERS) {
+        assert.ok(limits(block(await wireOf(engine, label, { CLEAROTRON_INSTRUCTIONS_DIR: join(overlay, "skills") }))) >= 1,
+          `${label}: an older rulebook keeps the limit`);
+      }
+    } finally { rmSync(overlay, { recursive: true, force: true }); }
+  });
+
   test(`${engine}: a company's own copy of the manual that lacks the paragraph still delivers it once`, async () => {
     const overlay = mkdtempSync(join(tmpdir(), "manual-paragraphs-overlay-"));
     try {
