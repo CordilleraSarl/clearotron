@@ -5,7 +5,7 @@
 //
 // The register recipes said no step narrows a crowd, and their transliteration recipe ran on any worldwide order, for
 // every transliteration in the manifest, on the claim that most registers store non-Latin marks in their own script.
-// The ruled method narrows a crowd by the steps in unit.md and asks one script question per market the frame names; a
+// The ruled method narrows a crowd by the steps in SKILL.md and asks one script question per market the frame names; a
 // register that files foreign marks by their romanised form needs no script question at all. This holds the ruled
 // lines and that the old ones are gone.
 import { test } from "node:test";
@@ -18,7 +18,7 @@ import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
 const recipes = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "register-recipes.md"), "utf8")
   .replace(/\s+/g, " ");
 
-test("no recipe step denies the narrowing: a crowd is narrowed by the steps in unit.md", () => {
+test("no recipe step denies the narrowing: a crowd is narrowed by the steps in SKILL.md", () => {
   assert.ok(recipes.includes(RECIPES_SENTENCES.recipeStepSamplesTopCrowd));
   assert.ok(recipes.includes(RECIPES_SENTENCES.eachNamedSliceScopedClass));
   for (const gone of ["narrows-for-tractability", "narrow-to-tractable-and-stop"])

@@ -50,4 +50,14 @@ export const DIGEST_SENTENCES = Object.freeze({
   theAuditTrailAndThe: "#### The audit trail and the status-filter summary are the DRIVER's",
   saturatedFieldWithEnumeratedExact: "saturated field with no enumerated exact-owner slice, and no narrowed list that was read answering it, "
     + "ruled a material gap",
+  providerErrorBlockedFetchCloseable: "A provider error or a blocked fetch is a CLOSEABLE gap — escalate and disclose; a predicate or an "
+    + "office the provider cannot express is never closeable, and stays open and disclosed. Either way it "
+    + "clamps the verdict CLEAR→CONDITIONAL.",
+  waitingFamilyTheReadingTurn: "a waiting family the reading turn chose not to ask, so it was never searched; or a crowd the narrowing "
+    + "steps closed (a narrowed list that was read answered it, or the reading step set it aside with its "
+    + "count and a reason). Its reason goes into the audit workbook, not the report.",
+  workerReadsTheCandidatesPlacementCarried: "The worker reads the candidates placement carried forward and their supporting evidence "
+    + "**through the band tools**",
+  whenInDoubtKeepSetVerify: "**When in doubt, KEEP and set `verify` to `yes`**",
+  ownerConflictsFlaggedVerify: "owner-identity conflicts flagged with `verify` set to `yes` (never silently picked)",
 });

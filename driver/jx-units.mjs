@@ -41,7 +41,8 @@ import { JX_PROVIDERS } from "./jx-providers.mjs";
 import { findGridLedgerViolations, findPlatformIdentityViolations } from "./common-law-receipts.mjs";
 import { paths, readJson } from "./run-record.mjs";
 import { isLiveRecord } from "./band-shape.mjs";
-import { bandGoodsIndex, goodsFor } from "./record-goods.mjs";
+import { bandGoodsIndex, goodsFor, rowGoods } from "./record-goods.mjs";
+import { recordGoodsEvidence, goodsFromLabel, heldRecordProvenance } from "./goods-evidence.mjs";
 import { stopsWithTheRun } from "./cancel.mjs";
 
 export const MAX_UNIT_ATTEMPTS = 3;      // degraded-unit retries across resumes (repairable, never terminal)
@@ -53,7 +54,7 @@ export const SERP_GRID_DEADLINE_MS = 5 * 60_000;   // whole-grid wall clock (CLE
                                                    // past it, unattempted cells gap honestly — never a stalled run
 export const NATIVEREAD_GRID_ROWS_CAP = 60;        // grid-findings rows inlined into the read payload (receipted cap)
 export const NATIVEREAD_RECORDS_CAP = 60;          // Chinese register records inlined into the read payload
-export const NATIVEREAD_GOODS_CHARS = 300;        // held goods text shown per record
+export const NATIVEREAD_GOODS_CHARS = 300;        // goods text shown per record
 const GAP_DEGRADE_FLOOR = 0.5;           // >50% gapped cells ⇒ the grid attempt DEGRADES (the GRID_COVERAGE_FLOOR idiom)
 
 const jxDir = (runDir) => paths(runDir).jx;
@@ -458,6 +459,11 @@ const recordIdOf = (r) => String(r?.record_id ?? r?.uri ?? "").trim();
  * whose office is CN, once per identifier. Live records come first and then by identifier, so a capped list is the
  * same list on every read. `state` keeps what the record establishes apart: "read" (the band was read, with or
  * without a Chinese record), "missing" (no band) and "unreadable". The unit's note is not read: it is a count.
+ *
+ * A record's goods are its held body's, and where the run holds none, the statements its search row carries
+ * (record-goods.mjs `rowGoods`). `goodsFrom` says what they rest on and how complete they are, in the words the band
+ * lookup serves (goods-evidence.mjs `goodsFromLabel`): an empty held body, a body with no goods field and nothing held
+ * stay three different things. A class whose wording the merged band set aside is said in `goodsFrom`, never as text.
  */
 export function chineseRegisterRecords(runDir) {
   const at = paths(runDir).registerBand("transliteration-numeric");
@@ -473,18 +479,67 @@ export function chineseRegisterRecords(runDir) {
       seen.set(id, r);
     }
   }
-  let goods = null;
-  try { goods = bandGoodsIndex(runDir); } catch { goods = null; }
+  let index = null, bodies = null;
+  try { index = bandGoodsIndex(runDir); } catch { index = null; }
+  try { bodies = heldRecordProvenance(runDir); } catch { bodies = null; }
+  const held = (r) => goodsFor(index, { record_id: recordIdOf(r) });
+  const reader = { of: (r) => held(r) ?? rowGoods(r), held: (r) => held(r) != null };
   const records = [...seen.values()]
     .sort((a, b) => (Number(isLiveRecord(b)) - Number(isLiveRecord(a))) || recordIdOf(a).localeCompare(recordIdOf(b)))
     .map((r) => {
-      const held = goodsFor(goods, { record_id: recordIdOf(r) });
-      const text = (held ?? []).map((g) => `${g.classes?.length ? `class ${g.classes.join("/")}: ` : ""}${g.text}`).join("; ");
+      const evidence = recordGoodsEvidence({ ...r, record_id: recordIdOf(r) }, { goods: reader, held: bodies });
+      const statements = (reader.of(r) ?? []).filter((g) => g?.setAside !== true && String(g?.text ?? "").trim());
       return { id: recordIdOf(r), mark: r?.mark_text ?? null, owner: r?.owner_name ?? null, status: r?.status ?? r?.screen?.status ?? null,
-        classes: Array.isArray(r?.classes) ? r.classes : [], goods: text ? text.slice(0, NATIVEREAD_GOODS_CHARS) : null };
+        classes: Array.isArray(r?.classes) ? r.classes : [], goods: statements.length ? statements : null, goodsFrom: goodsFromLabel(evidence) };
     });
   return { state: "read", records };
 }
+
+/**
+ * A RECORD'S GOODS AS THE READER IS SHOWN THEM: what they rest on, then the statements, class by class. A statement the
+ * register gave with a translation shows the original first and the translation beside it, labelled, so it never reads
+ * as more goods; neither carries a language label, which the record does not establish for the original. Past
+ * NATIVEREAD_GOODS_CHARS the text is cut here, and the line says so, apart from any cut the register made: how many
+ * characters it shows of how many, each class none of whose wording appears, each class whose further wording does
+ * not, and which version of a statement the cut shortened or left out. PURE.
+ */
+const goodsShown = (goods, from) => {
+  const label = from ?? "nothing held";
+  if (!goods?.length) return `goods: ${label}`;
+  const statements = goods.map((g) => {
+    const head = [...(g.classes?.length ? `class ${g.classes.join("/")}: ` : "")];
+    const original = [...String(g.alt ?? g.text)];
+    const opening = g.alt ? [..." (translation: "] : [];
+    const translation = g.alt ? [...String(g.text)] : [];
+    return { name: g.classes?.length ? g.classes.join("/") : null, head, original, opening, translation, close: g.alt ? [...")"] : [] };
+  });
+  const whole = statements.flatMap((t, i) => [...(i ? [..."; "] : []), ...t.head, ...t.original, ...t.opening, ...t.translation, ...t.close]);
+  if (whole.length <= NATIVEREAD_GOODS_CHARS) return `goods (${label}): ${whole.join("")}`;
+  const cut = NATIVEREAD_GOODS_CHARS;
+  const seen = new Set(), none = [], further = [], versions = [];
+  let at = 0;
+  for (const t of statements) {
+    const words = at + t.head.length, originalEnd = words + t.original.length;
+    const translationStart = originalEnd + t.opening.length, translationEnd = translationStart + t.translation.length;
+    const end = translationEnd + t.close.length;
+    if (cut <= words) { if (t.name) (seen.has(t.name) ? further : none).push(t.name); }
+    else {
+      if (t.name) seen.add(t.name);
+      // Only the words count: a translation shown whole with its closing bracket cut is not a shortened translation,
+      // and the line's own count already says the cut fell there.
+      if (t.translation.length && cut < translationEnd && t.name) {
+        versions.push(cut < originalEnd ? `the original wording for class ${t.name} is shortened, and its translation is not shown`
+          : cut <= translationStart ? `the translation for class ${t.name} is not shown` : `the translation for class ${t.name} is shortened`);
+      }
+    }
+    at = end + 2;
+  }
+  const classes = (list) => `class${list.length > 1 ? "es" : ""} ${[...new Set(list)].join(", ")}`;
+  // The cut only moves forward, so a class first left out is never shown later: the two lists never share a class.
+  const notes = [...(none.length ? [`the text of ${classes(none)} is not shown`] : []),
+    ...(further.length ? [`further wording for ${classes(further)} is not shown`] : []), ...versions];
+  return `goods (${label}; first ${cut} of ${whole.length} characters shown${notes.map((n) => `; ${n}`).join("")}): ${whole.slice(0, cut).join("")}`;
+};
 
 /**
  * The read's evidence, assembled by the driver: the sections the reader is shown, and the identifiers and URLs it
@@ -504,7 +559,7 @@ export function buildNativereadPayload({ registerRecords = { state: "missing", r
     evidence++;
     sections.push(`## Chinese register records supplied (${shownRecords.length} of ${eligible.length})\n`
       + shownRecords.map((r) => `- ${r.id} | ${r.mark ?? "mark not shown"} | owner: ${r.owner ?? "not shown"} | ${r.status ?? "status not shown"}`
-        + ` | classes ${r.classes.length ? r.classes.join(", ") : "not shown"} | goods: ${r.goods ?? "no goods text held"}`).join("\n"));
+        + ` | classes ${r.classes.length ? r.classes.join(", ") : "not shown"} | ${goodsShown(r.goods, r.goodsFrom)}`).join("\n"));
   } else {
     sections.push("## No Chinese register records were supplied for this reading");
   }

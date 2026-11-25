@@ -2,6 +2,20 @@
 
 > Read `SKILL.md` first (the shared spine). This file is the DIGEST-mode procedure + the register-findings output format. **Do NOT read `unit.md`.**
 
+## Spawned session
+
+- **Digest mode (judgment — Layer B)** — the task gives the paths to the per-axis prose digests (audit
+  summaries) and the manifest; the driver has already MERGED the per-axis bands into the run's complete
+  band. The worker reads the candidates placement carried forward and their supporting evidence **through the band tools** (`band_shape` first, then
+  `band_lookup` / `band_record` — every call lands in the reading audit; never by opening or slicing band
+  files), performs all cross-cutting judgment (relevance, owner aggregation, opposition, Option-D),
+  DECIDES SUFFICIENCY, and hands the register-side findings back as typed rows — the driver renders the document synthesis reads; the seat writes no file.
+
+**Digest mode also reads**: `placement-recommendations.md` at `studio/clearance-search/<slug>/<date>/placement-recommendations.md` (Touchpoint 2 per-candidate placements — informs digest tiering), and its structured mirror `placements.json` beside it (one `{mark, owner, jurisdiction, records, tier, reason}` entry per candidate; when present, the authoritative per-candidate tier record — the md carries the rulings tail as prose).
+
+Writes:
+- Digest mode: you write no file. The driver renders `studio/clearance-search/<slug>/<date>/register-findings.md` from what you send. Coverage statuses are NOT a file you write: they ride the `record_coverage` tool into a driver-held record, and the driver renders the `## Coverage ledger` table and its JSON mirror from it (see *Coverage ledger* below).
+
 ## Output — the findings you hand back through `record_register_digest`
 
 **YOU WRITE NO FILE.** The driver renders `register-findings.md` from what you send. It composes the
@@ -147,6 +161,58 @@ pendings) must ALWAYS end individually (1 or 2) — the crowd never ends a top-s
 crowd is a legitimate reasoned ending for the residual: rule it once, count it, and spend your
 individual reasoning where it matters. This is not a write-everything rule — it is a no-silent-death
 rule.
+
+The DRIVER merges the per-axis band blocks into the run's complete band (`parseNamedBand` / `mergeNamedBands`
+in `named-band.mjs` — code, not a model). Judgment (Layer B) reads that union **through the band tools**
+(`band_shape` / `band_lookup` / `band_record`; every call on the reading audit — never by reading or slicing
+the band files), reconciles against `matter-context`'s materially-matters list, settles ONE status per
+coverage unit, and **decides sufficiency** there.
+Synthesis emits the rolled-up signal in `findings.json` (`coverage_judgment` — `{sufficient, reason}`):
+`sufficient:false` (a material slice not fully cleared) clamps the verdict CLEAR→CONDITIONAL and the named gap
+ships as an open item — the report still delivers. `sufficient:true` → deliver clean. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver. A missing band is the
+one hard stop — the driver fails fan-in on it, so a clean can never ship over an unsearched band. **The funnel
+writes no `coverage_judgment` and no clean verdict** — it hands up the complete band + honest `incomplete`s and
+lets judgment decide.
+
+### Coverage ledger — which document you owe, and what the four status tokens mean
+
+**The status vocabulary is CLOSED: EXACTLY one bare token of: `confirmed-clean` / `coverage-limited` /
+`deferred` / `withheld-by-judgment`.** Qualifiers never go in a status cell; they go in the reason. The distinction between
+`coverage-limited` and `deferred` is doctrine, not wording, and the driver relabels a row that gets it wrong:
+
+- **`coverage-limited`** — the search RAN and could not be exhausted: a crowd over the provider window, a
+  count-only saturation descriptor, a volume/pagination ceiling. A re-run cannot close it, so the escalation
+  gate skips it and it does not on its own make the run unfinished.
+- **`deferred`** — the search could not run or could not reach its data: tool absent, provider error, fetch
+  blocked, a predicate or an office the active provider cannot express. A provider error or a blocked fetch is a
+  CLOSEABLE gap — escalate and disclose; a predicate or an office the provider cannot express is never closeable,
+  and stays open and disclosed. Either way it clamps the verdict CLEAR→CONDITIONAL. Mislabel one of these
+  `coverage-limited` and a fixable hole disappears into an accepted limit.
+- **`confirmed-clean`** — the slice ran to completion and judgment cleared it.
+- **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched;
+  or a crowd the narrowing steps closed (a narrowed list that was read answered it, or the reading step set it
+  aside with its count and a reason). Its reason goes into the audit workbook, not the report.
+
+**HOW those statuses are recorded is not yours to assume — the dispatch states it, and it is one route,
+the `record_coverage` tool.** The driver computes the form before every digest dispatch and enumerates
+its rows into the dispatch itself, so the prompt and the gate cannot disagree about what the run owes —
+there is nothing for them to disagree about:
+
+- **Every run has a coverage form, and you never open or edit it.** The driver has already computed one
+  row per coverage unit, every identifier included, and the dispatch lists the rows with their `row_id`s.
+  Record `status` and `reason` on every row by calling `record_coverage` — the driver validates each row
+  as it arrives, holds the record itself, and a row settled once stays settled — and write **no
+  `## Coverage ledger` table at all**: the driver renders that table and its JSON mirror FROM the record
+  after your pass, so a table you type into the findings is erased before anything reads it. Rows you ADD
+  go through the same tool (`kind: "seat"`); the field list and the closed axis vocabulary are stated in
+  the dispatch's coverage block, so read them there rather than from memory.
+- **A form carrying NO rows is still a complete answer, and it is the driver's.** Where the plan apparatus
+  was out of reach there is nothing to compute rows from, so the form carries `rows: []` and an `absence`
+  field naming the cause, and the dispatch carries no coverage block. You are not asked to record anything
+  and you still write no `## Coverage ledger` table: the driver renders the declaration, so the report
+  states what is true about the run rather than a reconstruction of it. A run with no coverage ledger
+  supports no coverage claim anywhere in the findings.
+
 
 ### Coverage ledger — you rule the driver's form rows through `record_coverage` (the driver renders the `## Coverage ledger` section and `register-coverage-ledger.json` from what the tool records; synthesis lifts the rolled-up sufficiency into `coverage_judgment`)
 
@@ -410,8 +476,8 @@ alone. **Grounding:** "kept" means carried forward for assessment, NOT that it m
 URI); one known only from general knowledge — no register record fetched, no common-law record cited — is
 carried at synthesis as a typed **context note** (`context_notes[]`, type `famous-neighbour-ungrounded`),
 never as a finding with an empty or fabricated registration (the findings contract rejects that, and an
-ungrounded finding must never ship). Surfaced either way, never dropped. **When in doubt, KEEP and flag
-`Verify? ✅`** — better to surface a borderline candidate than drop a
+ungrounded finding must never ship). Surfaced either way, never dropped. **When in doubt, KEEP and set
+`verify` to `yes`** — better to surface a borderline candidate than drop a
 real risk. Log every gate drop. **Filer size, individual-vs-entity status, and apparent dormancy are never
 in-doubt-DROP reasons for an on-point in-class mark** — they travel WITH the kept candidate into Stage-2 as
 characterisation, they do not keep it out of the findings.
@@ -426,8 +492,8 @@ normalised owner name (strip suffixes — "Ltd", "GmbH", "Co.", commas, periods)
 for the same URI across fields or sources, OR an EUIPO cross-check disagrees with the vendor record on
 owner identity, OR a portfolio-size signal (many filings clustering under a normalised owner) would
 materially change the enforcement-appetite read, do NOT silently pick one. Surface both readings in the
-findings row and set `Verify? ✅` with reason "owner-identity conflict — confirm before enforcement
-read." Owner identity drives enforcer-profiling (see `clearance-search/firm-wide-reasoning.md`, *Enforcer profiling*
+row's `flag_reason`, with the reason "owner-identity conflict — confirm before enforcement
+read.", and set `verify` to `yes`. Owner identity drives enforcer-profiling (see `clearance-search/firm-wide-reasoning.md`, *Enforcer profiling*
 rule) — a wrong owner is a wrong risk read.
 
 ### Step 4 — Owner slices, and the applicant's own rights
@@ -534,7 +600,7 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 - [ ] `placement-recommendations.md` read and informing tiering; each candidate's graduated outcome adopted or counter-reasoned with audit-trail justification; its coverage-commands/open-questions carried forward
 - [ ] Per-jurisdiction sub-query attribution (`_query`) carried forward in the findings file's audit trail
 - [ ] Relevance gate applied per archetype over the candidates placement carried forward (field-relevance only — filer size/dormancy held for Stage-2, never a drop reason); drops logged
-- [ ] Owner aggregation across the band; owner-identity conflicts flagged `Verify? ✅` (never silently picked)
+- [ ] Owner aggregation across the band; owner-identity conflicts flagged with `verify` set to `yes` (never silently picked)
 - [ ] **Every coverage-form row ruled through `record_coverage`** — the tool's answer reports nothing outstanding; every `incomplete` crowd descriptor ruled cleared/material-gap; reconciled against `matter-context`'s material-jurisdiction list (every material jurisdiction enumerated-and-cleared, or written `coverage-limited`/`deferred` → CONDITIONAL — never a self-accepted clean over an unsearched slice); genuine open judgment surfaced to ship (not a coverage gap)
 - [ ] Applicant own-rights sweep run **if priority is live** (never a conflict / Findings row / gate)
 - [ ] Watchlist matches flagged

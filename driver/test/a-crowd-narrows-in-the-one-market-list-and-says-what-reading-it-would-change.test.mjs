@@ -14,6 +14,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveSkillReads } from "../stages.mjs";
 import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 import { RECIPES_SENTENCES } from "./ruled-sentences-register-recipes.mjs";
@@ -25,7 +26,7 @@ const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
 test("a crowd's market step uses the one list, and a major the list does not name stays in the crowd's count", () => {
   const skill = flat("SKILL.md"), unit = flat("unit.md"), recipes = flat("register-recipes.md");
-  assert.ok(skill.includes(REGISTER_SENTENCES.whenTheScopeSweepReturns));
+  assert.ok(unit.includes(UNIT_SENTENCES.whenTheScopeSweepReturns));
   assert.ok(unit.includes(UNIT_SENTENCES.whenTheWorldwideQuestionCrowd));
   assert.ok(unit.includes(UNIT_SENTENCES.theIdenticalMarkForThe));
   assert.ok(recipes.includes(RECIPES_SENTENCES.theirMarketStepUsesThe));
@@ -40,8 +41,10 @@ test("a crowd's market step uses the one list, and a major the list does not nam
 });
 
 test("before narrowing a wider crowd, judgment writes what reading it would change, or sets it aside", () => {
-  const condition = UNIT_SENTENCES.theSameStepsServeAny;
-  for (const m of ["SKILL.md", "unit.md"]) assert.ok(flat(m).includes(condition), `${m} does not carry the condition sentence`);
+  // Written once, in the shared manual both register modes read.
+  assert.ok(flat("SKILL.md").includes(REGISTER_SENTENCES.theSameStepsServeAny), "SKILL.md does not carry the condition sentence");
+  for (const stage of ["register-unit", "register-digest"])
+    assert.ok(resolveSkillReads(stage, {}).includes("skills/clearance-register/SKILL.md"), `${stage} does not read the shared register manual`);
 });
 
 test("the shared manual and the provider notes carry no price words", () => {

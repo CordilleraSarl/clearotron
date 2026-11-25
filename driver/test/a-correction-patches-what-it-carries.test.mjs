@@ -30,7 +30,8 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { recordSynthesis, mergeSynthesisPatch, registerPatchOf, FINDINGS_FILE, NARRATIVE_FILE } from "../synthesis-record.mjs";
+import { recordSynthesis, mergeSynthesisPatch, registerPatchOf, rebaseSynthesis, FINDINGS_FILE, NARRATIVE_FILE } from "../synthesis-record.mjs";
+import { FINDINGS_SCHEMA_VERSION } from "../findings-model.mjs";
 import { foldFindingsFile, UNFOLDED_FILE } from "../record-fold.mjs";
 import { parseFrameworkManifest } from "../framework.mjs";
 import { parseFrameworkMethod, freezeFrameworkMethod, FROZEN_METHOD_FILE } from "../framework-method.mjs";
@@ -111,8 +112,12 @@ const canon = (v) => (v === null || typeof v !== "object") ? JSON.stringify(v) :
 /** A run holding one accepted whole save. */
 function saved(opts = {}, doc = opts.method ? rated() : record()) {
   const dir = runDir(opts);
-  const r = recordSynthesis(dir, { narrative: NARRATIVE, findings: doc });
+  // A record of an earlier version is one accepted before the version rule: a newly written whole record below the
+  // current version is refused, so the earlier one is held as the base the driver's own edits write.
+  const earlier = doc.schema_version < FINDINGS_SCHEMA_VERSION;
+  const r = recordSynthesis(dir, { narrative: NARRATIVE, findings: earlier ? record() : doc });
   assert.equal(r.refused, null, `the first save was refused: ${r.refused}`);
+  if (earlier) { const b = rebaseSynthesis(dir, () => doc); assert.equal(b.ok, true, `the earlier record was not held: ${b.reason}`); }
   return dir;
 }
 const accepts = (r, what) => assert.equal(r.refused, null, `${what} was refused: ${r.refused}`);

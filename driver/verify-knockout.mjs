@@ -693,8 +693,10 @@ export const validators = {
       // degraded parity vs the DISK truth (the sweep's payload/.failed sentinels), both directions:
       // a mark without a payload can never be rated as researched, and a mark WITH one can't hide
       // behind a degraded flag (fresh evidence must be assessed, e.g. after a resume re-sweep).
+      // `true` exactly, the value the report's left-open list reads (publish/knockout-left-open.mjs): any
+      // other value on a mark with no payload would pass a truthiness test here and be missed there.
       const payloadExists = existsSync(join(runDir, "research", `${kebab(m.name)}.md`));
-      if (!payloadExists && !m.degraded)
+      if (!payloadExists && m.degraded !== true)
         return { ok: false, reason: `mark "${m.name}": the driver holds NO research payload for this mark — the row must carry degraded:true (null-results doctrine; a degraded mark can never be silently clean)` };
       if (payloadExists && m.degraded)
         return { ok: false, reason: `mark "${m.name}": a research payload exists but the row claims degraded — assess the held evidence` };
@@ -987,7 +989,7 @@ export function validateMergedFindings(runDir, merged, plan) {
   // payload/.failed sentinels are the driver's ground truth, never the model's echo)
   for (const m of marks) {
     const payloadExists = existsSync(join(runDir, "research", `${kebab(m.name)}.md`));
-    if (!payloadExists && !m.degraded) failures.push(`mark "${m.name}" has no research payload but is not flagged degraded — a degraded mark can never be silently clean`);
+    if (!payloadExists && m.degraded !== true) failures.push(`mark "${m.name}" has no research payload but is not flagged degraded — a degraded mark can never be silently clean`);
     if (payloadExists && m.degraded) failures.push(`mark "${m.name}" has a research payload but is flagged degraded — held evidence must be assessed`);
   }
   // PR-5 — permission-prose backstop over the MERGED text (chunk files can predate the per-chunk check

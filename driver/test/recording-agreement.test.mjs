@@ -956,28 +956,17 @@ test("a tool named in a multi-reader doc is granted to every reader of it", () =
   //
   // A row LEAVING this list is good news and still wants the entry removed in the same commit, or the
   // list slowly becomes a licence rather than a record.
+  //
+  // The register spine's eight rows left when the spine split by mode: unit.md and digest.md each hold their
+  // own mode's tools, and the shared SKILL.md names none a reader of it lacks. The three left are
+  // synthesis-rules.md's, served to report-overview, which is tool-free by design.
   const MODE_SCOPED = [
-    "skills/clearance-register/SKILL.md names band_lookup, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names band_record, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names band_shape, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names record_coverage, not held by: register-unit",
-    // Conversion 11 — the TENTH row, and it is the same mode-scoped shape as the four above it rather
-    // than the finding this list was left open for. The mention sits in SKILL.md's **Digest mode
-    // (judgment — Layer B)** bullet, the same sentence that already names `record_coverage` and the band
-    // tools; register-unit reads the shared spine and is dispatched as the FUNNEL, which that bullet is
-    // explicitly not addressing. Scoping it further is not available — the spine is one file by design,
-    // and the section labels are the scoping.
-    "skills/clearance-register/SKILL.md names record_register_digest, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names register_enumerate, not held by: register-digest",
-    // The approved Unit-mode sentence that names the unit's note tool: the mirror of record_register_digest above.
-    "skills/clearance-register/SKILL.md names record_unit_note, not held by: register-digest",
-    "skills/clearance-register/SKILL.md names register_execute_plan, not held by: register-digest",
     "skills/clearance-search/synthesis-rules.md names band_lookup, not held by: report-overview",
     "skills/clearance-search/synthesis-rules.md names band_record, not held by: report-overview",
     "skills/clearance-search/synthesis-rules.md names perplexity_research, not held by: report-overview",
   ];
   assert.deepEqual(offenders.sort(), [...MODE_SCOPED].sort(),
-    "a shared document names a tool that some of its readers cannot call, and it is not one of the ten "
+    "a shared document names a tool that some of its readers cannot call, and it is not one of the three "
     + "mode-scoped rows recorded above. Every reader is ORDERED by that document, so the call is "
     + "impossible for the ones without the grant and the shortfall reads as a model that chose not to. "
     + "Scope the sentence to the seat that holds the tool, grant it to the others, or drop the name — and "

@@ -8,6 +8,6 @@ export const SIGNA_SENTENCES = Object.freeze({
   oneCallNotThree: "It is ONE call, not three.",
   discloseSearchThisRegisterCan: "disclose it; no search on this register can close it, so it is not escalated, and it is never clean.",
   giveThatSliceDeferredCoverage: "give that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa) — ",
-  thisFollowsTheKeystoneDoctrine: " This follows the keystone doctrine in `../SKILL.md` → *Coverage ledger*: a could-not-reach gap is "
+  thisFollowsTheKeystoneDoctrine: " This is the digest's keystone doctrine (`../digest.md` → *Coverage ledger*): a could-not-reach gap is "
     + "**`deferred`**, open and disclosed, never `coverage-limited`",
 });

@@ -38,8 +38,8 @@
 import { serve } from "./stdio-server.mjs";
 import { recordSynthesis } from "../../synthesis-record.mjs";   // the writer
 import { correctionPositionsFrom } from "./correction-positions.mjs";   // the positions a correction's dispatch hands its save
-import { recordRegisterDigest } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
-import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES, KNOCKOUT_FINDING_KEYS } from "../../findings-model.mjs";
+import { recordRegisterDigest, DIGEST_DROP_REASON_TOKENS, VERIFY_VALUES, ADJUDICATION_DECISIONS } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
+import { FINDING_FIELDS, COVERAGE_AREA_STATES, KNOCKOUT_FINDING_KEYS, KNOCKOUT_FINDING_TYPES } from "../../findings-model.mjs";
 import { recordBlindFrame } from "../../blind-frame-record.mjs";
 import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
 import { recordSkeptic } from "../../skeptic-record.mjs";
@@ -65,7 +65,7 @@ import { REGISTER_AXES } from "../../coverage-ledger.mjs";
 import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
-import { USE_PHRASE, FAMILIES_RULE, FRAME_REPAIR_RULE } from "../../verify-knockout.mjs";   // the use phrase, the families and the repair rule, each defined once
+import { USE_PHRASE, FAMILIES_RULE, FRAME_REPAIR_RULE, KNOCKOUT_RATING_QUALIFIERS } from "../../verify-knockout.mjs";   // the use phrase, the families and the repair rule, each defined once
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
 import { recordKnockoutCorrection } from "../../knockout-correction-record.mjs";
 import { recordKnockoutRegisterRead } from "../../knockout-register-record.mjs";
@@ -292,7 +292,7 @@ const KNOCKOUT_ASSESS_FINDING_FIELDS = {
   // then, refused otherwise (findings-model.mjs validateKnockoutFinding).
   inputs: { type: "object", additionalProperties: { type: "string" }, description: "The framework's own inputs for this finding, keyed by its labels, each one of the values it lists." },
   net: { type: "string", description: "One conclusion sentence." },
-  type: { type: "string" },
+  type: { type: "string", enum: [...KNOCKOUT_FINDING_TYPES] },
   evidence: { type: "array", items: { type: "string" } },
   basis: { type: "string", description: "The ground THIS FINDING's band rests on — not the mark's `basis`, which is a different field one level up." },
   // The ninth key. This schema once said "all eight, no others" and forbade it while the recorder enforced
@@ -309,13 +309,25 @@ const KNOCKOUT_CORRECTION_FINDING_FIELDS = {
   band: { type: "string", description: "A word from the framework's ladder." },
   inputs: { type: "object", description: "The framework's own inputs for this finding, where it states a method." },
   net: { type: "string", description: "One conclusion sentence." },
-  type: { type: "string", description: "Famous Brand, Active Business, Cultural Reference, Domain, Descriptive Use, Negative Association or Competitor Intelligence." },
+  type: { type: "string", enum: [...KNOCKOUT_FINDING_TYPES], description: "Famous Brand, Active Business, Cultural Reference, Domain, Descriptive Use, Negative Association or Competitor Intelligence." },
   evidence: { type: "array", items: { type: "string" }, description: "URLs held for this name." },
   basis: { type: "string", description: "The ground the band rests on." },
   weighedFilings: { type: "array", items: { type: "string" }, description: "The register record ids this finding's reasoning used." },
 };
+// The qualifier values both Knockout operations take, from the list the validator closes on.
+const QUALIFIER_VALUES = `null or ${KNOCKOUT_RATING_QUALIFIERS.map((q) => `"${q}"`).join(" or ")}`;
 const knockoutFindingProperties = (fields) =>
   Object.fromEntries(KNOCKOUT_FINDING_KEYS.filter((k) => k in fields).map((k) => [k, fields[k]]));
+
+// ── THE CLEARANCE FINDING, DECLARED FROM ITS ONE DEFINITION ────────────────────────────────────────────
+//
+// Both lists that carry a finding (`save_findings`, `findings_patch`) declare each key with its type and the words
+// findings-model.mjs `FINDING_FIELDS` gives it: when it is required, its shape and the values it takes. A patch row
+// keeps its own `ordinal`, which names the finding it replaces. No key is `required` here: the record's own checks
+// refuse a missing field by name, in the turn, and a refusal at the schema leaves no call file.
+const FINDING_ITEM = "One complete finding object, as the findings record carries it. It takes the keys below and no others.";
+const findingProperties = (except = []) => Object.fromEntries(Object.entries(FINDING_FIELDS)
+  .filter(([k]) => !except.includes(k)).map(([k, f]) => [k, { type: f.type, description: f.about }]));
 
 serve({
   name: "recording",
@@ -657,7 +669,7 @@ serve({
             properties: {
               uri: { type: "string", description: "The record's `/mark/…` uri, as the band carries it. The driver joins on it; a uri the band cannot resolve is refused." },
               flag_reason: { type: "string", description: "WHY this position is risk-relevant — the judgment the row exists to carry." },
-              verify: { type: "string", enum: ["yes", "no"], description: "EXACTLY one bare token: does this row still need verification against the live register?" },
+              verify: { type: "string", enum: [...VERIFY_VALUES], description: "EXACTLY one bare token: does this row still need verification against the live register?" },
             },
           },
         },
@@ -669,7 +681,7 @@ serve({
             properties: {
               uri: { type: "string", description: "The record's `/mark/…` uri, as the band carries it." },
               flag_reason: { type: "string", description: "WHY this position is incumbent context rather than a risk-relevant conflict." },
-              verify: { type: "string", enum: ["yes", "no"], description: "EXACTLY one bare token." },
+              verify: { type: "string", enum: [...VERIFY_VALUES], description: "EXACTLY one bare token." },
             },
           },
         },
@@ -680,13 +692,13 @@ serve({
             "screen_verdict, class, status) is rendered from the band record, not typed: a batch-dropped " +
             "candidate with no entry here vanishes from the published audit, which is a silent recall loss.",
           items: {
-            type: "object", required: ["uri", "drop_reason"],
+            type: "object", required: ["uri", "drop_reason", "ground"],
             properties: {
               uri: { type: "string", description: "The dropped record's `/mark/…` uri." },
               drop_reason: { type: "string", description: "The one-line WHY — the judgment about THIS record. Never a bare status word." },
               ground: {
                 type: "string",
-                enum: ["off-field", "goods-distance", "duplicate-of-surfaced", "sign", "dead-status", "out-of-class"],
+                enum: [...DIGEST_DROP_REASON_TOKENS],
                 description:
                   "REQUIRED. EXACTLY one bare token saying under WHICH RULE the drop is made — the prose " +
                   "in drop_reason says why this record, the token says under which rule. `off-field` " +
@@ -722,7 +734,7 @@ serve({
             type: "object", required: ["subject", "decision", "reason"],
             properties: {
               subject: { type: "string", description: "Which placement — the mark and, where it helps a reader, its uri." },
-              decision: { type: "string", enum: ["ADOPTED", "OVERRODE"], description: "EXACTLY one bare token." },
+              decision: { type: "string", enum: [...ADJUDICATION_DECISIONS], description: "EXACTLY one bare token." },
               reason: { type: "string", description: "An override QUOTES the reason it contradicts; a kept tier still says why." },
             },
           },
@@ -1157,8 +1169,8 @@ serve({
             "COMPLETED FINDINGS, saved before the whole record exists. Send one or a few complete finding objects as the findings record carries them, and nothing else on the call. Each is checked as the record checks a finding and kept as soon as it passes; one that is refused leaves the others saved. A finding saved again for the same position replaces the earlier one. Saving writes no report: the record is complete only when you send `narrative` with `findings`, and that call takes every saved finding for a position it does not carry.",
           items: {
             type: "object",
-            description: "One complete finding object, as the findings record carries it.",
-            properties: Object.fromEntries(FINDING_KEYS_CURRENT.map((k) => [k, { description: `Part of the finding record; see findings-model.mjs for what \`${k}\` carries.` }])),
+            description: FINDING_ITEM,
+            properties: findingProperties(),
           },
         },
         findings_patch: {
@@ -1180,11 +1192,9 @@ serve({
               // schema without refusing the traffic it was meant to police.
               //
               // DERIVED, NEVER COPIED. The authority for what a finding carries is findings-model.mjs's
-              // key ladder. A hand-written list here would be a second definition of the record's shape
-              // and the two would drift the first time that ladder gains a key. The schema declares that
-              // these keys EXIST; what each one means stays where it is defined.
-              ...Object.fromEntries(FINDING_KEYS_CURRENT.filter((k) => k !== "ordinal")
-                .map((k) => [k, { description: `Part of the finding record; see findings-model.mjs for what \`${k}\` carries.` }])),
+              // `FINDING_FIELDS`, held to the key ladder by a test. A hand-written list here would be a second
+              // definition of the record's shape, and the two would drift the first time that ladder gains a key.
+              ...findingProperties(["ordinal"]),
             },
           },
         },
@@ -1281,7 +1291,7 @@ serve({
               ref: { type: ["string", "null"] },
               name: { type: "string", description: "The mark, VERBATIM as the plan names it — the join key for everything downstream." },
               rating: { type: "string", description: "The band word from the framework in force, verbatim. Not a numeral, not a letter code." },
-              ratingQualifier: { type: ["string", "null"], description: "A closed sub-gradation that can only CAP a band; anything else belongs in the band word itself." },
+              ratingQualifier: { type: ["string", "null"], description: `A closed sub-gradation that can only CAP a band; anything else belongs in the band word itself. It is ${QUALIFIER_VALUES}.` },
               degraded: { type: ["boolean", "null"], description: "True only when the driver holds NO research payload for this mark. A degraded mark can never read as silently clean." },
               bullets: { type: "array", minItems: 1, maxItems: 5, items: { type: "string" }, description: "1–5 evidence bullets." },
               basis: { type: "string", description: "ONE sentence: why this band, for this name, in these classes. The report renders it as the lead line — a paragraph in bullets cannot fill it." },
@@ -1349,7 +1359,7 @@ serve({
               classesDriving: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 }, description: "Mandatory at a material band — class-specific ratings." },
               classGroups: { type: "array", minItems: 2, description: "OPTIONAL: when separating the requested goods changes the advice under the frozen framework. Every class searched belongs to one group, and rating is the highest group's band.", items: { type: "object", required: ["band", "classes"], properties: {
                 band: { type: "string", description: "The band for this group, in the framework's words." },
-                ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+                ratingQualifier: { type: ["string", "null"], description: `${QUALIFIER_VALUES}.` },
                 classes: { type: "array", minItems: 1, items: { type: "integer", minimum: 1, maximum: 45 } },
               } } },
               beltAndBraces: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
@@ -1440,11 +1450,11 @@ serve({
             properties: {
               name: { type: "string", description: "The name, verbatim." },
               rating: { type: "string", description: "The band, in the framework's words." },
-              ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+              ratingQualifier: { type: ["string", "null"], description: `${QUALIFIER_VALUES}.` },
               classesDriving: { type: "array", items: { type: "integer" }, description: "The classes behind the band." },
               classGroups: { type: "array", minItems: 2, description: "Where this repair changes the conclusion by class group: every row as it now reads.", items: { type: "object", required: ["band", "classes"], properties: {
                 band: { type: "string", description: "The band for this group, in the framework's words." },
-                ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+                ratingQualifier: { type: ["string", "null"], description: `${QUALIFIER_VALUES}.` },
                 classes: { type: "array", minItems: 1, items: { type: "integer", minimum: 1, maximum: 45 } },
               } } },
               basis: { type: "string", description: "One sentence: why this band, for this name, in these classes." },
