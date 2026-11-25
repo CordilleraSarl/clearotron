@@ -12,6 +12,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DIGEST_DROP_REASON_TOKENS, VERIFY_VALUES, ADJUDICATION_DECISIONS } from "../register-digest-record.mjs";
 import { STAGES, paths } from "../stages.mjs";
+import { DIGEST_SENTENCES } from "./ruled-sentences-digest.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -62,8 +63,8 @@ test("the dispatch names the ground and asks for no record ids the tool has no f
 });
 
 test("the manual sets verify by the value the tool takes", () => {
-  const manual = readFileSync(join(DRIVER, "skills", "clearance-register", "digest.md"), "utf8");
+  const manual = readFileSync(join(DRIVER, "skills", "clearance-register", "digest.md"), "utf8").replace(/\s+/g, " ");
   assert.doesNotMatch(manual, /Verify\? ✅/);
-  assert.match(manual, /\*\*When in doubt, KEEP and set\n`verify` to `yes`\*\*/);
-  assert.match(manual, /owner-identity conflicts flagged with `verify` set to `yes` \(never silently picked\)/);
+  assert.ok(manual.includes(DIGEST_SENTENCES.whenInDoubtKeepSetVerify), "the in-doubt rule does not set verify");
+  assert.ok(manual.includes(DIGEST_SENTENCES.ownerConflictsFlaggedVerify), "the checklist does not set verify");
 });
