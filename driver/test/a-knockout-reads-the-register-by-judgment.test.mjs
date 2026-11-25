@@ -28,6 +28,7 @@ import { ownersOwedACheck } from "../owner-use-check.mjs";
 import { acceptKnockoutRegister, recordKnockoutRegisterRead, settledKnockoutReading, validateKnockoutRegisterFile, knockoutRegisterFile, mergeKnockoutRegisterCall } from "../knockout-register-record.mjs";
 import { readingDoc } from "./knockout-reading-fixture.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
+import { CROWD_DOC } from "../stages.mjs";
 import { beginAnswerMemory } from "../../providers/_shared/answer-memory.mjs";
 import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 
@@ -738,8 +739,11 @@ test("the manual carries the clearance's reading rule word for word, narrows the
   // The clearance's reading rule is in the shared register manual. Its headings sit a level higher there, and the words match.
   const spine = read("clearance-register/SKILL.md");
   const headed = (text, heading) => text.split("\n").some((l) => /^#+ /.test(l) && l.replace(/^#+ /, "") === heading.replace(/^#+ /, ""));
-  for (const heading of [REGISTER_SENTENCES.everyStepLookWhatYou, REGISTER_SENTENCES.readTheIdenticalMarkFirst])
+  for (const heading of [REGISTER_SENTENCES.readTheIdenticalMarkFirst])
     assert.ok(headed(manual, heading) && spine.includes(heading), heading);
+  // The crowd-size paragraph has one home, which the reader is handed beside its own manual.
+  assert.ok(KO_STAGES["knockout-register-read"].skillReads.includes(CROWD_DOC), "the reader is not handed the crowd-size paragraph");
+  assert.doesNotMatch(manual, /Fifty\? Read them all\. A few hundred\?/, "the reader's manual carries its own copy of the crowd-size paragraph again");
   const step = (text) => text.slice(text.indexOf("3. Still a crowd?"), text.indexOf(REGISTER_SENTENCES.listYouHaveReadAnswers));
   assert.ok(step(manual).length > 0);
   assert.equal(step(manual), step(spine), "the market steps drifted from the clearance's");

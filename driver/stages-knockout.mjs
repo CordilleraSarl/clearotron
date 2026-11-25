@@ -20,7 +20,7 @@ import { FROZEN_METHOD_FILE, methodDictation, inputsShape } from "./framework-me
 import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-review-record.mjs";
 import { knockoutRegisterChunkFile, knockoutRegisterFile, validateKnockoutRegisterFile } from "./knockout-register-record.mjs";
 import { narrowingOrderLine } from "./effective-scope.mjs";
-import { REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK } from "./stages.mjs";
+import { CROWD_DOC, REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK } from "./stages.mjs";
 import { declaredValidator } from "./stage-declarations.mjs";
 import { defectEvidence } from "./ko-review-evidence.mjs";   // each stage's validator, by the name its declaration gives
 
@@ -474,13 +474,13 @@ export const KO_STAGES = {
     // the judgment tier.
     model: "sonnet", thinking: "medium", timeoutSec: 900, stallSec: 600,
     // DECLARATIVE ONLY on this lane, as the assess stage records; the effective read is in the message.
-    skillReads: ["skills/knockout-register-read/SKILL.md"],
+    skillReads: ["skills/knockout-register-read/SKILL.md", CROWD_DOC],
     // A reader bound to a family writes its own record; one with no family bound (chunkNo null) writes the order's.
     out: (K, chunkNo) => (chunkNo == null ? K.registerReading : knockoutRegisterChunkFile(K.runDir, chunkNo)),
     validate: declaredValidator("knockout-register-read", KO_VALIDATORS),
     reads: (K) => ({ files: [K.instructedScope, K.inboundRequest, K.plan, paths(K.runDir).profile], message: true }),
     message: ({ K, job = {}, profile = null, readingLines = [], providerDoc = null, inScope = null, planFile = null, scopeFile = null, familySize = 1 }) => lines(
-      reads(["skills/knockout-register-read/SKILL.md", providerDoc].filter(Boolean)),
+      reads(["skills/knockout-register-read/SKILL.md", CROWD_DOC, providerDoc].filter(Boolean)),
       // The same assignment whether the name is ordered alone or in a shortlist.
       familySize > 1 ? FAMILY_READER_OPENER(familySize) : `You are reading the register for one name of a KNOCKOUT screen. You rate nothing; the step after you rates what you carry forward, with your reasons.`,
       existsSync(K.inboundRequest) ? `The client's request, as it arrived: ${K.inboundRequest}` : "",

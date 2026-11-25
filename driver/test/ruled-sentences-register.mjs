@@ -15,7 +15,6 @@ export const REGISTER_SENTENCES = Object.freeze({
     + "sweep uses the judgment model for that decision. The digest assesses the evidence carried forward. The "
     + "driver selects each stage's model; a unit does not choose its own replacement.",
   readTheIdenticalMarkFirst: "## Read the identical mark first. Look at the count before you read anything",
-  everyStepLookWhatYou: "## At every step: look at what you have before you work on it",
   onceTheIdenticalMarkFor: "Once the identical mark for the client's goods has been read, decide as a lawyer would whether you have "
     + "enough. Would more searching change what you tell the client: who could object, how weak the word is in "
     + "this market, or what the client should do? If it would, widen one step, read, and decide again. If it "
@@ -31,6 +30,5 @@ export const REGISTER_SENTENCES = Object.freeze({
     + "change. If you cannot, set it aside with its count and your reason. You need not take every step on "
     + "every crowd.",
   listYouHaveReadAnswers: "A list you have read answers",
-  everyStepLookWhatYou2: "At every step: look at what you have before you work on it",
   limitedTheClientGoodsWords: "limited to the client's goods words",
 });

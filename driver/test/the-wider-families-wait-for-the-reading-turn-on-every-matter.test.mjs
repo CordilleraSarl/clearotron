@@ -9,7 +9,7 @@ import { compileRegisterPlan, joinPlanToBands, deriveCoverageSkeleton, findUnexe
   awaitsReadingTurn, guardParentQid } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
-import { resolveSkillReads } from "../stages.mjs";
+import { CROWD_DOC, resolveSkillReads } from "../stages.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -163,12 +163,14 @@ test("the shipped manual carries the words the model reads, not only the config 
     assert.ok(resolveSkillReads(stage, {}).includes("skills/clearance-register/SKILL.md"), `${stage} does not read the shared register manual`);
   for (const f of ["SKILL.md"]) {
     const src = readFileSync(join(HERE, "..", "skills", "clearance-register", f), "utf8");
-    assert.match(src, /At every step: look at what you have before you work on it/,
-      `${f} does not carry the rule that applies at every moment`);
+    const crowd = readFileSync(join(HERE, "..", CROWD_DOC), "utf8");
+    for (const stage of ["register-unit", "register-digest"])
+      assert.ok(resolveSkillReads(stage, {}).includes(CROWD_DOC), `${stage} does not read the rule that applies at every moment`);
+    assert.match(crowd, /At every step: look at what you have before you work on it/, "the shared manual lost the rule that applies at every moment");
     assert.match(src, /On every matter the identical mark, in the instructed classes, is the first thing you read/,
       `${f} does not say the identical mark is read first on EVERY matter`);
-    assert.match(src, /to the placements, to the off-register sweep and to the write-up alike/,
-      `${f} does not name the five moments the rule applies at`);
+    assert.match(crowd.replace(/\s+/g, " "), /to the placements, to the off-register sweep and to the write-up alike/,
+      "the shared manual does not name the five moments the rule applies at");
     // The decision after reading carries no crowd precondition: once the identical mark for the client's goods has been
     // read, the reading turn decides as a lawyer would whether it has enough. The owner's sentence (his 899),
     // character for character, and no fixed stop.

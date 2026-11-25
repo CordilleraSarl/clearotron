@@ -34,14 +34,6 @@ THE PROSE RULES — binding on every line a reader sees (the report, its cards, 
 - NAME THE LEGAL TEST IN PLAIN WORDS. "applying the well-accepted framework for confusion — the marks as wholes against the goods and services" reads correctly to a lawyer and to a client. Never recite a court's factor template as though it structured the analysis, and never cite a decision this run did not fetch.
 - NO FILLER. Delete any phrase carrying no fact: run-shaped noise ("session-wide notice coverage", "coverage across the session"), throat-clearing ("it is worth noting that", "importantly", "as noted above"), and any sentence whose deletion loses nothing.
 
-## At every step: look at what you have before you work on it
-
-Fifty? Read them all. A few hundred? Sort by the client's goods and markets, read the near ones first, list
-the rest. A thousand or more? The field is crowded: read the identical and live ones for the client's
-goods, tell the client it is crowded, and do not write up the rest. Carry forward only what a lawyer would
-raise with the client. Write down what you set aside and why. This applies to the register's answer, to the
-list of records, to the placements, to the off-register sweep and to the write-up alike.
-
 ## Two levels: what a reader sees first, and what a fold holds
 
 **The reader is a lawyer who layers advice on top — and that lawyer's client reads the same page.** The

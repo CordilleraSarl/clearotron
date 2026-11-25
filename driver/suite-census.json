@@ -1391,7 +1391,7 @@
         },
         "a-knockout-reads-the-register-by-judgment.test.mjs": {
           "tests": 46,
-          "asserts": 213,
+          "asserts": 215,
           "skips": 0,
           "todos": 0
         },
@@ -2824,8 +2824,8 @@
           "todos": 0
         },
         "a-stage-meets-each-paragraph-its-manual-carries-once.test.mjs": {
-          "tests": 7,
-          "asserts": 19,
+          "tests": 8,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -7701,9 +7701,9 @@
           "skips": 0,
           "todos": 0
         },
-        "the-crowd-instruction-reads-the-same-in-every-manual.test.mjs": {
-          "tests": 2,
-          "asserts": 7,
+        "the-crowd-instruction-has-one-home-that-every-reader-is-handed.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -9089,7 +9089,7 @@
         },
         "the-wider-families-wait-for-the-reading-turn-on-every-matter.test.mjs": {
           "tests": 7,
-          "asserts": 24,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },

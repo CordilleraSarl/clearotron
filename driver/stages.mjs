@@ -846,6 +846,10 @@ export const pharmaMatter = (job) =>
 // The reach is pinned by report-prose-standard.test.mjs, because nothing FAILS if these rules never
 // arrive: the stage simply writes to model defaults and every other test still passes.
 const REPORT_PROSE = "skills/clearance-search/report-prose.md";
+// ONE COPY OF THE CROWD-SIZE RULE ("Fifty? Read them all. …"), read by every stage that applies it: the writers, the
+// review, the common-law seats and the register unit and write-up, and the Knockout's register reader. It was copied
+// word for word into each of their manuals, and one edit could leave the others behind.
+export const CROWD_DOC = "skills/clearance-search/look-at-what-you-have.md";
 // THE SPINE RIDES WITH synthesis-rules.md EVERYWHERE IT IS READ. 412 lines MOVED
 // out of that file into `firm-wide-reasoning.md` so the knockout lane can read the same copy instead of
 // carrying its own retired transcription. A move, not a copy — which means every stage that read
@@ -856,12 +860,12 @@ const SPINE_DOC = "skills/clearance-search/firm-wide-reasoning.md";
 const synthesisSkillReads = ({ profile, job }) => [
   "skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), workedExamplesFor(profile),
   ...(pharmaMatter(job) ? ["skills/clearance-search/field-doctrine-pharma.md"] : []),
-  REPORT_PROSE, "skills/clearance-search/synthesis-finding-rules.md",
+  REPORT_PROSE, CROWD_DOC, "skills/clearance-search/synthesis-finding-rules.md",
 ];
 const reportOverviewSkillReads = ({ profile }) =>
-  ["skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), "skills/clearance-search/delivery-contract.md", REPORT_PROSE];
+  ["skills/clearance-search/synthesis-rules.md", SPINE_DOC, frameworkFor(profile), "skills/clearance-search/delivery-contract.md", REPORT_PROSE, CROWD_DOC];
 const reportCardSkillReads = ({ profile }) =>
-  ["skills/clearance-search/delivery-contract.md", frameworkFor(profile), REPORT_PROSE, "skills/clearance-search/report-card-rules.md"];
+  ["skills/clearance-search/delivery-contract.md", frameworkFor(profile), REPORT_PROSE, CROWD_DOC, "skills/clearance-search/report-card-rules.md"];
 // THE REVIEW READS WHAT IT ENFORCES. Its manual judges a rating on the framework's own method, at the framework's
 // lowest band and under the framework in force, and its standing lines hold a pharma matter to the field module. It was
 // handed none of them: on a test run with Codex, a review that had not been given the framework went looking for one in
@@ -873,13 +877,13 @@ const reportCardSkillReads = ({ profile }) =>
 const COMMON_LAW_SPINE = "skills/clearance-common-law/SKILL.md";
 const COMMON_LAW_GRID = "skills/clearance-common-law/grid.md";
 const COMMON_LAW_MEANING = "skills/clearance-common-law/meaning.md";
-const COMMON_LAW_WHOLE = Object.freeze([COMMON_LAW_SPINE, COMMON_LAW_GRID, COMMON_LAW_MEANING]);
-const commonLawSeatReads = ({ axis } = {}) => axis === MEANING_SEAT ? [COMMON_LAW_SPINE, COMMON_LAW_MEANING]
-  : axis ? [COMMON_LAW_SPINE, COMMON_LAW_GRID] : [...COMMON_LAW_WHOLE];
+const COMMON_LAW_WHOLE = Object.freeze([COMMON_LAW_SPINE, CROWD_DOC, COMMON_LAW_GRID, COMMON_LAW_MEANING]);
+const commonLawSeatReads = ({ axis } = {}) => axis === MEANING_SEAT ? [COMMON_LAW_SPINE, CROWD_DOC, COMMON_LAW_MEANING]
+  : axis ? [COMMON_LAW_SPINE, CROWD_DOC, COMMON_LAW_GRID] : [...COMMON_LAW_WHOLE];
 const reviewSkillReads = ({ profile, job }) => [
   "skills/narrative-refutation/SKILL.md", frameworkFor(profile), SPINE_DOC,
   ...(pharmaMatter(job) ? ["skills/clearance-search/field-doctrine-pharma.md"] : []),
-  REPORT_PROSE,
+  REPORT_PROSE, CROWD_DOC,
 ];
 
 // Standing rules a stage's opening message states and every follow-up session repeats (`standing` on the stage,
@@ -1953,7 +1957,7 @@ export const STAGES = {
     // real fix is the in-class scoping (unit.md) + the 600 enumerate ceiling, which cap the silent page-loop to
     // ~seconds; this is a safety margin only. stallSec stays < timeoutSec so a true silent wedge still trips.
     timeoutSec: 1500, stallSec: 1100,
-    skillReads: ["skills/clearance-register/SKILL.md", "skills/clearance-register/unit.md"],
+    skillReads: ["skills/clearance-register/SKILL.md", CROWD_DOC, "skills/clearance-register/unit.md"],
     // Every follow-up is a fresh session that calls the same register tools, so its methodology line also names the
     // active provider's manual, which holds THIS provider's tool names and operator vocabulary and which the opening
     // message tells the first session to read and follow.
@@ -2053,7 +2057,7 @@ export const STAGES = {
     };
     const romanisedFiling = planEntries.some((e) => romanisedNote(e));
     return lines(
-      `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine) then skills/clearance-register/unit.md (MODE A — UNIT). Do NOT read digest.md (digest-mode judgment a unit must never run).`,
+      `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine), ${CROWD_DOC}, then skills/clearance-register/unit.md (MODE A — UNIT). Do NOT read digest.md (digest-mode judgment a unit must never run).`,
       // WHAT THE KEY ALSO CARRIES — COMPOSED, NOT DOCTRINE.
       // `unit.md` used to name three tools flat, and on a deployment withholding two of them the seat was
       // told it holds tools its grant does not carry. The composer derives the list from the same table
@@ -2346,7 +2350,7 @@ export const STAGES = {
     // CAVEAT the probe carries in its own words: it ran on a band trimmed 2,596 -> 300 records. The tiering
     // work is per-record, so the finding should hold at full size, but the first full-band arm is the test.
     model: "opus", thinking: "low", timeoutSec: 2400, stallSec: 900,
-    skillReads: ["skills/clearance-register/SKILL.md", "skills/clearance-register/digest.md"],
+    skillReads: ["skills/clearance-register/SKILL.md", CROWD_DOC, "skills/clearance-register/digest.md"],
     out: (P) => P.registerFindings,
     validate: declaredValidator("register-digest", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2460,7 +2464,7 @@ export const STAGES = {
       },
     },
     message: ({ paths: P, axes, lateBind, intakeAsks, placementSetAsides }) => lines(
-      `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine) then skills/clearance-register/digest.md (MODE B — DIGEST).`,
+      `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine), ${CROWD_DOC}, then skills/clearance-register/digest.md (MODE B — DIGEST).`,
       `You are register DIGEST mode. Combine the unit digests into the register findings file.`,
       // T9 (A2) — the owning stage executes its committed intake checks (see common-law twin).
       // PR-8: this stage holds the READ-ONLY band tools, not the live register — the old wording
