@@ -1,5 +1,26 @@
 # clearotron-driver
 
+## 0.7.0-beta.3
+
+### Patch Changes
+
+- Fixed: A client's assistant connected to Clearotron now gets instructions that match what the connector does. It reads a report's own product and coverage before describing the work, and no longer calls every search a preliminary one. It is no longer asked for a requester key or offered a model choice that its account cannot set, and no longer claims a native-language reading on searches that never run one. A report link for a Knockout screen is now pointed to the brief and the report for its findings, which the findings list there cannot show. The reader of an order's brief is now told to leave the choice of search to the person ordering it when more than one would fit.
+- Fixed: When an order fails before its search starts, or is refused before it runs, the notice now reaches an integration whose access is limited to that order's company, as notices about started searches already did. A client who placed the order is told that the search was not started, without the technical reason.
+- Fixed: A Knockout of close variations no longer risks rating each name alone. The intake must now say which names belong together, listing unrelated names on their own, before its plan is saved. Before, a plan that left the groups out was accepted, and every name was then rated in isolation. Once a plan is saved, a correction to one of its fields or one of its names is now accepted on its own, where before it was refused.
+- Fixed: Each name in a Knockout now opens with its overall rating and the goods or services the rating is for, and says how the advice differs for other goods. Before, a name's first paragraphs could describe the name and its market without giving the rating, so a reader could not tell which of the requested goods the rating applied to.
+- Fixed: An assistant opened on a Knockout report link now reads the name's findings in the brief and the delivered report. It no longer asks for finding cards that a Knockout does not have.
+- Fixed: A register search that stops answering partway through a clearance is no longer run again at full cost; the searches it could not finish are delivered as left open.
+- Fixed: The steps that write a report now follow one set of writing rules. The summary and every line a reader sees first are asked for in plain words a client reads, with no sentence over 25 words, while the detail behind a fold keeps its legal language. Before, the same rules were stated several times and disagreed about who the reader was.
+- Fixed: When an order's id is too long, the refusal now states the 128-character limit and the id's own length. Before, it named only the allowed characters, so a caller could not tell what to fix.
+- Fixed: A what-if memo is now offered only on a delivered clearance report whose findings can be read, never on a search still running, one stopped or never delivered, or a Knockout screen. A request outside that is declined when it is asked rather than after it was accepted. Asking to re-run a step of a delivered report now points to the memo instead of only refusing.
+- Fixed: When the review withdraws a finding, an open coverage row that still cites it is now sent back to the writer for correction before delivery. Such a row could otherwise print under "Left open" with the withdrawn finding's owner, though the report carries no card for that finding.
+- Fixed: An assistant placing an order through the connector now tells the requester the search is submitted, not that it is starting, and confirms it only once the order has been accepted. It reports a start only once the search has a status of its own, and checks that status rather than reading silence as progress.
+- Fixed: Wherever a register search is told how to narrow a crowded result, it is now pointed to the section that holds those steps. The register guides now say that the coverage record is where a market the register cannot reach is recorded and disclosed.
+- Fixed: Each step of a clearance is now given only the instructions for its own part of the work. A register or marketplace step no longer receives instructions written for another step, and the review that checks the gathered findings is given its instructions directly instead of being told to open a file.
+- Fixed: A clearance now fetches logos only for the registrations its report draws, at most eight per finding. A finding citing more registrations no longer pays the register for logos that no page shows.
+- Fixed: A link written into the opening paragraphs of the report's assessment of the mark now shows as a link, as it already did in the rows below them, instead of as markup.
+- Fixed: The Chinese-language review now reads the Chinese register records the search found, with their goods where held, so a conflict it spots in them can reach the report instead of only a suggestion to search further.
+
 ## 0.7.0-beta.2
 
 ### Patch Changes
