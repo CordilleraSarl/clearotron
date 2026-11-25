@@ -496,21 +496,46 @@ export function chineseRegisterRecords(runDir) {
 }
 
 /**
- * A RECORD'S GOODS AS THE READER IS SHOWN THEM: what they rest on, then the statements, class by class. Past
+ * A RECORD'S GOODS AS THE READER IS SHOWN THEM: what they rest on, then the statements, class by class. A statement the
+ * register gave with a translation shows the original first and the translation beside it, labelled, so it never reads
+ * as more goods; neither carries a language label, which the record does not establish for the original. Past
  * NATIVEREAD_GOODS_CHARS the text is cut here, and the line says so, apart from any cut the register made: how many
- * characters it shows of how many, and each class whose statement the cut left out whole. PURE.
+ * characters it shows of how many, each class none of whose wording appears, each class whose further wording does
+ * not, and which version of a statement the cut shortened or left out. PURE.
  */
 const goodsShown = (goods, from) => {
   const label = from ?? "nothing held";
   if (!goods?.length) return `goods: ${label}`;
-  const parts = goods.map((g) => [...`${g.classes?.length ? `class ${g.classes.join("/")}: ` : ""}${g.text}`]);
-  const whole = parts.flatMap((p, i) => (i ? [..."; ", ...p] : p));
+  const statements = goods.map((g) => {
+    const head = [...(g.classes?.length ? `class ${g.classes.join("/")}: ` : "")];
+    const original = [...String(g.alt ?? g.text)];
+    const opening = g.alt ? [..." (translation: "] : [];
+    const translation = g.alt ? [...String(g.text)] : [];
+    return { name: g.classes?.length ? g.classes.join("/") : null, head, original, opening, translation, close: g.alt ? [...")"] : [] };
+  });
+  const whole = statements.flatMap((t, i) => [...(i ? [..."; "] : []), ...t.head, ...t.original, ...t.opening, ...t.translation, ...t.close]);
   if (whole.length <= NATIVEREAD_GOODS_CHARS) return `goods (${label}): ${whole.join("")}`;
-  const left = [];
+  const cut = NATIVEREAD_GOODS_CHARS;
+  const seen = new Set(), none = [], further = [], versions = [];
   let at = 0;
-  goods.forEach((g, i) => { if (at >= NATIVEREAD_GOODS_CHARS) left.push(...(g.classes ?? [])); at += parts[i].length + 2; });
-  return `goods (${label}; first ${NATIVEREAD_GOODS_CHARS} of ${whole.length} characters shown`
-    + `${left.length ? `; the text of class${left.length > 1 ? "es" : ""} ${left.join(", ")} is not shown` : ""}): ${whole.slice(0, NATIVEREAD_GOODS_CHARS).join("")}`;
+  for (const t of statements) {
+    const words = at + t.head.length, originalEnd = words + t.original.length;
+    const translationStart = originalEnd + t.opening.length, end = translationStart + t.translation.length + t.close.length;
+    if (cut <= words) { if (t.name) (seen.has(t.name) ? further : none).push(t.name); }
+    else {
+      if (t.name) seen.add(t.name);
+      if (t.translation.length && cut < end && t.name) {
+        versions.push(cut < originalEnd ? `the original wording for class ${t.name} is shortened, and its translation is not shown`
+          : cut <= translationStart ? `the translation for class ${t.name} is not shown` : `the translation for class ${t.name} is shortened`);
+      }
+    }
+    at = end + 2;
+  }
+  const classes = (list) => `class${list.length > 1 ? "es" : ""} ${[...new Set(list)].join(", ")}`;
+  // The cut only moves forward, so a class first left out is never shown later: the two lists never share a class.
+  const notes = [...(none.length ? [`the text of ${classes(none)} is not shown`] : []),
+    ...(further.length ? [`further wording for ${classes(further)} is not shown`] : []), ...versions];
+  return `goods (${label}; first ${cut} of ${whole.length} characters shown${notes.map((n) => `; ${n}`).join("")}): ${whole.slice(0, cut).join("")}`;
 };
 
 /**
