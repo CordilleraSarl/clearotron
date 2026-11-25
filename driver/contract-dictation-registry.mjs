@@ -109,66 +109,25 @@ export function grantedToolsFor(stage) {
 // this is not that: it is the measured population, which is FIVE TIMES the two members was filed
 // on, and every entry is a live divergence a reader can go and see.
 //
-// SIX OF THE TEN ARE ONE SUB-CLASS NOBODY HAD NAMED: SHARED DOCTRINE, DIVERGENT GRANTS. A skill file is
-// served whole to several stages whose grants differ, so the same sentence is a correct instruction to
-// one seat and an order for a tool the next seat does not hold. `clearance-register/SKILL.md` goes to
-// register-unit and register-digest; `clearance-search/phase2-execution.md` goes to skeptic;
-// `clearance-search/synthesis-rules.md` goes to synthesis AND report-overview. report-overview and
-// clearance-variants are tool-free BY DESIGN, each with its reason written out in TOOL_FREE_STAGES;
-// skeptic has since CONVERTED to the RECORDING category (its reason moved to RECORDING_STAGES) and
-// holds exactly its own record tool — still no retrieval tool, so its entries below reproduce
-// unchanged. Each of the three is currently served a document telling it to run a lookup.
+// SHARED DOCTRINE, DIVERGENT GRANTS. A skill file is served whole to several stages whose grants differ,
+// so the same sentence is a correct instruction to one seat and an order for a tool the next seat does
+// not hold. `clearance-search/synthesis-rules.md` goes to synthesis AND report-overview, and
+// report-overview is tool-free BY DESIGN, its reason written out in TOOL_FREE_STAGES; clearance-variants
+// is tool-free too, and its own doctrine names a research call. The register spine's eight rows and the
+// skeptic's two resolved when those manuals split by seat: each register mode reads only its own file
+// beside the shared spine, and the skeptic reads a manual of its own.
 //
 // Resolution is per pair and is doctrine judgment: grant the tool, drop the order, or scope the
 // sentence to the seat that holds it. owns that call and says so; E12's job is that the list can
 // only shrink. The test asserts every entry still reproduces, so a pair fixed in fails CI here
 // until its line is deleted.
 export const TOOL_ORDER_BACKLOG = [
-  { stage: "register-digest", tool: "register_enumerate", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — shared doctrine: SKILL.md is served to register-unit (holds register) and register-digest "
-      + "(holds band only, since the plan freeze retired live search from the judgment seat)." },
-  { stage: "register-digest", tool: "register_execute_plan", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — same shared file, same split grant." },
   { stage: "register-digest", tool: "register_batch_screen", site: "driver/skills/clearance-register/digest.md",
     closes: "#865 — the digest's OWN doctrine, not a shared file: this one is the stage being told to "
       + "batch-screen with a tool its grant does not carry. toolGroupsForStage() in gather-config.mjs already records that "
       + "this stage's prompt once ordered live register checks; the order outlived the note." },
-  { stage: "register-unit", tool: "band_record", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — same shared file, same split grant." },
-  { stage: "register-unit", tool: "band_shape", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — same shared file, same split grant." },
   { stage: "report-overview", tool: "band_record", site: "driver/skills/clearance-search/synthesis-rules.md",
     closes: "#865 — same shared file, same split grant." },
-  { stage: "register-unit", tool: "band_lookup", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — the mirror image: the band tools are the judgment stages', and the unit lane holds "
-      + "register instead." },
-  { stage: "register-unit", tool: "record_coverage", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — same shared-spine split as the band tools above, minted by the typed coverage "
-      + "transport: the spine's Coverage-ledger section (mode-scoped to DIGEST in its own words) orders "
-      + "`record_coverage`, which only register-digest's grant carries — the unit lane must never hold a "
-      + "writer into judgment's coverage record. Resolved the day the spine's coverage doctrine moves "
-      + "wholly into digest.md, or #865 scopes shared-spine text per seat." },
-  { stage: "register-unit", tool: "record_register_digest", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — the SAME shared-spine split as record_coverage above, minted by conversion 11's typed "
-      + "findings transport. The spine's mode list names the tool inside its **Digest mode (judgment — "
-      + "Layer B)** bullet, which is the sentence that already names record_coverage and the band tools; "
-      + "register-unit reads the spine and is dispatched as the FUNNEL, so it is ordered a tool only the "
-      + "digest grant carries. It resolves on the same condition as record_coverage's row — the day the "
-      + "spine's digest doctrine moves wholly into digest.md, or #865 scopes shared-spine text per seat — "
-      + "and NOT by granting it: the funnel must never hold a writer into judgment's findings document, "
-      + "which is the same rule that keeps record_coverage off its grant." },
-  { stage: "register-digest", tool: "record_unit_note", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "the mirror of record_register_digest above: the spine's **Unit mode** bullet says the driver renders "
-      + "the unit's note from its `record_unit_note` call, in wording approved on 2026-11-11. register-digest reads "
-      + "the spine and is dispatched as JUDGMENT, which that bullet does not address. It resolves on the same "
-      + "condition as the rows above, and NOT by granting it: the judgment seat never writes a unit's note." },
-  { stage: "skeptic", tool: "perplexity_research", site: "driver/skills/clearance-search/phase2-execution.md",
-    closes: "#865 — skeptic holds NO retrieval tool ('new search work enters via the escalation lane, never "
-      + "from this seat' — it converted to the RECORDING category, gaining record_skeptic plus the "
-      + "read-only, run-dir-scoped search_run_artifacts, and no retrieval tool) "
-      + "and is served a document ordering a live query." },
-  { stage: "skeptic", tool: "register_propose_supplemental", site: "driver/skills/clearance-search/phase2-execution.md",
-    closes: "#865 — same seat, same file, the supplemental mint it cannot call." },
   { stage: "report-overview", tool: "perplexity_research", site: "driver/skills/clearance-search/synthesis-rules.md",
     closes: "#865 — synthesis-rules.md is served to synthesis (holds perplexity + band) and to "
       + "report-overview (TOOL-FREE: 'renders the shell from the settled narrative + findings')." },

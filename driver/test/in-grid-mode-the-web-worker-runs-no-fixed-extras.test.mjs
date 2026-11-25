@@ -13,9 +13,11 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { GRID_SENTENCES } from "./ruled-sentences-common-law-grid.mjs";
 
-const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-common-law", "SKILL.md"), "utf8")
+// The web manual: its shared spine, the grid and the meaning sweep, as the single web stage reads them.
+const manual = ["SKILL.md", "grid.md", "meaning.md"]
+  .map((f) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-common-law", f), "utf8")).join("\n")
   .replace(/>\s/g, " ").replace(/\s+/g, " ");
 
 test("grid mode judges the flagged elements' grid results and the meaning answers with every other candidate", () => {
@@ -29,6 +31,6 @@ test("grid mode judges the flagged elements' grid results and the meaning answer
 });
 
 test("a follow-up is asked only where closing the gap could change what the client is told", () => {
-  assert.ok(manual.includes(COMMON_LAW_SENTENCES.answerUnsureAndClosingCould));
+  assert.ok(manual.includes(GRID_SENTENCES.answerUnsureAndClosingCould));
   assert.ok(!manual.includes("If any answer is \"no\" or \"unsure,\" fire"), "the web manual still fires a follow-up on any such answer");
 });
