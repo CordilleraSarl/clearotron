@@ -15,11 +15,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { GRID_SENTENCES } from "./ruled-sentences-common-law-grid.mjs";
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-common-law");
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
-const manual = flat("SKILL.md");
+// The web manual: its shared spine, the grid and the meaning sweep.
+const manual = ["SKILL.md", "grid.md", "meaning.md"].map(flat).join(" ");
 const prompts = flat("perplexity-prompts.md");
 
 test("no manual teaches a hand-authored grid program, and neither takes every variant", () => {
@@ -32,7 +33,7 @@ test("no manual teaches a hand-authored grid program, and neither takes every va
 });
 
 test("the field search is a targeted follow-up where the frame names a field outside the customer's own", () => {
-  assert.ok(manual.includes(COMMON_LAW_SENTENCES.fieldScopedGeneralSearchThe));
+  assert.ok(manual.includes(GRID_SENTENCES.fieldScopedGeneralSearchThe));
   assert.ok(!manual.includes("Field-scoped general-web cell"), "the web manual still dictates a cell the grid does not build");
   assert.ok(!prompts.includes("web-field:"), "the grid prompt still dictates a cell the grid does not build");
   for (const gone of ["the matter goes outside the customer's core field", "is also mandatory", "one extra cell per term", "`\"<term> pizza\"` cells"])
@@ -42,6 +43,6 @@ test("the field search is a targeted follow-up where the frame names a field out
 });
 
 test("the narrative reviewer flags an untraced publisher in the audit workbook, and blocks no delivery", () => {
-  assert.ok(manual.includes(COMMON_LAW_SENTENCES.willFlagTheAuditWorkbook));
+  assert.ok(manual.includes(GRID_SENTENCES.willFlagTheAuditWorkbook));
   assert.ok(!manual.includes("BLOCK delivery"), "the web manual still says the reviewer blocks delivery");
 });

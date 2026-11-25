@@ -8,7 +8,8 @@ import { fileURLToPath } from "node:url";
 import { compileRegisterPlan, joinPlanToBands, deriveCoverageSkeleton, findUnexecutedCleanClaims,
   awaitsReadingTurn, guardParentQid } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
-import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { resolveSkillReads } from "../stages.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -157,7 +158,10 @@ test("the shipped manual carries the words the model reads, not only the config 
   // THE INERT-FEATURE TRAP, and it has already cost this build once: the instruction went to the
   // config repo's skills and not to the manual the engine ships, so the model never saw it. These are
   // the owner's ruled sentences; they are asserted as SHIPPED, in the tree the product carries.
-  for (const f of ["SKILL.md", "unit.md"]) {
+  // The narrowing doctrine is written once, in the shared manual, and both register modes read it.
+  for (const stage of ["register-unit", "register-digest"])
+    assert.ok(resolveSkillReads(stage, {}).includes("skills/clearance-register/SKILL.md"), `${stage} does not read the shared register manual`);
+  for (const f of ["SKILL.md"]) {
     const src = readFileSync(join(HERE, "..", "skills", "clearance-register", f), "utf8");
     assert.match(src, /At every step: look at what you have before you work on it/,
       `${f} does not carry the rule that applies at every moment`);
@@ -168,7 +172,7 @@ test("the shipped manual carries the words the model reads, not only the config 
     // The decision after reading carries no crowd precondition: once the identical mark for the client's goods has been
     // read, the reading turn decides as a lawyer would whether it has enough. The owner's sentence (his 899),
     // character for character, and no fixed stop.
-    assert.ok(src.replace(/\s+/g, " ").includes(UNIT_SENTENCES.onceTheIdenticalMarkFor), `${f} does not carry the owner's stopping judgment`);
+    assert.ok(src.replace(/\s+/g, " ").includes(REGISTER_SENTENCES.onceTheIdenticalMarkFor), `${f} does not carry the owner's stopping judgment`);
     assert.doesNotMatch(src, /stop widening|widen one step at a time/, `${f} still carries the fixed stop or the thin-list rule`);
   }
 });

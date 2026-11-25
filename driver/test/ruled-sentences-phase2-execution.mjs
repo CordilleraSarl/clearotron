@@ -14,22 +14,10 @@ export const PHASE2_SENTENCES = Object.freeze({
   recordItsResultThatFinding: "record its result in that finding's `use_check.source`",
   namesNonUseRevocationCancellation: "names non-use revocation/cancellation as the mitigant),",
   theActiveRegisterProviderAnd: "the **active register provider** and its output path (`register-units/<axis>.md`).",
-  passingMentionNeverTriggersRun: "a passing mention never triggers a re-run,",
-  comesFromFreshEyesAudit: "comes from a fresh-eyes audit plus targeted escalation, not from one giant session.",
-  variantExecutionStrategyRegisterLayer: "### Variant execution strategy (register layer) The register units follow clearance-register/unit.md: "
+  variantExecutionStrategyRegisterLayer: "### Variant execution strategy (register layer) The register units follow clearance-register/SKILL.md: "
     + "the identical mark first, a crowd narrowed by its steps, and a wider question only where reading it "
     + "would change what you tell the client. A family the reading turn did not ask is recorded "
     + "withheld-by-judgment with its reason; that is a documented decision, not a shortcut. ## Step 2.6",
-  coverageLedgerAnyDeferredCoverage: "- **Coverage ledger:** is any `deferred` / `coverage-limited` row being narrated (or about to be "
-    + "narrated) as a clean negative? Is a material jurisdiction that no question reached at all missing from "
-    + "the ledger? One covered by a complete worldwide answer, or left in a crowd's count by the identical "
-    + "mark's narrowing, is accounted for and needs no row of its own. A deferred row treated as clean is a "
-    + "recall gap — flag it.",
-  deferredCoverageLedgerRowThe: "**A `deferred` coverage-ledger row the table lists as CLOSEABLE is exactly this kind of "
-    + "documented-reason gap** — the owning unit resumes and runs the missing question. A deferral the table "
-    + "marks NOT CLOSEABLE is not re-run.",
-  gapTheCoverageLedgerRecords: "- a gap the **Coverage ledger records as `coverage-limited`** — a crowd recorded with its count, which "
-    + "a warm re-run cannot close;",
   applyTheExistingTriggersFor: "Apply the existing triggers for actual-use, enforcement, and owner checks after the relevant legal "
     + "assessment. First use a suitable answer already held by this run, including an earlier stage or "
     + "attempt, where it answers the same owner, mark, goods, territory, and material time question. A source "

@@ -60,7 +60,7 @@ test("both re-run follow-ups and the review's manual name the kinds the review's
     assert.equal(note([]), "", "a follow-up names rows when there are none");
   }
   // The manual names the provider's kind with its examples in brackets, then the rest in the same words.
-  const manual = readFileSync(join(HERE, "..", "skills", "clearance-search", "phase2-execution.md"), "utf8").replace(/\s+/g, " ");
+  const manual = readFileSync(join(HERE, "..", "skills", "skeptic", "SKILL.md"), "utf8").replace(/\s+/g, " ");
   const [provider, rest] = NOT_CLOSEABLE_KINDS.split(", the envelope close");
   assert.ok(manual.includes(provider.replace(/^the provider/, "the active provider")) && manual.includes("the envelope close" + rest),
     "the review's manual names other kinds");

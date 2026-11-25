@@ -40,17 +40,16 @@ test("every manual that carries the crowd instruction carries it byte for byte",
   assert.deepEqual(copies.map((c) => c.file), [
     "clearance-common-law/SKILL.md",
     "clearance-register/SKILL.md",
-    "clearance-register/unit.md",
     "clearance-search/report-prose.md",
     "knockout-register-read/SKILL.md",
   ], "the manuals that carry the paragraph changed: read the new or missing one before changing this list");
-  assert.equal(copies.length, 5);
+  assert.equal(copies.length, 4);
   for (const c of copies) assert.ok(c.text.length > 200, `${c.file}: the paragraph read as empty or cut short`);
   assert.deepEqual(drifted(copies), [], "a copy of the crowd instruction no longer reads as the others do");
 });
 
 test("one character changed in any one copy is caught", () => {
-  assert.equal(copies.length, 5);
+  assert.equal(copies.length, 4);
   for (let i = 0; i < copies.length; i++) {
     const planted = copies.map((c, j) => (j === i ? { ...c, text: c.text.replace("crowded", "crowdeD") } : c));
     assert.notEqual(planted[i].text, copies[i].text, `${copies[i].file}: the planted change did not land`);

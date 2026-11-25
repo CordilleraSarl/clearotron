@@ -11,23 +11,26 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
+import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
 
 const skill = (rel) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", rel), "utf8");
 
 test("the web and register manuals set no call budget", () => {
   const manuals = {
     "clearance-common-law/SKILL.md": skill("clearance-common-law/SKILL.md"),
+    "clearance-common-law/grid.md": skill("clearance-common-law/grid.md"),
+    "clearance-common-law/meaning.md": skill("clearance-common-law/meaning.md"),
     "clearance-common-law/perplexity-prompts.md": skill("clearance-common-law/perplexity-prompts.md"),
     "clearance-register/SKILL.md": skill("clearance-register/SKILL.md"),
+    "clearance-register/unit.md": skill("clearance-register/unit.md"),
     "clearance-register/digest.md": skill("clearance-register/digest.md"),
   };
   // THE SENTINEL CANNOT BE A STRING THIS ARM EXISTS TO SEE REMOVED. It used to be the register manual's
   // per-unit table of calls — one of the numbers the ruling takes out — so deleting that table turned a
   // successful repair into "the manuals were read" failing. A canary keyed on the thing being removed
   // fires when the work is done, which is the one time it must not.
-  assert.ok(manuals["clearance-common-law/SKILL.md"].includes("Step 3 — Famous-mark")
-    && manuals["clearance-register/SKILL.md"].includes(REGISTER_SENTENCES.toolCallBudgetAndWhy),
+  assert.ok(manuals["clearance-common-law/grid.md"].includes("Step 3 — Famous-mark")
+    && manuals["clearance-register/unit.md"].includes(UNIT_SENTENCES.toolCallBudgetAndWhy),
     "guard: the manuals were read");
   for (const [name, text] of Object.entries(manuals)) {
     for (const budget of [/Budget: /, /\d+-per-mark cap/, /workflow cap/, /up to \d+ follow-up calls/, /Phoneme at \d+/, /image at \d+/, /up to \d+ \((?:phonetic recipes|device-led)\)/])

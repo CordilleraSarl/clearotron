@@ -33,7 +33,7 @@ import { GRID_HALVES, splitGridTerms, mergeGrids, mergeCommonLawFindings } from 
 import { validators } from "../verify.mjs";
 import { paths } from "../stages.mjs";
 import { correctionHint } from "../gateway.mjs";
-import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { GRID_SENTENCES } from "./ruled-sentences-common-law-grid.mjs";
 import { recordCoverageStatus, coverageStatusPath, coverageStatusAsData, findingsPathForSpec, COMMON_LAW_COVERAGE_STATUSES,
   recordStatusesFromFindings, ledgerStatuses, NOT_STATED } from "../common-law-coverage-status.mjs";
 
@@ -221,7 +221,7 @@ test("a record the seat made through the tool is never overwritten by code", () 
 });
 
 test("the ledger reader takes the first table under the heading, its header and separator skipped", () => {
-  const doc = ["## Findings", "| a | b |", "", "### Coverage ledger", COMMON_LAW_SENTENCES.coverageUnitStatusReason, "|---|:---:|---|",
+  const doc = ["## Findings", "| a | b |", "", "### Coverage ledger", GRID_SENTENCES.coverageUnitStatusReason, "|---|:---:|---|",
     "| dictated platform grid | confirmed-clean | full sweep |", "| non-Latin reach | Deferred | next pass |", "| app stores | complete | no word |",
     "", "### Audit trail", "| 1 | deferred | x |"].join("\n");
   assert.deepEqual(ledgerStatuses(doc), { "dictated platform grid": "confirmed-clean", "non-Latin reach": "deferred", "app stores": NOT_STATED });
@@ -278,7 +278,7 @@ test("the server refuses a call with no driver-written spec, and writes nothing"
 });
 
 test("the manual orders the tool, and names exactly the values its served schema accepts", async () => {
-  const skill = readFileSync(join(DRIVER, "skills", "clearance-common-law", "SKILL.md"), "utf8");
+  const skill = readFileSync(join(DRIVER, "skills", "clearance-common-law", "grid.md"), "utf8");
   const from = skill.indexOf("### Coverage ledger");
   const ledger = skill.slice(from, skill.indexOf("\n### ", from + 1));
   assert.ok(ledger.length > 100, "the manual's coverage ledger section could not be found");
