@@ -11,7 +11,7 @@
     "the baseline tracks named elements, and a rename is a new name. Regenerate rather than work around it.",
     "Measured 139 of 287 declared elements."
   ],
-  "total": 104,
+  "total": 103,
   "byStage": {
     "matter-frame": [
       "### Intake asks line shape — rendered by the driver from intake_asks[]",
@@ -98,7 +98,6 @@
       "source attribution — the register name tagged on each record, plus the EUIPO `environment` word",
       "the compulsory dominant-element crowd row's `unit` cell — the dictated grammar `<axis> / dominant-element crowd (<N> members): <label>` and the bare integer N",
       "the full clickable record URL, composed from providers/<name>.md 'Record base host' plus the record `uri`",
-      "the record ids read while answering each instructed check",
       "the rolled-up one-line `reason` naming the material slice"
     ],
     "skeptic": [

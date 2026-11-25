@@ -2422,7 +2422,7 @@ export const STAGES = {
       },
       "the record ids read while answering each instructed check": {
         class: "judgment", tokens: ["registerdigest_relied_records_invalid", "registerdigest_relied_record_unknown"],
-        why: "WHICH records an answer rests on is the seat's to say: the reading audit proves a record was opened somewhere in the run, not which answer it supports, and rendering that run-wide list beneath every answer cited records the digest never read (measured in testing, 2026-11-25: 46 of 578 and 19 of 322). The seat names the held records each answer relies on in `records`, where applicable; the driver resolves each against the band and refuses one the run does not hold, and keeps the run's reads once under the audit trail. The key keeps its old wording because contract-arm2-baseline.json freezes it.",
+        why: "WHICH records an answer rests on is the seat's to say: the reading audit proves a record was opened somewhere in the run, not which answer it supports, and rendering that run-wide list beneath every answer cited records the digest never read (measured in testing, 2026-11-25: 46 of 578 and 19 of 322). The seat names the held records each answer relies on in `records`, where applicable; the driver resolves each against the band and refuses one the run does not hold, and keeps the run's reads once under the audit trail.",
       },
       "adopt-or-override each placement by engaging its reason, and the `### Disagreement resolutions` rows (one per surfaced disagreement and per borderline:true, each ADOPTED/OVERRODE in writing)": {
         class: "judgment", tokens: ["registerdigest_adjudication_invalid", "registerdigest_adjudication_incomplete"],
