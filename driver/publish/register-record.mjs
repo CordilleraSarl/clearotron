@@ -27,7 +27,6 @@ export const RECORD_LABELS = R.labels;
 export const MT_NOTE = R.mtNote;
 export const NO_GOODS = R.noGoods;
 export const CLASS_NOT_STATED = R.classNotStated;
-export const LOGO_NOT_RETRIEVED = R.logoNotRetrieved;
 export const registrationsCount = R.registrationsCount;
 export const showAllTerms = R.showAllTerms;
 const machineTranslation = R.machineTranslation;

@@ -1967,9 +1967,9 @@ function registerRecordBlock(f, recordsByUri, numberOf) {
 
 // LOGOS ON THE CARD, ON A LINE OF THEIR OWN (owner, 2026-11-18). Under the owner line, one logo per registration
 // in the card's register record whose logo the run saved, each in a box of one fixed size captioned with its
-// register, so nothing in the card head moves when a card has logos. A logo the run tried and failed to fetch reads
-// "Logo not retrieved" and opens the office's record; a registration with no logo, or one the run never asked
-// about, draws nothing, so a run that fetched no logos draws no line. A grouped negative row shows up to three small
+// register, so nothing in the card head moves when a card has logos. A registration with no logo, one the run never
+// asked about, or one whose fetch failed draws nothing (owner, 2026-11-25), so a card with no saved logo draws no
+// line. A grouped negative row shows up to three small
 // logos and "+N" under its text. The image travels inside the report; nothing points at the register's image.
 function logoLine(f, recordsByUri, { small = false } = {}) {
   if (!LOGOS.size) return '';

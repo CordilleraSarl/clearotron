@@ -6,7 +6,8 @@
 // The Knockout is a level of clearance, so a listed filing gets what a clearance card's registration gets: a closed
 // "Register record" drop-down, in a row under its table row, built from the record the run saved, with the same rows
 // a clearance draws. A filing whose record carries a logo shows it under the mark name, in the card's box and with
-// no caption, since the Territory column names the register. A filing the run saved no record of keeps its single
+// no caption, since the Territory column names the register. A logo the run failed to fetch draws nothing (owner,
+// 2026-11-25). A filing the run saved no record of keeps its single
 // row, so a run that saved none renders its table as before. Every name, number and image here is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -66,6 +67,13 @@ test("a filing's logo sits under its mark name, in the card's box, with no capti
   assert.match(html, new RegExp(`<td>SKARVELL AUDIO<div class="rr-logos rr-ko"><figure class="rr-lg"><img src="${DATA.replace(/[+/]/g, (c) => `\\${c}`)}" alt="SKARVELL AUDIO, logo as registered in United Kingdom"></figure></div></td>`),
     "the logo is not under the mark name, uncaptioned");
   assert.doesNotMatch(html.match(/<div class="rr-logos rr-ko">[\s\S]*?<\/div>/)[0], /figcaption/);
+});
+
+test("a filing whose logo the run failed to fetch draws nothing in its trademark cell", () => {
+  const html = page({ filingRecords: RECORDS, logos: new Map([[US, { state: "failed" }], [GB, { state: "fetched", src: DATA }]]) });
+  assert.match(html, /<tr class="rr-has">\s*<td>SKARVELLE<\/td>/, "the failed fetch drew something under the mark name");
+  assert.equal((html.match(/<div class="rr-logos rr-ko">/g) ?? []).length, 1, "only the fetched logo has a logo line");
+  assert.doesNotMatch(html, /Logo not retrieved|rr-nologo/, "a failed fetch drew a box in the table");
 });
 
 test("a run that saved no records draws the table as it did, and a clearance and a Knockout draw one entry the same way", () => {

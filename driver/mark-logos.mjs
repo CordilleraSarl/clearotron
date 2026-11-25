@@ -15,7 +15,7 @@
 // requests (that count approved 2026-11-18). Every registration a finding cited was asked about, though, and on two
 // delivered reports of 2026-11-25, 9 of 40 and 6 of 58 image requests were for registrations past a card's eighth.
 //
-// WHAT A ROW SAYS, and only `failed` reads as "Logo not retrieved" on the page:
+// WHAT A ROW SAYS, and only `fetched` draws on the page:
 //   fetched   the image is saved; `file` is relative to the run folder, `contentType` PNG, JPEG, GIF or WebP
 //   failed    a request was made and did not land, or brought back something that is not one of those images
 //   no-logo   the record says a word mark, or that no image exists
@@ -239,9 +239,10 @@ const SHOWN_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp
 
 /**
  * The logos a report shows, by registration: `fetched` rows carry the image as a data address, so the delivered
- * report fetches nothing and never names the register's image address; `failed` rows carry no image and read "Logo
- * not retrieved"; every other row is left out, since it draws nothing. A row's file must sit inside the run's logo
- * folder and open as the image type it was saved as, or it is left out. Never throws. IMPURE: it reads the run.
+ * report fetches nothing and never names the register's image address; `failed` rows carry no image and draw nothing,
+ * but stay in the map so the report document records the failed fetch; every other row is left out. A row's file
+ * must sit inside the run's logo folder and open as the image type it was saved as, or it is left out. Never throws.
+ * IMPURE: it reads the run.
  */
 export function logosForReport(runDir) {
   const out = new Map();

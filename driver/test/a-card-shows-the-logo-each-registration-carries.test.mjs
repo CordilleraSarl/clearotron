@@ -6,8 +6,9 @@
 // A lawyer compares logos first, and the report showed none. The run's logo step saves each cited registration's
 // logo; the report embeds it, so the delivered page fetches nothing and never names the register's image address.
 // On a card the logos sit under the owner line, one fixed box each, captioned with the register. A logo the step
-// tried and failed to fetch reads "Logo not retrieved" and opens the office's record. A registration with no logo
-// draws nothing, and so does a run that fetched none. A grouped negative row shows up to three small logos and "+N".
+// tried and failed to fetch draws nothing (owner, 2026-11-25), as a registration with no logo does, and so does a
+// run that fetched none. A grouped negative row shows up to three small logos and "+N", counting only the logos it
+// can draw.
 // The reader admits only an image saved inside the run's logo folder that opens as the type it was saved as.
 // Every name, number and image here is invented.
 import { test } from "node:test";
@@ -24,6 +25,7 @@ const PNG = Buffer.from("89504e470d0a1a0a0000000d4948445200000001000000010806000
   "1f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082", "hex");
 const DATA = `data:image/png;base64,${PNG.toString("base64")}`;
 
+// The failure stays in the reader's map, which the report document records; the page draws nothing for it.
 test("the reader embeds a saved image, keeps a failure, and admits nothing else", () => {
   const run = mkdtempSync(join(tmpdir(), "logos-"));
   try {
@@ -75,9 +77,8 @@ test("a card's logos sit on their own line under the owner, captioned with their
   const line = html.match(/<div class="owner-line">[\s\S]*?<\/div>(<div class="rr-logos rr-band">[\s\S]*?<\/div>)\s*<div class="oneline">/)?.[1];
   assert.ok(line, "the logo line is not between the owner line and the card's sentence");
   assert.ok(line.includes(`<img src="${DATA}" alt="SKARVEL, logo as registered in European Union">`), "the EU logo, embedded, with its screen-reader text");
-  assert.deepEqual([...line.matchAll(/<figcaption>([^<]+)<\/figcaption>/g)].map((m) => m[1]), ["EU", "UK", "DE"], "the captions, in the card's order, each register as a reader names it");
-  assert.ok(line.includes('<a class="rr-nologo" href="https://register.example/de/302020118845" target="_blank" rel="noopener noreferrer">Logo not retrieved</a>'),
-    "a failed fetch does not read Logo not retrieved, linked to the office's record");
+  assert.deepEqual([...line.matchAll(/<figcaption>([^<]+)<\/figcaption>/g)].map((m) => m[1]), ["EU", "UK"], "the captions, in the card's order, each register as a reader names it, and none for the failed fetch");
+  assert.doesNotMatch(html, /Logo not retrieved|rr-nologo|register\.example\/de\/302020118845" target="_blank" rel="noopener noreferrer"><\/a>/, "a failed fetch drew a box in its place");
   assert.doesNotMatch(html, /https?:\/\/[^"]*\.(png|jpe?g|gif|webp)"/i, "the page points at an image address");
 });
 
@@ -86,6 +87,8 @@ test("a registration without a logo draws nothing, and a run that fetched none d
   assert.equal((some.match(/<figure class="rr-lg">/g) ?? []).length, 1, "a registration with no saved logo drew a box");
   const none = card([{ uri: EU, jurisdiction: "EM" }]);
   assert.doesNotMatch(none, /<div class="rr-logos/, "a run that fetched no logos drew a logo line");
+  const failed = card([{ uri: DE, jurisdiction: "DE" }], { logos: new Map([[DE, { state: "failed" }]]) });
+  assert.doesNotMatch(failed, /<div class="rr-logos|<figure class="rr-lg">/, "a card whose only logo failed to fetch drew a logo line");
 });
 
 test("a grouped negative row shows up to three small logos and +N under its text", () => {
@@ -103,4 +106,15 @@ test("a grouped negative row shows up to three small logos and +N under its text
   assert.equal((small.match(/<figure class="rr-lg">/g) ?? []).length, 3, "the row does not show three small logos");
   assert.ok(small.endsWith('<span class="rr-more">+2</span>'), "the row does not count the rest");
   assert.doesNotMatch(small, /figcaption/, "a small logo carries a caption");
+  // A failed fetch is neither drawn nor counted in the "+N".
+  const withFailure = renderHtml(REPORT, [{
+    ordinal: 9, mark: "SKARVELIS", band: "Manageable", disposition: "distinguished", net: "Ostrevin would very likely defeat this claim.",
+    legal_position: "Different goods.", practical_position: "No enforcement on record.",
+    owner: { name: "Varrow Holdings Ltd", registrations: uris.map((uri) => ({ uri, jurisdiction: "EM" })) },
+  }], [], { runId: "logo-test", findingsSchemaVersion: 6, recordsByUri: new Map(recs.map((r) => [r.uri, r])),
+    logos: new Map(uris.map((u, i) => [u, i === 1 ? { state: "failed" } : { state: "fetched", src: DATA }])) });
+  const smallAfter = withFailure.match(/<details class="rgroup rn"(?: id="c\d+")?><summary>[\s\S]*?<div class="rr-logos rr-sm">([\s\S]*?)<\/div><\/summary>/)?.[1] ?? "";
+  assert.equal((smallAfter.match(/<figure class="rr-lg">/g) ?? []).length, 3, "the row does not show three small logos when one fetch failed");
+  assert.ok(smallAfter.endsWith('<span class="rr-more">+1</span>'), "the row counts a failed fetch among the rest");
+  assert.doesNotMatch(withFailure, /Logo not retrieved|rr-nologo/, "a failed fetch drew a box on the row");
 });

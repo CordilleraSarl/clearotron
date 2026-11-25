@@ -191,7 +191,7 @@
         },
         "a-card-shows-the-logo-each-registration-carries.test.mjs": {
           "tests": 4,
-          "asserts": 15,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1294,8 +1294,8 @@
           "todos": 0
         },
         "a-knockout-filing-opens-its-register-record.test.mjs": {
-          "tests": 4,
-          "asserts": 15,
+          "tests": 5,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
