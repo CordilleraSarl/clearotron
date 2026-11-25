@@ -144,11 +144,11 @@ were the hardest lines on the page.
 
 **Everything a reader sees before opening a fold is written for the client's business owner.** Ordinary
 nouns, one idea per sentence, no sentence over 25 words, the conclusion first. On this product that is:
-`chunkSummary`, `marks[].basis`, `factors`, `counterFactors`, `mitigation`, every finding's `net`, every `registerReads[].read`, and `standardCaveats`.
+`chunkSummary`, each name's assessment wherever it opens that name's page, `marks[].basis`, `factors`, `counterFactors`, `mitigation`, every finding's `net`, every `registerReads[].read`, and `standardCaveats`.
 
 **Inside a fold the lawyer's vocabulary is allowed** where a plain word would lose precision —
-`findings[].basis`, the provenance, the long `assessment`. Even there, a term is explained the first time
-it appears on the page.
+`findings[].basis`, the provenance, the assessment when it appears behind a fold. Even there, a term is
+explained the first time it appears on the page.
 
 Every surface carries the same caution: never hedge MORE on one surface than on another, and never flatten a surface to bald assertion.
 
@@ -226,8 +226,10 @@ A note that restates a finding already on the page is not a note. Cut it.
 ## The per-mark opening read (`assessment`)
 
 Each mark's report is delivered on its own, and `assessment` is the first thing its reader meets —
-before any table. Write it for a client who ordered this one name and nothing else: what the name is,
-what the landscape around it looks like, what drives the rating.
+before any table. Write for the client who ordered this name. In the first substantive paragraph, give
+the overall band and name the goods or services that drive it. If the advice differs for other goods,
+say how. Then explain the name, the marketplace, and the reason for the rating. Use plain words and keep
+visible sentences to 25 words or fewer. In the group summary, give each name the same clarity.
 
 **No recommendation, and no next step.** Never say what to do with the name, whether it advances, or
 what happens next — not under a heading of your own, and not as a closing line. The findings and the

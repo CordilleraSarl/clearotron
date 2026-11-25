@@ -839,7 +839,7 @@ export const E3_EVIDENCE_UNRESOLVED = [
   // absorbed. It was the narrative "## Answers to your instructions" row deleted above: its dictation is
   // gone, so there is no un-anchorable quote left to be unresolved. The one that REMAINS is a live row
   // whose quote spans a template line. Measured before deleting, not predicted — two rows shared
-  // `where: "driver/stages.mjs:2870"`, so which one occupied this slot could not be read off the strings.
+  // one `where` in driver/stages.mjs, so which one occupied this slot could not be read off the strings.
   "synthesis|driver/stages.mjs",
 ];
 
