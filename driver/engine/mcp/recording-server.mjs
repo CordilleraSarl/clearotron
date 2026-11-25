@@ -716,14 +716,19 @@ serve({
         instructed_checks: {
           type: "array",
           description:
-            "One entry per requester ask this stage owns, answered from the FROZEN material. The record " +
-            "ids you read are the reading audit's and are rendered for you. A check the frozen material " +
-            "genuinely cannot answer is answered honestly here AND recorded as an open coverage row.",
+            "One entry per requester ask this stage owns, answered from the FROZEN material. A check the " +
+            "frozen material genuinely cannot answer is answered honestly here AND recorded as an open coverage row.",
           items: {
             type: "object", required: ["ask", "answer"],
             properties: {
               ask: { type: "string", description: "The requester's ask, as dispatched." },
               answer: { type: "string", description: "Your answer — including the honest \"the frozen material cannot answer this\"." },
+              records: {
+                type: "array", items: { type: "string" },
+                description: "OPTIONAL. The held record identifiers this answer relies on, where applicable: each record's `/mark/…` " +
+                  "uri, as the band carries it. A uri the band does not hold is refused. Name none where the answer rests " +
+                  "on a search's count, a verified zero or an open question.",
+              },
             },
           },
         },

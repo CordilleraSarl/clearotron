@@ -11,10 +11,10 @@
 //   - On a machine with no background units whose search is refused, the first line is the refusal the
 //     portal gives the person who runs the install, from the same composer, with the command as doctor
 //     names it everywhere else.
-//   - In every other state, "Will a search run?" is the first section, and it ends with the sign-in line
-//     when the program resolves.
-//   - Under --probe-engine on an install that can search, the turn runs before the opening is printed,
-//     and its verdict ends "Will a search run?".
+//   - In every other state, "Will a search run?" is the first section.
+//   - On an install that can search, the turn that proves the engine runs before the opening is printed, and
+//     its verdict ends "Will a search run?". It runs every time (owner ruling, 2026-11-25); `--probe-engine`,
+//     which used to ask for it, is still accepted. The sign-in line that sent the reader to that flag is gone.
 //   - "Research provider" comes second in every state.
 //
 // The register is taken from the table and the expected sentence from the composer, so nothing here
@@ -114,7 +114,8 @@ function installCommandOf(out) {
   assert.ok(m, `the register section names no command to set it up:\n${out}`);
   return m[1];
 }
-const SIGN_IN = /The engine program is installed\. Whether it is signed in cannot be read from disk: run `[^`]+doctor --probe-engine` to find out\./;
+const SIGN_IN = /Whether it is signed in cannot be read from disk/;
+const PROBING = /^ {2}Probing anthropic-agent with one turn on its cheapest model \(this SPENDS; /;
 
 test("with no units and no search possible, doctor opens with the refusal's own words and the command that sets it up", () => {
   const home = homeWith();
@@ -135,7 +136,8 @@ test("with no units and no search possible, doctor opens with the refusal's own 
 test("in every other state the refusal's sentence is not printed, and \"Will a search run?\" is the first section", () => {
   assert.ok(REG, "no register declares a credential, so the install that can search below would be vacuous");
   const states = [
-    { name: "an install with no units that can search", home: { file: CAN_SEARCH },
+    // The one line above the heading is the turn's announcement, which is not a sentence of the opening's own.
+    { name: "an install with no units that can search", home: { file: CAN_SEARCH }, opening: [PROBING],
       first: /^ {2}✓ nothing a search is refused for at order time is missing from your environment file$/m },
     // Units read `~/.env`, which setup does not write, so "run setup" would not reach them: no sentence.
     { name: "units installed, and a search refused", home: { units: [] },
@@ -147,7 +149,9 @@ test("in every other state the refusal's sentence is not printed, and \"Will a s
     const home = homeWith(s.home);
     try {
       const out = doctor(home);
-      assert.deepEqual(openingOf(out), [], `${s.name}: the opening printed words of its own:\n${out}`);
+      const opening = openingOf(out);
+      assert.equal(opening.length, (s.opening ?? []).length, `${s.name}: the opening printed words of its own:\n${out}`);
+      (s.opening ?? []).forEach((re, i) => assert.match(opening[i], re, `${s.name}:\n${out}`));
       assert.equal(headings(out)[0], "Will a search run?", `${s.name}: ${headings(out).join(" / ")}`);
       assert.match(sectionOf(out, "Will a search run?"), s.first, `${s.name}:\n${out}`);
       assert.equal(headings(out).filter((h) => h === "Will a search run?").length, 1, `${s.name}: printed twice`);
@@ -155,14 +159,14 @@ test("in every other state the refusal's sentence is not printed, and \"Will a s
   }
 });
 
-test("when \"Will a search run?\" leads, it ends with the sign-in line, which the Engine section no longer prints", () => {
+test("when \"Will a search run?\" leads, it ends with the turn's verdict, unasked, and no line sends the reader to a flag", () => {
   const home = homeWith({ file: CAN_SEARCH });
   try {
     const out = doctor(home);
     const lead = sectionOf(out, "Will a search run?").split("\n").filter((l) => l.trim());
-    assert.match(lead.at(-1), SIGN_IN, out);
-    assert.doesNotMatch(sectionOf(out, "Engine"), SIGN_IN, out);
-    assert.equal(out.split("\n").filter((l) => SIGN_IN.test(l)).length, 1, `the sign-in line is printed once:\n${out}`);
+    assert.match(lead.at(-1), /^ {2}✓ MODE: engine ready — proven by the turn just spent/, out);
+    assert.doesNotMatch(out, SIGN_IN, out);
+    assert.doesNotMatch(out, /--probe-engine/, out);
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 

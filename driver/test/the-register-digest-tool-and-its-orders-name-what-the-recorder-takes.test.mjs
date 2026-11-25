@@ -57,9 +57,9 @@ test("the dispatch names the ground and asks for no record ids the tool has no f
   const msg = STAGES["register-digest"].message({ paths: paths("/r"), axes: ["primary-sweep"],
     intakeAsks: [{ owner: "register", ask: "Is the invented mark VELTRANE filed in class 9?" }] });
   assert.match(msg, /`negative_rows`: one entry per candidate screened out — its `uri`, your `drop_reason` and its `ground`\./);
-  assert.match(msg, /answer each from the run's frozen register material via the band tools \(band_shape \/ band_lookup \/ band_record\) and send each answer in `instructed_checks`\./);
+  assert.match(msg, /answer each from the run's frozen register material via the band tools \(band_shape \/ band_lookup \/ band_record\)\. Send each answer in `instructed_checks`\./);
   assert.doesNotMatch(msg, /record ids you read in the findings file/);
-  assert.match(msg, /MUST NOT RETYPE — [^.]*the record ids you read\./, "the rule that the ids are not the seat's to send is kept");
+  assert.match(msg, /MUST NOT RETYPE — [^.]*the summary counts or the audit trail\./, "the rule that the audit trail is not the seat's to send is kept");
 });
 
 test("the manual sets verify by the value the tool takes", () => {

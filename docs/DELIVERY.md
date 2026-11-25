@@ -35,6 +35,7 @@ backstop (the markers are edge-triggers, **not** the source of truth — see Wri
 | **duplicate-skipped** | `intake-<base>.duplicate.pending` | JSON packet | `<base>.duplicate` + `.reason` in the queue |
 | **pre-run-failed** | `intake-<base>.prerun-failed.pending` | JSON packet | `<base>.failed` + `.reason` in the queue |
 | **late-bind-ack** | `<runId>.bindack.pending` | JSON packet | `customer-late-bind-ack` event in `_driver/run.jsonl` |
+| **engine-check-failed** | `engine-check-<engine>.failed.pending` | JSON packet for the operator: no run, no requester | `<CLEAROTRON_WORK_DIR>/engine-check/<engine>.check.json` |
 
 `runId` is `<slug>-<date>-<codename>` — the SAME id `status.json`, the pool and every status surface
 carry. **There is one canonical form, and every minting site writes it.** Packets and outbox markers
@@ -105,17 +106,36 @@ field, never "this was not a refusal".
 
 ### `intake-rejected` — `intake-<base>.failed.pending`
 
-`{ ts, kind: "intake-rejected", classify: "clarify"|"reject", base, agent, jobId, msgId,
-forwarder, forwarderEmail, markName, errors[], text }` — `classify: "clarify"` means the fix
+`{ ts, kind: "intake-rejected", classify: "clarify"|"reject", base, agent, account, organisation,
+jobId, msgId, forwarder, forwarderEmail, markName, errors[], text }` — `classify: "clarify"` means the fix
 is a question back to the requester (see [INTAKE.md](INTAKE.md)); `"reject"` means the job was
 malformed. `text` is ready to send ("… Nothing has been searched or delivered. Job parked as
 <base>.failed …").
 
 ### `duplicate-skipped` — `intake-<base>.duplicate.pending`
 
-`{ ts, kind: "duplicate-skipped", base, agent, jobId, msgId, forwarder, forwarderEmail,
-markName, text }` — the matter-dedup gate parked the request instead of running a second paid
-search. The queue-side `.duplicate.reason` explains the match and the `dupOverride` force-run.
+`{ ts, kind: "duplicate-skipped", base, agent, account, organisation, jobId, msgId, forwarder,
+forwarderEmail, markName, text }` — the matter-dedup gate parked the request instead of running a
+second paid search. The queue-side `.duplicate.reason` explains the match and the `dupOverride` force-run.
+
+### `pre-run-failed` — `intake-<base>.prerun-failed.pending`
+
+`{ ts, kind: "pre-run-failed", base, agent, account, organisation, jobId, msgId, forwarder,
+forwarderEmail, markName, reason, text }` plus the chat routing fields — the request failed before its
+run could start, for example on the engine's sign-in check, so nothing was searched or delivered.
+`text` is ready to send. For an order placed by the person it is for (`clientPrincipal`) it is the
+not-started sentence of the failure email ("The <search ordered> for <mark> was not started, and nothing
+was delivered. Please tell whoever administers this installation."); otherwise it is the staff line with
+the reason. `reason` is always on the packet.
+
+### Whose notice it is, when there is no run
+
+The three kinds above are filed before any run exists, so there is no run to read a company from.
+Each carries `account`, the company key its order named (`profileKey`), and `organisation`, the
+organisation of a Generic order. A token scoped to named companies lists and acknowledges the notices
+of those companies, as it does their runs. An order that named no company carries `account: null`,
+which only a full grant sees: the runner may still resolve such an order to a company from the
+sender's email domain.
 
 ### `late-bind-ack` — `<runId>.bindack.pending`
 

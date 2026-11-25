@@ -703,16 +703,10 @@ export const KO_STAGES = {
     validate: declaredValidator("knockout-review", KO_VALIDATORS),
     reads: (K) => ({ files: [K.findings, K.plan, ...asRequested(K), ...frozenRules(K), K.registerRecords, K.ownerChecks],
       dirs: [K.researchDir], message: true, deck: true }),
-    // ── THE MESSAGE PROMISES A TABLE ONLY WHEN IT HAS ONE ──────────────────────────
+    // ── THE MESSAGE PROMISES A BLOCK ONLY WHEN IT HAS ONE ──────────────────────────
     //
-    // `evidenceLines` is the driver's measurement, passed at dispatch. Two things follow, and the arms
-    // found both: the defaults must not be absent — a message that throws on a ctx without them cannot
-    // be composed by anything except the production call site, which is how a dispatch goes unexamined
-    // — and the promise has to branch. A stage message that says "the lines are below" and then lists
-    // none has handed the seat an absence dressed as a pass, which is the reading this whole rule
-    // exists to stop. A record the driver's read flags nowhere is handed its first-read lines instead,
-    // by the owner's ruling of 2026-10-10, so both branches have rows under them; a record with no such
-    // line is not dispatched at all.
+    // Every block below is the driver's, passed at dispatch, and each has a default, so the message composes on a ctx without them.
+    // A heading over no rows would hand the seat an absence dressed as evidence, so each block is left out when it is empty.
     message: ({ K, frameworkPath = null, digestLines = [], searchedRows = [], setAsideRows = [], sourceLines = [], ownerCheckRows = [], sourceAnswers = [], earlierRightsReview = [], registerTableFile = null }) => lines(
       // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24).
       `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters?`,

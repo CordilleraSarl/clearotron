@@ -40,14 +40,18 @@ test("Corsearch runs no watchlist sweep, and EUIPO names its coverage, not the t
   assert.ok(!euipo.includes("the deliberate trade of running the free tier"), "the EUIPO manual still calls its coverage the trade of a tier");
 });
 
-const NEVER_CLOSED = SIGNA_SENTENCES.discloseSearchThisRegisterCan;
+// The digest owns the deferred row a register cannot reach (design, 2026-11-25): the Signa and USPTO guides say the digest
+// records it; Clarivate's names the row a dictated slice it blocks becomes.
+const NEVER_CLOSED = "disclose it; no search on this register can close it, so it is not escalated, and it is never clean.";
+const DIGEST_RECORDS = SIGNA_SENTENCES.digestRecordsItAsDeferred + SIGNA_SENTENCES.noSearchThisRegisterCanClose;
 
 test("a gap no search on the register can close is disclosed, never escalated and never clean", () => {
   const clarivate = flat("clarivate-questions.md"), signa = flat("signa-questions.md"), uspto = flat("uspto-local.md");
   assert.ok(clarivate.includes("Each of these, when it blocks a dictated slice, is a **`deferred` coverage row** — " + NEVER_CLOSED));
-  assert.ok(signa.includes(SIGNA_SENTENCES.giveThatSliceDeferredCoverage
-    + NEVER_CLOSED + SIGNA_SENTENCES.thisFollowsTheKeystoneDoctrine));
-  assert.ok(uspto.includes("give that slice a `deferred` coverage-form row so the digest and synthesis surface it — " + NEVER_CLOSED));
+  assert.ok(signa.includes(SIGNA_SENTENCES.registerSweepCannotReach + DIGEST_RECORDS + SIGNA_SENTENCES.thisFollowsTheKeystoneDoctrine));
+  assert.ok(uspto.includes("the register sweep cannot reach it here. " + DIGEST_RECORDS));
+  for (const [name, text] of [["Signa", signa], ["USPTO", uspto]])
+    assert.ok(!text.includes("give that slice a `deferred` coverage-form row"), `the ${name} guide still asks its reader to record the row`);
   for (const [name, text] of [["Signa", signa], ["USPTO", uspto]])
     for (const gone of ["closeable", "skeptic can escalate", "escalate + disclose"])
       assert.ok(!text.includes(gone), `the ${name} manual still says "${gone}"`);

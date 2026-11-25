@@ -17,6 +17,7 @@ import { witnessStageMethodology, describeMethodologyDrift } from "../methodolog
 import { inlineManuals } from "../manuals-inline.mjs";
 import { builtinToolsFor } from "../engine/mcp/gather-config.mjs";
 import { statOf } from "./judge.mjs";
+import { recordEngineAnswered, turnAnswered } from "../engine/health.mjs";   // a completed turn moves the engine check's clock
 import { correctiveMessage, warmPatchMessage, warmTimeoutMessage } from "./repair-messages.mjs";
 import { retryBackoffMs, sleep, vetoResumeRuledNone, warmEligible } from "./turn-signals.mjs";
 
@@ -140,6 +141,7 @@ export async function dispatchTurn(stage, { attempt, warm, timeoutWarm, vetoedRe
     // keep it while the disk has room and say on the tuple's `stream` what landed.
     streamFile: streamFilePath(runDir, name, attempt) });
   const settledAt = Date.now();   //: zero point of the wall-rescue quiescence clock, read before anything else
+  if (turnAnswered(turn)) recordEngineAnswered(engine.name);
   // LOG-ONLY. Nothing here can fail a turn: the claim that the frozen set does not change across a seat
   // turn is READ from the writers' call sites and not yet MEASURED on a running system, and arming an
   // unmeasured guard is the defect class this exists to catch. One run supplies the number; the row's

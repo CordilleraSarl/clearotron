@@ -126,6 +126,8 @@ export const VOCABULARY = [
   { token: "registerdigest_drop_ground_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — the closed ground token" },
   { token: "registerdigest_drop_ground_contradicted", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — the ground contradicts this run's own screen verdict" },
   { token: "registerdigest_instructed_incomplete", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — every instructed check carries ask AND answer" },
+  { token: "registerdigest_relied_records_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — an answer's `records` is a list of held record uris" },
+  { token: "registerdigest_relied_record_unknown", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — a record an answer relies on is one this run's band carries" },
   { token: "registerdigest_adjudication_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — one bare token of ADOPTED/OVERRODE" },
   { token: "registerdigest_adjudication_incomplete", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — an override quotes the reason it contradicts" },
   { token: "registerdigest_nothing_judged", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — a digest that ends no record has not read the band" },

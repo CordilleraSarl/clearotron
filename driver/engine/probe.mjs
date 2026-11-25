@@ -69,6 +69,7 @@
 
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID, engineAdapterSpecifier, resolveEngineProgram } from "../driver.config.mjs";
 import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "./auth.mjs";
+import { billingRefusalWords } from "../run-requirements.mjs";   // the one refusal that quotes a value, said by name
 import { everyToolCallRefused } from "./tool-refusal.mjs";
 import { randomBytes } from "node:crypto";
 import { fileURLToPath } from "node:url";
@@ -268,9 +269,11 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   // rewrites the bare word for that copy and leaves every other copy's text as it was thrown.
   if (error) {
     const msg = String(error?.message ?? error);
+    // THE BILLING WORD IS NAMED, NEVER QUOTED: a key pasted into it would otherwise be printed by `doctor`, which
+    // makes this turn every time, and carried in the engine check's alert.
     if (error?.billingRefusal === true || /=api-key but/i.test(msg))   // auth.mjs marks every billing refusal
       return v("auth-misconfigured", "config",
-        `${id} cannot start: ${/=api-key but/i.test(msg) ? "the billing mode this box declares has no key" : "the billing setting this box declares is refused"}`, msg, { detail: null });
+        `${id} cannot start: ${/=api-key but/i.test(msg) ? "the billing mode this box declares has no key" : "the billing setting this box declares is refused"}`, billingRefusalWords(msg), { detail: null });
     if (SIGNED_OUT_RE.test(msg))
       return v("signed-out", "config", `${id} is not signed in`, ENGINE_BINARIES[id] ? namingProgram(msg, ENGINE_BINARIES[id], program) : msg);
     if (TIER_RE.test(msg))
@@ -736,6 +739,19 @@ export async function probeEngineTurn({
  * provider's sign-in, which a minute's wait may outlast.
  */
 export async function preflightEngineTurn(opts = {}) {
+  const verdict = await judgeEngineTurn(opts);
+  if (verdict.ok) return verdict;
+  if (probeVerdictLane(verdict) !== "configuration") return { ...verdict, warning: probeWeatherWarning(verdict) };
+  const detail = verdict.detail ? `\n  engine said: ${verdict.detail}` : "";
+  throw new Error(`[preflight] ${probeFailureText(verdict)}${detail}`);
+}
+
+/**
+ * The door's verdict without the door's refusal: one probe, and the second check after a sign-in renewal that
+ * could not happen just now. The engine check between jobs (engine/health.mjs) judges a turn exactly as the door
+ * does and reads the lane itself, because it reports rather than refuses.
+ */
+export async function judgeEngineTurn(opts = {}) {
   let verdict = await doorProbe(opts);
   if (RECHECKED_MODES.has(verdict.mode)) {
     const first = verdict;
@@ -745,10 +761,7 @@ export async function preflightEngineTurn(opts = {}) {
     verdict = { ...await doorProbe(opts),
       recheckedAfter: { mode: first.mode, basis: first.basis, detail: first.detail, waitedMs: REFRESH_LOCK_WAIT_MS } };
   }
-  if (verdict.ok) return verdict;
-  if (probeVerdictLane(verdict) !== "configuration") return { ...verdict, warning: probeWeatherWarning(verdict) };
-  const detail = verdict.detail ? `\n  engine said: ${verdict.detail}` : "";
-  throw new Error(`[preflight] ${probeFailureText(verdict)}${detail}`);
+  return verdict;
 }
 
 /**
