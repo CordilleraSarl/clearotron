@@ -86,7 +86,7 @@ test("A6: stop_reason max_tokens + no artifact = the NAMED fault, counted in the
   assert.equal(c.length, 2);
   assert.match(c[1].prompt, /maximum output-token ceiling/);
   assert.match(c[1].prompt, /stop_reason max_tokens/);
-  assert.match(c[1].prompt, /CALL THE WRITE TOOL/);
+  assert.match(c[1].prompt, /write the required file\(s\) as soon as their content is ready/);
 });
 
 test("A4: consecutive DIFFERENT validator strings keep the ladder alive; the first byte-identical repeat stops it", async () => {

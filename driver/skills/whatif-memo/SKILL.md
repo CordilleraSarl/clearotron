@@ -11,8 +11,11 @@ gathered and saying what it means under an assumption somebody has handed you.
 - The **assumption**, in the reader's own words. Apply it as stated. Do not improve it, narrow it, or
   answer a nearby question you find easier.
 - The run's **findings** — the conflicts the clearance reported, with their ratings.
-- The **rating framework** the original run was assessed under. Use that one. A memo assessed under a
-  different framework than its parent cannot be compared with it, which is the only reason it exists.
+- The **rating framework** the original run was assessed under: its name, its bands from highest to
+  lowest, and its rating table where it has one. Use that one. A memo assessed under a different
+  framework than its parent cannot be compared with it, which is the only reason it exists. Use the
+  original report's findings and the rating rules supplied here. If a band change depends on a rule that
+  is missing, keep the reported band and explain the limit.
 
 ## What you may not do
 

@@ -14,14 +14,14 @@
 // when it was killed, and that process wrote nothing. It writes a start line and a settle line now.
 //
 // WHAT THESE TESTS PIN, and the second is the one that keeps this honest:
-//   1. a started-and-never-settled call turns the verdict into `tool_timeout`, and the corrective stops
-//      telling a model it skipped a call it made;
+//   1. a started-and-never-settled call turns the verdict into `tool_timeout`, a product fault: the step is told so
+//      and is not sent back to make the call again;
 //   2. NO LOG changes NOTHING. Absence is not evidence the call returned — every run without the log
 //      (a replay, an archived run, a run whose servers never started) keeps the verdict it had.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, appendFileSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, appendFileSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
@@ -29,6 +29,10 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { unsettledToolCalls, registerPlanCallKilled, toolCallsPath } from "../tool-calls.mjs";
 import { validators } from "../verify.mjs";
 import { repairTarget, warmPatchMessage, warmEligible } from "../gateway.mjs";
+import { nextRung } from "../ladder/next-rung.mjs";
+import { productFaultOf, productFaultReason, PRODUCT_FAULT_MESSAGE } from "../product-fault.mjs";
+import { plainCause, plainDeferralReason } from "../deferral-row.mjs";
+import { recordUnitNote } from "../register-unit-record.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 /** A run dir shaped like the fresh-run path registerUnit gates on: instructed-scope + a register plan. */
@@ -131,31 +135,41 @@ test("a unit whose call RETURNED still fails as named_band_missing", () => {
 
 // ── the corrective ──────────────────────────────────────────────────────────────────────────────────
 
-test("the repair aims at the same band file and the warm lane still applies", () => {
+test("the killed call is a product fault: no resumed repair, the ladder ends, and the gap is delivered", () => {
   const md = "/run/register-units/incumbent-class.md";
   const fail = "invalid_file:incumbent-class.md:tool_timeout:register_execute_plan:incumbent-class";
   // The band file is joined beside the unit's notes with this machine's `join`, so it is expected that way.
   assert.equal(repairTarget(fail, md), join("/run/register-units", "incumbent-class-band.json"),
     "same absent artifact, reached the other way");
-  assert.equal(warmEligible(fail, { status: "ok" }), true,
-    "the session completed cleanly and the repair is one tool call — the named_band_missing argument, unchanged");
+  assert.equal(warmEligible(fail, { status: "ok" }), false, "no resumed session is sent back to make the call again");
+  assert.deepEqual(productFaultOf({ fail, label: "register-unit:incumbent-class" }),
+    { cause: "tool_timeout", tool: "register_execute_plan", axis: "incumbent-class" });
+  const next = nextRung({ fail, warm: false, attempt: 1, maxRetries: 2, attemptFails: [fail], name: "register-unit:incumbent-class",
+    runDir: mkdtempSync(join(tmpdir(), "r793-rung-")), warmEscalatedAt: 0, rungsRefunded: 0, timeoutRetriesUsed: 0, effTimeout: 600 });
+  assert.equal(next.rung, "break", "a second attempt would make the call again");
 });
 
-// THE SENTENCE THAT MATTERS. A model told it never produced an artifact has one obvious way to comply,
-// and on this stage that way is the forbidden one. R5 took the accusing hint four times.
-test("the corrective does not accuse the model, and forbids the hand-authored escape", () => {
-  const md = "/run/register-units/incumbent-class.md";
-  const msg = warmPatchMessage("invalid_file:incumbent-class.md:tool_timeout:register_execute_plan:incumbent-class", md);
-  assert.match(msg, /WAS MADE and never returned/, "it says what happened");
-  assert.match(msg, /Nothing about your turn was wrong/, "and that the model is not at fault");
-  assert.match(msg, /do NOT author band blocks by hand/, "the forbidden repair stays forbidden");
-  // The step never writes its note file (the driver writes it from the step's call) and the note tool refuses any
-  // note while the band is missing, so it is not told to hand-write one; the driver's call log records the kill
-  // (packet rows D20 and D21).
-  assert.doesNotMatch(msg, /CROSS-CHECK REQUIRED/, "it is not told to hand-write a note it never writes");
-  assert.match(msg, /driver's own call log records that the call never returned/i, "and it is told where the kill is recorded");
-  assert.doesNotMatch(msg, /NEVER WRITTEN — the stage cannot pass/,
-    "never the named_band_missing wording, which reads as 'you did not do it'");
+// THE NOTE IS WHERE THE STEP LEARNS IT. Its note cannot be filed without a band, and the refusal it used to get said
+// "the unit has not run", which sends a step that did run back to make the call again.
+test("a note filed after the plan call never came back is answered with the product-fault message, and nothing else", () => {
+  const { runDir, axis } = runWithPlan();
+  rmSync(join(runDir, "register-units", `${axis}.md`));
+  started(runDir, { seq: 1, server: "euipo", tool: "register_execute_plan", axis });
+  const r = recordUnitNote(runDir, { axis, note: "The plan call did not return." });
+  assert.equal(r.written, null, "nothing is filed");
+  assert.equal(r.refused, null, "it is not a refusal the step corrects");
+  assert.match(r.product_fault, /register_execute_plan for incumbent-class never returned/, "the cause stays in the run's record");
+  assert.ok(PRODUCT_FAULT_MESSAGE.includes("product fault"), "the record rule's stop condition is in the message");
+  // A missing note on that unit is the same killed call, read off the same log.
+  assert.equal(productFaultOf({ fail: `missing_file:${join(runDir, "register-units", `${axis}.md`)}`, runDir, label: `register-unit:${axis}` })?.cause, "tool_timeout");
+});
+
+test("a note with no band and no killed call is still refused as an account of nothing", () => {
+  const { runDir, axis } = runWithPlan();
+  const r = recordUnitNote(runDir, { axis, note: "Nothing ran." });
+  assert.equal(r.product_fault, undefined);
+  assert.match(String(r.refused), /unit_band_unreadable/);
+  assert.equal(productFaultOf({ fail: "missing_file:x.md", runDir, label: `register-unit:${axis}` }), null, "no log, no fault");
 });
 
 test("named_band_missing keeps its own corrective untouched", () => {
@@ -193,4 +207,13 @@ test("a register stage's server really is given the run dir the log hangs off", 
     if (prior === undefined) pinEnv(process.env, "CLEAROTRON_DATABASE", undefined);
     else pinEnv(process.env, "CLEAROTRON_DATABASE", prior);
   }
+});
+
+test("the reader's line for a slice the killed call left open says only that it was not completed", () => {
+  // A start with no return shows no answer was recorded; it does not show the source timed out, and `tool_timeout` is
+  // itself minted from the missing return.
+  assert.equal(productFaultReason(), plainCause("unfinished"));
+  assert.equal(plainCause("unfinished"), "it could not be completed this run, so it is left open here rather than reported as clean");
+  assert.doesNotMatch(productFaultReason(), /timed out/);
+  assert.notEqual(productFaultReason(), plainDeferralReason("slice-not-landed"), "a call that was sent is not said to have never reached the register");
 });

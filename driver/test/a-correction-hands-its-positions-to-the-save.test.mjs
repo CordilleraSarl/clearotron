@@ -25,6 +25,8 @@ import { renderCodexConfigToml } from "../engine/mcp/codex-config.mjs";
 import { recordSynthesis, FINDINGS_FILE } from "../synthesis-record.mjs";
 import { appendDeclinations } from "../declination-tool.mjs";
 import { synthesisFindings } from "./mock-stage-fixtures.mjs";
+import { acceptedEnvelope } from "../preserve-merge.mjs";
+import { FINDINGS_SCHEMA_VERSION } from "../findings-model.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 process.env.CLEAROTRON_RUN_LOCK_DIR = mkdtempSync(join(tmpdir(), "correction-positions-locks-"));
@@ -83,7 +85,8 @@ test("on the Claude engine, a stage ladder carrying a correction hands its posit
 test("a correction's retries say the save may add the finding, and every other retry says it replaces", () => {
   const files = [join(tempDir("correction-positions-retry-"), "narrative.md")];
   mkdirSync(driverDir(dirname(files[0]), "synthesis-calls"), { recursive: true });
-  writeFileSync(driverDir(dirname(files[0]), "synthesis-calls", "accepted.json"), "{}\n");
+  writeFileSync(driverDir(dirname(files[0]), "synthesis-calls", "accepted.json"),
+    acceptedEnvelope({ findings: { schema_version: FINDINGS_SCHEMA_VERSION, findings: [] } }, "2026-11-24T00:00:00Z"));
   const fail = `invalid_file:${files[0]}:finding_meter_unknown:1`;
   for (const [what, text] of [["a fresh retry", (adds) => correctiveMessage("the base", 2, fail, files, { adds })],
     ["a warm patch", (adds) => warmPatchMessage(fail, files, { adds })]]) {

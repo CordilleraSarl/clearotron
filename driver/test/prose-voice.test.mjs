@@ -54,13 +54,18 @@ test("the contract carries the word budgets, each-fact-once and the two RULED pr
   assert.match(PROSE_VOICE, /20-25 words a sentence/, "the per-sentence budget is stated");
   assert.match(PROSE_VOICE, /80 words a paragraph/, "the per-paragraph budget is stated");
   // §7: the caption obeyed "3 sentences" with three 60-word sentences. A cap is not a budget.
-  assert.match(PROSE_VOICE, /FOLD POINT and never the target/i, "a code cap is taught as a fold point, not a target");
+  assert.match(PROSE_VOICE, /that cap is a ceiling and never the target/, "a cap is taught as a ceiling, not a target");
+  assert.match(PROSE_VOICE, /at most 3 sentences for the caption, at most 2 for a finding's conclusion/, "both caps are kept");
+  assert.doesNotMatch(PROSE_VOICE, /2-sentence finding sentence|roughly 75 words/, "a dropped wording is back");
   assert.match(PROSE_VOICE, /EACH FACT ONCE, AT ITS RANK/, "the repetition rule is stated");
   assert.match(PROSE_VOICE, /CROSS-REFERENCES IT BY ORDINAL/, "…with the mechanism that replaces retelling");
   // Ruling 4, both halves.
   assert.match(PROSE_VOICE, /NO PRESCRIPTIONS \(RULED\)/);
   assert.match(PROSE_VOICE, /we recommend/, "the banned advice grammar is named");
   assert.match(PROSE_VOICE, /NO DISCLAIMERS \(RULED\)/);
+  // The ban is on boilerplate; a material limit on the answer is still stated (design, 2026-11-24).
+  assert.match(PROSE_VOICE, /No boilerplate caveat about the document/);
+  assert.match(PROSE_VOICE, /A material limit on the answer \(what was or was not searched, evidence that is missing, a qualification the framework requires\) is a FACT/);
 });
 
 // The "ONE READER" test that stood here asserted the two-audience posture was gone from the
@@ -108,17 +113,26 @@ test("§L language rules ride the contract", () => {
 
 // ---- Level 2: the skill files stages.mjs tells each stage to read (charter Part E) ----
 
-test("two-level rule: the skill files teach the same contract, never the retired opposite", () => {
+test("one rulebook: report-prose.md holds the message's rules word for word, and the other manuals point there", () => {
   const delivery = skill("delivery-contract.md");
   const synthesis = skill("synthesis-rules.md");
   const worked = skill("worked-examples.md");
+  const flat = (t) => t.split("\n").join(" ").replace(/\s+/g, " ");
 
-  // Each file states the contract at its own level…
-  for (const [name, body] of [["delivery-contract.md", delivery], ["synthesis-rules.md", synthesis]]) {
-    assert.match(body, /House prose contract/, `${name} carries the contract`);
-    assert.match(body, /20–25 words a sentence/, `${name} carries the word budget`);
-    assert.match(body, /No prescriptions \(ruled\)/i, `${name} carries ruling 4`);
+  // THE ONE HOME (owner, 2026-11-24: the prose rules consolidated around two levels). The message states each rule in
+  // the rulebook's own words, so the two cannot teach different rules; the other manuals point and do not restate.
+  const prose = flat(skill("report-prose.md"));
+  for (const rule of PROSE_VOICE.split("\n"))
+    assert.ok(prose.includes(flat(rule)), `report-prose.md does not carry the message's rule: ${rule.slice(0, 60)}`);
+  for (const [name, body] of [["delivery-contract.md", delivery], ["synthesis-rules.md", synthesis], ["worked-examples.md", worked]]) {
+    assert.match(body, /\[report-prose\.md\]\(report-prose\.md\)/, `${name} does not point to the rulebook`);
+    assert.doesNotMatch(body, /House prose contract|One reader, one posture|20–25 words a sentence/, `${name} restates the rules`);
   }
+  // The owner deleted the one-reader sentence; the two levels and equal caution replace it.
+  for (const text of [PROSE_VOICE, delivery, synthesis, worked, skill("report-prose.md")])
+    assert.doesNotMatch(text, /ONE READER, ONE POSTURE|no softer second audience|single audience/i, "the deleted one-reader rule is still taught");
+  assert.match(PROSE_VOICE, /TWO LEVELS\. Default-visible text, anything a reader meets before opening a fold, is in plain words a client reads, with no visible sentence over 25 words\./);
+  assert.match(PROSE_VOICE, /Every surface carries the same caution/, "the one posture kept only as equal caution");
 
   // …and none of them still teaches the opposite. These three lines are the exact level-2 contradictions
   // that survived the earlier prose pass: a caption that ends in advice, and a per-surface hedge setting.
@@ -158,13 +172,7 @@ test("the reader-owns-every-noun rule rides the contract at both levels", () => 
   assert.match(PROSE_VOICE, /JUDGE THE SENTENCE, NEVER THE WORD/,
     "…and states it as a judgment on the sentence, never a vocabulary to avoid (the owner's ruling)");
 
-  for (const [name, body] of [
-    ["delivery-contract.md", skill("delivery-contract.md")],
-    ["synthesis-rules.md", skill("synthesis-rules.md")],
-    ["report-prose.md", skill("report-prose.md")],
-  ]) {
-    assert.match(body, /reader owns every noun/i, `${name} carries the level-2 mirror`);
-  }
+  assert.match(skill("report-prose.md"), /reader owns every noun/i, "the rulebook carries the rule");
   // The worked pairs are what the model imitates (§7), so the contrast has to be one of them.
   assert.match(skill("worked-examples.md"), /Every noun is one the reader already owns/,
     "worked-examples.md carries the before/after pair for it");

@@ -14,7 +14,7 @@ and is what you want when you are working in this tree.
 | File | Shipped verb | In a checkout | Cost |
 |---|---|---|---|
 | `example.mjs` | `clearotron demo` | `npx clearotron demo` | Free. No credentials, no model, no engine, no register call. |
-| `onboard.mjs` | `clearotron install` | `npm run setup` | **Spends one cheap engine turn.** `clearotron doctor` writes nothing and contacts nothing outside this machine. |
+| `onboard.mjs` | `clearotron install` | `npm run setup` | **Spends one cheap engine turn**, and so does `clearotron doctor` when an engine is configured; `doctor` changes no setting. |
 | `start.mjs` | `clearotron start` | `npm start` | Free to start. What it starts can spend — see below. |
 | `uspto-sync.mjs` | `clearotron sync` | `npm run sync:uspto` | Not billed, but 41.5 GB of download and about nine hours of indexing. |
 | `signa-sync.mjs` | — | `node bin/signa-sync.mjs` | One vendor read (`GET /v1/offices`, paged). Needs `SIGNA_API_KEY`. |
@@ -25,9 +25,8 @@ the demo pool could collide with is checked by realpath and by containment befor
 because a demo runs on deployed machines too.
 
 `onboard.mjs` validates each answer through the door the engine itself uses before it persists anything,
-and the engine check is a real turn through the adapter's own spawn path. `--check` is the free half: it
-reports what this machine is configured for and writes nothing. Add `--probe-engine` to spend the turn
-deliberately.
+and the engine check is a real turn through the adapter's own spawn path. `--check` reports what this machine
+is configured for, makes one real engine call when an engine is configured, and changes no setting.
 
 `start.mjs` is a supervisor. It starts four children. `driver/portal-service.mjs` (the portal, default
 port 18802) and `mcp-server/http-server.mjs` (the engine door the portal's Start button calls, default

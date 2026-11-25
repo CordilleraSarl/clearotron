@@ -38,8 +38,8 @@
 import { serve } from "./stdio-server.mjs";
 import { recordSynthesis } from "../../synthesis-record.mjs";   // the writer
 import { correctionPositionsFrom } from "./correction-positions.mjs";   // the positions a correction's dispatch hands its save
-import { recordRegisterDigest } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
-import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES, KNOCKOUT_FINDING_KEYS } from "../../findings-model.mjs";
+import { recordRegisterDigest, DIGEST_DROP_REASON_TOKENS, VERIFY_VALUES, ADJUDICATION_DECISIONS } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
+import { FINDING_FIELDS, COVERAGE_AREA_STATES, KNOCKOUT_FINDING_KEYS, KNOCKOUT_FINDING_TYPES } from "../../findings-model.mjs";
 import { recordBlindFrame } from "../../blind-frame-record.mjs";
 import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
 import { recordSkeptic } from "../../skeptic-record.mjs";
@@ -65,7 +65,7 @@ import { REGISTER_AXES } from "../../coverage-ledger.mjs";
 import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
-import { USE_PHRASE } from "../../verify-knockout.mjs";   // the use phrase, defined once
+import { USE_PHRASE, FAMILIES_RULE, FRAME_REPAIR_RULE, KNOCKOUT_RATING_QUALIFIERS } from "../../verify-knockout.mjs";   // the use phrase, the families and the repair rule, each defined once
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
 import { recordKnockoutCorrection } from "../../knockout-correction-record.mjs";
 import { recordKnockoutRegisterRead } from "../../knockout-register-record.mjs";
@@ -292,7 +292,7 @@ const KNOCKOUT_ASSESS_FINDING_FIELDS = {
   // then, refused otherwise (findings-model.mjs validateKnockoutFinding).
   inputs: { type: "object", additionalProperties: { type: "string" }, description: "The framework's own inputs for this finding, keyed by its labels, each one of the values it lists." },
   net: { type: "string", description: "One conclusion sentence." },
-  type: { type: "string" },
+  type: { type: "string", enum: [...KNOCKOUT_FINDING_TYPES] },
   evidence: { type: "array", items: { type: "string" } },
   basis: { type: "string", description: "The ground THIS FINDING's band rests on — not the mark's `basis`, which is a different field one level up." },
   // The ninth key. This schema once said "all eight, no others" and forbade it while the recorder enforced
@@ -309,13 +309,25 @@ const KNOCKOUT_CORRECTION_FINDING_FIELDS = {
   band: { type: "string", description: "A word from the framework's ladder." },
   inputs: { type: "object", description: "The framework's own inputs for this finding, where it states a method." },
   net: { type: "string", description: "One conclusion sentence." },
-  type: { type: "string", description: "Famous Brand, Active Business, Cultural Reference, Domain, Descriptive Use, Negative Association or Competitor Intelligence." },
+  type: { type: "string", enum: [...KNOCKOUT_FINDING_TYPES], description: "Famous Brand, Active Business, Cultural Reference, Domain, Descriptive Use, Negative Association or Competitor Intelligence." },
   evidence: { type: "array", items: { type: "string" }, description: "URLs held for this name." },
   basis: { type: "string", description: "The ground the band rests on." },
   weighedFilings: { type: "array", items: { type: "string" }, description: "The register record ids this finding's reasoning used." },
 };
+// The qualifier values both Knockout operations take, from the list the validator closes on.
+const QUALIFIER_VALUES = `null or ${KNOCKOUT_RATING_QUALIFIERS.map((q) => `"${q}"`).join(" or ")}`;
 const knockoutFindingProperties = (fields) =>
   Object.fromEntries(KNOCKOUT_FINDING_KEYS.filter((k) => k in fields).map((k) => [k, fields[k]]));
+
+// ── THE CLEARANCE FINDING, DECLARED FROM ITS ONE DEFINITION ────────────────────────────────────────────
+//
+// Both lists that carry a finding (`save_findings`, `findings_patch`) declare each key with its type and the words
+// findings-model.mjs `FINDING_FIELDS` gives it: when it is required, its shape and the values it takes. A patch row
+// keeps its own `ordinal`, which names the finding it replaces. No key is `required` here: the record's own checks
+// refuse a missing field by name, in the turn, and a refusal at the schema leaves no call file.
+const FINDING_ITEM = "One complete finding object, as the findings record carries it. It takes the keys below and no others.";
+const findingProperties = (except = []) => Object.fromEntries(Object.entries(FINDING_FIELDS)
+  .filter(([k]) => !except.includes(k)).map(([k, f]) => [k, { type: f.type, description: f.about }]));
 
 serve({
   name: "recording",
@@ -600,7 +612,7 @@ serve({
           type: "array",
           description:
             "One row per scope decision. The driver renders the ledger table AND writes scope-ledger.json " +
-            "from these rows — it no longer recovers them by parsing the table back out of the prose.",
+            "from these rows — it does not recover them by parsing the table back out of the prose.",
           items: {
             type: "object", required: ["layer", "item", "status"],
             properties: {
@@ -657,7 +669,7 @@ serve({
             properties: {
               uri: { type: "string", description: "The record's `/mark/…` uri, as the band carries it. The driver joins on it; a uri the band cannot resolve is refused." },
               flag_reason: { type: "string", description: "WHY this position is risk-relevant — the judgment the row exists to carry." },
-              verify: { type: "string", enum: ["yes", "no"], description: "EXACTLY one bare token: does this row still need verification against the live register?" },
+              verify: { type: "string", enum: [...VERIFY_VALUES], description: "EXACTLY one bare token: does this row still need verification against the live register?" },
             },
           },
         },
@@ -669,7 +681,7 @@ serve({
             properties: {
               uri: { type: "string", description: "The record's `/mark/…` uri, as the band carries it." },
               flag_reason: { type: "string", description: "WHY this position is incumbent context rather than a risk-relevant conflict." },
-              verify: { type: "string", enum: ["yes", "no"], description: "EXACTLY one bare token." },
+              verify: { type: "string", enum: [...VERIFY_VALUES], description: "EXACTLY one bare token." },
             },
           },
         },
@@ -680,13 +692,13 @@ serve({
             "screen_verdict, class, status) is rendered from the band record, not typed: a batch-dropped " +
             "candidate with no entry here vanishes from the published audit, which is a silent recall loss.",
           items: {
-            type: "object", required: ["uri", "drop_reason"],
+            type: "object", required: ["uri", "drop_reason", "ground"],
             properties: {
               uri: { type: "string", description: "The dropped record's `/mark/…` uri." },
               drop_reason: { type: "string", description: "The one-line WHY — the judgment about THIS record. Never a bare status word." },
               ground: {
                 type: "string",
-                enum: ["off-field", "goods-distance", "duplicate-of-surfaced", "sign", "dead-status", "out-of-class"],
+                enum: [...DIGEST_DROP_REASON_TOKENS],
                 description:
                   "REQUIRED. EXACTLY one bare token saying under WHICH RULE the drop is made — the prose " +
                   "in drop_reason says why this record, the token says under which rule. `off-field` " +
@@ -704,14 +716,19 @@ serve({
         instructed_checks: {
           type: "array",
           description:
-            "One entry per requester ask this stage owns, answered from the FROZEN material. The record " +
-            "ids you read are the reading audit's and are rendered for you. A check the frozen material " +
-            "genuinely cannot answer is answered honestly here AND recorded as an open coverage row.",
+            "One entry per requester ask this stage owns, answered from the FROZEN material. A check the " +
+            "frozen material genuinely cannot answer is answered honestly here AND recorded as an open coverage row.",
           items: {
             type: "object", required: ["ask", "answer"],
             properties: {
               ask: { type: "string", description: "The requester's ask, as dispatched." },
               answer: { type: "string", description: "Your answer — including the honest \"the frozen material cannot answer this\"." },
+              records: {
+                type: "array", items: { type: "string" },
+                description: "OPTIONAL. The held record identifiers this answer relies on, where applicable: each record's `/mark/…` " +
+                  "uri, as the band carries it. A uri the band does not hold is refused. Name none where the answer rests " +
+                  "on a search's count, a verified zero or an open question.",
+              },
             },
           },
         },
@@ -722,7 +739,7 @@ serve({
             type: "object", required: ["subject", "decision", "reason"],
             properties: {
               subject: { type: "string", description: "Which placement — the mark and, where it helps a reader, its uri." },
-              decision: { type: "string", enum: ["ADOPTED", "OVERRODE"], description: "EXACTLY one bare token." },
+              decision: { type: "string", enum: [...ADJUDICATION_DECISIONS], description: "EXACTLY one bare token." },
               reason: { type: "string", description: "An override QUOTES the reason it contradicts; a kept tier still says why." },
             },
           },
@@ -1157,8 +1174,8 @@ serve({
             "COMPLETED FINDINGS, saved before the whole record exists. Send one or a few complete finding objects as the findings record carries them, and nothing else on the call. Each is checked as the record checks a finding and kept as soon as it passes; one that is refused leaves the others saved. A finding saved again for the same position replaces the earlier one. Saving writes no report: the record is complete only when you send `narrative` with `findings`, and that call takes every saved finding for a position it does not carry.",
           items: {
             type: "object",
-            description: "One complete finding object, as the findings record carries it.",
-            properties: Object.fromEntries(FINDING_KEYS_CURRENT.map((k) => [k, { description: `Part of the finding record; see findings-model.mjs for what \`${k}\` carries.` }])),
+            description: FINDING_ITEM,
+            properties: findingProperties(),
           },
         },
         findings_patch: {
@@ -1180,11 +1197,9 @@ serve({
               // schema without refusing the traffic it was meant to police.
               //
               // DERIVED, NEVER COPIED. The authority for what a finding carries is findings-model.mjs's
-              // key ladder. A hand-written list here would be a second definition of the record's shape
-              // and the two would drift the first time that ladder gains a key. The schema declares that
-              // these keys EXIST; what each one means stays where it is defined.
-              ...Object.fromEntries(FINDING_KEYS_CURRENT.filter((k) => k !== "ordinal")
-                .map((k) => [k, { description: `Part of the finding record; see findings-model.mjs for what \`${k}\` carries.` }])),
+              // `FINDING_FIELDS`, held to the key ladder by a test. A hand-written list here would be a second
+              // definition of the record's shape, and the two would drift the first time that ladder gains a key.
+              ...findingProperties(["ordinal"]),
             },
           },
         },
@@ -1232,12 +1247,12 @@ serve({
     // offered a field it may not use can fill it, and the check that refuses it runs after the whole step.
     schemaNow: (schema) => knockoutAssessSchemaFor(schema, process.env.CLEAROTRON_BAND_RUN_DIR),
     description:
-      "Hand back THIS CHUNK's rated assessment as VALUES. The driver serializes knockout-assess-<n>.json, " +
-      "so you never format JSON and never write the file. WHICH CHUNK IS NOT YOURS TO SAY — the driver " +
+      "Hand back THIS GROUP's rated assessment as VALUES. The driver serializes knockout-assess-<n>.json, " +
+      "so you never format JSON and never write the file. WHICH GROUP IS NOT YOURS TO SAY — the driver " +
       "bound it when it dispatched you, and there is no parameter for it. Rate every mark assigned to " +
-      "this chunk and no others. " +
+      "this group and no others. " +
       // The repair contract, in the dispatch's approved words: the recorder merges field by field (knockout-assess-record.mjs).
-      "On the first call, send the complete assessment. Once the tool has confirmed a written record for this chunk, correct a name by sending its exact name and only the fields you changed. Omitted names and omitted fields within a name keep their recorded values. A field you send replaces that whole field: send a changed list or object complete, including unchanged entries. Update the chunk summary when the correction changes it. If the tool has written no record, send the complete corrected assessment.",
+      "On the first call, send the complete assessment. Once the tool has confirmed a written record for this group, correct a name by sending its exact name and only the fields you changed. Omitted names and omitted fields within a name keep their recorded values. A field you send replaces that whole field: send a changed list or object complete, including unchanged entries. Update the group summary when the correction changes it. If the tool has written no record, send the complete corrected assessment.",
     inputSchema: {
       type: "object",
       // `schema_version` is accepted and ignored: the driver writes its own. Declared so a seat that
@@ -1252,13 +1267,12 @@ serve({
         chunkSummary: {
           type: "string",
           description:
-            "The cross-mark read covering THIS chunk's marks: a short opening line for what the batch as a whole shows, then one \"## <MARK NAME>\" sub-header per mark with its band and the one or two things that drive it, bullets where they help. EVERY chunk emits one: " +
-            "the whole-batch executive summary is composed in code by concatenating them, so a chunk " +
-            "without one vanishes from the summary a client reads.",
+            "The summary of THIS group's names. Open with a line for each name and its band, then one \"## <MARK NAME>\" sub-header per name with the one or two things that drive its band, bullets where they help. " +
+            "Every group sends one, and code joins them into the order's summary once every name is rated, so a name missing here is missing from what the client reads.",
         },
         framework: {
           type: "object", additionalProperties: false,
-          description: "Chunk 0 only — the deck in force and its ladder, as you were handed them.",
+          description: "Not needed: the driver records the frozen framework. If you send it, it must name that framework and its ladder.",
           properties: {
             source: { type: "string", description: "The framework key." },
             ladder: { type: "array", items: { type: "string" }, description: "Band words, highest first." },
@@ -1266,15 +1280,15 @@ serve({
         },
         batch: {
           type: "object", additionalProperties: false,
-          description: "Chunk 0 only, and required there — the merged artifact takes it from chunk 0 alone.",
+          description: "Optional, from any group. Use `batch.standardCaveats` only for a qualification the brief establishes for every name in the order. Put a qualification specific to an assigned name in that name’s assessment.",
           properties: {
-            productContext: { type: "string", description: "What the batch is FOR, in the client's terms." },
+            productContext: { type: "string", description: "Not needed: the driver takes the product context from the plan." },
             standardCaveats: { type: "array", items: { type: "string" } },
           },
         },
         marks: {
           type: "array", minItems: 1,
-          description: "One row per mark assigned to THIS chunk — no invention, no neighbour-chunk overrun.",
+          description: "One row per mark assigned to THIS group — no invention, no neighbour-group overrun.",
           items: {
             type: "object", additionalProperties: false,
             required: ["name"],
@@ -1282,14 +1296,14 @@ serve({
               ref: { type: ["string", "null"] },
               name: { type: "string", description: "The mark, VERBATIM as the plan names it — the join key for everything downstream." },
               rating: { type: "string", description: "The band word from the framework in force, verbatim. Not a numeral, not a letter code." },
-              ratingQualifier: { type: ["string", "null"], description: "A closed sub-gradation that can only CAP a band; anything else belongs in the band word itself." },
+              ratingQualifier: { type: ["string", "null"], description: `A closed sub-gradation that can only CAP a band; anything else belongs in the band word itself. It is ${QUALIFIER_VALUES}.` },
               degraded: { type: ["boolean", "null"], description: "True only when the driver holds NO research payload for this mark. A degraded mark can never read as silently clean." },
               bullets: { type: "array", minItems: 1, maxItems: 5, items: { type: "string" }, description: "1–5 evidence bullets." },
               basis: { type: "string", description: "ONE sentence: why this band, for this name, in these classes. The report renders it as the lead line — a paragraph in bullets cannot fill it." },
               factors: { type: "array", minItems: 2, maxItems: 4, items: { type: "string" }, description: "2–4 one-line load-bearing observations behind the band." },
               counterFactors: { type: "array", minItems: 1, maxItems: 3, items: { type: "string" }, description: "1–3 one-line statements of what holds this name at this band rather than the next, either way." },
               mitigation: { type: "string", description: "May be \"\" when nothing would move the band — but SEND THE KEY on the first call, so a considered \"none\" is not confusable with an omission." },
-              assessment: { type: "string", description: "The opening paragraph a reader of THIS MARK'S own report sees first: what the name is, what the landscape looks like, what drives the rating." },
+              assessment: { type: "string", description: "The opening read a reader of THIS MARK'S own report sees first. In the first substantive paragraph, give the overall band and name the goods or services that drive it." },
               contextFraming: { type: "string" },
               registerEstimate: { type: "string" },
               parodyNote: { type: ["string", "null"] },
@@ -1350,7 +1364,7 @@ serve({
               classesDriving: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 }, description: "Mandatory at a material band — class-specific ratings." },
               classGroups: { type: "array", minItems: 2, description: "OPTIONAL: when separating the requested goods changes the advice under the frozen framework. Every class searched belongs to one group, and rating is the highest group's band.", items: { type: "object", required: ["band", "classes"], properties: {
                 band: { type: "string", description: "The band for this group, in the framework's words." },
-                ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+                ratingQualifier: { type: ["string", "null"], description: `${QUALIFIER_VALUES}.` },
                 classes: { type: "array", minItems: 1, items: { type: "integer", minimum: 1, maximum: 45 } },
               } } },
               beltAndBraces: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
@@ -1381,7 +1395,7 @@ serve({
     name: "record_knockout_review",
     description:
       "Hand back the MATERIAL DEFECTS you found, as VALUES, and your answer to the question the dispatch opens with. A material " +
-      "defect goes to the step that rated the batch, and you repair nothing. Send an empty `material` list when you found none.",
+      "defect goes to the step that rated the order, and you repair nothing. Send an empty `material` list when you found none.",
     inputSchema: {
       type: "object",
       additionalProperties: false,
@@ -1414,7 +1428,7 @@ serve({
     schemaNow: (schema) => knockoutAssessSchemaFor(schema, process.env.CLEAROTRON_BAND_RUN_DIR),
     description:
       "Hand back your repair of the defects you were given, as VALUES, sending only what changes. The driver merges it onto " +
-      "the chunk it holds and checks the result as it checks a rated chunk. It refuses a change to a name no defect concerns, except a finding a defect names that also stands on that name. " +
+      "the group it holds and checks the result as it checks a rated group. It refuses a change to a name no defect concerns, except a finding a defect names that also stands on that name. " +
       "It refuses a moved finding no answer accounts for, and a rating that moves without its dependent answers. A repair turn may send " +
       "only what it corrects, and what it has repaired is kept.",
     inputSchema: {
@@ -1432,7 +1446,7 @@ serve({
             findings: { type: "array", items: { type: "integer" }, description: "OPTIONAL: the ordinal of any finding this repair moved beyond the one the defect names." },
           } },
         },
-        chunkSummary: { type: "string", description: "The whole of this chunk's summary as it now reads, where the repair changes it. Required when a rating moves." },
+        chunkSummary: { type: "string", description: "The whole of this group's summary as it now reads, where the repair changes it. Required when a rating moves." },
         marks: {
           type: "array",
           description: "One row per name you repair, carrying only the fields that change.",
@@ -1441,11 +1455,11 @@ serve({
             properties: {
               name: { type: "string", description: "The name, verbatim." },
               rating: { type: "string", description: "The band, in the framework's words." },
-              ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+              ratingQualifier: { type: ["string", "null"], description: `${QUALIFIER_VALUES}.` },
               classesDriving: { type: "array", items: { type: "integer" }, description: "The classes behind the band." },
               classGroups: { type: "array", minItems: 2, description: "Where this repair changes the conclusion by class group: every row as it now reads.", items: { type: "object", required: ["band", "classes"], properties: {
                 band: { type: "string", description: "The band for this group, in the framework's words." },
-                ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+                ratingQualifier: { type: ["string", "null"], description: `${QUALIFIER_VALUES}.` },
                 classes: { type: "array", minItems: 1, items: { type: "integer", minimum: 1, maximum: 45 } },
               } } },
               basis: { type: "string", description: "One sentence: why this band, for this name, in these classes." },
@@ -1548,23 +1562,19 @@ serve({
   }, {
     name: "record_knockout_frame",
     description:
-      "Hand back the batch FRAME as VALUES: the plan, and the scope note. The driver serializes " +
+      "Hand back the order's FRAME as VALUES: the plan, and the scope note. The driver serializes " +
       "knockout-plan.json and writes knockout-frame.md, so you never format JSON and never write either " +
       "file. `scope_note` is written EXACTLY as you send it, so write the finished 2-3 sentences — the " +
       "driver adds no heading and composes nothing into it. One row per instructed mark, names verbatim " +
-      "from the instructed scope. A repair turn may send only what it is correcting: the driver merges " +
-      "marks onto what it already accepted BY MARK NAME, so the marks you omit survive — but a mark you " +
-      "DO send replaces its stored row key by key, so send that mark whole.",
+      `from the instructed scope. ${FRAME_REPAIR_RULE}`,
     inputSchema: {
       type: "object",
-      // THE FIRST CALL'S CONTRACT, and it matches the acceptor rather than under-promising against it.
-      // This schema declared NOTHING required while `acceptKnockoutFrame` refused a call missing any of
-      // these three, so the document handed to the seat said a field was optional and the driver then
-      // refused it by name. A schema and an acceptor that disagree resolve toward the STRICTER side.
+      // NOTHING IS REQUIRED AT THE TOP OR ON THE BATCH, because the gate cannot tell a first call from a repair (design,
+      // 2026-11-24). The seat is handed this schema once, at the start of its session, and the gate checks every call
+      // against it; required fields here refused the repair the description asks for, a batch field or a name row sent
+      // alone, before the recorder saw it. The recorder holds the two states instead: the complete plan before its first
+      // save, and the plan a repair leaves after it. A name row stays required whole, because a row sent replaces its row.
       //
-      // A REPAIR turn may still omit all three: the acceptor validates the MERGED result, so the stored
-      // value stands. `required` describes the call that has nothing to merge onto — the first one.
-      required: ["scope_note", "batch", "marks"],
       // `schema` is accepted and ignored: the driver writes its own. Declared so a seat that sends it is
       // not refused for a field nobody reads — the narrow-refusal rule preserve-merge.mjs states.
       properties: {
@@ -1572,18 +1582,17 @@ serve({
         scope_note: {
           type: "string",
           description:
-            "The 2-3 sentence scope note, written to knockout-frame.md EXACTLY as sent. What the batch " +
+            "The 2-3 sentence scope note, written to knockout-frame.md EXACTLY as sent. What the order " +
             "is, which classes, anything flagged. Name the search that was configured — this document is " +
             "read to check that what ran is what the client ordered.",
         },
         batch: {
           type: "object",
-          required: ["productContext", "inUseAs", "useKind"],   // places are per name (ruling 570): the batch list is optional, as in the acceptor and the manual
           properties: {
-            productContext: { type: "string", description: "One sentence: what the batch is for. Every mark's contextFraming is read against it." },
+            productContext: { type: "string", description: "One sentence: what the order is for. Every mark's contextFraming is read against it." },
             // THE ORDER'S USE PHRASE (design, 2026-11-24): one for the names with the order's proposed use, so two runs of one order ask the same questions.
             useKind: { type: "string", description: USE_PHRASE },
-            inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The places the batch is searched on include the sites where these uses are listed." },
+            inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The places the order is searched on include the sites where these uses are listed." },
             places: {
               type: "array", items: { type: "string" },
               description: "THE PLACES ARE PER NAME (task 2d) and go on each mark, not here.",
@@ -1595,7 +1604,7 @@ serve({
             },
             families: {
               type: "array", items: { type: "array", items: { type: "string" } },
-              description: "Put each submitted name verbatim in exactly one group in batch.families. Keep spellings generated only for searching outside the groups.",
+              description: FAMILIES_RULE,
             },
           },
         },
@@ -1613,12 +1622,12 @@ serve({
               classes: { type: "array", items: { type: "number" }, description: "Nice classes, integers 1-45." },
               beltAndBraces: { type: "array", items: { type: "number" }, description: "Adjacent Nice classes swept as a precaution, integers 1-45." },
               classesPlain: { type: "string", description: "The plain-language class line — what these classes are, in words the rating step reads beside the numbers." },
-              contextFraming: { type: "string", description: "What THIS name is for — a character, a location, a product line. The rating hangs off it: the assess stage is told to rate WITH this field, per mark, and two names in one batch can sit at different bands on identical evidence because they are used differently." },
+              contextFraming: { type: "string", description: "What THIS name is for — a character, a location, a product line. The rating hangs off it: the assess stage is told to rate WITH this field, per mark, and two names in one order can sit at different bands on identical evidence because they are used differently." },
               useKind: { type: "string", description: "A different use the request gives this name, copied as batch.useKind is (task 2c). Leave it out otherwise." },
               // PER NAME, NOT PER BATCH (ruling 570). Declared here as well as in the driver's allowlist
               // because a field the prose asks for and the schema omits is a contradiction the seat
               // resolves whichever way it happens to trust.
-              places: { type: "array", items: { type: "string" }, description: "The places THIS name is searched on: two or more, one of them \"web\" (the whole web) and each other a site's bare host. No upper limit — name as many as this name needs, and no more, because every place is another search of every spelling. Two names in one batch may have different lists." },
+              places: { type: "array", items: { type: "string" }, description: "The places THIS name is searched on: two or more, one of them \"web\" (the whole web) and each other a site's bare host. No upper limit — name as many as this name needs, and no more, because every place is another search of every spelling. Two names in one order may have different lists." },
               // NO SPELLINGS: the driver builds them from the name (task 2e). A held answer that sends them is accepted, as the record says.
               alternatives: { type: "array", items: { type: "string" }, description: "Each written form of this one item, where the request gives more than one spelling or word order. Omit otherwise." },
               priorKnowledge: { type: "string", description: "What the requester already told you about this name, or omit it." },

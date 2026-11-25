@@ -49,7 +49,7 @@ export const NATIVEREAD_TOOL = {
 };
 
 /** Assemble the Messages API body (pure). `payload` is the code-inlined evidence slice the DRIVER
- *  assembled (register rows, candidates, sub-class notes, grid findings) — this module never decides
+ *  assembled (register records, candidates, sub-class notes, grid findings) — this module never decides
  *  what the model may see. */
 export function buildNativereadRequest({ mark, lane = "zh", payload }) {
   if (lane !== "zh") throw new Error(`jx-nativeread: no prompt for lane "${lane}"`);
@@ -58,8 +58,10 @@ export function buildNativereadRequest({ mark, lane = "zh", payload }) {
   const prompt = [
     `Mark under clearance: "${String(mark).trim()}".`,
     ``,
-    `Below is the complete Chinese evidence slice assembled for this run — CNIPA register rows,`,
-    `native-script candidate forms, sub-class (similarity-group) notes, and platform search findings.`,
+    `Read the Chinese-language evidence supplied below. A shortened section states how many records or rows were omitted.`,
+    `Base each conclusion on the details shown.`,
+    `Each goods entry identifies its source and states how much wording is shown.`,
+    `Missing goods do not establish that the goods are unrelated.`,
     `Read it as a Chinese trademark practitioner would and emit up to ${MAX_ITEMS} items:`,
     `- "conflict-read": what a specific register record actually is (goods coverage, sub-class overlap,`,
     `  status nuance a Latin-only read misses) — record_uri REQUIRED, from the slice;`,

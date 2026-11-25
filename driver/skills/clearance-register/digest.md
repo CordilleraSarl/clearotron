@@ -2,12 +2,26 @@
 
 > Read `SKILL.md` first (the shared spine). This file is the DIGEST-mode procedure + the register-findings output format. **Do NOT read `unit.md`.**
 
+## Spawned session
+
+- **Digest mode (judgment — Layer B)** — the task gives the paths to the per-axis prose digests (audit
+  summaries) and the manifest; the driver has already MERGED the per-axis bands into the run's complete
+  band. The worker reads the candidates placement carried forward and their supporting evidence **through the band tools** (`band_shape` first, then
+  `band_lookup` / `band_record` — every call lands in the reading audit; never by opening or slicing band
+  files), performs all cross-cutting judgment (relevance, owner aggregation, opposition, Option-D),
+  DECIDES SUFFICIENCY, and hands the register-side findings back as typed rows — the driver renders the document synthesis reads; the seat writes no file.
+
+**Digest mode also reads**: `placement-recommendations.md` at `studio/clearance-search/<slug>/<date>/placement-recommendations.md` (Touchpoint 2 per-candidate placements — informs digest tiering), and its structured mirror `placements.json` beside it (one `{mark, owner, jurisdiction, records, tier, reason}` entry per candidate; when present, the authoritative per-candidate tier record — the md carries the rulings tail as prose).
+
+Writes:
+- Digest mode: you write no file. The driver renders `studio/clearance-search/<slug>/<date>/register-findings.md` from what you send. Coverage statuses are NOT a file you write: they ride the `record_coverage` tool into a driver-held record, and the driver renders the `## Coverage ledger` table and its JSON mirror from it (see *Coverage ledger* below).
+
 ## Output — the findings you hand back through `record_register_digest`
 
 **YOU WRITE NO FILE.** The driver renders `register-findings.md` from what you send. It composes the
 title, the summary counts, every identifier cell, the clickable record URL, the register tag, the
-Negative-results provenance fields, the audit trail and the record ids you read — all from the band and
-from its own receipts. Nothing you write by hand is read, and you hold no `Write` or `Edit` tool for it.
+Negative-results provenance fields and the audit trail, with every record read in this run — all from the
+band and from its own receipts. Nothing you write by hand is read, and you hold no `Write` or `Edit` tool for it.
 
 ### What the call takes
 
@@ -16,7 +30,7 @@ from its own receipts. Nothing you write by hand is read, and you hold no `Write
 | `findings_rows` | Sheet-1 position | `uri`, `flag_reason`, `verify` (`yes`/`no`) | URI, Mark, Owner, Country, Classes, Status, Filed, Expiry + the clickable URL |
 | `incumbent_rows` | Sheet-2 position you change or add; send no row for a sheet-2 placement you keep (the driver writes it with placement's reason) | the same three | the same cells |
 | `negative_rows` | dropped candidate | `uri`, `drop_reason`, `ground`, optional `variant` | the Mark cell and the Notes provenance (URI, `screen_verdict`, class, status) |
-| `instructed_checks` | requester ask | `ask`, `answer` | the record ids you read while answering |
+| `instructed_checks` | requester ask | `ask`, `answer`, and `records`: the held record identifiers the answer relies on, where applicable | each answer's records, beneath it |
 | `disagreement_resolutions` | disagreement / borderline | `subject`, `ADOPTED`\|`OVERRODE`, `reason` | the section and its rows |
 | `opposition` / `merch_sweep` / `cross_checks` / `open_flags` | — | your prose | the headings around it |
 
@@ -35,7 +49,7 @@ reader can see it.
 #### Summary counts
 
 Driver-computed from its own receipts. **There is no field for them and you do not state them.** The
-COVERAGE judgment is not among them: it is yours, and it rides `record_coverage` (below). You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`.
+COVERAGE judgment is not among them: it is yours, and it rides `record_coverage` (below).
 
 #### `findings_rows` — Sheet 1 (risk-relevant) and `incumbent_rows` — Sheet 2
 
@@ -148,7 +162,59 @@ crowd is a legitimate reasoned ending for the residual: rule it once, count it, 
 individual reasoning where it matters. This is not a write-everything rule — it is a no-silent-death
 rule.
 
-### Coverage ledger — you rule the driver's form rows through `record_coverage` (orchestrator: the driver renders the `## Coverage ledger` section and `register-coverage-ledger.json` from what the tool records; synthesis lifts the rolled-up sufficiency into `coverage_judgment`)
+The DRIVER merges the per-axis band blocks into the run's complete band (`parseNamedBand` / `mergeNamedBands`
+in `named-band.mjs` — code, not a model). Judgment (Layer B) reads that union **through the band tools**
+(`band_shape` / `band_lookup` / `band_record`; every call on the reading audit — never by reading or slicing
+the band files), reconciles against `matter-context`'s materially-matters list, settles ONE status per
+coverage unit, and **decides sufficiency** there.
+Synthesis emits the rolled-up signal in `findings.json` (`coverage_judgment` — `{sufficient, reason}`):
+`sufficient:false` (a material slice not fully cleared) clamps the verdict CLEAR→CONDITIONAL and the named gap
+ships as an open item — the report still delivers. `sufficient:true` → deliver clean. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver. A missing band is the
+one hard stop — the driver fails fan-in on it, so a clean can never ship over an unsearched band. **The funnel
+writes no `coverage_judgment` and no clean verdict** — it hands up the complete band + honest `incomplete`s and
+lets judgment decide.
+
+### Coverage ledger — which document you owe, and what the four status tokens mean
+
+**The status vocabulary is CLOSED: EXACTLY one bare token of: `confirmed-clean` / `coverage-limited` /
+`deferred` / `withheld-by-judgment`.** Qualifiers never go in a status cell; they go in the reason. The distinction between
+`coverage-limited` and `deferred` is doctrine, not wording, and the driver relabels a row that gets it wrong:
+
+- **`coverage-limited`** — the search RAN and could not be exhausted: a crowd over the provider window, a
+  count-only saturation descriptor, a volume/pagination ceiling. A re-run cannot close it, so the escalation
+  gate skips it and it does not on its own make the run unfinished.
+- **`deferred`** — the search could not run or could not reach its data: tool absent, provider error, fetch
+  blocked, a predicate or an office the active provider cannot express. A provider error or a blocked fetch is a
+  CLOSEABLE gap — escalate and disclose; a predicate or an office the provider cannot express is never closeable,
+  and stays open and disclosed. Either way it clamps the verdict CLEAR→CONDITIONAL. Mislabel one of these
+  `coverage-limited` and a fixable hole disappears into an accepted limit.
+- **`confirmed-clean`** — the slice ran to completion and judgment cleared it.
+- **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched;
+  or a crowd the narrowing steps closed (a narrowed list that was read answered it, or the reading step set it
+  aside with its count and a reason). Its reason goes into the audit workbook, not the report.
+
+**HOW those statuses are recorded is not yours to assume — the dispatch states it, and it is one route,
+the `record_coverage` tool.** The driver computes the form before every digest dispatch and enumerates
+its rows into the dispatch itself, so the prompt and the gate cannot disagree about what the run owes —
+there is nothing for them to disagree about:
+
+- **Every run has a coverage form, and you never open or edit it.** The driver has already computed one
+  row per coverage unit, every identifier included, and the dispatch lists the rows with their `row_id`s.
+  Record `status` and `reason` on every row by calling `record_coverage` — the driver validates each row
+  as it arrives, holds the record itself, and a row settled once stays settled — and write **no
+  `## Coverage ledger` table at all**: the driver renders that table and its JSON mirror FROM the record
+  after your pass, so a table you type into the findings is erased before anything reads it. Rows you ADD
+  go through the same tool (`kind: "seat"`); the field list and the closed axis vocabulary are stated in
+  the dispatch's coverage block, so read them there rather than from memory.
+- **A form carrying NO rows is still a complete answer, and it is the driver's.** Where the plan apparatus
+  was out of reach there is nothing to compute rows from, so the form carries `rows: []` and an `absence`
+  field naming the cause, and the dispatch carries no coverage block. You are not asked to record anything
+  and you still write no `## Coverage ledger` table: the driver renders the declaration, so the report
+  states what is true about the run rather than a reconstruction of it. A run with no coverage ledger
+  supports no coverage claim anywhere in the findings.
+
+
+### Coverage ledger — you rule the driver's form rows through `record_coverage` (the driver renders the `## Coverage ledger` section and `register-coverage-ledger.json` from what the tool records; synthesis lifts the rolled-up sufficiency into `coverage_judgment`)
 
 You are JUDGMENT (Layer B), not the funnel. The funnel handed up the band in **two states only**: `enumerated`
 (paged to `has_more:false` — complete) or `incomplete` (a crowd descriptor it could not exhaust). The funnel wrote
@@ -239,9 +305,7 @@ third is never a clean negative either: its count stays on the record.
 
 **Each open row is discharged only by ITSELF.** A `coverage-limited` row about one slice does not
 account for a different slice's block, however plainly its reason discusses the axis — so set the status
-on the row that owns the block. This is the same rule the gate has always applied: a disclosure counted
-only where it named that block. What changed is that you no longer have to name it, because the driver
-wrote the block its own row. Rows about slices that genuinely enumerated to `has_more:false` STAY
+on the row that owns the block. You do not have to name the block, because the driver wrote each block its own row. Rows about slices that genuinely enumerated to `has_more:false` STAY
 `confirmed-clean` — do not downgrade them, that trades one false claim for another.
 
 Never retype a query id, a hit count or any other identifier into a reason cell to prove you read
@@ -255,7 +319,7 @@ for a saturated dominant element or `translit-*-meaning` token (the token kept a
 goods-vocabulary words are **never** ANDed into the search text — goods-relevance is judged at SELECTION). If that
 named slice came back `enumerated`, read it and clear or surface its hits. If it came back `incomplete` AND it is
 material (the exact / near-identical in-class slice is the highest-relevance category), write it `coverage-limited`
-with a reason that NAMES the slice and the count. A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when deciding `coverage_judgment`. Insufficient coverage, a material deferred register slice, or unresolved timeout-taint on a material axis can raise CLEAR to CONDITIONAL; other terminal checks still apply. An everyday-word-scale count on
+with a reason that NAMES the slice and the count. An everyday-word-scale count on
 its own (a count-only saturation probe) is never a clean of the
 dangerous category and never a reason to drop the token, re-narrow it, or swap it for the phonetic form. An unenumerated crowd row is never `confirmed-clean`: rule it `withheld-by-judgment` with its count and reason if it is settled, else `coverage-limited`.
 
@@ -274,8 +338,7 @@ uncertainty about whether I LOOKED, or about what the COMPLETE picture MEANS?* W
 
 **Axis labelling is the driver's on every row the driver wrote — and yours on every row you add.** Each
 driver row already carries its axis and its coverage unit, composed by the driver from the plan entry the
-row is about: you never retype one of those, so a transposed or markdown-wrapped axis is no longer a
-reachable failure on them. A row YOU add is the one place an axis cell is still yours, and it is a closed
+row is about: you never retype one of those. A row YOU add is the one place an axis cell is still yours, and it is a closed
 four-token vocabulary — the list is above, it is in the dispatch's coverage block, and the tool refuses
 an axis outside it at call time with the rejected value named.
 
@@ -298,14 +361,15 @@ rolled-up `coverage_judgment` — is unchanged, because there is no second arm f
 #### The audit trail and the status-filter summary are the DRIVER's
 
 Per-unit search and detail-fetch counts, the `_query` attribution stamped at merge, the live/dead/ambiguous
-distribution, and the record ids you read — all from the run's own receipts. **There is no field for any
+distribution, and every record read in this run — all from the run's own receipts. **There is no field for any
 of them.** The JUDGMENT half stays yours: a unit that shortcut its axis is flagged in your prose.
 
 #### `instructed_checks` — one entry per requester ask this stage owns
 
-Send `{ask, answer}`. Answer from the FROZEN material via the band tools; a check the frozen material
+Send `{ask, answer, records}`. Answer from the FROZEN material via the band tools; a check the frozen material
 genuinely cannot answer is answered honestly AND recorded as an open coverage row naming the missing
-query. The driver renders the record ids you read beneath each answer.
+query. Include the held record identifiers this answer relies on, where applicable, in `records`. An answer
+that rests on a search's count, a verified zero or an open question names none: its receipt is its basis.
 
 #### `disagreement_resolutions` — one entry per disagreement, and per borderline
 
@@ -325,10 +389,10 @@ decision `ADOPTED`, reason `the cl.12 overlap is auto-parts vs the applicant's s
 **Coverage ledger → the `coverage_judgment` contract.** You rule every row of the driver's coverage form
 through `record_coverage` (a `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment` status and a reason on
 every row — the driver renders both the `## Coverage ledger` table and `register-coverage-ledger.json`
-from what the tool records). You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`. The FORM is the
+from what the tool records). The FORM is the
 single source of truth; the rendered table and the JSON mirror are both derived from it, so they agree by
 construction and neither can be the thing that drifts. Driver
-semantics: A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when deciding `coverage_judgment`. Insufficient coverage, a material deferred register slice, or unresolved timeout-taint on a material axis can raise CLEAR to CONDITIONAL; other terminal checks still apply. The named gap surfaces in # Actions (the report still ships); `sufficient:true` ⇒ deliver.
+semantics: The named gap surfaces in # Actions (the report still ships); `sufficient:true` ⇒ deliver.
 There are **no `commands[]` and no `halt`** — a material gap is a delivered conditional, never a re-enumeration
 loop and never a no-deliver halt.
 
@@ -413,8 +477,8 @@ alone. **Grounding:** "kept" means carried forward for assessment, NOT that it m
 URI); one known only from general knowledge — no register record fetched, no common-law record cited — is
 carried at synthesis as a typed **context note** (`context_notes[]`, type `famous-neighbour-ungrounded`),
 never as a finding with an empty or fabricated registration (the findings contract rejects that, and an
-ungrounded finding must never ship). Surfaced either way, never dropped. **When in doubt, KEEP and flag
-`Verify? ✅`** — better to surface a borderline candidate than drop a
+ungrounded finding must never ship). Surfaced either way, never dropped. **When in doubt, KEEP and set
+`verify` to `yes`** — better to surface a borderline candidate than drop a
 real risk. Log every gate drop. **Filer size, individual-vs-entity status, and apparent dormancy are never
 in-doubt-DROP reasons for an on-point in-class mark** — they travel WITH the kept candidate into Stage-2 as
 characterisation, they do not keep it out of the findings.
@@ -429,8 +493,8 @@ normalised owner name (strip suffixes — "Ltd", "GmbH", "Co.", commas, periods)
 for the same URI across fields or sources, OR an EUIPO cross-check disagrees with the vendor record on
 owner identity, OR a portfolio-size signal (many filings clustering under a normalised owner) would
 materially change the enforcement-appetite read, do NOT silently pick one. Surface both readings in the
-findings row and set `Verify? ✅` with reason "owner-identity conflict — confirm before enforcement
-read." Owner identity drives enforcer-profiling (see `clearance-search/firm-wide-reasoning.md`, *Enforcer profiling*
+row's `flag_reason`, with the reason "owner-identity conflict — confirm before enforcement
+read.", and set `verify` to `yes`. Owner identity drives enforcer-profiling (see `clearance-search/firm-wide-reasoning.md`, *Enforcer profiling*
 rule) — a wrong owner is a wrong risk read.
 
 ### Step 4 — Owner slices, and the applicant's own rights
@@ -477,7 +541,7 @@ kept.
 ### Step 6 — Stealth-filer detection + Option-D cross-checks
 
 Run the stealth-filer regex ([stealth-filer-indicators.md](stealth-filer-indicators.md)) over all
-owners. Then per the orchestrator's cross-pollination logic:
+owners. Then:
 
 The driver prepares Trigger 1 and 4 checks before this stage. Read their receipt and the band to distinguish checks that ran from checks withheld, refused, or left beyond the cap. Keep each not-searched reason; a check that did not run is not a clean result. Record Triggers 2 and 3 in `cross_checks`, naming the owner and why. No stage runs those two; synthesis and the reviewing lawyer read them as open checks.
 
@@ -490,18 +554,18 @@ lost between judgment and the Excel). **You write no file and you name none.**
 
 The per-unit counts are rendered from the run's own receipts, so the audit trail is not yours to compile.
 What IS yours is the judgment beside it: **explicitly flag any unit
-that reported it shortcut its axis**, in your `open_flags` prose — the orchestrator's skeptic review
+that reported it shortcut its axis**, in your `open_flags` prose — the skeptic review
 decides whether to re-run that unit (the driver resumes that unit's own session warm, at its own tier —
 not a fresh Opus spawn). You do NOT re-run anything.
 
 **Rule the coverage form and reconcile the complete band against `matter-context`.** Rule every
 crowd descriptor (cleared / material-gap) by recording that row's status and reason through
-`record_coverage`. You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`. Then **reconcile the band against `matter-context`'s materially-matters jurisdiction list**:
+`record_coverage`. Then **reconcile the band against `matter-context`'s materially-matters jurisdiction list**:
 every material jurisdiction must be accounted for. One covered by a complete worldwide or regional answer, or by a
 narrowed list that was read, is accounted for by that answer. One the identical mark's narrowing left inside a crowd,
 because the one market list did not name it, stays in that crowd's count on the crowd's own row. Only a material
 jurisdiction no question reached at all is an **unsearched dangerous slice**: write it `deferred` if it could not
-reach its data, else `coverage-limited`, with a reason that NAMES the slice. A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when deciding `coverage_judgment`. Insufficient coverage, a material deferred register slice, or unresolved timeout-taint on a material axis can raise CLEAR to CONDITIONAL; other terminal checks still apply.
+reach its data, else `coverage-limited`, with a reason that NAMES the slice.
 The gap surfaces in # Actions. **Never** write a missing material jurisdiction as a self-accepted clean — but
 it is a delivered conditional, not a re-search loop and not a halt. Each slice is prefixed by the axis that ran
 (or owes) its sweep — `primary-sweep / CH (material)`, never a bare `CH (material)`. Do not re-judge a unit's
@@ -537,7 +601,7 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 - [ ] `placement-recommendations.md` read and informing tiering; each candidate's graduated outcome adopted or counter-reasoned with audit-trail justification; its coverage-commands/open-questions carried forward
 - [ ] Per-jurisdiction sub-query attribution (`_query`) carried forward in the findings file's audit trail
 - [ ] Relevance gate applied per archetype over the candidates placement carried forward (field-relevance only — filer size/dormancy held for Stage-2, never a drop reason); drops logged
-- [ ] Owner aggregation across the band; owner-identity conflicts flagged `Verify? ✅` (never silently picked)
+- [ ] Owner aggregation across the band; owner-identity conflicts flagged with `verify` set to `yes` (never silently picked)
 - [ ] **Every coverage-form row ruled through `record_coverage`** — the tool's answer reports nothing outstanding; every `incomplete` crowd descriptor ruled cleared/material-gap; reconciled against `matter-context`'s material-jurisdiction list (every material jurisdiction enumerated-and-cleared, or written `coverage-limited`/`deferred` → CONDITIONAL — never a self-accepted clean over an unsearched slice); genuine open judgment surfaced to ship (not a coverage gap)
 - [ ] Applicant own-rights sweep run **if priority is live** (never a conflict / Findings row / gate)
 - [ ] Watchlist matches flagged

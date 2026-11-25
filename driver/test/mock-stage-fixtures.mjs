@@ -1853,6 +1853,16 @@ export function applyStageWrites(msg, argv) {
           return r.refused ? `mock writer's four-answers patch refused: ${r.refused}` : "mock writer patched the four answers";
         }
       }
+      // MOCK_COVERAGE_CITES — the writer's delivery-check repair removes the open coverage row citing the withdrawn finding,
+      // as its ruled line orders: ONE patch carrying the corrected coverage register alone.
+      if (process.env.MOCK_COVERAGE_CITES && WRITER_LINT_REPAIR.test(msg)) {
+        const rows = structuredClone(lastAcceptedCall(runDir)?.findings?.coverage ?? null);
+        if (Array.isArray(rows)) {
+          recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+          const r = recordSynthesis(runDir, { findings: { coverage: rows.filter((row) => !String(row?.note ?? "").includes(`finding ${process.env.MOCK_COVERAGE_CITES} `)) } });
+          return r.refused ? `mock writer's coverage patch refused: ${r.refused}` : "mock writer patched the coverage rows";
+        }
+      }
       // MOCK_GOODS_REPAIR=correct|first|ignore — the writer's delivery-check repair, handed a record's complete goods
       // statements for a finding that says they are cut (MOCK_GOODS_CUT_CLAIM). "correct": ONE patch carrying each
       // finding a goods line names for the claim ("Correct the claim in finding <A>", or "Finding <N> cites" where one
@@ -1939,6 +1949,11 @@ export function applyStageWrites(msg, argv) {
         const cites = String(process.env.MOCK_ANSWERS_CITE).split(",").map(Number);
         for (const a of Object.values(doc.four_answers ?? {})) if (a && typeof a === "object") a.ordinals = cites;
       }
+      // MOCK_COVERAGE_CITES=<ordinal> — every whole save carries an open coverage row citing that finding, written as a
+      // writer writes one while the finding stands (the writer's delivery-check repair patches it away, above).
+      if (process.env.MOCK_COVERAGE_CITES && Array.isArray(doc.coverage))
+        doc.coverage.push({ area: "Velloquin Kestrel Ltd — prior position", state: "open",
+          note: `The position in finding ${process.env.MOCK_COVERAGE_CITES} on the invented earlier filing remains unresolved.` });
       // THE MOCK CARRIES THE RUN'S OWN LIMITS, because a compliant seat does. The receiver refuses a
       // coverage account that is clean throughout when the register ledger records a slice as less than
       // clean — doctrine, not a new rule: "a unit recorded coverage-limited can never be written as a
@@ -2575,8 +2590,9 @@ export function applyStageWrites(msg, argv) {
         // THE ORDER'S USE PHRASE (design, 2026-11-24), and a name's own below only where its use differs.
         useKind: orderUse,
         umbrellaBrandNote: null, executionOrder: [...names],
-        // MOCK_KO_FAMILIES — the intake's families, `[["<name>", …], …]`; without it the intake groups nothing.
-        ...(process.env.MOCK_KO_FAMILIES ? { families: JSON.parse(process.env.MOCK_KO_FAMILIES) } : {}) },
+        // MOCK_KO_FAMILIES — the intake's families, `[["<name>", …], …]`; without it every name is a group of one, as a fresh
+        // plan must say (design, 2026-11-24).
+        families: process.env.MOCK_KO_FAMILIES ? JSON.parse(process.env.MOCK_KO_FAMILIES) : names.map((n) => [n]) },
       marks: names.map((n, i) => ({ ref: null, name: n, classes: [9], beltAndBraces: [35],
         classesPlain: "software (9); retail services (35, belt-and-braces)",
         contextFraming: /[aeiou]{2}|q[^u]/i.test(n) ? "coined/fanciful term" : "brand-like compound",
@@ -2684,7 +2700,9 @@ export function applyStageWrites(msg, argv) {
           // assessment beside a re-rated mark is observable.
           assessment: `${n} screens at ${band} on this sweep. The name was searched against marketplace and `
             + `common-law use in the classes this chunk covers, and the read below sets out what the sweep `
-            + `found and what it could not reach. A knockout screen triages; it does not clear.`,
+            + `found and what it could not reach. A knockout screen triages; it does not clear.`
+            // MOCK_KO_NAME_QUALIFICATION: JSON keyed by name, a qualification that holds for that name alone, in its own assessment.
+            + (process.env.MOCK_KO_NAME_QUALIFICATION && JSON.parse(process.env.MOCK_KO_NAME_QUALIFICATION)[n] ? ` ${JSON.parse(process.env.MOCK_KO_NAME_QUALIFICATION)[n]}` : ""),
           contextFraming: "mock framing", rating: band, ratingQualifier: null,
           // MOCK_KO_CLASS_GROUPS: this name's answer by class group, as JSON keyed by name, through the real transport's check.
           ...(() => { const split = process.env.MOCK_KO_CLASS_GROUPS ? JSON.parse(process.env.MOCK_KO_CLASS_GROUPS)[n] : null;
@@ -2712,7 +2730,8 @@ export function applyStageWrites(msg, argv) {
           // MOCK_KO_CITE_NOWHERE: a source the run does not hold, on the mark's first finding, the way a model's bad citation lands.
           findings: koMockFindings(runDir, n, band).map((f, j) => (process.env.MOCK_KO_CITE_NOWHERE && j === 0 ? { ...f, evidence: [...f.evidence, process.env.MOCK_KO_CITE_NOWHERE] } : f)),
           negatives: deg ? [] : [{ term: n, source: "web, marketplaces, app stores", note: "no results of significance" }],
-          degraded: deg ? { reason: "research unavailable" } : null };
+          // The flag the rater sends; the cause is the driver's, already in the plan the dispatch shows.
+          degraded: deg ? true : null };
       }),
     };
     // THE DRIVER WRITES THE CHUNK, THROUGH THE REAL TRANSPORT. The mock composes values and hands them
@@ -3145,6 +3164,16 @@ export function breakFindingsAfterWrites(msg, argv) {
 }
 
 export function beforeForcedFailure(argv, msg) {
+  // A register call sent and never returned: the server logged its start, and the turn ended with it still out.
+  const killedAxis = process.env.MOCK_KILLED_REGISTER_CALL;
+  if (killedAxis) {
+    const dir = runDirFromWiring(argv);
+    if (dir) {
+      mkdirSync(driverDir(dir), { recursive: true });
+      appendFileSync(driverDir(dir, "tool-calls.jsonl"), JSON.stringify({ ts: new Date().toISOString(), event: "started",
+        server: "register", seq: Date.now(), tool: "register_execute_plan", axis: killedAxis }) + "\n");
+    }
+  }
   if (process.env.MOCK_POST_REPAIR_OWES_MORE !== "persist" || !/After the delivery check, that record was repaired/.test(msg)) return;
   const dir = runDirFromWiring(argv);
   if (!dir) return;

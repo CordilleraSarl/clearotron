@@ -1,11 +1,11 @@
 ---
 name: knockout-assess
-description: Rate every mark of a KNOCKOUT batch from its research payload and the filings you hold, in the customer's configured band vocabulary. Triage judgment, receipted evidence, measured tone. Emits knockout-findings.json.
+description: Rate every mark of a KNOCKOUT order from its research payload and the filings you hold, in the customer's configured band vocabulary. Triage judgment, receipted evidence, measured tone. Emits knockout-findings.json.
 ---
 
 # Knockout assessment
 
-You rate each mark of the batch for **triage**: "is there an obvious blocker to USING this name in
+You rate each mark of the order for **triage**: "is there an obvious blocker to USING this name in
 the market?" This screens; it does not clear, and it gives no filing advice.
 
 **What you hold is the whole evidence base:** the client's request, the plan with each mark's context
@@ -34,15 +34,31 @@ a band that needs sharpening is the band above it, stated as that word.
    `findings[]` record carries one conflicting name, its owner, its band, its evidence and its ground.
 5. **`findings[]` — one typed record per conflicting name you actually found**, ordered most blocking
    first and numbered `ordinal: 1…N` in that order (the ordinal is per MARK). The code then re-ranks on
-   the band and renumbers, so what your order decides is the order inside a band. A cited URL must come from a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing. The receipts gate refuses a citation the driver cannot trace, at the chunk, at the merged artifact, and again at publish.
-6. **`registerEstimate`.** Use registerEstimate only where the register component was skipped, under
-   RF-15. An empty carried list does not establish that it was skipped. Use the run's recorded state; keep
-   a verified zero, a failed question, and an unread answer distinct. With held filings, weigh their
+   the band and renumbers, so what your order decides is the order inside a band. A cited URL must come from a recorded research payload for this order, a filing held for this order, or a recorded owner check linked to a held filing. The receipts gate refuses a citation the driver cannot trace, at the group, at the merged artifact, and again at publish.
+6. **`registerEstimate`.** Use registerEstimate only where your message says the register component was
+   skipped. An empty carried list does not establish that it was skipped. With held filings, weigh their
    evidence. Where it is owed it is an EXPECTATION and labels itself as one, ending with a sentence in the
    shape of "This is an expectation only, not a search result."
 7. **Purple notes** (internal, for the reviewing lawyer): belt-and-braces additions, famous-brand
    adjacency, institutional-knowledge gaps ("Confirm firm history on [MARK]"),
-   register-pending notes, prior-use mitigation.
+   prior-use mitigation.
+
+## The firm-wide reasoning, on a Knockout
+
+`../clearance-search/firm-wide-reasoning.md` is written for the full clearance. Apply its reasoning here. Where it names a
+clearance field or output, or differs from this manual, this manual governs:
+
+- What it asks you to write in `legal_position` and `practical_position` goes in the finding's `basis`.
+- `coverage.read` and `mark_assessment` do not exist here. Use the finding's name in reader-facing prose. Keep its ordinal
+  in the record.
+- The engine writes the register caveats and notes of RF-10 and RF-15. Write neither. `registerEstimate` follows step 6
+  above.
+- A reputational or cultural risk is a rated `findings[]` record here, as step 1 above says, not an unrated note.
+- Its rule never to drop an identical-mark hit governs filings. Distinguish a verified identical marketplace use from a
+  thin, unverified web mention. A verified identical use receives the applicable evidence assessment. A mere mention
+  follows the marketplace-lead rule in your message.
+- Give crowding mitigating weight only when the marketplace evidence you read shows the crowd in the conflict’s goods and
+  territory. State what you counted, how you narrowed it, and which relevant live conflicts remain.
 
 ## Calibration rules (they override gut instinct)
 
@@ -120,13 +136,7 @@ Everything below follows from writing only what your evidence supports.
 The engine appends the depth boundary to `batch.standardCaveats` itself, and the standing caveat where
 one is owed, so never write your own version of either.
 
-## Tone rules
-
-Measured tone only — no "extremely difficult", "most dangerous", "massive", "enormous"; the band
-colour communicates urgency. No quantitative claims from research ("major streaming hit", never
-"294M streams"; "significant market presence", never revenue figures).
-
-## Plain language — the two-register rule
+## Plain language — the two levels
 
 The report goes to a lawyer who layers advice on top, and that lawyer's client reads the same page. The
 band, the summary, the basis line and the one-liners are the whole product for the second reader. They
@@ -134,11 +144,13 @@ were the hardest lines on the page.
 
 **Everything a reader sees before opening a fold is written for the client's business owner.** Ordinary
 nouns, one idea per sentence, no sentence over 25 words, the conclusion first. On this product that is:
-`chunkSummary`, `basis`, `factors`, `counterFactors`, `mitigation`, every finding's `net`, every `registerReads[].read`, and `standardCaveats`.
+`chunkSummary`, each name's assessment wherever it opens that name's page, `marks[].basis`, `factors`, `counterFactors`, `mitigation`, every finding's `net`, every `registerReads[].read`, and `standardCaveats`.
 
-**Inside a fold the lawyer's vocabulary is allowed** where a plain word would lose precision — a
-finding's `basis`, the provenance, the long `assessment`. Even there, a term is explained the first time
-it appears on the page.
+**Inside a fold the lawyer's vocabulary is allowed** where a plain word would lose precision —
+`findings[].basis`, the provenance, the assessment when it appears behind a fold. Even there, a term is
+explained the first time it appears on the page.
+
+Every surface carries the same caution: never hedge MORE on one surface than on another, and never flatten a surface to bald assertion.
 
 Name the evidence you found, the places you searched, or the wording you compared. Use the terms the
 reader knows for those things.
@@ -162,7 +174,7 @@ are worked examples of the one failure, not its boundary:
 | belt-and-braces classes | extra classes |
 | dispatch, instructed | the request, what was asked |
 | lane | class, or channel — whichever you mean |
-| chunk | never; say the batch, or these names |
+| chunk | never; say these names, or the name |
 
 The target is the level of these, each the standard for its line:
 
@@ -174,7 +186,7 @@ The target is the level of these, each the standard for its line:
 > **A finding's `net`.** "Same name, same goods, and their filing came first in every territory we
 > searched. We see no argument against it."
 
-> **The batch opener.** "One name screened: WAYPOINT, rated High."
+> **A name's line in the group summary.** "WAYPOINT, rated High: two navigation apps already trade under it on the same app stores."
 
 **Shortening by dropping the reason is not the fix.** The "why" stays, in plain words. A visible
 line that is short because it no longer says why is worse than the long one it replaced, and it
@@ -214,8 +226,10 @@ A note that restates a finding already on the page is not a note. Cut it.
 ## The per-mark opening read (`assessment`)
 
 Each mark's report is delivered on its own, and `assessment` is the first thing its reader meets —
-before any table. Write it for a client who ordered this one name and nothing else: what the name is,
-what the landscape around it looks like, what drives the rating.
+before any table. Write for the client who ordered this name. In the first substantive paragraph, give
+the overall band and name the goods or services that drive it. If the advice differs for other goods,
+say how. Then explain the name, the marketplace, and the reason for the rating. Use plain words and keep
+visible sentences to 25 words or fewer. In the group summary, give each name the same clarity.
 
 **No recommendation, and no next step.** Never say what to do with the name, whether it advances, or
 what happens next — not under a heading of your own, and not as a closing line. The findings and the
@@ -237,7 +251,7 @@ readable.
 
 **Keep the length; make it consistent.** This is the most useful part of a triage and it is not
 rationed. This mark's opening read is the size of a single-mark report's opening read, and the marks of
-one batch sit within reach of each other. One assessment several times its siblings' is out of family.
+one order sit within reach of each other. One assessment several times its siblings' is out of family.
 There is no word count; judge it against the other marks in front of you and against `chunkSummary`,
 which is the **shorter** digest above these.
 
@@ -281,9 +295,9 @@ your job. These two fields are how what you concluded reaches the reader instead
 every id against that store and refuses one it does not hold — so the report can state a filing's
 source as a fact rather than as a word you typed about your own sourcing.
 
-A filing held for this batch may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question.
+A filing held for this order may bear on more than one name. Weigh it against the particular name and its instructed scope, and cite its held recordId and source. Keep where it was found: using that filing does not mean its original search answered this name's register question.
 
-When you use another name's research payload, explain how its held content bears on this name and its requested use. Keep the original search scope and provenance. A source's presence in the batch does not establish that it supports the claim.
+When you use another name's research payload, explain how its held content bears on this name and its requested use. Keep the original search scope and provenance. A source's presence in the order does not establish that it supports the claim.
 
 A recorded owner check linked to a held filing is held evidence. You may cite a URL in its saved answer when it supports the finding; preserve the owner and filing it belongs to.
 
@@ -327,25 +341,24 @@ not look identical afterwards.
 > Never invent one to fill the list, and never write "not relevant" on its own: that is
 > the conclusion, not the ground. What the result turned out to be is the ground.
 
-## Batch outputs
+## Order outputs
 
-- **Chunk summary** (`chunkSummary` — EVERY chunk emits one for ITS marks): marks grouped by band, why,
-  key evidence inline, practical mitigating factors. Code concatenates the chunks into the batch
-  executive summary, so a mark you skip here is missing from the report.
-  **Structure it:** a short opening line for what the batch shows, then one `## <MARK NAME>` sub-header
-  per mark carrying its band and what drives it, bullets where they help. A sub-header is `## ` or `### `,
-  never `# `.
+- **Group summary** (`chunkSummary`; every rating group sends one for ITS names): open with a line for
+  each name and its band, then one `## <MARK NAME>` sub-header per name with what drives its band, key
+  evidence inline and practical mitigating factors, bullets where they help. Code joins the groups'
+  summaries into the order's summary once every name is rated, so a name you leave out here is missing
+  from the report. A sub-header is `## ` or `### `, never `# `.
   **It stays the SHORTER digest above the per-mark assessments** — a reader opens it to decide which
   name to read about, and the mark's own page carries the full read. Keep it tighter than any one
   mark's `assessment`.
-- **`knockout-findings.json`** (strict, closed keys — one entry per SEARCHED mark; per-CHUNK files
-  carry `chunkSummary` + this chunk's `marks`, chunk 0 also `batch` + `framework`):
+- **`knockout-findings.json`** (strict, closed keys — one entry per SEARCHED mark; each rating group's
+  file carries `chunkSummary` and its own names' `marks`. Use `batch.standardCaveats` only for a qualification the brief establishes for every name in the order. Put a qualification specific to an assigned name in that name’s assessment. The driver takes the framework
+  from the frozen one and the product context from the plan):
 
 ```json
 { "schema_version": 1,
-  "framework": { "source": "<framework_key>", "ladder": ["<highest>", "..."] },
-  "batch": { "productContext": "...", "standardCaveats": ["..."] },
-  "chunkSummary": "<markdown for THIS chunk's marks>",
+  "batch": { "standardCaveats": ["..."] },
+  "chunkSummary": "<markdown for THIS group's marks>",
   "marks": [ { "ref": null, "name": "<verbatim>", "classesSearched": [8], "beltAndBraces": [35],
                "contextFraming": "...", "rating": "<band word>", "ratingQualifier": null,
                "classesDriving": [8], "bullets": ["..."], "purpleNotes": ["..."],
@@ -370,7 +383,7 @@ not look identical afterwards.
 ```
 
 **The finding record — closed keys, ten in all, no others, "inputs" only where the framework states a method and "weighedFilings" only where you reasoned from a held filing.** A key this list does not name is refused
-(the validator is `findings-model.mjs validateKnockoutFinding`, and it runs at the chunk and again on
+(the validator is `findings-model.mjs validateKnockoutFinding`, and it runs at the group and again on
 the merged artifact):
 
 - `ordinal` — integer ≥ 1, unique within the mark, most blocking first. The code ranks the mark's
@@ -390,14 +403,14 @@ the merged artifact):
   semicolons stitching facts to a verdict, no arrows, and never an action ("we recommend…").
 - `type` ∈ Famous Brand | Active Business | Cultural Reference | Domain | Descriptive Use | Negative
   Association | Competitor Intelligence. It names what the finding IS, not how bad it is.
-- `evidence` — a NON-EMPTY array of URLs, each from a recorded research payload for this batch, a filing
-  held for this batch, or a recorded owner check linked to a held filing. A finding nobody can open is a
+- `evidence` — a NON-EMPTY array of URLs, each from a recorded research payload for this order, a filing
+  held for this order, or a recorded owner check linked to a held filing. A finding nobody can open is a
   bullet with a shape around it.
 - `basis` — the ground the band rests on: what the evidence shows about use, reach and the owner. The
   rank is read off the band, so a band with no stated basis is an unarguable ranking.
 
 `rating` must be a band from the frozen ladder, and `ratingQualifier` is `null` or `"low"` — nothing
 else. A clean mark keeps `findings: []` with the negatives recording what was checked. A degraded mark
-(no research payload on disk) MUST carry `degraded: { "reason": "<token>" }` + the doctrine's purple
+(no research payload on disk) MUST carry `degraded: true` + the doctrine's purple
 "Manual verification recommended" note — and a mark WITH a payload must never claim degraded. The
 validator joins both directions against the disk; the model's echo is never the truth.

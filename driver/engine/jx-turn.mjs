@@ -170,7 +170,8 @@ export async function makeJxTurnRunner({
     vendor, authMode, cloud, engine: id,
     async turn({ prompt }) {
       let tuple;
-      try { tuple = await runTurn({ message: prompt, model, thinking, timeoutSec, stallSec }); }
+      // Its reply is its result, so it carries no output rule (engine/common.mjs, outputRule).
+      try { tuple = await runTurn({ message: prompt, model, thinking, timeoutSec, stallSec, output: { kind: "reply" } }); }
       catch (e) {
         return { ok: false, cause: `the engine turn threw: ${String(e?.message ?? e).slice(0, 200)}`,
           model: null, vendor, authMode, cloud, engine: id, usage: { input: 0, output: 0 }, truncationObservable: false };

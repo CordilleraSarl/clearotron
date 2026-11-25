@@ -30,7 +30,7 @@
 // enforces record_uri ∈ the inlined slice (else the item demotes to a lead); severity_hint is a
 // triage hint and NEVER sets a band — Claude stays the sole rating authority.
 
-import { readFileSync, writeFileSync, renameSync, appendFileSync, mkdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, renameSync, appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { LANGUAGE_LANES, SERP_LANES, isMirrorHost, canonicalTerm, jxBillingStamp, jxModelFields } from "./jx-lanes.mjs";
 import { jxKey, MAX_LANE_ATTEMPTS } from "./jx.mjs";
@@ -40,6 +40,9 @@ import { SERP_PROVIDERS } from "./driver.config.mjs";
 import { JX_PROVIDERS } from "./jx-providers.mjs";
 import { findGridLedgerViolations, findPlatformIdentityViolations } from "./common-law-receipts.mjs";
 import { paths, readJson } from "./run-record.mjs";
+import { isLiveRecord } from "./band-shape.mjs";
+import { bandGoodsIndex, goodsFor, rowGoods } from "./record-goods.mjs";
+import { recordGoodsEvidence, goodsFromLabel, heldRecordProvenance } from "./goods-evidence.mjs";
 import { stopsWithTheRun } from "./cancel.mjs";
 
 export const MAX_UNIT_ATTEMPTS = 3;      // degraded-unit retries across resumes (repairable, never terminal)
@@ -50,7 +53,8 @@ export const SERP_CONCURRENCY = 3;       // parallel SERP calls (the knockout sw
 export const SERP_GRID_DEADLINE_MS = 5 * 60_000;   // whole-grid wall clock (CLEAROTRON_JX_SERP_DEADLINE_MS overrides);
                                                    // past it, unattempted cells gap honestly — never a stalled run
 export const NATIVEREAD_GRID_ROWS_CAP = 60;        // grid-findings rows inlined into the read payload (receipted cap)
-export const NATIVEREAD_SLICE_CAP = 12000; // chars of register-unit output inlined into the read payload
+export const NATIVEREAD_RECORDS_CAP = 60;          // Chinese register records inlined into the read payload
+export const NATIVEREAD_GOODS_CHARS = 300;        // goods text shown per record
 const GAP_DEGRADE_FLOOR = 0.5;           // >50% gapped cells ⇒ the grid attempt DEGRADES (the GRID_COVERAGE_FLOOR idiom)
 
 const jxDir = (runDir) => paths(runDir).jx;
@@ -432,7 +436,6 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
 }
 
 // ── Slice 3 — jx-nativeread:zh ──────────────────────────────────────────────────────────────────────
-const URI_RE = /https?:\/\/[^\s|)\]"'<>]+/g;
 const normUri = (u) => String(u).replace(/[.,;:!?]+$/, "");
 
 // The rows the cap keeps. The grid is in cell order, which says nothing about relevance, so use a reader could flag sat
@@ -442,34 +445,141 @@ const GRID_ROW_RANK = new Map([["use-evidence", 0], ["listing-candidate", 1], ["
 const gridRowRank = (f) => GRID_ROW_RANK.get(f?.classification) ?? 3;
 
 /** Assemble the code-inlined zh evidence slice + the fetched-URI set it carries (pure over inputs). */
-export function buildNativereadPayload({ registerSliceText = "", candidates = [], cnipaSubgroups = [], gridFindings = [] }) {
+// THE OFFICE A BAND ROW BELONGS TO: the registry the screen names, else the office its identifier carries
+// (`/mark/cn/…`). Empty when neither says.
+const officeOf = (r) => {
+  const reg = String(r?.screen?.registry ?? (Array.isArray(r?.jurisdictions) ? r.jurisdictions[0] : r?.jurisdictions) ?? r?.jurisdiction ?? "").trim();
+  if (reg) return reg.toUpperCase();
+  return (/^\/mark\/([a-z]+)\//i.exec(String(r?.record_id ?? r?.uri ?? ""))?.[1] ?? "").toUpperCase();
+};
+const recordIdOf = (r) => String(r?.record_id ?? r?.uri ?? "").trim();
+
+/**
+ * THE CHINESE REGISTER RECORDS THE READER IS GIVEN, from the transliteration and numeric search's own band: every row
+ * whose office is CN, once per identifier. Live records come first and then by identifier, so a capped list is the
+ * same list on every read. `state` keeps what the record establishes apart: "read" (the band was read, with or
+ * without a Chinese record), "missing" (no band) and "unreadable". The unit's note is not read: it is a count.
+ *
+ * A record's goods are its held body's, and where the run holds none, the statements its search row carries
+ * (record-goods.mjs `rowGoods`). `goodsFrom` says what they rest on and how complete they are, in the words the band
+ * lookup serves (goods-evidence.mjs `goodsFromLabel`): an empty held body, a body with no goods field and nothing held
+ * stay three different things. A class whose wording the merged band set aside is said in `goodsFrom`, never as text.
+ */
+export function chineseRegisterRecords(runDir) {
+  const at = paths(runDir).registerBand("transliteration-numeric");
+  if (!existsSync(at)) return { state: "missing", records: [] };
+  let blocks;
+  try { blocks = JSON.parse(readFileSync(at, "utf8")); } catch { return { state: "unreadable", records: [] }; }
+  if (!Array.isArray(blocks)) return { state: "unreadable", records: [] };
+  const seen = new Map();
+  for (const b of blocks) {
+    for (const r of [...(Array.isArray(b?.records) ? b.records : []), ...(Array.isArray(b?.sample) ? b.sample : [])]) {
+      const id = recordIdOf(r);
+      if (!id || officeOf(r) !== "CN" || seen.has(id)) continue;
+      seen.set(id, r);
+    }
+  }
+  let index = null, bodies = null;
+  try { index = bandGoodsIndex(runDir); } catch { index = null; }
+  try { bodies = heldRecordProvenance(runDir); } catch { bodies = null; }
+  const held = (r) => goodsFor(index, { record_id: recordIdOf(r) });
+  const reader = { of: (r) => held(r) ?? rowGoods(r), held: (r) => held(r) != null };
+  const records = [...seen.values()]
+    .sort((a, b) => (Number(isLiveRecord(b)) - Number(isLiveRecord(a))) || recordIdOf(a).localeCompare(recordIdOf(b)))
+    .map((r) => {
+      const evidence = recordGoodsEvidence({ ...r, record_id: recordIdOf(r) }, { goods: reader, held: bodies });
+      const statements = (reader.of(r) ?? []).filter((g) => g?.setAside !== true && String(g?.text ?? "").trim());
+      return { id: recordIdOf(r), mark: r?.mark_text ?? null, owner: r?.owner_name ?? null, status: r?.status ?? r?.screen?.status ?? null,
+        classes: Array.isArray(r?.classes) ? r.classes : [], goods: statements.length ? statements : null, goodsFrom: goodsFromLabel(evidence) };
+    });
+  return { state: "read", records };
+}
+
+/**
+ * A RECORD'S GOODS AS THE READER IS SHOWN THEM: what they rest on, then the statements, class by class. A statement the
+ * register gave with a translation shows the original first and the translation beside it, labelled, so it never reads
+ * as more goods; neither carries a language label, which the record does not establish for the original. Past
+ * NATIVEREAD_GOODS_CHARS the text is cut here, and the line says so, apart from any cut the register made: how many
+ * characters it shows of how many, each class none of whose wording appears, each class whose further wording does
+ * not, and which version of a statement the cut shortened or left out. PURE.
+ */
+const goodsShown = (goods, from) => {
+  const label = from ?? "nothing held";
+  if (!goods?.length) return `goods: ${label}`;
+  const statements = goods.map((g) => {
+    const head = [...(g.classes?.length ? `class ${g.classes.join("/")}: ` : "")];
+    const original = [...String(g.alt ?? g.text)];
+    const opening = g.alt ? [..." (translation: "] : [];
+    const translation = g.alt ? [...String(g.text)] : [];
+    return { name: g.classes?.length ? g.classes.join("/") : null, head, original, opening, translation, close: g.alt ? [...")"] : [] };
+  });
+  const whole = statements.flatMap((t, i) => [...(i ? [..."; "] : []), ...t.head, ...t.original, ...t.opening, ...t.translation, ...t.close]);
+  if (whole.length <= NATIVEREAD_GOODS_CHARS) return `goods (${label}): ${whole.join("")}`;
+  const cut = NATIVEREAD_GOODS_CHARS;
+  const seen = new Set(), none = [], further = [], versions = [];
+  let at = 0;
+  for (const t of statements) {
+    const words = at + t.head.length, originalEnd = words + t.original.length;
+    const translationStart = originalEnd + t.opening.length, translationEnd = translationStart + t.translation.length;
+    const end = translationEnd + t.close.length;
+    if (cut <= words) { if (t.name) (seen.has(t.name) ? further : none).push(t.name); }
+    else {
+      if (t.name) seen.add(t.name);
+      // Only the words count: a translation shown whole with its closing bracket cut is not a shortened translation,
+      // and the line's own count already says the cut fell there.
+      if (t.translation.length && cut < translationEnd && t.name) {
+        versions.push(cut < originalEnd ? `the original wording for class ${t.name} is shortened, and its translation is not shown`
+          : cut <= translationStart ? `the translation for class ${t.name} is not shown` : `the translation for class ${t.name} is shortened`);
+      }
+    }
+    at = end + 2;
+  }
+  const classes = (list) => `class${list.length > 1 ? "es" : ""} ${[...new Set(list)].join(", ")}`;
+  // The cut only moves forward, so a class first left out is never shown later: the two lists never share a class.
+  const notes = [...(none.length ? [`the text of ${classes(none)} is not shown`] : []),
+    ...(further.length ? [`further wording for ${classes(further)} is not shown`] : []), ...versions];
+  return `goods (${label}; first ${cut} of ${whole.length} characters shown${notes.map((n) => `; ${n}`).join("")}): ${whole.slice(0, cut).join("")}`;
+};
+
+/**
+ * The read's evidence, assembled by the driver: the sections the reader is shown, and the identifiers and URLs it
+ * may cite. Only what it was shown can ground a reading: a record or a platform row left out by a cap is not
+ * citable. A register section with no record does not count as evidence to read.
+ */
+export function buildNativereadPayload({ registerRecords = { state: "missing", records: [] }, candidates = [], cnipaSubgroups = [], gridFindings = [] }) {
   const sections = [];
-  if (candidates.length) sections.push("## Native-script candidates (generated for this run)\n"
-    + candidates.map((c) => `- ${c.term} (${c.kind}) — ${String(c.rationale ?? "").slice(0, 200)}`).join("\n"));
-  if (cnipaSubgroups.length) sections.push("## CNIPA sub-class notes (seed table — informational)\n"
-    + cnipaSubgroups.map((g) => `- class ${g.class}: ${g.groups ? g.groups.join(", ") : (g.note ?? "no entry")}`).join("\n"));
-  if (registerSliceText.trim()) {
-    const truncated = registerSliceText.length > NATIVEREAD_SLICE_CAP;
-    sections.push("## CN register slice (transliteration-numeric unit output" + (truncated ? ", truncated" : "") + ")\n"
-      + registerSliceText.slice(0, NATIVEREAD_SLICE_CAP));
+  let evidence = 0;
+  if (candidates.length) { evidence++; sections.push("## Native-script candidates (generated for this run)\n"
+    + candidates.map((c) => `- ${c.term} (${c.kind}) — ${String(c.rationale ?? "").slice(0, 200)}`).join("\n")); }
+  if (cnipaSubgroups.length) { evidence++; sections.push("## CNIPA sub-class notes (informational)\n"
+    + cnipaSubgroups.map((g) => `- class ${g.class}: ${g.groups ? g.groups.join(", ") : (g.note ?? "no entry")}`).join("\n")); }
+  const eligible = registerRecords?.records ?? [];
+  const shownRecords = eligible.slice(0, NATIVEREAD_RECORDS_CAP);
+  if (shownRecords.length) {
+    evidence++;
+    sections.push(`## Chinese register records supplied (${shownRecords.length} of ${eligible.length})\n`
+      + shownRecords.map((r) => `- ${r.id} | ${r.mark ?? "mark not shown"} | owner: ${r.owner ?? "not shown"} | ${r.status ?? "status not shown"}`
+        + ` | classes ${r.classes.length ? r.classes.join(", ") : "not shown"} | ${goodsShown(r.goods, r.goodsFrom)}`).join("\n"));
+  } else {
+    sections.push("## No Chinese register records were supplied for this reading");
   }
   let gridRowsDropped = 0;
+  let shownRows = [];
   if (gridFindings.length) {
-    const rows = [...gridFindings].sort((a, b) => gridRowRank(a) - gridRowRank(b)).slice(0, NATIVEREAD_GRID_ROWS_CAP);
-    gridRowsDropped = gridFindings.length - rows.length;
+    evidence++;
+    shownRows = [...gridFindings].sort((a, b) => gridRowRank(a) - gridRowRank(b)).slice(0, NATIVEREAD_GRID_ROWS_CAP);
+    gridRowsDropped = gridFindings.length - shownRows.length;
     sections.push("## Platform grid findings (judged)\n"
-      + rows.map((f) => `- [${f.classification}] "${f.title}" — ${f.url} (term ${f.term} on ${f.platform})${f.note ? ` — ${f.note}` : ""}`).join("\n")
-      + (gridRowsDropped ? `\n- … ${gridRowsDropped} more rows omitted (payload cap — full set in zh-grid-findings.json)` : ""));
+      + shownRows.map((f) => `- [${f.classification}] "${f.title}" — ${f.url} (term ${f.term} on ${f.platform})${f.note ? ` — ${f.note}` : ""}`).join("\n")
+      + (gridRowsDropped ? `\n- … ${gridRowsDropped} more rows not shown` : ""));
   }
   const payload = sections.join("\n\n");
-  // The grounding set is STRUCTURAL, never a regex over the rendered payload: a URL an attacker
-  // plants inside a hit TITLE/snippet (or the model echoes in its own output) must not mint a
-  // grounding URI (review 2026-07-18). Sources: the grid findings' url FIELDS (every one was
-  // actually fetched and receipted, capped or not) + URIs in the register unit's own output (our
-  // register machinery's text, the design's fetched set).
-  const uris = new Set(gridFindings.map((f) => f?.url).filter(Boolean).map((u) => normUri(String(u))));
-  for (const m of String(registerSliceText).slice(0, NATIVEREAD_SLICE_CAP).match(URI_RE) ?? []) uris.add(normUri(m));
-  return { payload, uris, sections: sections.length, gridRowsDropped };
+  // The grounding set is STRUCTURAL, never a regex over the rendered payload: a URL planted inside a hit title or
+  // echoed by the model must not mint a grounding identifier (review 2026-07-18). It holds the identifiers of the
+  // register records shown and the URL fields of the platform rows shown, and nothing a cap left out.
+  const uris = new Set([...shownRecords.map((r) => r.id), ...shownRows.map((f) => f?.url).filter(Boolean)].map((u) => normUri(String(u))));
+  return { payload, uris, sections: evidence, gridRowsDropped,
+    register: { state: registerRecords?.state ?? "missing", eligible: eligible.length, shown: shownRecords.length } };
 }
 
 /** Grounding enforcement (pure): record_uri must come from the inlined slice; conflict-read and
@@ -512,14 +622,13 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
     }
 
     const markName = String(job.markName ?? job.name ?? "").trim();
-    let registerSliceText = "";
-    try { registerSliceText = readFileSync(join(run.runDir, "register-units", "transliteration-numeric.md"), "utf8"); } catch { /* unit may not exist */ }
+    const registerRecords = chineseRegisterRecords(run.runDir);
     const fold = ctx.jxLanes?.fold?.lanes?.[lane] ?? {};
     let gridFindings = [];
     try { gridFindings = readJson(join(jxDir(run.runDir), `${lane}-grid-findings.json`))?.findings ?? []; } catch { /* grid unit may be off */ }
-    const { payload, uris, sections, gridRowsDropped } = buildNativereadPayload({
-      registerSliceText, candidates: fold.accepted ?? [], cnipaSubgroups: fold.cnipaSubgroups ?? [], gridFindings });
-    if (!sections) return { ran: false, cause: "no zh evidence to read (no register slice, candidates or grid findings)" };
+    const { payload, uris, sections, gridRowsDropped, register } = buildNativereadPayload({
+      registerRecords, candidates: fold.accepted ?? [], cnipaSubgroups: fold.cnipaSubgroups ?? [], gridFindings });
+    if (!sections) return { ran: false, cause: `no zh evidence to read (register records ${register.state === "read" ? "none held" : register.state}, no candidates or grid findings)` };
 
     const { exec, source } = resolveNativeread(opts, { mark: markName, lane, runDir: run.runDir });
     const started = Date.now();
@@ -540,7 +649,7 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
     const items = groundReadItems(r.items ?? [], uris);
     const grounded = items.filter((i) => i.grounded).length;
     mkdirSync(jxDir(run.runDir), { recursive: true });
-    atomic(join(jxDir(run.runDir), "nativeread.json"), { schema: 1, lane, mark: markName, items, sections,
+    atomic(join(jxDir(run.runDir), "nativeread.json"), { schema: 1, lane, mark: markName, items, sections, register,
       ...(gridRowsDropped ? { gridRowsDropped } : {}), readAt: new Date().toISOString() });
     // the aim-attention artifact — the ONLY thing the Phase-5 consume flag will ever surface to
     // synthesis; the header restates the authority rule so the artifact is self-describing

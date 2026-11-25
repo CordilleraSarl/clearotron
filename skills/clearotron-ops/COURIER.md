@@ -44,6 +44,10 @@ You are the courier, not the author.
 7. **`kind: "pre-run-failed"`** — a request failed before its run could start, so nothing was searched or
    delivered. Relay the packet's `text` to the forwarder. Then **`ack_event { file }`**.
 
+8. **`kind: "engine-check-failed"`** — the installation’s engine failed its health check. The operator can see the
+   failure in `clearotron status`. Leave this packet pending and continue with the other events. Do not relay, mark
+   or acknowledge it. The next passing worker check clears it.
+
 ## Discipline
 
 - **Every chat send names its channel.** Take it from the packet's `whatsappChannel` rather than from
@@ -52,7 +56,7 @@ You are the courier, not the author.
   it — which is how four notices were lost in one morning.
 - **Verbatim.** Every `text` and `emailBodyHtml` is ready to send. Your judgment is not wanted in
   the payload — only in faithful routing.
-- **Never invent a recipient.** Route only to the packet's forwarder/whatsappTo. A packet with no
+- **Never invent a recipient.** Route only to the packet's forwarder/whatsappTo. A delivery event with no
   usable route gets reported to your operator, not guessed.
 - **Idempotent, no retry loops.** `mark_sent`/`ack_event` are safe to repeat. If a SEND fails,
   leave the event pending (no mark, no ack), log it, and let the next wake retry once — persistent

@@ -20,15 +20,17 @@ const DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clear
 const flat = (rel) => readFileSync(join(DIR, rel), "utf8").replace(/\s+/g, " ");
 
 test("Clarivate asks one script question per named market, keeps the class pin, and narrows a crowd by the unit manual's steps", () => {
-  const clarivate = flat("clarivate.md");
+  // How a question is asked on Clarivate is in its questions file; the gone list is read over both files.
+  const clarivate = flat("clarivate-questions.md"), both = `${flat("clarivate.md")} ${clarivate}`;
   assert.ok(clarivate.includes("- **No cross-language single query** — ask one script question per market the frame names, by its "
     + "romanised form (below); where that romanised form is a Latin question the plan already asks, do not ask it again."));
   assert.ok(clarivate.includes("Leave it off: dead identical records then come back in the named band with their status, and no separate "
     + "identity leg is run."));
-  assert.ok(clarivate.includes("Narrow a crowd by the steps in `unit.md` (*Read the identical mark first*). Never by \"take the first N\"."));
+  // Both seats that read it hold a manual with that section, so the line names no file and each reads its own.
+  assert.ok(clarivate.includes("Narrow a crowd by the steps under *Read the identical mark first* in your own manual. Never by \"take the first N\"."));
   for (const gone of ["run the variant manifest per script", "run the identity leg", "identical-match is class-agnostic",
     "Narrow by: office set", "not wired yet", "unbilled", "escalate and disclose"])
-    assert.ok(!clarivate.includes(gone), `the Clarivate manual still says "${gone}"`);
+    assert.ok(!both.includes(gone), `the Clarivate manual still says "${gone}"`);
 });
 
 test("Corsearch runs no watchlist sweep, and EUIPO names its coverage, not the trade of a tier", () => {
@@ -38,14 +40,18 @@ test("Corsearch runs no watchlist sweep, and EUIPO names its coverage, not the t
   assert.ok(!euipo.includes("the deliberate trade of running the free tier"), "the EUIPO manual still calls its coverage the trade of a tier");
 });
 
-const NEVER_CLOSED = SIGNA_SENTENCES.discloseSearchThisRegisterCan;
+// The digest owns the deferred row a register cannot reach (design, 2026-11-25): the Signa and USPTO guides say the digest
+// records it; Clarivate's names the row a dictated slice it blocks becomes.
+const NEVER_CLOSED = "disclose it; no search on this register can close it, so it is not escalated, and it is never clean.";
+const DIGEST_RECORDS = SIGNA_SENTENCES.digestRecordsItAsDeferred + SIGNA_SENTENCES.noSearchThisRegisterCanClose;
 
 test("a gap no search on the register can close is disclosed, never escalated and never clean", () => {
-  const clarivate = flat("clarivate.md"), signa = flat("signa.md"), uspto = flat("uspto-local.md");
+  const clarivate = flat("clarivate-questions.md"), signa = flat("signa-questions.md"), uspto = flat("uspto-local.md");
   assert.ok(clarivate.includes("Each of these, when it blocks a dictated slice, is a **`deferred` coverage row** — " + NEVER_CLOSED));
-  assert.ok(signa.includes(SIGNA_SENTENCES.giveThatSliceDeferredCoverage
-    + NEVER_CLOSED + SIGNA_SENTENCES.thisFollowsTheKeystoneDoctrine));
-  assert.ok(uspto.includes("give that slice a `deferred` coverage-form row so the digest and synthesis surface it — " + NEVER_CLOSED));
+  assert.ok(signa.includes(SIGNA_SENTENCES.registerSweepCannotReach + DIGEST_RECORDS + SIGNA_SENTENCES.thisFollowsTheKeystoneDoctrine));
+  assert.ok(uspto.includes("the register sweep cannot reach it here. " + DIGEST_RECORDS));
+  for (const [name, text] of [["Signa", signa], ["USPTO", uspto]])
+    assert.ok(!text.includes("give that slice a `deferred` coverage-form row"), `the ${name} guide still asks its reader to record the row`);
   for (const [name, text] of [["Signa", signa], ["USPTO", uspto]])
     for (const gone of ["closeable", "skeptic can escalate", "escalate + disclose"])
       assert.ok(!text.includes(gone), `the ${name} manual still says "${gone}"`);

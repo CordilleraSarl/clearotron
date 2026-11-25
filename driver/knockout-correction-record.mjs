@@ -45,7 +45,7 @@ const correctionCallDir = (runDir, chunkNo) => driverDir(runDir, join("knockout-
 const nameKey = (s) => String(s ?? "").trim().toLowerCase();
 /** A finding's identity across a renumbering: the gate re-ranks on the band, so an ordinal does not survive a move. */
 export const sameFinding = (a, b) => nameKey(a?.name) === nameKey(b?.name) && nameKey(a?.owner) === nameKey(b?.owner);
-const withoutOrdinal = (f) => { const { ordinal: _ordinal, ...rest } = f ?? {}; return JSON.stringify(rest); };
+export const withoutOrdinal = (f) => { const { ordinal: _ordinal, ...rest } = f ?? {}; return JSON.stringify(rest); };
 
 /**
  * The round's work, from the record the check read and the defects it raised: each numbered, on its chunk, with the finding

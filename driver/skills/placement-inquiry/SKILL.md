@@ -66,7 +66,7 @@ Both tiers below are answers to ONE question, and you answer it in writing on ev
 
 > **Does this conflict change the advice, or only complete the record?**
 
-Expanded, the way you would put it to yourself before signing: would the senior lawyer signing this clearance need to discuss **this** conflict with the client before the client acts — because this owner can and plausibly would block adoption, or because resolving it changes what the client should *do* (consent, scope-narrowing, a coexistence call, filing strategy)? Changes-the-advice → headline-candidate. Completes-the-record → sheet 2.
+Expanded, the way you would put it to yourself before signing: would the reviewing lawyer signing this clearance need to discuss **this** conflict with the client before the client acts — because this owner can and plausibly would block adoption, or because resolving it changes what the client should *do* (consent, scope-narrowing, a coexistence call, filing strategy)? Changes-the-advice → headline-candidate. Completes-the-record → sheet 2.
 
 Two things the question deliberately is **not**. It is not "does this warrant the client narrative" — narrative-worthiness is relative to the rest of the band, so it moves whenever the band's composition moves, and the same record placed twice lands in two tiers. And it is not a risk tier: you are told below not to tier risk numerically, that is the digest's job, and a boundary you can only decide by computing the thing you are forbidden to compute is a boundary that falls back to feel. Ask what the conflict *does to the advice*, and write the answer down.
 
@@ -109,7 +109,7 @@ When your placement deviates from a strict reading of the candidate's class-matc
 
 ### Band reconciliation — form the expectation for THIS mark, then check the band against it
 
-Before placing individual candidates, step back and reason about the band **as a whole**, the way a senior lawyer reads a search result before drafting. Write a short reconciliation (3-8 lines) at the top of the file:
+Before placing individual candidates, step back and reason about the band **as a whole**, the way the reviewing lawyer reads a search result before drafting. Write a short reconciliation (3-8 lines) at the top of the file:
 
 - **What did I expect to see for THIS mark?** Given the archetype + risk theory (from `matter-context` / the manifest): a coined word in an empty class should return little; a saturated everyday word in a crowded class should return a wall of names; a famous-element-masked mark should surface the famous owner.
 - **Does the band match that expectation?** Reconcile, and name the mismatches explicitly. The traps to catch (these are reasoning prompts, not a checklist to mechanise):
@@ -173,7 +173,7 @@ The inquiry above is primary. The patterns below describe how the inquiry's answ
 ## Reasoning posture
 
 - **Declare the borderline ones.** If your written answer to the promotion question could be argued either way by two competent lawyers on this record, **say so**: set `"borderline": true` on that entry in `placements.json`, and let the `reason` state both readings and which one you took. Declaring a borderline is a correct professional outcome, never a failure — what is a failure is a confident tier on a record the question does not decide. The digest is told to expect your declarations and to resolve each one either way in writing, so a declaration costs the run nothing and gives the disagreement somewhere auditable to happen. It is an **internal** adjudication flag between stages: it never travels into the client's report as hedge language.
-- **If you'd promote a candidate to a tier higher than a senior lawyer would, write the reasoning that defends the promotion explicitly. If you cannot defend it, demote.** This is the tie-break AFTER the promotion question, never instead of it: answer the question first, in writing; demote-on-undefendable settles what the answer leaves standing.
+- **If you'd promote a candidate to a tier higher than the reviewing lawyer would, write the reasoning that defends the promotion explicitly. If you cannot defend it, demote.** This is the tie-break AFTER the promotion question, never instead of it: answer the question first, in writing; demote-on-undefendable settles what the answer leaves standing.
 - **Nothing is silently filtered.** Every out-of-scope candidate has a one-line reasoning trace. Audit trail must show *why*, not just *what*.
 - **Owner attribution gaps stop promotion.** If a candidate is a common-law game title without a confirmed `developer_of_record` / `publisher_of_record` field in common-law-findings, place at sheet-2 with a verify-flag. Do NOT confabulate publishers by inferring from prior-frequent gaming companies (Bandai Namco, Tencent, etc.).
 - **Don't down-place an on-field in-class identical mark on filer-size or apparent-dormancy grounds.** A small / individual / tail-market filer of an in-class identical mark is a real paper conflict — place it at headline-candidate or sheet-2 (never out-of-scope), the promotion question deciding which, and leave the filer-size / revocation-vulnerability read for the digest/synthesis Stage-2. Those are mitigants to weigh, not reasons to keep a real conflict out of the report.

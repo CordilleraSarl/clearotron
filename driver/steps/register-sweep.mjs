@@ -13,13 +13,14 @@ import { connotationObligations, parseDispositionForm, parsePrRiskResults, rende
 import { NON_MATERIAL_AXES } from "../coverage-ledger.mjs";
 import { undecidedCrossChecks, waitingCrossCheck, withoutWait } from "../cross-check-wait.mjs";
 import { plainDeferralReason } from "../deferral-row.mjs";
+import { productFaultOf, productFaultReason } from "../product-fault.mjs";
 import { formSidecarPath, outstandingRows, unionDispositionForm } from "../disposition-union.mjs";
 import { config, envGateOn } from "../driver.config.mjs";
 import { registerAdapter } from "../engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { readStickyGaps, receiptSettled, settleReceipt } from "../envelope-settle.mjs";
 import { note, runLog } from "../log.mjs";
 import { findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks } from "../named-band.mjs";
-import { readPartNotCompleted } from "../parts-not-completed.mjs";
+import { readPartNotCompleted, slicesNotYetRecorded, unitsNotYetRecorded, writePartNotCompleted } from "../parts-not-completed.mjs";
 import { gridBatchFor } from "../profiles.mjs";
 import { countLaneCalls } from "../provider-usage.mjs";
 import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
@@ -267,6 +268,24 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     } catch (err) {
       runLog(run.runDir, { event: "connotation-reissue-failed", error: String(err?.message ?? err).slice(0, 160) });
     }
+  }
+  // A REGISTER UNIT WHOSE PLAN CALL NEVER CAME BACK is a product fault (product-fault.mjs): it is not sent again, by a retry,
+  // a recovery pass or a resume. It is recorded at once in the searches' record and taken as its band stands, so the run
+  // goes on, and its slices are delivered open. Only that unit: a sibling that failed on its own work keeps its own
+  // failure and its normal recovery below.
+  const killedCall = (i) => Boolean(productFaultOf({ fail: gatherResults[i]?.fail, runDir: run.runDir, label: `register-unit:${gather[i].axis}` }));
+  const faulted = gather.map((g, i) => i).filter((i) => gather[i].name === "register-unit" && gather[i].axis
+    && !gatherResults[i]?.ok && !gatherResults[i]?.resetsAt && killedCall(i));
+  if (faulted.length) {
+    const held = readPartNotCompleted(run.runDir, "searches");
+    const axes = faulted.map((i) => gather[i].axis);
+    const slices = faulted.flatMap((i) => slicesUnitNeverReached(P, ctx.registerPlan, gather[i].axis, productFaultReason()));
+    writePartNotCompleted(run.runDir, "searches", { stage: `register-unit:${axes[0]}`, reason: gatherResults[faulted[0]]?.fail ?? "product fault",
+      slices: [...(Array.isArray(held?.slices) ? held.slices : []), ...slicesNotYetRecorded(held, slices)],
+      disclosedAxes: Array.isArray(held?.disclosed_axes) ? held.disclosed_axes : [],
+      unfinishedUnits: [...(Array.isArray(held?.unfinished_units) ? held.unfinished_units : []), ...unitsNotYetRecorded(held, axes)] });
+    runLog(run.runDir, { event: "unit-product-fault", units: axes, slices: slices.length });
+    for (const i of faulted) gatherResults[i] = unfinishedUnitAsItStands({ ...ctx, axis: gather[i].axis });
   }
   // A REGISTER UNIT THAT WROTE NO RESULT is the searches not completed, after every other member has been held to its
   // own failure as before (unfinishedUnitAsItStands, above). A rate limit keeps its own path.

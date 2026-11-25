@@ -101,7 +101,7 @@ export function knockoutCitedUrls(f) {
  * content bears on the name is the model's to explain and the check's to read, and a source's presence supports nothing by itself.
  * A URL only in raw web results, or any other file the step was not given as evidence, stays outside.
  */
-export const PERMITTED_SOURCES = "a recorded research payload for this batch, a filing held for this batch, or a recorded owner check linked to a held filing";
+export const PERMITTED_SOURCES = "a recorded research payload for this order, a filing held for this order, or a recorded owner check linked to a held filing";
 export const urlNotHeld = (mark, url) => `knockout_url_unreceipted:${mark}: "${url}" is not traceable to ${PERMITTED_SOURCES}. Cite a source from that held evidence.`;
 const OWNER_PAYLOAD = /^owner-.+-[0-9a-f]{10}\.md$/;   // the name `ownerPayloadFile` gives a check's answer
 export function urlHeldFor(runDir) {
@@ -510,6 +510,24 @@ export function batchUseKindDefect(useKind) {
   return typeof useKind === "string" && useKind.trim() ? null : `batch.useKind is required (task 2c). ${USE_PHRASE}`;
 }
 
+/**
+ * THE FAMILIES, DEFINED ONCE (design, 2026-11-24). A plan that left the field out was accepted and every name was then rated
+ * alone, so a family of variations could be lost with no refusal. A fresh plan now states every name's group, singletons
+ * included; a held answer from before keeps what it framed. The grouping line, the tool's field note, the manual and the
+ * refusals all state it in these words.
+ */
+export const FAMILIES_RULE = "Put every submitted name in exactly one group. List unrelated names as groups of one.";
+export function familiesMissingDefect(families) {
+  return families == null ? `batch.families is required to complete the plan. ${FAMILIES_RULE}` : null;
+}
+
+/**
+ * THE REPAIR RULE, DEFINED ONCE (design, 2026-11-24). A refused call saves nothing, so a repair that sent only the corrected
+ * names after a refused first call lost every other name; after a save, a sent name replaces its whole row. The message,
+ * the tool's description and the refusal all state it in these words.
+ */
+export const FRAME_REPAIR_RULE = "Until the tool confirms it saved the plan, send the complete corrected plan. After confirmation, send only changed batch fields and complete changed name rows.";
+
 export function useKindDefect(name, useKind) {
   const refusal = `mark "${name}": useKind is required: one to three words, the kind of use this name is searched for (task 2c)`;
   return typeof useKind === "string" && useKind.trim() ? null : refusal;
@@ -675,8 +693,10 @@ export const validators = {
       // degraded parity vs the DISK truth (the sweep's payload/.failed sentinels), both directions:
       // a mark without a payload can never be rated as researched, and a mark WITH one can't hide
       // behind a degraded flag (fresh evidence must be assessed, e.g. after a resume re-sweep).
+      // `true` exactly, the value the report's left-open list reads (publish/knockout-left-open.mjs): any
+      // other value on a mark with no payload would pass a truthiness test here and be missed there.
       const payloadExists = existsSync(join(runDir, "research", `${kebab(m.name)}.md`));
-      if (!payloadExists && !m.degraded)
+      if (!payloadExists && m.degraded !== true)
         return { ok: false, reason: `mark "${m.name}": the driver holds NO research payload for this mark — the row must carry degraded:true (null-results doctrine; a degraded mark can never be silently clean)` };
       if (payloadExists && m.degraded)
         return { ok: false, reason: `mark "${m.name}": a research payload exists but the row claims degraded — assess the held evidence` };
@@ -969,7 +989,7 @@ export function validateMergedFindings(runDir, merged, plan) {
   // payload/.failed sentinels are the driver's ground truth, never the model's echo)
   for (const m of marks) {
     const payloadExists = existsSync(join(runDir, "research", `${kebab(m.name)}.md`));
-    if (!payloadExists && !m.degraded) failures.push(`mark "${m.name}" has no research payload but is not flagged degraded — a degraded mark can never be silently clean`);
+    if (!payloadExists && m.degraded !== true) failures.push(`mark "${m.name}" has no research payload but is not flagged degraded — a degraded mark can never be silently clean`);
     if (payloadExists && m.degraded) failures.push(`mark "${m.name}" has a research payload but is flagged degraded — held evidence must be assessed`);
   }
   // PR-5 — permission-prose backstop over the MERGED text (chunk files can predate the per-chunk check

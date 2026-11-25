@@ -30,7 +30,8 @@ import { fileURLToPath } from "node:url";
 
 import { classifyProbe, probeEngineTurn, preflightEngineTurn, probeFailureText, probeVerdictLane,
   PROBE_MODEL, PROBE_THINKING, PROBE_TOOLS, PROBE_FILE, probePrompt, isProbePrompt, probeToolConfig,
-  ENGINES_WITH_A_SHELL, PROBE_COMMAND_FILE, namesPathWhole, REFRESH_LOCK_WAIT_MS } from "../engine/probe.mjs";
+  ENGINES_WITH_A_SHELL, PROBE_COMMAND_FILE, PROBE_OUTPUT, namesPathWhole, REFRESH_LOCK_WAIT_MS } from "../engine/probe.mjs";
+import { claudeTurnInstructions } from "../engine/common.mjs";
 import { parseCodexEvent } from "../engine/openai-agent.mjs";
 import { CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "../engine/auth.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
@@ -694,6 +695,9 @@ test("the real anthropic adapter is driven by its OWN spawn path — mock-claude
     const cfg = JSON.parse(call.argv[call.argv.indexOf("--mcp-config") + 1]);
     assert.deepEqual(Object.keys(cfg.mcpServers), ["probe"], "the probe starts its own tool server and no other");
     assert.equal(call.argv[call.argv.indexOf("--allowedTools") + 1], "Read Write Edit mcp__probe__ping mcp__probe__note mcp__probe__look");
+    // ITS DUTIES ARE ITS PROMPT'S: it is judged on its reply, so no output rule tells it to reply with a path instead.
+    assert.equal(call.argv[call.argv.indexOf("--append-system-prompt") + 1], claudeTurnInstructions(PROBE_OUTPUT));
+    assert.doesNotMatch(call.argv[call.argv.indexOf("--append-system-prompt") + 1], /Reply with just the path/);
     // ITS OWN RUN FOLDER, granted as a stage's is, and gone once the turn is.
     const granted = call.argv[call.argv.indexOf("--add-dir") + 1];
     assert.ok(granted && /clearotron-probe-/.test(granted), `the probe's run folder was not granted: ${call.argv.join(" ")}`);

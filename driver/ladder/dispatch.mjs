@@ -17,6 +17,7 @@ import { witnessStageMethodology, describeMethodologyDrift } from "../methodolog
 import { inlineManuals } from "../manuals-inline.mjs";
 import { builtinToolsFor } from "../engine/mcp/gather-config.mjs";
 import { statOf } from "./judge.mjs";
+import { recordEngineAnswered, turnAnswered } from "../engine/health.mjs";   // a completed turn moves the engine check's clock
 import { correctiveMessage, warmPatchMessage, warmTimeoutMessage } from "./repair-messages.mjs";
 import { retryBackoffMs, sleep, vetoResumeRuledNone, warmEligible } from "./turn-signals.mjs";
 
@@ -59,7 +60,7 @@ export async function retryMode({ name }, { attempt, lastFail, lastJson, lastKil
 
 export async function dispatchTurn(stage, { attempt, warm, timeoutWarm, vetoedResume, lastFail, lastKey, lastSessionRef, warmEscalatedAt, effTimeout }) {
   const { name, engine, stageHome, agent, message, refreshMessage, model, thinking, sessionKey, stallSec, files, maxRetries, runDir, followup, adds,
-    supplementalLane, gatherAllowedTools, gatherSeatWrites, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig } = stage;
+    supplementalLane, gatherAllowedTools, gatherSeatWrites, turnOutput, engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig } = stage;
   // Snapshot each expected artifact at THIS attempt's start. TWO readers, one base — so they can never
   // disagree about what this dispatch emitted:
   //   · AD-4 emitted-vs-landed telemetry — `wrote` says whether this dispatch WROTE its artifact, as
@@ -134,12 +135,13 @@ export async function dispatchTurn(stage, { attempt, warm, timeoutWarm, vetoedRe
   // already holds them, and its message names none. The dispatch record and the witness above keep the composed text.
   const wire = warm || timeoutWarm ? { text: effMessage, inlined: [], missing: [] }
     : inlineManuals(effMessage, { resolve: engineResolveSkill, skillsDir: engineSkillsDir });
-  const turn = await engine.runTurn({ agent, sessionKey: key, message: wire.text, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, builtinTools: builtinToolsFor(name), seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+  const turn = await engine.runTurn({ agent, sessionKey: key, message: wire.text, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, stageHome, mcpConfig, allowedTools: gatherAllowedTools, builtinTools: builtinToolsFor(name), output: turnOutput, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
     progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
     // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
     // keep it while the disk has room and say on the tuple's `stream` what landed.
     streamFile: streamFilePath(runDir, name, attempt) });
   const settledAt = Date.now();   //: zero point of the wall-rescue quiescence clock, read before anything else
+  if (turnAnswered(turn)) recordEngineAnswered(engine.name);
   // LOG-ONLY. Nothing here can fail a turn: the claim that the frozen set does not change across a seat
   // turn is READ from the writers' call sites and not yet MEASURED on a running system, and arming an
   // unmeasured guard is the defect class this exists to catch. One run supplies the number; the row's

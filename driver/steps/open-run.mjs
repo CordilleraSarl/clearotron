@@ -10,6 +10,7 @@ import { orderSnapshot, readAcceptedOrder, retainAcceptedOrder } from "../accept
 import { recordSpan } from "../attributed-span.mjs";
 import { config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential, REGISTER_PROVIDER } from "../driver.config.mjs";
 import { engineProvenance } from "../engine-build.mjs";
+import { recordEngineAnswered } from "../engine/health.mjs";
 import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
 import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerDoor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
@@ -173,6 +174,7 @@ export async function openRun({ job, opts }) {
     // in tests; a run passes none and waits.
     engineTurn = await preflightEngineTurn({ wait: opts.engineTurnWait, env: engineEnv }).catch(parksIfRecorded("engine-sign-in"));
     engineTurnEndedMs = Date.now();
+    if (engineTurn.ok) recordEngineAnswered(engineTurn.engine);
     if (engineTurn.warning) console.error(engineTurn.warning);
   }
   const agent = opts.agent ?? config.defaultAgent;

@@ -19,7 +19,7 @@ import { recordKnockoutAssess, knockoutAssessChunkFile } from "../knockout-asses
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-const REPAIR = "On the first call, send the complete assessment. Once the tool has confirmed a written record for this chunk, correct a name by sending its exact name and only the fields you changed. Omitted names and omitted fields within a name keep their recorded values. A field you send replaces that whole field: send a changed list or object complete, including unchanged entries. Update the chunk summary when the correction changes it. If the tool has written no record, send the complete corrected assessment.";
+const REPAIR = "On the first call, send the complete assessment. Once the tool has confirmed a written record for this group, correct a name by sending its exact name and only the fields you changed. Omitted names and omitted fields within a name keep their recorded values. A field you send replaces that whole field: send a changed list or object complete, including unchanged entries. Update the group summary when the correction changes it. If the tool has written no record, send the complete corrected assessment.";
 const WHOLE_NAME = /send (that|a corrected) mark (whole|complete)|replaces that mark's whole record/;
 
 const TEMP = [];

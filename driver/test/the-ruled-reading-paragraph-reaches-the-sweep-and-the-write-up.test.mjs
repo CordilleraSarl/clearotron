@@ -16,22 +16,21 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { resolveSkillReads } from "../stages.mjs";
-import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { CROWD_DOC, resolveSkillReads } from "../stages.mjs";
 import { MATTER_FRAME_SENTENCES } from "./ruled-sentences-matter-frame.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(DRIVER, rel), "utf8");
-const HEADING = UNIT_SENTENCES.everyStepLookWhatYou2;
+const HEADING = "At every step: look at what you have before you work on it";
 
-/** The paragraph as the register manual ships it: the text between its heading and the next heading. */
+/** The paragraph as its one manual ships it: the text under its heading. */
 function shippedParagraph() {
-  const src = read("skills/clearance-register/SKILL.md");
-  const at = src.indexOf(`### ${HEADING}`);
-  assert.ok(at > 0, "the register manual no longer carries the ruled paragraph under its heading");
+  const src = read(CROWD_DOC);
+  const at = src.indexOf(`# ${HEADING}`);
+  assert.ok(at >= 0, "the shared manual no longer carries the ruled paragraph under its heading");
   const after = src.slice(at).split("\n").slice(1);
   const end = after.findIndex((l, i) => i > 0 && l.startsWith("#"));
-  const body = after.slice(0, end).join("\n").trim();
+  const body = (end < 0 ? after : after.slice(0, end)).join("\n").trim();
   assert.match(body, /^Fifty\? Read them all\./, "premise: the paragraph's text was not found under its heading");
   assert.match(body, /to the off-register sweep and to the write-up alike\.$/, "premise: the paragraph's text was cut short");
   return body;

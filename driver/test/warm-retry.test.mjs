@@ -249,11 +249,11 @@ test("warm patch write-mode: invalid_file patches in place, missing_file still w
   // loop below. Both branches keep a live witness, which is the property this arm exists for.
   const exists = warmPatchMessage("invalid_file:x/common-law-findings.md:use_check_missing:F1", ["/r/clearance-search/x/common-law-findings.md"]);
   assert.match(exists, /TARGETED EDITS/);
-  assert.match(exists, /Edit tool/);
+  assert.match(exists, /with your file-editing operation/);
   assert.match(exists, /leave every other line of the file byte-identical/);
   assert.doesNotMatch(exists, /full file, not a diff/, "the whole-document re-emit is what this removes");
   // …and the Edit direction must not strand a genuinely absent file: the fallback is stated in the tail
-  assert.match(exists, /does not exist, create it in full with the Write tool/);
+  assert.match(exists, /does not exist, create it in full\./);
 
   const absent = warmPatchMessage("missing_file:x/out.md", ["/r/clearance-search/x/out.md"]);
   assert.match(absent, /NEVER WRITTEN/);

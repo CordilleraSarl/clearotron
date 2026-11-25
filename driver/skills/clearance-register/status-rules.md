@@ -1,6 +1,6 @@
 # Status rules — status classification, Madrid handling, non-Latin status strings
 
-Cross-referenced from [clearance-register/SKILL.md](SKILL.md) — the canonical entry point. The provider files and stealth-filer indicators link here for the status-classification rules; the orchestrator never reads this file directly.
+Cross-referenced from [clearance-register/SKILL.md](SKILL.md) — the canonical entry point. The provider files and stealth-filer indicators link here for the status-classification rules.
 
 > **Funnel vs judgment (read this first).** Under the two-layer split, the **funnel (Layer A) does NOT drop
 > records on status** — `register_enumerate` carries **every** record forward (live AND dead) **with its
@@ -88,7 +88,7 @@ These are flag-for-review heuristics, not auto-drop rules. The record stays in f
 
 The funnel carries **every** dead record forward with its status and dates; **whether a dead record matters is
 JUDGMENT's call (Layer B)**, not a funnel keep/drop. This section is the **reference for the reads judgment
-makes** — it no longer instructs the funnel to drop anything.
+makes** — it does not instruct the funnel to drop anything.
 
 - **Dead-but-identical** — a record with a **dead status** whose mark text is an **identical match** to the
   input (case-insensitive, ignoring punctuation — the reference algorithm below). The reviewing lawyer never ignores an

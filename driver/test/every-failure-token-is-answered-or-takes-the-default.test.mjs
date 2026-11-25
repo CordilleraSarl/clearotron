@@ -28,6 +28,7 @@ const TAKES_THE_DEFAULT = [
   "registerdigest_accounting_unreadable", "registerdigest_model_missing", "registerdigest_uri_missing", "registerdigest_uri_unknown",
   "registerdigest_flag_reason_missing", "registerdigest_verify_invalid", "registerdigest_drop_reason_missing",
   "registerdigest_drop_ground_invalid", "registerdigest_drop_ground_contradicted", "registerdigest_instructed_incomplete",
+  "registerdigest_relied_records_invalid", "registerdigest_relied_record_unknown",
   "registerdigest_adjudication_invalid", "registerdigest_adjudication_incomplete", "registerdigest_nothing_judged",
   "registerdigest_batch_unknown", "registerdigest_double_counted", "registerdigest_model_write_failed",
   "coverage_form_engine_vocabulary", "plan_execution_unreadable", "stagecontracts_invalid", "frame_scope_missing",
@@ -35,7 +36,7 @@ const TAKES_THE_DEFAULT = [
   "declared_not_executed", "named_band_invalid", "placementmodel_missing", "placement_unjudged", "placement_register_unrendered",
   "placement_form_unreadable", "placement_floors_without_fate", "placement_refused", "caselaw_ledger_missing",
   "caselaw_ledger_unparseable", "no_verdict_line", "missing_file",
-  // The tool_timeout row answers the token with its detail (`tool_timeout:<tool>`), which is how the ladder writes it.
+  // A register call that never returned is a product fault: the ladder ends on it before any re-ask (product-fault.mjs).
   "tool_timeout",
 ];
 

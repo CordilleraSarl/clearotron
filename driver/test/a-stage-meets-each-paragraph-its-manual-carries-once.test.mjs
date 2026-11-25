@@ -3,7 +3,8 @@
 //
 // A STAGE MEETS EACH PARAGRAPH ITS MANUAL CARRIES ONCE (manual-paragraphs.mjs). Six instruction paragraphs that hold no case
 // value moved into their stage's own manual (design, 2026-11-20): the variant generation's family floor, two synthesis rules
-// and three report-card rules. The stage composer keeps each as a fallback, and the gateway drops it from the stage text when
+// and three report-card rules. The prose rules followed into report-prose.md, which the three writing stages read (design,
+// 2026-11-24), and a writer with a customer's own worked examples meets them once too. The stage composer keeps each as a fallback, and the gateway drops it from the stage text when
 // an inlined manual already says it. Read here: the manuals hold them, each stage's opening message holds each of its own
 // paragraphs exactly once on both engines, a company's own copy of a manual that lacks the paragraph still delivers it once,
 // a manual that cannot be read leaves it in the stage text, and a warm patch sends none. Case material is invented.
@@ -22,6 +23,7 @@ const { runStage, warmPatchMessage, warmTimeoutMessage } = await import("../gate
 const { inlineManuals } = await import("../manuals-inline.mjs");
 const { MANUAL_PARAGRAPHS } = await import("../manual-paragraphs.mjs");
 const { DRIVER, everyModelStageDispatch, baseOf } = await import("./model-stage-dispatches.mjs");
+const { STAGES: CLEARANCE, paths } = await import("../stages.mjs");
 
 const ENGINES = {
   "anthropic-agent": (dir, out) => ({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: join(HERE, "mock-claude.mjs"),
@@ -32,8 +34,15 @@ const ENGINES = {
 const MESSAGES = new Map(everyModelStageDispatch("/nonexistent/invented-run")
   .filter((d) => d.label === "house default").map((d) => [d.name, d]));
 // The stage each manual's paragraphs belong to, and the label one of its sessions runs under.
+const PROSE = "skills/clearance-search/report-prose.md";
 const STAGES = [["skills/clearance-variants/SKILL.md", "clearance-variants"],
-  ["skills/clearance-search/synthesis-finding-rules.md", "synthesis"], ["skills/clearance-search/report-card-rules.md", "report-card:1"]];
+  ["skills/clearance-search/synthesis-finding-rules.md", "synthesis"], ["skills/clearance-search/report-card-rules.md", "report-card:1"],
+  [PROSE, "synthesis"], [PROSE, "report-overview"], [PROSE, "report-card:1"]];
+const WRITERS = ["synthesis", "report-overview", "report-card:1"];
+// The invented firm's worked examples in this tree, standing in for a customer's own.
+const CUSTOM_EXAMPLES = "skills/clearance-search/worked-examples-zephyr.md";
+const customMessage = (label) => CLEARANCE[baseOf(label)].message({ profile: { workedExamplesPath: CUSTOM_EXAMPLES }, job: {},
+  paths: paths("/nonexistent/invented-run"), axis: "primary-sweep", half: "a", finding: { ordinal: 1 }, run: { slug: "invented", codename: "invented" } });
 const count = (text, p) => text.split(p).length - 1;
 
 function withEnv(env, fn) {
@@ -43,12 +52,12 @@ function withEnv(env, fn) {
 }
 
 /** What the stand-in program was handed for one fresh dispatch of `label`. */
-async function wireOf(engine, label, env = {}) {
+async function wireOf(engine, label, env = {}, composed = MESSAGES.get(baseOf(label)).message) {
   const dir = mkdtempSync(join(tmpdir(), "manual-paragraphs-"));
   try {
     mkdirSync(driverDir(dir), { recursive: true });
     const out = join(dir, "out.md");
-    const message = `${MESSAGES.get(baseOf(label)).message}\nThis case's own material: INVENTED-CASE.`;
+    const message = `${composed}\nThis case's own material: INVENTED-CASE.`;
     await withEnv({ ...ENGINES[engine](dir, out), CLEAROTRON_RETRY_BACKOFF_MS: "0", ...env },
       () => runStage(label, { message, model: "opus", sessionKey: `manual-paragraphs-${engine}-${label}`, runDir: dir,
         expectFile: out, maxRetries: 0, timeoutSec: 30 }).catch(() => null));
@@ -73,11 +82,76 @@ test("each paragraph is a line of its own in its manual, once, and its stage rea
 
 for (const engine of Object.keys(ENGINES)) {
   test(`${engine}: each stage's opening message holds each of its paragraphs exactly once`, async () => {
-    for (const [ref, label] of STAGES) {
+    for (const label of new Set(STAGES.map(([, l]) => l))) {
       const wire = await wireOf(engine, label);
-      assert.ok(wire.includes(`=== MANUAL: `) && wire.includes(ref.split("/").pop()), `${label}: ${ref} was not carried`);
-      for (const p of MANUAL_PARAGRAPHS[ref]) assert.equal(count(wire, p), 1, `${label}: ${p.slice(0, 40)}`);
+      for (const [ref] of STAGES.filter(([, l]) => l === label)) {
+        assert.ok(wire.includes(`=== MANUAL: `) && wire.includes(ref.split("/").pop()), `${label}: ${ref} was not carried`);
+        for (const p of MANUAL_PARAGRAPHS[ref]) assert.equal(count(wire, p), 1, `${label}: ${p.slice(0, 40)}`);
+      }
     }
+  });
+
+  test(`${engine}: each writer with a customer's own worked examples meets the prose rules once`, async () => {
+    for (const label of WRITERS) {
+      const composed = customMessage(label);
+      const wire = await wireOf(engine, label, {}, composed);
+      if (label === "synthesis") assert.ok(composed.includes(CUSTOM_EXAMPLES) && wire.includes("worked-examples-zephyr.md"), "premise: the custom examples were named");
+      assert.ok(wire.includes("report-prose.md ==="), `${label}: the rulebook was not carried`);
+      for (const p of MANUAL_PARAGRAPHS[PROSE]) assert.equal(count(wire, p), 1, `${label}: ${p.slice(0, 40)}`);
+    }
+  });
+
+  test(`${engine}: a company's own rulebook that lacks the rules still delivers each rule once`, async () => {
+    const overlay = mkdtempSync(join(tmpdir(), "manual-paragraphs-prose-overlay-"));
+    try {
+      mkdirSync(join(overlay, "skills", "clearance-search"), { recursive: true });
+      writeFileSync(join(overlay, "skills", "clearance-search", "report-prose.md"), "An invented firm's own prose guide.\nINVENTED-FIRM-SENTINEL sits in its middle.\n");
+      for (const label of WRITERS) {
+        const wire = await wireOf(engine, label, { CLEAROTRON_INSTRUCTIONS_DIR: join(overlay, "skills") });
+        assert.ok(wire.includes("INVENTED-FIRM-SENTINEL"), `premise: ${label} carried the company's own copy`);
+        for (const p of MANUAL_PARAGRAPHS[PROSE]) assert.equal(count(wire, p), 1, `${label}: ${p.slice(0, 40)}`);
+      }
+    } finally { rmSync(overlay, { recursive: true, force: true }); }
+  });
+
+  test(`${engine}: the rulebook states the visible 25-word limit once, and no writer is left without it`, async () => {
+    // The limit was stated three times in the rulebook: in TWO LEVELS, in WORD BUDGETS and in the default-visible paragraph.
+    // It stays in TWO LEVELS only. A company's rulebook that lacks it still gets it from the stage text's fallback, and an
+    // older rulebook that still states it keeps it. Other manuals a writer reads are not counted here.
+    const LIMIT = /no visible sentence over 25 words/gi;
+    const limits = (text) => (text.match(LIMIT) ?? []).length;
+    const block = (wire) => wire.match(/=== MANUAL: [^\n]*report-prose\.md ===\n[\s\S]*?\n=== END MANUAL: [^\n]*report-prose\.md ===/)?.[0] ?? "";
+    const outside = (wire) => limits(wire) - limits(block(wire));
+    for (const label of WRITERS) {
+      const wire = await wireOf(engine, label);
+      assert.ok(block(wire), `premise: ${label} carried the rulebook`);
+      assert.equal(limits(block(wire)), 1, `${label}: the shipped rulebook states the limit once`);
+    }
+    const overlay = mkdtempSync(join(tmpdir(), "manual-paragraphs-limit-overlay-"));
+    try {
+      mkdirSync(join(overlay, "skills", "clearance-search"), { recursive: true });
+      const own = join(overlay, "skills", "clearance-search", "report-prose.md");
+      writeFileSync(own, "An invented firm's own prose guide.\nINVENTED-FIRM-SENTINEL sits in its middle.\n");
+      for (const label of WRITERS) {
+        const shipped = await wireOf(engine, label);
+        const wire = await wireOf(engine, label, { CLEAROTRON_INSTRUCTIONS_DIR: join(overlay, "skills") });
+        assert.ok(wire.includes("INVENTED-FIRM-SENTINEL"), `premise: ${label} carried the company's own copy`);
+        assert.equal(limits(block(wire)), 0, `premise: ${label}'s company rulebook does not state the limit`);
+        assert.equal(outside(wire), outside(shipped) + 1, `${label}: the stage text's fallback gives the limit back once`);
+      }
+      // An older rulebook: today's, with the two restatements the limit used to have put back.
+      const shippedText = readFileSync(join(DRIVER, "skills", "clearance-search", "report-prose.md"), "utf8");
+      const older = shippedText
+        .replace("about 20-25 words a sentence behind a fold, about 80 words a paragraph.",
+          "about 20-25 words a sentence behind a fold, no visible sentence over 25 words (TWO LEVELS), about 80 words a paragraph.")
+        .replace("One idea per sentence. The conclusion first.", "One idea per sentence. **No visible sentence over 25 words.** The conclusion first.");
+      assert.notEqual(older, shippedText, "premise: the older rulebook differs from the shipped one");
+      writeFileSync(own, older);
+      for (const label of WRITERS) {
+        assert.ok(limits(block(await wireOf(engine, label, { CLEAROTRON_INSTRUCTIONS_DIR: join(overlay, "skills") }))) >= 1,
+          `${label}: an older rulebook keeps the limit`);
+      }
+    } finally { rmSync(overlay, { recursive: true, force: true }); }
   });
 
   test(`${engine}: a company's own copy of the manual that lacks the paragraph still delivers it once`, async () => {

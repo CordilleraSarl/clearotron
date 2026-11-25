@@ -51,8 +51,9 @@ test("a lawyer's word in a finding's ONE sentence is flagged, and the field is n
 });
 
 test("the same word inside a FOLD is not flagged — that is rule 2, not an oversight", () => {
-  // A finding's `basis` is behind "Why this band" and the long `assessment` is behind its own fold.
-  // Precision is wanted there; a check that flagged it would trade precision for vagueness.
+  // A finding's `basis` is behind "Why this band". Precision is wanted there; a check that flagged it would trade precision
+  // for vagueness. This check does not read the `assessment`: where it opens a name's page the manual asks for plain words,
+  // and nothing refuses it.
   const c = flagged(FINDINGS({
     findings: [{ ordinal: 1, net: "Same name, same goods, and they were first.",
       basis: "The proprietor holds a subsisting registration and would prevail on every limb." }],
@@ -303,9 +304,9 @@ test("every field a reader meets without clicking is a field the reviewer reads"
 
 // ── the doctrine that teaches it ─────────────────────────────────────────────────────────────────────
 
-test("the skill carries the two-register rule, and its worked examples obey it", () => {
+test("the skill carries the two-levels rule, and its worked examples obey it", () => {
   const skill = readFileSync(SKILL, "utf8");
-  assert.match(skill, /## Plain language — the two-register rule/);
+  assert.match(skill, /## Plain language — the two levels/);
   assert.match(skill, /no sentence over 25 words/);
   // The swaps are examples of one failure, not its boundary — the skill must say so, because a writer
   // who reads the table as the rule will find a synonym the table missed and ship it.

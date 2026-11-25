@@ -197,7 +197,7 @@ test("A6: max_tokens_no_output wrapping a content fail → the correction names 
   assert.match(m, /CORRECTION:/);
   assert.match(m, /maximum output-token ceiling/);
   assert.match(m, /stop_reason max_tokens/);
-  assert.match(m, /CALL THE WRITE TOOL/);
+  assert.match(m, /write the required file\(s\) as soon as their content is ready/);
   assert.match(m, new RegExp(`missing_file:run/${HAND_WRITTEN.replace(".", "\\.")}`), "the underlying validator string still rides in");
   // a wrapped invalid_file keeps its reason-aware hint too
   const v = correctiveMessage(BASE, 2, "max_tokens_no_output:invalid_file:run/narrative.md:use_check_missing:F1", "/x/clearance-search/run/narrative.md");

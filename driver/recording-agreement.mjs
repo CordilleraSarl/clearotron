@@ -131,16 +131,18 @@ export function blockAround(text, needle) {
 export const WRITE_ORDER_MARKERS = Object.freeze([
   { id: "writeReturn:absolute-path", re: /ABSOLUTE path/ },
   { id: "writeReturn:you-owe", re: /YOU OWE \d+ FILES/ },
-  { id: "repair-tail:write-tool", re: /with the Write tool/ },
-  { id: "repair-tail:edit-tool", re: /using the Edit tool/ },
-  { id: "corrective:max-tokens-write-tool", re: /CALL THE WRITE TOOL/ },
+  // The repair tails and the output-ceiling corrective name no engine's tool: both engines write files, each with its own
+  // operation. So the markers are the orders themselves.
+  { id: "repair-tail:write-complete", re: /Write the COMPLETE file now/ },
+  { id: "repair-tail:targeted-edits", re: /by TARGETED EDITS to/ },
+  { id: "corrective:max-tokens-write", re: /write the required file\(s\) as soon/ },
   // ADDED BY THE THIRD CONVERSION, and the way it was found is the argument for the anti-rot arm below.
   // `warmPatchMessage`'s sibling branch orders "Re-save the COMPLETE corrected JSON at <path>" — a
   // hand-write with no Write/Edit token and no `ABSOLUTE path` in it, so the four markers above were all
   // blind to it. On frame-diff the sibling IS the tool-written artifact, so that branch was ordering a
   // hand-write of a driver-owned file on every `framediff_*` token, and direction (b) reported clean.
   // A marker list is only as good as the composers it has met; this is the fifth composer it has met.
-  { id: "warm-sibling:re-save-complete", re: /Re-save the COMPLETE/ },
+  { id: "warm-sibling:re-save-complete", re: /re-save the COMPLETE/i },
 ]);
 
 // THE RESIDUAL GAP, STATED RATHER THAN LEFT FOR SOMEBODY TO DISCOVER. This list is the composers as they

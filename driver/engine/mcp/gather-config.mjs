@@ -843,21 +843,46 @@ export function withSendUntil(mcpConfigJson, sendUntilMs) {
   return JSON.stringify(cfg);
 }
 
-// THE ENGINE'S OWN BUILT-IN TOOLS a stage is started with, where a stage names them. Measured in testing, 2026-11-23, on Claude
-// readers: they used file read and tool search (and one search-in-files with no result), and the other built-in tools' definitions
-// were most of every call's starting context, about 14k tokens of 28k. A stage not named here keeps the engine's full set. Tool
-// search stays, or the tool servers' tools load in full on the first call. The tool servers' tools are the grant's, as before; this
-// names only the engine's own.
-// The rating, the review and the correction record through their tools and write no file; measured on the same runs, they used file
-// read, search-in-files, file match and tool search, and none of the other built-in tools.
+// THE ENGINE'S OWN BUILT-IN TOOLS a stage is started with. Measured in testing, 2026-11-23, on Claude readers: they used
+// file read and tool search (and one search-in-files with no result), and the other built-in tools' definitions were most of
+// every call's starting context, about 14k tokens of 28k. Measured again, 2026-11-24, over the clearance stages' saved
+// sessions: every stage used file read, search-in-files, file match and tool search, and the stages that write a file used
+// file write and edit besides; the rest were never needed, and two subagent and messaging tools were called by stages that
+// had no use for them. So a stage that records through its tool is started with those four, and a stage that writes a file
+// with the two writing tools as well. Tool search stays, or the tool servers' tools load in full on the first call. The
+// tool servers' tools are the grant's, as before; this names only the engine's own. A label with no declared stage keeps
+// the engine's full set.
 const READ_AND_SEARCH = Object.freeze(["Read", "Grep", "Glob", "ToolSearch"]);
+const READ_SEARCH_AND_WRITE = Object.freeze([...READ_AND_SEARCH, "Write", "Edit"]);
+// Named where a stage's own grant differs: the register reader uses file read and tool search alone, and the case-law
+// stage's grant holds the engine's page fetch.
 const BUILTIN_TOOLS = Object.freeze({ "knockout-register-read": Object.freeze(["Read", "ToolSearch"]),
-  "knockout-assess": READ_AND_SEARCH,
+  "case-law": Object.freeze([...READ_SEARCH_AND_WRITE, "WebFetch"]),
   // THE REVIEW AND THE CORRECTION ARE HANDED WHAT THEY CHECK, so a consult is one deliberate read: measured in testing, 2026-11-24,
   // with file search the review searched the run's files call after call, and each call carried everything before it.
   "knockout-review": Object.freeze(["Read", "ToolSearch"]), "knockout-correct": Object.freeze(["Read", "ToolSearch"]) });
 export function builtinToolsFor(stage) {
-  return BUILTIN_TOOLS[String(stage ?? "").replace(/#\d+$/, "")] ?? null;
+  const declared = declaredStageOfLabel(stage);
+  if (!declared) return null;
+  return BUILTIN_TOOLS[declared] ?? (STAGE_DECLARATIONS[declared].recording ? READ_AND_SEARCH : READ_SEARCH_AND_WRITE);
+}
+
+/**
+ * The declared stage a dispatched label belongs to, the fanned recording labels included: `report-card:<n>` and
+ * `knockout-assess#<n>` belong to their base stage where its recording row declares that fan-out (toolGroupsForStage
+ * below). Null for a label no stage declares. PURE.
+ */
+export function declaredStageOfLabel(label = "") {
+  const name = String(label ?? "");
+  const stage = declaredStageOf(name);
+  if (stage) return stage;
+  for (const [sep, flag] of SUFFIX_FORMS) {
+    const at = name.lastIndexOf(sep);
+    if (at <= 0) continue;
+    const base = name.slice(0, at);
+    if (RECORDING[base]?.[flag] && name.slice(at + 1) && STAGE_DECLARATIONS[base]) return base;
+  }
+  return null;
 }
 
 export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis, bandGroups = false, correctionPositions = null,

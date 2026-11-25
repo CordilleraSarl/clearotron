@@ -1,6 +1,75 @@
 # clearance-register — MODE A (UNIT)
 
-> Read `SKILL.md` first (the shared spine: Spawned session, Model, Provider, Tool call budget, the band-block coverage model, Failure fallback). This file is the UNIT-mode procedure only. **Do NOT read `digest.md`** — that is digest-mode judgment a unit must never run.
+> Read `SKILL.md` first (the shared spine: what both modes read, Model, Provider, and how a crowd is narrowed). This file is the UNIT mode: its session, tool budget, failure fallback, band-block coverage model and procedure. **Do NOT read `digest.md`** — that is digest-mode judgment a unit must never run.
+
+## Spawned session
+
+- **Unit mode (the FUNNEL — Layer A)** — the task names ONE axis (`saturation-probe` | `primary-sweep` |
+  `transliteration-numeric` | `incumbent-class`), the variant manifest path, archetype + risk theory,
+  active provider, target classes / jurisdiction / industry. The worker runs that axis only. On a run whose plan carries the supplemental lane, the tools your opening message names run every query and write the band, and you hand-write no band; `register_enumerate` exists only on the no-plan path (no plan compiled), where you enumerate each named query to completion or report honest `incomplete`. Saturation crowds are count-only descriptors. Only the raw character-noise pile stays in this session;
+  the **complete named band + crowd descriptors** cross the firewall as the band JSON.
+
+Writes:
+- Unit mode — TWO artifacts, both gate-checked, neither optional. On a plan run, on an axis with no work and no planned entries, the driver writes the band empty and you write no block. `studio/clearance-search/<slug>/<date>/register-units/<axis>.md` is the stage's DECLARED OUTPUT: the driver renders it from your `record_unit_note` call and fails the pass outright when it is absent, and the digest worker reads it as an input. `studio/clearance-search/<slug>/<date>/register-units/<axis>-band.json` is the COMPLETE named band — a JSON array of `enumerated` / `incomplete` blocks (see `unit.md` → *Named-band artifact*) — carrying every record and no clearance verdict. The md narrates and proves nothing on its own: an md narrating a completed sweep while the band its plan entries call for is missing is refused as `named_band_missing`. In plan mode `register_execute_plan` writes the band itself and you never hand-write its blocks.
+
+## Tool call budget — and why it is NOT a sufficiency lever
+
+On a run whose plan carries the supplemental lane, the tools named in your dispatch run every query and write the band; `register_enumerate` exists only on the no-plan path (no plan compiled). **A budget ceiling is therefore NOT a "searched enough" knob and NEVER a reason to sample,
+top-N, or self-accept a slice.** The narrowing steps bound the searching: each keeps the limits before it, and
+they end. A crowd still a crowd after the last step is recorded with its count, never cut further. A saturation crowd is **described** with one
+count-only call (`limit:1`), not enumerated. The failure mode of the old funnel — deep-paging a
+saturated raw pile — does **not** exist: crowds are descriptors, named slices are bounded.
+
+**A genuine resource/time limit produces an `incomplete` block, never a sufficiency accept.** If
+`register_enumerate` hits the provider 5000-record window or a resource ceiling on a slice, it returns
+`{state:"incomplete", …, reason}` — the funnel writes that block verbatim and **stops there for that slice**.
+The unit narrows a crowd or records it with its count. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver. The
+funnel never converts a resource limit into a clean negative and never re-adds a record/count ceiling that
+says "searched N, ship clean".
+
+## Failure fallback
+
+`register_enumerate` handles retry / backoff / window-cap internally and returns `incomplete` (count + sample
++ reason) rather than throwing or silently truncating — so most "failure" handling is just **writing the
+`incomplete` block verbatim** and letting judgment act on it.
+
+- **Provider session-key invalid** → halt; surface it to the driver with a one-line diagnostic (no band can be written).
+- **A named slice cannot be enumerated** (provider 5000-record window, resource ceiling, persistent provider error) → `register_enumerate` returns `{state:"incomplete", …, reason}`; **write that block verbatim.** Do NOT narrow-and-call-clean and do NOT fabricate an empty. The `incomplete` block (a could-not-reach / crowd signal) crosses to judgment. The unit narrows a crowd or records it with its count. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver.
+- **Rate-limit signal (429 or sustained 5xx)** → handled inside the primitive (back off); a persistent failure surfaces as an `incomplete` block with the error in `reason`.
+- **A unit's axis has no work** in this manifest (e.g. transliteration-numeric with an English-only mark) and no entries in the frozen plan → write no block, send `record_unit_note` with a `note` saying why, leave `null_result` unset, and return. Do NOT fabricate work. For a run without a frozen plan, follow *No work on this axis* in `unit.md`.
+## Coverage = the band blocks (the funnel emits NO clearance verdict)
+
+A negative is only as good as the search behind it — and under the two-layer split the **funnel proves the
+search by the band blocks themselves**, not by authoring a `confirmed-clean` / `coverage-limited` verdict. The
+old funnel ledger collapsed two different things into one row and let the machine call a search "clean" — that
+**was** the sufficiency-in-the-machine bug. It is removed from the funnel. The funnel emits exactly two block
+states, and **the state IS the coverage signal**:
+
+- **`enumerated`** = `register_enumerate` paged that named slice to `has_more:false`. Every record crossed
+  the firewall. This is "the search ran to completion" — but **the funnel does not append a clearance verdict
+  to it**; whether the *absence of relevant hits* is a real clean negative is **judgment's** call, made over
+  the complete enumerated band. (There is no "saturated-field qualifier" to satisfy here any more — a saturated
+  field's dangerous slices are themselves `enumerated` blocks, never sampled, so there is no "sampled but
+  marked clean" state to guard against.)
+- **`incomplete`** = the slice could not be enumerated (crowd over the provider window/resource ceiling) OR
+  could not reach its data (provider error, tool absent) OR is a count-only crowd descriptor. **The funnel
+  never grades an `incomplete` as an "accepted limit" vs a "closeable gap"** — that grading was a sufficiency
+  judgment (is this gap OK to ship over?) and now belongs to **judgment (Layer B)**: the lawyer reads the
+  `incomplete` block (its `total_hits` / `sample` / `reason`), decides whether it is material. The unit narrows a crowd or records it with its count. A `sufficient:false` does not re-search; a `deferred` row may be re-run by the driver. The funnel's job
+  is only to surface the `incomplete` honestly — count + sample + reason — never to decide it is tolerable.
+
+**The exact name-list is read first, and narrowed when it crowds.** The dominant element's `match_mode:exact`
+× in-scope class slice is the identical-mark question of the narrowing steps; a complete answer covers every
+jurisdiction in it. A bare-exact incumbent in a filed class is the highest-relevance category — it can
+**never** be sampled or rolled into a count; if it comes back `incomplete`, it is narrowed by the steps in
+`SKILL.md`, and what stays a crowd after the last step stays on its coverage row with its count, as a required
+read not completed. (The funnel does not author a "closeable vs accepted" judgment on it — it just enumerates it.)
+
+**Count-only crowd descriptors describe, they do not clear.** The `saturation-probe` axis (`limit:1`, no
+enumeration) measures how crowded an element is — it is written as an `incomplete` crowd-descriptor block
+(`fetched:0`, `reason:"crowd descriptor — …"`) and **clears nothing**. The named slices inside the crowd (the
+exact name-list, the class+region-scoped substring band) are the `enumerated` blocks; judgment reads the
+descriptor's count alongside them.
 
 # MODE A — UNIT (run one axis → ENUMERATE the named band, OR report honest incompleteness)
 
@@ -26,7 +95,7 @@
 You are the **FUNNEL** — Layer A, the search machine. For every query you run, either **ENUMERATE it to completion**
 (page to `has_more:false`, hand up every record) **or** report **HONEST INCOMPLETENESS** (count + sample +
 why). There is **no "good enough" for a search that did not run** — no sampling, no top-N, no "narrow to tractable
-and call it clean". A crowd is narrowed by the steps below, and what stays a crowd is recorded with its count.
+and call it clean". A crowd is narrowed by the steps in *Read the identical mark first*, and what stays a crowd is recorded with its count.
 Placement reads your **complete named band**.
 
 You were spawned to run exactly ONE axis named in your task. Read the manifest, the matter frame and the provider doc your opening message names; `status-rules.md` and `register-recipes.md` are reference, opened only for a status string or query shape you cannot read otherwise. Then:
@@ -42,63 +111,36 @@ You were spawned to run exactly ONE axis named in your task. Read the manifest, 
    - **`{state:"enumerated", total_hits, count, records:[…]}`** — it paged to `has_more:false`; every named record is carried forward, already batch-screened (each record carries `record_id`, `mark_text`, `classes`, `status`, `owner_name`, `owner_country`, `application_date`, `registration_date`, `expiry_date`, `jurisdictions`, `screen_verdict`). Write this verbatim as an `enumerated` band block.
    - **`{state:"incomplete", total_hits, fetched, sample, reason}`** — it could **not** page to completion (the band is a genuine CROWD over the resource ceiling, the provider 5000-record window was hit, or a provider error occurred). Write this verbatim as an `incomplete` band block. **This is a SIGNAL to judgment, never a clean negative and never something you self-accept.** You do **not** "narrow to tractable and call it clean" — an incomplete result crosses the firewall as an incomplete block, and you decide on it by the narrowing steps: narrow it, or record it with its count and move on.
 
-### At every step: look at what you have before you work on it
-
-Fifty? Read them all. A few hundred? Sort by the client's goods and markets, read the near ones first, list
-the rest. A thousand or more? The field is crowded: read the identical and live ones for the client's
-goods, tell the client it is crowded, and do not write up the rest. Carry forward only what a lawyer would
-raise with the client. Write down what you set aside and why. This applies to the register's answer, to the
-list of records, to the placements, to the off-register sweep and to the write-up alike.
-
-### Read the identical mark first. Look at the count before you read anything
-
-On every matter the identical mark, in the instructed classes, is the first thing you read, and nothing
-wider is asked until you have read it. The register tells you how many filings answer a question before it
-hands you any. Take a look: how bad is it? If the list is one you can read record by record, read it in
-full. If it is not, do not read it and do not leave it: narrow the same question, in this order, until it
-is, then read that list in full and decide. Each step keeps the limits of the steps before it. Stop at the first
-step that gives you a list you can read.
-
-1. Ask again for the identical mark, in the instructed classes, limited to the client's goods words. Read
-   that list.
-2. Still a crowd? Ask again with the dominant goods word alone, then one class at a time, in the instructed
-   classes. Read each list.
-3. Still a crowd? Ask again one question per market, from the one list your opening message names. Read those
-   lists.
-4. Still a crowd after step 3? The narrowing ends. Record it with its count: the field is crowded there.
-
-A list you have read answers the crowd it came from. Do not ask that crowd again without the limits that answered
-it.
-
-A small list for a longer mark or narrower goods does not establish that a distinct root or sound-alike family adds nothing. Judge what that family could add to the advice and record the reason. Where no count is held, do not describe the family as a measured crowd.
-
-The same steps serve any other question that comes back as a crowd, when reading it would change what you tell the client. Before you narrow a wider crowd, write in the proposal what reading it would change. If you cannot, set it aside with its count and your reason. You need not take every step on every crowd. A wider crowd that the lists you have read already
-answer is set aside with its count and your reason. That is finished work, not a gap. The countries the identical
-mark's market step did not read stay on its coverage row with their count, as today.
-
-Once the identical mark for the client's goods has been read, decide as a lawyer would whether you have enough. Would more searching change what you tell the client: who could object, how weak the word is in this market, or what the client should do? If it would, widen one step, read, and decide again. If it would not, you are done. Write in one line why more searching would not change the advice, record which questions you did not ask and why, and move on. That is complete work.
-
-Every question you ask is recorded with its count. A narrowing replaces nothing silently: the crowd it
-replaces stays on the record with its count. What was counted and not read is set aside with that count,
-never marked clean.
-
-The families you did not open are recorded `withheld-by-judgment`
-with your reason — not `confirmed-clean`, which would claim a search nobody ran, and not
-`coverage-limited`, which says the engine tried and could not finish. You chose where the work was best
-spent; say so, and say which questions you did not ask.
-
-When you narrow a crowded question, name the crowd it replaces: put its qid on the proposal as
-`narrows`. The record then shows the crowd and the question that answered it side by side, each with
-its own count. A narrowing that does not name what it replaced leaves the crowd looking unanswered.
 
    - **Write each call's result as one block in `register-units/<axis>-band.json`** (the named-band array — see *Named-band artifact* below). One block per `register_enumerate` / count-probe call. An `enumerated` block carries its records; an `incomplete` block is carried forward **verbatim — never dropped, never "accepted", never silently re-narrowed-then-cleaned**.
    - **The completeness contract is UNIFORM — it applies to the named band too.** "The exact mark, in-class" is *usually* small and `enumerated` — but that is **not load-bearing**. If it ever runs to a few hundred and `register_enumerate` returns `incomplete`, it stays `incomplete` and crosses to judgment, exactly like the wider crowd. A search is done when it is `enumerated`, when a narrowed list has answered its crowd, or when a wider search's crowd is set aside with its count and a reason. The identical mark for the client's goods, still a crowd in a market on the one list your opening message names, is not done. A refused or failed search is never done. **Never self-accept "good enough" for a search that did not run.**
 4. **For a SATURATION CROWD (a genuinely unbounded `contains` / character-indexed pile), write a COUNT-ONLY descriptor — do NOT enumerate it.** A saturated element solo (e.g. the everyday-word meaning token alone, the bare common element) is not a named band — it is noise the lawyer needs *described*, not *piled in*. Run `register_search` with `limit:1` (count-only, capturing `total_hits`) and write the result as an `{state:"incomplete", query, total_hits, fetched:0, sample:[], reason:"crowd descriptor — …"}` block. **Do NOT call `register_enumerate` on a saturation crowd, and do NOT call it clean.** The descriptor (count + why) is what crosses the firewall; the raw character-noise pile does not. Read the count and decide by the narrowing steps whether a narrower named question inside it would change what you tell the client.
 5. **Mechanical facts only — read off the record.** `register_enumerate` returns each record already batch-screened: class membership, live/dead `status`, owner, dates, `jurisdictions`, and a closed-set `screen_verdict`. Those are **mechanical reads off the record** — keep them. You do **NOT**:
    - **off-field-drop on goods** — brand-json has no goods/services text; an in-scope-class live record is carried forward and the lawyer decides on its actual goods/services. (`screen_verdict` is enrichment for judgment, not a funnel drop authority.)
-   - **sample or self-accept** — no top-N, no per-jurisdiction 3-fetch ceiling, no switch-to-exact-standalone-as-enumeration. The tool enumerates or reports incomplete; a crowd is narrowed by the steps above, and the narrowing stops at the first list you can read.
+   - **sample or self-accept** — no top-N, no per-jurisdiction 3-fetch ceiling, no switch-to-exact-standalone-as-enumeration. The tool enumerates or reports incomplete; a crowd is narrowed by the steps in *Read the identical mark first*, and the narrowing stops at the first list you can read.
 6. **Surface dead records WITH their status — no funnel date-cutoff.** Carry every record `register_enumerate` returns **with its `status`** (live / lapsed / expired / lapse-date in the record's dates). You do **NOT** apply a recency/date threshold and you do **NOT** drop dead-except-identical. **`recently-dead` is a STATUS for judgment**, not a funnel filter: whether a recently-lapsed near-identical matters (revival window, field history, non-use vulnerability) is the lawyer's call (Layer B), made on the status + lapse date you passed through. Volume is handled by the completeness contract (step 3): if the dead-inclusive named band is bounded, `register_enumerate` returns it `enumerated`; if it is a crowd, it returns `incomplete` → descriptor. You pass the fact; judgment weighs it. (The old D4 ≤5y date-cutoff drop is **removed** — it was a funnel-side judgment.)
 7. **Write the band artifact, then return.** Write `register-units/<axis>-band.json` (the named-band array, schema below) to `studio/clearance-search/<slug>/<date>/register-units/<axis>-band.json`, **before you return — returning without it is a failure** (the deterministic driver gates on this file: if it is missing after your turn it fails the stage and retries it under a fresh session key; a band that never lands as a file is lost work). Then **file your audit note by calling `record_unit_note`** — you do not write it, and the dispatch hands you no path for it: the driver renders it from your call. **The counts are not yours to type.** Queries enumerated, incomplete blocks and records carried forward are taken from the band you just wrote, so the note and the band cannot disagree; a note filed before the band exists is refused by name, because an account of a sweep that has not happened is not a short note but a wrong one. What you send is the half the band cannot say: `null_result` if this axis genuinely found nothing (refused against a band that carries records), and `note` — one short observation an auditor would want, in a lawyer's words. **The raw character-noise pile stays in this session** — what crosses the firewall is the **complete named band + crowd descriptors** (the `<axis>-band.json` array), NOT the raw rows. Do **not** aggregate owners — that is judgment's job (Layer B).
+
+**The per-major and per-jurisdiction named queries are breadth, not a budgeted sufficiency allowance.** Each
+in-scope major (US/EU/UK/CN/JP) and each material jurisdiction the matter-frame declared is **part of the in-scope sweep** — and when the region-scoped in-scope sweep (Recipe 7 Step 2) returns `enumerated`
+(complete), that complete set provably contains every in-scope slice, so the per-major/per-jurisdiction slices
+are taken from it **machine-side by `jurisdictions`**, NOT re-run as redundant per-major `register_enumerate`
+calls (Recipe 7 §2b/§2c — this drops the per-jurisdiction call-count + timeout fragility). When the in-scope sweep returns `incomplete` as a crowd, narrow it by the steps in *Read the identical mark first*: their market step uses the one list your opening message names, and a major or material jurisdiction the list does not name is not asked on its own; it stays in the crowd's count. Either way no slice is sampled; the manifest/matter-frame chose the breadth (judgment, upstream). There is **no "ring-fenced allowance" that breadth
+yields to** any more (that was a sufficiency trade — breadth-vs-coverage), because no slice is sampled: every
+named query enumerates or returns `incomplete`. If a declared jurisdiction's query genuinely cannot run
+(provider error), it surfaces as an `incomplete` block (a could-not-reach gap for judgment), never a silent
+drop and never a sufficiency-accepted omission.
+
+**The dangerous-category named enumeration is the same contract, not a separate budget floor.** The
+`primary-sweep` unit's dangerous-category enumeration (`unit.md` → *the dangerous-category named enumeration*)
+runs **every** named slice through `register_enumerate` — the exact name-list, the substring band, the phonetic fringe — **for the DISTINCTIVE anchor. A common saturated component
+that is not the anchor (a stripped common word — GREAT / OUTDOORS) is count-only via `saturation-probe`, not
+enumerated here** (`unit.md` → *the dangerous-category named enumeration*; an all-common-words phrase mark is
+searched as the exact phrase + near-neighbours). It does **not** "detail-fetch every candidate up to a
+budget then mark coverage-limited on overrun" (that was the old sufficiency floor) — `register_enumerate`
+either enumerates the slice or returns `incomplete`, and the funnel writes the block. A sampled dangerous
+category is **structurally impossible** now: there is no sampling verb in the funnel.
+
 
 ## What else your grant carries, and why you do not call it
 
@@ -158,8 +200,8 @@ band its plan entries call for is missing is refused as `named_band_missing`.
 ### Per-axis specifics
 
 - **`saturation-probe`** — fires when any element is flagged `saturation: high`/`very-high`, plus a partial-phrase structural-prefix probe for slogan/descriptive-compound multi-word marks. Run count-only probes (`limit:1, fields:["uri"]`) capturing `total_hits`, and write **one `incomplete` crowd-descriptor block per probed element** (`fetched:0`, `reason:"crowd descriptor — saturated element <X>, count-only"`). It measures how crowded an element is — it **enumerates nothing and clears nothing**. Skip (not applicable) if all elements are distinctive/low-saturation. **A meaning-translation variant (`translit-*-meaning`) is NOT special-cased into a drop:** an everyday-word-scale count is just a crowd descriptor; whether the field-scoped named slice inside it matters is judgment's call — the funnel surfaces the count, and the **primary-sweep** axis runs the field-scoped named enumeration where the frame says that market matters (see `transliteration-numeric`). Record `translit-too-generic` in the descriptor `reason` as a context note (NOT a drop / re-narrow / swap-to-phonetic signal). An implausibly LOW count on a translation that ought to have peers is the separate `translit-underretrieved` context note — also recorded in the descriptor `reason`, never acted on as a drop. Both are signals the lawyer reads.
-- **`primary-sweep`** — always applicable. Run the playbook's named variant queries: the exact mark + each `phrase-substitution`, `visual-substitution`, family-pattern wildcard, and slang variant the manifest lists, **each via `register_enumerate`** (the tool guarantees the page loop). Owns the family-pattern / phrase-substitution / slang / visual-substitution variant queries. **Owns the dead-inclusive named enumeration** (its `register_enumerate` calls carry live AND dead records forward with their status — see step 6; there is no separate "dead-but-identical" or "D4" pass, because the funnel no longer filters dead records). **On a saturated unit, owns the [named-band enumeration of the dangerous category](#exact-in-class-live-floor-primary-sweep-unit-owns-it)** (the exact mark + the **distinctive** formative root / dominant token as the substring-in-scope-class-live named slice, its majors taken from it by jurisdictions, plus the phonetic fringe) — enumerated, not sampled. **The named enumeration covers a saturated `translit-*-meaning` meaning token too, where the frame says that market matters (see `transliteration-numeric`)** (scoped to the filed in-scope Nice classes as the `nice_classes` × `regions` filter on the `register_enumerate` call, NOT goods-words ANDed into the search text) — not only the Latin dominant element / formative root. **But a COMMON component that is NOT the distinctive anchor** (a "stripped" common word the manifest marks common/descriptive — DUSK / TALES / GREAT / OUTDOORS) **is count-only, owned by `saturation-probe`, and is NOT enumerated here**: `saturation-probe` already counts it and hands that count up; primary-sweep does **not** run the substring / per-major / phonetic enumeration on it and does **not** author a second crowd block for it (see the linked section — wholesale-enumerating a common component per-jurisdiction is the mega-crowd grind that SIGKILLs the stage).
-- **`transliteration-numeric`** — fires when the manifest has `translit-*` variants or numeric-substitution variants. Ask one script question per market the frame names. Where the register files foreign marks by their romanised form, and it says so, the Latin question already covers them; do not ask it again in other scripts. A word's meaning in another language is asked only where the frame says that market matters and buyers would read the word as the mark. For each numeric-substitution variant enumerate its query. Owns the foreign-transliteration + numeric-substitution variant queries. Skip if the manifest classifies the mark English-only / single-language. (Multi-script accumulation is no longer a window risk for the unit — `register_enumerate` owns the page loop and a crowd returns `incomplete`, so the unit does not deep-page raw rows itself.)
+- **`primary-sweep`** — always applicable. Run the playbook's named variant queries: the exact mark + each `phrase-substitution`, `visual-substitution`, family-pattern wildcard, and slang variant the manifest lists, **each via `register_enumerate`** (the tool guarantees the page loop). Owns the family-pattern / phrase-substitution / slang / visual-substitution variant queries. **Owns the dead-inclusive named enumeration** (its `register_enumerate` calls carry live AND dead records forward with their status — see step 6; there is no separate "dead-but-identical" pass, because the funnel does not filter dead records). **On a saturated unit, owns the [named-band enumeration of the dangerous category](#exact-in-class-live-floor-primary-sweep-unit-owns-it)** (the exact mark + the **distinctive** formative root / dominant token as the substring-in-scope-class-live named slice, its majors taken from it by jurisdictions, plus the phonetic fringe) — enumerated, not sampled. **The named enumeration covers a saturated `translit-*-meaning` meaning token too, where the frame says that market matters (see `transliteration-numeric`)** (scoped to the filed in-scope Nice classes as the `nice_classes` × `regions` filter on the `register_enumerate` call, NOT goods-words ANDed into the search text) — not only the Latin dominant element / formative root. **But a COMMON component that is NOT the distinctive anchor** (a "stripped" common word the manifest marks common/descriptive — DUSK / TALES / GREAT / OUTDOORS) **is count-only, owned by `saturation-probe`, and is NOT enumerated here**: `saturation-probe` already counts it and hands that count up; primary-sweep does **not** run the substring / per-major / phonetic enumeration on it and does **not** author a second crowd block for it (see the linked section — wholesale-enumerating a common component per-jurisdiction is the mega-crowd grind that SIGKILLs the stage).
+- **`transliteration-numeric`** — fires when the manifest has `translit-*` variants or numeric-substitution variants. Ask one script question per market the frame names. Where the register files foreign marks by their romanised form, and it says so, the Latin question already covers them; do not ask it again in other scripts. A word's meaning in another language is asked only where the frame says that market matters and buyers would read the word as the mark. For each numeric-substitution variant enumerate its query. Owns the foreign-transliteration + numeric-substitution variant queries. Skip if the manifest classifies the mark English-only / single-language. (Multi-script accumulation is not a window risk for the unit — `register_enumerate` owns the page loop and a crowd returns `incomplete`, so the unit does not deep-page raw rows itself.)
 - **`incumbent-class`** — fires when the manifest has an `industry_incumbent_alert`. `register_enumerate` the named band in the matter's in-scope Nice set and markets — **never an all-class incumbent sweep** (that is the unscoped crowd that timed this very axis out live). **Beyond the NAMED watchlist incumbents, the named enumeration is an UNNAMED-OWNER exact-in-class-live enumeration in those classes** — the watchlist seeds prioritise *attention* (judgment's use), they do **not** bound the funnel's enumeration. Every exact-token-in-class-live record crosses the firewall whether or not its owner was pre-listed; the watchlist is provably incomplete, so it never decides what the funnel enumerates. Skip only if there is no incumbent alert AND the frozen plan carries no entries on this axis — the plan is the search authority. **The plan carries no owner lane from the manifest's watchlist.** Read owners from the records this axis and the primary sweep returned. Propose an owner slice only where an owner's other marks could change the assessment, for example when the records show a family of marks sharing the element. A bare-owner count is never written up as a reviewed portfolio or as "portfolio too large, noted". Read an owner's portfolio as far as it answers a question about this owner: can it block, would it, and what kind of filer it is. Never its whole register because it is an incumbent.
 
 ### Exact-in-class-live floor — RENAMED to: the dangerous-category named enumeration (primary-sweep unit owns it) {#exact-in-class-live-floor-primary-sweep-unit-owns-it}
@@ -177,7 +219,7 @@ predicate, and each per-major and phonetic slice built on it — is **attempted 
 its own result**. If it returns `enumerated` (tractable — a real named band: e.g. ≈257 exact-in-class-live; the phrase
 "QUIET FIELD" ≈ 99), keep it, take its majors from it by `jurisdictions`, and run its phonetic pass. If it returns `incomplete` because the
 slice is **itself a crowd over the ceiling** (a hyper-common word — GREAT ≈ 28k, OUTDOORS ≈ 2.7k),
-the ceiling is a call limit, never a decision point: decide on that crowd with [the same steps](#read-the-identical-mark-first-look-at-the-count-before-you-read-anything),
+the ceiling is a call limit, never a decision point: decide on that crowd with [the same steps](SKILL.md#read-the-identical-mark-first-look-at-the-count-before-you-read-anything),
 only as far as reading it would change what you tell the client; record what stays a crowd with its count. Gate on the *result*, never the label: a token the manifest calls
 "dominant" is enumerated only if class-scoping makes it tractable (the colour-word mark COLORA→色彩), and a hyper-common word is
 counted whether or not it is the dominant unit. **On a crowd slice, what you WRITE depends on which slice it is:**

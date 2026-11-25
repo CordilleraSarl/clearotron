@@ -12,7 +12,7 @@ funnel's tool surface, one `register_execute_plan` call runs every dictated entr
 the SHAPE of the query it names, never as an instruction to type the call yourself. The funnel (Layer A) runs
 each named query via
 `register_enumerate` — the completeness primitive that owns the page loop and returns `enumerated` or
-`incomplete`, never a partial list. **No recipe step samples a top-N; a crowd is narrowed by the steps in unit.md.** A recipe step that says "macro probe"
+`incomplete`, never a partial list. **No recipe step samples a top-N; a crowd is narrowed by the steps in SKILL.md.** A recipe step that says "macro probe"
 is a **count-only crowd descriptor** (`limit:1`); a recipe step that names a variant query is an
 **`register_enumerate` call**. See [unit.md](unit.md).
 
@@ -108,7 +108,7 @@ If you are a unit, run only your assigned axis from the recipe below; the write-
 2. ENUMERATE the dangerous named slices (register_enumerate) — class + region scoped,
    the tool owns the page loop and returns enumerated|incomplete:
    → name:<mark> match=exact classes <target>                        → exact-in-class name-list
-   → name:<mark> match=default classes <target>  → the substring band; a crowd is narrowed by the steps in unit.md
+   → name:<mark> match=default classes <target>  → the substring band; a crowd is narrowed by the steps in SKILL.md
    (do NOT AND a product/industry term into the search text — that is a goods filter and drops
     in-class-live records on a goods guess; the lawyer judges goods at selection. Scope the search text by class and region; narrow a crowd by the
     client's goods with the goods field, never by putting goods words into the search text.)
@@ -120,7 +120,7 @@ If you are a unit, run only your assigned axis from the recipe below; the write-
 4. ENUMERATE a cross-class merch query if identical match
 ```
 
-**Why:** descriptive crowded-field marks have many records. Each named slice is scoped by class and region (breadth, not sufficiency), and `register_enumerate` pages it to completion or returns `incomplete`; a crowd is narrowed by the steps in unit.md, which stop at the first list you can read. The crowd descriptor (step 1) tells the lawyer how crowded the field is; the lawyer decides relevance and sufficiency over the complete enumerated slices.
+**Why:** descriptive crowded-field marks have many records. Each named slice is scoped by class and region (breadth, not sufficiency), and `register_enumerate` pages it to completion or returns `incomplete`; a crowd is narrowed by the steps in SKILL.md, which stop at the first list you can read. The crowd descriptor (step 1) tells the lawyer how crowded the field is; the lawyer decides relevance and sufficiency over the complete enumerated slices.
 
 **Expected output:** complete enumerated band for each class/region-scoped named slice + a crowd descriptor for the bare element. The lawyer filters to relevance; the funnel does not.
 
@@ -188,7 +188,7 @@ Ask one script question per market the frame names. Where the register files for
 7. ENUMERATE a cross-class merch query if identical match
 ```
 
-**Why:** for 0-distinctive multi-word marks, the search vector IS the phrase + its morphological variations. The funnel enumerates each — it does **not** "narrow via phrase composition because element-level sweeps are too saturated" (that was a sufficiency call). The element-level crowd is *described* (steps 1–2) and the named slices are *enumerated* (steps 3–7). Placement reads the band; a crowd is narrowed by the steps in unit.md.
+**Why:** for 0-distinctive multi-word marks, the search vector IS the phrase + its morphological variations. The funnel enumerates each — it does **not** "narrow via phrase composition because element-level sweeps are too saturated" (that was a sufficiency call). The element-level crowd is *described* (steps 1–2) and the named slices are *enumerated* (steps 3–7). Placement reads the band; a crowd is narrowed by the steps in SKILL.md.
 
 **Expected output:** the enumerated band for every named slice + crowd descriptors for the bare elements. The lawyer prioritises; the funnel surfaces everything.
 
@@ -197,7 +197,7 @@ Ask one script question per market the frame names. Where the register files for
 ## Recipe 7 — Exact-in-class-live floor (saturated near-exact band)
 
 **When to use:** the manifest flags the **distinctive anchor** (`Formative root` / dominant element)
-`saturation: high`/`very-high` and you are the `primary-sweep` unit. This is the executable form of the [dangerous-category named enumeration](unit.md#exact-in-class-live-floor-primary-sweep-unit-owns-it) — enumerating the **near-exact band** (the *distinctive* dominant token a *substring* but not identical) and the **phonetic fringe** that a saturated field otherwise buries past the ranker cliff. **Do NOT run this recipe on a COMMON component** (a stripped common word the manifest marks common/descriptive — GREAT / OUTDOORS): a common component is count-only via the `saturation-probe` axis (which already counted it), and wholesale-enumerating its substring per-jurisdiction is the mega-crowd grind that SIGKILLs the stage. Runs **alongside** the saturated recipe (Recipe 3 / Recipe 6), not instead of it. **It is no longer a sufficiency floor** (no "fetch 3 representatives", no per-class `confirmed-clean` verdict) — it is the completeness contract applied to the dangerous slice: enumerate it, or report it incomplete.
+`saturation: high`/`very-high` and you are the `primary-sweep` unit. This is the executable form of the [dangerous-category named enumeration](unit.md#exact-in-class-live-floor-primary-sweep-unit-owns-it) — enumerating the **near-exact band** (the *distinctive* dominant token a *substring* but not identical) and the **phonetic fringe** that a saturated field otherwise buries past the ranker cliff. **Do NOT run this recipe on a COMMON component** (a stripped common word the manifest marks common/descriptive — GREAT / OUTDOORS): a common component is count-only via the `saturation-probe` axis (which already counted it), and wholesale-enumerating its substring per-jurisdiction is the mega-crowd grind that SIGKILLs the stage. Runs **alongside** the saturated recipe (Recipe 3 / Recipe 6), not instead of it. **It is not a sufficiency floor** (no "fetch 3 representatives", no per-class `confirmed-clean` verdict) — it is the completeness contract applied to the dangerous slice: enumerate it, or report it incomplete.
 
 **Pattern:**
 
@@ -232,14 +232,14 @@ Ask one script question per market the frame names. Where the register files for
      `jurisdictions` (US/EU/UK/CN/JP …) for the per-major reconciliation — do NOT run a redundant per-major `register_enumerate`. A COMPLETE region-scoped set provably contains every in-scope major's records, so
      the slice is EXACT, not a sufficiency guess. (This removes the per-jurisdiction redundancy + its call-count
      / timeout fragility; a complete Step 2 still individuates every major.)
-   → When Step 2 returned `{state:"incomplete"}` as a crowd, narrow it by the steps in unit.md (*Read the identical mark first*). Their market step uses the one list your opening message names: `register_enumerate name:<root> match=default nice_classes:<target> regions:[<market>]`; each writes its own enumerated|incomplete block. A major the list does not name is not asked on its own; it stays in the crowd's count.
+   → When Step 2 returned `{state:"incomplete"}` as a crowd, narrow it by the steps in SKILL.md (*Read the identical mark first*). Their market step uses the one list your opening message names: `register_enumerate name:<root> match=default nice_classes:<target> regions:[<market>]`; each writes its own enumerated|incomplete block. A major the list does not name is not asked on its own; it stays in the crowd's count.
 
-2c. The exact name-list — slice it from the complete set, or narrow it by the steps in unit.md when Step 2 is incomplete.
+2c. The exact name-list — slice it from the complete set, or narrow it by the steps in SKILL.md when Step 2 is incomplete.
    → The exact-in-class records are a SUBSET of the substring band, so when Step 2 is `{state:"enumerated"}`
      they are already present: derive the exact name-list by slicing Step 2 for records whose name matches the
      dominant token EXACTLY (live + dead, with status) — the Larkmoor recall guarantee is preserved by the
      complete set, no separate exact call needed.
-   → When Step 2 is `{state:"incomplete"}`, narrow the exact name-list by the steps in `unit.md` (*Read the identical
+   → When Step 2 is `{state:"incomplete"}`, narrow the exact name-list by the steps in `SKILL.md` (*Read the identical
      mark first*): the client's goods first, then one market at a time from the one list your opening message names: `register_enumerate name:<dominant token> match=exact nice_classes:<target> regions:[<market>]` → returns
      every exact-in-class record (live + dead with status). Never sub-sampled, never rolled into a count.
 
@@ -252,7 +252,7 @@ Ask one script question per market the frame names. Where the register files for
      so judgment sees provenance; identical-text rows carry their status like any other record
 ```
 
-**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer; a crowd is narrowed by the steps in `unit.md`, whose market step uses the one list your opening message names; then the exact name-list, narrowed by the steps in `unit.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. You decide on each `incomplete` by the narrowing steps; placement reads the band and decides relevance. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
+**Why this order:** crowd descriptor first (one count — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors, taken from a complete worldwide answer; a crowd is narrowed by the steps in `SKILL.md`, whose market step uses the one list your opening message names; then the exact name-list, narrowed by the steps in `SKILL.md` when it crowds; then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. You decide on each `incomplete` by the narrowing steps; placement reads the band and decides relevance. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
 
 **Meaning-axis extension — a saturated everyday-word meaning token (COLORA→色彩) runs the same enumeration.** When
 the saturation probe flags a `translit-*-meaning` variant and the frame says that market matters, add **one `register_enumerate` step on the
@@ -307,7 +307,7 @@ total_hits, fetched:0, sample:[], reason:"crowd descriptor — <why>"}`. Then:
 - **Do NOT narrow the crowd, re-probe, and call the residual clean.** Scoping a named slice by class/region is
   *breadth* (which slice you search) — that is fine and is what the `register_enumerate` call does. Replacing
   a broad query's hits with a narrower query's lower count and declaring the field clean is the banned
-  broad→narrow false-clean. The crowd is *described* (count) and the named slices are *enumerated*; a crowd that reading would change the advice on is narrowed by the steps in unit.md.
+  broad→narrow false-clean. The crowd is *described* (count) and the named slices are *enumerated*; a crowd that reading would change the advice on is narrowed by the steps in SKILL.md.
 - **"Character-noise" is a judgment read, not a funnel call.** A high count is *passed to the lawyer as a
   descriptor*; the funnel does not dismiss it as individual-character indexing. The lawyer reads the count
   alongside the enumerated class-scoped band and decides.

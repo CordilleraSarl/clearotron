@@ -7,14 +7,14 @@ import { editRepairTail, fullWriteTail, failingTarget, abbrev, ABBREVIATED_VALUE
 
 test("the edit tail orders a patch, forbids the whole-file rewrite, and still covers an absent file", () => {
   const t = editRepairTail("/r/x/register-findings.md");
-  assert.match(t, /TARGETED EDITS to \/r\/x\/register-findings\.md using the Edit tool/);
+  assert.match(t, /TARGETED EDITS to \/r\/x\/register-findings\.md with your file-editing operation/);
   assert.match(t, /change ONLY what the correction/);
   assert.match(t, /leave every other line of the file byte-identical/);
   assert.match(t, /Do NOT rewrite, re-emit or re-type the whole file/);
   // the reason, not just the rule — a full rewrite of valid prose is the risk being avoided
   assert.match(t, /risks degrading it/);
   // the one branch the model still has to handle itself
-  assert.match(t, /does not exist, create it in full with the Write tool/);
+  assert.match(t, /does not exist, create it in full\./);
   // no caller may end up with a bare "the stage output" when it knows the path
   assert.match(editRepairTail(null), /the stage output/);
 });
@@ -23,7 +23,7 @@ test("the full-write tail is reserved for a file that was never written", () => 
   const t = fullWriteTail("/r/x/out.md");
   assert.match(t, /Write the COMPLETE file now at \/r\/x\/out\.md/);
   assert.match(t, /from the work already in your context/, "a resumed session must not redo the work");
-  assert.doesNotMatch(t, /Edit tool/);
+  assert.doesNotMatch(t, /file-editing operation/);
 });
 
 test("failingTarget picks the member the invalid_file token names", () => {

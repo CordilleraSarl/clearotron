@@ -14,9 +14,9 @@
 - [Example 1 — descriptive-compound + family-of-marks (GLOWVAULTER / FLINTVAULT, gaming hardware)](#example-1-descriptive-compound-family-of-marks-glowvaulter-flintvault-gaming-hardware)
 - [Example 2 — slogan (SET YOUR PACE, console tagline)](#example-2-slogan-set-your-pace-console-tagline)
 - [Example 3 — cross-industry collab, multi-mark (a games franchise × pizza chain; food + gaming)](#example-3-cross-industry-collab-multi-mark-a-games-franchise-pizza-chain-food-gaming)
-- [Example 4 — descriptive-compound + family-of-marks (AQUA SURGE / AQUA DAWN, energy/functional drinks) — ILLUSTRATIVE composite (pending a staff-lawyer-marked real matter)](#example-4-descriptive-compound-+-family-of-marks-aqua-surge-aqua-dawn-energyfunctional-drinks-illustrative-composite-pending-a-staff-lawyer-marked-real-matter)
-- [Example 5 — slogan / tagline (POWER YOUR FOCUS, energy-drink line) — ILLUSTRATIVE composite (pending a staff-lawyer-marked real matter)](#example-5-slogan-tagline-power-your-focus-energy-drink-line-illustrative-composite-pending-a-staff-lawyer-marked-real-matter)
-- [Example 6 — cross-industry collab, multi-mark (a functional-drink brand × a fitness-apparel/sports collaboration; beverages + apparel + retail/events) — ILLUSTRATIVE composite (pending a staff-lawyer-marked real matter)](#example-6-cross-industry-collab-multi-mark-a-functional-drink-brand-a-fitness-apparelsports-collaboration;-beverages-+-apparel-+-retailevents-illustrative-composite-pending-a-staff-lawyer-marked-real-matter)
+- [Example 4 — descriptive-compound + family-of-marks (AQUA SURGE / AQUA DAWN, energy/functional drinks) — ILLUSTRATIVE composite (pending a reviewing-lawyer-marked real matter)](#example-4-descriptive-compound-+-family-of-marks-aqua-surge-aqua-dawn-energyfunctional-drinks-illustrative-composite-pending-a-reviewing-lawyer-marked-real-matter)
+- [Example 5 — slogan / tagline (POWER YOUR FOCUS, energy-drink line) — ILLUSTRATIVE composite (pending a reviewing-lawyer-marked real matter)](#example-5-slogan-tagline-power-your-focus-energy-drink-line-illustrative-composite-pending-a-reviewing-lawyer-marked-real-matter)
+- [Example 6 — cross-industry collab, multi-mark (a functional-drink brand × a fitness-apparel/sports collaboration; beverages + apparel + retail/events) — ILLUSTRATIVE composite (pending a reviewing-lawyer-marked real matter)](#example-6-cross-industry-collab-multi-mark-a-functional-drink-brand-a-fitness-apparelsports-collaboration;-beverages-+-apparel-+-retailevents-illustrative-composite-pending-a-reviewing-lawyer-marked-real-matter)
 
 ## The reasoning to reproduce (what makes these good)
 
@@ -55,16 +55,11 @@ The hardest calls sit on the **Manageable ↔ Moderate** line, and the answer tu
 
 Both are the same principle from opposite sides: **rate our use meeting their use, not the marks in the abstract.**
 
-### Delivery prose & the table formula (spec 09)
+### Delivery prose & the table formula
 
-How findings are written on the report (not how they are scored):
-
-1. Cut dead weight and throat-clearing; one idea per sentence; 3+ parallel items become a real list, never an inline `(a)…(b)…(c)` run. **Word budgets: ~20–25 words a sentence, ~80 a paragraph** — the one hard cap is the 3-sentence caption; it is a limit, not a target.
-2. Verdict-first — lead with the line the reader can act on; numbers over superlatives; no intensifiers, no GPT-isms. **No disclaimers at all** (ruled): a real limit on the answer is a *fact*, stated once where it belongs, in consequence terms — not a caveat about the document.
-3. Each finding's sentence follows *The finding sentence* in synthesis-rules.md.
-4. **One reader, one posture — the hedge is the house register, not a table exception.** There is one report and one reader (the reviewing lawyer), so there is one voice: the calibrated register of an advisory preliminary assessment ("appears to be", "could likely be reduced in scope", "cannot be excluded"). It **survives everywhere** — no surface strips it to bald assertion, and no surface hedges *more* than another. (This item used to read "hedge exception (table only)", which made the cover note hedge harder than the report it covered; that was the two-audience premise, and it is retired.) The hedge is calibration and **never** a substitute for a fact the run holds: where the run has the record, state the record.
-5. **No prescriptions** (ruled 2026-07-30). Prose states the position, never the remedy — no "we recommend / advise / suggest", no "you should", no "the practical path is". Every forward step a human must take is a typed action in the `actions` register, which code renders.
-6. **Each fact once, at its rank.** A finding is written in its own row; the summary names the decisive one and no other; a later section cross-references by ordinal ("the three US class-32 rights — findings 1, 4 and 7") rather than retelling. The section spine already holds each fact once — use it.
+How findings are written on the report (not how they are scored) is [report-prose.md](report-prose.md),
+the prose rules every writing stage reads. Each finding's sentence follows *The finding sentence* in
+synthesis-rules.md.
 
 ---
 
@@ -406,14 +401,14 @@ promotional context.)*
 > These three parallel the gaming examples above, taxon-for-taxon, on **beverage / functional-drink /
 > supplement** fact patterns — so the synthesis has a non-gaming depth target for a drinks customer
 > (the gaming examples are RETAINED; this is enrichment, not replacement). They are **ILLUSTRATIVE
-> composites** (plausible, not real delivered matters) pending staff-lawyer-marked real beverage cases via the
+> composites** (plausible, not real delivered matters) pending reviewing-lawyer-marked real beverage cases via the
 > Judgment loop — reproduce their *reasoning depth and chain*, never their invented owners as precedent.
 > Note the beverage-native instincts they carry: retail marketplaces (Amazon/GNC/iHerb/Walmart) as the
 > common-law battleground (not app stores); FDA structure/function-claim exposure flagged as a *labelling*
 > point distinct from clearance; can/label **trade dress**; crowded-field **dilution** of near-descriptive
 > energy terms; TTB/alcohol (Class 33) adjacency only where a hit sits there.
 
-## Example 4 — descriptive-compound + family-of-marks (AQUA SURGE / AQUA DAWN, energy/functional drinks) — ILLUSTRATIVE composite (pending a staff-lawyer-marked real matter)
+## Example 4 — descriptive-compound + family-of-marks (AQUA SURGE / AQUA DAWN, energy/functional drinks) — ILLUSTRATIVE composite (pending a reviewing-lawyer-marked real matter)
 
 *Global preliminary search for AQUA SURGE and AQUA DAWN as line-extension names for a functional energy + electrolyte drink, with a Class 5 effervescent-tablet companion SKU. Classes 5 (nutritional/dietary supplements, electrolyte tablets), 30 (powdered drink mixes), 32 (non-alcoholic and energy drinks). The client already runs an established "AQUA" house range — AQUA ZERO, AQUA REPLENISH and AQUA NIGHT — across cans (Class 32) and stick-pack powders (Class 30), launched 2023. New names extend the family into a daytime pre-workout (AQUA SURGE) and a morning electrolyte-coffee hybrid (AQUA DAWN).*
 
@@ -461,7 +456,7 @@ A register sweep returned roughly 1,900 live DAWN / DAWN-formative filings inter
 
 ---
 
-## Example 5 — slogan / tagline (POWER YOUR FOCUS, energy-drink line) — ILLUSTRATIVE composite (pending a staff-lawyer-marked real matter)
+## Example 5 — slogan / tagline (POWER YOUR FOCUS, energy-drink line) — ILLUSTRATIVE composite (pending a reviewing-lawyer-marked real matter)
 
 *Global preliminary search for POWER YOUR FOCUS as the tagline for a new functional/energy-drink line — header text on cans and across the launch marketing (web, social, point-of-sale). Classes 5, 30, 32, 35. The client's house brand "Kestrel" already fronts the range, and the tagline sits beneath the KESTREL house mark on every can face.*
 
@@ -496,7 +491,7 @@ A register sweep returned roughly 1,900 live DAWN / DAWN-formative filings inter
 
 ---
 
-## Example 6 — cross-industry collab, multi-mark (a functional-drink brand × a fitness-apparel/sports collaboration; beverages + apparel + retail/events) — ILLUSTRATIVE composite (pending a staff-lawyer-marked real matter)
+## Example 6 — cross-industry collab, multi-mark (a functional-drink brand × a fitness-apparel/sports collaboration; beverages + apparel + retail/events) — ILLUSTRATIVE composite (pending a reviewing-lawyer-marked real matter)
 
 *Preliminary clearance for four names for a co-branded limited-edition collaboration between a functional/energy-drink brand and a fitness-apparel & sports label: a limited-run co-branded can, a co-branded apparel capsule (training tops, caps, gym bags), and a retail/event "drop" activation (pop-up shop + a launch training event). Focused on **Class 32** (energy/functional drinks), with a side-glance at **Class 5** (where a name reads as a supplement claim), **Class 25** (apparel/headgear), **Class 18** (bags), **Class 35** (retail/online retail of the drop) and **Class 41** (organising the launch training event). The drinks are positioned non-alcoholic, so TTB/alcohol-label clearance is not engaged. Names assume **use only** — no filing intended; the lead candidate follows the drink brand's existing "SURGE" sub-line (an electrolyte range debuted 2024), so the collaboration reads as a continuation of that family.*
 

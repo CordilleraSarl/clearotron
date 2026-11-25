@@ -126,6 +126,8 @@ export const VOCABULARY = [
   { token: "registerdigest_drop_ground_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — the closed ground token" },
   { token: "registerdigest_drop_ground_contradicted", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — the ground contradicts this run's own screen verdict" },
   { token: "registerdigest_instructed_incomplete", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — every instructed check carries ask AND answer" },
+  { token: "registerdigest_relied_records_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — an answer's `records` is a list of held record uris" },
+  { token: "registerdigest_relied_record_unknown", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — a record an answer relies on is one this run's band carries" },
   { token: "registerdigest_adjudication_invalid", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — one bare token of ADOPTED/OVERRODE" },
   { token: "registerdigest_adjudication_incomplete", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — an override quotes the reason it contradicts" },
   { token: "registerdigest_nothing_judged", stages: ["register-digest"], site: "driver/register-digest-record.mjs acceptRegisterDigest — a digest that ends no record has not read the band" },
@@ -425,7 +427,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   },
   {
     prefix: "knockout_",
-    site: "driver/findings-model.mjs:2353 validateKnockoutFinding, for `knockout_finding_*` and `knockout_findings_*`",
+    site: "driver/findings-model.mjs:2407 validateKnockoutFinding, for `knockout_finding_*` and `knockout_findings_*`",
     reason: "The knockout lane's parser. knockout-frame and knockout-assess live in driver/stages-knockout.mjs, not in STAGES, so they carry no E1 declaration and are outside this partition. RECORDED AS A GAP: #850 audits both stages, and an E1 declaration for the knockout lane is not in this scaffolding.",
   },
   {
@@ -530,7 +532,7 @@ export const INNER_CODES = Object.freeze([
   // ONE CODE, TWO TOKENS, and the split is by `cause` rather than by code: verify.mjs peels the
   // `axis_invalid` cause into its own family before counting the rest. A ruling naming only
   // `coverage_no_status` would be true of most `no_status` records and false of the ones that matter most.
-  { code: "no_status", mints: ["driver/coverage-form.mjs:998"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
+  { code: "no_status", mints: ["driver/coverage-form.mjs:1002"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
     why: "Two composites, split on the record's `cause`: coverageFormFail() in verify.mjs for cause `axis_invalid`, and the same function for the rest. NOT the `@returns` annotation of findCoverageFormViolations() in coverage-form.mjs — that is the annotation, not the mint." },
   { code: "engine_vocabulary", mints: ["driver/coverage-form.mjs:988"], rollsUpTo: ["coverage_form_engine_vocabulary"],
     why: "#669 — the seat wrote an engine token into the `reason` sentence that reaches the reader's page. Checked on settled rows too, because a row the seat considers finished is exactly the one whose sentence gets printed. Namespaced by coverageFormFail() in verify.mjs; the bare code names a row, never a stage." },

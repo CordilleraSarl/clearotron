@@ -20,7 +20,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { STAGES, paths, composeFollowup } from "../stages.mjs";
-import { parseFindingsJson } from "../findings-model.mjs";
+import { parseFindingsJson, FINDING_FIELDS } from "../findings-model.mjs";
 import { composeDispatchExtra } from "../pipeline.mjs";
 import { plainRegisterFlags, SENTENCE_WORD_LIMIT } from "../plain-register.mjs";
 import { SYNTHESIS_SENTENCES } from "./ruled-sentences-synthesis-rules.mjs";
@@ -42,8 +42,9 @@ test("the writer is given the approved paragraph in place of the old one-sentenc
   assert.ok(msg.split("\n").includes(`- net: ${PARAGRAPH}`), "the net line is the approved paragraph, word for word");
   assert.doesNotMatch(msg, /There is NO length cap/, "the claim that there is no length limit is gone");
   assert.doesNotMatch(msg, /IT IS A CONCLUSION, NOT A CHAIN: ONE sentence/, "the old one-sentence order is gone");
-  assert.match(msg, /"net" \(MANDATORY on every finding a reader sees\),"borderline_between"/,
-    "the field list no longer calls it the one-clause read or points at a heading that does not exist");
+  // The keys' list moved to the tool's schema, built from FINDING_FIELDS: it calls the field the finding sentence.
+  assert.equal(FINDING_FIELDS.net.about, "REQUIRED on every finding except a withdrawn or ruled-out one: the finding sentence.",
+    "the schema no longer calls it the finding sentence, or points at a heading that does not exist");
   assert.doesNotMatch(msg, /ONE-CLAUSE NET|one-clause read/);
 });
 
@@ -103,14 +104,14 @@ test("the four refusals on the finding sentence no longer call it one-clause, as
 // With the framework the review applies and the shared reasoning between them: the house default here, as no profile names one.
 test("the reviewer reads the prose manual whose rules it enforces, on its first dispatch and on every follow-up", () => {
   const first = STAGES["narrative-refutation"].message({ paths: paths("/r"), job: {}, profile: null, framework: null }).split("\n")[0];
-  assert.equal(first, "First, read and follow exactly: skills/narrative-refutation/SKILL.md, skills/clearance-search/risk-framework.md, skills/clearance-search/firm-wide-reasoning.md, skills/clearance-search/report-prose.md.");
+  assert.equal(first, "First, read and follow exactly: skills/narrative-refutation/SKILL.md, skills/clearance-search/risk-framework.md, skills/clearance-search/firm-wide-reasoning.md, skills/clearance-search/report-prose.md, skills/clearance-search/look-at-what-you-have.md.");
   const follow = composeFollowup("narrative-refutation", { profile: null, job: {} }, { followup: "the instruction" }).split("\n")[0];
-  assert.equal(follow, "METHODOLOGY (reference — this is a correction to work that already exists, NOT an instruction to redo the stage): this stage is held to skills/narrative-refutation/SKILL.md, skills/clearance-search/risk-framework.md, skills/clearance-search/firm-wide-reasoning.md, skills/clearance-search/report-prose.md. Re-read whatever the instruction below turns on.");
+  assert.equal(follow, "METHODOLOGY (reference — this is a correction to work that already exists, NOT an instruction to redo the stage): this stage is held to skills/narrative-refutation/SKILL.md, skills/clearance-search/risk-framework.md, skills/clearance-search/firm-wide-reasoning.md, skills/clearance-search/report-prose.md, skills/clearance-search/look-at-what-you-have.md. Re-read whatever the instruction below turns on.");
 });
 
 test("the prose manual names the finding sentence and its two-sentence limit where it lists what a reader sees first", () => {
   const text = manual("clearance-search/report-prose.md");
-  assert.ok(text.includes("**DEFAULT-VISIBLE TEXT CARRIES NO LEGAL OR ENGINE VOCABULARY.** Default-visible means anything a reader\nmeets before opening a fold: the summary and the opening line, the basis for the rating, the points for\nand against and what would soften them, the finding sentence under each name (at most two sentences),\nthe four answers, the reviewer's notes, the caveats, the coverage rows and the lines saying what needs a\ndecision. Ordinary nouns. One idea per sentence. **No visible sentence over 25 words.** The conclusion\nfirst.\n"));
+  assert.ok(text.includes("**DEFAULT-VISIBLE TEXT CARRIES NO LEGAL OR ENGINE VOCABULARY.** Default-visible means anything a reader\nmeets before opening a fold: the summary and the opening line, the basis for the rating, the points for\nand against and what would soften them, the finding sentence under each name (at most two sentences),\nthe four answers, the reviewer's notes, the caveats, the coverage rows and the lines saying what needs a\ndecision. Ordinary nouns. One idea per sentence. The conclusion first.\n"));
   assert.ok(!text.includes("the one sentence under each name"));
 });
 

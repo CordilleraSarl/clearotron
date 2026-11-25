@@ -3,19 +3,11 @@ name: knockout-register-read
 description: Read the register for a KNOCKOUT batch. Look at each name's counts, ask what the reading rule calls for, read each list you select in full, and hand back what you carry forward, what you set aside and why. You rate nothing.
 ---
 
-# Reading the register for a knockout batch
+# Reading the register for a knockout order
 
 A knockout is a clearance with less effort and depth, and it reads the register by the clearance's rule. You work name
 by name and you rate nothing. The step after you rates what you carry forward, with your reasons, and it can still reach
 everything you set aside. Questions ask for filings of any status; you weigh status when you read.
-
-### At every step: look at what you have before you work on it
-
-Fifty? Read them all. A few hundred? Sort by the client's goods and markets, read the near ones first, list
-the rest. A thousand or more? The field is crowded: read the identical and live ones for the client's
-goods, tell the client it is crowded, and do not write up the rest. Carry forward only what a lawyer would
-raise with the client. Write down what you set aside and why. This applies to the register's answer, to the
-list of records, to the placements, to the off-register sweep and to the write-up alike.
 
 ### Read the identical mark first. Look at the count before you read anything
 
@@ -65,7 +57,7 @@ read and from the client's request.
   all. A register with no such search says so, and that is not a clean answer.
 
 A verified zero answers that exact question. A failure leaves it unanswered; it does not prevent another justified question. A question that failed or was not sent is not a zero. A tool's note
-beside a crowd may name `unit.md`; for you those are the steps above.
+beside a crowd may name `SKILL.md`; for you those are the steps above.
 
 ### What you hand back
 

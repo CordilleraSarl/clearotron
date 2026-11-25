@@ -142,9 +142,10 @@ export function systemPrompt({ today = new Date().toISOString().slice(0, 10) } =
     "",
     "THE FOUR SEARCHES. Return the id, or an empty string when the brief does not clearly describe one:",
     ...PRODUCTS.map((p) => `  ${p.id.padEnd(28)} ${p.geography}; up to ${p.maxNames} name${p.maxNames === 1 ? "" : "s"}${p.caseLaw ? "; carries the case-law and opposition reading" : ""}`),
-    "The geography and the search have to agree — that is what the form checks. A brief naming one country",
-    "is a full-country-search; two or more, or a region, is a multi-country-focus-search; everywhere is a",
-    "global-preliminary-search; several names screened quickly is a knockout-search.",
+    // NO SHORTCUT FROM GEOGRAPHY TO PRODUCT (design, 2026-11-24): one name in one country, or worldwide, fits a Knockout as well
+    // as a clearance, and the reader that mapped one country to a full-country search chose for a client who had not.
+    "Use the product the brief clearly requests. Check that its territories and number of names fit. If more",
+    "than one product fits and the brief does not say which one the client wants, leave the product blank.",
     "Choose full-country-search only when the brief asks for ONE country. Its case-law and opposition",
     "reading is not something to add — it is what that search is — so do not reach for it because the brief",
     "mentions a dispute in passing.",

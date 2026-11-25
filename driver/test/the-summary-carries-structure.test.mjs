@@ -18,6 +18,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, mkdtempSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from "../../shared/summary-blocks.mjs";
@@ -51,8 +52,8 @@ test("the manual orders structure on both summaries, and the superseded wording 
   const d = read("driver/stages-knockout.mjs") + read("driver/skills/knockout-assess/SKILL.md");
   assert.match(d, /Structure it so it can be scanned/,
     "the per-mark assessment is no longer ordered as an unstructured paragraph");
-  assert.match(d, /\*\*Structure it:\*\* a short opening line/,
-    "the cross-mark chunkSummary is no longer ordered as an unstructured paragraph");
+  assert.match(d, /open with a line for\s+each name and its band, then one `## <MARK NAME>` sub-header per name/,
+    "the group summary is no longer ordered as an unstructured paragraph");
   // THE PLANT. This is the exact clause that produced the 2,875-character block, and an arm that cannot
   // fail on it is measuring that a sentence exists rather than that the instruction changed.
   assert.doesNotMatch(d, /2–5 measured sentences covering THIS chunk's marks/,
@@ -66,6 +67,15 @@ test("the doctrine file agrees with the dispatch instead of contradicting it", (
   assert.doesNotMatch(s, /`chunkSummary`, narrative, not bullets/,
     "SKILL.md still forbids the bullets the dispatch now asks for");
   assert.match(s, /## The per-mark opening read/, "the assessment field has no doctrine section");
+  // A divided name read Medium over fourteen classes while eleven were Manageable: its opening gave no band, because the
+  // manual ordered the name, the landscape, then the rating. The opening now leads with the band and the goods it covers.
+  const flat = (t) => t.replace(/\s+/g, " ");
+  const opening = flat(s.slice(s.indexOf(ASSESS_SENTENCES.thePerMarkOpeningRead), s.indexOf(ASSESS_SENTENCES.noRecommendationAndNoNextStep)));
+  assert.ok(opening.includes(flat(ASSESS_SENTENCES.theOpeningGivesTheBandAndItsGoods)),
+    "the opening read no longer leads with the band and the goods that carry it");
+  assert.doesNotMatch(opening, /what the name is, what the landscape around it looks like, what drives the rating/,
+    "the old order, which put the rating last, is back");
+  assert.doesNotMatch(flat(s), /the provenance, the long `assessment`/, "the manual again calls the whole assessment folded");
   assert.match(s, /Never `# `/, "the depth rule that stops a summary truncating itself is not stated");
 });
 
@@ -102,7 +112,10 @@ test("no copy of the opening-read instruction the model is handed asks what to d
     const s = read(f);
     assert.doesNotMatch(s, /what (?:a reader should |to )?do with (?:that|it)\b/i, `${f} asks again for what to do with the name`);
     if (f.includes("stages-knockout")) continue;   // the opening read's instruction is the manual's now, and the message points there
-    assert.match(s, /what drives the rating\./, `${f} no longer carries the opening-read instruction this arm reads — find where it moved`);
+    const firstSentence = ASSESS_SENTENCES.theOpeningGivesTheBandAndItsGoods.split(". ")[0] + ".";
+    assert.ok(s.replace(/\s+/g, " ").includes(firstSentence),
+      `${f} no longer carries the opening-read instruction this arm reads — find where it moved`);
+    assert.doesNotMatch(s, /what drives the rating\./, `${f} still orders the opening with the rating last`);
   }
 });
 

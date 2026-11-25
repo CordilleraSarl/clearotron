@@ -13,13 +13,15 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { PHASE2_SENTENCES } from "./ruled-sentences-phase2-execution.mjs";
+import { SKEPTIC_SENTENCES } from "./ruled-sentences-skeptic.mjs";
 
-const phase2 = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-search", "phase2-execution.md"), "utf8")
-  .replace(/\s+/g, " ");
+// The skeptic's own manual, and the phase-two reference it was moved out of.
+const read = (...rel) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", ...rel), "utf8").replace(/\s+/g, " ");
+const skeptic = read("skeptic", "SKILL.md");
+const phase2 = read("clearance-search", "phase2-execution.md");
 
 test("the skeptic's non-trigger is a crowd recorded with its count, and names no budget, allowance or sample", () => {
-  assert.ok(phase2.includes(PHASE2_SENTENCES.gapTheCoverageLedgerRecords));
+  assert.ok(skeptic.includes(SKEPTIC_SENTENCES.gapTheCoverageLedgerRecords));
   for (const gone of ["budget overrun", "ring-fenced jurisdiction yield", "phonetic-fringe sampled"])
-    assert.ok(!phase2.includes(gone), `the skeptic is still told of "${gone}"`);
+    for (const text of [skeptic, phase2]) assert.ok(!text.includes(gone), `the skeptic is still told of "${gone}"`);
 });

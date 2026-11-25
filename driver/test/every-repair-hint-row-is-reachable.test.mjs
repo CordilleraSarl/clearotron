@@ -36,7 +36,6 @@ const EXAMPLES = {
   connotation_search_missing: "invalid_file:x.json:connotation_search_missing",
   named_band_collapsed: "invalid_file:x.json:named_band_collapsed",
   intake_ask_unanswered: "invalid_file:x.json:intake_ask_unanswered",
-  tool_timeout: "tool_timeout:register_execute_plan:incumbent-class",
   named_band_missing: "invalid_file:x.json:named_band_missing",
   named_band_shape: "invalid_file:x.json:named_band_state_invalid",
   plan_audit_missing: "invalid_file:x.json:plan_audit_missing",

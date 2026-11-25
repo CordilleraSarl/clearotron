@@ -136,8 +136,8 @@ VERBATIM; nothing else asks what the name means:
 ## Reasoning posture
 
 - When in doubt about an **off-field / adjacency** decision, INCLUDE rather than exclude — matter-frame should not silently filter a *field*; downstream review (`placement-inquiry`) can deprioritise later with reasoning. **Jurisdiction scope follows its own rule (see *Scope jurisdictions*): search wide, cite narrow.** An instructed-narrow scope is honored; a worldwide or brand-signalled scope widens the SEARCH to the majors + signalled markets; an inferred scope is labelled and disclosed. Do not silently pin a globally-signalling brand to one country (the pinned-scope miss), and do not widen a deliberately-local matter on abstract "the sector is global" reasoning (a wasted sweep).
-- Be concrete about WHY for each item. A senior lawyer reading matter-context.md should be able to disagree with specific items and see exactly where your reasoning broke — not just see a conclusion.
-- If you find yourself rating something as in-lane that a senior lawyer would obviously drop, surface the tension rather than smoothing it.
+- Be concrete about WHY for each item. The reviewing lawyer reading matter-context.md should be able to disagree with specific items and see exactly where your reasoning broke — not just see a conclusion.
+- If you find yourself rating something as in-lane that the reviewing lawyer would obviously drop, surface the tension rather than smoothing it.
 
 ## What NOT to do
 

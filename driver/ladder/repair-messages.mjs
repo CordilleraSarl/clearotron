@@ -8,7 +8,7 @@
 // Moved out of gateway.mjs unchanged, so that the ladder's phases import these instead of having them handed in.
 import { CONNOTATION_FORM_TOKEN_RE, CONNOTATION_NO_RESEMBLANCE_MARK, CONNOTATION_UNMATCHED_MARK } from "../connotation-search.mjs";
 import { REGISTER_AXES } from "../coverage-ledger.mjs";
-import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.mjs";
+import { DISPOSITIONS, FINDINGS_SCHEMA_VERSION, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.mjs";
 import { undispatchableFiringDirectives } from "../frame-diff-model.mjs";
 import { CLEARANCE_FINDINGS_TOKEN_RE, gridLedgerNameFor, repairSiblingName, toolWrittenArtifact } from "./form-sync.mjs";
 import { rel } from "./turn-signals.mjs";
@@ -56,7 +56,7 @@ export function correctiveMessage(baseMessage, attempt, lastFail, expectFile, { 
       (toolWritten
         ? `call \`${toolWritten.tool}\` with ${toolWritten.what} as soon as the values are ready — the driver ` +
           `writes the file from that call, and nothing you write by hand is read — `
-        : `CALL THE WRITE TOOL for the required file(s) as soon as their content is ready, `) +
+        : `write the required file(s) as soon as their content is ready, `) +
       `keep your text reply to a 2-3 line summary, and never restate file contents or your reasoning in the reply. `
     : "";
   if (!/^(invalid_file|missing_file)/.test(inner))
@@ -65,7 +65,7 @@ export function correctiveMessage(baseMessage, attempt, lastFail, expectFile, { 
       `\n\nCORRECTION: ${budget}${requiredFileClause(inner, { names, toolWritten })}`;
   return baseMessage +
     `\n\nCORRECTION: your previous attempt failed file validation (${inner}). ${budget}Re-do the task and make sure ` +
-    `${correctionHint(inner, { gridLedgerName: gridLedgerNameFor(expectFile), supplementalLane, undispatchable: frameDiffUndispatchable(expectFile, inner), heldRecord: heldSynthesisRecord(files), adds })}. ` +
+    `${correctionHint(inner, { gridLedgerName: gridLedgerNameFor(expectFile), supplementalLane, undispatchable: frameDiffUndispatchable(expectFile, inner), toolWritten: toolWritten?.tool ?? null, heldRecord: heldSynthesisRecord(files), adds })}. ` +
     requiredFileClause(inner, { names, toolWritten });
 }
 
@@ -111,8 +111,9 @@ export function frameDiffUndispatchable(expectFile, lastFail = "framediff_direct
 
 // THE WRITER'S RETRY, WHEN THE DRIVER HOLDS ITS RECORD. A save the tool accepted can still fail the stage's own check
 // of the written files, and the driver then holds the record that save left: the retry sends only the change, in the
-// patch the follow-ups above it ask for. A record nobody saved yet, or one whose version is being replaced, still
-// takes the complete save.
+// patch the follow-ups above it ask for. A record nobody saved yet, or one held at another schema version, which must be
+// re-versioned, still takes the complete save. The version is read off the held record, never off the failure's text: a
+// row's own check names the schema in its explanation, and that says nothing about the version the record is held at.
 // The patch a held record takes, in the tool's own words; the retry for most findings checks leaves the narrative as it is.
 // On the correction answering a review's flags, and on its retries, the rows are described in the words ruled for that
 // correction (2026-11-02): it may add the finding for an excluded position its flags name (synthesis-record.mjs).
@@ -122,7 +123,6 @@ export const CORRECTION_ROWS = "the complete finding objects you changed or adde
 export const patchRows = (adds = false) => (adds ? CORRECTION_ROWS : REPLACED_ROWS);
 const heldRecordPatch = (adds = false) => `ONE \`record_synthesis\` PATCH call, sending only the change: \`findings_patch\` carrying ${patchRows(adds)}, and \`findings\` carrying any register you corrected, complete, and never a \`findings[]\` list`;
 const heldRecordRetry = (adds = false) => `Fix exactly that in ${heldRecordPatch(adds)}; leave the narrative prose unchanged`;
-const VERSION_FAILURE_RE = /finding_legacy_scale_forbidden|schema_version/;
 // A USE CHECK'S CORRECTION corrects what depends on the finding too, so it never says to leave the narrative as it is
 // (design, 2026-10-28). A held record takes the patch, in the tool's own words, with the narrative sections it changes;
 // a record not yet accepted is completed by its first call, which the line after every hint names. The caller prints a
@@ -132,12 +132,17 @@ const useCheckCorrection = (heldRecord, adds = false) => heldRecord
   ? `${RESEARCH_CORRECTION} Send it in ${heldRecordPatch(adds)}. In \`narrative\`, send only the sections you changed — the rest are held`
   : RESEARCH_CORRECTION.replace(/\.$/, "");
 /**
- * Does the driver hold an accepted synthesis record for the run these files belong to? Read from either of the files
- * the writer's call renders: the stage's own expected file is the narrative, and a caller may name the findings.
+ * Does the driver hold an accepted synthesis record for the run these files belong to, at the schema version this driver
+ * dictates, so that a retry patches it? Read from either of the files the writer's call renders: the stage's own
+ * expected file is the narrative, and a caller may name the findings. A record held at another version is re-sent whole.
  */
 export const heldSynthesisRecord = (files) => {
   const f = (Array.isArray(files) ? files : [files]).find((x) => typeof x === "string" && [NARRATIVE_FILE, FINDINGS_FILE].includes(basename(x)));
-  return Boolean(f) && existsSync(synthesisCallPaths(dirname(f)).accepted);
+  if (!f) return false;
+  const at = synthesisCallPaths(dirname(f)).accepted;
+  if (!existsSync(at)) return false;
+  try { return JSON.parse(readFileSync(at, "utf8"))?.params?.findings?.schema_version === FINDINGS_SCHEMA_VERSION; }
+  catch { return false; }
 };
 
 // ── A FAILURE'S CODES: THE TOKENS ITS REASON CARRIES ─────────────────────────────────────────────
@@ -235,7 +240,7 @@ export const REPAIR_HINTS = [
       extra = /own inputs under "inputs"/.test(lastFail)
         ? ` SPECIFIC FIX: delete composite/level/dispute_type and record the framework's own inputs under ` +
           `"inputs", then give the band the framework's table yields for them.`
-        : ` SPECIFIC FIX: schema_version 4 carries NO composite/level/dispute_type — delete those keys. ` +
+        : ` SPECIFIC FIX: a finding carries NO composite/level/dispute_type — delete those keys. ` +
           `The rating is "band": the band WORD your reasoning under the framework you read yields (EXACTLY one of ` +
           `its band words, as written in the framework). Your reasoning trail stays in the narrative prose.`;
     } else if (/finding_(inputs_[a-z]+|band_off_table|borderline_off_table):/.test(lastFail)) {
@@ -253,8 +258,8 @@ export const REPAIR_HINTS = [
         `findings are NOT rated and carry NO band. The top level carries "rated_under_framework" = the ` +
         `framework key you were told to rate under, verbatim.`;
     }
-    return `findings.json is a JSON OBJECT { schema_version, rated_under_framework, findings[], coverage[], context_notes[] } ` +
-      `(schema_version 5 additionally allows top-level ask_answers[] = [{ask, answer}], structured mark_assessment fields, ` +
+    return `The findings record is a JSON OBJECT { schema_version, rated_under_framework, findings[], coverage[], context_notes[] } ` +
+      `(it also allows top-level ask_answers[] = [{ask, answer}], structured mark_assessment fields, ` +
       // review — coverage_judgment.rows USED TO BE LISTED HERE as a key the model may emit, and
       // this is the message the seat reads at the moment it is REPAIRING findings.json: the one turn
       // where it is most likely to re-add a field the driver took. The dictation deletes the invitation
@@ -267,7 +272,7 @@ export const REPAIR_HINTS = [
       `you type there is replaced wholesale. ` +
       // — the contract the driver now dictates. Stated here because this hint is what the model
       // reads when a findings_/finding_ token fails: a hint naming the old contract teaches the wrong one.
-      `On schema_version 6 EVERY finding that reaches a reader carries BOTH "legal_position" and "practical_position" — ` +
+      `EVERY finding that reaches a reader carries BOTH "legal_position" and "practical_position" — ` +
       // ── — THE SET IS DERIVED, NOT RETYPED ───────────────────────────────────────────────────
       //
       // This sentence hand-listed all five dispositions, which made it a SECOND AUTHOR of a closed set
@@ -290,14 +295,14 @@ export const REPAIR_HINTS = [
       `"off_field_ground" = "different-field" (the goods do not meet — its own goods_proximity meter must then read ` +
       `"low") or "no-material-risk" (a clear win, carrying no field claim). A mark argued apart on sound, rhythm, ` +
       `orthography or connotation is "distinguished", never off-field. ` +
-      `On schema_version 4+ each finding carries "band" (the framework-in-force's band WORD; rated dispositions only — ` +
+      `Each finding carries "band" (the framework-in-force's band WORD; rated dispositions only — ` +
       `composite/level/dispute_type are RETIRED and forbidden), owner.registrations[] (ONE entry per ` +
       `registration — never overwrite or transpose another's facts; a finding with no fetched record → []), the four ` +
       `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), quadrant {x,y} in [0,1], a ` +
       `typed source, a disposition, and a unique 1-based ordinal. The failed check was: ${tok}.${extra} ` +
       (USE_CHECK_TOKEN_RE.test(lastFail) ? useCheckCorrection(heldRecord, adds)
-        : heldRecord && !VERSION_FAILURE_RE.test(lastFail) ? heldRecordRetry(adds)
-        : `Fix exactly that, re-save the COMPLETE findings.json, and leave the narrative prose unchanged`);
+        : heldRecord ? heldRecordRetry(adds)
+        : `Fix exactly that in one complete \`record_synthesis\` call, and leave the narrative prose unchanged`);
   } },
   { code: "coverage_status_offenum", codes: ["coverage_status_offenum"], hint(lastFail) {
     // D1 — the off-enum PROSE Status cell (distinct from coverage_status_invalid, which is the JSON
@@ -312,7 +317,7 @@ export const REPAIR_HINTS = [
       `applicable or not searched is an honest \`deferred\` with the reason stated. Leave every other row ` +
       `and section unchanged`;
   } },
-  { code: "coverage_ledger_shape", codes: ["coverage_ledger_unparseable", "coverage_ledger_empty", "coverage_axis_invalid", "coverage_axis_missing", "coverage_status_invalid", "coverage_key_unknown", "coverage_mirror_missing"], hint(lastFail, { resaveClause }) {
+  { code: "coverage_ledger_shape", codes: ["coverage_ledger_unparseable", "coverage_ledger_empty", "coverage_axis_invalid", "coverage_axis_missing", "coverage_status_invalid", "coverage_key_unknown", "coverage_mirror_missing"], hint(lastFail, { resaveClause, toolWritten }) {
     // Map #3 — `mirror_missing` is LEGACY and never fires anymore (the JSON is code-derived from the prose,
     // so the prose↔JSON cross-check was retired); the alternation keeps it only to give a sane hint to any
     // in-flight pre-Map-#3 run that might surface it. The structure tokens (unparseable/empty/axis_*/status_*/
@@ -337,7 +342,9 @@ export const REPAIR_HINTS = [
       `table only — never invent an axis to carry it, and never drop a real axis to make room. scope = the ` +
       `verbatim right side; status = EXACTLY one bare token of confirmed-clean / coverage-limited / deferred ` +
       `(a qualifier like "(count-only, saturated)" moves into reason). The failed check was: ${tok}. ` +
-      resaveClause;
+      // THE LEDGER'S ROWS RIDE THEIR OWN TOOL. Where the findings are written from the digest's record call, the
+      // coverage rows still come from `record_coverage`, so the correction names that tool and not the digest's.
+      (toolWritten ? resaveVia(COVERAGE_TOOL) : resaveClause);
   } },
   { code: "use_check_missing", codes: ["use_check_missing"], hint(lastFail) {
     return "every finding the failed check names by number, a finding at a material band whose owner's use is recorded as " +
@@ -551,7 +558,7 @@ export const REPAIR_HINTS = [
   { code: "receipts_short", codes: ["receipts_short"], hint(lastFail) {
     const shorts = (lastFail.match(/receipts_short:([^\s]+)/) || [])[1] || "";
     return `the Negative-results matrix accounts for EVERY (variant × platform) grid cell — these variants are ` +
-      `short (variant:rows/expected): ${shorts}. Re-transcribe their cells from the grid call's stdout JSON ` +
+      `short (variant:rows/expected): ${shorts}. Add their rows from the cells in the grid tool's ledger ` +
       `(every cell needs a receipt row: "No results" / "No similar listings (N candidates reviewed)" / ` +
       `"Similar listing(s) found — see Findings" / "not executed — coverage-limited"); re-run the grid call ` +
       `only if those cells are genuinely absent from its output`;
@@ -711,26 +718,6 @@ export const REPAIR_HINTS = [
       `no section for you to write and nothing you write by hand is read. ` +
       `Answer from the gather stages' actual results (the owning stage was instructed to run each check); an ` +
       `un-run check gets the honest "NOT executed this run — <reason>" answer plus an open coverage[] row — never silence`;
-  } },
-  { code: "tool_timeout", withDetail: ["tool_timeout"], hint(lastFail) {
-    // — THE SAME ABSENT BAND, AND THE OPPOSITE INSTRUCTION.
-    //
-    // `named_band_missing`'s hint below tells the model it never made its call. When the call WAS made
-    // and was killed in flight, that sentence is false, and it is worse than merely useless: it accuses
-    // a model that did exactly what it was told, and it invites the one repair the doctrine forbids —
-    // writing the band by hand to make the complaint go away. R5 on 2026-08-12 took that hint four
-    // times against a deterministic 300s cap.
-    //
-    // So the hint says what is actually true: the call is right, the call is what to repeat, and if it
-    // dies again the honest audit note IS the answer. Nothing here asks for a shorter or cheaper call —
-    // no model gets a time budget, and the cap that killed it is the bridge's, fixed in this issue's
-    // other half.
-    return `your dictated register tool call was MADE and never RETURNED — it was still running when ` +
-      `the bridge killed it, so the band was never written. This is NOT a missing-structure defect and ` +
-      `NOT something you did wrong. Call register_execute_plan ONCE more with the exact ` +
-      `{"plan_path", "axis", "output_path"} from your stage instructions. If it is killed again, do ` +
-      `NOT author band blocks by hand and do NOT narrate coverage you did not get — the driver's own call ` +
-      `log records that the call never returned`;
   } },
   { code: "named_band_missing", codes: ["named_band_missing"], hint(lastFail) {
     // 2026-07-14 (copper-keystone): the unit's .md narrated success but the band file was NEVER WRITTEN —
@@ -1008,16 +995,21 @@ export const REPAIR_HINTS = [
   } },
 ];
 
+/** The repair act on a step whose result a record tool carries: the values go through that tool, and the driver writes. */
+const resaveVia = (tool) => `Fix exactly that. Send the corrected values through \`${tool}\`. The driver writes the result`;
+const COVERAGE_TOOL = "record_coverage";
+
 const REPAIR_HINT_DEFAULT = "the required output file is actually written and contains every required section IN FULL";
 
 export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null, heldRecord = false, adds = false } = {}) {
-  // The repair act, for the hints that name one. Kept to a single sentence and a single decision so a
+  // The repair act, for the hints that name one. Kept to a single decision so a
   // new hint has one thing to append rather than a branch to reproduce.
   const resaveClause = toolWritten
-    ? `Fix exactly that and send the corrected values — the driver re-derives this file and the prose table together from your \`${toolWritten}\` call, so there is nothing here for you to save`
+    ? resaveVia(toolWritten)
     : `Fix exactly that, re-save the COMPLETE JSON file, and leave the prose table unchanged`;
   const row = hintSelection(lastFail)?.row;
-  return row ? row.hint(lastFail, { resaveClause, gridLedgerName, supplementalLane, undispatchable, toolWritten, heldRecord, adds }) : REPAIR_HINT_DEFAULT;
+  if (row) return row.hint(lastFail, { resaveClause, gridLedgerName, supplementalLane, undispatchable, toolWritten, heldRecord, adds });
+  return toolWritten ? `your \`${toolWritten}\` call carries every value this step requires, in full` : REPAIR_HINT_DEFAULT;
 }
 
 /**
@@ -1079,16 +1071,6 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
     const band = join(dirname(files[0]), basename(files[0]).replace(/\.md$/i, "-band.json"));
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo your digest prose (${names} already passed validation) and do NOT author band blocks by hand.\n` +
       `The named band ${band} was NEVER WRITTEN — the stage cannot pass without it. Call register_execute_plan ONCE with the exact {"plan_path", "axis", "output_path"} from your original stage instructions (output_path = ${band}); the TOOL executes the dictated entries and writes the band itself, qid-stamped. Then stop — do not edit the band afterwards.`;
-  }
-  // — THE SAME RESUME, WITHOUT THE ACCUSATION. The branch above tells the model the band was never
-  // written, which on a killed call reads as "you did not do it" to a model that did. Worse, a model
-  // told it failed to produce an artifact has one obvious way to comply, and it is the forbidden one.
-  // Warm for the same reason that one is: the session completed cleanly and the repair is one call.
-  if (/\btool_timeout:/.test(lastFail ?? "") && files.length) {
-    const band = join(dirname(files[0]), basename(files[0]).replace(/\.md$/i, "-band.json"));
-    return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo your digest prose (${names} already passed validation).\n` +
-      `Your register tool call WAS MADE and never returned — it was still running when the bridge killed it, so ${band} was never written. Nothing about your turn was wrong. Call register_execute_plan ONCE more with the exact {"plan_path", "axis", "output_path"} from your original stage instructions (output_path = ${band}), then stop.\n` +
-      `If it is killed again: do NOT author band blocks by hand and do NOT narrate coverage you did not obtain. The driver's own call log records that the call never returned.`;
   }
   // Sibling-JSON defects (WS-A coverage mirror / common-law grid): the FINDINGS file already passed
   // its prose checks — telling the model to rewrite it "in full" on a patch turn risks degrading
@@ -1175,18 +1157,8 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   const outIsToolWritten = files.length ? toolWrittenArtifact(files[0]) : null;
   if (sibling && files.length && !sibIsToolWritten && !outIsToolWritten) {
     const sib = join(dirname(files[0]), sibling);
-    // THE OUT FILE IS NAMED ONLY TO SAY "LEAVE IT ALONE", AND ON A CONVERTED STAGE THAT IS THE WRONG WAY
-    // TO SAY IT. This message carries TWO artifacts — the stage's out, told to stand,
-    // and the sibling, told to be re-saved — so a reader looking for "does any message name a
-    // tool-written artifact beside a write order" cannot pair them, and the guard flags the pair.
-    // Its conservatism is right: pairing an order with a target by proximity would be guessing, and the
-    // defect it exists to catch looks exactly like this from outside. So the converted case says the file
-    // is the driver's WITHOUT naming a path — which is also more accurate than telling a seat not to
-    // rewrite something it holds no writer for.
-    const outIsToolWritten = toolWrittenArtifact(files[0]);
-    const standsClause = outIsToolWritten
-      ? `Do NOT redo the work from scratch. This stage's own output is the driver's — it is rendered from your \`${outIsToolWritten.tool}\` call and you hold no tool that writes it, so there is nothing there for you to rewrite or protect.`
-      : `Do NOT redo the work from scratch, and do NOT rewrite ${names || "the findings file"} (it already passed validation).`;
+    // The stage's own output is not the driver's here (the guard above), so the session is told to leave it as it stands.
+    const standsClause = `Do NOT redo the work from scratch, and do NOT rewrite ${names || "the findings file"} (it already passed validation).`;
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. ${standsClause}\n` +
       `Your saved ${sibling} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), heldRecord: heldSynthesisRecord(files), adds })}.\n` +
       `Re-save the COMPLETE corrected JSON at ${sib}. Do not stop until it exists and is valid.`;
@@ -1242,7 +1214,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
         // anything.
         : `What you sent did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), toolWritten: toolWritten.tool, heldRecord: heldSynthesisRecord(files), adds })}.\n`) +
       `Call \`${toolWritten.tool}\` with the values from the work already in your context — never by writing or editing any file. ` +
-      `Do not stop until the tool accepts the call.`;
+      `Do not stop until the tool accepts the call or reports a product fault.`;
   }
   // Write-mode branch (E2E R2 2026-07-30/31): the FAILURE TOKEN is the validator's own existence verdict,
   // measured at the moment that matters — branch on it rather than re-deriving with an existsSync here

@@ -105,9 +105,9 @@ test("with no AI chosen and Claude's program on the machine, doctor ticks no bil
       assert.match(section, LEAVE_DEMO_NO_AI, `${what}'s way out of demo is not the one for no AI chosen:\n${section}`);
       assert.doesNotMatch(section, /Anthropic's CLI/, `${what}'s way out of demo named the default AI's program:\n${section}`);
     }
-    // Asked to probe, it says why it did not; not asked, it says nothing of a probe.
+    // It proves the engine every time, so with no AI chosen it says why it did not, asked or not.
     assert.match(engineSection(probed), NOT_PROBED_NO_AI, engineSection(probed));
-    assert.doesNotMatch(engineSection(plain), /not probed/, engineSection(plain));
+    assert.match(engineSection(plain), NOT_PROBED_NO_AI, engineSection(plain));
     // THE WITNESS: the program itself was never started, not even to say its version.
     assert.deepEqual(m.started(), [], "doctor started the program of an AI nobody chose");
     // Nothing was spent, so the closing line still says nothing was written.

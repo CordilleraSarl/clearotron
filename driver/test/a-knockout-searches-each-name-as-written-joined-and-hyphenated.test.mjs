@@ -40,7 +40,7 @@ const ROW = (name, over = {}) => ({ name, classes: [30], classesPlain: "confecti
   places: ["web", "shop.example.test"], ...over });
 const CALL = (over = {}) => ({ scope_note: NOTE,
   batch: { productContext: "An invented confectionery range.", inUseAs: "a sweet or a snack line", useKind: "sweet flavour",
-    executionOrder: ["Quillmere Vane", "SORRELVANE"] },
+    executionOrder: ["Quillmere Vane", "SORRELVANE"], families: [["Quillmere Vane"], ["SORRELVANE"]] },
   marks: [ROW("Quillmere Vane"), ROW("SORRELVANE", { useKind: "seasonal gift box" })], ...over });
 
 test("the plan carries the built spellings, the order's phrase, and a name's own use only where it was given", () => {
@@ -64,7 +64,7 @@ test("spellings a call sends are replaced, so two runs of one order ask the same
 });
 
 test("a call with no use phrase is asked for the order's, never for spellings, and a null use is no use", () => {
-  const noPhrase = { productContext: "An invented confectionery range.", inUseAs: "a sweet" };
+  const noPhrase = { productContext: "An invented confectionery range.", inUseAs: "a sweet", families: [["Quillmere Vane"], ["SORRELVANE"]] };
   const r = acceptKnockoutFrame(CALL({ batch: noPhrase }));
   assert.equal(r.ok, false);
   assert.match(r.reason, /^knockoutframe_use_kind: batch\.useKind is required/);
@@ -93,18 +93,20 @@ test("the use phrase is a run of the request's own words, checked by plain conta
 test("the use phrase has one definition: the manual, the tool's field note and the refusal say it in the same words", () => {
   const manual = readFileSync(joinPath(dirname(fileURLToPath(import.meta.url)), "..", "skills", "knockout-frame", "SKILL.md"), "utf8");
   assert.ok(manual.includes(USE_PHRASE), "the manual's task 2c is not the one definition");
-  const refusal = acceptKnockoutFrame(CALL({ batch: { productContext: "An invented range.", inUseAs: "a sweet" } })).reason;
+  const refusal = acceptKnockoutFrame(CALL({ batch: { productContext: "An invented range.", inUseAs: "a sweet", families: [["Quillmere Vane"], ["SORRELVANE"]] } })).reason;
   assert.ok(refusal.includes(USE_PHRASE), "the refusal does not say the definition");
 });
 
 test("a held answer framed before this keeps its own spellings and uses, so a replayed run frames as it ran", () => {
   const held = { scope_note: NOTE, batch: { productContext: "An invented confectionery range.", inUseAs: "a sweet" },
     marks: [ROW("Quillmere Vane", { useKind: "sweet", spellings: ["Quillmere Vane", "QuillmereVane"] })] };
-  const r = acceptKnockoutFrame(held);
+  // Saved is the replay's to say, never the payload's (design, 2026-11-24).
+  const saved = (p) => acceptKnockoutFrame(p, { saved: true });
+  const r = saved(held);
   assert.equal(r.ok, true, r.reason);
   assert.deepEqual(r.model.marks[0].spellings, ["Quillmere Vane", "QuillmereVane"]);
   assert.equal(useOf(r.model.marks[0], r.model.batch), "sweet");
-  assert.match(acceptKnockoutFrame({ ...held, marks: [{ ...held.marks[0], spellings: ["Quillmere Vane"] }] }).reason ?? "",
+  assert.match(saved({ ...held, marks: [{ ...held.marks[0], spellings: ["Quillmere Vane"] }] }).reason ?? "",
     /spellings is required/, "and is checked under the rule it was written to");
 });
 

@@ -30,7 +30,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, posix } from "node:path";
 
 import { STAGES, paths, resolveAlsoReads, resolveSkillReads } from "../stages.mjs";
-import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
+import { KO_STAGES, koPaths, readerProviderDoc } from "../stages-knockout.mjs";
 import { TRIAGE_FRAMEWORK } from "../pipeline-knockout.mjs";
 import { DEFAULT_FRAMEWORK, frameworkFor } from "../framework.mjs";
 import { PROVIDERS } from "../driver.config.mjs";
@@ -103,8 +103,8 @@ export function stageReads(root = ROOT) {
   }
   for (const [provider, meta] of Object.entries(PROVIDERS)) {
     if (!meta.skillDoc) continue;
-    rows.push({ stage: "register-unit", context: `provider ${provider}`, files: [meta.skillDoc] });
-    rows.push({ stage: "knockout-register-read", context: `provider ${provider}`, files: [meta.skillDoc] });
+    rows.push({ stage: "register-unit", context: `provider ${provider}`, files: [meta.skillDoc, meta.questionsDoc].filter(Boolean) });
+    rows.push({ stage: "knockout-register-read", context: `provider ${provider}`, files: [readerProviderDoc(meta)] });
   }
   // Read from disk and handed over inline by the memo's own dispatch (whatif-memo-run.mjs), so no message names it.
   rows.push({ stage: "whatif-memo", context: "post-delivery", files: ["skills/whatif-memo/SKILL.md"] });

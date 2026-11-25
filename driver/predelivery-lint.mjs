@@ -1294,7 +1294,7 @@ export function permissionProseChecks({ text, surface = "report", idSuffix = "",
   }
   // Whole-text pass: splitCards drops everything outside a `## ` card. On report.md that shell is the
   // front-matter, `# Actions` and `# Methodology` — all authored by report-overview, so the shell redo can
-  // genuinely fix what this names. (The coverage LEDGER is not here: delivery-contract.md:147 forbids
+  // genuinely fix what this names. (The coverage LEDGER is not here: delivery-contract.md ("does not author a `# Coverage`") forbids
   // report-overview from authoring a `# Coverage` section, and the panel renders from the typed coverage[]
   // array — so ledger prose reaches this check on the findings surface, which is structural with no redo by
   // design.) Deduped by POSITION, never by phrase: a card and the shell routinely carry the same anchor, and
@@ -1909,6 +1909,30 @@ export function actionCitationChecks({ actionsRegister, findings }) {
   return [c];
 }
 
+// An open coverage row citing a finding that is gone. A row written while its finding stood ("the position in finding
+// 12 remains unresolved") outlives the review that withdraws the finding, and "Left open" prints it with the owner in
+// its title, though no card carries that number: measured on a delivered report, 2026-11-25, sixteen such rows. The
+// row is the writer's record, so it goes to the writer's repair as the four answers' citations do, read with the word
+// "finding" before the number, as a writer's ground is read, so that a class written after a hash sign is never one.
+// THE WRITER'S NUMBERING. The rows are the writer's prose, which the delivery seam's fold copies and does not renumber,
+// so they are judged against the record the writer wrote (`narrativeFindings` while a fold is in force), and the
+// numbers they carry reach the writer's repair as written.
+// ABSENT ⇒ SILENT: a record with no coverage register emits nothing, and the replay harness passes none.
+export function coverageCitationChecks({ coverageRegister, findings }) {
+  if (!Array.isArray(coverageRegister)) return [];
+  const live = new Set((findings ?? []).filter((f) => f && f.disposition !== "withdrawn").map((f) => Number(f.ordinal)));
+  const withdrawn = new Set((findings ?? []).filter((f) => f && f.disposition === "withdrawn").map((f) => Number(f.ordinal)));
+  const cites = [];
+  coverageRegister.forEach((row, i) => {
+    for (const ord of citedFindingNumbers(`${row?.area ?? ""}\n${row?.note ?? ""}`, { bare: false }))
+      if (!live.has(ord)) cites.push({ row: i, area: String(row?.area ?? ""), ordinal: ord, withdrawn: withdrawn.has(ord) });
+  });
+  const c = check("coverage-citations", "reference", "report", cites.length === 0, cites.length
+    ? `open coverage row(s) cite finding(s) that are not there: ${cites.map((x) => `"${x.area}" cites #${x.ordinal}, which ${x.withdrawn ? "the review WITHDREW" : "this run has no finding for"}`).join("; ")}` : "");
+  if (cites.length) Object.assign(c, { register: "coverage", cites, writersNumbering: true });
+  return [c];
+}
+
 export function fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }) {
   if (!fourAnswers || typeof fourAnswers !== "object") return [];
   const out = [];
@@ -2503,7 +2527,7 @@ export function cardBudgetChecks({ cardFolds }) {
     `assembly folded ${folds.length} surface(s) to the level budgets (moved, never deleted): ${folds.map((f) => `${f.surface} → +${f.movedSentences} sentence(s)/${f.movedWords} word(s) into depth`).join("; ")}`)];
 }
 
-export function runLint({ followUpKinds = null, depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, emailConditions = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null, goodsEvidence = null, goodsHanded = null }) {
+export function runLint({ followUpKinds = null, depth, commonLawGrid, matterContext, clientPartyName, reportMd, overviewMd = null, emailConditions = null, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, coverageRegister = null, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null, goodsEvidence = null, goodsHanded = null }) {
   // WS-B: the run's profile platforms join the vocabulary for this run. Profiles carry store
   // DOMAINS by contract, so derive the name tokens a report would actually print: the raw norm
   // ("thomasnetcom"), the separator-spaced phrase ("thomasnet com" / "made in china com"), and the
@@ -2652,6 +2676,7 @@ export function runLint({ followUpKinds = null, depth, commonLawGrid, matterCont
   // meant a down-level file switched off the check that reports a down-level file.
   checks.push(...schemaVersionChecks({ schemaVersion: findingsSchemaVersion }));   // — the declared contract version
   checks.push(...actionCitationChecks({ actionsRegister, findings }));   // a forward step resting on a finding that is gone: the writer's repair
+  checks.push(...coverageCitationChecks({ coverageRegister, findings: narrativeFindings ?? findings }));   // an open coverage row citing a finding that is gone: the writer's repair, in its numbering
   checks.push(...fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }));   // P5 review — the four answers must not contradict the verdict or the findings (flag-only, absent ⇒ silent)
   checks.push(...placementsChecks({ placements }));   // B2 — an empty structured mirror is a flag a human reads, never an unrepairable validator kill
   checks.push(...recordCarryChecks({ recordCarry }));   // — a retrieved record dropped with no recorded ground, and a drop that is really an incomplete stage
@@ -2689,10 +2714,13 @@ export function runLint({ followUpKinds = null, depth, commonLawGrid, matterCont
 //
 // Derivation. The knockout lane's ONE model-authored artifact is knockout-findings.json. It has no
 // register RECORD store (it counts, it does not retrieve), no actions register, no verdict sidecar, no
-// client summary, no card assembly, no reviewer correction cycle, no intake-ask register. So the
-// applicable checks are exactly those whose whole input is model-authored TEXT:
+// client summary, no card assembly, no intake-ask register. So the applicable checks are those whose
+// whole input is model-authored TEXT:
 //   permission-prose · scope-numbers-in-prose · counting-consistency · wipo-designation-language ·
 //   prescription-prose
+// and one more since every Knockout is reviewed and corrected once: correction-consistency, which the
+// publish computes from the run's own round (knockout-correction-check.mjs) and hands in, because the
+// round's records are read off the run directory and this module reads none.
 // Everything else is ABSENT BY DESIGN and says so in the receipt (KNOCKOUT_ABSENT_BY_DESIGN below) —
 // never an entry that silently passes, which is the failure mode this tranche exists to kill. Measured
 // against two archived knockout runs, from 2026-07-28 and 2026-07-29: zero flags on the
@@ -2913,7 +2941,6 @@ export const KNOCKOUT_ABSENT_BY_DESIGN = [
   ["senior-rights-present", "registry", "no senior-right receipt — the closure that owes it is clearance machinery"],
   ["senior-right-coverage", "registry", "same"],
   ["counting-vs-findings", "counting", "reads the clearance finding set's owner + registration URIs; knockout findings carry neither"],
-  ["correction-consistency", "corrections", "no reviewer correction cycle on this lane — nothing is corrected or withdrawn after rating"],
   ["client-tier-match", "client", "no client summary (one report), so there is no second tier word to disagree"],
   ["overall-tier", "client", "the overall band is DERIVED in code (worstBand over the rated marks) and cannot drift from the finding set"],
   ["actions-reachability", "actions", "no actions register and no ask bucket"],
@@ -2936,7 +2963,7 @@ export const KNOCKOUT_ABSENT_BY_DESIGN = [
  * Returns { checks, failures, notApplicable } in runLint's shape. FLAG-ONLY by construction: it
  * decides nothing, throws nothing, and the caller writes its receipt best-effort.
  */
-export function runKnockoutLint({ findings }) {
+export function runKnockoutLint({ findings, correction = null }) {
   const { report, working } = knockoutSurfaces(findings);
   const checks = [];
   // The client-facing page. permission-prose here is NOT a re-run of the hard gate: verify-knockout's
@@ -2969,8 +2996,13 @@ export function runKnockoutLint({ findings }) {
   // the plain-language reviewer, over the fields a reader meets before opening a
   // fold. Internal by surface, so a hit reaches whoever is fixing the run and never a delivery surface.
   checks.push(...plainLanguageChecks({ findings }));
+  // A corrected Knockout delivers its correction (knockout-correction-check.mjs). The caller reads the round; a caller that
+  // hands none, and a run that holds no review, list the check with the reason rather than pass it.
+  checks.push(...(correction?.checks ?? []));
+  const unchecked = !correction ? { id: "correction-consistency", family: "corrections", reason: "the run's review round was not handed to this check" }
+    : correction.notApplicable;
   const failures = checks.filter((c) => !c.pass);
-  return { checks, failures, notApplicable: KNOCKOUT_ABSENT_BY_DESIGN };
+  return { checks, failures, notApplicable: unchecked ? [...KNOCKOUT_ABSENT_BY_DESIGN, unchecked] : KNOCKOUT_ABSENT_BY_DESIGN };
 }
 
 // The raw check detail, INTERNAL side only: the _driver sink, the run log, the staff diagnosis lane.

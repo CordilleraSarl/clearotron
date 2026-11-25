@@ -23,13 +23,20 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { whatIfPlan } from "../lib/whatif.mjs";
 import { accountWhatIfPlan } from "../lib/audit-view.mjs";
+
+// A delivered clearance holding the findings a memo reads: the planner offers a memo only where the worker can read one.
+const runDir = mkdtempSync(join(tmpdir(), "memo-door-"));
+writeFileSync(join(runDir, "findings.json"), "{}");
 
 // A delivered run as the resolver hands one over — archived, finished, nothing live about it.
 const delivered = (over = {}) => ({
   runId: "r-venqori", location: "archive", state: "delivered",
-  runDir: "/nonexistent/archive/r-venqori", P: {}, status: {}, ...over,
+  runDir, P: {}, status: {}, ...over,
 });
 
 const ASSUMPTION = "treat the Korean application as expired";

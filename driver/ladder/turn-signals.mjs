@@ -237,21 +237,11 @@ export function rel(p) {
   const m = /[\\/](clearance-search|prelim-search)[\\/]/.exec(p);   // either spelling of the studio segment, behind either separator
   return m ? p.slice(m.index + 1) : p;
 }
-const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:.*?:(use_check_missing|own_rights_missing|coverage_ledger_unparseable|coverage_ledger_empty|coverage_axis_invalid|coverage_axis_missing|coverage_status_(invalid|offenum)|coverage_key_unknown|coverage_(no_status|form_damaged|form_axis_invalid|form_engine_vocabulary)|grid_join_missing|grid_ledger_unparseable|platforms_missing|${CONNOTATION_FORM_TOKEN_SRC}|findings?_[a-z_]+|blindframe_[a-z_]+|framediff_[a-z_]+|named_band_(state_invalid|block_invalid|unparseable|missing)|tool_timeout:[a-z_]+:[a-z0-9-]+|plan_audit_missing|intake_ask_unanswered))`);
+const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:.*?:(use_check_missing|own_rights_missing|coverage_ledger_unparseable|coverage_ledger_empty|coverage_axis_invalid|coverage_axis_missing|coverage_status_(invalid|offenum)|coverage_key_unknown|coverage_(no_status|form_damaged|form_axis_invalid|form_engine_vocabulary)|grid_join_missing|grid_ledger_unparseable|platforms_missing|${CONNOTATION_FORM_TOKEN_SRC}|findings?_[a-z_]+|blindframe_[a-z_]+|framediff_[a-z_]+|named_band_(state_invalid|block_invalid|unparseable|missing)|plan_audit_missing|intake_ask_unanswered))`);
 
-// — `tool_timeout` IS ON THAT LIST TO KEEP ROUTING WHERE IT ALREADY IS, not to add a lane.
-//
-// This failure reaches the ladder today as `named_band_missing`, which is warm-eligible. Renaming the
-// token without adding it here would quietly move the class from warm to COLD — a full stage re-run
-// instead of a resume, on every timeout, as a side effect of an attribution fix. A rename must not
-// change what a failure costs.
-//
-// The issue notes that the argument applies: "the retry ladder cannot help a deterministic tool
-// timeout — this failure class is an argument for the same disclosed-deferral treatment when the ladder
-// is provably futile." That is a real question and it is NOT settled here. Two reasons to leave it:
-// this issue's OTHER half raised the bridge cap, so a retry is no longer provably futile — R5's four
-// attempts all died at a 300s cap that no longer applies; and turning a failure class into a disclosed
-// deferral is a doctrine change, which is the to make and not an attribution fix's.
+// — `tool_timeout` IS NOT ON THAT LIST. A register call that was sent and never returned is a product fault (ruled
+// 2026-11-24): the ladder ends on it (ladder/next-rung.mjs) rather than resuming the unit to make the call again, and
+// the run delivers that unit's slices open, as having timed out (steps/register-sweep.mjs).
 
 // — a rejected draft may be CARRIED across a recovery park only when its repair is a PATCH, not a
 // re-search. That is exactly the judgement WARM_ELIGIBLE_RE already encodes: the tokens meaning "the

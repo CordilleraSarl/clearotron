@@ -19,7 +19,7 @@ import { statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { WRITE_DISCIPLINE, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool, stallMs, engineMaxBufferChars, startGovernedChild, governWatchdog, readGovernedStreams } from "./common.mjs";   // the child, its watchdog, its reader, and the stall and buffer limits both engines share
+import { claudeTurnInstructions, FILE_OUTPUT, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool, stallMs, engineMaxBufferChars, startGovernedChild, governWatchdog, readGovernedStreams } from "./common.mjs";   // the child, its watchdog, its reader, and the stall and buffer limits both engines share
 import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { clearEngineChild } from "./child-record.mjs";   // the shared child (startGovernedChild) writes the record; this clears it at settle
@@ -195,7 +195,7 @@ export function claudeModel(model) {
 // ── thinking tier → `claude --effort` ────────────────────────────────────────────────────────────────
 // CANONICAL TABLE. `engine/openai-agent.mjs` carries the byte-equal twin for the tiers both vocabularies
 // can express, and `engine.anthropic.test.mjs` pins the two together — the same duplicate-plus-drift-test
-// discipline WRITE_DISCIPLINE already uses here (this module deliberately imports nothing but node
+// discipline the output rules once used here (this module deliberately imports nothing but node
 // built-ins, so a shared leaf import is not on the table).
 //
 // LIVE VOCABULARY (claude 2.1.193 `--help`, checked 2026-08-03): `--effort` takes
@@ -226,8 +226,8 @@ export function mapUsage(u) {
   return { input, output, cacheRead, cacheWrite, total: input + output + cacheRead + cacheWrite };
 }
 
-// The Write-tool discipline and the skill-reference rewrite are shared with the Codex adapter: engine/common.mjs.
-export { WRITE_DISCIPLINE, absolutizeSkillRefs };
+// The output rules and the skill-reference rewrite are shared with the Codex adapter: engine/common.mjs.
+export { claudeTurnInstructions, absolutizeSkillRefs };
 
 // Returns { args, input }: `args` is the flag list with `-p` as a BARE flag (no positional prompt), and
 // `input` is the absolutized prompt to write to the child's STDIN. The prompt is NOT an argv element:
@@ -338,7 +338,7 @@ export const OWN_SEARCH_TOOLS = Object.freeze(["WebSearch"]);
 /** The program's tools that write a file. A result that comes back an error is a write that failed. */
 const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
-export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, builtinTools = null, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
+export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
   const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
   const m = claudeModel(model); if (m) args.push("--model", m);
@@ -349,12 +349,9 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   // Stages WRITE their output file; acceptEdits auto-approves Write/Edit in non-interactive -p (Read is
   // always allowed). Gather tools (E3) ride --allowedTools so they never prompt either.
   args.push("--permission-mode", "acceptEdits");
-  // OUTPUT DISCIPLINE (engine-localized; the shared stage prompts say "write your output to <path>" which
-  // a workspace agent executes via its file tool, but claude -p tends to COMPOSE the output as text and
-  // report "done" without ever calling Write — the matter-frame missing_file failures, 2026-06-16). Force
-  // the Write-tool behaviour at the system-prompt level so EVERY stage's file actually lands, without
-  // touching the shared stage prompts. Unconditional — no disable knob.
-  args.push("--append-system-prompt", WRITE_DISCIPLINE);
+  // THE TURN'S OUTPUT RULE, by how it returns its result (common.mjs): its record tool, a file, or its reply, then the
+  // evidence rule. On every call, the resumed one included: a resumed turn returns its result the same way.
+  args.push("--append-system-prompt", claudeTurnInstructions(output));
   if (resumeRef) args.push("--resume", resumeRef);          // warm-resume → reuses the prompt cache
   if (mcpConfig) { args.push("--mcp-config", mcpConfig, "--strict-mcp-config"); }
   if (allowedTools) args.push("--allowedTools", allowedTools);
@@ -498,9 +495,9 @@ export const anthropicAgentEngine = {
   writeBoundary: "enforced",
   // The id a turn's rows record as asked for: the tier through Claude's catalog, `opus` → `anthropic/claude-opus`.
   resolveModelId(model) { return resolveModel(model); },
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
-    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, builtinTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
+    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);
