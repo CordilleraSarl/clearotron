@@ -415,6 +415,6 @@ the merged artifact):
 
 `rating` must be a band from the frozen ladder, and `ratingQualifier` is `null` or `"low"` — nothing
 else. A clean mark keeps `findings: []` with the negatives recording what was checked. A degraded mark
-(no research payload on disk) MUST carry `degraded: { "reason": "<token>" }` + the doctrine's purple
+(no research payload on disk) MUST carry `degraded: true` + the doctrine's purple
 "Manual verification recommended" note — and a mark WITH a payload must never claim degraded. The
 validator joins both directions against the disk; the model's echo is never the truth.

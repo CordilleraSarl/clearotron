@@ -8181,6 +8181,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-tools-take-what-their-validator-takes.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-workbook-s-long-text-columns-are-at-least-40-wide.test.mjs": {
           "tests": 2,
           "asserts": 7,

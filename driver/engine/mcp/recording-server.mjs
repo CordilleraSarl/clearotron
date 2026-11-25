@@ -39,7 +39,7 @@ import { serve } from "./stdio-server.mjs";
 import { recordSynthesis } from "../../synthesis-record.mjs";   // the writer
 import { correctionPositionsFrom } from "./correction-positions.mjs";   // the positions a correction's dispatch hands its save
 import { recordRegisterDigest, DIGEST_DROP_REASON_TOKENS, VERIFY_VALUES, ADJUDICATION_DECISIONS } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
-import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES, KNOCKOUT_FINDING_KEYS } from "../../findings-model.mjs";
+import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES, KNOCKOUT_FINDING_KEYS, KNOCKOUT_FINDING_TYPES } from "../../findings-model.mjs";
 import { recordBlindFrame } from "../../blind-frame-record.mjs";
 import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
 import { recordSkeptic } from "../../skeptic-record.mjs";
@@ -65,7 +65,7 @@ import { REGISTER_AXES } from "../../coverage-ledger.mjs";
 import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
-import { USE_PHRASE, FAMILIES_RULE, FRAME_REPAIR_RULE } from "../../verify-knockout.mjs";   // the use phrase, the families and the repair rule, each defined once
+import { USE_PHRASE, FAMILIES_RULE, FRAME_REPAIR_RULE, KNOCKOUT_RATING_QUALIFIERS } from "../../verify-knockout.mjs";   // the use phrase, the families and the repair rule, each defined once
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
 import { recordKnockoutCorrection } from "../../knockout-correction-record.mjs";
 import { recordKnockoutRegisterRead } from "../../knockout-register-record.mjs";
@@ -292,7 +292,7 @@ const KNOCKOUT_ASSESS_FINDING_FIELDS = {
   // then, refused otherwise (findings-model.mjs validateKnockoutFinding).
   inputs: { type: "object", additionalProperties: { type: "string" }, description: "The framework's own inputs for this finding, keyed by its labels, each one of the values it lists." },
   net: { type: "string", description: "One conclusion sentence." },
-  type: { type: "string" },
+  type: { type: "string", enum: [...KNOCKOUT_FINDING_TYPES] },
   evidence: { type: "array", items: { type: "string" } },
   basis: { type: "string", description: "The ground THIS FINDING's band rests on — not the mark's `basis`, which is a different field one level up." },
   // The ninth key. This schema once said "all eight, no others" and forbade it while the recorder enforced
@@ -309,11 +309,13 @@ const KNOCKOUT_CORRECTION_FINDING_FIELDS = {
   band: { type: "string", description: "A word from the framework's ladder." },
   inputs: { type: "object", description: "The framework's own inputs for this finding, where it states a method." },
   net: { type: "string", description: "One conclusion sentence." },
-  type: { type: "string", description: "Famous Brand, Active Business, Cultural Reference, Domain, Descriptive Use, Negative Association or Competitor Intelligence." },
+  type: { type: "string", enum: [...KNOCKOUT_FINDING_TYPES], description: "Famous Brand, Active Business, Cultural Reference, Domain, Descriptive Use, Negative Association or Competitor Intelligence." },
   evidence: { type: "array", items: { type: "string" }, description: "URLs held for this name." },
   basis: { type: "string", description: "The ground the band rests on." },
   weighedFilings: { type: "array", items: { type: "string" }, description: "The register record ids this finding's reasoning used." },
 };
+// The qualifier values both Knockout operations take, from the list the validator closes on.
+const QUALIFIER_VALUES = `null or ${KNOCKOUT_RATING_QUALIFIERS.map((q) => `"${q}"`).join(" or ")}`;
 const knockoutFindingProperties = (fields) =>
   Object.fromEntries(KNOCKOUT_FINDING_KEYS.filter((k) => k in fields).map((k) => [k, fields[k]]));
 
@@ -1281,7 +1283,7 @@ serve({
               ref: { type: ["string", "null"] },
               name: { type: "string", description: "The mark, VERBATIM as the plan names it — the join key for everything downstream." },
               rating: { type: "string", description: "The band word from the framework in force, verbatim. Not a numeral, not a letter code." },
-              ratingQualifier: { type: ["string", "null"], description: "A closed sub-gradation that can only CAP a band; anything else belongs in the band word itself." },
+              ratingQualifier: { type: ["string", "null"], description: `A closed sub-gradation that can only CAP a band; anything else belongs in the band word itself. It is ${QUALIFIER_VALUES}.` },
               degraded: { type: ["boolean", "null"], description: "True only when the driver holds NO research payload for this mark. A degraded mark can never read as silently clean." },
               bullets: { type: "array", minItems: 1, maxItems: 5, items: { type: "string" }, description: "1–5 evidence bullets." },
               basis: { type: "string", description: "ONE sentence: why this band, for this name, in these classes. The report renders it as the lead line — a paragraph in bullets cannot fill it." },
@@ -1349,7 +1351,7 @@ serve({
               classesDriving: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 }, description: "Mandatory at a material band — class-specific ratings." },
               classGroups: { type: "array", minItems: 2, description: "OPTIONAL: when separating the requested goods changes the advice under the frozen framework. Every class searched belongs to one group, and rating is the highest group's band.", items: { type: "object", required: ["band", "classes"], properties: {
                 band: { type: "string", description: "The band for this group, in the framework's words." },
-                ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+                ratingQualifier: { type: ["string", "null"], description: `${QUALIFIER_VALUES}.` },
                 classes: { type: "array", minItems: 1, items: { type: "integer", minimum: 1, maximum: 45 } },
               } } },
               beltAndBraces: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
@@ -1440,11 +1442,11 @@ serve({
             properties: {
               name: { type: "string", description: "The name, verbatim." },
               rating: { type: "string", description: "The band, in the framework's words." },
-              ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+              ratingQualifier: { type: ["string", "null"], description: `${QUALIFIER_VALUES}.` },
               classesDriving: { type: "array", items: { type: "integer" }, description: "The classes behind the band." },
               classGroups: { type: "array", minItems: 2, description: "Where this repair changes the conclusion by class group: every row as it now reads.", items: { type: "object", required: ["band", "classes"], properties: {
                 band: { type: "string", description: "The band for this group, in the framework's words." },
-                ratingQualifier: { type: ["string", "null"], description: "null or \"low\"." },
+                ratingQualifier: { type: ["string", "null"], description: `${QUALIFIER_VALUES}.` },
                 classes: { type: "array", minItems: 1, items: { type: "integer", minimum: 1, maximum: 45 } },
               } } },
               basis: { type: "string", description: "One sentence: why this band, for this name, in these classes." },
