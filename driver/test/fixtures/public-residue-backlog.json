@@ -11,7 +11,7 @@
     "machine-trailer",
     "in-a-string"
   ],
-  "total": 806,
+  "total": 805,
   "files": {
     "driver/contract-dictation-registry.mjs": [
       0,
@@ -195,7 +195,7 @@
     ],
     "driver/stages.mjs": [
       0,
-      1,
+      0,
       0,
       0,
       0,
