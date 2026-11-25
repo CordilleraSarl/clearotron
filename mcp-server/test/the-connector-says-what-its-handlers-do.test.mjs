@@ -86,6 +86,19 @@ test("a report link lists a clearance's cards by group, and is sent to the brief
   assert.match(operator.note, /Call list_findings without `group`/, "an operator lost the pointer to the call it may make");
 });
 
+// THE BRIEFING SAYS WHAT THE TOOL SAYS (design, 2026-11-24): the served pack sent every report link to the cards and
+// walked every finding through them, so a Knockout's assistant was told to make a call its link answers with a pointer.
+test("a report link's served briefing sends a clearance to its cards and a Knockout to the brief and its report", async () => {
+  const { instructionsFor } = await import("../lib/instructions.mjs");
+  const served = instructionsFor({ kind: "user" }).split("\n").join(" ").replace(/ +/g, " ");
+  for (const line of [
+    "On a clearance report, use `list_findings` for the individual cards and pass the requested group. On a Knockout, use `brief` and the delivered report for the name's findings.",
+    "Start with the brief. For a clearance, use the relevant finding card. For a Knockout, open the name's report. Identify the cited source and what it supports where the material you can read shows it.",
+  ]) assert.ok(served.includes(line), `the served briefing lacks design's line "${line.slice(0, 48)}…"`);
+  assert.doesNotMatch(served, /walk from the brief → `list_findings`/, "every finding is still walked through the cards, a Knockout's too");
+  assert.doesNotMatch(served, /one level deeper than the brief\. Pass `group`/, "the cards are still the one way deeper, a Knockout's link too");
+});
+
 test("a run-failed notice is settled with mark_sent, as the courier's instructions and the outbox both say", () => {
   assert.match(def("list_outbox_events").description, /settle delivered and run-failed events with mark_sent, and every other kind with ack_event/);
   assert.match(def("ack_event").description, /Delivered and run-failed events are settled by mark_sent instead\./);
