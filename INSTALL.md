@@ -102,8 +102,8 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   pay for Claude through your own Google Cloud, Microsoft Azure or Amazon Bedrock account (§3b).
 
   **Installed is not usable.** `npx clearotron install` proves the engine can complete a turn before it
-  writes anything, and `clearotron doctor --probe-engine` re-proves it on a configured box. Both
-  spend one cheap turn; plain `doctor` spends nothing.
+  writes anything, and `clearotron doctor` re-proves it on a configured box: it makes one real engine call
+  when an engine is configured. Both spend one cheap turn.
 
   **The check covers tools.** Every search stage calls tools. On some machines codex's own sandbox
   refuses every one of those calls while the turn reports success, so the check asks the engine to call
@@ -172,7 +172,7 @@ mkdir ~/app && cd ~/app
 npm init -y
 npm install /path/to/clearotron-<version>.tgz
 npx clearotron install         # the wizard
-npx clearotron doctor          # reads, and proves the engine with one real call; changes no setting
+npx clearotron doctor          # reads, and makes one real engine call when an engine is configured; changes no setting
 ```
 
 `npx` works from `~/app` because npm links a **dependency's** `bin` into the consuming project — the
@@ -793,8 +793,8 @@ its own header says never to expose it, and nothing here starts it.
 ## 6. Run a headless clearance report
 
 1. Make sure `CLEAROTRON_AI` names the engine you want (`anthropic-agent` or `openai-agent`), its CLI is
-   authenticated, and your active register provider's credential is set. `clearotron doctor
-   --probe-engine` answers all three, and the engine half of it by actually running a turn — an
+   authenticated, and your active register provider's credential is set. `clearotron doctor`
+   answers all three, and the engine half of it by actually running a turn — an
    executable on `PATH` that is signed out passes every other check and fails at the first stage.
 
 2. Write a **job file**. The required fields are an `id`, a `forwarder` handle, at least one mark

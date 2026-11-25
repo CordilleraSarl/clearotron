@@ -56,9 +56,9 @@ export function routineInterval(env = process.env) {
   return parsed ? { ms: parsed.ms, raw, invalid: false } : { ms: parseCheckInterval(ROUTINE_DEFAULT).ms, raw, invalid: true };
 }
 
-/** What a reader is told about a value the setting cannot take. */
-export const invalidIntervalText = (raw) =>
-  `${ROUTINE_SETTING}="${raw}" is not a duration; it takes a whole number of hours or days (12h, 7d, 30d) or off. The default, ${ROUTINE_DEFAULT}, is used.`;
+/** What a reader is told about a value the setting cannot take. The value is never quoted: a key pasted into the wrong setting would be printed. */
+export const invalidIntervalText = () =>
+  `${ROUTINE_SETTING} holds a value that is not a duration; it takes a whole number of hours or days (12h, 7d, 30d) or off. The default, ${ROUTINE_DEFAULT}, is used.`;
 
 // ── the record ────────────────────────────────────────────────────────────────────────────────────────
 //
@@ -110,17 +110,15 @@ export const readEngineCheck = (engine, { dir = engineCheckDir() } = {}) => read
 /**
  * Why a check is due now, or null. PURE.
  *
+ * - `first`: this install has no record yet, on the upgrade that brings the check or on a fresh install. Setup's
+ *   own turn and `doctor`'s are recorded nowhere, so neither is proof for this build.
  * - `build`: the installed build is not the one last checked, so a deploy by any route is proven within a tick.
  * - `recheck`: the last check failed, FAILING_RECHECK_MS or more ago, or the engine has completed a turn since,
  *   a stage's or the door's, which says it was fixed: the check confirms it and withdraws the alert.
  * - `routine`: the engine has had no successful call for the routine interval. `off` turns this one off alone.
- *
- * An install with no record yet starts its clock at `seen`, the first time the worker looked, and is not
- * checked on sight: setup has just proven it with a turn of its own, and a check on sight would fire on
- * every fresh install's first tick.
  */
 export function engineCheckDue({ now, build, intervalMs, lastAnswer, record }) {
-  if (!record) return null;
+  if (!record) return "first";
   if (record.ok === false) return now - Date.parse(record.at) >= FAILING_RECHECK_MS || (lastAnswer ?? 0) > Date.parse(record.at) ? "recheck" : null;
   if (build && record.build && build !== record.build) return "build";
   if (intervalMs == null) return null;
@@ -128,7 +126,10 @@ export function engineCheckDue({ now, build, intervalMs, lastAnswer, record }) {
   return now - since >= intervalMs ? "routine" : null;
 }
 
-/** The first look at an install with no record: the clock starts, nothing is checked. */
+/**
+ * The record's first mark, written before an install's first check. A record folder that cannot take it would
+ * otherwise make every idle tick a real turn, each finding no record; false says so, and no call is made.
+ */
 export function startEngineCheckClock(engine, { now = Date.now(), build = null, dir = engineCheckDir() } = {}) {
   try {
     mkdirSync(dir, { recursive: true });
@@ -144,7 +145,7 @@ export function engineCheckFailureText(verdict, at) {
   const headline = String(verdict.headline ?? "").replace(/\.$/, "");
   return [
     `The engine check failed at ${new Date(at).toISOString().replace(/\.\d{3}Z$/, "Z")}: ${headline}.`,
-    "No search can run until this is fixed.",
+    "Searches using this engine cannot start until this is fixed.",
     `To fix it: ${verdict.fix ?? "the engine's own message is in the worker's log."}`,
     "Then run `clearotron doctor` to confirm.",
   ].join("\n");
@@ -227,16 +228,20 @@ export async function runEngineCheck({
  * with no engine chosen. Returns the check's result, or `{ due: null }`.
  *
  * `starting`: the worker has just started, after a deploy, an upgrade or a restart, and checks whatever its
- * record says, a failure an hour old included: a restart is what an operator does after fixing the engine.
+ * record says, a failure an hour old included and no record at all: a restart is what an operator does after
+ * fixing the engine.
  */
 export async function maybeCheckEngine({ env = process.env, now = () => Date.now(), build = null, starting = false, dir = engineCheckDir(), run = runEngineCheck, log = note } = {}) {
   if (!String(env.CLEAROTRON_AI ?? "").trim()) return { due: null };
   const engine = engineOf(env.CLEAROTRON_AI);
   const record = readEngineCheck(engine, { dir });
-  if (!record) { startEngineCheckClock(engine, { now: now(), build, dir }); return { due: null }; }
   const interval = routineInterval(env);
-  if (interval.invalid) log(`[engine-check] ${invalidIntervalText(interval.raw)}`);
+  if (interval.invalid) log(`[engine-check] ${invalidIntervalText()}`);
   const due = starting ? "start" : engineCheckDue({ now: now(), build, intervalMs: interval.ms, lastAnswer: lastEngineAnswer(engine, { dir }), record });
   if (!due) return { due: null };
+  if (!record && !startEngineCheckClock(engine, { now: now(), build, dir })) {
+    log(`[engine-check] the check's record folder ${dir} cannot be written, so the engine is not checked until it can be`);
+    return { due: null };
+  }
   return { due, ...await run({ env, reason: due, now, build, dir }) };
 }

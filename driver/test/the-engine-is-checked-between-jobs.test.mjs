@@ -6,7 +6,7 @@
 // stand-ins in dead-login-engines.mjs, driven through the door's own judgment; nothing outside this machine is called.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -15,6 +15,7 @@ import {
 } from "../engine/health.mjs";
 import { deadLoginEngines } from "./dead-login-engines.mjs";
 import { dispatchTurn } from "../ladder/dispatch.mjs";
+import { judgeEngineTurn } from "../engine/probe.mjs";
 
 const HOUR = 60 * 60 * 1000, DAY = 24 * HOUR;
 const T0 = Date.parse("2026-11-25T10:00:00Z");
@@ -61,8 +62,8 @@ test("when a check is due: a new build, the routine interval since the last answ
   assert.equal(engineCheckDue({ now: T0 + FAILING_RECHECK_MS, build: "aaa", intervalMs: 7 * DAY, lastAnswer: T0, record: failed }), "recheck");
   assert.equal(engineCheckDue({ now: T0 + 60_000, build: "aaa", intervalMs: 7 * DAY, lastAnswer: T0 + 30_000, record: failed }), "recheck",
     "a turn the engine completed since the failure says it was fixed, and the check confirms it at once");
-  assert.equal(engineCheckDue({ now: T0 + 30 * DAY, build: "aaa", intervalMs: 7 * DAY, lastAnswer: null, record: null }), null,
-    "an install with no record is not checked on sight");
+  assert.equal(engineCheckDue({ now: T0, build: "aaa", intervalMs: 7 * DAY, lastAnswer: T0, record: null }), "first",
+    "an install with no record is checked on its first tick: a turn recorded nowhere is no proof for this build");
 });
 
 for (const which of ["claude", "codex"]) {
@@ -86,7 +87,7 @@ for (const which of ["claude", "codex"]) {
       assert.equal(name, engineCheckPacketName(engine));
       assert.equal(packet.kind, "engine-check-failed");
       assert.equal(packet.audience, "operator");
-      assert.match(packet.text, new RegExp(`^The engine check failed at 2026-11-25T10:00:00Z: ${engine} is not signed in\\.\\nNo search can run until this is fixed\\.\\nTo fix it: `));
+      assert.match(packet.text, new RegExp(`^The engine check failed at 2026-11-25T10:00:00Z: ${engine} is not signed in\\.\\nSearches using this engine cannot start until this is fixed\\.\\nTo fix it: `));
       assert.match(packet.text, /\nThen run `clearotron doctor` to confirm\.$/);
       assert.deepEqual(failedCheckLines(readEngineCheck(engine, { dir: b.dir })), packet.text.split("\n"), "status shows the alert's own lines while it stands");
 
@@ -125,19 +126,74 @@ test("the worker checks on a start, after a new build and when the interval has 
   try {
     const env = { ...b.engines.claude, [ROUTINE_SETTING]: "3d" };
     const ran = [];
-    const run = async ({ reason }) => { ran.push(reason); return {}; };
-    const tick = (at, extra = {}) => maybeCheckEngine({ env, now: () => at, build: "aaa", dir: b.dir, run, log: b.log, ...extra });
+    const run = (opts) => { ran.push(opts.reason); return runEngineCheck({ ...opts, judge: passes, write: b.write, withdraw: b.withdraw, log: b.log }); };
+    let build = "aaa";
+    const tick = (at, extra = {}) => maybeCheckEngine({ env, now: () => at, build, dir: b.dir, run, log: b.log, ...extra });
 
     assert.deepEqual(await maybeCheckEngine({ env: {}, now: () => T0, dir: b.dir, run }), { due: null }, "no engine chosen");
-    assert.deepEqual(await tick(T0), { due: null }, "the first look starts the clock and checks nothing");
+    await tick(T0);
     assert.deepEqual(await tick(T0 + DAY), { due: null });
     await tick(T0 + DAY, { starting: true });
-    await tick(T0 + DAY, { build: "bbb" });
-    await tick(T0 + 3 * DAY);
-    assert.deepEqual(ran, ["start", "build", "routine"]);
+    build = "bbb";
+    await tick(T0 + DAY);
+    assert.deepEqual(await tick(T0 + 3 * DAY), { due: null });
+    await tick(T0 + 4 * DAY);
+    assert.deepEqual(ran, ["first", "start", "build", "routine"]);
 
-    recordEngineAnswered("anthropic-agent", { now: T0 + 3 * DAY, dir: b.dir });
-    assert.deepEqual(await tick(T0 + 5 * DAY), { due: null }, "a completed turn moves the clock");
+    recordEngineAnswered("anthropic-agent", { now: T0 + 6 * DAY, dir: b.dir });
+    assert.deepEqual(await tick(T0 + 8 * DAY), { due: null }, "a completed turn moves the clock");
+  } finally { b.done(); }
+});
+
+// The upgrade that brings the check finds no record, and neither does a fresh install. Setup's own turn and
+// `doctor`'s are recorded nowhere, so neither is proof for this build: the first start proves the engine, and so
+// does the first tick of an install that is started anew every tick.
+for (const starting of [true, false]) {
+  test(`the first ${starting ? "start" : "tick"} on an install with no record yet makes the real call, and a dead login found then is alerted`, async () => {
+    const b = bench();
+    try {
+      let calls = 0;
+      const judge = (opts) => { calls += 1; return judgeEngineTurn(opts); };
+      const run = (opts) => runEngineCheck({ ...opts, judge, write: b.write, withdraw: b.withdraw, log: b.log, wait: noWait });
+      const r = await maybeCheckEngine({ env: b.engines.claude, now: () => T0, build: "aaa", starting, dir: b.dir, run, log: b.log });
+      assert.equal(calls, 1, "one real turn");
+      assert.equal(r.due, starting ? "start" : "first");
+      const record = readEngineCheck("anthropic-agent", { dir: b.dir });
+      assert.equal(record.ok, false);
+      assert.equal(record.lane, "configuration");
+      assert.equal(record.build, "aaa");
+      assert.equal(b.sent.length, 1);
+      assert.equal(b.sent[0].packet.kind, "engine-check-failed");
+      assert.match(b.sent[0].packet.text, /anthropic-agent is not signed in/);
+    } finally { b.done(); }
+  });
+}
+
+test("a record folder that cannot be written costs no turn, on any tick", async () => {
+  const b = bench();
+  try {
+    const dir = join(b.dir, "record-folder");
+    writeFileSync(dir, "a file where the folder should be\n");
+    const ran = [];
+    const run = async ({ reason }) => { ran.push(reason); return {}; };
+    for (const at of [T0, T0 + 60_000, T0 + FAILING_RECHECK_MS, T0 + DAY]) {
+      assert.deepEqual(await maybeCheckEngine({ env: b.engines.claude, now: () => at, build: "aaa", dir, run, log: b.log }), { due: null });
+    }
+    assert.deepEqual(ran, [], "no call is made while the check has nowhere to record it");
+    assert.match(b.logged.join("\n"), /cannot be written/);
+  } finally { b.done(); }
+});
+
+test("a value the routine setting cannot take is named in the log, never quoted", async () => {
+  const b = bench();
+  try {
+    const pasted = "a-value-pasted-here-by-mistake-7f3a";
+    const run = async () => ({});
+    await maybeCheckEngine({ env: { ...b.engines.claude, [ROUTINE_SETTING]: pasted }, now: () => T0, build: "aaa", dir: b.dir, run, log: b.log });
+    const said = b.logged.join("\n");
+    assert.match(said, new RegExp(`${ROUTINE_SETTING} holds a value that is not a duration`));
+    assert.match(said, /\(12h, 7d, 30d\) or off\. The default, 7d, is used\./);
+    for (const part of ["pasted", "mistake", "7f3a"]) assert.ok(!said.includes(part), `the log quotes the value: ${said}`);
   } finally { b.done(); }
 });
 

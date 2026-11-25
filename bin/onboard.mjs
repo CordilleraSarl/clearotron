@@ -4,7 +4,7 @@
 // clearotron install / clearotron doctor — one install, from nothing to a first real run.
 //
 //   npx clearotron install                    the wizard: one decision at a time, Enter takes the default
-//   npx clearotron doctor                     report what this machine is configured for, and prove the engine with one real call
+//   npx clearotron doctor                     report what this machine is configured for, and make one real engine call when an engine is configured
 //   npx clearotron doctor --probe-providers   …and spend one cheap paired call proving each register lane
 //   npx clearotron doctor --probe-connector   …and ask your own door whether an assistant could sign in
 //
