@@ -30,12 +30,20 @@ const step = (kind) => {
 
 test("the courier contract routes every event the delivery catalog lists, and a packet writer names each", () => {
   assert.ok(CATALOG.length >= 6, `guard: the delivery catalog was read (${CATALOG.join(", ")})`);
-  // run-failed.mjs writes the failed run's packet for both products.
-  const writers = ["driver/pipeline.mjs", "driver/pipeline-knockout.mjs", "driver/run-failed.mjs", "driver/runner.mjs", "mcp-server/lib/ops.mjs"].map(read).join("\n");
+  // run-failed.mjs writes the failed run's packet for both products; engine/health.mjs the engine check's alert.
+  const writers = ["driver/pipeline.mjs", "driver/pipeline-knockout.mjs", "driver/run-failed.mjs", "driver/runner.mjs", "mcp-server/lib/ops.mjs", "driver/engine/health.mjs"].map(read).join("\n");
   for (const kind of CATALOG) {
     assert.ok(writers.includes(`kind: "${kind}"`), `the catalog lists ${kind}, which no packet writer names`);
     assert.ok(step(kind), `the courier contract has no route for ${kind}`);
   }
+});
+
+test("the engine check's alert is left pending for the operator, and the no-route fallback is for delivery events alone", () => {
+  // The alert names no order and no recipient: a courier with the full grant meets it, and must neither relay nor
+  // settle it. The next passing check takes it back. A courier that took it for a packet with no usable route would
+  // report it on every wake.
+  assert.match(step("engine-check-failed"), /Leave this packet pending and continue with the other events\. Do not relay, mark or acknowledge it\. The next passing worker check clears it\./);
+  assert.ok(COURIER.includes("A delivery event with no usable route gets reported to your operator, not guessed."), "the fallback still covers every packet, the alert included");
 });
 
 test("a failed run's notice settles with mark_sent, and a request that became no run with ack_event", () => {

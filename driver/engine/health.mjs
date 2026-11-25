@@ -19,8 +19,8 @@
 // THE PRODUCT SENDS NOTHING (docs/DELIVERY.md). The alert is a packet in the outbox, for whatever drains it,
 // and the same lines in the worker's log; `doctor` and `status` show the last failure until a check passes.
 
-import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { config, DEFAULT_ENGINE_ID } from "../driver.config.mjs";
 import { judgeEngineTurn, probeFailureText, probeVerdictLane } from "./probe.mjs";
 import { writeOutboxPacket } from "../outbox.mjs";
@@ -84,9 +84,13 @@ function readJsonOrNull(path) {
 /**
  * Record that the engine completed a turn. BEST-EFFORT: a stage that cannot write this must carry on, and the
  * cost of a missed write is a routine check that runs sooner than it needed to.
+ *
+ * It does not create the work folder it records into. Every run's folder is inside that work folder, so a stage
+ * of a real run always finds it; a stage driven with none pointed at it records nothing rather than making one.
  */
 export function recordEngineAnswered(engine, { now = Date.now(), dir = engineCheckDir() } = {}) {
   try {
+    if (!existsSync(dirname(dir))) return false;
     mkdirSync(dir, { recursive: true });
     writeAtomic(lastAnswerPath(dir, engineOf(engine)), { at: new Date(now).toISOString() });
     return true;

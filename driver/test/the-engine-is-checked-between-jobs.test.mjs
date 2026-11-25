@@ -197,6 +197,18 @@ test("a value the routine setting cannot take is named in the log, never quoted"
   } finally { b.done(); }
 });
 
+test("a completed turn records into an existing work folder, and never makes one", () => {
+  const root = mkdtempSync(join(tmpdir(), "engine-check-root-"));
+  try {
+    const absent = join(root, "no-work-folder", "engine-check");
+    assert.equal(recordEngineAnswered("anthropic-agent", { now: T0, dir: absent }), false);
+    assert.deepEqual(readdirSync(root), [], "nothing was created where no work folder was");
+    const present = join(root, "engine-check");
+    assert.equal(recordEngineAnswered("anthropic-agent", { now: T0, dir: present }), true);
+    assert.equal(lastEngineAnswer("anthropic-agent", { dir: present }), T0);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 test("a turn the engine completed moves the clock; a refused or stopped one does not", async () => {
   assert.equal(turnAnswered({ code: 0, killed: false, signals: {} }), true);
   assert.equal(turnAnswered({ code: 1, killed: false, signals: {} }), false);
