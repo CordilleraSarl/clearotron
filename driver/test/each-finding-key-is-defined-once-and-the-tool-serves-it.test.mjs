@@ -26,7 +26,7 @@ import {
   SOURCE_TYPES, OFF_FIELD_GROUNDS, MANAGEABLE_CATEGORIES, RATING_WITHDRAWN_GROUNDS, USE_SOURCE_QUALITY, parseFindingsJson,
 } from "../findings-model.mjs";
 import { STAGES, paths } from "../stages.mjs";
-import { recordSynthesis, VERSION_STALE_TOKEN } from "../synthesis-record.mjs";
+import { recordSynthesis, VERSION_STALE_TOKEN, VERSION_MISMATCH_TOKEN } from "../synthesis-record.mjs";
 import { versionRecovery } from "../steps/synthesis.mjs";
 import { findProbativeGradingViolations } from "../reasoning-tripwires.mjs";
 import { contentModelChecks } from "../predelivery-lint.mjs";
@@ -153,15 +153,23 @@ test("the dispatch's required manageable and bears_on are flagged before deliver
 
 // ── THE VERSION ─────────────────────────────────────────────────────────────────────────────────────────
 
-test("a newly written whole record below the current version is refused at the tool and nothing is written; at the current one it is kept", () => {
-  for (const version of [3, 4, 6]) {
+test("a newly written whole record at any version but the current one is refused at the tool and nothing is written; at the current one it is kept", () => {
+  const ABSENT = Symbol("absent");
+  // Below the current version the token says stale; above it, missing or malformed, it says mismatch.
+  const cases = [[3, VERSION_STALE_TOKEN, "3"], [4, VERSION_STALE_TOKEN, "4"], [6, VERSION_STALE_TOKEN, "6"],
+    [FINDINGS_SCHEMA_VERSION + 1, VERSION_MISMATCH_TOKEN, String(FINDINGS_SCHEMA_VERSION + 1)],
+    [ABSENT, VERSION_MISMATCH_TOKEN, "none"], [null, VERSION_MISMATCH_TOKEN, "none"],
+    [String(FINDINGS_SCHEMA_VERSION), VERSION_MISMATCH_TOKEN, String(FINDINGS_SCHEMA_VERSION)],
+    [FINDINGS_SCHEMA_VERSION + 0.5, VERSION_MISMATCH_TOKEN, String(FINDINGS_SCHEMA_VERSION + 0.5)]];
+  for (const [version, token, shown] of cases) {
     const dir = mkdtempSync(join(tmpdir(), "finding-version-"));
     try {
-      const d = { ...doc(), schema_version: version };
+      const d = { ...doc() };
+      if (version === ABSENT) delete d.schema_version; else d.schema_version = version;
       const r = recordSynthesis(dir, { narrative: NARRATIVE, findings: d });
-      assert.match(String(r.refused), new RegExp(`^${VERSION_STALE_TOKEN}:${version} — a newly written findings record is "schema_version": ${FINDINGS_SCHEMA_VERSION}\\. `
+      assert.match(String(r.refused), new RegExp(`^${token}:${shown.replace(".", "\\.")} — a newly written findings record is "schema_version": ${FINDINGS_SCHEMA_VERSION}\\. `
         + `Send the whole record again at ${FINDINGS_SCHEMA_VERSION}, with the fields that version requires\\. A correction to a record already accepted is sent as a patch and keeps that record's version\\.$`));
-      assert.equal(existsSync(join(dir, "findings.json")), false, `version ${version}: a refused record was written`);
+      assert.equal(existsSync(join(dir, "findings.json")), false, `version ${String(version)}: a refused record was written`);
     } finally { rmSync(dir, { recursive: true, force: true }); }
   }
   const dir = mkdtempSync(join(tmpdir(), "finding-version-"));

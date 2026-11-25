@@ -1119,19 +1119,23 @@ export function synthesisDutyForRun(runDir) {
  * correction's dispatch; absent on every other call, which adds no finding (`correctionPositions`).
  */
 /**
- * A NEWLY WRITTEN RECORD IS AT THE CURRENT VERSION. A call carrying a whole findings document, a first call or a full
- * replacement, below FINDINGS_SCHEMA_VERSION is refused in the turn, so the writer repairs its first answer in its own
- * session: one at 4 to 6 would read under its own version's rules, with the later versions' checks off. A patch keeps
+ * A NEWLY WRITTEN RECORD IS AT THE CURRENT VERSION, EXACTLY. A call carrying a whole findings document, a first call or
+ * a full replacement, at any other version is refused in the turn, so the writer repairs its first answer in its own
+ * session: one at 4 to 6 would read under its own version's rules, with the later versions' checks off, and one above
+ * FINDINGS_SCHEMA_VERSION was written to no version this parser knows. Below it the token says stale; above it, or with
+ * no whole-number version at all, it says mismatch, which assumes no direction. A patch keeps
  * the version of the record it patches (`registerPatchOf` refuses any other envelope), so a record accepted at an
  * earlier version keeps it on resume and under a repair that only patches it. Nothing here re-stamps a version. PURE.
  */
 export const VERSION_STALE_TOKEN = "synthesis_schema_version_stale";
+export const VERSION_MISMATCH_TOKEN = "synthesis_schema_version_mismatch";
 export function staleVersionRefusal(call) {
   const doc = call?.findings;
   if (!isPlainObject(doc) || !Array.isArray(doc.findings)) return null;
   const sv = doc.schema_version;
-  if (Number.isInteger(sv) && sv >= FINDINGS_SCHEMA_VERSION) return null;
-  return `${VERSION_STALE_TOKEN}:${String(sv ?? "none").slice(0, 20)} — a newly written findings record is "schema_version": ${FINDINGS_SCHEMA_VERSION}. `
+  if (sv === FINDINGS_SCHEMA_VERSION) return null;
+  const token = Number.isInteger(sv) && sv < FINDINGS_SCHEMA_VERSION ? VERSION_STALE_TOKEN : VERSION_MISMATCH_TOKEN;
+  return `${token}:${String(sv ?? "none").slice(0, 20)} — a newly written findings record is "schema_version": ${FINDINGS_SCHEMA_VERSION}. `
     + `Send the whole record again at ${FINDINGS_SCHEMA_VERSION}, with the fields that version requires. `
     + "A correction to a record already accepted is sent as a patch and keeps that record's version.";
 }
