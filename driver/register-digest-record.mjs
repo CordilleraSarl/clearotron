@@ -424,7 +424,9 @@ const table = (columns, rows) => [row(columns), `|${columns.map(() => "---").joi
  *   recordHost    → the full clickable record URL (code-rendered)
  *   counts        → ## Summary counts (code-extracted)
  *   auditRows     → Audit trail (code-extracted)
- *   readIds       → the record ids read while answering each instructed check (code-extracted)
+ *   readIds       → every record id this run's reading audit logged as read, rendered once under the audit trail
+ *                   (code-extracted). It is no answer's support: a read proves a record was opened, not which
+ *                   answer it bears on, so each answer carries its own `records`.
  *   positions     → the crowd row's counted denominator (code-rendered, via the coverage form)
  */
 export function emptyFacts() {
@@ -599,14 +601,15 @@ export function renderRegisterFindings(model, facts = emptyFacts()) {
   for (const [heading, body] of [[DIGEST_SECTIONS.crossChecks, model.cross_checks], [DIGEST_SECTIONS.openFlags, model.open_flags]])
     if (body) out.push(heading, "", body, "");
 
-  // ### Answers to the instructed checks — the ANSWER is the seat's, the record ids it read while
-  // answering are the reading audit's. doubt-ledger's answerWatchlistLines scans this section by its
-  // /answer|watchlist/i heading test, so every line under it is a line that join can reach.
+  // ### Answers to the instructed checks — the ANSWER and the records it relies on are the seat's. An answer
+  // recorded before it could name them shows none: its attribution is unknown, and the run's reads are no
+  // stand-in for it. doubt-ledger's answerWatchlistLines scans this section by its /answer|watchlist/i heading
+  // test, so every line under it is a line that join can reach.
   if (model.instructed_checks.length) {
     out.push(DIGEST_SECTIONS.instructed, "");
     for (const c of model.instructed_checks) {
       out.push(`- You asked: ${c.ask} → ${c.answer}`);
-      if (facts.readIds?.length) out.push(`  - records read: ${facts.readIds.join(", ")}`);
+      if (c.records?.length) out.push(`  - Records relied on: ${c.records.join(", ")}`);
     }
     out.push("");
   }
@@ -618,10 +621,15 @@ export function renderRegisterFindings(model, facts = emptyFacts()) {
     out.push("");
   }
 
-  if (facts.auditRows?.length) {
-    out.push(DIGEST_SECTIONS.auditTrail, "",
-      table(["Unit", "Searches", "Detail fetches", "_query"], facts.auditRows.map((a) =>
+  // The run's reads, once, for audit, where a run answers instructed checks: what was opened, not what any
+  // answer rests on. A line, not a table, so the published audit's table reader leaves it here.
+  const reads = model.instructed_checks.length && facts.readIds?.length ? facts.readIds : [];
+  if (facts.auditRows?.length || reads.length) {
+    out.push(DIGEST_SECTIONS.auditTrail, "");
+    if (facts.auditRows?.length)
+      out.push(table(["Unit", "Searches", "Detail fetches", "_query"], facts.auditRows.map((a) =>
         [a.unit, a.searches, a.detail_fetches, a.query ?? ""])), "");
+    if (reads.length) out.push(`- records read: ${reads.join(", ")}`, "");
   }
   if (facts.counts) {
     const statusRow = facts.counts.find(([l]) => /status/i.test(l));
@@ -785,12 +793,26 @@ export function acceptRegisterDigest(params, facts = emptyFacts()) {
       screen_verdict: verdict });
   }
 
+  // THE RECORDS AN ANSWER RELIES ON are the seat's to name and the driver's to resolve. The reading audit proves a
+  // record was opened somewhere in the run, not which answer it supports, so it is no answer's citation. Each named
+  // record must be one the run holds, and is kept as the band carries it. An answer resting on a search's count, a
+  // verified zero or an open question names none: its receipt is its basis.
   const instructed_checks = [];
   for (const c of Array.isArray(params?.instructed_checks) ? params.instructed_checks : []) {
     const ask = str(c?.ask), answer = str(c?.answer);
     if (!ask || !answer)
       return { ok: false, reason: `registerdigest_instructed_incomplete:${(ask || answer).slice(0, 60) || "(empty)"} — every instructed check carries the ask AND the answer, including the honest "the frozen material cannot answer this"` };
-    instructed_checks.push({ ask, answer });
+    if (c?.records != null && !Array.isArray(c.records))
+      return { ok: false, reason: `registerdigest_relied_records_invalid:${ask.slice(0, 60)} — \`records\` is a list of the held record uris this answer relies on` };
+    const records = [];
+    for (const id of c?.records ?? []) {
+      const rec = byUri.get(joinKey(id));
+      if (!rec)
+        return { ok: false, reason: `registerdigest_relied_record_unknown:${str(id).slice(0, 60) || "(empty)"} (${ask.slice(0, 60)}) — no record in this run's band carries that uri. Name only held records this answer relies on, and none where it rests on a search rather than a record` };
+      const uri = identifierCells(rec, facts.recordHost).uri;
+      if (!records.includes(uri)) records.push(uri);
+    }
+    instructed_checks.push({ ask, answer, ...(records.length ? { records } : {}) });
   }
 
   const disagreement_resolutions = [];
