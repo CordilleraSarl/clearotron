@@ -18,6 +18,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, mkdtempSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { ASSESS_SENTENCES } from "./ruled-sentences-knockout-assess.mjs";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from "../../shared/summary-blocks.mjs";
@@ -66,6 +67,15 @@ test("the doctrine file agrees with the dispatch instead of contradicting it", (
   assert.doesNotMatch(s, /`chunkSummary`, narrative, not bullets/,
     "SKILL.md still forbids the bullets the dispatch now asks for");
   assert.match(s, /## The per-mark opening read/, "the assessment field has no doctrine section");
+  // A divided name read Medium over fourteen classes while eleven were Manageable: its opening gave no band, because the
+  // manual ordered the name, the landscape, then the rating. The opening now leads with the band and the goods it covers.
+  const flat = (t) => t.replace(/\s+/g, " ");
+  const opening = flat(s.slice(s.indexOf("## The per-mark opening read"), s.indexOf("**No recommendation, and no next step.**")));
+  assert.ok(opening.includes(flat(ASSESS_SENTENCES.theOpeningGivesTheBandAndItsGoods)),
+    "the opening read no longer leads with the band and the goods that carry it");
+  assert.doesNotMatch(opening, /what the name is, what the landscape around it looks like, what drives the rating/,
+    "the old order, which put the rating last, is back");
+  assert.doesNotMatch(flat(s), /the provenance, the long `assessment`/, "the manual again calls the whole assessment folded");
   assert.match(s, /Never `# `/, "the depth rule that stops a summary truncating itself is not stated");
 });
 
@@ -102,7 +112,9 @@ test("no copy of the opening-read instruction the model is handed asks what to d
     const s = read(f);
     assert.doesNotMatch(s, /what (?:a reader should |to )?do with (?:that|it)\b/i, `${f} asks again for what to do with the name`);
     if (f.includes("stages-knockout")) continue;   // the opening read's instruction is the manual's now, and the message points there
-    assert.match(s, /what drives the rating\./, `${f} no longer carries the opening-read instruction this arm reads — find where it moved`);
+    assert.match(s.replace(/\s+/g, " "), /In the first substantive paragraph, give the overall band and name the goods or services that drive it\./,
+      `${f} no longer carries the opening-read instruction this arm reads — find where it moved`);
+    assert.doesNotMatch(s, /what drives the rating\./, `${f} still orders the opening with the rating last`);
   }
 });
 

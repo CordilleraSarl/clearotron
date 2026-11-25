@@ -18,6 +18,9 @@ export const ASSESS_SENTENCES = Object.freeze({
     + "that wording is missing.",
   goodsWordingNotHeldFor: "\"Goods wording is not held for this filing, so its relevance to the requested goods remains unresolved.\"",
   thePerMarkOpeningRead: "## The per-mark opening read",
+  theOpeningGivesTheBandAndItsGoods: "In the first substantive paragraph, give the overall band and name the goods or services "
+    + "that drive it. If the advice differs for other goods, say how.",
+  theOpeningIsVisibleFoldedIsTheRest: "the first substantive paragraph of each `assessment`",
   optionalAndOmittingRowAlways: "> **Optional, and omitting a row is always safe.** A result your reading took for a possible conflict "
     + "and > then put down gets a ground, one row per owner's set or group of like results, never one per "
     + "result. > Never invent one to fill the list",
