@@ -8243,7 +8243,13 @@
         },
         "the-native-language-reader-is-given-the-chinese-register-records.test.mjs": {
           "tests": 3,
-          "asserts": 19,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-native-language-reader-is-told-what-each-records-goods-rest-on.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
