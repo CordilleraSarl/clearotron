@@ -503,7 +503,7 @@
         },
         "a-correction-patches-what-it-carries.test.mjs": {
           "tests": 49,
-          "asserts": 88,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },
@@ -1709,7 +1709,7 @@
         },
         "a-near-spelling-no-buyer-could-confuse-is-set-aside-with-its-reason.test.mjs": {
           "tests": 5,
-          "asserts": 25,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -3909,6 +3909,12 @@
           "skips": 0,
           "todos": 0
         },
+        "codex-is-shown-each-recording-tools-field-text.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "common-law-coverage-is-coverage-the-run-searched.test.mjs": {
           "tests": 5,
           "asserts": 8,
@@ -4662,6 +4668,12 @@
         "each-finding-card-is-a-heading-inside-the-main-landmark.test.mjs": {
           "tests": 3,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "each-finding-key-is-defined-once-and-the-tool-serves-it.test.mjs": {
+          "tests": 7,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -8175,6 +8187,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-tools-take-what-their-validator-takes.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-workbook-s-long-text-columns-are-at-least-40-wide.test.mjs": {
           "tests": 2,
           "asserts": 7,
@@ -8562,6 +8580,12 @@
         "the-register-claims-check-reads-the-records-the-run-holds.test.mjs": {
           "tests": 10,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-register-digest-tool-and-its-orders-name-what-the-recorder-takes.test.mjs": {
+          "tests": 3,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

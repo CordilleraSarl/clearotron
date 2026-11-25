@@ -4,7 +4,7 @@
 // engine already builds, so gather-config.mjs stays byte-untouched (merge-safety) and codex reuses the
 // exact server/tool wiring. Two inputs, both produced today by the gateway gather block:
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { tomlString } from "../../../shared/toml-string.mjs"; import { driverDir } from "../../run-record.mjs";
 
 //   • mcpConfig     — the claude-shaped JSON string `{mcpServers:{name:{command,args,env,connectionTimeoutMs?}}}`
@@ -76,6 +76,19 @@ export const codexBandAnswerChars = (env = process.env) =>
 export const CODEX_TOOL_ANSWER_BYTES = 36000;
 export const codexToolAnswerBytes = (env = process.env) =>
   Math.min(CODEX_TOOL_ANSWER_BYTES, Number(env.CLEAROTRON_TOOL_ANSWER_BYTES) || CODEX_TOOL_ANSWER_BYTES);
+
+// THE RECORDING TOOLS' FIELD TEXT REACHES CODEX WHOLE. Codex compacts an MCP tool's input schema when it
+// "exceeds this many UTF-8 bytes. The default is 5,000 bytes. Code Mode also uses an explicit value when
+// rendering tool input types" (the vendor's configuration reference, `mcp_servers.<id>.tool_input_schema_max_bytes`).
+// A compacted tool is shown to the model as its field names, types and enum values, with every field
+// description gone; Claude is shown every description whatever the size. Measured in testing, 2026-11-25, on
+// codex 0.162.0 with gpt-6.1-sol: a lookup of the recording tools showed the field text of each tool under the
+// default and none of `record_synthesis`, `record_register_digest` or `record_knockout_assess`, which are over
+// it; with 20,000 on the recording server it showed all three. Its tools are the ones measured over the
+// default, so it alone is given the larger size, and a test holds every recording tool's schema under it.
+export const CODEX_RECORDING_SCHEMA_BYTES = 20000;
+const RECORDING_SERVER_SCRIPT = "recording-server.mjs";
+const isRecordingServer = (s) => (s.args ?? []).some((a) => basename(String(a)) === RECORDING_SERVER_SCRIPT);
 
 // ── TOML value escaping (basic strings) ──────────────────────────────────────────────────────────────
 // One encoder for every TOML block the product writes; re-exported so this module's callers keep their import.
@@ -180,6 +193,8 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
     // Per-call, and deliberately on EVERY server including the engine-local fetch one: the cap belongs to
     // the turn's budget, not to any one server's reputation for being slow.
     if (toolTimeout) lines.push(`tool_timeout_sec = ${toolTimeout}`);
+    // The recording tools' field text, shown whole (CODEX_RECORDING_SCHEMA_BYTES, above).
+    if (isRecordingServer(s)) lines.push(`tool_input_schema_max_bytes = ${CODEX_RECORDING_SCHEMA_BYTES}`);
     // A SERVER GRANTED WHOLE GETS NO LIST. On claude `mcp__<server>__*` means every tool that server
     // serves, and the case-law step's two bridges are granted that way (gather-config's `allowedToolsFor`).
     // codex matches `enabled_tools` by exact name, so the `["*"]` this once wrote named no tool, both

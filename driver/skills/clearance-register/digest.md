@@ -410,8 +410,8 @@ alone. **Grounding:** "kept" means carried forward for assessment, NOT that it m
 URI); one known only from general knowledge — no register record fetched, no common-law record cited — is
 carried at synthesis as a typed **context note** (`context_notes[]`, type `famous-neighbour-ungrounded`),
 never as a finding with an empty or fabricated registration (the findings contract rejects that, and an
-ungrounded finding must never ship). Surfaced either way, never dropped. **When in doubt, KEEP and flag
-`Verify? ✅`** — better to surface a borderline candidate than drop a
+ungrounded finding must never ship). Surfaced either way, never dropped. **When in doubt, KEEP and set
+`verify` to `yes`** — better to surface a borderline candidate than drop a
 real risk. Log every gate drop. **Filer size, individual-vs-entity status, and apparent dormancy are never
 in-doubt-DROP reasons for an on-point in-class mark** — they travel WITH the kept candidate into Stage-2 as
 characterisation, they do not keep it out of the findings.
@@ -426,8 +426,8 @@ normalised owner name (strip suffixes — "Ltd", "GmbH", "Co.", commas, periods)
 for the same URI across fields or sources, OR an EUIPO cross-check disagrees with the vendor record on
 owner identity, OR a portfolio-size signal (many filings clustering under a normalised owner) would
 materially change the enforcement-appetite read, do NOT silently pick one. Surface both readings in the
-findings row and set `Verify? ✅` with reason "owner-identity conflict — confirm before enforcement
-read." Owner identity drives enforcer-profiling (see `clearance-search/firm-wide-reasoning.md`, *Enforcer profiling*
+row's `flag_reason`, with the reason "owner-identity conflict — confirm before enforcement
+read.", and set `verify` to `yes`. Owner identity drives enforcer-profiling (see `clearance-search/firm-wide-reasoning.md`, *Enforcer profiling*
 rule) — a wrong owner is a wrong risk read.
 
 ### Step 4 — Owner slices, and the applicant's own rights
@@ -534,7 +534,7 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 - [ ] `placement-recommendations.md` read and informing tiering; each candidate's graduated outcome adopted or counter-reasoned with audit-trail justification; its coverage-commands/open-questions carried forward
 - [ ] Per-jurisdiction sub-query attribution (`_query`) carried forward in the findings file's audit trail
 - [ ] Relevance gate applied per archetype over the candidates placement carried forward (field-relevance only — filer size/dormancy held for Stage-2, never a drop reason); drops logged
-- [ ] Owner aggregation across the band; owner-identity conflicts flagged `Verify? ✅` (never silently picked)
+- [ ] Owner aggregation across the band; owner-identity conflicts flagged with `verify` set to `yes` (never silently picked)
 - [ ] **Every coverage-form row ruled through `record_coverage`** — the tool's answer reports nothing outstanding; every `incomplete` crowd descriptor ruled cleared/material-gap; reconciled against `matter-context`'s material-jurisdiction list (every material jurisdiction enumerated-and-cleared, or written `coverage-limited`/`deferred` → CONDITIONAL — never a self-accepted clean over an unsearched slice); genuine open judgment surfaced to ship (not a coverage gap)
 - [ ] Applicant own-rights sweep run **if priority is live** (never a conflict / Findings row / gate)
 - [ ] Watchlist matches flagged

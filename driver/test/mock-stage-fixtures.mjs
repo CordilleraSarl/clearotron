@@ -2715,7 +2715,8 @@ export function applyStageWrites(msg, argv) {
           // MOCK_KO_CITE_NOWHERE: a source the run does not hold, on the mark's first finding, the way a model's bad citation lands.
           findings: koMockFindings(runDir, n, band).map((f, j) => (process.env.MOCK_KO_CITE_NOWHERE && j === 0 ? { ...f, evidence: [...f.evidence, process.env.MOCK_KO_CITE_NOWHERE] } : f)),
           negatives: deg ? [] : [{ term: n, source: "web, marketplaces, app stores", note: "no results of significance" }],
-          degraded: deg ? { reason: "research unavailable" } : null };
+          // The flag the rater sends; the cause is the driver's, already in the plan the dispatch shows.
+          degraded: deg ? true : null };
       }),
     };
     // THE DRIVER WRITES THE CHUNK, THROUGH THE REAL TRANSPORT. The mock composes values and hands them
