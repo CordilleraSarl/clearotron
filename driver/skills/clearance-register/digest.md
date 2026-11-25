@@ -6,8 +6,8 @@
 
 **YOU WRITE NO FILE.** The driver renders `register-findings.md` from what you send. It composes the
 title, the summary counts, every identifier cell, the clickable record URL, the register tag, the
-Negative-results provenance fields, the audit trail and the record ids you read — all from the band and
-from its own receipts. Nothing you write by hand is read, and you hold no `Write` or `Edit` tool for it.
+Negative-results provenance fields and the audit trail, with every record read in this run — all from the
+band and from its own receipts. Nothing you write by hand is read, and you hold no `Write` or `Edit` tool for it.
 
 ### What the call takes
 
@@ -16,7 +16,7 @@ from its own receipts. Nothing you write by hand is read, and you hold no `Write
 | `findings_rows` | Sheet-1 position | `uri`, `flag_reason`, `verify` (`yes`/`no`) | URI, Mark, Owner, Country, Classes, Status, Filed, Expiry + the clickable URL |
 | `incumbent_rows` | Sheet-2 position you change or add; send no row for a sheet-2 placement you keep (the driver writes it with placement's reason) | the same three | the same cells |
 | `negative_rows` | dropped candidate | `uri`, `drop_reason`, `ground`, optional `variant` | the Mark cell and the Notes provenance (URI, `screen_verdict`, class, status) |
-| `instructed_checks` | requester ask | `ask`, `answer` | the record ids you read while answering |
+| `instructed_checks` | requester ask | `ask`, `answer`, and `records`: the held record identifiers the answer relies on, where applicable | each answer's records, beneath it |
 | `disagreement_resolutions` | disagreement / borderline | `subject`, `ADOPTED`\|`OVERRODE`, `reason` | the section and its rows |
 | `opposition` / `merch_sweep` / `cross_checks` / `open_flags` | — | your prose | the headings around it |
 
@@ -295,14 +295,15 @@ rolled-up `coverage_judgment` — is unchanged, because there is no second arm f
 #### The audit trail and the status-filter summary are the DRIVER's
 
 Per-unit search and detail-fetch counts, the `_query` attribution stamped at merge, the live/dead/ambiguous
-distribution, and the record ids you read — all from the run's own receipts. **There is no field for any
+distribution, and every record read in this run — all from the run's own receipts. **There is no field for any
 of them.** The JUDGMENT half stays yours: a unit that shortcut its axis is flagged in your prose.
 
 #### `instructed_checks` — one entry per requester ask this stage owns
 
-Send `{ask, answer}`. Answer from the FROZEN material via the band tools; a check the frozen material
+Send `{ask, answer, records}`. Answer from the FROZEN material via the band tools; a check the frozen material
 genuinely cannot answer is answered honestly AND recorded as an open coverage row naming the missing
-query. The driver renders the record ids you read beneath each answer.
+query. Include the held record identifiers this answer relies on, where applicable, in `records`. An answer
+that rests on a search's count, a verified zero or an open question names none: its receipt is its basis.
 
 #### `disagreement_resolutions` — one entry per disagreement, and per borderline
 
