@@ -24,7 +24,7 @@ the artifacts this stage writes, so there is nothing here to call and nothing to
 - Social media presence and commercial use
 - Industry press and trade publications
 - Conceptual similarity analysis
-- PR / reputational risk flagging (separate from trademark risk)
+- PR / reputational risk flagging (separate from trademark risk). Write the PR and reputational section only when this session is assigned the meaning sweep.
 - Competitor intelligence (existing brand partnerships in the space)
 - Flagging client's prior use when found (noted, not part of risk assessment)
 - Enforcement history IF found organically (mention it, don't go looking)
@@ -208,7 +208,7 @@ common word) does not. Then categorise each finding into one of:
 - **Consumer-confusion risks** — overlap in the product's field(s): gaming, **and the collaborated / non-gaming field for collab matters**; identical/similar mark in same product space; direct or near-direct competitors
 - **Commercial awareness** — identical/similar in unrelated fields; crowded field evidence; competitor intelligence (existing brand partnerships)
 - **Competitor intelligence** — watchlist matches; existing partnerships major brands have in the space
-- **PR / reputational risk** — the meaning read of the mark AND its near-forms, scoped by the run's OWN dictated sweep: the fixed meaning / slang / gang / offensive / lookup shapes plus the matter frame's derived `Meaning angles:` queries (cultural origin/appropriation, charged history of the term or its imagery, category-specific controversy — as THIS matter's frame reasoned them). Never a generic sensitivities checklist — the scope IS the dictated sweep. NOT scored on legal-risk framework — separate category. **Every recorded query with results carries a ruling recorded through `record_dispositions`, whatever this section concludes** — reporting a loaded reading does not discharge the rest of the sweep (see the PR / reputational risk contract in `meaning.md`). `None identified` is additionally a clean *receipt* ONLY when the meaning sweep ran — cite a `Connotation-search source:` line; the driver rejects an unsearched clean claim (`connotation_search_missing`) and refuses the turn while any ruling is unrecorded (the `connotation_call_*` family). A dictionary gloss is never a clearance.
+- **PR / reputational risk** — the meaning read of the mark AND its near-forms, scoped by the run's OWN dictated sweep: the fixed meaning / slang / gang / offensive / lookup shapes plus the matter frame's derived `Meaning angles:` queries (cultural origin/appropriation, charged history of the term or its imagery, category-specific controversy — as THIS matter's frame reasoned them). Never a generic sensitivities checklist — the scope IS the dictated sweep. NOT scored on legal-risk framework — separate category. **Every recorded query with results carries a ruling recorded through `record_dispositions`, whatever this section concludes** — reporting a loaded reading does not discharge the rest of the sweep (see the PR / reputational risk contract in `meaning.md`). `None identified` is additionally a clean *receipt* ONLY when the meaning sweep ran — cite a `Connotation-search source:` line; the driver rejects an unsearched clean claim (`connotation_search_missing`) and refuses the turn while any ruling is unrecorded (the `connotation_call_*` family). A dictionary gloss is never a clearance. Write the PR and reputational section only when this session is assigned the meaning sweep.
 - **Negative results** — **one row for EVERY grid cell**, **plus rows for the field-scoped cells** (collab / non-gaming goods) when run. **Each row carries its receipt:** `No results` (the search returned nothing), `No similar listings (N candidates reviewed)` (returned N candidates, none prima facie similar), `Similar listing(s) found — see Findings (N candidates)` (the cell produced findings), or `not executed — coverage-limited (see ledger)` (the cell is in the grid's `gaps` — never a clean negative).
 - **Register checks requested** — Record the register checks this search calls for, in the format above (every common-law owner found → ONE register check)
 
@@ -244,7 +244,7 @@ Assemble common-law-findings.md at the path your task message names, per the for
 2. **Consumer-confusion risks** — gaming-industry overlap
 3. **Commercial awareness** — unrelated-field + crowded-field
 4. **Competitor intelligence** — watchlist + partnerships
-5. **PR / reputational risk** (or "None identified")
+5. **PR / reputational risk** (or "None identified"). Write the PR and reputational section only when this session is assigned the meaning sweep.
 6. **Negative results** — one row per grid cell
 7. **Coverage ledger** — one row per planned coverage unit (`confirmed-clean`/`coverage-limited`/`deferred`); the structured form of the open-verification prose, consumed by synthesis + the skeptic
 8. **Register checks requested** — Record the register checks this search calls for, in the format above.

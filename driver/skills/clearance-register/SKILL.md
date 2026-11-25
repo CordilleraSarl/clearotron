@@ -41,7 +41,7 @@ no cross-check alongside it: where the active provider's coverage does not reach
 mistaken — so the DRIVER records which answered, on every receipt in `_driver/receipts.json`.
 Never tag it in the findings.
 
-### At every step: look at what you have before you work on it
+## At every step: look at what you have before you work on it
 
 Fifty? Read them all. A few hundred? Sort by the client's goods and markets, read the near ones first, list
 the rest. A thousand or more? The field is crowded: read the identical and live ones for the client's
@@ -49,7 +49,7 @@ goods, tell the client it is crowded, and do not write up the rest. Carry forwar
 raise with the client. Write down what you set aside and why. This applies to the register's answer, to the
 list of records, to the placements, to the off-register sweep and to the write-up alike.
 
-### Read the identical mark first. Look at the count before you read anything
+## Read the identical mark first. Look at the count before you read anything
 
 On every matter the identical mark, in the instructed classes, is the first thing you read, and nothing
 wider is asked until you have read it. The register tells you how many filings answer a question before it

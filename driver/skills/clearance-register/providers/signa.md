@@ -144,8 +144,8 @@ these fifteen, an unmapped region abandons the translation, and a territory the 
 not reachable by asking the question a different way. A Madrid designation of Germany is found only when
 Germany is the territory searched, and it cannot be. For any matter jurisdiction outside this set, give
 that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa) — disclose
-it; no search on this register can close it, so it is not escalated, and it is never clean. This follows
-the keystone doctrine in `../digest.md` → *Coverage ledger*: a could-not-reach gap is **`deferred`**,
+it; no search on this register can close it, so it is not escalated, and it is never clean. This is
+the digest's keystone doctrine (`../digest.md` → *Coverage ledger*): a could-not-reach gap is **`deferred`**,
 open and disclosed, never `coverage-limited` (a searched-but-unexhausted DATA limit a re-run cannot close).
 
 ## Record base host

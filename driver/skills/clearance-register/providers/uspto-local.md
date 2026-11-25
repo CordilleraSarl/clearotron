@@ -129,7 +129,7 @@ for what the classification is then used for.
 This source covers **US only**. For every other jurisdiction in the matter, the register sweep cannot
 reach it here: give that slice a `deferred` coverage-form row so the digest and synthesis surface it —
 disclose it; no search on this register can close it, so it is not escalated, and it is never clean. This
-follows [../digest.md](../digest.md) → *Coverage ledger*.
+is the digest's coverage rule (`../digest.md` → *Coverage ledger*).
 
 The same rule covers the two capability gaps above: a phonetic slice and an internal-wildcard pattern are
 `deferred`, not `coverage-limited` and never clean.
