@@ -199,7 +199,7 @@ test("a run's record receipts name the register it recorded; a run with no recor
 });
 
 test("a register unit is briefed on its run's register: its name, its manual and its grant", async () => {
-  const { STAGES, PROVIDER_META, providerMeta } = await import("../stages.mjs");
+  const { STAGES, PROVIDER_META, providerMeta, providerManuals } = await import("../stages.mjs");
   const { REGISTER_PROVIDER, PROVIDERS } = await import("../driver.config.mjs");
   const other = REGISTER_PROVIDER === "signa" ? "euipo" : "signa";
   const PATHS = { variantManifest: "vm.json", matterContext: "mc.md", registerBand: (a) => `band-${a}.json`,
@@ -213,7 +213,8 @@ test("a register unit is briefed on its run's register: its name, its manual and
   assert.ok(onOther.includes(providerMeta(other).skillDoc), "the unit is told to read its run's register manual");
   assert.equal(message({}), message({ register: REGISTER_PROVIDER }), "a run that names no register is briefed on the machine's, as before");
   assert.deepEqual(PROVIDER_META, providerMeta(REGISTER_PROVIDER));
-  assert.deepEqual(STAGES["register-unit"].followupSkillReads({ register: other }), [providerMeta(other).skillDoc]);
+  assert.deepEqual(STAGES["register-unit"].followupSkillReads({ register: other }), providerManuals(other), "a follow-up reads its run's register manuals");
+  assert.equal(providerManuals(other)[0], providerMeta(other).skillDoc);
 });
 
 test("a run's register adapter is the named register's, or the machine's when none is named", async () => {
