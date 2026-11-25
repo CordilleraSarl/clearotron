@@ -62,7 +62,8 @@ comes from the search's `ids{}` key, never from the guid.
 | Opposition | `oppositions: null` — see below |
 | Everything else | `_raw` (full ST.66 record) |
 
-A record whose `statusClass` is `unknown` is never auto-dropped: deep-fetch it.
+A record whose `statusClass` is `unknown` is never auto-dropped: deep-fetch it. If a full record has already returned an
+unknown status, keep it unknown.
 
 **`test_mode: true` is dev-only.** Bodies are obfuscated and **not persisted** to the record
 ledger — so a test-mode fetch can never back a real finding.

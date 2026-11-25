@@ -26,7 +26,8 @@ test("Clarivate asks one script question per named market, keeps the class pin, 
     + "romanised form (below); where that romanised form is a Latin question the plan already asks, do not ask it again."));
   assert.ok(clarivate.includes("Leave it off: dead identical records then come back in the named band with their status, and no separate "
     + "identity leg is run."));
-  assert.ok(clarivate.includes("Narrow a crowd by the steps in `unit.md` (*Read the identical mark first*). Never by \"take the first N\"."));
+  // Both seats that read it hold a manual with that section, so the line names no file and each reads its own.
+  assert.ok(clarivate.includes("Narrow a crowd by the steps under *Read the identical mark first* in your own manual. Never by \"take the first N\"."));
   for (const gone of ["run the variant manifest per script", "run the identity leg", "identical-match is class-agnostic",
     "Narrow by: office set", "not wired yet", "unbilled", "escalate and disclose"])
     assert.ok(!both.includes(gone), `the Clarivate manual still says "${gone}"`);

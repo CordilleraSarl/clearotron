@@ -35,7 +35,13 @@ test("a provider that splits its manual opens the questions file with the reader
     assert.ok(msg.includes(meta.questionsDoc) && !msg.includes(meta.skillDoc), `${id}: the reader's message names the whole manual`);
     // The reader cannot fetch a record, so its file tells it to fetch none.
     assert.doesNotMatch(read(meta.questionsDoc), /deep-fetch|pass it to `register_record_fetch`/, `${id}: the reader's file tells it to fetch a record`);
+    // Nor does it send the reader to the clearance unit's manual, which the reader is never handed.
+    assert.doesNotMatch(read(meta.questionsDoc), /`unit\.md`/, `${id}: the reader's file points at unit.md`);
   }
+  // The unit fetches a record of unknown status once; a full record that still reads unknown stays unknown, with no second fetch.
+  assert.match(read(PROVIDERS.clarivate.skillDoc).replace(/\s+/g, " "), /deep-fetch it\. If a full record has already returned an unknown status, keep it unknown\./);
+  // A Signa reader holding a list row or goods wording alone reads only the fields it was shown.
+  assert.match(read(PROVIDERS.signa.questionsDoc).replace(/\s+/g, " "), /When the filing detail includes a full record, use the fields below\. With a list row or goods wording alone, use only the fields shown\./);
 });
 
 test("the clearance unit reads both files, its opening and its follow-ups alike", () => {

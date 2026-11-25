@@ -42,6 +42,9 @@ crowd descriptor.
 
 ## Normalized record fields (`register_record_fetch` → flat shape — read directly)
 
+When the filing detail includes a full record, use the fields below. With a list row or goods wording alone, use only
+the fields shown.
+
 `register_record_fetch` returns the record NORMALIZED to the shared provider shape (the plugin flattens
 Signa's nested record; the full upstream record is under `_raw`):
 

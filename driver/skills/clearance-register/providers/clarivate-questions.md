@@ -80,7 +80,8 @@ against the 186-code vocabulary. A jurisdiction **outside** that vocabulary is r
 becomes a `deferred` coverage row — it is never quietly dropped from the filter.
 
 An international (WO) registration reaches **only its designated countries** — read
-`madridDesignations`; never imply "international = global".
+`madridDesignations`; never imply "international = global". When the extract omits that field, a particular country's
+coverage cannot be resolved from the WO office code alone.
 
 ### Owner search — resolve first, and never emit CONTAINS
 
@@ -110,7 +111,7 @@ weigh materiality. (Exception: a `names` stack wider than the 496 chunk bound is
 window-by-window, so no whole-stack per-office count exists — the field is then null with a stated
 reason, because a mislabelled per-jurisdiction figure is worse than none.)
 
-Narrow a crowd by the steps in `unit.md` (*Read the identical mark first*). Never by "take the first N".
+Narrow a crowd by the steps under *Read the identical mark first* in your own manual. Never by "take the first N".
 
 ## Status — read `statusClass`, and let it fail open
 
