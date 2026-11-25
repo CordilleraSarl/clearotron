@@ -118,6 +118,9 @@ test("past the cut, a class with some wording shown says its further wording is 
     20: { body: { goodsServices: [{ classes: [9], description: ORIGINAL, language: "zh", translation: LONG, translation_language: "en" }] } },
     30: { body: { goodsServices: [{ classes: [9], description: LONG, language: "zh", translation: GOODS, translation_language: "en" }] } },
     40: { body: { goodsServices: [{ classes: [9], description: "x".repeat(NATIVEREAD_GOODS_CHARS - "class 9: ".length - 3), language: "zh", translation: GOODS, translation_language: "en" }] } },
+    // The translation's last word ends at the cut, and only the closing bracket falls past it.
+    50: { body: { goodsServices: [{ classes: [9], description: "x".repeat(50), language: "zh",
+      translation: "y".repeat(NATIVEREAD_GOODS_CHARS - "class 9: ".length - 50 - " (translation: ".length), translation_language: "en" }] } },
   });
   try {
     const { payload } = buildNativereadPayload({ registerRecords: chineseRegisterRecords(dir) });
@@ -126,5 +129,7 @@ test("past the cut, a class with some wording shown says its further wording is 
     assert.match(lineOf(payload, 20), /characters shown; the translation for class 9 is shortened\): /);
     assert.match(lineOf(payload, 30), /characters shown; the original wording for class 9 is shortened, and its translation is not shown\): /);
     assert.match(lineOf(payload, 40), /characters shown; the translation for class 9 is not shown\): /);
+    assert.ok(lineOf(payload, 50).includes(`goods (official record; first ${NATIVEREAD_GOODS_CHARS} of ${NATIVEREAD_GOODS_CHARS + 1} characters shown): `),
+      `a translation shown whole was said to be shortened: ${lineOf(payload, 50)}`);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

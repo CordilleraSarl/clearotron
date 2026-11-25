@@ -520,11 +520,14 @@ const goodsShown = (goods, from) => {
   let at = 0;
   for (const t of statements) {
     const words = at + t.head.length, originalEnd = words + t.original.length;
-    const translationStart = originalEnd + t.opening.length, end = translationStart + t.translation.length + t.close.length;
+    const translationStart = originalEnd + t.opening.length, translationEnd = translationStart + t.translation.length;
+    const end = translationEnd + t.close.length;
     if (cut <= words) { if (t.name) (seen.has(t.name) ? further : none).push(t.name); }
     else {
       if (t.name) seen.add(t.name);
-      if (t.translation.length && cut < end && t.name) {
+      // Only the words count: a translation shown whole with its closing bracket cut is not a shortened translation,
+      // and the line's own count already says the cut fell there.
+      if (t.translation.length && cut < translationEnd && t.name) {
         versions.push(cut < originalEnd ? `the original wording for class ${t.name} is shortened, and its translation is not shown`
           : cut <= translationStart ? `the translation for class ${t.name} is not shown` : `the translation for class ${t.name} is shortened`);
       }
