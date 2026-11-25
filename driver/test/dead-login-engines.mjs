@@ -7,7 +7,9 @@
 //   - Claude ends a `-p` turn with "Invalid API key · Please run /login" and exits 1;
 //   - Codex 0.162.0 writes its refused renewal to stderr, fails the turn and exits 1 (the two lines are the ones
 //     a-codex-renewal-that-fails-for-a-moment-is-not-a-sign-out.test.mjs replays, as codex wrote them).
-// The shebang names this node, so a test that pins PATH to the system folders still starts them.
+// The shebang names this node, so a test that pins PATH to the system folders still starts them. Windows has no
+// shebang: there the `.mjs` name is what starts them, because the product runs a JavaScript engine program through
+// the Node running now (engineSpawn), as it runs Codex's npm launcher.
 import { chmodSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -49,8 +51,8 @@ function program(path, body) {
 export function deadLoginEngines(dir) {
   const authFile = join(dir, "auth.json");
   writeFileSync(authFile, JSON.stringify({ auth_mode: "chatgpt", tokens: { refresh_token: "spent" } }) + "\n");
-  const claude = program(join(dir, "claude-signed-out"), CLAUDE);
-  const codex = program(join(dir, "codex-signed-out"), CODEX);
+  const claude = program(join(dir, "claude-signed-out.mjs"), CLAUDE);
+  const codex = program(join(dir, "codex-signed-out.mjs"), CODEX);
   return {
     authFile,
     claude: { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: claude },

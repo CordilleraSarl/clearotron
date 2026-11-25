@@ -1660,7 +1660,9 @@ function plantInstalledCopy(content, version = "9.9.9") {
   return { root, program };
 }
 
-test("--check names the copy Clearotron installed and its version, and offers no vendor install", () => {
+test("--check names the copy Clearotron installed and its version, and offers no vendor install", {
+  skip: process.platform === "win32" && "a `#!/bin/sh` stand-in: --check makes a real turn on the installed copy, whose name is `claude.exe`, and Windows starts only a real executable by that name",
+}, () => {
   const { install } = ENGINE_BINARIES["anthropic-agent"];
   // A copy that answers the turn --check makes every time: the offline stand-in, behind the installed copy's name.
   const { root, program } = plantInstalledCopy(`#!/bin/sh\nexec "${process.execPath}" "${MOCK_CLAUDE}" "$@"\n`);

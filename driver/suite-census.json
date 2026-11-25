@@ -5700,7 +5700,7 @@
         "onboard-wizard.test.mjs": {
           "tests": 78,
           "asserts": 304,
-          "skips": 4,
+          "skips": 5,
           "todos": 0
         },
         "onboarding-sets-the-framework-it-says-it-set.test.mjs": {

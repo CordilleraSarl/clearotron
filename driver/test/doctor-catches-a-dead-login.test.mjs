@@ -16,6 +16,7 @@ import { spawnSync } from "node:child_process";
 import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";
 import { doctorRepoRoot } from "./helpers/portal-bundle.mjs";
 import { deadLoginEngines } from "./dead-login-engines.mjs";
+import { engineSpawn } from "../engine/engine-spawn.mjs";
 
 /** The real command, in a scratch home, with the deployment's git position pinned (doctor-refuses-what-cannot-run.test.mjs says why). */
 function doctor(env, args = []) {
@@ -35,7 +36,8 @@ for (const [engine, said] of [["claude", /anthropic-agent is not signed in/], ["
     try {
       const engines = deadLoginEngines(dir);
       if (engine === "codex") {
-        const status = spawnSync(engines.codex.CLEAROTRON_CODEX_PATH, ["login", "status"], { encoding: "utf8" });
+        const start = engineSpawn(engines.codex.CLEAROTRON_CODEX_PATH, ["login", "status"]);
+        const status = spawnSync(start.command, start.args, { encoding: "utf8" });
         assert.match(status.stdout, /Logged in/, "the stand-in says it is signed in, as the real one did");
       }
       const r = doctor(engines[engine]);
