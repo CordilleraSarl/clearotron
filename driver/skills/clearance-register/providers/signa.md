@@ -142,10 +142,10 @@ force there, and a finding may sit on any layer of it.
 expansion above does not change this and must not be read as widening it: `SIGNA_OFFICE_KEYS` maps only
 these fifteen, an unmapped region abandons the translation, and a territory the vendor does not index is
 not reachable by asking the question a different way. A Madrid designation of Germany is found only when
-Germany is the territory searched, and it cannot be. For any matter jurisdiction outside this set, give
-that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa) — disclose
-it; no search on this register can close it, so it is not escalated, and it is never clean. This is
-the digest's keystone doctrine (`../digest.md` → *Coverage ledger*): a could-not-reach gap is **`deferred`**,
+Germany is the territory searched, and it cannot be. For any matter jurisdiction outside this set, the
+register sweep **cannot reach** it on Signa. The digest records that part of the search as deferred and
+discloses the gap. No search on this register can close it, so it is not escalated, and it is never clean.
+This is the digest's keystone doctrine (`../digest.md` → *Coverage ledger*): a could-not-reach gap is **`deferred`**,
 open and disclosed, never `coverage-limited` (a searched-but-unexhausted DATA limit a re-run cannot close).
 
 ## Record base host
