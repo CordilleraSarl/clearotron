@@ -316,6 +316,26 @@ test("a Clarivate answer of a shape the adapter does not read fails with that sh
   }
 });
 
+test("a clearance asks for logos only for the registrations its card draws: the first eight it holds a record of", async () => {
+  // A card's register record and its logo line draw at most eight registrations (publish/render.mjs, shownRegistrations).
+  // On two delivered reports of 2026-11-25, 9 of 40 and 6 of 58 image requests were for registrations past a card's eighth.
+  const dir = mkdtempSync(join(tmpdir(), "logos-card-shown-"));
+  mkdirSync(join(dir, "_records"), { recursive: true });
+  mkdirSync(driverDir(dir), { recursive: true });
+  const ids = Array.from({ length: 11 }, (_, i) => `qzc${String(i + 1).padStart(2, "0")}`);
+  for (const id of ids) writeFileSync(join(dir, "_records", `em-${id}.json`), JSON.stringify({ _uri: `/mark/em/${id}`, markFeature: "WORD AND DESIGN", imageAvailable: true }));
+  // The second cited registration has no saved record, so the card skips it and draws the ninth held one in its place.
+  const cited = [ids[0], "qzc99", ...ids.slice(1)].map((id) => ({ uri: `/mark/em/${id}` }));
+  writeFileSync(join(dir, "findings.json"), JSON.stringify({ findings: [
+    { ordinal: 1, disposition: "off-field", owner: { registrations: cited } },
+    { ordinal: 2, disposition: "withdrawn", owner: { registrations: [{ uri: `/mark/em/${ids[10]}` }] } }] }));
+  const calls = [];
+  const doc = await markLogos(dir, { findingsPath: join(dir, "findings.json"), provider: register(() => ({ ok: true, bytes: PNG }), calls), env: ENV });
+  assert.deepEqual(calls, ids.slice(0, 8).map((id) => `/mark/em/${id}`), "a logo was asked for a registration the card does not draw, or one it draws was skipped");
+  assert.equal(byRef(doc)["/mark/em/qzc99"].state, "unknown", "a registration the run holds no record of keeps its row and asks nothing");
+  assert.equal(byRef(doc)["/mark/em/qzc09"], undefined, "a registration past the card's eighth was given a row");
+});
+
 test("a Knockout asks for logos only for the filings its tables show: the most material few, the weighed ones first", async () => {
   // A name's table shows at most eight filings, the ones the run weighed first (publish/render-knockout.mjs, shownFilings).
   // On a demo re-run, 8 of a Knockout's 9 image requests were for filings no page listed.

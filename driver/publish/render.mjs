@@ -1945,6 +1945,14 @@ function fullDetail(f, card, recordsByUri = new Map()) {
 // AT MOST EIGHT ENTRIES, in the card's order, then the line that sends the reader to the audit workbook for all of
 // them (owner, 2026-11-18). A card citing dozens of registrations otherwise runs to pages.
 const RECORD_CAP = 8;
+/**
+ * The registrations a card's logo line draws, in the card's order: those whose record the run saved, at most RECORD_CAP,
+ * as its register record lists them. The logo step asks for logos for these alone (mark-logos.mjs), so no logo is paid for
+ * that no reader sees. `hasRecord` takes a registration's lower-cased address. PURE.
+ */
+export function shownRegistrations(f, hasRecord) {
+  return (f?.owner?.registrations || []).filter((r) => r?.uri && hasRecord(String(r.uri).toLowerCase())).slice(0, RECORD_CAP);
+}
 function registerRecordBlock(f, recordsByUri, numberOf) {
   const cited = (f.owner?.registrations || [])
     .map((r) => ({ r, rec: r?.uri ? recordsByUri.get(String(r.uri).toLowerCase()) : null }))
@@ -1965,9 +1973,7 @@ function registerRecordBlock(f, recordsByUri, numberOf) {
 // logos and "+N" under its text. The image travels inside the report; nothing points at the register's image.
 function logoLine(f, recordsByUri, { small = false } = {}) {
   if (!LOGOS.size) return '';
-  const figures = (f.owner?.registrations || [])
-    .filter((r) => r?.uri && recordsByUri.get(String(r.uri).toLowerCase()))
-    .slice(0, RECORD_CAP)
+  const figures = shownRegistrations(f, (uri) => Boolean(recordsByUri.get(uri)))
     .map((r) => {
       const rec = recordsByUri.get(String(r.uri).toLowerCase());
       const href = hrefAttr(RECORD_LINKS?.get(String(r.uri).toLowerCase())?.href) || hrefAttr(registerRecordView(rec, { uri: r.uri }).logo.href);
