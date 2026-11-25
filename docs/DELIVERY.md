@@ -105,17 +105,35 @@ field, never "this was not a refusal".
 
 ### `intake-rejected` — `intake-<base>.failed.pending`
 
-`{ ts, kind: "intake-rejected", classify: "clarify"|"reject", base, agent, jobId, msgId,
-forwarder, forwarderEmail, markName, errors[], text }` — `classify: "clarify"` means the fix
+`{ ts, kind: "intake-rejected", classify: "clarify"|"reject", base, agent, account, organisation,
+jobId, msgId, forwarder, forwarderEmail, markName, errors[], text }` — `classify: "clarify"` means the fix
 is a question back to the requester (see [INTAKE.md](INTAKE.md)); `"reject"` means the job was
 malformed. `text` is ready to send ("… Nothing has been searched or delivered. Job parked as
 <base>.failed …").
 
 ### `duplicate-skipped` — `intake-<base>.duplicate.pending`
 
-`{ ts, kind: "duplicate-skipped", base, agent, jobId, msgId, forwarder, forwarderEmail,
-markName, text }` — the matter-dedup gate parked the request instead of running a second paid
-search. The queue-side `.duplicate.reason` explains the match and the `dupOverride` force-run.
+`{ ts, kind: "duplicate-skipped", base, agent, account, organisation, jobId, msgId, forwarder,
+forwarderEmail, markName, text }` — the matter-dedup gate parked the request instead of running a
+second paid search. The queue-side `.duplicate.reason` explains the match and the `dupOverride` force-run.
+
+### `pre-run-failed` — `intake-<base>.prerun-failed.pending`
+
+`{ ts, kind: "pre-run-failed", base, agent, account, organisation, jobId, msgId, forwarder,
+forwarderEmail, markName, reason, text }` plus the chat routing fields — the request failed before its
+run could start, for example on the engine's sign-in check, so nothing was searched or delivered.
+`text` is ready to send. For an order a client placed themselves it is the client sentence of the
+failure email ("The <search ordered> for <mark> was not started, and nothing was delivered. Please tell
+whoever administers this installation."); otherwise it is the staff line with the reason. `reason` is always on the packet.
+
+### Whose notice it is, when there is no run
+
+The three kinds above are filed before any run exists, so there is no run to read an account from.
+Each carries `account`, the account its order named (`profileKey`), and `organisation`, the
+organisation of a Generic order. A token scoped to named companies lists and acknowledges the notices
+of those companies, as it does their runs. An order that named no account carries `account: null`,
+which only a full grant sees: the runner may still resolve such an order to a company from the
+sender's email domain.
 
 ### `late-bind-ack` — `<runId>.bindack.pending`
 

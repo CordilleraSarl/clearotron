@@ -16,7 +16,7 @@ import { validateJob } from "../../driver/enqueue-schema.mjs";
 import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
 import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
-import { assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
+import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
 import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one marker shape, shared with the engine
 import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver/engine/child-record.mjs";   //
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
@@ -561,9 +561,10 @@ export function getDeliveryPacket(args = {}) {
 // courier never SAW this event and cannot be misled into thinking it routed one it did not. Leaving
 // the file on disk is the point — the full-grant courier still picks it up.
 //
-// Fail closed on every unknown: a packet with no runId (an intake rejection filed before any run
-// exists), an unreadable file, or a run with no account tag all resolve to "not in your grant" for a
-// scoped session — exactly how assertAccountAccess already treats an untagged run everywhere else.
+// Fail closed on every unknown: an unreadable file, a run with no account tag, or a notice filed before
+// any run exists whose order named no account all resolve to "not in your grant" for a scoped session —
+// exactly how assertAccountAccess already treats an untagged run everywhere else. A notice with no run
+// is judged on the account its order named (runner.mjs noticeAccount), as list_outbox_events judges it.
 export function ackEvent(args = {}, { scope } = {}) {
   const file = String(args.file || "");
   if (!file) throw new Error("ack_event: file is required (from list_outbox_events)");
@@ -584,12 +585,13 @@ export function ackEvent(args = {}, { scope } = {}) {
 // is a refusal, never a pass.
 function ackVisible(path, file, scope) {
   let runId = null;
+  let packet = null;
   try {
     const raw = readFileSync(path, "utf8");
-    try { runId = JSON.parse(raw).runId ?? null; }
+    try { packet = JSON.parse(raw); runId = packet?.runId ?? null; }
     catch { runId = file.replace(/\.pending$/, ""); }     // legacy delivered marker: agent-id text body, runId in the name
   } catch { return false; }                                // unreadable — fail CLOSED
-  if (!runId) return false;
+  if (!runId) return packet ? accountVisible(scope, packet.account ?? null, packet.organisation ?? null) : false;
   const run = resolveRun(String(runId));
   if (!run) return false;
   try { assertAccountAccess(scope, runAccountKey(run), `outbox event "${file}"`); return true; }
