@@ -70,7 +70,7 @@ test("the doctrine file agrees with the dispatch instead of contradicting it", (
   // A divided name read Medium over fourteen classes while eleven were Manageable: its opening gave no band, because the
   // manual ordered the name, the landscape, then the rating. The opening now leads with the band and the goods it covers.
   const flat = (t) => t.replace(/\s+/g, " ");
-  const opening = flat(s.slice(s.indexOf("## The per-mark opening read"), s.indexOf("**No recommendation, and no next step.**")));
+  const opening = flat(s.slice(s.indexOf(ASSESS_SENTENCES.thePerMarkOpeningRead), s.indexOf(ASSESS_SENTENCES.noRecommendationAndNoNextStep)));
   assert.ok(opening.includes(flat(ASSESS_SENTENCES.theOpeningGivesTheBandAndItsGoods)),
     "the opening read no longer leads with the band and the goods that carry it");
   assert.doesNotMatch(opening, /what the name is, what the landscape around it looks like, what drives the rating/,
@@ -112,7 +112,8 @@ test("no copy of the opening-read instruction the model is handed asks what to d
     const s = read(f);
     assert.doesNotMatch(s, /what (?:a reader should |to )?do with (?:that|it)\b/i, `${f} asks again for what to do with the name`);
     if (f.includes("stages-knockout")) continue;   // the opening read's instruction is the manual's now, and the message points there
-    assert.match(s.replace(/\s+/g, " "), /In the first substantive paragraph, give the overall band and name the goods or services that drive it\./,
+    const firstSentence = ASSESS_SENTENCES.theOpeningGivesTheBandAndItsGoods.split(". ")[0] + ".";
+    assert.ok(s.replace(/\s+/g, " ").includes(firstSentence),
       `${f} no longer carries the opening-read instruction this arm reads — find where it moved`);
     assert.doesNotMatch(s, /what drives the rating\./, `${f} still orders the opening with the rating last`);
   }

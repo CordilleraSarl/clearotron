@@ -20,7 +20,9 @@ export const ASSESS_SENTENCES = Object.freeze({
   thePerMarkOpeningRead: "## The per-mark opening read",
   theOpeningGivesTheBandAndItsGoods: "In the first substantive paragraph, give the overall band and name the goods or services "
     + "that drive it. If the advice differs for other goods, say how.",
-  theOpeningIsVisibleFoldedIsTheRest: "the first substantive paragraph of each `assessment`",
+  noRecommendationAndNoNextStep: "**No recommendation, and no next step.**",
+  theAssessmentIsVisibleWhereItOpensThePage: "each name's assessment wherever it opens that name's page",
+  theAssessmentIsFoldedOnlyBehindAFold: "the assessment when it appears behind a fold",
   optionalAndOmittingRowAlways: "> **Optional, and omitting a row is always safe.** A result your reading took for a possible conflict "
     + "and > then put down gets a ground, one row per owner's set or group of like results, never one per "
     + "result. > Never invent one to fill the list",
