@@ -9,7 +9,7 @@ import { atomicWrite, paths } from "../run-record.mjs";
 import { ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { applyAskClosure, deriveAsks, finalizeOpenHandoffs, summarizeAsks } from "../ask-ledger.mjs";
 import { mintCommonLawCarryDoubts } from "../commonlaw-carry.mjs";
-import { consolidateFindingsFile, deriveCommonLawCarry, injectDeferralCoverage, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, localLanguageStateOf, planWriteUps, stampCoverageJudgmentRows, writeShortEntries } from "../coverage-rows-run.mjs";
+import { consolidateFindingsFile, deriveCommonLawCarry, injectDeferralCoverage, injectLaneDepthCoverage, injectMeaningGapCoverage, injectScreenGateCoverage, injectSearchesOpenCoverage, injectScriptScopeCoverage, injectUncoveredMarketCoverage, localLanguageStateOf, planWriteUps, stampCoverageJudgmentRows, writeShortEntries } from "../coverage-rows-run.mjs";
 import { readDeclinations } from "../declination-tool.mjs";
 import { keepDeliveredRecordAsHistory, readFindingsForReport, readReadingLog, rebuildDeliveredRecord, rewriteFromBeforeTheSeam, withdrawSupersededAudit } from "../delivered-record-run.mjs";
 import { caseLawJoin, settleDerivedBases } from "../dispatch-extras.mjs";
@@ -68,7 +68,7 @@ export async function runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWri
   // A pass follows each rewrite of findings.json and adds the rows below again, so delivery reads only the adders
   // that failed since the last of these.
   runLog(run.runDir, { event: "coverage-rows-pass" });
-  injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
+  injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note); injectSearchesOpenCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
   // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
   // discloses what the native-language investigation would have searched, and where it is offered
   // (coverage-limited: never clamps, never gates).

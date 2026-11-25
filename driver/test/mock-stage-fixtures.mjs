@@ -2685,7 +2685,9 @@ export function applyStageWrites(msg, argv) {
           // assessment beside a re-rated mark is observable.
           assessment: `${n} screens at ${band} on this sweep. The name was searched against marketplace and `
             + `common-law use in the classes this chunk covers, and the read below sets out what the sweep `
-            + `found and what it could not reach. A knockout screen triages; it does not clear.`,
+            + `found and what it could not reach. A knockout screen triages; it does not clear.`
+            // MOCK_KO_NAME_QUALIFICATION: JSON keyed by name, a qualification that holds for that name alone, in its own assessment.
+            + (process.env.MOCK_KO_NAME_QUALIFICATION && JSON.parse(process.env.MOCK_KO_NAME_QUALIFICATION)[n] ? ` ${JSON.parse(process.env.MOCK_KO_NAME_QUALIFICATION)[n]}` : ""),
           contextFraming: "mock framing", rating: band, ratingQualifier: null,
           // MOCK_KO_CLASS_GROUPS: this name's answer by class group, as JSON keyed by name, through the real transport's check.
           ...(() => { const split = process.env.MOCK_KO_CLASS_GROUPS ? JSON.parse(process.env.MOCK_KO_CLASS_GROUPS)[n] : null;

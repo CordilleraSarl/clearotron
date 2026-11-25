@@ -98,6 +98,9 @@ for (const engine of Object.keys(ENGINES)) {
     assert.equal(deferred.length, qids.size, `a slice never reached is not deferred: ${deferred.length} of ${qids.size}`);
     assert.deepEqual(deferred.filter((d) => d.reason !== NOT_LANDED), [], "a slice is deferred without the shipped reason");
     assert.notEqual(p2.verdict, "CLEAR", "the verdict stayed CLEAR over slices nobody searched");
+    // THE READER IS TOLD: the delivered report's coverage carries the search as open, with the line its record holds.
+    assert.ok(json(join(rd, "findings.json")).coverage.some((c) => c.area === "Follow-up / main register search" && c.state === "open"
+      && c.note === `main register search — not completed this run — ${NOT_LANDED}`), "the delivered report does not carry the search as open");
   });
 }
 
@@ -123,34 +126,64 @@ test("the slices a unit never reached are the planned ones its band holds no blo
 });
 
 // A REGISTER CALL SENT AND NEVER RETURNED IS A PRODUCT FAULT. The unit is not sent back to make the call again, though
-// attempts and the run's recovery budget remain, and its slices are delivered open, not as never having reached the
-// register: a start with no return shows only that no answer was recorded, so they take the line for a search left open.
+// attempts and the run's recovery budget remain: it is recorded at once and taken as its band stands, and the run goes on.
+// Its slices are delivered open with the line for a search left open: a start with no return shows only that no answer
+// was recorded. A sibling that failed on its own work keeps its normal recovery.
 const LEFT_OPEN = plainDeferralReason("unfinished");
+const ALL_UNITS = "BAND ARTIFACT";
+const unitAttempts = (evs, axis) => evs.filter((e) => e.event === "attempt" && e.stage === `register-unit:${axis}`).length;
+async function untilDelivered(root, engine, knobs, max = 8) {
+  const passes = [];
+  let codename = null;
+  for (let n = 0; n < max; n++) {
+    const p = await runPass(root, engine, knobs, codename);
+    passes.push(p);
+    codename = p.codename ?? codename;
+    if (!p.postponed) break;
+  }
+  return passes;
+}
 for (const engine of Object.keys(ENGINES)) {
-  test(`${engine}: a register unit whose plan call never came back is sent once, even with recovery on, and its slices are delivered open`, async () => {
+  test(`${engine}: a register unit whose plan call never came back is sent once, even with recovery on, and the run delivers with its slices open`, async () => {
     const root = tempDir("clearotron-unit-call-killed-");
     const knobs = { MOCK_FAIL_STAGE: FAIL_UNIT, MOCK_KILLED_REGISTER_CALL: AXIS, CLEAROTRON_REGISTER_GAP_CLAMP: "1", CLEAROTRON_MAX_RETRIES: "2",
       CLEAROTRON_RECOVERY_MAX: "3" };
     const p1 = await runPass(root, engine, knobs);
-    assert.equal(p1.postponed, true, `pass 1 did not park: ${JSON.stringify(p1).slice(0, 300)}`);
-    const ev1 = events(p1.runDir);
-    assert.equal(ev1.filter((e) => e.event === "attempt" && e.stage === `register-unit:${AXIS}`).length, 1, "the unit was sent again after its call never came back");
-    assert.deepEqual(ev1.filter((e) => e.event === "attempt-prevented" && e.stage === `register-unit:${AXIS}`).map((e) => e.decision),
+    assert.equal(p1.ok, true, `the run did not deliver on its first pass: ${JSON.stringify(p1).slice(0, 300)}`);
+    const ev = events(p1.runDir);
+    assert.equal(unitAttempts(ev, AXIS), 1, "the unit was sent again after its call never came back");
+    assert.deepEqual(ev.filter((e) => e.event === "attempt-prevented" && e.stage === `register-unit:${AXIS}`).map((e) => e.decision),
       ["ladder-break:product-fault"], "the ladder did not end on the product fault");
-    assert.deepEqual(ev1.filter((e) => e.event === "part-not-completed").map((e) => e.part), ["searches"], "the run bought a recovery park instead of recording the searches");
+    assert.deepEqual(ev.filter((e) => e.event === "unit-product-fault").map((e) => e.units), [[AXIS]]);
+    assert.equal(ev.filter((e) => e.event === "unit-not-completed-delivery" && e.stage === `register-unit:${AXIS}`).length, 1, "the unit was not taken as it stands");
     const record = json(driverDir(p1.runDir, "not-completed", "searches.json"));
     assert.deepEqual(record.unfinished_units, [AXIS], "the record does not name the unit");
     assert.ok((record.slices ?? []).length > 0, "guard: the record holds no slice");
-    assert.ok(record.slices.every((s) => s.axis === AXIS && s.reason === LEFT_OPEN),
+    assert.ok(record.slices.every((x) => x.axis === AXIS && x.reason === LEFT_OPEN),
       `a slice was recorded without the line for a search left open: ${JSON.stringify(record.slices.slice(0, 2))}`);
-
-    const p2 = await runPass(root, engine, knobs, p1.codename);
-    assert.equal(p2.ok, true, `the run did not deliver: ${JSON.stringify(p2).slice(0, 300)}`);
-    const ev2 = events(p2.runDir);
-    assert.equal(ev2.filter((e) => e.event === "attempt" && e.stage === `register-unit:${AXIS}`).length, 1, "the unit was sent again on the pass that delivers");
-    assert.equal(ev2.filter((e) => e.event === "unit-not-completed-delivery" && e.stage === `register-unit:${AXIS}`).length, 1, "the unit was not taken as it stands");
-    const deferred = (json(driverDir(p2.runDir, "plan-execution.json")).deferred ?? []).filter((d) => record.slices.some((s) => s.qid === d.qid));
+    const deferred = (json(driverDir(p1.runDir, "plan-execution.json")).deferred ?? []).filter((d) => record.slices.some((x) => x.qid === d.qid));
     assert.equal(deferred.length, record.slices.length, "a slice whose call never came back is not deferred");
     assert.deepEqual(deferred.filter((d) => d.reason !== LEFT_OPEN), [], "a slice is deferred without the line for a search left open");
+    assert.ok(json(join(p1.runDir, "findings.json")).coverage.some((c) => c.area === "Follow-up / main register search" && c.state === "open"
+      && c.note === `main register search — not completed this run — ${LEFT_OPEN}`), "the delivered report does not carry the search as open");
+  });
+
+  test(`${engine}: beside a unit whose call never came back, a sibling that failed on its own work keeps its recovery, and only the faulted unit is never sent again`, async () => {
+    const root = tempDir("clearotron-unit-call-killed-sibling-");
+    const knobs = { MOCK_FAIL_STAGE: ALL_UNITS, MOCK_KILLED_REGISTER_CALL: AXIS, CLEAROTRON_REGISTER_GAP_CLAMP: "1", CLEAROTRON_MAX_RETRIES: "0",
+      CLEAROTRON_RECOVERY_MAX: "3" };
+    const passes = await untilDelivered(root, engine, knobs);
+    const last = passes[passes.length - 1];
+    assert.equal(last.ok, true, `the run did not deliver: ${JSON.stringify(last).slice(0, 300)}`);
+    const ev = events(last.runDir);
+    assert.equal(unitAttempts(ev, AXIS), 1, "the faulted unit was sent again by a recovery pass or a resume");
+    const siblings = [...new Set(ev.filter((e) => e.event === "attempt" && /^register-unit:/.test(e.stage) && e.stage !== `register-unit:${AXIS}`).map((e) => e.stage))];
+    assert.ok(siblings.length > 0, "guard: no sibling unit ran");
+    assert.ok(ev.some((e) => e.event === "recovery-classified" || e.event === "recovery-parked"), "the sibling's failure bought no recovery");
+    assert.ok(siblings.some((st) => ev.filter((e) => e.event === "attempt" && e.stage === st).length > 1), "no sibling was sent again by its recovery");
+    const record = json(driverDir(last.runDir, "not-completed", "searches.json"));
+    assert.ok(record.unfinished_units.includes(AXIS), "the faulted unit is not recorded");
+    assert.ok(record.slices.filter((x) => x.axis === AXIS).every((x) => x.reason === LEFT_OPEN), "the faulted unit's slices carry another line");
+    assert.ok(record.slices.filter((x) => x.axis !== AXIS).every((x) => x.reason === NOT_LANDED), "a sibling's slices took the faulted unit's line");
   });
 }

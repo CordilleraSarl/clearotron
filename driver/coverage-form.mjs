@@ -991,6 +991,10 @@ export function findCoverageFormViolations(rows, formError = null) {
       detail: `reason names ${banned.join(", ")} — the reader's page prints this sentence; the coverage unit already carries the identifier`,
     });
     if (rowIsSettled(r, r)) continue;
+    // A ROW THE DRIVER PARKED IS NOT A MISSING STATUS. The coverage tool gave up on it past its refusal bound and told the
+    // step so, and the reader is told it is open (coverage-rows-run.mjs). Only the driver parks a row: the union copies
+    // a call's status and reason and nothing else (coverage-union.mjs), so a call cannot exempt a row by sending the flag.
+    if (r?.parked === true) continue;
     const { status } = seatFields(r);
     const axisOk = REGISTER_AXES.includes(String(r?.axis ?? "").trim().toLowerCase());
     const openClean = axisOk && r?.open === true && STATUS_SET.has(status);

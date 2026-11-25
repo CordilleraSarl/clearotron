@@ -1241,7 +1241,7 @@
         },
         "a-knockout-batch-is-rated-a-family-at-a-time-side-by-side.test.mjs": {
           "tests": 10,
-          "asserts": 56,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -1265,7 +1265,7 @@
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
           "tests": 32,
-          "asserts": 178,
+          "asserts": 179,
           "skips": 0,
           "todos": 0
         },
@@ -1487,7 +1487,7 @@
         },
         "a-large-grid-is-served-in-parts-under-the-tool-cap.test.mjs": {
           "tests": 5,
-          "asserts": 23,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -1794,6 +1794,12 @@
         "a-parked-cancel-frees-its-matter.test.mjs": {
           "tests": 6,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-parked-coverage-ruling-is-exempt-and-reaches-the-reader.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -2236,8 +2242,8 @@
           "todos": 0
         },
         "a-register-search-that-cannot-finish-is-delivered-as-not-searched.pipeline.test.mjs": {
-          "tests": 4,
-          "asserts": 34,
+          "tests": 5,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -2657,7 +2663,7 @@
         },
         "a-search-asks-the-web-on-the-settings-its-report-type-pins.test.mjs": {
           "tests": 6,
-          "asserts": 22,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -2831,7 +2837,7 @@
         },
         "a-stage-run-again-is-answered-what-it-already-asked.test.mjs": {
           "tests": 5,
-          "asserts": 24,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -3510,6 +3516,12 @@
         "an-unended-position-is-delivered-stated.test.mjs": {
           "tests": 2,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-unfinished-register-search-reaches-the-reader-as-open.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -5333,7 +5345,7 @@
         },
         "jx-p4-units.test.mjs": {
           "tests": 25,
-          "asserts": 136,
+          "asserts": 137,
           "skips": 0,
           "todos": 0
         },
@@ -5404,8 +5416,8 @@
           "todos": 0
         },
         "knockout-seats-do-not-describe-the-register-lane.test.mjs": {
-          "tests": 6,
-          "asserts": 13,
+          "tests": 8,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -8229,6 +8241,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-native-language-reader-is-given-the-chinese-register-records.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "the-notice-goes-to-whoever-asked.test.mjs": {
           "tests": 10,
           "asserts": 29,
@@ -8622,6 +8640,12 @@
         "the-report-shell-keeps-what-a-repair-does-not-resend.test.mjs": {
           "tests": 6,
           "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-research-tool-takes-each-route-it-is-told-and-no-other.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },

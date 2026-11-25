@@ -34,15 +34,31 @@ a band that needs sharpening is the band above it, stated as that word.
    `findings[]` record carries one conflicting name, its owner, its band, its evidence and its ground.
 5. **`findings[]` — one typed record per conflicting name you actually found**, ordered most blocking
    first and numbered `ordinal: 1…N` in that order (the ordinal is per MARK). The code then re-ranks on
-   the band and renumbers, so what your order decides is the order inside a band. A cited URL must come from a recorded research payload for this order, a filing held for this order, or a recorded owner check linked to a held filing. The receipts gate refuses a citation the driver cannot trace, at the chunk, at the merged artifact, and again at publish.
-6. **`registerEstimate`.** Use registerEstimate only where the register component was skipped, under
-   RF-15. An empty carried list does not establish that it was skipped. Use the run's recorded state; keep
-   a verified zero, a failed question, and an unread answer distinct. With held filings, weigh their
+   the band and renumbers, so what your order decides is the order inside a band. A cited URL must come from a recorded research payload for this order, a filing held for this order, or a recorded owner check linked to a held filing. The receipts gate refuses a citation the driver cannot trace, at the group, at the merged artifact, and again at publish.
+6. **`registerEstimate`.** Use registerEstimate only where your message says the register component was
+   skipped. An empty carried list does not establish that it was skipped. With held filings, weigh their
    evidence. Where it is owed it is an EXPECTATION and labels itself as one, ending with a sentence in the
    shape of "This is an expectation only, not a search result."
 7. **Purple notes** (internal, for the reviewing lawyer): belt-and-braces additions, famous-brand
    adjacency, institutional-knowledge gaps ("Confirm firm history on [MARK]"),
-   register-pending notes, prior-use mitigation.
+   prior-use mitigation.
+
+## The firm-wide reasoning, on a Knockout
+
+`../clearance-search/firm-wide-reasoning.md` is written for the full clearance. Apply its reasoning here. Where it names a
+clearance field or output, or differs from this manual, this manual governs:
+
+- What it asks you to write in `legal_position` and `practical_position` goes in the finding's `basis`.
+- `coverage.read` and `mark_assessment` do not exist here. Use the finding's name in reader-facing prose. Keep its ordinal
+  in the record.
+- The engine writes the register caveats and notes of RF-10 and RF-15. Write neither. `registerEstimate` follows step 6
+  above.
+- A reputational or cultural risk is a rated `findings[]` record here, as step 1 above says, not an unrated note.
+- Its rule never to drop an identical-mark hit governs filings. Distinguish a verified identical marketplace use from a
+  thin, unverified web mention. A verified identical use receives the applicable evidence assessment. A mere mention
+  follows the marketplace-lead rule in your message.
+- Give crowding mitigating weight only when the marketplace evidence you read shows the crowd in the conflict’s goods and
+  territory. State what you counted, how you narrowed it, and which relevant live conflicts remain.
 
 ## Calibration rules (they override gut instinct)
 

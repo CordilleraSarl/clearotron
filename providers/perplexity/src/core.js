@@ -347,8 +347,7 @@ export function formatSandboxResponse(data, preset) {
   const meta = [`Depth: ${preset}`];
   const usage = data.usage || {};
   if (usage.total_tokens) meta.push(`Tokens: ${usage.total_tokens}`);
-  const cost = usage.cost?.total_cost;
-  if (cost != null) meta.push(`Cost: $${cost}`);
+  // The provider's charge is not the stage's to read (the no-price ruling): it stays in the raw reply the run keeps.
   const confirmation = extractText(data).trim();
 
   return deliverable.stdout.trim() +
@@ -357,6 +356,12 @@ export function formatSandboxResponse(data, preset) {
     (confirmation ? `\n\nModel confirmation: ${confirmation}` : "") +
     `\n\n---\n_Research metadata: ${meta.join(" | ")}_`;
 }
+
+/**
+ * An answer held from an earlier call may carry the provider's charge in its metadata footer, written before the
+ * formatter stopped printing it. It is taken out of that footer only: an amount the research itself found survives.
+ */
+export const withoutProviderCharge = (text) => String(text ?? "").replace(/^(_Research metadata: .*?) \| Cost: \$[^ |_]+(.*_)$/m, "$1$2");
 
 export function formatResponse(data, preset) {
   const text = extractText(data);

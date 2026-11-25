@@ -297,13 +297,15 @@ test("a skip is read from what the run recorded, and a missing file establishes 
   const K = koPaths(dir);
   const msg = () => KO_STAGES["knockout-assess"].message({ K, job: {}, chunkNo: 0, chunkMarks: [{ name: NAME }], chunkTotal: 1, framework: { bands: [{ label: "High" }] }, frameworkPath: null, frameworkMethod: null });
   assert.equal(registerLaneState(dir).state, "unknown");
-  assert.ok(msg().includes("The held files do not establish whether the register component ran. Keep that uncertainty explicit."));
+  assert.ok(msg().includes("The saved material does not establish whether the register search ran. Weigh the evidence supplied. The report states what the register covered."));
   writeFileSync(driverDir(dir, "register-counts.json"), "{}");
   assert.equal(registerLaneState(dir).state, "unavailable");
-  assert.ok(msg().includes("The register listing was unavailable on this run. Use the recorded counts and failure reason, and keep that gap explicit."));
+  // A counts file alone makes the state unavailable, so the line names no cause and points the rater at nothing to describe.
+  assert.ok(msg().includes("No register listing is available to this assessment. Weigh the evidence supplied. The report states what the register covered."));
+  assert.ok(!msg().includes(K.registerCounts), "the rater is not pointed at the counts to describe them");
   writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ unavailable: "the listing could not run", marks: [] }));
   assert.deepEqual(registerLaneState(dir), { state: "unavailable", reason: "the listing could not run" });
-  assert.ok(msg().includes("The recorded reason: the listing could not run"));
+  assert.ok(!msg().includes("the listing could not run"), "the recorded reason reaches the report from code, not through the rater");
   writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ marks: [{ name: NAME, records: [] }] }));
   assert.equal(registerLaneState(dir).state, "held", "an empty carried list is a register that ran");
   assert.doesNotMatch(msg(), /was skipped on this run/);
