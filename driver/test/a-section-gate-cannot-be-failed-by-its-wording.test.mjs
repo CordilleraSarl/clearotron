@@ -20,7 +20,8 @@ import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const VERIFY = readFileSync(join(ROOT, "verify.mjs"), "utf8");
-const SKILL = readFileSync(join(ROOT, "skills", "clearance-common-law", "SKILL.md"), "utf8");
+// The findings file's template and its anchors are in the grid manual.
+const SKILL = readFileSync(join(ROOT, "skills", "clearance-common-law", "grid.md"), "utf8");
 
 // The real gate, imported here rather than beside the behavioural block below: the derived class
 // arm reads `validators` too, and a const declared after it sits in TDZ when the runner reaches it.

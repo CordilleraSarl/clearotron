@@ -13,12 +13,15 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { COMMON_LAW_SENTENCES } from "./ruled-sentences-common-law.mjs";
+import { GRID_SENTENCES } from "./ruled-sentences-common-law-grid.mjs";
 
-const manual = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-common-law", "SKILL.md"), "utf8")
+// The web manual: its shared spine, the grid and the meaning sweep.
+const manual = ["SKILL.md", "grid.md", "meaning.md"]
+  .map((f) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-common-law", f), "utf8")).join("\n")
   .replace(/\s+/g, " ");
 
 test("the web manual asks one grid call per mark and a follow-up only where it could change the advice", () => {
-  assert.ok(manual.includes(COMMON_LAW_SENTENCES.oneGridCallPerMark));
+  assert.ok(manual.includes(GRID_SENTENCES.oneGridCallPerMark));
   for (const gone of ["calls: **5**", "Per workflow run total: **15**"])
     assert.ok(!manual.includes(gone), `the web manual still sets a call count: "${gone}"`);
 });

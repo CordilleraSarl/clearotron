@@ -21,7 +21,8 @@ instead; and `clearance-search/templates/search-request-form.html`, named only i
 | `matter-frame` | Phase 0. Writes the matter's commercial context — sector, customer base, channels of trade, jurisdictions that materially matter, off-field sectors, watchlist seeds — before any search runs. `watchlist-reference.md` is enrichment, not authority. |
 | `clearance-variants` | Classifies the mark into one of six archetypes, derives a risk theory from that, emits the variant manifest both execution skills read. Non-Latin scripts: `transliteration-scripts.md`. |
 | `blind-frame`, `frame-diff` | Re-derives the threat model from the raw instruction alone, deliberately starved of the matter frame, then diffs that model against what the run actually scoped and emits reopen directives the driver acts on. Something has to test the frame instead of reasoning inside it. |
-| `clearance-common-law` | The marketplace / web / social sweep, as structured Perplexity research over the platform list the stage dictates. Prompt templates: `perplexity-prompts.md`. |
+| `clearance-common-law` | The marketplace / web / social sweep, as structured Perplexity research over the platform list the stage dictates. A shared spine plus one file per seat: `grid.md` (the marketplace grid) and `meaning.md` (the meaning sweep and its PR / reputational section); a single session reads both. Prompt templates: `perplexity-prompts.md`. |
+| `skeptic` | The fresh-eyes review of the gathered findings before they are trusted. Hands back its flags and escalation decisions through `record_skeptic`. |
 | `clearance-register` | Register execution in the two modes a spawn selects: `unit.md` (the funnel — enumerate one axis to completion) and `digest.md` (judgment over the merged band). Plus `register-recipes.md`, `status-rules.md`, `stealth-filer-indicators.md`, `providers/`. |
 | `placement-inquiry` | Applies commercial relevance per candidate — headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered — before any tiering runs. |
 | `case-law-citation` | Grounds risk-relevant findings in precedent fetched in-session, never from memory. One thin adapter per source in `sources/`; `evals.md` defines what working means. |
@@ -62,8 +63,8 @@ are clean. The authoring rules and the empirical-verification checklist a new pr
 ## Where to start
 
 `clearance-register/SKILL.md`, the more elaborated of the two execution skills: a spine plus per-mode files
-(`unit.md`, `digest.md`) and per-provider files (`providers/`). The other, `clearance-common-law`, is one spine plus
-`perplexity-prompts.md` — the per-mode split and `providers/` are register-only, not a shape every
-execution skill shares. `clearance-search/phase2-execution.md` is methodology, not sequencing — the pipeline is
+(`unit.md`, `digest.md`) and per-provider files (`providers/`). The other, `clearance-common-law`, is a spine plus
+one file per seat (`grid.md`, `meaning.md`) and `perplexity-prompts.md`; `providers/` is register-only, not a
+shape every execution skill shares. `clearance-search/phase2-execution.md` is methodology, not sequencing — the pipeline is
 sequenced in code, in `../stages.mjs` and `../pipeline.mjs`. The old orchestrator manual is kept as a record at
 [clearance-search-spine.md](../../docs/architecture/retired-manuals/clearance-search-spine.md); no stage reads it.

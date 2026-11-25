@@ -38,9 +38,10 @@ export function clearanceDispatches(runDir, other = null) {
   const out = [];
   for (const [name, def] of Object.entries(STAGES)) {
     for (const { label, ctx } of CLEARANCE_CTXS) {
-      const message = def.message({ ...ctx, ...(other ? { job: { ...ctx.job, ...other.job } } : {}), paths: paths(runDir), axis: "primary-sweep", half: "a",
-        finding: { ordinal: other?.ordinal ?? 1 }, run: other?.run ?? { slug: "invented", codename: "invented" } });
-      out.push({ name, label, message, declared: resolveSkillReads(name, ctx) });
+      // The message and the declared reads see one context: a seat's reads depend on its axis.
+      const stageCtx = { ...ctx, ...(other ? { job: { ...ctx.job, ...other.job } } : {}), paths: paths(runDir), axis: "primary-sweep", half: "a",
+        finding: { ordinal: other?.ordinal ?? 1 }, run: other?.run ?? { slug: "invented", codename: "invented" } };
+      out.push({ name, label, message: def.message(stageCtx), declared: resolveSkillReads(name, stageCtx) });
     }
   }
   return out;

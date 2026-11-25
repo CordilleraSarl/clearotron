@@ -19,9 +19,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { validateJob } from "../enqueue-schema.mjs";
-import { STAGES } from "../stages.mjs";
+import { STAGES, resolveSkillReads } from "../stages.mjs";
 import { MAJOR_MARKETS } from "../effective-scope.mjs";
-import { UNIT_SENTENCES } from "./ruled-sentences-unit.mjs";
+import { REGISTER_SENTENCES } from "./ruled-sentences-register.mjs";
 
 const DEFAULTS = ["NZ", "PH", "KE"];
 const PATHS = { variantManifest: "vm.json", matterContext: "mc.md", registerBand: (a) => `band-${a}.json`,
@@ -74,13 +74,15 @@ test("a customer with nothing set up narrows by the order's classes and then the
   assert.match(line, new RegExp(`the markets the customer's field and brand point to \\(judge them from the matter frame\\), else the major markets \\(${MAJOR_MARKETS.join(", ")}\\)`));
 });
 
-test("both register manuals narrow a crowd one class at a time in the instructed classes, never in the classes the crowding owners file in", () => {
+test("both register modes narrow a crowd one class at a time in the instructed classes, never in the classes the crowding owners file in", () => {
   const dir = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register");
-  for (const name of ["SKILL.md", "unit.md"]) {
-    const text = readFileSync(join(dir, name), "utf8").replace(/\s+/g, " ");
-    assert.ok(text.includes(UNIT_SENTENCES.stillCrowdAskAgainWith), name);
-    assert.ok(text.includes(UNIT_SENTENCES.stillCrowdAskAgainOne), name);
-    assert.ok(text.includes(UNIT_SENTENCES.stillCrowdAfterStepThe), name);
-    assert.doesNotMatch(text, /the owners crowding the list file in|then the incumbent's/, name);
-  }
+  // The narrowing steps are written once, in the shared manual, and both modes read it.
+  for (const stage of ["register-unit", "register-digest"])
+    assert.ok(resolveSkillReads(stage, {}).includes("skills/clearance-register/SKILL.md"), `${stage} does not read the shared register manual`);
+  const skill = readFileSync(join(dir, "SKILL.md"), "utf8").replace(/\s+/g, " ");
+  assert.ok(skill.includes(REGISTER_SENTENCES.stillCrowdAskAgainWith));
+  assert.ok(skill.includes(REGISTER_SENTENCES.stillCrowdAskAgainOne));
+  assert.ok(skill.includes(REGISTER_SENTENCES.stillCrowdAfterStepThe));
+  for (const name of ["SKILL.md", "unit.md", "digest.md"])
+    assert.doesNotMatch(readFileSync(join(dir, name), "utf8").replace(/\s+/g, " "), /the owners crowding the list file in|then the incumbent's/, name);
 });
