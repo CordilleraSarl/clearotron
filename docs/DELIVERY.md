@@ -165,6 +165,9 @@ drives the whole delivery side over the ops MCP face — mint its token verb-sco
 4. For the remaining kinds — `intake-rejected`, `duplicate-skipped`, `pre-run-failed`, `late-bind-ack` — route the
    packet's `text` → **`ack_event(file)`** (idempotent; validated as a bare `*.pending` name). These
    describe something that did not become a run, so there is no run to settle.
+5. Leave `engine-check-failed` pending. It is for this install's operator, who sees the failure in
+   `clearotron status`, and it has no requester: do not route, mark or acknowledge it. The next passing
+   engine check takes it back.
 
 **Poll at any hour.** Owed work does not keep office hours: a run that fails at 03:00 owes its requester
 a notice at 03:00. Ask the door directly with **`list_runs({ sendPending: true })`** — the no-filesystem
@@ -188,7 +191,8 @@ The filesystem loop below remains equivalent for integrators that do have data-p
    `forwarder`/`forwarderEmail`, `Subject:` = `subject`, `In-Reply-To:` = `msgId`; optionally
    chat `whatsappText` to `whatsappTo` and, separately, to `whatsappCcOperator` when present. A null
    `whatsappTo` with a `whatsappToReason` means nobody is reachable for that requester — surface it, do
-   not redirect the notice to the operator instead. For every other kind, `text` is ready to route as-is.
+   not redirect the notice to the operator instead. For every other kind, `text` is ready to route as-is,
+   except `engine-check-failed`, which stays pending for the operator (step 5 of the pure-MCP loop above).
 3. **Write back**: create a `.sent` marker in the (archived) run dir after a successful send —
    the idempotency guard that prevents double-sends if markers fire twice. Then clear the
    consumed `.pending` files. The MCP verb writes it as JSON
