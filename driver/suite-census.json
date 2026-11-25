@@ -1761,6 +1761,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-notice-filed-before-a-run-names-the-company-its-order-named.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-package-install-is-not-told-to-use-git.test.mjs": {
           "tests": 4,
           "asserts": 16,
@@ -9614,6 +9620,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-notice-before-start-reaches-a-courier-scoped-to-its-company.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-removed-person-loses-their-assistant-too.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -9659,6 +9671,12 @@
         "ack-event-account-gate.test.mjs": {
           "tests": 7,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-accepted-order-is-submitted-not-started.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -9825,8 +9843,8 @@
           "todos": 0
         },
         "ops.test.mjs": {
-          "tests": 40,
-          "asserts": 170,
+          "tests": 41,
+          "asserts": 174,
           "skips": 0,
           "todos": 0
         },
