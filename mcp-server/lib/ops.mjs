@@ -60,6 +60,15 @@ export function enqueuedViaFor(scope) {
   return String(scope?.sub ?? "") === PORTAL_TOKEN_SUB ? "portal/start_run" : "mcp/start_run";
 }
 
+// THE QUEUE ID'S LIMIT, NAMED IN THE REFUSAL. The id becomes a queue file name, so it is held to a slug
+// of at most this many characters. The refusal named only the characters, and an assistant whose id was
+// too long read it as a bad character, changed nothing that mattered, and lost the order's first call on
+// three mornings before it made one up that fit. stop_run's queue form holds a queued id to the same rule.
+const QUEUE_ID_MAX = 128;
+const QUEUE_ID_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${QUEUE_ID_MAX - 1}}$`);
+const queueIdRefusal = (id) => `id ${JSON.stringify(id)} must be a bare filename slug of at most ${QUEUE_ID_MAX} characters `
+  + `([A-Za-z0-9._@-], no path separators)${id.length > QUEUE_ID_MAX ? `; this one has ${id.length}` : ""}`;
+
 export function buildJob(args = {}, { scope } = {}) {
   // marks[] (search-depth spine): a knockout BATCH is ONE job carrying every mark — accept an explicit
   // marks array ({name, classes?, ref?} each) as the batch form; markName remains the single-mark form
@@ -72,8 +81,7 @@ export function buildJob(args = {}, { scope } = {}) {
   const id = String(args.id || `mcp-${Date.now().toString(36)}-${randomUUID().slice(0, 8)}`);
   // Input hardening: the id becomes a QUEUE FILENAME (join(qdir, `${id}.json`)) — a
   // path-shaped id would escape the queue directory. Slug-validated unconditionally, every caller.
-  if (id !== basename(id) || id.includes("..") || !/^[A-Za-z0-9][A-Za-z0-9._@-]{0,127}$/.test(id))
-    throw new Error(`id ${JSON.stringify(id)} must be a bare filename slug ([A-Za-z0-9._@-], no path separators)`);
+  if (id !== basename(id) || id.includes("..") || !QUEUE_ID_RE.test(id)) throw new Error(queueIdRefusal(id));
   const classes = Array.isArray(args.classes) ? args.classes.map(Number).filter(Number.isFinite) : undefined;
   // `||` not `??`: markName "" is falsy-but-not-nullish and must fall through to the
   // first batch mark, never enqueue an empty display name.
@@ -314,8 +322,7 @@ export async function stopRun(args = {}, { scope, endTurn = endEngineChild } = {
     const qdir = queueDir(agent);
     // same filename hardening as start_run — the id is joined into the queue path
     const sid = String(args.id);
-    if (sid !== basename(sid) || sid.includes("..") || !/^[A-Za-z0-9][A-Za-z0-9._@-]{0,127}$/.test(sid))
-      throw new Error(`stop_run: id ${JSON.stringify(sid)} must be a bare filename slug ([A-Za-z0-9._@-], no path separators)`);
+    if (sid !== basename(sid) || sid.includes("..") || !QUEUE_ID_RE.test(sid)) throw new Error(`stop_run: ${queueIdRefusal(sid)}`);
     const f = join(qdir, `${String(args.id)}.json`);
     const NOT_FOUND = { ok: false, action: "not-found", id: args.id, note: "No queued job with that id (already run, or never queued)." };
     // ACCOUNT GATE: the runId form is gated at the dispatch chokepoint, but a QUEUED job

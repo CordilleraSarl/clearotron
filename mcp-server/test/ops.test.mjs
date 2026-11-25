@@ -402,6 +402,19 @@ test("start_run/stop_run: a path-shaped id is refused (the queue-filename harden
   assert.equal(ok.ok, true, "the legacy id charset (dots/@/dashes) still passes");
 });
 
+test("start_run/stop_run: an id over the limit is refused with the limit and its own length", async () => {
+  // An id of allowed characters that is only too long was refused with the characters alone, and the
+  // caller read it as a bad character. The refusal names the limit, and the length when that is the fault.
+  const long = `hook-${"a".repeat(146)}`;
+  assert.throws(() => startRun({ markName: "SPINE-L", forwarder: "requester", classes: [9], id: long }),
+    /at most 128 characters .*; this one has 151$/);
+  await assert.rejects(() => stopRun({ id: long }), /^Error: stop_run: id .* at most 128 characters .*; this one has 151$/);
+  assert.equal(startRun({ markName: "SPINE-L2", forwarder: "requester", classes: [9], id: "a".repeat(128) }).ok, true,
+    "128 characters is inside the limit");
+  assert.throws(() => startRun({ markName: "SPINE-L3", forwarder: "requester", classes: [9], id: "a/b" }),
+    (e) => /at most 128 characters/.test(e.message) && !/this one has/.test(e.message), "a short bad id is not told its length");
+});
+
 test("start_run: deliveryRoute + parentRunId ride the job; an unbuilt route and a bad one are BOTH refused", () => {
   const r = startRun({ markName: "SPINE-R1", forwarder: "requester", classes: [9], deliveryRoute: "email", parentRunId: "spine-cedar-1" });
   const job = JSON.parse(readFileSync(r.queuePath, "utf8"));
