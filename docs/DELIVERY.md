@@ -122,16 +122,17 @@ second paid search. The queue-side `.duplicate.reason` explains the match and th
 `{ ts, kind: "pre-run-failed", base, agent, account, organisation, jobId, msgId, forwarder,
 forwarderEmail, markName, reason, text }` plus the chat routing fields — the request failed before its
 run could start, for example on the engine's sign-in check, so nothing was searched or delivered.
-`text` is ready to send. For an order a client placed themselves it is the client sentence of the
-failure email ("The <search ordered> for <mark> was not started, and nothing was delivered. Please tell
-whoever administers this installation."); otherwise it is the staff line with the reason. `reason` is always on the packet.
+`text` is ready to send. For an order placed by the person it is for (`clientPrincipal`) it is the
+not-started sentence of the failure email ("The <search ordered> for <mark> was not started, and nothing
+was delivered. Please tell whoever administers this installation."); otherwise it is the staff line with
+the reason. `reason` is always on the packet.
 
 ### Whose notice it is, when there is no run
 
-The three kinds above are filed before any run exists, so there is no run to read an account from.
-Each carries `account`, the account its order named (`profileKey`), and `organisation`, the
+The three kinds above are filed before any run exists, so there is no run to read a company from.
+Each carries `account`, the company key its order named (`profileKey`), and `organisation`, the
 organisation of a Generic order. A token scoped to named companies lists and acknowledges the notices
-of those companies, as it does their runs. An order that named no account carries `account: null`,
+of those companies, as it does their runs. An order that named no company carries `account: null`,
 which only a full grant sees: the runner may still resolve such an order to a company from the
 sender's email domain.
 
