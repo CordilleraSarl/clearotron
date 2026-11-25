@@ -154,7 +154,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
       // this surface was CLEAN. The false claim lived in register-units/*.json, _driver/register-plan.json,
       // the register coverage ledger and skeptic-flags.md — none of which runLint scans. Guarding the four
       // delivered surfaces is the scope here; widening it to the internal register surfaces is its own change.
-      let lintFindings = null, lintSv = 1, lintMarkAssessment = null, lintActions = null, lintFindingsRaw = "", lintAskAnswers = null, lintFourAnswers = null;
+      let lintFindings = null, lintSv = 1, lintMarkAssessment = null, lintActions = null, lintFindingsRaw = "", lintAskAnswers = null, lintFourAnswers = null, lintCoverage = null;
       try {
         if (existsSync(P.findings)) {
           lintFindingsRaw = readFileSync(P.findings, "utf8");
@@ -163,6 +163,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
           lintActions = doc.actions ?? null;   // spec 64 — the typed register joins the coherence checks
           lintAskAnswers = doc.askAnswers ?? null;   // PR-9 — the intake-ask lint judges the JOIN on v5 runs
           lintFourAnswers = doc.fourAnswers ?? null;   // P5 — the four answers join the content-model presence checks
+          lintCoverage = doc.coverage ?? null;   // an open row citing a withdrawn finding goes to the writer's repair
         }
       } catch {
         // — the strict parse throwing used to leave lintFindings null, and EVERY findings-based
@@ -174,6 +175,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
           const soft = parseFindingsJsonLenient(lintFindingsRaw);
           lintFindings = soft.findings; lintSv = soft.schemaVersion ?? 1; lintMarkAssessment = soft.markAssessment ?? null;
           lintActions = soft.actions ?? null; lintAskAnswers = soft.askAnswers ?? null; lintFourAnswers = soft.fourAnswers ?? null;
+          lintCoverage = soft.coverage ?? null;
         } } catch { /* validators.findings owns the unparseable case */ }
       }
       // The narrative's finding headings are in the model's numbering: once the record is folded, its
@@ -216,7 +218,7 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
         // The overview as its writer wrote it, read for a citation of a finding the report does not carry; and the
         // conditions the email carries, as the email composes them.
         overviewMd: (() => { try { return readFileSync(P.reportOverview, "utf8"); } catch { return null; } })(), emailConditions: emailConditionsOfReport(reportMd, lintVerdict?.verdict, { assessmentNotCompleted: readPartNotCompleted(run.runDir, "assessment") != null }),
-        fetchFailures: recordFetchFailures, findings: lintFindings, narrativeFindings: lintNarrativeFindings, findingsRaw: lintFindingsRaw, actionsRegister: lintActions, verdictDoc: lintVerdict,
+        fetchFailures: recordFetchFailures, findings: lintFindings, narrativeFindings: lintNarrativeFindings, findingsRaw: lintFindingsRaw, actionsRegister: lintActions, coverageRegister: lintCoverage, verdictDoc: lintVerdict,
         // WP-56 B2 — fresh v4 runs expect the standing mark-assessment (structural banner flag when
         // absent). The replay harness's runLint call never passes this, so archived runs never flip.
         markAssessment: lintMarkAssessment, markAssessmentExpected: lintSv >= 4,
@@ -440,8 +442,8 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
       // writer's too: no card or overview repair can change what the renderer stamps from the record. It joins the
       // narrative's faults in the writer's one repair, each named by the finding that owns it, in the numbering the
       // writer's save takes. Its consumers then rebuild, and its change is reviewed, as for any repair of the record.
-      // A fault a register of the record holds (the four answers citing a finding the review withdrew) joins it, one
-      // line per withdrawn finding it cites, in that numbering.
+      // A fault a register of the record holds (the four answers or an open coverage row citing a finding the review
+      // withdrew) joins it, one line per withdrawn finding it cites, in that numbering.
       const fold = readFold(run.runDir);
       const sentenceFixable = targets.stamped.flatMap((f) => (f.parts ?? []).map((x) => ({ ...f, finding: keptModelOrdinal(fold, x.ordinal), detail: x.detail })));
       const recordFixable = targets.record.flatMap((f) => writersCitationFaults(f, (o) => keptModelOrdinal(fold, o)));
