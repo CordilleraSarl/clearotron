@@ -49,7 +49,7 @@ reader can see it.
 #### Summary counts
 
 Driver-computed from its own receipts. **There is no field for them and you do not state them.** The
-COVERAGE judgment is not among them: it is yours, and it rides `record_coverage` (below). You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`.
+COVERAGE judgment is not among them: it is yours, and it rides `record_coverage` (below).
 
 #### `findings_rows` — Sheet 1 (risk-relevant) and `incumbent_rows` — Sheet 2
 
@@ -319,7 +319,7 @@ for a saturated dominant element or `translit-*-meaning` token (the token kept a
 goods-vocabulary words are **never** ANDed into the search text — goods-relevance is judged at SELECTION). If that
 named slice came back `enumerated`, read it and clear or surface its hits. If it came back `incomplete` AND it is
 material (the exact / near-identical in-class slice is the highest-relevance category), write it `coverage-limited`
-with a reason that NAMES the slice and the count. A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when deciding `coverage_judgment`. Insufficient coverage, a material deferred register slice, or unresolved timeout-taint on a material axis can raise CLEAR to CONDITIONAL; other terminal checks still apply. An everyday-word-scale count on
+with a reason that NAMES the slice and the count. An everyday-word-scale count on
 its own (a count-only saturation probe) is never a clean of the
 dangerous category and never a reason to drop the token, re-narrow it, or swap it for the phonetic form. An unenumerated crowd row is never `confirmed-clean`: rule it `withheld-by-judgment` with its count and reason if it is settled, else `coverage-limited`.
 
@@ -388,10 +388,10 @@ decision `ADOPTED`, reason `the cl.12 overlap is auto-parts vs the applicant's s
 **Coverage ledger → the `coverage_judgment` contract.** You rule every row of the driver's coverage form
 through `record_coverage` (a `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment` status and a reason on
 every row — the driver renders both the `## Coverage ledger` table and `register-coverage-ledger.json`
-from what the tool records). You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`. The FORM is the
+from what the tool records). The FORM is the
 single source of truth; the rendered table and the JSON mirror are both derived from it, so they agree by
 construction and neither can be the thing that drifts. Driver
-semantics: A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when deciding `coverage_judgment`. Insufficient coverage, a material deferred register slice, or unresolved timeout-taint on a material axis can raise CLEAR to CONDITIONAL; other terminal checks still apply. The named gap surfaces in # Actions (the report still ships); `sufficient:true` ⇒ deliver.
+semantics: The named gap surfaces in # Actions (the report still ships); `sufficient:true` ⇒ deliver.
 There are **no `commands[]` and no `halt`** — a material gap is a delivered conditional, never a re-enumeration
 loop and never a no-deliver halt.
 
@@ -559,12 +559,12 @@ not a fresh Opus spawn). You do NOT re-run anything.
 
 **Rule the coverage form and reconcile the complete band against `matter-context`.** Rule every
 crowd descriptor (cleared / material-gap) by recording that row's status and reason through
-`record_coverage`. You send no rolled-up line. Your row statuses are what synthesis reads when it writes `coverage_judgment`. Then **reconcile the band against `matter-context`'s materially-matters jurisdiction list**:
+`record_coverage`. Then **reconcile the band against `matter-context`'s materially-matters jurisdiction list**:
 every material jurisdiction must be accounted for. One covered by a complete worldwide or regional answer, or by a
 narrowed list that was read, is accounted for by that answer. One the identical mark's narrowing left inside a crowd,
 because the one market list did not name it, stays in that crowd's count on the crowd's own row. Only a material
 jurisdiction no question reached at all is an **unsearched dangerous slice**: write it `deferred` if it could not
-reach its data, else `coverage-limited`, with a reason that NAMES the slice. A `coverage-limited` row does not change the verdict by itself. Synthesis reads it when deciding `coverage_judgment`. Insufficient coverage, a material deferred register slice, or unresolved timeout-taint on a material axis can raise CLEAR to CONDITIONAL; other terminal checks still apply.
+reach its data, else `coverage-limited`, with a reason that NAMES the slice.
 The gap surfaces in # Actions. **Never** write a missing material jurisdiction as a self-accepted clean — but
 it is a delivered conditional, not a re-search loop and not a halt. Each slice is prefixed by the axis that ran
 (or owes) its sweep — `primary-sweep / CH (material)`, never a bare `CH (material)`. Do not re-judge a unit's
