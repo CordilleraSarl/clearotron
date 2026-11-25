@@ -649,7 +649,7 @@ export const E3_BACKLOG = [
   {
     stage: "narrative-refutation",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:4720",
+    where: "driver/stages.mjs:4717",
     surface: "stage-message",
     // RE-QUOTED BY CONVERSION 9. The LINE-TOKEN half is gone — no "anywhere on the line", no "[kind: …]
     // token", no "a line with no token is treated as fact", because a kind is a typed field now and an
@@ -839,7 +839,7 @@ export const E3_EVIDENCE_UNRESOLVED = [
   // absorbed. It was the narrative "## Answers to your instructions" row deleted above: its dictation is
   // gone, so there is no un-anchorable quote left to be unresolved. The one that REMAINS is a live row
   // whose quote spans a template line. Measured before deleting, not predicted — two rows shared
-  // `where: "driver/stages.mjs:2870"`, so which one occupied this slot could not be read off the strings.
+  // one `where` in driver/stages.mjs, so which one occupied this slot could not be read off the strings.
   "synthesis|driver/stages.mjs",
 ];
 
