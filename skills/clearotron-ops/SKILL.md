@@ -19,7 +19,7 @@ a yes.
 **1. Is it a new matter?** The matter is the mark, not the thread. A forwarded reply quotes the original
 request beneath it, which makes a follow-up look like a fresh request, so check `list_runs` for the mark
 (in flight and recently delivered) and your own sent confirmation for the thread first. A bare "proceed"
-or a thank-you never starts a second search: reply once that the search is already running, and stop. A
+or a thank-you never starts a second search: reply once that the search is already submitted, and stop. A
 different mark in the same thread is a distinct matter and its own search. A newly named applicant, or
 marks to exclude, go in through `feed_context` while a run is in flight; it carries nothing else. Only
 the requester's explicit "run it again" starts a second search of the same mark, with `dupOverride: true`.
@@ -59,8 +59,11 @@ reports in the confirmation, above all a search or a scope narrower than the wor
   worldwide.
 - **Given:** what the request stated, said back briefly.
 
-End with **"Starting now on this understanding — reply to correct anything."**, and call `start_run`
-with the same arguments at once.
+End with **"Submitted on this understanding — reply to correct anything."** Call `start_run` with the
+same arguments at once, and send the confirmation only once it returns ok: an accepted call means the
+search is submitted, not started. If it refuses, nothing was submitted: correct what the refusal names
+and call it once more. If it refuses again, send no confirmation; tell the requester the search was not
+submitted, and quote the refusal.
 
 **5. What holds a search back.** Only two things: a mark that cannot be made out (absent, or with no
 clearly likely reading), and goods and classes both absent. Ask for the missing item, and start when the
@@ -71,7 +74,7 @@ answer arrives. Nothing else holds a search:
 - An unknown applicant never holds one. Lead the second group with the question, set
   `customerUnknown: true`, and start at once:
 
-> Who is the applicant? I've started the search — it doesn't depend on the answer — but until the
+> Who is the applicant? I've submitted the search — it doesn't depend on the answer — but until the
 > applicant is named I can't separate their own marks from third-party conflicts: an identical or
 > near-identical hit is reported as an ordinary conflict, carrying a note to disregard it if it's the
 > applicant's own prior filing. Reply as early as you can — I'll fold it in on a best-effort basis
@@ -144,6 +147,9 @@ The call returns the accepted job (or a validation refusal telling you exactly w
 
 ## While a run is in flight
 
+- **Submitted is not started.** The engine claims a submitted search when a slot is free, then checks
+  that it can run. It has started once `list_runs` shows it. Never tell a requester a search is running
+  before then. A search that fails before it starts reaches you as a `pre-run-failed` outbox event.
 - **`get_run` / `list_runs`** — state, current step, verdict when reached. Answer a requester's "how is
   it going?" from what these return. An engine you cannot reach and a search that has made no progress
   are different facts: say "I could not reach the engine" for the first and "no progress since <time>"

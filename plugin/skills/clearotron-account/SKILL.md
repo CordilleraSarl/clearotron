@@ -230,6 +230,10 @@ that would actually be searched, the expected turnaround, and any blockers. Rela
 would surprise them — most often a scope narrower than the words they used. Only then `start_run`,
 with the same arguments.
 
+**An accepted `start_run` means submitted, not started.** The search waits for a free slot and a check
+that it can run. Tell the user it is submitted, never that it is starting or running. It has started
+once `list_runs` shows it.
+
 **One country already covers the regional and international rights that bind it.** A clearance for a
 country reaches its national register, the regional register that binds it — an EU trade mark blocks use
 in an EU member state without ever appearing in that state's own register — and international
