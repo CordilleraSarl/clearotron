@@ -6,8 +6,9 @@
 // the-ruled-sentences-tests-hold-are-in-their-manuals.test.mjs checks each one is still in the manual, word for word.
 export const SIGNA_SENTENCES = Object.freeze({
   oneCallNotThree: "It is ONE call, not three.",
-  discloseSearchThisRegisterCan: "disclose it; no search on this register can close it, so it is not escalated, and it is never clean.",
-  giveThatSliceDeferredCoverage: "give that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa) — ",
+  registerSweepCannotReach: "the register sweep **cannot reach** it on Signa. ",
+  digestRecordsItAsDeferred: "The digest records that part of the search as deferred and discloses the gap. ",
+  noSearchThisRegisterCanClose: "No search on this register can close it, so it is not escalated, and it is never clean.",
   thisFollowsTheKeystoneDoctrine: " This is the digest's keystone doctrine (`../digest.md` → *Coverage ledger*): a could-not-reach gap is "
     + "**`deferred`**, open and disclosed, never `coverage-limited`",
 });

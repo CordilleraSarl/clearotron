@@ -7,7 +7,7 @@
 // the unit's manual — so it carries facts only. How the unit decides on a crowd belongs where the unit reads its
 // results: a register server adds this line, as a block of its own beside the answer, to an answer that carries one.
 
-export const CROWD_NOTE = "A crowd is decided with the narrowing steps in unit.md, only as far as reading it would change what you "
+export const CROWD_NOTE = "A crowd is decided with the narrowing steps in SKILL.md, only as far as reading it would change what you "
   + "tell the client; what stays a crowd is recorded with its count.";
 
 /**

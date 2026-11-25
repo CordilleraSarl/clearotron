@@ -1270,8 +1270,8 @@
           "todos": 0
         },
         "a-knockout-defect-reaches-the-step-that-can-repair-it.test.mjs": {
-          "tests": 32,
-          "asserts": 179,
+          "tests": 31,
+          "asserts": 176,
           "skips": 0,
           "todos": 0
         },
@@ -1307,7 +1307,7 @@
         },
         "a-knockout-is-reviewed-once-for-facts-and-ratings.test.mjs": {
           "tests": 7,
-          "asserts": 23,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -8187,12 +8187,6 @@
           "skips": 0,
           "todos": 0
         },
-        "the-knockout-review-meets-the-tone-and-figure-checks.test.mjs": {
-          "tests": 2,
-          "asserts": 5,
-          "skips": 0,
-          "todos": 0
-        },
         "the-knockout-scale-names-its-ends-on-a-phone.test.mjs": {
           "tests": 2,
           "asserts": 3,
@@ -8250,6 +8244,12 @@
         "the-merged-band-carries-what-its-readers-read.test.mjs": {
           "tests": 4,
           "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-merged-knockout-record-meets-the-tone-and-figure-checks.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
@@ -8465,7 +8465,7 @@
         },
         "the-provider-manuals-follow-the-ruled-method.test.mjs": {
           "tests": 4,
-          "asserts": 13,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

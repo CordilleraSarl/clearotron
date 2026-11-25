@@ -299,8 +299,8 @@ const PLANTED = Object.freeze({
       ],
     },
   },
-  // The reviewing pass. It MERGES BY ADDRESS rather than by key, which is what the drop-each-key arm
-  // below reads back: dropping `rewrites` must leave the stored rewrites standing, not delete them.
+  // The reviewing pass. It MERGES: the drop-each-key arm below reads back that dropping `material` or the answer leaves the stored
+  // one standing rather than deleting it.
   record_knockout_review: {
     expect: "merges",
     accept: (params) => acceptKnockoutReview(params),
@@ -309,17 +309,6 @@ const PLANTED = Object.freeze({
       schema_version: 1,
       first_question: "Yes: it names who could object, how strong each is, and what the client should do.",
       material: [{ kind: "scope", mark: "NOVAPULSE", problem: "The request asks about drinks and the answer leaves out class 32." }],
-      rewrites: [
-        { at: { field: "basis", mark: "NOVAPULSE" },
-          text: "The name is already crowded in drinks. Two live registrations sit close to it.",
-          why: "one 44-word sentence carrying three ideas" },
-        { at: { field: "findings.net", mark: "NOVAPULSE", ordinal: 1 },
-          text: "They would probably win if they objected." },
-      ],
-      declined: [
-        { at: { field: "batch.executiveSummary" },
-          why: "\"belt-and-braces\" is the requester's own phrase from the instructions, not the profession's" },
-      ],
     },
   },
 });
@@ -630,12 +619,11 @@ const DECLARES_NONE_BY_DESIGN = Object.freeze({
     + "field refused the repair (design, 2026-11-24). acceptKnockoutFrame refuses a first call missing the note, a batch "
     + "field or the names, and the arms in a-knockout-plan-is-repaired-in-two-states.test.mjs drive both states.",
   record_knockout_review:
-    "What its acceptor demands is a DISJUNCTION — at least one of `rewrites` or `declined` — and "
-    + "`required[]` can only state a conjunction. Declaring either would refuse a legitimate call: a "
-    + "pass that rewrote every flagged line sends no declined rows, and one that judged every flag to "
-    + "be the subject rather than the profession's shorthand sends no rewrites. Both are real outcomes "
-    + "and the refusal that matters is of the call sending NEITHER, which acceptKnockoutReview makes by "
-    + "name because an empty call cannot be told from a stage that never ran.",
+    "What its acceptor demands is a DISJUNCTION — a material defect, or the answer to its question with an "
+    + "empty defect list — and `required[]` can only state a conjunction. A repair turn merges onto the "
+    + "stored call, so declaring either field would refuse a repair that sends only the other. The refusal "
+    + "that matters is of a call sending NEITHER, which acceptKnockoutReview makes by name because an empty "
+    + "call cannot be told from a stage that never ran.",
 });
 
 /** Pure, so a plant can drive it: transports promising nothing with no stated reason. */

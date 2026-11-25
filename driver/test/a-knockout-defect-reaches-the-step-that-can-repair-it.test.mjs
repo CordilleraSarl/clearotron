@@ -36,7 +36,7 @@ const { knockoutInner, sourceAnswerLine } = await import("../pipeline-knockout.m
 const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 const { applyCorrectionCall, chunkScope, correctionOutcomes, correctionWork, knockoutCorrectionFile, mergedAnswers, movedOutsideScope, rollBackName, summaryBlock, validateKnockoutCorrectionFile, keepChunkBases, correctionWorkPath } = await import("../knockout-correction-record.mjs");
 const { knockoutAssessChunkFile } = await import("../knockout-assess-record.mjs");
-const { acceptKnockoutReview, knockoutReviewFile, recordKnockoutReview, rewritesThatSurvive, validateKnockoutReviewFile } = await import("../knockout-review-record.mjs");
+const { acceptKnockoutReview, knockoutReviewFile, recordKnockoutReview, validateKnockoutReviewFile } = await import("../knockout-review-record.mjs");
 const { KO_STAGES, koPaths } = await import("../stages-knockout.mjs");
 const { REVIEW_APPLIES_THE_SUPPLIED_FRAMEWORK } = await import("../stages.mjs");
 const { registerLaneState, REGISTER_LANE_FILE } = await import("../verify-knockout.mjs");
@@ -538,14 +538,6 @@ test("a reference the run does not hold is refused at the call, in the turn, and
   assert.equal(existsSync(knockoutReviewFile(dir)), false, "nothing is written for the stage to refuse afterwards");
   assert.ok(call(["/mark/em/held", "supp:asked"]).written, "a held filing and a question the run asked are held");
   assert.equal(recordKnockoutReview(mkdtempSync(join(tmpdir(), "ko-no-record-")), { material: [{ kind: "scope", mark: NAME, problem: "p" }] }).refused, null, "with no record on disk the stage's own check says it could not look");
-});
-
-test("only a first pass's rewrites on names the correction did not change carry over", () => {
-  const review = { rewrites: [{ at: { field: "basis", mark: NAME }, text: "a" }, { at: { field: "basis", mark: SIBLING }, text: "b" },
-    { at: { field: "batch.executiveSummary" }, text: "c" }, { at: { field: "batch.standardCaveats", index: 0 }, text: "d" }] };
-  assert.deepEqual(rewritesThatSurvive(review, [NAME]).rewrites.map((r) => r.text), ["b", "d"]);
-  assert.deepEqual(rewritesThatSurvive(review, [NAME, SIBLING]).rewrites.map((r) => r.text), ["d"], "a rewrite stood on a name the correction reached");
-  assert.deepEqual(rewritesThatSurvive(review, null).rewrites.map((r) => r.text), ["d"], "a rewrite on a name stood when nothing showed that name unchanged");
 });
 
 test("the correction's dispatch names each defect, in the chunk's own numbering", () => {

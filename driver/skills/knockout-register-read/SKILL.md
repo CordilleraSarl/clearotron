@@ -65,7 +65,7 @@ read and from the client's request.
   all. A register with no such search says so, and that is not a clean answer.
 
 A verified zero answers that exact question. A failure leaves it unanswered; it does not prevent another justified question. A question that failed or was not sent is not a zero. A tool's note
-beside a crowd may name `unit.md`; for you those are the steps above.
+beside a crowd may name `SKILL.md`; for you those are the steps above.
 
 ### What you hand back
 

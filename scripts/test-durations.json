@@ -1302,7 +1302,7 @@
   "driver/test/the-knockout-page-opens-its-audit-workbook.test.mjs": 36,
   "driver/test/the-knockout-rating-step-keeps-each-names-full-opening.test.mjs": 16,
   "driver/test/the-knockout-rating-step-reads-no-set-aside-lines.test.mjs": 16,
-  "driver/test/the-knockout-review-meets-the-tone-and-figure-checks.test.mjs": 23,
+  "driver/test/the-merged-knockout-record-meets-the-tone-and-figure-checks.test.mjs": 23,
   "driver/test/the-knockout-reviewing-pass-rewrites-what-a-reader-sees-first.test.mjs": 38,
   "driver/test/the-knockout-searches-every-spelling-on-every-place.test.mjs": 6171,
   "driver/test/the-legacy-web-path-searches-what-the-frame-names.test.mjs": 1,
