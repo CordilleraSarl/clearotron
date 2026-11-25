@@ -114,13 +114,23 @@
     },
     "skills/clearance-common-law/SKILL.md": {
       "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "skills/clearance-common-law/grid.md": {
+      "literal-json-skeleton": 0,
+      "exactly-these-keys": 0,
+      "dictated-line-shape": 0
+    },
+    "skills/clearance-common-law/meaning.md": {
+      "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
       "dictated-line-shape": 1
     },
     "skills/clearance-register/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 2
+      "dictated-line-shape": 0
     },
     "skills/clearance-register/unit.md": {
       "literal-json-skeleton": 5,
@@ -137,10 +147,10 @@
       "exactly-these-keys": 1,
       "dictated-line-shape": 4
     },
-    "skills/clearance-search/phase2-execution.md": {
+    "skills/skeptic/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 3
+      "dictated-line-shape": 0
     },
     "skills/frame-diff/SKILL.md": {
       "literal-json-skeleton": 4,
@@ -190,6 +200,6 @@
   },
   "totals": {
     "stages": 41,
-    "files": 50
+    "files": 45
   }
 }
