@@ -56,6 +56,9 @@ test("a clean review is an answer; a call with neither an answer nor a defect li
   writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify({ marks: [] }));
   const r = recordKnockoutReview(dir, { first_question: "Yes.", material: [], rewrites: [{ at: { field: "basis", mark: "QUILLBRAE" }, text: "x" }] });
   assert.equal(r.written, null, "a rewrite was accepted");
+  assert.match(String(r.refused), /rewords nothing, so it takes no `rewrites`/, "a rewrite is refused for what it is, not for the line it names");
+  assert.equal(acceptKnockoutReview({ first_question: "Yes.", material: [], declined: [{ why: "x" }] }).ok, false, "a declined line was accepted");
+  assert.equal(acceptKnockoutReview({ first_question: "Yes.", material: [], rewrites: [], declined: [] }).ok, true, "an empty retired list was refused");
 });
 
 test("the correction answers its defect in the approved words, with what it rests on and no whole research payload", () => {
