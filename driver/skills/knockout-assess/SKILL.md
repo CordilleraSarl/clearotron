@@ -136,12 +136,6 @@ Everything below follows from writing only what your evidence supports.
 The engine appends the depth boundary to `batch.standardCaveats` itself, and the standing caveat where
 one is owed, so never write your own version of either.
 
-## Tone rules
-
-Measured tone only — no "extremely difficult", "most dangerous", "massive", "enormous"; the band
-colour communicates urgency. No quantitative claims from research ("major streaming hit", never
-"294M streams"; "significant market presence", never revenue figures).
-
 ## Plain language — the two levels
 
 The report goes to a lawyer who layers advice on top, and that lawyer's client reads the same page. The
