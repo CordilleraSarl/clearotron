@@ -3909,6 +3909,12 @@
           "skips": 0,
           "todos": 0
         },
+        "codex-is-shown-each-recording-tools-field-text.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "common-law-coverage-is-coverage-the-run-searched.test.mjs": {
           "tests": 5,
           "asserts": 8,
@@ -8964,6 +8970,12 @@
         "the-summary-carries-structure.test.mjs": {
           "tests": 14,
           "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-synthesis-re-asks-ask-for-the-record-the-code-takes.test.mjs": {
+          "tests": 4,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
