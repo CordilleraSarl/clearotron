@@ -256,8 +256,8 @@
           "todos": 0
         },
         "a-citation-of-a-withdrawn-finding-is-repaired-by-the-part-that-wrote-it.test.mjs": {
-          "tests": 10,
-          "asserts": 50,
+          "tests": 11,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
