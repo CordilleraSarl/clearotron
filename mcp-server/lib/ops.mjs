@@ -60,14 +60,14 @@ export function enqueuedViaFor(scope) {
   return String(scope?.sub ?? "") === PORTAL_TOKEN_SUB ? "portal/start_run" : "mcp/start_run";
 }
 
-// THE QUEUE ID'S LIMIT, NAMED IN THE REFUSAL. The id becomes a queue file name, so it is held to a slug
-// of at most this many characters. The refusal named only the characters, and an assistant whose id was
+// THE QUEUE ID'S RULE, STATED WHOLE IN THE REFUSAL. The id becomes a queue file name, so it is held to a slug
+// of at most this many characters that starts with a letter or digit. The refusal named only the characters, and an assistant whose id was
 // too long read it as a bad character, changed nothing that mattered, and lost the order's first call on
 // three mornings before it made one up that fit. stop_run's queue form holds a queued id to the same rule.
 const QUEUE_ID_MAX = 128;
 const QUEUE_ID_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${QUEUE_ID_MAX - 1}}$`);
-const queueIdRefusal = (id) => `id ${JSON.stringify(id)} must be a bare filename slug of at most ${QUEUE_ID_MAX} characters `
-  + `([A-Za-z0-9._@-], no path separators)${id.length > QUEUE_ID_MAX ? `; this one has ${id.length}` : ""}`;
+const queueIdRefusal = (id) => `id ${JSON.stringify(id)}: Use an ID of 1–${QUEUE_ID_MAX} characters. Start with an ASCII letter or digit. `
+  + `The remaining characters may also include a dot, underscore, @ or hyphen.${id.length > QUEUE_ID_MAX ? ` This one has ${id.length} characters.` : ""}`;
 
 export function buildJob(args = {}, { scope } = {}) {
   // marks[] (search-depth spine): a knockout BATCH is ONE job carrying every mark — accept an explicit

@@ -60,10 +60,11 @@ reports in the confirmation, above all a search or a scope narrower than the wor
 - **Given:** what the request stated, said back briefly.
 
 End with **"Submitted on this understanding — reply to correct anything."** Call `start_run` with the
-same arguments at once, and send the confirmation only once it returns ok: an accepted call means the
-search is submitted, not started. If it refuses, nothing was submitted: correct what the refusal names
-and call it once more. If it refuses again, send no confirmation; tell the requester the search was not
-submitted, and quote the refusal.
+same arguments at once. If validation refuses the submission, correct the named input and try once more.
+If the ID is already queued or processing, check the existing order. If the outcome is unknown, check its
+status before trying again. Confirm submission only after acceptance or after verifying that this order
+was already submitted. Give the requester the actionable reason in plain words. Keep raw diagnostics for
+staff.
 
 **5. What holds a search back.** Only two things: a mark that cannot be made out (absent, or with no
 clearly likely reading), and goods and classes both absent. Ask for the missing item, and start when the
@@ -74,11 +75,10 @@ answer arrives. Nothing else holds a search:
 - An unknown applicant never holds one. Lead the second group with the question, set
   `customerUnknown: true`, and start at once:
 
-> Who is the applicant? I've submitted the search — it doesn't depend on the answer — but until the
-> applicant is named I can't separate their own marks from third-party conflicts: an identical or
-> near-identical hit is reported as an ordinary conflict, carrying a note to disregard it if it's the
-> applicant's own prior filing. Reply as early as you can — I'll fold it in on a best-effort basis
-> while the search is still running.
+> Who is the applicant? Until the applicant is named I can't separate their own marks from third-party
+> conflicts: an identical or near-identical hit is reported as an ordinary conflict, carrying a note to
+> disregard it if it's the applicant's own prior filing. Reply as early as you can — I'll fold it in on a
+> best-effort basis while the search is still running.
 
 The answer goes in through `feed_context`. Never promise that an answer arriving any time before
 delivery will be folded in: a late answer is best effort.
@@ -147,9 +147,10 @@ The call returns the accepted job (or a validation refusal telling you exactly w
 
 ## While a run is in flight
 
-- **Submitted is not started.** The engine claims a submitted search when a slot is free, then checks
-  that it can run. It has started once `list_runs` shows it. Never tell a requester a search is running
-  before then. A search that fails before it starts reaches you as a `pre-run-failed` outbox event.
+- **Submitted is not started.** Acceptance means the order was submitted. The engine claims a submitted
+  search when a slot is free, then checks that it can run. Report a start once the matching run has a
+  status, and give its actual state. A search that fails before it starts reaches you as a
+  `pre-run-failed` outbox event.
 - **`get_run` / `list_runs`** — state, current step, verdict when reached. Answer a requester's "how is
   it going?" from what these return. An engine you cannot reach and a search that has made no progress
   are different facts: say "I could not reach the engine" for the first and "no progress since <time>"
@@ -165,7 +166,7 @@ The call returns the accepted job (or a validation refusal telling you exactly w
 ## Discipline
 
 - **One submission per request.** The engine's queue is the handoff; do not re-submit on silence —
-  check `get_run` instead. Failures REACH YOU as outbox events; silence means it is still working.
+  check `get_run` instead. Failures REACH YOU as outbox events. Check the order's status before reporting progress.
 - **You are not the analyst.** Never editorialize engine output toward the requester; the packets
   and reports are the deliverable, written by the engine (see `COURIER.md`).
 - **Least privilege.** Your token should carry only the verbs you use (`mcp-server/packs/ops/CONNECT.md`); if a call is

@@ -231,8 +231,8 @@ would surprise them — most often a scope narrower than the words they used. On
 with the same arguments.
 
 **An accepted `start_run` means submitted, not started.** The search waits for a free slot and a check
-that it can run. Tell the user it is submitted, never that it is starting or running. It has started
-once `list_runs` shows it.
+that it can run. Tell the user it is submitted, never that it is starting or running. Report a start
+once the matching run has a status, and give its actual state.
 
 **One country already covers the regional and international rights that bind it.** A clearance for a
 country reaches its national register, the regional register that binds it — an EU trade mark blocks use

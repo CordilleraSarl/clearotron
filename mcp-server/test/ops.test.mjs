@@ -395,24 +395,26 @@ test("start_run: marks[] batch form — one job carries every mark; markName def
 
 test("start_run/stop_run: a path-shaped id is refused (the queue-filename hardening)", async () => {
   for (const id of ["../evil", "a/b", "..", ".hidden"]) {
-    assert.throws(() => startRun({ markName: "SPINE-H", forwarder: "requester", classes: [9], id }), /bare filename slug/, `id ${id}`);
-    await assert.rejects(() => stopRun({ id }), /bare filename slug/, `stop id ${id}`);
+    assert.throws(() => startRun({ markName: "SPINE-H", forwarder: "requester", classes: [9], id }), /Use an ID of 1–128 characters/, `id ${id}`);
+    await assert.rejects(() => stopRun({ id }), /Use an ID of 1–128 characters/, `stop id ${id}`);
   }
   const ok = startRun({ markName: "SPINE-H2", forwarder: "requester", classes: [9], id: "mcp-spine.h2@test-1" });
   assert.equal(ok.ok, true, "the legacy id charset (dots/@/dashes) still passes");
 });
 
-test("start_run/stop_run: an id over the limit is refused with the limit and its own length", async () => {
-  // An id of allowed characters that is only too long was refused with the characters alone, and the
-  // caller read it as a bad character. The refusal names the limit, and the length when that is the fault.
-  const long = `hook-${"a".repeat(146)}`;
+test("start_run/stop_run: an id over the limit is refused with the whole rule and its own length", async () => {
+  // An id of allowed characters that is only too long was refused with the characters alone, and the caller read it as a
+  // bad character. The refusal states the whole rule, and the id's length when that is the fault (design, 2026-11-25).
+  const RULE = "Use an ID of 1–128 characters. Start with an ASCII letter or digit. The remaining characters may also include a dot, underscore, @ or hyphen.";
+  const long = `hook-${"a".repeat(124)}`;   // 129 characters
   assert.throws(() => startRun({ markName: "SPINE-L", forwarder: "requester", classes: [9], id: long }),
-    /at most 128 characters .*; this one has 151$/);
-  await assert.rejects(() => stopRun({ id: long }), /^Error: stop_run: id .* at most 128 characters .*; this one has 151$/);
+    (e) => e.message.endsWith(`id ${JSON.stringify(long)}: ${RULE} This one has 129 characters.`));
+  await assert.rejects(() => stopRun({ id: long }), (e) => e.message === `stop_run: id ${JSON.stringify(long)}: ${RULE} This one has 129 characters.`);
   assert.equal(startRun({ markName: "SPINE-L2", forwarder: "requester", classes: [9], id: "a".repeat(128) }).ok, true,
     "128 characters is inside the limit");
-  assert.throws(() => startRun({ markName: "SPINE-L3", forwarder: "requester", classes: [9], id: "a/b" }),
-    (e) => /at most 128 characters/.test(e.message) && !/this one has/.test(e.message), "a short bad id is not told its length");
+  // A leading underscore breaks the first-character rule, not the length: it is told the rule and no length.
+  assert.throws(() => startRun({ markName: "SPINE-L3", forwarder: "requester", classes: [9], id: "_hook-1" }),
+    (e) => e.message.endsWith(`id "_hook-1": ${RULE}`));
 });
 
 test("start_run: deliveryRoute + parentRunId ride the job; an unbuilt route and a bad one are BOTH refused", () => {
