@@ -20,6 +20,7 @@ import { CLIENT_DOOR_UNIT, clientDoorPort } from "../shared/client-door.mjs";
 import { invoke } from "../shared/invocation.mjs";
 import { readRunning, probe } from "../shared/running-start.mjs";
 import { configStaleness, stalenessWarning, parseSystemdTimestamp } from "../driver/config-staleness.mjs";   // — F48
+import { engineCheckDir, failedCheckLines, readEngineCheck } from "../driver/engine/health.mjs";
 
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
 const say = (s = "") => console.log(s);
@@ -126,6 +127,16 @@ if (!installed && running.length) {
 }
 if (existsSync(join(UNIT_DIR, CLIENT_DOOR_UNIT))) {
   say(`  ${CLIENT_DOOR_UNIT.padEnd(34)} ${state(CLIENT_DOOR_UNIT)}  (assistant connection — 127.0.0.1:${clientDoorPort(process.env)}; \`${invoke("disconnect")}\` closes it)`);
+}
+// THE ENGINE CHECK'S LAST FAILURE, while it stands (driver/engine/health.mjs). Read over the units' own file, as the
+// ports are: the worker that checks reads its settings there, and so names its work folder there.
+{
+  let unitsEnv = process.env;
+  try { unitsEnv = { ...process.env, ...parseEnvFile(readFileSync(join(homedir(), ".env"), "utf8")) }; } catch { /* the shell's */ }
+  const engine = String(unitsEnv.CLEAROTRON_AI ?? "").trim();
+  const dir = unitsEnv.CLEAROTRON_WORK_DIR ? join(unitsEnv.CLEAROTRON_WORK_DIR, "engine-check") : engineCheckDir();
+  const lines = engine ? failedCheckLines(readEngineCheck(engine, { dir })) : [];
+  if (lines.length) say(`\n  ⚠ ${lines.join("\n    ")}`);
 }
 say(`\n  Configuration questions: ${invoke("doctor")}`);
 process.exit(0);

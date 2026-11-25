@@ -172,7 +172,7 @@ mkdir ~/app && cd ~/app
 npm init -y
 npm install /path/to/clearotron-<version>.tgz
 npx clearotron install         # the wizard
-npx clearotron doctor          # reads; writes nothing and contacts nothing outside this machine
+npx clearotron doctor          # reads, and proves the engine with one real call; changes no setting
 ```
 
 `npx` works from `~/app` because npm links a **dependency's** `bin` into the consuming project — the

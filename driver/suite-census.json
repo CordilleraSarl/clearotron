@@ -4449,6 +4449,12 @@
           "skips": 0,
           "todos": 0
         },
+        "doctor-catches-a-dead-login.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "doctor-does-not-tick-a-billing-mode-it-cannot-see.test.mjs": {
           "tests": 6,
           "asserts": 12,
@@ -4469,7 +4475,7 @@
         },
         "doctor-opens-with-whether-a-search-can-run.test.mjs": {
           "tests": 5,
-          "asserts": 29,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
@@ -7854,6 +7860,12 @@
         "the-engine-floor-can-run-the-current-top-tier.test.mjs": {
           "tests": 2,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-engine-is-checked-between-jobs.test.mjs": {
+          "tests": 7,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },

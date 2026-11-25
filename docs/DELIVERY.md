@@ -35,6 +35,7 @@ backstop (the markers are edge-triggers, **not** the source of truth — see Wri
 | **duplicate-skipped** | `intake-<base>.duplicate.pending` | JSON packet | `<base>.duplicate` + `.reason` in the queue |
 | **pre-run-failed** | `intake-<base>.prerun-failed.pending` | JSON packet | `<base>.failed` + `.reason` in the queue |
 | **late-bind-ack** | `<runId>.bindack.pending` | JSON packet | `customer-late-bind-ack` event in `_driver/run.jsonl` |
+| **engine-check-failed** | `engine-check-<engine>.failed.pending` | JSON packet for the operator: no run, no requester | `<CLEAROTRON_WORK_DIR>/engine-check/<engine>.check.json` |
 
 `runId` is `<slug>-<date>-<codename>` — the SAME id `status.json`, the pool and every status surface
 carry. **There is one canonical form, and every minting site writes it.** Packets and outbox markers

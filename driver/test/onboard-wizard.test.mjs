@@ -701,17 +701,18 @@ const MOCK_CLAUDE = join(REPO, "driver", "test", "mock-claude.mjs");
 // The closing line of a check whose probe started the AI program, in the approved words.
 const TURN_KEPT_ITS_FILES = "Clearotron wrote nothing; the AI program's test turn keeps its own files.";
 
-test("--check does NOT spend a turn unless it is asked to", () => {
+// THE TURN IS NO LONGER ASKED FOR (owner ruling, 2026-11-25): a program that said it was signed in passed a check
+// that took its word, for three weeks, on a production install. The flag that asked is still accepted.
+test("--check proves the engine with one turn without being asked", () => {
   const dir = mkdtempSync(join(tmpdir(), "onboard-probe-"));
   const log = join(dir, "calls.jsonl");
   try {
     const r = run(["--check"], { ...CLAUDE_CHOSEN, CLEAROTRON_CLAUDE_PATH: MOCK_CLAUDE, MOCK_CLAUDE_CALL_LOG: log });
     assert.equal(r.code, 0, r.out);
-    assert.equal(existsSync(log), false, "a --check that dials a provider is a check that can fail for reasons that are not about this machine");
-    // CONTROL for the closing line below: with no turn spent, nothing outside this command could have written either.
-    assert.match(r.out, /Nothing was written\./, r.out);
-    assert.ok(!r.out.includes(TURN_KEPT_ITS_FILES), "a check that ran no turn speaks of the turn's files");
-    assert.match(r.out, /--probe-engine/, "…and it says the check it did NOT make, rather than implying the engine is fine");
+    assert.match(r.out, /completed a turn/, r.out);
+    assert.equal(existsSync(log), true, "the engine really was invoked");
+    assert.equal(readFileSync(log, "utf8").trim().split("\n").length, 1, "one turn, and only one");
+    assert.doesNotMatch(r.out, /--probe-engine/, "the turn is not an option the reader has to ask for");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -1661,7 +1662,8 @@ function plantInstalledCopy(content, version = "9.9.9") {
 
 test("--check names the copy Clearotron installed and its version, and offers no vendor install", () => {
   const { install } = ENGINE_BINARIES["anthropic-agent"];
-  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n");
+  // A copy that answers the turn --check makes every time: the offline stand-in, behind the installed copy's name.
+  const { root, program } = plantInstalledCopy(`#!/bin/sh\nexec "${process.execPath}" "${MOCK_CLAUDE}" "$@"\n`);
   try {
     const r = run(["--check"], { ...CLAUDE_CHOSEN, CLEAROTRON_ENGINES_DIR: root });
     assert.equal(r.code, 0, r.out);

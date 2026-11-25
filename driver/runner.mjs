@@ -48,6 +48,8 @@ import { orderedQueueFiles } from "./queue-order.mjs";   // the order jobs are a
 import { isCancelled } from "./cancel.mjs";   // a stopped run must not come back through any resume path
 import { whatsappRouting } from "./stages.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
+import { maybeCheckEngine } from "./engine/health.mjs";   // the engine proven between jobs, on a tick with nothing to run
+import { engineCommit } from "./engine-build.mjs";
 import { writeRunStatus, terminalRunState } from "./progress.mjs";   // A5 — grace-exit park + reclaim-bound terminal go through the guarded status writer; terminalRunState is the run record's own terminal vocabulary (2155)
 import { identitySeed } from "./progress.mjs";   // — the same stamp a run seeds, for the process that runs them
 import { writeDrainerStamp } from "./drainer-identity.mjs";   // — deploy health cannot interrogate a running process; it says so itself
@@ -2288,6 +2290,19 @@ function hasQueuedWork() {
   });
 }
 
+// THE ENGINE IS PROVEN BETWEEN JOBS TOO (engine/health.mjs): when the worker starts, after the installed build
+// changes, and when it has had no successful call for the routine interval. Only on a tick with nothing to run, so
+// it never delays a job, and it is due rarely enough that an empty tick stays free. Isolated: a check that throws
+// must not end the activation. `checkOnStart` is set by the watch entrypoint alone: a systemd one-shot starts a
+// process every tick, and a start there is not a restart.
+let checkOnStart = false;
+async function idleEngineCheck() {
+  const starting = checkOnStart;
+  checkOnStart = false;
+  try { await maybeCheckEngine({ build: engineCommit(), starting }); }
+  catch (e) { note(`[runner] engine check FAILED to run (isolated): ${e?.message ?? e}`); }
+}
+
 export async function main({ once = true } = {}) {
   // `once:false` is the no-systemd deployment: loop instead of returning, and let the SAME per-activation
   // body below run once per tick. Delegated rather than inlined so the systemd path (once:true, always)
@@ -2303,7 +2318,7 @@ export async function main({ once = true } = {}) {
   // happens to be down but there's no work anyway. A DUE run-dir POSTPONED orphan counts as work too.
   const dueOrphans = scanDueRunDirOrphans();
   const whatIfDue = hasPendingWhatIf();
-  if (!hasQueuedWork() && dueOrphans.length === 0 && !whatIfDue) return;
+  if (!hasQueuedWork() && dueOrphans.length === 0 && !whatIfDue) return await idleEngineCheck();
   // Deployment config check — this is the DEPLOYMENT entrypoint, the layer that owns "what is this
   // install's public hostname" (not the pipeline, which is also driven by tests and by --resume with no
   // deployment around it). Reports only: a missing hostname costs a link, not the deliverable, so it must
@@ -2508,6 +2523,7 @@ if (isEntrypoint(import.meta.url)) {
   // BEST-EFFORT AND NEVER FATAL — a drainer that cannot write its stamp still drains. The absence is a
   // finding where it is READ (scripts/live-surface-check.mjs), which costs no client a report.
   const watching = argv.includes("--watch");
+  checkOnStart = watching;
   writeDrainerStamp(config.workspaceRoot, {
     ...identitySeed(),
     mode: watching ? "watch" : "once",

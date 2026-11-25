@@ -4,8 +4,7 @@
 // clearotron install / clearotron doctor — one install, from nothing to a first real run.
 //
 //   npx clearotron install                    the wizard: one decision at a time, Enter takes the default
-//   npx clearotron doctor                     report what this machine is configured for. Writes NOTHING.
-//   npx clearotron doctor --probe-engine      …and spend one cheap turn proving the engine can run
+//   npx clearotron doctor                     report what this machine is configured for, and prove the engine with one real call
 //   npx clearotron doctor --probe-providers   …and spend one cheap paired call proving each register lane
 //   npx clearotron doctor --probe-connector   …and ask your own door whether an assistant could sign in
 //
@@ -281,10 +280,10 @@ const READ_ENV_PATH = () => activeEnvPath({ repoRoot: REPO });
 const argv = process.argv.slice(2);
 const has = (n) => argv.includes(n);
 const CHECK_ONLY = has("--check");
-// Opt-in, and off by default on purpose — see runCheck's header. A flag rather than an environment
-// variable: a variable read by shipping code owes a governance row, and this is a per-invocation
-// intention, not a property of the machine. Same reasoning as `bin/uspto-sync.mjs --force-disk`.
-const PROBE_ENGINE = has("--probe-engine");
+// THE ENGINE IS PROVEN BY A REAL TURN EVERY TIME (owner ruling, 2026-11-25). It was opt-in, and a production
+// install whose sign-in had stopped renewing passed `doctor` for three weeks because its engine program still
+// said it was signed in. `--probe-engine`, the flag that used to ask for the turn, is still accepted and changes
+// nothing.
 // issue 1871 — the same opt-in shape, for the credentials that had no proof at all. Never implied by
 // a plain --check: this SPENDS, and on two of the register adapters the count IS a billable search.
 const PROBE_PROVIDERS = has("--probe-providers");
@@ -1448,12 +1447,12 @@ function defaultWith(name, read) {
 }
 
 // ── --check ──────────────────────────────────────────────────────────────────────────────────────────
-// Reports. Writes nothing and creates nothing, ever.
+// Reports. Changes no setting of this install, ever.
 //
-// It calls nobody EITHER, with exactly one opt-in exception: `--probe-engine` spends one cheap engine
-// turn. Off by default, and the default is off for the original reason — a check that dials a provider
-// is a check that can fail for reasons that are not about this machine. Named as a flag so the reader
-// who asked for it is the one who pays for it, and so `--check` stays the thing you can run anywhere.
+// It calls one thing outside this machine: the engine, for one cheap turn, every time, because an engine
+// program's own word that it is signed in was not true (owner ruling, 2026-11-25). The turn may renew the
+// engine's own sign-in file and leave the program's session log, which is why this says "changes no setting"
+// and no longer "writes nothing". Every other call is opt-in, by its own flag.
 //
 // Exit 0 when everything PRESENT is coherent, 1 when something present is WRONG, 2 when it could not
 // look. An absence is reported loudly and is not, on its own, a failure — a fresh clone has configured
@@ -1642,14 +1641,14 @@ export function whatSetupLeft({ copy = null, engine = null, turnRan = false } = 
 export async function runCheck() {
   say("\n  Trademark clearance engine — configuration check\n");
   const ctx = await readCheckContext();
-  const { leadIsTheRefusal, refusal, turnLeads, signInLineLeads } = await sayOpening(ctx);
+  const { leadIsTheRefusal, refusal, turnLeads } = await sayOpening(ctx);
 
   // The path this command runs from, with the build it names below it.
   say(`\n  repo: ${REPO}`);
 
   await sayDeployment(ctx);
   await sayNode();
-  await sayEngine({ ...ctx, turnLeads, signInLineLeads });
+  await sayEngine({ ...ctx, turnLeads });
   await sayHowToRun();
   await sayEnvFile();
   await sayConfigurationStore(ctx);
@@ -1831,8 +1830,7 @@ async function readCheckContext() {
 
   // ── WHAT THE OPENING NEEDS FROM THE ENGINE SECTION, READ BEFORE IT ─────────────────────────────────
   //
-  // The opening says whether the engine program resolves (the sign-in line) and, under --probe-engine,
-  // runs the turn on the copy that resolves. Both are read here, once, and the Engine section still
+  // The opening runs the turn on the copy that resolves. Both are read here, once, and the Engine section still
   // prints every line about them. `engineJudged` is that section's own condition: it judges nothing when
   // the units' environment cannot be read, or when CLEAROTRON_AI names no engine this driver ships.
   const engineJudged = serviceKnown && !(engSel && !engSpec);
@@ -1862,10 +1860,6 @@ async function readCheckContext() {
   // on PATH for an install run from npx, and now that the engine program comes with the install this is
   // the line most installs see first. The opening prints it when it leads and the Engine section prints
   // it otherwise; null where that section would print the demo lines instead.
-  const signInLine = engineJudged && installMode !== ENGINE_MODES.DEMO
-    ? "The engine program is installed. Whether it is signed in cannot be read from disk: run "
-      + `\`${reachableCommand("doctor --probe-engine")}\` to find out.`
-    : null;
 
   // ONE TURN, WHEREVER IT RUNS. The engine as a RUN would see it (engineEnvOf). Only the engine-selection
   // keys — the probe must bill exactly the way this machine bills and moves no other variable. The auth
@@ -1957,11 +1951,11 @@ async function readCheckContext() {
   };
   return { fileEnv, unitDir, startPaths, hosted, unitEnv, effective, serviceEnvLabel, serviceEnvFile, serviceKnown,
     serviceFileEnv, effectiveForService, servicesRead, engineEnvOf, engSel, engineId, engSpec, serviceValue,
-    engineChosen, binSet, binSetting, bin, invEnv, installMode, signInLine, runTurn, sayTurn, atOrder,
+    engineChosen, binSet, binSetting, bin, invEnv, installMode, runTurn, sayTurn, atOrder,
     sayWillASearchRun, sayResearch, turnRan: () => probeTurnRan };
 }
 
-async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, signInLine, runTurn, sayTurn, atOrder,
+async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, runTurn, sayTurn, atOrder,
   sayWillASearchRun, sayResearch }) {
   // ── THE OPENING: WHETHER A SEARCH CAN RUN, WHAT STOPS IT, AND THE NEXT ACTION ─────────────────────
   //
@@ -1976,8 +1970,8 @@ async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, s
   // not write, so running setup alone would not reach them. A refusal with no words for what is missing
   // has no such sentence, and opens as every other state does.
   //
-  // EVERY OTHER STATE OPENS WITH "Will a search run?" ITSELF, then the sign-in line when the program
-  // resolves, or, under --probe-engine on an install that can search, the turn that answers it. The turn
+  // EVERY OTHER STATE OPENS WITH "Will a search run?" ITSELF, then, on an install that can search, the turn
+  // that answers whether its engine is signed in. The turn
   // is announced before it spends anything, and above the heading: a line that starts a section would end
   // "Will a search run?" for any reader that splits this output at its headings.
   //
@@ -1985,8 +1979,7 @@ async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, s
   // searches and that the order-time answer does not cover.
   const missingWords = serviceKnown && atOrder.length ? whatIsMissing(atOrder) : "";
   const leadIsTheRefusal = !hosted && missingWords !== "";
-  const turnLeads = PROBE_ENGINE && serviceKnown && atOrder.length === 0 && engineChosen && bin.executable && !bin.relative;
-  const signInLineLeads = !leadIsTheRefusal && !PROBE_ENGINE && signInLine !== null;
+  const turnLeads = serviceKnown && atOrder.length === 0 && engineChosen && bin.executable && !bin.relative;
   // ONE LINE, AS EVERY LINE BELOW IS, and the terminal wraps it. Wrapped here at spaces, it broke the command
   // apart wherever the install's path made a long word: `cd <path> && npx clearotron install` on three lines.
   //
@@ -2005,11 +1998,10 @@ async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, s
       turn = await runTurn();
     }
     sayWillASearchRun();
-    if (signInLineLeads) info(signInLine);
     if (turn) sayTurn(turn);
   }
   sayResearch();
-  return { leadIsTheRefusal, refusal, turnLeads, signInLineLeads };
+  return { leadIsTheRefusal, refusal, turnLeads };
 }
 
 async function sayDeployment({ fileEnv, hosted, unitEnv }) {
@@ -2184,7 +2176,7 @@ async function sayNode() {
 }
 
 async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, engineEnvOf, engSel, engineId,
-  engSpec, binSet, binSetting, bin, invEnv, installMode, signInLine, runTurn, sayTurn, turnLeads, signInLineLeads }) {
+  engSpec, binSet, binSetting, bin, invEnv, installMode, runTurn, sayTurn, turnLeads }) {
   say("\n  Engine");
   // This block used to read CLEAROTRON_CLAUDE_PATH unconditionally, under the heading "Engine binary", on a
   // box that may be running codex — so it reported the wrong variable and could pass for the wrong
@@ -2219,8 +2211,8 @@ async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, e
     // AI this command's file does not, it keeps the words it had.
     info(demoModeLine());
     for (const line of leaveDemoAdvice(noAiChosen ? null : engSpec)) info(line);
-    // ASKED TO PROBE with no AI chosen, it says why it did not, where it used to print nothing at all.
-    if (PROBE_ENGINE && noAiChosen) info(`not probed — no AI is chosen. \`${invoke("install")}\` asks which AI to use.`);
+    // With no AI chosen it says why it did not prove one, where it used to print nothing at all.
+    if (noAiChosen) info(`not probed — no AI is chosen. \`${invoke("install")}\` asks which AI to use.`);
   } else {
     ok(`${engineId} (${engSel.from}) — ${engSpec.label}`);
 
@@ -2325,7 +2317,7 @@ async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, e
       // restart a service — neither of which can change the answer, because the refusal is about the
       // platform rather than the binary. Naming WSL2 is the only instruction that ends this state.
       for (const line of leaveDemoAdvice(engSpec)) info(line);
-    } else if (!signInLineLeads) info(signInLine);   // printed here unless the opening carries it
+    }
 
     // AND WHETHER THE ENGINE AGREES, which is a different question from the one above and the reason an
     // outside user gave up on this product. This command reads its OWN environment; the portal's New
@@ -2404,14 +2396,10 @@ async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, e
 
     // An executable file is not a working engine, and this command says so rather than implying
     // otherwise by staying silent.
-    if (!PROBE_ENGINE && installMode === ENGINE_MODES.DEMO) {
-      // — DEMO DOES NOT ADVERTISE THE PROBE. The generic line below sends the reader to spend a
-      // turn; with nothing to spawn, --probe-engine answers "there is no usable binary to probe" and the
-      // round trip taught them nothing they were not just told. Advice that cannot pay off is noise in
-      // the one command a first-time reader runs to find out what they have.
+    if (installMode === ENGINE_MODES.DEMO) {
+      // — DEMO HAS NOTHING TO PROVE. With nothing to spawn, "there is no usable binary to probe" would
+      // tell the reader nothing they were not just told.
       info("nothing to probe in demo mode — the sign-in question arrives once a binary does.");
-    } else if (!PROBE_ENGINE) {
-      info("whether it is SIGNED IN is not checked here — add --probe-engine to spend one cheap turn proving it");
     } else if (!bin.executable || bin.relative) {
       info("not probed — there is no usable binary to probe. Fix the line above first.");
     } else if (!turnLeads) {
