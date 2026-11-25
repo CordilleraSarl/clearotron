@@ -301,6 +301,8 @@ const PROVIDER = REGISTER_PROVIDER;
 // the provider half is this label. It was a driver fact the seat retyped out of the dispatch; the driver
 // stamps it now, and it reads the label from here rather than re-deriving it from CLEAROTRON_DATABASE
 // — a second derivation of a provider name is how a masthead ends up naming a register the run never used.
+// THE PROVIDER'S MANUALS, as a clearance seat reads them: the manual, then the questions file where the provider splits one out.
+export const providerManuals = (register) => [providerMeta(register).skillDoc, providerMeta(register).questionsDoc].filter(Boolean);
 export const providerMeta = (register) => PROVIDERS[register] ?? {   // a run's register (ctx.register), or the machine's
   label: register ?? "(none configured)",
   skillDoc: null,
@@ -721,7 +723,7 @@ export const SKILL_COMPANIONS = Object.freeze({
   "clearance-common-law": Object.freeze(["perplexity-prompts.md"]),
   "clearance-register": Object.freeze([
     "register-recipes.md", "status-rules.md", "stealth-filer-indicators.md",
-    "providers/corsearch.md", "providers/clarivate.md",
+    "providers/corsearch.md", "providers/clarivate.md", "providers/clarivate-questions.md",
   ]),
   "case-law-citation": Object.freeze(["sources/courtlistener.md", "sources/legaldatahunter.md", "sources/eurlex.md"]),
 });
@@ -1955,7 +1957,7 @@ export const STAGES = {
     // Every follow-up is a fresh session that calls the same register tools, so its methodology line also names the
     // active provider's manual, which holds THIS provider's tool names and operator vocabulary and which the opening
     // message tells the first session to read and follow.
-    followupSkillReads: (ctx) => (providerMeta(ctx?.register ?? PROVIDER).skillDoc ? [providerMeta(ctx?.register ?? PROVIDER).skillDoc] : []),
+    followupSkillReads: (ctx) => (providerMeta(ctx?.register ?? PROVIDER).skillDoc ? providerManuals(ctx?.register ?? PROVIDER) : []),
     out: (P, axis) => P.registerUnit(axis),
     validate: declaredValidator("register-unit", validators),
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -2069,7 +2071,7 @@ export const STAGES = {
         // Leaving the clause in would tell every unit on every vendor that a second EU source was
         // available to it, and a unit that believes it has a cross-check it does not have will report
         // agreement it never obtained.
-        ? ` Read and follow ${providerMeta(register).skillDoc} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
+        ? ` Read and follow ${providerManuals(register).join(" and ")} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
         : " NO provider vocabulary doc is registered for it, so there is nothing to read for its tool names — treat that as a fault and say so rather than improvising an operator vocabulary."),
       USE_THE_INPUTS,
       planEntries.length
@@ -2419,8 +2421,8 @@ export const STAGES = {
         why: "Answering a lawyer's question from the frozen band, including the honest 'the frozen material cannot answer this' that becomes an open coverage row. No artifact holds it. (No token here: intake_ask_unanswered lives on validators.narrative, not registerFindings.)",
       },
       "the record ids read while answering each instructed check": {
-        class: "mechanical:tool-written", tokens: [],
-        why: "CONVERTED (conversion 11): the driver renders the ids beneath each instructed check from its own reading audit, and the tool takes {ask, answer} only. Every band_shape / band_lookup / band_record call lands in reading-log.jsonl with its args (the pattern #850 names as already existing for the band tools), so the driver held this list the whole time the seat was being asked to reproduce it.",
+        class: "judgment", tokens: ["registerdigest_relied_records_invalid", "registerdigest_relied_record_unknown"],
+        why: "WHICH records an answer rests on is the seat's to say: the reading audit proves a record was opened somewhere in the run, not which answer it supports, and rendering that run-wide list beneath every answer cited records the digest never read (measured in testing, 2026-11-25: 46 of 578 and 19 of 322). The seat names the held records each answer relies on in `records`, where applicable; the driver resolves each against the band and refuses one the run does not hold, and keeps the run's reads once under the audit trail. The key keeps its old wording because contract-arm2-baseline.json freezes it.",
       },
       "adopt-or-override each placement by engaging its reason, and the `### Disagreement resolutions` rows (one per surfaced disagreement and per borderline:true, each ADOPTED/OVERRODE in writing)": {
         class: "judgment", tokens: ["registerdigest_adjudication_invalid", "registerdigest_adjudication_incomplete"],
@@ -2467,7 +2469,7 @@ export const STAGES = {
       // answered from the frozen material; NEW register work enters only through the supplemental
       // mint (a register-unit lane proposal / the skeptic's escalation re-run), never from here.
       (intakeAsks ?? []).filter((a) => a.owner === "register").length ? lines(
-        `INSTRUCTED CHECKS (the requester explicitly asked for these; THIS stage owns their ANSWERS): answer each from the run's frozen register material via the band tools (band_shape / band_lookup / band_record) and send each answer in \`instructed_checks\`. You hold NO live register tools here — that is by design, never an outage: a check the frozen material genuinely cannot answer (it needs a register query no dispatched slice covers) is recorded honestly as a Coverage-ledger open row naming the missing query, so the escalation lane can propose it through the supplemental mint — never guessed, never silently dropped, and never reported as a tool fault:`,
+        `INSTRUCTED CHECKS (the requester explicitly asked for these; THIS stage owns their ANSWERS): answer each from the run's frozen register material via the band tools (band_shape / band_lookup / band_record). Send each answer in \`instructed_checks\`. Include the held record identifiers this answer relies on, where applicable. You hold NO live register tools here — that is by design, never an outage: a check the frozen material genuinely cannot answer (it needs a register query no dispatched slice covers) is recorded honestly as a Coverage-ledger open row naming the missing query, so the escalation lane can propose it through the supplemental mint — never guessed, never silently dropped, and never reported as a tool fault:`,
         ...(intakeAsks ?? []).filter((a) => a.owner === "register").map((a, i) => `  ${i + 1}. "${a.ask}"`),
       ) : "",
       `Unit digests: ${(axes ?? []).map((a) => P.registerUnit(a)).join(", ")}.`,
@@ -2534,8 +2536,8 @@ export const STAGES = {
       // ending rule. What goes is the seat retyping identifier cells, record URLs, summary counts and
       // audit rows out of artifacts the driver already holds, and laying them out as tables.
       `RECORD YOUR WORK WITH \`record_register_digest\`. THE DISPATCH NAMES NO FILE FOR YOU TO WRITE, deliberately — the driver renders the findings document from what you send. You hold no Write or Edit tool for it and nothing you write by hand is read.`,
-      `WHAT THE CALL TAKES, AND WHAT IT DOES NOT. \`findings_rows\` / \`incumbent_rows\`: one entry per POSITION that earns a row — the \`uri\` of any one constituent, your \`flag_reason\`, and \`verify\`. \`negative_rows\`: one entry per candidate screened out — its \`uri\`, your \`drop_reason\` and its \`ground\`. \`instructed_checks\`: {ask, answer}. \`disagreement_resolutions\`: {subject, ADOPTED|OVERRODE, reason}. Plus your prose sections: \`opposition\`, \`merch_sweep\`, \`cross_checks\`, \`open_flags\`.`,
-      `YOU DO NOT SEND — AND MUST NOT RETYPE — any record's Mark, Owner, Country, Classes, Status, Filed or Expiry, the clickable record URL, the register name, the summary counts, the audit trail or the record ids you read. Every one of those is rendered from the band record your \`uri\` names or from this run's own receipts. The uri IS the join: a uri no band record carries is refused on the call, naming it, rather than rendered as a row of blank cells.`,
+      `WHAT THE CALL TAKES, AND WHAT IT DOES NOT. \`findings_rows\` / \`incumbent_rows\`: one entry per POSITION that earns a row — the \`uri\` of any one constituent, your \`flag_reason\`, and \`verify\`. \`negative_rows\`: one entry per candidate screened out — its \`uri\`, your \`drop_reason\` and its \`ground\`. \`instructed_checks\`: {ask, answer, records}. \`disagreement_resolutions\`: {subject, ADOPTED|OVERRODE, reason}. Plus your prose sections: \`opposition\`, \`merch_sweep\`, \`cross_checks\`, \`open_flags\`.`,
+      `YOU DO NOT SEND — AND MUST NOT RETYPE — any record's Mark, Owner, Country, Classes, Status, Filed or Expiry, the clickable record URL, the register name, the summary counts or the audit trail. Every one of those is rendered from the band record your \`uri\` names or from this run's own receipts. The uri IS the join: a uri no band record carries is refused on the call, naming it, rather than rendered as a row of blank cells.`,
       // The reading step is not asked to mark the list's lines with fate codes. That order named a field its tool
       // does not take and a fetch it cannot make, and only an operator metric read the result, which now says
       // it was not computed (gate-metrics.mjs). The tool still accepts codes a call carries.

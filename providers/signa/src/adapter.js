@@ -8,6 +8,9 @@ export const adapter = {
   label: "Signa",
   credEnv: "SIGNA_API_KEY",
   skillDoc: "skills/clearance-register/providers/signa.md",
+  // How a question is asked and how its answer reads, split from the manual above: the Knockout reader holds only the
+  // propose tool, so it reads this file alone; the clearance unit reads both.
+  questionsDoc: "skills/clearance-register/providers/signa-questions.md",
   hasPublicRecordUrl: false, // Signa exposes no per-record public URL — cite the office register
   //, ruling 2026-08-20 — no register UI exists to link to at all, so the card points at
   // the artifact that DOES carry the record: the audit workbook. Naming it is the whole of this

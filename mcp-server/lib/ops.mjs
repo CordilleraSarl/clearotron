@@ -16,7 +16,7 @@ import { validateJob } from "../../driver/enqueue-schema.mjs";
 import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
 import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
-import { assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
+import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
 import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one marker shape, shared with the engine
 import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver/engine/child-record.mjs";   //
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
@@ -60,6 +60,15 @@ export function enqueuedViaFor(scope) {
   return String(scope?.sub ?? "") === PORTAL_TOKEN_SUB ? "portal/start_run" : "mcp/start_run";
 }
 
+// THE QUEUE ID'S RULE, STATED WHOLE IN THE REFUSAL. The id becomes a queue file name, so it is held to a slug
+// of at most this many characters that starts with a letter or digit. The refusal named only the characters, and an assistant whose id was
+// too long read it as a bad character, changed nothing that mattered, and lost the order's first call on
+// three mornings before it made one up that fit. stop_run's queue form holds a queued id to the same rule.
+const QUEUE_ID_MAX = 128;
+const QUEUE_ID_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${QUEUE_ID_MAX - 1}}$`);
+const queueIdRefusal = (id) => `id ${JSON.stringify(id)}: Use an ID of 1–${QUEUE_ID_MAX} characters. Start with an ASCII letter or digit. `
+  + `The remaining characters may also include a dot, underscore, @ or hyphen.${id.length > QUEUE_ID_MAX ? ` This one has ${id.length} characters.` : ""}`;
+
 export function buildJob(args = {}, { scope } = {}) {
   // marks[] (search-depth spine): a knockout BATCH is ONE job carrying every mark — accept an explicit
   // marks array ({name, classes?, ref?} each) as the batch form; markName remains the single-mark form
@@ -72,8 +81,7 @@ export function buildJob(args = {}, { scope } = {}) {
   const id = String(args.id || `mcp-${Date.now().toString(36)}-${randomUUID().slice(0, 8)}`);
   // Input hardening: the id becomes a QUEUE FILENAME (join(qdir, `${id}.json`)) — a
   // path-shaped id would escape the queue directory. Slug-validated unconditionally, every caller.
-  if (id !== basename(id) || id.includes("..") || !/^[A-Za-z0-9][A-Za-z0-9._@-]{0,127}$/.test(id))
-    throw new Error(`id ${JSON.stringify(id)} must be a bare filename slug ([A-Za-z0-9._@-], no path separators)`);
+  if (id !== basename(id) || id.includes("..") || !QUEUE_ID_RE.test(id)) throw new Error(queueIdRefusal(id));
   const classes = Array.isArray(args.classes) ? args.classes.map(Number).filter(Number.isFinite) : undefined;
   // `||` not `??`: markName "" is falsy-but-not-nullish and must fall through to the
   // first batch mark, never enqueue an empty display name.
@@ -314,8 +322,7 @@ export async function stopRun(args = {}, { scope, endTurn = endEngineChild } = {
     const qdir = queueDir(agent);
     // same filename hardening as start_run — the id is joined into the queue path
     const sid = String(args.id);
-    if (sid !== basename(sid) || sid.includes("..") || !/^[A-Za-z0-9][A-Za-z0-9._@-]{0,127}$/.test(sid))
-      throw new Error(`stop_run: id ${JSON.stringify(sid)} must be a bare filename slug ([A-Za-z0-9._@-], no path separators)`);
+    if (sid !== basename(sid) || sid.includes("..") || !QUEUE_ID_RE.test(sid)) throw new Error(`stop_run: ${queueIdRefusal(sid)}`);
     const f = join(qdir, `${String(args.id)}.json`);
     const NOT_FOUND = { ok: false, action: "not-found", id: args.id, note: "No queued job with that id (already run, or never queued)." };
     // ACCOUNT GATE: the runId form is gated at the dispatch chokepoint, but a QUEUED job
@@ -561,9 +568,10 @@ export function getDeliveryPacket(args = {}) {
 // courier never SAW this event and cannot be misled into thinking it routed one it did not. Leaving
 // the file on disk is the point — the full-grant courier still picks it up.
 //
-// Fail closed on every unknown: a packet with no runId (an intake rejection filed before any run
-// exists), an unreadable file, or a run with no account tag all resolve to "not in your grant" for a
-// scoped session — exactly how assertAccountAccess already treats an untagged run everywhere else.
+// Fail closed on every unknown: an unreadable file, a run with no account tag, or a notice filed before
+// any run exists whose order named no account all resolve to "not in your grant" for a scoped session —
+// exactly how assertAccountAccess already treats an untagged run everywhere else. A notice with no run
+// is judged on the account its order named (runner.mjs noticeAccount), as list_outbox_events judges it.
 export function ackEvent(args = {}, { scope } = {}) {
   const file = String(args.file || "");
   if (!file) throw new Error("ack_event: file is required (from list_outbox_events)");
@@ -584,12 +592,13 @@ export function ackEvent(args = {}, { scope } = {}) {
 // is a refusal, never a pass.
 function ackVisible(path, file, scope) {
   let runId = null;
+  let packet = null;
   try {
     const raw = readFileSync(path, "utf8");
-    try { runId = JSON.parse(raw).runId ?? null; }
+    try { packet = JSON.parse(raw); runId = packet?.runId ?? null; }
     catch { runId = file.replace(/\.pending$/, ""); }     // legacy delivered marker: agent-id text body, runId in the name
   } catch { return false; }                                // unreadable — fail CLOSED
-  if (!runId) return false;
+  if (!runId) return packet ? accountVisible(scope, packet.account ?? null, packet.organisation ?? null) : false;
   const run = resolveRun(String(runId));
   if (!run) return false;
   try { assertAccountAccess(scope, runAccountKey(run), `outbox event "${file}"`); return true; }
