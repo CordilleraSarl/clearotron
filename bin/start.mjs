@@ -1529,7 +1529,8 @@ if (isMain) {
   // cannot settle it is given nothing and asked by setup. Written add-only beside the stores, so a line an operator
   // wrote wins, and set in this process only once written, so this start's services and the services' file read what
   // the settings file says.
-  const research = DEMO ? { add: null } : webResearchToAdd(process.env, installationRunDirs(paths.workspace));
+  const research = DEMO || String(process.env[WEB_RESEARCH_SETTING] ?? "").trim() !== "" ? { add: null }
+    : webResearchToAdd(process.env, installationRunDirs(paths.workspace));
   const researchAdded = research.add ?? {};
 
   // A DEMO WRITES NO SECRETS AND NO ADDRESS. They are generated per run and live in memory only, which
