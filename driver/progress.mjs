@@ -20,6 +20,7 @@ import { isStopReason, stopReason } from "../shared/stop-reason.mjs";   // a sto
 import { DRIVER_DIR, atomicWrite, readJson } from "./run-record.mjs";
 import { config } from "./driver.config.mjs";
 import { batchMarkName } from "./mark-name.mjs";
+import { productSpec } from "./products.mjs";   // which products read case law, which names the sixth step
 import { runLog, note } from "./log.mjs";
 // — the seed's pid stamp. claim-liveness.mjs is the real home of the /proc reader (runner.mjs
 // imports and re-exports it rather than owning it), so this takes it from the source and adds no
@@ -41,6 +42,28 @@ export const DISPLAY_STEPS = [
   "Publishing",             // 8  publish (code) → .published
   "Sending to you",         // 9  notify, notify-chat → .delivered
 ];
+
+// THE SIXTH STEP OF A SEARCH THAT DOES NOT READ CASE LAW. Global preliminary and Multi-country focus run
+// the same stages, and their sixth step is the review of the conclusions: they do not search case law
+// (`caseLaw: false` in products.mjs). Named "Case law & refutation" there, a list that ticks it tells the
+// reader case law was covered. Approved wording, 2026-11-25.
+export const CONCLUSIONS_STEP = "Checking the conclusions";
+const CASE_LAW_STEP_INDEX = 5;
+const CONCLUSIONS_STEPS = Object.freeze(DISPLAY_STEPS.map((s, i) => (i === CASE_LAW_STEP_INDEX ? CONCLUSIONS_STEP : s)));
+
+/**
+ * The display steps of a clearance of this product, in order: the ONE home of every name a person reads
+ * for a clearance's progress. A product that does not read case law names its sixth step
+ * CONCLUSIONS_STEP; every other product, and one this build cannot place, keeps DISPLAY_STEPS. PURE.
+ */
+export function displayStepsFor(product) {
+  return productSpec(product)?.caseLaw === false ? CONCLUSIONS_STEPS : DISPLAY_STEPS;
+}
+
+/** The display steps a clearance run walks, from its frozen search policy. */
+function runDisplaySteps(ctx) {
+  return displayStepsFor(ctx?.searchPolicy?.product ?? ctx?.searchPolicy?.level ?? null);
+}
 
 // Real STAGES key (no axis suffix) → 0-based DISPLAY_STEPS index.
 //
@@ -91,12 +114,13 @@ export const NON_STAGE_STEPS = {
 };
 
 // rawStageKey may carry an axis suffix ("register-unit:primary-sweep") — strip it. Returns null for an
-// unknown key so callers can no-op (an unmapped stage must never touch the displayed step).
-export function stepForStage(rawStageKey) {
+// unknown key so callers can no-op (an unmapped stage must never touch the displayed step). `steps` is
+// the run's own list (displayStepsFor); the index is the same in every list, only a name differs.
+export function stepForStage(rawStageKey, steps = DISPLAY_STEPS) {
   const key = String(rawStageKey ?? "").split(":")[0];
   const index = STAGE_TO_STEP[key];
   if (index == null) return null;
-  return { index, label: DISPLAY_STEPS[index], n: index + 1, total: DISPLAY_STEPS.length };
+  return { index, label: steps[index], n: index + 1, total: steps.length };
 }
 
 /**
@@ -397,7 +421,8 @@ export function resumeRecord(runDir, resume) {
 
 export function seedRunStatus(ctx, { resume = false } = {}) {
   const { job, run, agent } = ctx;
-  const first = stepForStage("matter-frame");
+  const steps = runDisplaySteps(ctx);
+  const first = stepForStage("matter-frame", steps);
   const pass = resumeRecord(run.runDir, resume);
   writeRunStatus(ctx, {
     schema: 1,
@@ -426,6 +451,9 @@ export function seedRunStatus(ctx, { resume = false } = {}) {
     ...identitySeed(),
     stepIndex: first.index, stepLabel: first.label, stepN: first.n, stepTotal: first.total,
     currentStep: currentStepOf(first),
+    // EVERY STEP THIS RUN WALKS, by name and in order, so a surface that lists them reads the run's own
+    // list rather than keeping a copy. The Knockout lane writes its own list the same way.
+    steps: [...steps],
     lastStage: null,
     review: null,
     url: null,
@@ -452,7 +480,7 @@ export function seedRunStatus(ctx, { resume = false } = {}) {
 // raw key; this is the same moment in the stepper's own words, for a surface that shows where the run is.
 // A stage with no display step leaves it where it was: those stages run inside the step already shown.
 export function recordTransition(ctx, rawStageKey) {
-  const step = stepForStage(rawStageKey);
+  const step = stepForStage(rawStageKey, runDisplaySteps(ctx));
   writeRunStatus(ctx, {
     ...(step ? { stepIndex: step.index, stepLabel: step.label, stepN: step.n, stepTotal: step.total, currentStep: currentStepOf(step) } : {}),
     lastStage: rawStageKey,

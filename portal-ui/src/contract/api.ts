@@ -574,6 +574,9 @@ export type Run = {
   readonly step: string | null
   readonly stepN: number | null
   readonly stepTotal: number | null
+  /** Every step the run walks, by name and in order, as the engine wrote the run's own list. Null for a
+   *  run recorded before the field and on every row that is not live. The browser keeps no copy. */
+  readonly steps: readonly string[] | null
   /** A stop has been asked for and the step in flight is finishing. Beside a
    *  non-terminal state this is the screen's "Stopping…"; the terminal replaces it. */
   readonly stopRequestedAt: string | null
@@ -1512,6 +1515,7 @@ const decodeRun = (raw: unknown): Run | null => {
     stoppable: r['stoppable'] !== false,
     stepN: asNumber(r['stepN']),
     stepTotal: asNumber(r['stepTotal']),
+    steps: Array.isArray(r['steps']) && (r['steps'] as unknown[]).length ? asStrings(r['steps']) : null,
     reason: asString(r['reason']),
     failedStage: asString(r['failedStage']),
     reasonDetail: asString(r['reasonDetail']),

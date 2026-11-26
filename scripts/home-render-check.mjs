@@ -33,6 +33,10 @@ import { reportIdentityFor } from '../driver/search-policy.mjs'
 // The quote bounds, from the engine's own effort model — so the past-the-bound state below is derived
 // from the table it is testing against rather than from a number typed beside it.
 import { TURNAROUND_QUOTE } from '../driver/effort-model.mjs'
+// THE STEP NAMES A RUNNING CARD LISTS are the engine's own lists, read here from their one home: a fixture
+// that typed them would certify a card the engine never feeds.
+import { displayStepsFor } from '../driver/progress.mjs'
+import { koSteps } from '../driver/stages-knockout.mjs'
 import { browserRun } from "../shared/browser-temp-root.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url))
@@ -67,6 +71,9 @@ const run = (o) => ({
   date: o.date ?? '2026-07-27', band: o.band ?? null, tone: o.tone ?? null, bands: [], marks: [],
   reportSchema: 2, held: false, report: o.state === 'delivered' ? `/portal/report/${o.runId}/` : null,
   step: o.step ?? null, stepN: o.stepN ?? null, stepTotal: o.stepTotal ?? null,
+  // The run's own step list, as the row carries it. Absent on a fixture standing for a run recorded before
+  // the field, which keeps the single step line and the bars.
+  steps: o.steps ?? null,
   reason: o.reason ?? null, failedStage: o.failedStage ?? null,
   pausedKind: o.pausedKind ?? null, resetsAt: o.resetsAt ?? null, startedAt: o.startedAt ?? null,
   queuePos: o.queuePos ?? null,
@@ -85,6 +92,10 @@ const run = (o) => ({
 // of it on a day nobody chose and red this file for a change nobody made. Today, every day.
 const TODAY = new Date().toISOString().slice(0, 10)
 
+// A live run at step `n` of the engine's list for its search: the step's name, its number, the total and the
+// list itself all come from the same list, as the server sends them.
+const at = (steps, n) => ({ steps: [...steps], step: steps[n - 1], stepN: n, stepTotal: steps.length })
+
 const FINISHED = [
   run({ runId: 'f1', mark: 'VIBRANTE FROSTPLUM', state: 'delivered', band: 'Tier 3 — material', tone: 'high', date: '2026-07-26', projectKey: 'q3-packaging', projectName: 'Q3 packaging refresh — EU' }),
   run({ runId: 'f2', mark: 'VANTOR LABS', state: 'delivered', band: 'Clear to file', tone: 'minimal', date: '2026-07-24' }),
@@ -95,26 +106,36 @@ const STATES = {
   // A card of each kind at once, plus a queue deep enough that its ordinals mean something.
   busy: {
     runs: [
-      run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(96) }),
-      run({ runId: 'b', mark: 'KINETIC BLOOM', state: 'paused', pausedKind: 'rate-limit', stepN: 5, stepTotal: 9, resetsAt: new Date(now + 42 * 60_000).toISOString() }),
+      run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', ...at(displayStepsFor('full-country-search'), 2), startedAt: ago(96) }),
+      run({ runId: 'b', mark: 'KINETIC BLOOM', state: 'paused', pausedKind: 'rate-limit', ...at(displayStepsFor('full-country-search'), 5), resetsAt: new Date(now + 42 * 60_000).toISOString() }),
       run({ runId: 'c', mark: 'NORTHWIND', state: 'queued', queuePos: 1 }),
       run({ runId: 'd', mark: 'EMBER FORGE', state: 'queued', queuePos: 2 }),
       run({ runId: 'e', mark: 'CASTELLAN', state: 'queued', queuePos: 3 }),
       ...FINISHED,
     ],
-    expectCards: 2, expectQueue: 3, expectFirstCardPips: 9, expectStops: 2,
-    // The design's stop dialog is drawn over this card: CORAL FREEZE, on Register sweeps.
+    expectCards: 2, expectQueue: 3, expectFirstCardPips: 0, expectStops: 2,
+    expectSteps: { count: 9, current: displayStepsFor('full-country-search')[1], done: 1, pausedCurrent: displayStepsFor('full-country-search')[4] },
+    // The design's stop dialog is drawn over this card: CORAL FREEZE, on the register step.
     stopDialog: 'CORAL FREEZE',
   },
   one: {
-    runs: [run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Common-law grid', stepN: 4, stepTotal: 9, startedAt: ago(38) }), ...FINISHED],
-    expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
+    runs: [run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', product: 'global-preliminary-search', ...at(displayStepsFor('global-preliminary-search'), 6), startedAt: ago(38) }), ...FINISHED],
+    expectCards: 1, expectQueue: 0, expectFirstCardPips: 0, expectStops: 1,
     expectExpect: '· usually 1.5 to 2.5 h',
+    // A GLOBAL PRELIMINARY NEVER READS THE CASE-LAW STEP: its sixth step reviews the conclusions.
+    expectSteps: { count: 9, current: displayStepsFor('global-preliminary-search')[5], done: 5, absent: displayStepsFor('full-country-search')[5] },
+    phone: true,
+  },
+  // A RUN RECORDED BEFORE THE LIST: no names on the wire, so the card keeps today's single line and bars.
+  nolist: {
+    runs: [run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Searching registers and common law', stepN: 2, stepTotal: 9, startedAt: ago(38) }), ...FINISHED],
+    expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
   },
   // A knockout has FIVE steps, or six with the register probe. The pip row follows the RUN.
   knockout: {
-    runs: [run({ runId: 'k', mark: 'DRIVERS HAVEN', state: 'running', kind: 'knockout-batch', product: 'knockout-search', step: 'Marketplace sweep', stepN: 3, stepTotal: 5, startedAt: ago(14) }), ...FINISHED],
-    expectCards: 1, expectQueue: 0, expectFirstCardPips: 5, expectStops: 1,
+    runs: [run({ runId: 'k', mark: 'DRIVERS HAVEN', state: 'running', kind: 'knockout-batch', product: 'knockout-search', ...at(koSteps(), 3), startedAt: ago(14) }), ...FINISHED],
+    expectCards: 1, expectQueue: 0, expectFirstCardPips: 0, expectStops: 1,
+    expectSteps: { count: koSteps().length, current: koSteps()[2], done: 2 },
     // PAST ITS OWN BOUND, AND THAT IS THE POINT. A knockout quotes 5 to 10 MINUTES, so a run 14 minutes
     // in is late by its own table while the same elapsed time is early for a clearance. One quote per
     // pipeline, read from the run rather than from the screen.
@@ -368,6 +389,24 @@ const PROBE = `(() => {
       const first = all('.home2-card').find((n) => !n.closest('.home2-stopped'))
       return first ? [...first.querySelectorAll('.home2-pip')].length : 0
     })(),
+    // FIRST CARD'S STEP LIST: how many names, which is current, how many done, and every name as drawn.
+    steps: (() => {
+      const cards = all('.home2-card').filter((n) => !n.closest('.home2-stopped'))
+      const read = (card) => {
+        const list = card?.querySelector('ol.home2-steps')
+        if (!list) return null
+        const items = [...list.querySelectorAll('li')]
+        const cur = items.filter((li) => li.getAttribute('aria-current') === 'step')
+        return {
+          count: items.length,
+          current: cur.map((li) => li.textContent.trim()),
+          done: items.filter((li) => li.classList.contains('done')).length,
+          names: items.map((li) => li.textContent.trim()),
+          clipped: items.filter((li) => li.scrollWidth > li.clientWidth + 1).length,
+        }
+      }
+      return { first: read(cards[0]), second: read(cards[1]) }
+    })(),
     // THE DEPTH LABEL MUST NOT BE CLIPPED. A string test cannot see this; only a browser can.
     depthClipped: all('.home2-depth').filter((n) => n.scrollWidth > n.clientWidth + 1).length,
     depthText: (q('.home2-depth')?.textContent ?? '').trim(),
@@ -573,6 +612,24 @@ for (const [name, spec] of Object.entries(STATES)) {
     say(out.queueRows === spec.expectQueue, `${name}/${theme}: ${out.queueRows} queue rows (expected ${spec.expectQueue})`)
     say(out.pips === spec.expectFirstCardPips, `${name}/${theme}: first card has ${out.pips} pips (expected ${spec.expectFirstCardPips})`)
 
+    // A RUNNING CARD LISTS EVERY STEP BY NAME, the run's own list, with exactly one current step. A card
+    // whose run sent no list keeps the single line and draws no list.
+    const st = out.steps?.first
+    if (spec.expectSteps) {
+      const e = spec.expectSteps
+      say(st?.count === e.count, `${name}/${theme}: first card lists ${st?.count ?? 0} steps (expected ${e.count})`)
+      say(JSON.stringify(st?.current) === JSON.stringify([e.current]), `${name}/${theme}: the current step is ${JSON.stringify(st?.current)} (expected ${JSON.stringify([e.current])})`)
+      say(st?.done === e.done, `${name}/${theme}: ${st?.done} steps done (expected ${e.done})`)
+      say(st?.clipped === 0, `${name}/${theme}: no step name clipped (${st?.clipped})`)
+      if (e.absent) say(!st?.names.includes(e.absent), `${name}/${theme}: "${e.absent}" is not on this card`)
+      if (e.pausedCurrent) {
+        const p2 = out.steps?.second
+        say(JSON.stringify(p2?.current) === JSON.stringify([e.pausedCurrent]), `${name}/${theme}: the paused card's current step is ${JSON.stringify(p2?.current)}`)
+      }
+    } else if (spec.expectCards) {
+      say(st == null, `${name}/${theme}: no step list on a card whose run sent none`)
+    }
+
     // STOP APPEARS ONLY WHERE IT CAN DO SOMETHING. A failed or stopped run is terminal; a button on it
     // would be a control that cannot act.
     say(out.stops === spec.expectStops, `${name}/${theme}: ${out.stops} Stop buttons (expected ${spec.expectStops})`)
@@ -694,6 +751,23 @@ for (const [name, spec] of Object.entries(STATES)) {
       if (data) writeFileSync(join(shotDir, `home-${name}-${theme}.png`), Buffer.from(data, 'base64'))
     }
 
+    // AT PHONE WIDTH THE LIST WRAPS AND NOTHING CLIPS. Read at 390px, then the window goes back to its size.
+    if (spec.phone) {
+      await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true })
+      await new Promise((r) => setTimeout(r, 400))
+      const narrow = await evalIn(PROBE)
+      say(narrow?.sidewaysOverflow === 0, `${name}/${theme}/phone: no sideways scroll (${narrow?.sidewaysOverflow}px)`)
+      say(narrow?.steps?.first?.clipped === 0 && narrow?.steps?.first?.count === spec.expectSteps.count,
+        `${name}/${theme}/phone: every step drawn, none clipped (${JSON.stringify({ count: narrow?.steps?.first?.count, clipped: narrow?.steps?.first?.clipped })})`)
+      if (shotDir) {
+        const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
+        const data = shot.result?.result?.data ?? shot.result?.data
+        if (data) writeFileSync(join(shotDir, `home-${name}-${theme}-phone.png`), Buffer.from(data, 'base64'))
+      }
+      await cmd('Emulation.clearDeviceMetricsOverride', {})
+      await new Promise((r) => setTimeout(r, 200))
+    }
+
     // ── THE STOP DIALOG, EACH OPTION SELECTED ─────────────────────────────────────────────────────────
     //
     // Opened from the running card the way a reader opens it. The safe option is selected first; picking
@@ -737,7 +811,7 @@ for (const [name, spec] of Object.entries(STATES)) {
         say(/A stopped search cannot be restarted and produces no report\. It stays in Clearances, marked stopped\. Its finished steps stay readable through Ask AI\./.test(opened.text),
           `${name}/${theme}: the stop dialog states the facts of a stop`)
         // THE STEP IS NAMED ONCE, AS A LABEL, and the two choices say "this step" (the owner's words, 2026-11-06).
-        say(/Current step: Register sweeps/.test(opened.text)
+        say(opened.text.includes(`Current step: ${displayStepsFor('full-country-search')[1]}`)
           && /This step finishes first, so its work is kept\. There is no reliable completion estimate for this step\./.test(opened.text)
           && /This step is cut off and its work is lost\. Everything recorded before it is kept\./.test(opened.text),
           `${name}/${theme}: the dialog names the step in progress once, and both options say "this step"`)

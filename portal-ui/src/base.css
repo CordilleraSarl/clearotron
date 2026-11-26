@@ -2959,6 +2959,19 @@ details[open] > .fold-summary .fold-chev {
 .home2-pip.on.failed { background: var(--tone-high); }
 .home2-pip.on.cancelled { background: var(--text-faint); }
 
+/* A running card's steps, every one by name (board Main, 2026-11-25). Done: a tick and muted text.
+   Current: bold, with a filled dot in the accent colour, or today's paused colour on a paused card.
+   To come: an open dot and muted text. Names wrap at phone width; nothing clips. */
+.home2-steps { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.home2-stepitem { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.35; color: var(--text-muted); }
+.home2-stepmark { flex: none; width: 14px; height: 14px; margin-top: 1px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); }
+.home2-stepname { min-width: 0; overflow-wrap: anywhere; }
+.home2-stepitem.current { font-size: 14.5px; font-weight: 700; color: var(--text-strong); }
+.home2-stepitem.current .home2-stepmark { margin-top: 2px; }
+.home2-stepitem.current .home2-stepdot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-accent); }
+.home2-steps.paused .home2-stepitem.current .home2-stepdot { background: var(--tone-medium); }
+.home2-stepitem.todo .home2-stepdot { width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid var(--border-strong); }
+
 .home2-card-foot {
   margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-hairline);
   display: flex; align-items: center; gap: 10px;

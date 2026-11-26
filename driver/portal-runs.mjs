@@ -304,6 +304,10 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         ...(TERMINAL_STATES.has(s.state)
           ? { step: s.stepLabel ?? null, stepN: s.stepN ?? null, stepTotal: s.stepTotal ?? null }
           : stageNow(s)),
+        // EVERY STEP THE RUN WALKS, by name and in order, as the run wrote its own list (progress.mjs
+        // displayStepsFor; the Knockout lane's koSteps). Home lists them on a running card; the browser
+        // keeps no copy. Null for a run recorded before the field, which keeps today's single step line.
+        steps: Array.isArray(s.steps) && s.steps.length && s.steps.every((x) => typeof x === "string") ? s.steps : null,
         // — a requested stop is a state the screen shows. Stamped by stop_run,
         // preserved by writeRunStatus's spread-merge, replaced by the terminal when the honour check
         // fires. The UI derives "Stopping…" from this beside a non-terminal state.
