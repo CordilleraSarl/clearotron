@@ -511,6 +511,32 @@ export function pips(stepN: number | null, stepTotal: number | null): { total: n
   return { total, filled }
 }
 
+/** Where a step stands on a live card: behind the run, the one it is in, or still to come. */
+export type StepMark = 'done' | 'current' | 'todo'
+
+/**
+ * A running card's steps, every one by name, each marked against the step the run is in now.
+ *
+ * THE NAMES ARE THE RUN'S OWN LIST (`steps` on the wire), never a copy kept here: a Global preliminary
+ * names its sixth step differently from a Full country search, and a Knockout has its own five or six.
+ * The current step is `stepN`, which the server reads the way the card's single line did (stageNow, a
+ * step back included). Steps above it are done and steps below it are to come.
+ *
+ * Null when there is no list to draw: no names on the wire (a run recorded before the field), no step
+ * recorded, or a count that disagrees with the names. The card then keeps today's single line.
+ */
+export function stepList(
+  steps: readonly string[] | null,
+  stepN: number | null,
+  stepTotal: number | null,
+): readonly { name: string; mark: StepMark }[] | null {
+  if (!steps || steps.length === 0) return null
+  if (stepN == null || !Number.isFinite(stepN) || stepN < 1) return null
+  if (stepTotal != null && stepTotal !== steps.length) return null
+  const current = Math.min(steps.length, Math.floor(stepN))
+  return steps.map((name, i) => ({ name, mark: i + 1 < current ? 'done' : i + 1 === current ? 'current' : 'todo' }))
+}
+
 // ── the four regions of the rebuilt Home ─────────────────────────────────────────────────────────
 
 /**

@@ -519,7 +519,7 @@ const tools = {
   },
   decision_timeline({ runId }) {
     const run = mustRun(runId);
-    const { timeline, verdictHistory } = projectTimeline(readEvents(run.runDir), run.P);
+    const { timeline, verdictHistory } = projectTimeline(readEvents(run.runDir), run.P, { steps: run.status?.steps });
     // Honest: the risk ladder is only recoverable if the DIGEST itself has a prior snapshot;
     // a generic _history dir for some OTHER stage does not make register-findings diffable.
     const riskLadderAvailable = listArtifactVersions(run.P, run.runDir, "register-digest", null).length > 1;
@@ -538,7 +538,7 @@ const tools = {
     // `since` is a stable seq cursor (number, from a prior call) OR an ISO timestamp (the first/human call).
     const sinceSeq = (typeof since === "number" || (typeof since === "string" && /^\d+$/.test(since.trim()))) ? Number(since) : null;
     const sinceTs = sinceSeq == null ? (since ?? null) : null;
-    const { timeline } = projectTimeline(readEvents(run.runDir), run.P, { sinceTs, sinceSeq });
+    const { timeline } = projectTimeline(readEvents(run.runDir), run.P, { sinceTs, sinceSeq, steps: run.status?.steps });
     const cursor = timeline.length ? timeline[timeline.length - 1].seq : (sinceSeq ?? null);
     let changes = timeline;
     if (Array.isArray(kinds) && kinds.length) changes = changes.filter((c) => kinds.includes(c.kind));

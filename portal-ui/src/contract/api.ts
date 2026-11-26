@@ -574,6 +574,9 @@ export type Run = {
   readonly step: string | null
   readonly stepN: number | null
   readonly stepTotal: number | null
+  /** Every step the run walks, by name and in order, as the engine wrote the run's own list. Null for a
+   *  run recorded before the field and on every row that is not live. The browser keeps no copy. */
+  readonly steps: readonly string[] | null
   /** A stop has been asked for and the step in flight is finishing. Beside a
    *  non-terminal state this is the screen's "Stopping…"; the terminal replaces it. */
   readonly stopRequestedAt: string | null
@@ -1139,6 +1142,12 @@ export type ProviderState = {
    * the hop; the reason and the file stay with the server.
    */
   readonly credential: 'absent' | 'usable' | 'unusable' | 'unreadable' | null
+  /**
+   * WHETHER A SEARCH REFUSES TO RUN WITHOUT THIS SOURCE, as the server decides it from the order door's own
+   * requirements: true for the register and the research key, false for every source a search runs without
+   * and discloses. Null from an older server, which the page draws as needed, the look every row had.
+   */
+  readonly needed: boolean | null
 }
 
 /**
@@ -1512,6 +1521,7 @@ const decodeRun = (raw: unknown): Run | null => {
     stoppable: r['stoppable'] !== false,
     stepN: asNumber(r['stepN']),
     stepTotal: asNumber(r['stepTotal']),
+    steps: Array.isArray(r['steps']) && (r['steps'] as unknown[]).length ? asStrings(r['steps']) : null,
     reason: asString(r['reason']),
     failedStage: asString(r['failedStage']),
     reasonDetail: asString(r['reasonDetail']),
@@ -2661,6 +2671,7 @@ export const api = {
                 const s = asRecord(r['credential'])['state']
                 return s === 'absent' || s === 'usable' || s === 'unusable' || s === 'unreadable' ? s : null
               })(),
+              needed: typeof r['needed'] === 'boolean' ? r['needed'] : null,
             }
           })
         : null,

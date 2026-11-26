@@ -14,7 +14,8 @@
 // the limit and starving the tabs that are being looked at.
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { Result } from '../contract/api.ts'
+import { api, type Result, type RunState } from '../contract/api.ts'
+import { HIDDEN_POLL_MS, anyInFlight, endedSince, statesOf } from '../contract/tabTitle.ts'
 
 const ACTIVE_MS = 5_000
 const IDLE_MS = 30_000
@@ -149,4 +150,50 @@ export function usePoll(reload: () => void, { active, rateLimited }: { active: b
     }
     if (visible) reloadRef.current()
   }, [visible])
+}
+
+/**
+ * HOW MANY OF THIS PERSON'S SEARCHES ENDED WHILE THE TAB WAS OUT OF VIEW (board TabTitle, approved 2026-11-25).
+ *
+ * The one exception to "stop entirely when the tab is hidden", and kept as small as it can be: when the tab
+ * goes out of view it reads the person's searches once, and then once a minute, only while one of them is
+ * still in flight. A refusal for too many requests waits the same back-off as the visible poll. The count
+ * goes back to nothing the moment the tab is looked at, and no request is made while it is in view.
+ *
+ * `enabled` is false until the person is signed in: a sign-in page has nobody's searches to count.
+ */
+export function useEndedWhileHidden(enabled: boolean): number {
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    if (!enabled) return
+    let seen: ReadonlyMap<string, RunState> | null = null
+    let timer: number | undefined
+    let live = true
+    const read = async () => {
+      const r = await api.runsMine()
+      if (!live || document.visibilityState !== 'hidden') return
+      if (r.kind === 'ok') {
+        if (seen) {
+          const ended = endedSince(seen, r.value)
+          if (ended) setCount((c) => c + ended)
+        }
+        seen = statesOf(r.value)
+      }
+      if (r.kind === 'rateLimited') timer = window.setTimeout(() => { void read() }, BACKOFF_MS)
+      else if (seen && anyInFlight(seen)) timer = window.setTimeout(() => { void read() }, HIDDEN_POLL_MS)
+    }
+    const onVisibility = () => {
+      window.clearTimeout(timer)
+      seen = null
+      if (document.visibilityState === 'hidden') void read()
+      else setCount(0)
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      live = false
+      window.clearTimeout(timer)
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
+  }, [enabled])
+  return count
 }

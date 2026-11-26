@@ -1505,6 +1505,34 @@ input.filter {
   background: var(--text-faint);
 }
 
+/* An optional source not set up: the off look, with the dot open (board SettingsProposed, 2026-11-25). */
+.cfg-dot.off.open {
+  box-sizing: border-box;
+  background: transparent;
+  border: 1.5px solid var(--text-muted);
+}
+
+/* Needed and Optional: headings over their categories, each with a rule to the right. */
+.cfg-group-head {
+  display: flex; align-items: center; gap: 12px; margin: 0;
+  font-size: 15px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--text-strong);
+}
+.cfg-group-head::after { content: ''; flex: 1; height: 1px; background: var(--border-hairline); }
+
+/* The command that fixes a row's problem, with Copy at its right (board SettingsCommand, 2026-11-25). */
+.cfg-cmd {
+  display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 6px 6px 6px 14px;
+  border: 1px solid var(--border-hairline); border-radius: 8px; background: var(--surface-sunken);
+}
+.cfg-cmd code { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 13px; color: var(--text-strong); overflow-wrap: anywhere; }
+.cfg-copy {
+  flex: none; min-height: 44px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 7px;
+  background: var(--surface-raised); color: var(--text-strong); font: inherit; font-size: 12.5px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+}
+.cfg-copy:hover { border-color: var(--accent-ink); color: var(--text-accent); }
+.cfg-copy.is-copied { color: var(--tone-low); }
+
 /* ── mobile ──────────────────────────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 899px) {
@@ -2804,6 +2832,20 @@ details[open] > .fold-summary .fold-chev {
 .nc-company-name { font-size: 15px; font-weight: 600; color: var(--text-strong); }
 .nc-project { max-width: 340px; flex: 1; }
 .nc-describe-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px; }
+/* The company's settings as one line, with "Change" (board NewClearanceProposed, 2026-11-25). */
+.nc-company-line {
+  display: flex; align-items: center; gap: 16px; padding: 16px 18px;
+  border: 1px solid var(--border-hairline); border-radius: 12px; background: var(--surface-raised);
+}
+.nc-company-line-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.nc-company-line-value { font-size: 14.5px; color: var(--text-body); overflow-wrap: anywhere; }
+/* "Change" and "All four searches": real buttons that say whether what they open is open. */
+.nc-disclose {
+  flex: none; min-height: 44px; padding: 0 18px; border: 1px solid var(--border-strong); border-radius: 8px;
+  background: var(--surface-raised); color: var(--text-strong); font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
+}
+.nc-disclose:hover { border-color: var(--accent-ink); color: var(--text-accent); }
+.nc-all-searches { align-self: flex-start; margin-top: 12px; }
 .nc-optional { font-size: 11.5px; color: var(--text-faint); }
 .nc-which-head {
   display: flex;
@@ -2958,6 +3000,19 @@ details[open] > .fold-summary .fold-chev {
 .home2-pip.on.paused { background: var(--tone-medium); }
 .home2-pip.on.failed { background: var(--tone-high); }
 .home2-pip.on.cancelled { background: var(--text-faint); }
+
+/* A running card's steps, every one by name (board Main, 2026-11-25). Done: a tick and muted text.
+   Current: bold, with a filled dot in the accent colour, or today's paused colour on a paused card.
+   To come: an open dot and muted text. Names wrap at phone width; nothing clips. */
+.home2-steps { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.home2-stepitem { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.35; color: var(--text-muted); }
+.home2-stepmark { flex: none; width: 14px; height: 14px; margin-top: 1px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); }
+.home2-stepname { min-width: 0; overflow-wrap: anywhere; }
+.home2-stepitem.current { font-size: 14.5px; font-weight: 700; color: var(--text-strong); }
+.home2-stepitem.current .home2-stepmark { margin-top: 2px; }
+.home2-stepitem.current .home2-stepdot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-accent); }
+.home2-steps.paused .home2-stepitem.current .home2-stepdot { background: var(--tone-medium); }
+.home2-stepitem.todo .home2-stepdot { width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid var(--border-strong); }
 
 .home2-card-foot {
   margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-hairline);

@@ -3564,3 +3564,22 @@ test("a live run's row names the stage it is in now, a step back included; a fin
   assert.equal(done.step, "Case law & refutation", "a finished run keeps the step its terminal write set");
   assert.equal(done.stepN, 6);
 });
+
+// ── A RUNNING CARD LISTS EVERY STEP BY NAME, FROM THE RUN'S OWN LIST (approved 2026-11-25) ────────────────
+// The browser keeps no copy of any step list: the row carries the names the run wrote, in order.
+test("a live run's row carries the run's own step list; a run recorded before the field carries none", async () => {
+  const { displayStepsFor, CONCLUSIONS_STEP } = await import("../progress.mjs");
+  const { service, workspaceRoot } = world();
+  const live = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "tmp9-live", "2026-07-18-amber-x", "status.json");
+  const write = (s) => writeFileSync(live, JSON.stringify({ runId: "tmp9-live-amber-x", markName: "LIVEMARK", updatedAt: "2026-07-18T10:00:00Z", ...s }));
+  const row = async () => (await service.route("GET", "/portal/api/runs", CLIENT, {}, {})).json.runs.find((r) => r.runId === "tmp9-live-amber-x");
+  const steps = [...displayStepsFor("global-preliminary-search")];
+  write({ state: "running", steps, currentStep: { index: 5, label: CONCLUSIONS_STEP, n: 6, total: 9 }, lastStage: "narrative-refutation", stepLabel: CONCLUSIONS_STEP, stepN: 6, stepTotal: 9 });
+  const r = await row();
+  assert.deepEqual(r.steps, steps, "the row carries every step the run walks, in order");
+  assert.equal(r.step, CONCLUSIONS_STEP);
+  write({ state: "running", currentStep: { index: 1, label: "Searching registers and common law", n: 2, total: 9 }, stepN: 2, stepTotal: 9 });
+  assert.equal((await row()).steps, null, "no list on the record: the card keeps its single line");
+  write({ state: "running", steps: ["Framing the matter", 7], stepN: 1, stepTotal: 2 });
+  assert.equal((await row()).steps, null, "a list that is not all names is not a list");
+});

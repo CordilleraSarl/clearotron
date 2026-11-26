@@ -3982,8 +3982,8 @@
           "todos": 0
         },
         "config-inventory.test.mjs": {
-          "tests": 19,
-          "asserts": 60,
+          "tests": 20,
+          "asserts": 67,
           "skips": 0,
           "todos": 0
         },
@@ -6082,8 +6082,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 138,
-          "asserts": 750,
+          "tests": 139,
+          "asserts": 754,
           "skips": 1,
           "todos": 0
         },
@@ -9010,8 +9010,8 @@
           "todos": 0
         },
         "the-status-says-which-step-the-run-is-in-now.test.mjs": {
-          "tests": 3,
-          "asserts": 8,
+          "tests": 6,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -9807,8 +9807,8 @@
           "todos": 0
         },
         "events.test.mjs": {
-          "tests": 13,
-          "asserts": 42,
+          "tests": 14,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
@@ -10226,8 +10226,8 @@
           "todos": 0
         },
         "home.test.ts": {
-          "tests": 56,
-          "asserts": 200,
+          "tests": 57,
+          "asserts": 207,
           "skips": 0,
           "todos": 0
         },
@@ -10256,8 +10256,8 @@
           "todos": 0
         },
         "installationSettings.test.ts": {
-          "tests": 13,
-          "asserts": 39,
+          "tests": 18,
+          "asserts": 64,
           "skips": 0,
           "todos": 0
         },
@@ -10275,7 +10275,7 @@
         },
         "lockup.test.ts": {
           "tests": 5,
-          "asserts": 17,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -10425,7 +10425,7 @@
         },
         "screenCopy.test.ts": {
           "tests": 63,
-          "asserts": 243,
+          "asserts": 245,
           "skips": 0,
           "todos": 0
         },
@@ -10444,6 +10444,12 @@
         "summaryBlocks.test.ts": {
           "tests": 3,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "tabTitle.test.ts": {
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },

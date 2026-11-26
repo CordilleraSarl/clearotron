@@ -207,3 +207,17 @@ test("an engine-internal kind reaches neither the timeline nor a client account,
     assert.ok(!JSON.stringify(acct).includes(kind), `the engine's name "${kind}" reached a client account`);
   }
 });
+
+// THE RUN'S OWN STEP NAMES. A Global preliminary names its sixth step "Checking the conclusions" on Home and in
+// its status (approved 2026-11-25), so the timeline names that phase the same way. A Knockout's own list is
+// never indexed by the clearance stepper's map, and a run recorded before the list keeps the shipped names.
+test("a timeline names each phase from the run's own clearance step list", async () => {
+  const { displayStepsFor, DISPLAY_STEPS, CONCLUSIONS_STEP } = await import("../../driver/progress.mjs");
+  const run = runs.resolveRun(RUN_ID2);
+  const phaseOf = (steps) => events.projectTimeline([{ event: "stage", stage: "narrative-refutation", ts: "2026-07-01T00:00:00Z" }], run.P, { steps }).timeline[0].phase;
+  assert.equal(phaseOf([...displayStepsFor("global-preliminary-search")]), CONCLUSIONS_STEP);
+  assert.equal(phaseOf([...displayStepsFor("full-country-search")]), DISPLAY_STEPS[5]);
+  assert.equal(phaseOf(null), DISPLAY_STEPS[5], "no list recorded: the shipped names");
+  assert.equal(phaseOf(["Framing the batch", "Sweeping marks", "Knockout assessment", "Report & publish", "Sending to you"]), DISPLAY_STEPS[5],
+    "a Knockout's own list is not indexed by the clearance map");
+});

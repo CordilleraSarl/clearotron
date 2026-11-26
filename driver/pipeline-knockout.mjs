@@ -1105,6 +1105,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
           // for reconcile-runs' exact liveness test. The stepper and the identity are separate calls now.
           ...identitySeed(),
           stepIndex: 0, stepLabel: STEPS[0], stepN: 1, stepTotal: STEPS.length,
+          // Every step this run walks, by name and in order, as the clearance seed writes its own.
+          steps: [...STEPS],
           review: null, url: null, failedStage: null, reason: null, deliveredAt: null,
           // A5/A3: a re-run of a previously-terminal knockout may reopen the state ONLY because the resume
           // guard cleared the sentinel (ctx.stateReset threads that authority); startedAt is no longer

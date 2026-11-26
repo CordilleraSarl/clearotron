@@ -18,8 +18,8 @@ import { join } from 'node:path'
 import { api, isOk, type ProviderState, type Result } from '../src/contract/api.ts'
 import { engineRow, engineRowFaults } from '../src/contract/engineState.ts'
 import {
-  ABSENT_NOTE, CASE_LAW_GAP, KEY_NEEDED, SETUP_GUIDES, SIGN_IN_NEEDED, engineCapabilityRows, providerCategories, providerRow,
-  setupGuideUrl, signInRow, splitSourceLabel, type SettingsRow,
+  ABSENT_NOTE, CASE_LAW_GAP, KEY_NEEDED, KNOCKOUT_STILL_RUNS, SETUP_GUIDES, SIGN_IN_NEEDED, engineCapabilityRows, providerCategories, providerRow,
+  setupCommand, setupGuideUrl, signInRow, splitSourceLabel, type SettingsRow,
 } from '../src/contract/installationSettings.ts'
 import { engineInventory, providerInventory } from '../../driver/config-inventory.mjs'
 import { authView } from '../../driver/portal-config-view.mjs'
@@ -105,7 +105,12 @@ test('the screen draws only what the contract decides — it never reads a row\'
   assert.doesNotMatch(screen, /\.missing\b/, 'the screen reads the variables a row is missing and can print them')
   assert.doesNotMatch(screen, /\.remedy\b/, 'the screen reads a row\'s remedy, which carries paths and README steps')
   assert.match(screen, /<Row \{\.\.\.signInRow\(/, 'the sign-in row is assembled in the screen again')
-  assert.match(screen, /providerCategories\(v\.providers\)/, 'the provider headings are no longer the contract\'s')
+  assert.match(screen, /providerCategories\(v\.providers, /, 'the provider headings are no longer the contract\'s')
+  // NEEDED, THEN OPTIONAL, as headings, each filled from the contract's own `needed` (board approved 2026-11-25).
+  assert.match(screen, /<Group title="Needed" heading>/, 'the Needed group is not a heading')
+  assert.match(screen, /<Group title="Optional" heading>/, 'the Optional group is not a heading')
+  assert.match(screen, /\.filter\(\(c\) => c\.needed\)/, 'the Needed group is not the contract\'s answer')
+  assert.match(screen, /\.filter\(\(c\) => !c\.needed\)/, 'the Optional group is not the contract\'s answer')
 })
 
 test('the engine row states a missing key without naming it', () => {
@@ -215,4 +220,70 @@ test('every setup guide is a document in this repository, and its anchor is a he
   assert.equal(setupGuideUrl('https://github.com/Example/Fork', 'case-law'),
     'https://github.com/Example/Fork/blob/main/providers/oauth-mcp-bridge/README.md#one-time-setup-per-remote-mcp-server',
     'a guide must open in the repository the server names, so a fork sends its readers to its own instructions')
+})
+
+
+// ── NEEDED AND OPTIONAL, AND THE COMMAND THAT FIXES A ROW (boards approved 2026-11-25) ──────────────────
+
+test('which group a source sits in is the server\'s answer, and it agrees with what a search refuses to run without', async () => {
+  const { view } = await servedPage()
+  const cats = providerCategories(view.providers ?? [])
+  assert.deepEqual(cats.filter((c) => c.needed).map((c) => c.label), ['Trademark register', 'Common-law and marketplace research'])
+  assert.deepEqual(cats.filter((c) => !c.needed).map((c) => c.label), ['Chinese marketplace search', 'Case law and oppositions'])
+  // An older server that does not say draws every row as needed, the look every row had.
+  const older = (view.providers ?? []).map((p): ProviderState => ({ ...p, needed: null }))
+  assert.ok(providerCategories(older).every((c) => c.needed), 'a row the server did not place is drawn as optional')
+})
+
+test('an optional source not set up is neutral: "Not set up" for an absent key, "Unknown" kept where it could not be read', async () => {
+  const { view } = await servedPage()
+  const rows = providerCategories(view.providers ?? []).flatMap((c) => c.rows)
+  const at = (name: string) => rows.find((r) => r.name === name)!
+  assert.deepEqual([at('SerpAPI').state, at('SerpAPI').off, at('SerpAPI').open], ['Not set up', true, true], 'SerpAPI still reads as a fault')
+  assert.deepEqual([at('CourtListener').state, at('CourtListener').off, at('CourtListener').open], ['Not set up', true, true])
+  const unreadable = providerRow({ ...(view.providers ?? []).find((p) => p.provider === 'courtlistener')!, credential: 'unreadable' })
+  assert.deepEqual([unreadable.state, unreadable.faults, unreadable.off, unreadable.command], ['Unknown', ['Could not be checked'], true, null],
+    'an optional source that could not be read became "Not set up", or offers a command')
+  // A NEEDED source not set up looks as it did.
+  assert.deepEqual([at('Corsearch').state, at('Corsearch').off, at('Perplexity').state, at('Perplexity').off], ['Missing', false, 'Missing', false])
+})
+
+test('the common-law and marketplace row says a Knockout search can still run, while its key is missing and on no other row', async () => {
+  const { view } = await servedPage()
+  const rows = providerCategories(view.providers ?? []).flatMap((c) => c.rows)
+  const perplexity = rows.find((r) => r.name === 'Perplexity')!
+  assert.deepEqual(perplexity.faults, [`${KEY_NEEDED}. ${KNOCKOUT_STILL_RUNS}`])
+  assert.equal(perplexity.faults[0], 'A key is needed. A Knockout search can still run.', 'the line is not the approved sentence')
+  assert.ok(!rows.filter((r) => r !== perplexity).some((r) => r.faults.some((f) => f.includes(KNOCKOUT_STILL_RUNS))), 'the sentence is on another row')
+  const keyed = providerRow({ ...(view.providers ?? []).find((p) => p.key === 'research')!, configured: true, missing: [] })
+  assert.deepEqual([keyed.state, keyed.faults], ['Configured', []], 'the sentence outlives the key')
+})
+
+test('a row reading "Missing" or "Not set up" that the setup wizard fixes shows its command; a sign-in and an unread row show none', async () => {
+  const { view } = await servedPage()
+  const rows = providerCategories(view.providers ?? []).flatMap((c) => c.rows)
+  const at = (name: string) => rows.find((r) => r.name === name)!
+  assert.equal(setupCommand('latest'), 'npx clearotron install')
+  assert.equal(setupCommand('beta'), 'npx clearotron@beta install')
+  for (const name of ['Corsearch', 'Perplexity', 'SerpAPI']) assert.equal(at(name).command, 'npx clearotron install', `${name} shows no command`)
+  for (const name of ['CourtListener', 'Legal Data Hunter', 'EUR-Lex', 'EUIPO Boards of Appeal']) assert.equal(at(name).command, null, `${name} shows a command`)
+  const beta = providerCategories(view.providers ?? [], { channel: 'beta' }).flatMap((c) => c.rows).find((r) => r.name === 'SerpAPI')!
+  assert.equal(beta.command, 'npx clearotron@beta install', 'a beta install is told to fetch the stable')
+  const none = providerRow({ key: 'register', label: 'Trademark register', provider: null, providerLabel: null, known: false, configured: false,
+    missing: ['CLEAROTRON_DATABASE'], remedy: null, enrolment: null, credential: null, needed: true })
+  assert.equal(none.command, 'npx clearotron install', 'no register chosen, and no command to choose one')
+  const typo = providerRow({ key: 'register', label: 'Trademark register', provider: 'clarivat', providerLabel: null, known: false, configured: false,
+    missing: [], remedy: null, enrolment: null, credential: null, needed: true })
+  assert.equal(typo.command, null, 'a name this build does not ship is not fixed by the wizard')
+  // Every command line sits under a row reading Missing or Not set up.
+  assert.ok(rows.filter((r) => r.command).every((r) => r.state === 'Missing' || r.state === 'Not set up'))
+})
+
+test('the engine row with no engine chosen shows the setup command; a chosen engine shows none', () => {
+  const unset = engineRow({ id: 'anthropic-agent', vendor: 'Anthropic', known: true, binaryPresent: true, selected: false,
+    billing: { apiBilled: false, missing: [] }, program: 'claude', install: null } as Parameters<typeof engineRow>[0])
+  assert.deepEqual([unset.state, unset.command], ['Missing', 'npx clearotron install'])
+  const chosen = engineRow({ id: 'anthropic-agent', vendor: 'Anthropic', known: true, binaryPresent: true, selected: true,
+    billing: { apiBilled: false, missing: [] }, program: 'claude', install: null } as Parameters<typeof engineRow>[0])
+  assert.equal(chosen.command ?? null, null)
 })
