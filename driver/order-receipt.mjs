@@ -151,8 +151,13 @@ export function receiptIn(qdir, ref, names) {
   if (!terminal && !live) return null;
   const markerPath = terminal ? at(terminal) : live === "claimed" ? join(qdir, claimed) : at(live);
   const job = readJsonSafe(markerPath);
+  // WHEN IT LAST CHANGED: the latest of the marker and what was written beside it. A marker is the job file renamed,
+  // and a rename keeps the file's time, so a refused order's marker alone says when it was PLACED; its `.reason` or
+  // `.result` says when it was refused or stopped.
   let updatedAt = null;
-  try { updatedAt = statSync(markerPath).mtime.toISOString(); } catch { /* the marker moved under us; the next read sees it */ }
+  const stamps = [markerPath, ...(terminal ? [at(`${terminal}.reason`), at(`${terminal}.result`)] : [at(`${live}.meta`)])]
+    .map((p) => { try { return statSync(p).mtimeMs; } catch { return null; } }).filter((t) => t != null);
+  if (stamps.length) updatedAt = new Date(Math.max(...stamps)).toISOString();
   const base = { reference: ref, job, updatedAt };
 
   if (terminal) {

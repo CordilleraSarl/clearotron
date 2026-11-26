@@ -2,9 +2,9 @@
 
 *What the engine emits when a run finishes, and who does the sending.*
 
-The engine **never sends anything**. In the default comms mode (`handoff`) it publishes the
-report to the pool and writes **self-contained event packets** to the outbox; the integrator
-consumes them and does the sending. This is the productized seam: wire your channel layer
+The engine sends nothing of its own unless the install names a route for failure notices (see
+"A route of the install's own" below). It publishes the report to the pool and writes
+**self-contained event packets** to the outbox; the integrator consumes them and does the sending. This is the productized seam: wire your channel layer
 (email/chat/webhook) against the packets below and you never touch engine internals.
 
 ## Comms mode — there isn't one
@@ -208,6 +208,61 @@ The filesystem loop below remains equivalent for integrators that do have data-p
 The markers are edge-triggers; `status.json.sendPending` + `.sent` are the source of truth.
 A lost marker never loses a delivery (the backstop scan finds it); a duplicate marker never
 double-sends (`.sent` guards it).
+
+## A route of the install's own
+
+An install with no courier, or a courier that cannot see every notice, can name a receiver on the
+same machine, and the worker sends it each owed failure notice itself. With nothing configured the
+install behaves exactly as described above.
+
+| Setting | Meaning |
+|---|---|
+| `CLEAROTRON_NOTICE_URL` | The receiver: `http://` or `https://` on a loopback address (`127.0.0.1`, `::1`, `localhost`). Any other address is refused, and nothing is sent. |
+| `CLEAROTRON_NOTICE_AUDIENCES` | `submitter`, `operator`, or both. An audience left out stays with the courier: its packets are left in the outbox, untouched. |
+| `CLEAROTRON_NOTICE_DEDUPE` | `1` when the receiver drops a repeated `Idempotency-Key`. |
+
+**What is owed, and to whom.** Notices are read from the order's receipt in the queue and from the
+engine check's record, never from the `.pending` markers:
+
+| What happened | The person who placed the order | The operator |
+|---|---|---|
+| Refused at the claim (allowance, the order's content, a demo company) | yes | no |
+| Refused at dispatch (the checks before a run starts, the engine's sign-in) | yes | yes |
+| A run stopped before delivering | yes | yes |
+| The engine check failed | | yes |
+
+A cancelled order and a parked one are owed nothing. Nothing that happened before the route was first
+configured is owed, so naming a route does not send the install's history.
+
+**The request.** One `POST` per notice, `Content-Type: application/json`, header `Idempotency-Key:
+<deliveryId>`. The body carries `deliveryId`, `kind` (`order-refused`, `run-stopped`,
+`engine-check-failed`), `audience`, `recipient` and `at`, and then:
+
+- for the person who placed the order, `order`: the receipt as `order_status` gives it to a company
+  (`reference`, `state`, `terminal`, `runId`, and `reason` only for an order refused before it ran),
+  with `recipient` naming the company, its organisation for Generic, and the `forwarder`,
+  `forwarderEmail` and `msgId` the order carried;
+- for the operator, `fault`: the kind, the order or run it concerns, the stage and recorded reason
+  where there are ones, and `nextAction`, a code (`check-engine`, `read-the-run`).
+
+Neither carries a sentence for the recipient: the words are the receiver's to choose. Nothing sent for
+one company names another company or its orders.
+
+**The answer.** A `2xx` takes the notice. Anything else, or no connection, leaves it `failed`, and it is
+sent again after a wait: one minute, doubling, at most fifteen. Only the notice is sent again, never the
+search.
+
+**The record.** Each notice has one file in `<outbox>/deliveries/`, named by its delivery id, a hash of
+the event, the audience and the recipient, so restarts and retries keep it. Its `state` is `pending`,
+`attempted` (written before the request goes out), `confirmed`, `failed` or `ambiguous`. A notice is
+ambiguous when its request went out and no answer came back, or when the worker stopped between sending
+it and recording the answer. An ambiguous notice is sent again only where `CLEAROTRON_NOTICE_DEDUPE=1`;
+otherwise it waits for the operator to settle it with the receiver.
+
+**Settling the send.** When the person who placed a stopped run is told, the run's owed send is settled
+exactly as `mark_sent` settles it: `.sent` is written with `via: "notice-route"` and the delivery id as
+`messageId`, `sendPending` is cleared, and the run's markers are removed. A run already settled is not
+sent at all.
 
 ## Legacy notes
 

@@ -49,6 +49,7 @@ import { orderedQueueFiles } from "./queue-order.mjs";   // the order jobs are a
 import { isCancelled } from "./cancel.mjs";   // a stopped run must not come back through any resume path
 import { whatsappRouting } from "./stages.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
+import { deliverNotices, markRouteSeen } from "./notice-delivery.mjs";   // failure notices through the route an install configures
 import { maybeCheckEngine } from "./engine/health.mjs";   // the engine proven between jobs, on a tick with nothing to run
 import { engineCommit } from "./engine-build.mjs";
 import { clientNotStartedText } from "./run-outcome.mjs";
@@ -2406,6 +2407,7 @@ export async function main({ once = true } = {}) {
 const WATCH_TICK_MS = 90_000;    // mirrors prelim-driver.timer's OnUnitActiveSec — one cadence, two deployments
 const WATCH_SLICE_MS = 5_000;    // the longest we ever sleep in one go: the suspend detector's resolution
 const WATCH_WAKE_JUMP_MS = 15_000;   // wall clock outrunning a slice by this much means the machine was asleep
+const NOTICE_TICK_MS = 60_000;       // how often owed notices are looked for and sent, while the loop runs
 
 // A REF'D timer, deliberately not the shared `delay()` above: delay() unrefs, and between ticks this sleep
 // is the ONLY thing on the event loop, so an unref'd one would let node exit 0 after the first tick — the
@@ -2475,8 +2477,23 @@ export async function watch({
   // A job file arriving ends the wait early (see watchQueueFolders). Injectable so the arms can watch a folder
   // of their own, or none.
   queueWatch = (onJob) => watchQueueFolders(onJob), settleMs = WATCH_SETTLE_MS,
+  // ── NOTICES ON THEIR OWN CLOCK (notice-delivery.mjs) ────────────────────────────────────────────────
+  //
+  // A tick awaits a whole run, often hours, so a notice sent only between ticks would wait out the run that is
+  // already going. Its own timer, for as long as the loop runs; nothing at all on an install with no route.
+  // Injectable for the same reason the beat is.
+  deliverEveryMs = NOTICE_TICK_MS,
+  startDelivering = (fn, everyMs) => { const t = setInterval(fn, everyMs); t.unref?.(); return () => clearInterval(t); },
+  deliver = deliverNotices,
 } = {}) {
   note(`[runner] watch: checking every ${Math.round(tickMs / 1000)}s for a search to start or to resume. Ctrl-C to stop.`);
+  let delivering = false;
+  const stopDelivering = startDelivering(async () => {
+    if (delivering) return;   // one pass at a time in this process; the lock covers every other
+    delivering = true;
+    try { await deliver(); } catch (e) { note(`[runner] notice pass FAILED (isolated): ${e?.message ?? e}`); }
+    finally { delivering = false; }
+  }, deliverEveryMs);
   // Arrivals during a drain are not lost and not raced: they leave `woken` set, and the drain's next pass starts as
   // soon as this one ends. Never a second main() beside one in flight.
   let woken = false, rouse = null;
@@ -2518,7 +2535,7 @@ export async function watch({
         }
       }
     }
-  } finally { watcher?.close?.(); }
+  } finally { watcher?.close?.(); stopDelivering(); }
   note(`[runner] watch: stopped${stopSignal ? ` (${stopSignal})` : ""} — anything still parked resumes the next time this runs.`);
 }
 
@@ -2566,5 +2583,9 @@ if (isEntrypoint(import.meta.url)) {
     argv: process.argv.slice(1).join(" "),
   });
 
+  markRouteSeen();   // before the drain, so a failure in it is owed its notice
   await main({ once: !watching });
+  // A single drain ends with one notice pass, idle or not: the systemd timer is this deployment's only clock, and a
+  // notice must not wait for an order to arrive. Nothing at all on an install with no route.
+  if (!watching) await deliverNotices();
 }
