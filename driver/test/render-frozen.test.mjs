@@ -7,9 +7,10 @@
 // component-native from report-data.json.
 //
 // ── The report-page guard ───────────────────────────────────────────────────────────────────────────
-// The saved runs under demo/ (the three clearance levels and the Knockout) are published under a frozen clock through
-// driver/test/snapshot/publish-compare.mjs, and each run's report.html is compared with the fingerprint stored in
-// fixtures/demo-report-pages.json. A change that moves what a demo page prints fails here, and a comment does not.
+// The saved runs under demo/ (the three clearance levels and the Knockout), and the two under fixtures/report-pages/ that
+// draw what no demo reaches, are published under a frozen clock through driver/test/snapshot/publish-compare.mjs, and each
+// run's report.html is compared with the fingerprint stored in fixtures/demo-report-pages.json. A change that moves what
+// one of those pages prints fails here, and a comment does not.
 // report.css and shared/brand.mjs are inlined into the page, so a change there moves it too.
 //
 // It replaced a sha256 over render.mjs's own bytes on 2026-11-18. That pin existed because pool-admin's republish
@@ -22,15 +23,17 @@
 // ── If the page guard fails ─────────────────────────────────────────────────────────────────────────
 // You changed what a delivered report shows. That is a decision, not a detail:
 //
-//   1. Record the demo runs on the previous commit and on yours (publish-compare.mjs `record`, then `compare`),
-//      and read every page that differs. Each difference should be one you meant.
+//   1. Record the samples on the previous commit and on yours (publish-compare.mjs `record`, then `compare`, with
+//      `--run` for each fixtures/report-pages/ run), and read every page that differs. Each difference should be one
+//      you meant.
 //   2. Re-stamp IN THE SAME COMMIT, and say in its message what the pages now show differently:
 //        node driver/test/snapshot/publish-compare.mjs pages --write driver/test/fixtures/demo-report-pages.json
 //
-// WHAT IT CANNOT SEE: a branch no demo run reaches. Measured 2026-11-18 with V8 coverage of the four publishes,
-// 22 of render.mjs's 118 named functions never run (the compact card and the card's "The read" fold among them),
-// and 26 of render-knockout.mjs's 64, every finding block included: the Knockout demo's one mark has no findings.
-// A change there passes this guard; only a behaviour test that reaches it can catch it.
+// WHAT IT CANNOT SEE: a branch no sample reaches. Measured 2026-11-26 with V8 coverage of the six publishes, counting
+// every function V8 names, nested ones included: 17 of render.mjs's 149 never run, and 8 of render-knockout.mjs's 79.
+// The four demos alone left 21 and 15: no Knockout finding block, no filings-first order, no "The read" fold and no
+// legal and practical positions, which is why fixtures/report-pages/ exists. A change in a branch no sample reaches
+// passes this guard; only a behaviour test that reaches it can catch it.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -38,7 +41,7 @@ import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSyn
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
-import { demoReportPages } from "./snapshot/publish-compare.mjs";
+import { reportPages } from "./snapshot/publish-compare.mjs";
 import { crossBuildRepublishRefusal } from "../one-build-per-run.mjs";
 import { inDispositionMode, DISPOSITION_BAND } from "../findings-model.mjs";
 
@@ -2862,13 +2865,13 @@ const at = (p) => fileURLToPath(new URL(p, import.meta.url));
 // THE REPORT-PAGE GUARD. The header says what it compares and what to do when it fails. Every sample must publish
 // exactly one page, and the samples must be the ones the record names: a sample that publishes nothing, or a record
 // that lost one, would otherwise compare as clean.
-test("the four demo runs publish the report pages the record holds", () => {
+test("the demo runs and the report-page fixtures publish the report pages the record holds", () => {
   const record = JSON.parse(readFileSync(at("fixtures/demo-report-pages.json"), "utf8"));
-  const pages = demoReportPages(at("../../"));
+  const pages = reportPages(at("../../"));
   const restamp = "node driver/test/snapshot/publish-compare.mjs pages --write driver/test/fixtures/demo-report-pages.json";
   assert.deepEqual(Object.keys(pages).sort(), Object.keys(record).sort(),
-    `the demo runs and the record name different samples; if demo/ changed on purpose, re-stamp: ${restamp}`);
-  assert.equal(Object.keys(pages).length, 4, "expected the four demo runs, the Knockout included");
+    `the samples and the record name different ones; if demo/ or fixtures/report-pages/ changed on purpose, re-stamp: ${restamp}`);
+  assert.equal(Object.keys(pages).length, 6, "expected the four demo runs, the Knockout included, and the two fixtures/report-pages/ runs");
   for (const [sample, published] of Object.entries(pages)) {
     assert.equal(Object.keys(published).length, 1, `${sample} published ${Object.keys(published).length} report pages, not one`);
     assert.deepEqual(published, record[sample],

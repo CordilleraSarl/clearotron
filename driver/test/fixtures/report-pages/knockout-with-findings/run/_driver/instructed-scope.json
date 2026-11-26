@@ -1,0 +1,8 @@
+{
+  "marks": ["TALVORENE"],
+  "classes": [9, 42],
+  "jurisdictions": null,
+  "goods": "Irrigation-scheduling software for greenhouses",
+  "customer": null,
+  "marksDetailed": [ { "name": "TALVORENE", "classes": [9, 42], "ref": "fixture-tal-01" } ]
+}

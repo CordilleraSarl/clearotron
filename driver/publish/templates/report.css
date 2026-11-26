@@ -173,6 +173,23 @@
   .land{padding:14px 14px 6px}
   .land svg{width:100%;height:auto;display:block}
   .land svg a{cursor:pointer}
+  /* A dot's panel (owner, 2026-11-25): a dark ring on the dot under the pointer or keyboard focus, and one small panel in
+     the chart's card that the page script fills and places. The chart's card stays a light surface in the dark theme, so
+     the panel's colours are the light ones, handed in by the renderer as custom properties. */
+  .land{position:relative}
+  .land svg a .qring{display:none}
+  .land svg a:hover .qring,.land svg a:focus-visible .qring,.land svg a.qhot .qring{display:inline}
+  .land svg a:focus-visible{outline:none}
+  .qtip{position:absolute;z-index:5;width:262px;max-width:calc(100% - 16px);box-sizing:border-box;padding:12px 14px;background:#FFFDF9;border:1px solid #D8CCB8;border-radius:10px;box-shadow:0 1px 2px rgba(37,9,2,.05),0 10px 30px rgba(37,9,2,.12);display:flex;flex-direction:column;gap:8px;color:var(--qt-ink);font-family:var(--font);text-align:left}
+  .qtip[hidden]{display:none}
+  .qtip .qt1{display:flex;align-items:center;gap:9px}
+  .qtip .qn{width:22px;height:22px;border-radius:50%;color:var(--qt-ink);font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+  .qtip .qm{font-size:15px;font-weight:700;min-width:0;overflow-wrap:anywhere}
+  .qtip .qb{margin-left:auto;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap;flex:none}
+  .qtip .qb.med{background:var(--qt-med-bg);color:var(--qt-med-tx)}
+  .qtip .qb.low{background:var(--qt-low-bg);color:var(--qt-low-tx)}
+  .qtip .qs{font-size:12.5px;color:var(--qt-sub);line-height:1.45}
+  .qtip .qs:empty{display:none}
   .keypanel{padding:16px 18px;display:flex;flex-direction:column}
   .keypanel .label{margin-bottom:6px}
   .keyhint{font-size:11.5px;color:var(--slate);margin:0 0 12px}
@@ -398,6 +415,11 @@
   .rcode{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--slate);background:var(--bg2);border:1px solid var(--line);padding:2px 6px;border-radius:5px;min-width:30px;text-align:center;flex:none}
   .rname{font-weight:700;font-size:13px;flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .rsub{flex:1;min-width:0;font-size:11px}
+  /* The common-law row's name is the longest in the key, so beside its band and its count "Unregistered use" had no room
+     and ran under the count. Its header may take a second line: an item that does not fit moves down whole, the label
+     keeps its width and the count stays at the right of the last line. No words change. */
+  .rrow.rcl>summary{flex-wrap:wrap;row-gap:4px}
+  .rrow.rcl .rsub{flex:1 0 auto}
   .rcount{font-size:11px;font-weight:700;color:var(--slate);flex:none}
   .rbody{padding:2px 2px 6px 8px}
   .rgroup{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:13px;box-shadow:var(--shadow);overflow:hidden}
@@ -410,6 +432,20 @@
   .gcount{font-size:11px;font-weight:700;color:var(--slate)}
   .gbody{padding:0 12px 8px}
   .rgroup .card{margin:0 0 10px} .rgroup .card:last-child{margin-bottom:4px}
+  /* The folded list of lower-rated conflicts (owner, 2026-11-25). Its header keeps its title and marker; a control at the
+     right says "Show all {n}" folded and "Hide" open, drawn as a card's Ask AI pill with crimson words, and drops to a
+     second row at the right where the header is too narrow. Folded, the list shows the edges of two more cards under it.
+     Screen only: the control is .no-print, and the pile and the room it takes sit under @media screen. */
+  .rgroup.lowerband>summary{flex-wrap:wrap;row-gap:8px}
+  .rgroup.lowerband>summary .gname{min-width:0}
+  .lb-show{margin-left:auto;flex:none;display:inline-flex;align-items:center;font:600 12px/1 var(--font);padding:7px 11px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--crimson);white-space:nowrap}
+  .rgroup.lowerband>summary:hover .lb-show{border-color:var(--crimson);color:var(--crimson)}
+  .lb-show .lb-open,.rgroup.lowerband[open]>summary .lb-show .lb-closed{display:none}
+  .rgroup.lowerband[open]>summary .lb-show .lb-open{display:inline}
+  @media screen{
+    .rgroup.lowerband{--pile:color-mix(in srgb,var(--faint) 55%,var(--line2));--sheet:color-mix(in srgb,var(--card) 80%,var(--line2))}
+    .rgroup.lowerband:not([open]){margin-bottom:32px;box-shadow:var(--shadow),0 13px 0 -6px var(--sheet),0 13px 0 -5px var(--pile),0 26px 0 -12px var(--sheet),0 26px 0 -11px var(--pile)}
+  }
 
   /* a grouped reasoned negative. The shared ground is in the .fold-lead above the run of rows;
      each row carries only what is its own, so the line has to stay ONE line's worth of weight: the mark
@@ -639,6 +675,7 @@
   .crow{display:grid;grid-template-columns:200px 1fr;gap:12px;align-items:start;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
   .crow .cm-mark{font-weight:700}.crow .cwho{color:var(--slate);line-height:1.45}
   .crow .curl{color:var(--crimson);text-decoration:none;font-size:12.5px;word-break:break-all}
+  .crow .curl a{color:inherit;text-decoration:none}
   .cmore{padding:10px 0 2px;font-size:12.5px}.wb{color:var(--crimson);text-decoration:none;font-weight:600}
 
   details.searched{margin:14px 0;background:var(--card);border-radius:12px;box-shadow:var(--shadow)}

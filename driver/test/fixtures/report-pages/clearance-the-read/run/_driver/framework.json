@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "framework_key": "fixture-scale",
+  "title": "Fixture risk scale",
+  "source_deck": "Invented for the report-page guard; four rating tiers",
+  "entity_label": "the company",
+  "bands": [
+    { "label": "Very High", "tone": "severe" },
+    { "label": "High", "tone": "high" },
+    { "label": "Moderate", "tone": "medium" },
+    { "label": "Manageable", "tone": "low" }
+  ],
+  "structure": { "kind": "bands" }
+}

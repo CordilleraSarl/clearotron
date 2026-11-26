@@ -1,0 +1,67 @@
+{
+  "schema": 2,
+  "provider": "fixture",
+  "providerLabel": "Fixture register",
+  "takenAt": "2026-11-26T09:01:00.000Z",
+  "basis": "Invented filings for the report-page guard.",
+  "marks": [
+    {
+      "name": "TALVORENE",
+      "classes": [9, 42],
+      "terms": ["TALVORENE"],
+      "fetched": 2,
+      "available": 2,
+      "capped": false,
+      "records": [
+        {
+          "recordId": "/mark/eu/00000000-0000-4000-8000-000000000001",
+          "mark": "TALVOREN",
+          "owner": "Talvoren Systems",
+          "ownerCountry": "DE",
+          "status": "REGISTERED",
+          "classes": [9],
+          "territory": "eu",
+          "applicationDate": "2021-03-02",
+          "registrationDate": "2021-09-14",
+          "applicationNumber": "000000001",
+          "registrationNumber": "000000001",
+          "irNumber": null,
+          "filingRoute": null,
+          "officeUrl": null,
+          "matchedForm": "TALVORENE",
+          "matchedBasis": "close",
+          "url": null,
+          "provider": "fixture",
+          "goods": ["9: Downloadable software for controlling greenhouse climate and watering."],
+          "goodsState": "complete",
+          "goodsFrom": "official record",
+          "goodsShortened": false
+        },
+        {
+          "recordId": "/mark/gb/00000000-0000-4000-8000-000000000002",
+          "mark": "TALVERINE",
+          "owner": "Talverine Analytics Ltd",
+          "ownerCountry": "GB",
+          "status": "PENDING",
+          "classes": [42],
+          "territory": "gb",
+          "applicationDate": "2026-05-11",
+          "registrationDate": null,
+          "applicationNumber": "UK0000000002",
+          "registrationNumber": null,
+          "irNumber": null,
+          "filingRoute": null,
+          "officeUrl": null,
+          "matchedForm": "TALVORENE",
+          "matchedBasis": "close",
+          "url": null,
+          "provider": "fixture",
+          "goods": ["42: Software as a service for analysing soil readings."],
+          "goodsState": "complete",
+          "goodsFrom": "official record",
+          "goodsShortened": false
+        }
+      ]
+    }
+  ]
+}

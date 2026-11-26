@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "framework": { "source": "fixture-triage", "ladder": ["Very High", "High", "Medium", "Manageable", "Low"] },
+  "batch": {
+    "productContext": "Irrigation-scheduling software for greenhouses, downloadable and as a service, in Classes 9 and 42.",
+    "standardCaveats": ["This is a Knockout search, not a clearance."],
+    "executiveSummary": "One invented name assessed for the report-page guard.\n\n## TALVORENE\n\n**Medium for Classes 9 and 42.** A registered near name covers greenhouse software."
+  },
+  "cardOrder": "filings-first",
+  "marks": [
+    {
+      "ref": "fixture-tal-01",
+      "name": "TALVORENE",
+      "classesSearched": [9, 42],
+      "beltAndBraces": [],
+      "contextFraming": "TALVORENE is an invented name, used here only to exercise the report page.",
+      "rating": "Medium",
+      "ratingQualifier": null,
+      "classesDriving": [9],
+      "bullets": ["A registered near name covers greenhouse software."],
+      "purpleNotes": ["Check whether Talvoren Systems sells outside the European Union."],
+      "parodyNote": null,
+      "crowdedField": false,
+      "basis": "A registered near name covers software for greenhouse watering, the same goods.",
+      "factors": ["The registered near name differs by one final letter.", "Its goods are greenhouse software, the client's own field."],
+      "counterFactors": ["The pending near name sits in soil analysis, a neighbouring field."],
+      "mitigation": "Evidence that the registered owner has stopped trading would lower this read.",
+      "assessment": "## Reading the name\n\nTALVORENE is invented for this fixture.\n\n## What drives the rating\n\nA registered near name covers the same goods.",
+      "findings": [
+        {
+          "ordinal": 1,
+          "name": "Talvoren Systems",
+          "owner": "Talvoren Systems",
+          "band": "Medium",
+          "net": "The owner of the registered near name trades in greenhouse software under it, the client's own field.",
+          "type": "Active Business",
+          "evidence": ["https://talvoren.example.test/products"],
+          "basis": "The owner's product page offers watering controllers and their software under TALVOREN, and its European Union registration covers that software.",
+          "weighedFilings": ["/mark/eu/00000000-0000-4000-8000-000000000001"]
+        },
+        {
+          "ordinal": 2,
+          "name": "Talvorina Garden Supplies",
+          "owner": "Talvorina Garden Supplies",
+          "band": "Manageable",
+          "net": "A garden shop trades under a near name with no filing found, selling hoses and planters rather than software.",
+          "type": "Active Business",
+          "evidence": ["https://talvorina.example.test/shop"],
+          "basis": "The shop's pages list garden hardware only; no software, service or filing under the name was found."
+        }
+      ],
+      "registerReads": [
+        { "recordId": "/mark/eu/00000000-0000-4000-8000-000000000001", "band": "Medium", "read": "European Union registration for greenhouse software; the name differs by one final letter." },
+        { "recordId": "/mark/gb/00000000-0000-4000-8000-000000000002", "band": "Manageable", "read": "United Kingdom application for soil-analysis software, a neighbouring field." }
+      ],
+      "setAside": [],
+      "negatives": [],
+      "degraded": null
+    }
+  ]
+}
