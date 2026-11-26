@@ -29,6 +29,7 @@ import { inputsLine } from '../framework-method.mjs';
 import { clientConditions } from '../terminal-clamp.mjs'; import { hrefAttr } from './attr.mjs';   // an href is attribute-safe and http(s), or not a link
 import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // the export menu's shell and behaviour, shared with the knockout template   // the reader's clause per condition, shared with the cover note
 import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs';
+import { webNameRow } from './search-depth.mjs';   // what a web name's `url` gives the page, read once for the page and the lint
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
@@ -112,6 +113,7 @@ let NEGATIVES_GROUPED = false;
 let FRAMEWORK = null;
 let FRAMEWORK_METHOD = null;   // the frozen method (framework-method.mjs), where the framework states one
 let AUDIT_HREF = null;   // the audit workbook's address, for the line a capped list ends with; null when the run has none
+let WEB_PICTURES = new Map();   // finding ordinal → its saved web pictures, in the card's order; empty without the picture step
 let LOGOS = new Map();   // registration → its saved logo ({ state, src }); empty on a run that fetched none
 const GAUGE_STOP_BY_TONE = { minimal: 1, low: 1, medium: 2, high: 3, severe: 4 };
 // Severity rank for sorting/worst-of: band index in the manifest (0 = most severe); legacy composite
@@ -1026,11 +1028,15 @@ const RUN_COMMON_LAW_RECORD_LABEL = R.cleared.runCommonLawRecord;
 // a new tab as the page's other evidence links do. A block that gave no address is not a name and is not here.
 const webAddressText = (u) => String(u).replace(/^https?:\/\//, '').replace(/\/$/, '');
 function webNamesHtml(searchDepth) {
-  const web = (searchDepth && searchDepth.cleared && searchDepth.cleared.web) || [];
+  // A record written before the reader gave each row its links carries only `url`; it is read the same way here.
+  const web = ((searchDepth && searchDepth.cleared && searchDepth.cleared.web) || [])
+    .map((w) => (Array.isArray(w.links) ? w : { ...w, ...(webNameRow(w.url) ?? { links: [], runRecord: false, ref: null, note: true }) }))
+    .filter((w) => !w.note);
   if (!web.length) return '';
   const rows = web.map((w) => `<div class="crow"><span class="cm-mark">${esc(w.title || '')}</span><span class="curl">${
     w.runRecord ? esc(RUN_COMMON_LAW_RECORD_LABEL)
-    : (Array.isArray(w.links) ? w.links : []).map((u) => (hrefAttr(u)
+    : w.ref ? esc(w.ref)
+    : w.links.map((u) => (hrefAttr(u)
       ? `<a href="${hrefAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(webAddressText(u))}</a>` : esc(webAddressText(u)))).join(' \u00b7 ')
   }</span></div>`).join('');
   return `<details class="cgroup"><summary><span class="gname">${R.cleared.webAndMarketplace}</span><span class="gcount">${
@@ -2001,8 +2007,22 @@ function registerRecordBlock(f, recordsByUri, numberOf) {
 // asked about, or one whose fetch failed draws nothing (owner, 2026-11-25), so a card with no saved logo draws no
 // line. A grouped negative row shows up to three small
 // logos and "+N" under its text. The image travels inside the report; nothing points at the register's image.
+// "On the web" (owner, 2026-11-25 and 2026-11-26): the pictures the pages the card says the name is used on declare for
+// themselves, saved by the picture step, each in the logo's box, captioned with its site alone and opening the page it
+// came from. Drawn only when it holds a picture; a page that gave none leaves no trace.
+function webFrame(f) {
+  const pics = WEB_PICTURES.get(String(f.ordinal)) ?? [];
+  if (!pics.length) return '';
+  const figures = pics.slice(0, 8).map((p) => {
+    const href = hrefAttr(p.page);
+    const img = `<img src="${escAttr(p.src)}" alt="${escAttr(R.pictures.webAlt(f.mark ?? '', p.site ?? '', p.fetchedOn ?? ''))}">`;
+    return `<figure class="rr-lg">${href ? `<a href="${href}" target="_blank" rel="noopener noreferrer">${img}</a>` : img}<figcaption>${esc(p.site ?? '')}</figcaption></figure>`;
+  }).join('');
+  return `<div class="pic-set"><div class="pic-head"><span class="pic-lab">${esc(R.pictures.onTheWeb)}</span></div><div class="rr-logos rr-band">${figures}</div></div>`;
+}
+
 function logoLine(f, recordsByUri, { small = false } = {}) {
-  if (!LOGOS.size) return '';
+  if (!LOGOS.size && (small || !WEB_PICTURES.size)) return '';
   const figures = shownRegistrations(f, (uri) => Boolean(recordsByUri.get(uri)))
     .map((r) => {
       const rec = recordsByUri.get(String(r.uri).toLowerCase());
@@ -2010,8 +2030,15 @@ function logoLine(f, recordsByUri, { small = false } = {}) {
       return logoFigureHtml(rec, { uri: r.uri, logo: LOGOS.get(normalizeRecordUri(r.uri)), href, caption: !small });
     })
     .filter(Boolean);
+  // THE PICTURE LINE (owner, 2026-11-25): each set of pictures in a frame of its own under its label, so a reader can
+  // tell which set is which. "Register" holds the logos the run fetched, drawn as before, then "On the web"; each is
+  // drawn only when it holds a picture. The rows under "Marks that can coexist" keep their small unframed logos.
+  if (!small) {
+    const register = figures.length ? `<div class="pic-set"><div class="pic-head"><span class="pic-lab">${esc(R.pictures.register)}</span></div><div class="rr-logos rr-band">${figures.join('')}</div></div>` : '';
+    const web = webFrame(f);
+    return register || web ? `<div class="pic-line">${register}${web}</div>` : '';
+  }
   if (!figures.length) return '';
-  if (!small) return `<div class="rr-logos rr-band">${figures.join('')}</div>`;
   return `<div class="rr-logos rr-sm">${figures.slice(0, 3).join('')}${figures.length > 3 ? `<span class="rr-more">+${figures.length - 3}</span>` : ''}</div>`;
 }
 
@@ -2782,7 +2809,7 @@ const STRIP = Object.freeze([
 // document does not hold is the page's surface: its two addresses, the confidentiality posture and the demo flag, which
 // publish passes beside the document as it always has; and the two sets the document holds by reference, the saved
 // records' bodies by uri and the saved logos' images by ref, which publish resolves from the run. PURE given its inputs.
-function clearanceContextOf(doc, { recordsByUri = new Map(), logos = new Map(), homeHref, chromeHref, delivery, demoData } = {}) {
+function clearanceContextOf(doc, { recordsByUri = new Map(), logos = new Map(), webPictures = new Map(), homeHref, chromeHref, delivery, demoData } = {}) {
   const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, verdict = doc?.verdict ?? {};
   const framework = doc?.framework ?? {}, prose = doc?.prose ?? {};
   const asMap = (pairs) => (Array.isArray(pairs) ? new Map(pairs) : null);
@@ -2796,7 +2823,7 @@ function clearanceContextOf(doc, { recordsByUri = new Map(), logos = new Map(), 
     enforcerSignals: client.enforcerSignals, recordOrigin: run.provider?.origin,
     recordOrigins: run.provider?.origins, recordCitation: run.provider?.citation ?? null, recordLinks: asMap(client.recordLinks?.byUri),
     providerLabel: run.provider?.label, seniorRights: client.seniorRights, findingsSchemaVersion: run.findingsVersion,
-    searchDepth: scope.searchDepth, assessmentNotCompleted: verdict.assessmentNotCompleted, logos,
+    searchDepth: scope.searchDepth, assessmentNotCompleted: verdict.assessmentNotCompleted, logos, webPictures,
     followUpKinds: followUpKindsFrom(client.followUpKinds),
   });
 }
@@ -2809,6 +2836,7 @@ function clearanceContext(parsed, findings = [], coverage = [], opts = {}) {
   FRAMEWORK_METHOD = opts.frameworkMethod ?? null;
   AUDIT_HREF = hrefAttr(opts.auditFile, { relative: true }) || null;
   LOGOS = opts.logos instanceof Map ? opts.logos : new Map();
+  WEB_PICTURES = opts.webPictures instanceof Map ? opts.webPictures : new Map();
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)

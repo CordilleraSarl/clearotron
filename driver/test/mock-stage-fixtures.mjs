@@ -957,9 +957,11 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
     // including four-answers-present was switched off for every mock run. Grounded in what this fixture
     // actually found, so fourAnswersCoherenceChecks — which runs ungated and compares the answers against
     // the verdict and the findings — has something true to agree with.
-    four_answers: {
+    // MOCK_NO_FOUR_ANSWERS=1 — the writer's first record carries no four answers, as a writer may when it judges it can
+    // ground none (the run that shipped without them, 2026-11-25).
+    ...(process.env.MOCK_NO_FOUR_ANSWERS ? {} : { four_answers: {
       third_party_rights: { read: "A live registration on the same distinctive element sits in the filed class.", token: "strong", basis: "the register record returned by the primary sweep" },
-    },
+    } }),
     // WP-56 B2 — the mock mirrors production emission: a fresh synthesis carries the standing
     // mark-itself read (the mark-assessment-present lint expects it on fresh runs).
     mark_assessment: {
@@ -1840,6 +1842,15 @@ export function applyStageWrites(msg, argv) {
           const r = recordSynthesis(runDir, call);
           return r.refused ? `mock writer refused re-saving the same values: ${r.refused}` : "mock writer re-saved the same values";
         }
+      }
+      // MOCK_NO_FOUR_ANSWERS — a writer's delivery-check repair that is told the four answers are missing adds the one it can
+      // ground, as one patch carrying that register alone: a grounded partial block, which the presence check accepts.
+      if (process.env.MOCK_NO_FOUR_ANSWERS && WRITER_LINT_REPAIR.test(msg) && msg.includes("The four answers are missing.")) {
+        recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+        const r = recordSynthesis(runDir, { findings: { four_answers: {
+          registrability: { read: "The coined mark is inherently distinctive for the filed goods.", token: "registrable", basis: "the assessment of the mark and the register coverage" },
+        } } });
+        return r.refused ? `mock writer's four-answers patch refused: ${r.refused}` : "mock writer added the four answers it can ground";
       }
       // MOCK_ANSWERS_CITE — the writer's delivery-check repair corrects the four answers as its repair message orders: ONE
       // patch carrying the corrected register alone, which the receiver merges onto the record it last accepted. Each

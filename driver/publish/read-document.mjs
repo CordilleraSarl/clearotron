@@ -17,6 +17,7 @@ import { join } from 'node:path';
 import { paths, readJson } from '../run-record.mjs';
 import { engineCommit } from '../engine-build.mjs';
 import { logosForReport } from '../mark-logos.mjs';
+import { webPicturesForReport } from '../web-pictures.mjs';
 import { servedModels } from '../tokens.mjs';
 import { resolveDemoData } from './demo-marking.mjs';
 import { reportDates, zurichStamp } from './report-dates.mjs';
@@ -54,6 +55,8 @@ function readFrame({ runId, runDir = null, poolRoot, customerKey = null }, base,
     served,
     // Each cited or listed registration's saved logo; none on a run that fetched none.
     logos: logosForReport(runDir),
+    // Each card's saved web pictures; none on a run whose picture step did not run.
+    webPictures: webPicturesForReport(runDir),
     profile,
     // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
     engineCommit: engineCommit(),

@@ -200,7 +200,7 @@ export const NOT_COUNTED_EVENTS = {
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
     "doctrine-write", "document-coverage-rendered", "document-growth-trip", "doubt-selection", "doubts", "draft-carry",
     "economics", "engine-build", "envelope-closed", "envelope-decision", "envelope-decision-early",
-    "escalation-skipped", "experiment", "experiment-refused", "goods-held-whole-handed", "logos", 
+    "escalation-skipped", "experiment", "experiment-refused", "four-answers-handed", "goods-held-whole-handed", "logos", 
     "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
     "framework", "goods-evidence", "grid-ledger-saved", "grid-spec", "grid-split", "hit-list-minted",
@@ -223,7 +223,7 @@ export const NOT_COUNTED_EVENTS = {
     // wrong, a question re-asked or an attempt repeated, so it does not bear on "first time" (515).
     // The target moved off this line to the run's own, above: the bar is about a run and this span is
     // one stage of it.
-    "knockout-sweep-total", "level-scope-note",
+    "knockout-plain-language", "knockout-sweep-total", "level-scope-note",
     "named-band-merged", "named-band-remerged", "late-evidence", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred",

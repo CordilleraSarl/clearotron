@@ -339,7 +339,16 @@ export const RECORD_LINKS = Object.freeze({
 });
 
 /** The Knockout report page: its own words, section by section. A value a sentence carries arrives formatted. */
+// A card's picture line (owner, 2026-11-25), one set of words for both report pages: each set of pictures sits in a
+// frame of its own under its label.
+const PICTURES = Object.freeze({
+  register: 'Register',
+  onTheWeb: 'On the web',
+  webAlt: (mark, site, date) => `${mark}, picture shown by ${site}, fetched ${date}`,
+});
+
 export const KNOCKOUT_PAGE = Object.freeze({
+  pictures: PICTURES,
   // The jump strip, in its order.
   strip: Object.freeze({ summary: 'Summary', findings: 'Findings', filings: 'Also considered', next: 'Next steps' }),
   degradedNote: 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.',
@@ -655,6 +664,8 @@ export const REPORT_PAGE = Object.freeze({
   // one conflict, and "Hide" while open. {n} is the number the title opens with.
   lowerBandShow: (count) => (count === 1 ? 'Show' : `Show all ${count.toLocaleString('en-GB')}`),
   lowerBandHide: 'Hide',
+  // A conflict card's picture line (owner, 2026-11-25): each set of pictures sits in a frame of its own under its label.
+  pictures: PICTURES,
   // The conflict panel (owner, 2026-11-25): its name for a screen reader, and the name of the control that shuts it.
   conflictPanel: Object.freeze({ name: (n) => `Conflict ${n}`, close: 'Close' }),
   // The chart of conflicts: its axes, its zone and its legend.

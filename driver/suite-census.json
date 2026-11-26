@@ -466,8 +466,8 @@
           "todos": 0
         },
         "a-conflict-number-opens-its-card-beside-the-claim.test.mjs": {
-          "tests": 4,
-          "asserts": 22,
+          "tests": 5,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -1305,6 +1305,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-filing-card-shows-its-registered-logo.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-filing-carries-the-goods-the-run-holds.test.mjs": {
           "tests": 10,
           "asserts": 40,
@@ -1422,6 +1428,12 @@
         "a-knockout-records-each-pass-as-a-clearance-does.test.mjs": {
           "tests": 1,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-records-its-plain-language-counts-by-group-and-field.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -2787,6 +2799,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-signa-knockout-opens-its-filings-from-the-search-it-holds.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs": {
           "tests": 10,
           "asserts": 20,
@@ -3156,6 +3174,12 @@
         "a-web-hit-reads-as-a-hit-on-what-was-searched.test.mjs": {
           "tests": 5,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-web-page-gives-its-preview-picture-and-nothing-else.test.mjs": {
+          "tests": 9,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -5075,7 +5099,7 @@
         },
         "every-web-name-the-list-counts-is-printed-with-its-address.test.mjs": {
           "tests": 5,
-          "asserts": 27,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -5610,6 +5634,12 @@
         "methodology-witness.test.mjs": {
           "tests": 10,
           "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
+        "missing-four-answers-ride-a-writer-repair-already-owed.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -9698,6 +9728,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-read-tool-answers-in-the-shape-it-declares.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-removed-person-loses-their-assistant-too.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -9724,7 +9760,7 @@
         },
         "a-write-verb-says-whether-it-happened.test.mjs": {
           "tests": 3,
-          "asserts": 23,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -10068,6 +10104,12 @@
           "tests": 8,
           "asserts": 24,
           "skips": 1,
+          "todos": 0
+        },
+        "the-portal-and-the-connector-read-one-list-of-runs.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
           "todos": 0
         },
         "the-portal-boot-check-is-not-logged-as-a-rejection.test.mjs": {
@@ -10862,6 +10904,12 @@
         "providers/signa/test/a-deterministic-mode-goes-to-the-register-as-a-text-filter.test.mjs": {
           "tests": 6,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/a-failed-image-says-why-the-register-refused-it.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },

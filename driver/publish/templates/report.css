@@ -10,6 +10,9 @@
   /* The column narrowed beside the conflict panel (owner, 2026-11-25): it becomes the query container its width rules'
      twins ask (column-queries.mjs), at the width the page script sets. Screen only, so paper is never narrowed. */
   @media screen{html.rep-narrow .wrap{container:repcol/inline-size;max-width:none;width:var(--rep-col);margin-left:var(--rep-left);margin-right:0}}
+  /* Where the window holds the full column and the conflict panel beside it (16 + 1120 + 30 + 500 + 16 px), a clearance
+     page keeps that room on the right from the start, so opening the panel moves nothing (design, 2026-11-26). */
+  @media screen and (min-width:1682px){body:has(> #cpanel-words) > .wrap{margin-left:16px;margin-right:auto}}
   /* The conflict panel (owner, 2026-11-25): a conflict's card, opened beside the claim that cites it. The card is the page's
      own markup, drawn at the panel's width by the width rules' twins (the panel is their query container). Never printed. */
   .cpanel{position:absolute;z-index:20;container:repcol/inline-size;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);outline:none}
@@ -294,6 +297,17 @@
   .rr-lg img{display:block;width:94px;height:72px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;padding:5px;box-sizing:border-box}
   .rr-lg figcaption{font-size:10.5px;letter-spacing:.04em;color:var(--slate);margin-top:3px}
   .rr-band{max-width:none;justify-content:flex-start;gap:10px;margin:10px 0 12px}
+  /* The picture line (owner, 2026-11-25): each set in a bordered frame whose first line is its label, set as the card's
+     "Owner" label is. Frames sit side by side where the card is wide enough and stack, as wide as the wider one, where
+     it is not; on paper a frame keeps its label and a picture its caption. */
+  .pic-line{display:flex;flex-wrap:wrap;align-items:stretch;gap:14px;width:fit-content;max-width:100%;margin:12px 0 14px}
+  .pic-set{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);background:color-mix(in srgb,var(--card) 50%,var(--bg));break-inside:avoid}
+  .pic-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-height:17px}
+  .pic-lab{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);line-height:1.2}
+  .pic-set .rr-band{margin:0}
+  .pic-set .rr-lg{width:auto;min-width:94px;max-width:150px;break-inside:avoid}
+  .pic-set .rr-lg img{margin:0 auto}
+  .pic-set .rr-lg figcaption{overflow-wrap:anywhere}
   .rn>summary .rr-sm{flex:0 0 100%;box-sizing:border-box;padding-left:14px;margin:2px 0 0}
   .rr-more{align-self:center;font-size:11px;color:var(--slate)}
   .rr-sm{max-width:none;justify-content:flex-start;gap:4px;margin-left:4px}
@@ -591,6 +605,7 @@
   .fourans ul.fa-obstacles li{margin:0 0 4px;font-size:13px}
   @media (max-width:640px){.fourans .fa-row{flex-direction:column;gap:2px}.fourans .fa-k{flex:auto}}
   @media (max-width:640px){.rr-row{grid-template-columns:1fr;gap:0}.rr-band .rr-lg,.rr-band .rr-lg img{width:72px}.rr-band .rr-lg img{height:56px}}
+  @media (max-width:640px){.pic-line{display:grid;grid-template-columns:fit-content(100%);width:auto}.pic-set{padding:8px 6px}.pic-set .rr-band{gap:8px}.pic-set .rr-lg{min-width:72px;max-width:116px}}
 
   /* ── the coverage ledger stops being the page's smallest print ─────────────────────────────
      `details.scope` had NO screen rule at all: its summary rendered at the browser default, in the

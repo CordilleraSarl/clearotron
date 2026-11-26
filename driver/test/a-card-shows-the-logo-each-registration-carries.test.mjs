@@ -74,8 +74,8 @@ const card = (registrations, opts = {}) => renderHtml(REPORT, [{
 test("a card's logos sit on their own line under the owner, captioned with their register", () => {
   const logos = new Map([[EU, { state: "fetched", src: DATA }], [GB, { state: "fetched", src: DATA }], [DE, { state: "failed" }]]);
   const html = card([{ uri: EU, jurisdiction: "EM" }, { uri: GB, jurisdiction: "GB" }, { uri: DE, jurisdiction: "DE" }], { logos });
-  const line = html.match(/<div class="owner-line">[\s\S]*?<\/div>(<div class="rr-logos rr-band">[\s\S]*?<\/div>)\s*<div class="oneline">/)?.[1];
-  assert.ok(line, "the logo line is not between the owner line and the card's sentence");
+  const line = html.match(/<div class="owner-line">(?:(?!<div class="oneline">)[\s\S])*?<\/div><div class="pic-line"><div class="pic-set"><div class="pic-head"><span class="pic-lab">Register<\/span><\/div>(<div class="rr-logos rr-band">[\s\S]*?<\/div>)<\/div><\/div>\s*<div class="oneline">/)?.[1];
+  assert.ok(line, "the logo line is not between the owner line and the card's sentence, in a frame labelled Register (owner, 2026-11-25)");
   assert.ok(line.includes(`<img src="${DATA}" alt="SKARVEL, logo as registered in European Union">`), "the EU logo, embedded, with its screen-reader text");
   assert.deepEqual([...line.matchAll(/<figcaption>([^<]+)<\/figcaption>/g)].map((m) => m[1]), ["EU", "UK"], "the captions, in the card's order, each register as a reader names it, and none for the failed fetch");
   assert.doesNotMatch(html, /Logo not retrieved|rr-nologo|register\.example\/de\/302020118845" target="_blank" rel="noopener noreferrer"><\/a>/, "a failed fetch drew a box in its place");
@@ -86,9 +86,9 @@ test("a registration without a logo draws nothing, and a run that fetched none d
   const some = card([{ uri: EU, jurisdiction: "EM" }, { uri: GB, jurisdiction: "GB" }], { logos: new Map([[GB, { state: "fetched", src: DATA }]]) });
   assert.equal((some.match(/<figure class="rr-lg">/g) ?? []).length, 1, "a registration with no saved logo drew a box");
   const none = card([{ uri: EU, jurisdiction: "EM" }]);
-  assert.doesNotMatch(none, /<div class="rr-logos/, "a run that fetched no logos drew a logo line");
+  assert.doesNotMatch(none, /<div class="rr-logos|class="pic-line"/, "a run that fetched no logos drew a logo line or an empty frame");
   const failed = card([{ uri: DE, jurisdiction: "DE" }], { logos: new Map([[DE, { state: "failed" }]]) });
-  assert.doesNotMatch(failed, /<div class="rr-logos|<figure class="rr-lg">/, "a card whose only logo failed to fetch drew a logo line");
+  assert.doesNotMatch(failed, /<div class="rr-logos|<figure class="rr-lg">|class="pic-line"/, "a card whose only logo failed to fetch drew a logo line or an empty frame");
 });
 
 test("a grouped negative row shows up to three small logos and +N under its text", () => {

@@ -491,6 +491,16 @@ const httpsUrlOrNull = (v) => {
 // Map a raw Signa record → the NEUTRAL normalized shape the driver + skill consume. officeHint = the
 // office of the synthetic ref the caller cited (keeps cited==logged); record's jurisdiction_code is the
 // fallback (Signa records carry an ISO jurisdiction_code directly, so no office map is needed).
+/**
+ * A FILING'S RECORD FROM THE SEARCH ROW THE RUN ALREADY HOLDS. A Signa search answer carries the whole trademark record,
+ * and a Knockout never makes the separate record fetch, so its page had no record to open and no logo to draw. The row is
+ * read with the same normaliser the record fetch uses and marked as a search result; nothing is asked of the register,
+ * and a field the row lacks stays missing. Null for a row with no record in it. PURE.
+ */
+export function recordFromSearchRow(row) {
+  return row?.raw && typeof row.raw === "object" ? { ...normalizeRecord(row.raw, row.office || null), _source: "search_row" } : null;
+}
+
 export function normalizeRecord(rec, officeHint = null) {
   if (!rec || typeof rec !== "object") return rec;
   const office = officeHint || rec.jurisdiction_code || rec.office_code || "xx";
@@ -951,23 +961,55 @@ export function skippedChannels(body, requested) {
 // back is kept only if it opens as an image (mark-logos.mjs). A record with no such link asks nothing (`notTried`). In a test of 2026-11-17 the link opened without a key and charged no credits; the
 // answer's own credits header is ledgered all the same, as every call's is.
 const IMAGE_ENDPOINT = "GET /v1/trademarks/{id}/media/{id}";
-export async function doMarkImage(base, link, tctx) {
+export async function doMarkImage(base, link, tctx, { sleep = pause } = {}) {
   let url;
   try { url = new URL(String(link ?? "")); } catch { return { ok: false, notTried: true, cause: "the record names no image link" }; }
   if (url.protocol !== "https:" || url.host !== new URL(base).host)
     return { ok: false, notTried: true, cause: "the record's image link is not on this register's own host" };
-  const t0 = Date.now();
-  let resp, bytes;
-  try {
-    resp = await fetch(url, { headers: { Accept: "image/*" }, signal: AbortSignal.timeout(30_000) });
-    bytes = Buffer.from(await resp.arrayBuffer());
-  } catch (e) {
-    logCall(tctx, { http_status: resp?.status ?? 0, ok: false, attempts: 1, took_ms: Date.now() - t0, bytes: 0, cache_hit: false, endpoint: IMAGE_ENDPOINT, credits_charged: null });
-    return { ok: false, cause: `the request threw: ${String(e?.message ?? e).slice(0, 120)}` };
+  // ASKED ONCE MORE, AT MOST (owner, 2026-11-26: at most one extra image request per failed logo). Only where the register
+  // says the failure is retryable, or a server error comes with no body to read, after the searches' own 1.5-second pause.
+  let last = null;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const t0 = Date.now();
+    let resp, bytes;
+    try {
+      resp = await fetch(url, { headers: { Accept: "image/*" }, signal: AbortSignal.timeout(30_000) });
+      bytes = Buffer.from(await resp.arrayBuffer());
+    } catch (e) {
+      logCall(tctx, { http_status: resp?.status ?? 0, ok: false, attempts: attempt, took_ms: Date.now() - t0, bytes: 0, cache_hit: false, endpoint: IMAGE_ENDPOINT, credits_charged: null });
+      return { ok: false, cause: `the request threw: ${String(e?.message ?? e).slice(0, 120)}` };
+    }
+    logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts: attempt, took_ms: Date.now() - t0, bytes: bytes.length, cache_hit: false, endpoint: IMAGE_ENDPOINT, credits_charged: creditsCharged(resp) });
+    if (resp.ok) return { ok: true, bytes, contentType: resp.headers.get("content-type") };
+    last = { status: resp.status, bytes };
+    if (attempt === 2 || !worthAskingAgain(resp.status, bytes)) break;
+    await sleep(1500);
   }
-  logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts: 1, took_ms: Date.now() - t0, bytes: bytes.length, cache_hit: false, endpoint: IMAGE_ENDPOINT, credits_charged: creditsCharged(resp) });
-  if (!resp.ok) return { ok: false, cause: `HTTP ${resp.status}` };
-  return { ok: true, bytes, contentType: resp.headers.get("content-type") };
+  return { ok: false, cause: imageFailureCause(last.status, last.bytes) };
+}
+
+/** Whether a failed image is asked once more: the register's error says it is retryable, or a 5xx has no JSON body. PURE. */
+export function worthAskingAgain(status, bytes) {
+  let body = null;
+  try { body = JSON.parse(Buffer.from(bytes ?? []).toString("utf8")); } catch { body = null; }
+  const err = body && typeof body === "object" ? (body.error && typeof body.error === "object" ? body.error : body) : null;
+  if (err && typeof err.retryable === "boolean") return err.retryable;
+  return status >= 500 && !err;
+}
+
+/**
+ * Why an image request failed, as the register said it: its status and, where the body is Signa's JSON error, the
+ * error's `type` and `detail` and whether it called itself retryable. Measured on 2026-11-25: two EU logo images answered
+ * 503 and the run kept only "HTTP 503", so nothing said which backend failed or whether asking again would help. PURE.
+ */
+export function imageFailureCause(status, bytes) {
+  let body = null;
+  try { body = JSON.parse(Buffer.from(bytes ?? []).toString("utf8")); } catch { body = null; }
+  const err = body && typeof body === "object" ? (body.error && typeof body.error === "object" ? body.error : body) : null;
+  const one = (v) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, 160);
+  const parts = [err?.type ? one(err.type) : null, err?.detail ? one(err.detail) : null,
+    typeof err?.retryable === "boolean" ? (err.retryable ? "retryable" : "not retryable") : null].filter(Boolean);
+  return parts.length ? `HTTP ${status}: ${parts.join(" — ")}` : `HTTP ${status}`;
 }
 
 // ── Record fetch ─────────────────────────────────────────────────────────────────────────────────

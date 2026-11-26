@@ -57,12 +57,19 @@ const AUDIT = `# Negative Results
 - source_layer: Common-law
 - url: common-law-grid.json
 - description: Backed by the run's ledger.
+
+## A name a record file backs
+- source_layer: Common-law
+- url: records/jp-1.json
+- description: Backed by a saved record.
 `;
 
 test("a block whose url names no place is not a name; the run's own search record still is", () => {
   const { web } = clearedNames(AUDIT);
-  assert.deepEqual(web.map((w) => w.title), ["A trading name on a marketplace", "Two names on one developer page", "A name the run's own search record backs"],
+  assert.deepEqual(web.map((w) => w.title), ["A trading name on a marketplace", "Two names on one developer page", "A name the run's own search record backs", "A name a record file backs"],
     "the note with a sentence for its url was listed as a name, or a name was lost");
+  assert.equal(web[3].ref, "records/jp-1.json", "a reference that is not an address lost its exact text");
+  assert.deepEqual(web[3].links, [], "a reference that is not an address became a link");
   assert.deepEqual(web[1].links, ["https://apps.example/dev/quellmont/id1", "https://apps.example/dev/brisandor/id2"]);
   assert.equal(web[2].runRecord, true);
   assert.deepEqual(web[2].links, []);
@@ -95,7 +102,7 @@ test("every name the header counts is printed, and every link is an address that
   const many = Array.from({ length: 12 }, (_, i) => `## Brisandor${i} kit\n- source_layer: Common-law\n- url: [Brisandor${i}](https://shop.example/${i})\n`).join("\n");
   const { web } = clearedNames(`# Negative Results\n\n${many}\n${AUDIT.split("\n").slice(2).join("\n")}`);
   const { count, rows, anchors } = webList(renderWith(web));
-  assert.equal(count, 15, "the header counts something other than the twelve names and three blocks that are names");
+  assert.equal(count, 16, "the header counts something other than the twelve names and four blocks that are names");
   assert.equal(rows.length, count, "the header and the rows disagree");
   for (let i = 0; i < 12; i++) assert.ok(rows.some((r) => r.includes(`Brisandor${i} kit`)), `name ${i + 1} is counted and not printed`);
   assert.ok(!rows.some((r) => r.includes("See cell-level receipts")), "a note is printed as a name");
