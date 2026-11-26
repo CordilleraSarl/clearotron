@@ -1624,6 +1624,37 @@ for (const width of [1280, 400]) {
 await cdp('Emulation.clearDeviceMetricsOverride', {})
 console.log(`how soon: ${JSON.stringify(howSoon)}`)
 
+// ── ZERO, ONE AND TWO SEARCHES LEFT (design ruling 2026-11-26) ──────────────────────────────────────────
+// Urgent counts two: with exactly one left it is disabled, its cost stays, and "1 search left today." sits
+// beside it while Standard stays available. With two left both can be chosen; with none, nothing starts.
+const LEFT = `(async () => {
+  ${EVIDENCE_HELPERS}
+  const radios = () => [...document.querySelectorAll('.nc-how-soon [role="radio"]')];
+  await ready();
+  set(names(), 'BRAVOLINE'); await sleep(120);
+  const row = [...document.querySelectorAll('.pick-row')].find((r) => /Knockout search/.test(r.innerText || ''));
+  row?.querySelector('.pick-row-hit')?.click(); await sleep(250);
+  await must(() => radios().length === 2, 4000, 'How soon never appeared');
+  radios()[1].click(); await sleep(200);
+  const review = [...document.querySelectorAll('button')].find((b) => /Review search/.test(b.innerText || ''));
+  return { options: radios().map((r) => ({ line: r.querySelector('.nc-speed-line')?.textContent, note: r.querySelector('.nc-speed-note')?.textContent ?? null,
+    checked: r.getAttribute('aria-checked'), disabled: r.getAttribute('aria-disabled') })),
+    footer: (document.querySelector('.composer-footer')?.innerText ?? '').replace(/\\s+/g, ' '), reviewable: Boolean(review && !review.disabled) };
+})()`
+const leftStates = {}
+const usageBefore = usageNow
+for (const left of [2, 1, 0]) {
+  urgentNow = true
+  usageNow = { ...usageNow, today: 20 - left, dailyRuns: 20, capped: true }
+  await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+  await new Promise((r) => setTimeout(r, 1200))
+  const got = (await evalIn(LEFT)).result?.result
+  leftStates[left] = got?.value ?? { fatal: got?.description ?? 'evaluate returned nothing' }
+}
+usageNow = usageBefore
+urgentNow = false
+console.log(`searches left: ${JSON.stringify(leftStates)}`)
+
 // ── AN INSTALLATION THAT CANNOT READ A BRIEF OFFERS NO BOX TO WRITE ONE IN (approved 2026-11-25) ────
 // Describe it keeps its heading, its "optional" mark and the server's own sentence, and the first field a
 // person types in is Names to clear. The installation that can read one keeps the box: the first pass.
@@ -1756,6 +1787,20 @@ const planBody = planPosts[0]?.body ?? null
 const countsBody = planPosts.length > 1 ? planPosts[planPosts.length - 1].body : null
 const fail = []
 const ok = (cond, msg) => { if (!cond) fail.push(msg) }
+
+// ZERO, ONE AND TWO SEARCHES LEFT (design ruling 2026-11-26).
+{
+  const two = leftStates[2], one = leftStates[1], none = leftStates[0]
+  if ([two, one, none].some((s) => !s || s.fatal)) fail.push(`the searches-left pass: ${JSON.stringify(leftStates)}`)
+  else {
+    ok(two.options[1].disabled !== 'true' && two.options[1].checked === 'true' && /· Urgent/.test(two.footer) && two.reviewable,
+      `with two searches left Urgent is not chosen and runnable: ${JSON.stringify(two)}`)
+    ok(one.options[1].disabled === 'true' && one.options[1].line === '3 to 6 minutes · uses 2 searches' && one.options[1].note === '1 search left today.'
+      && one.options[0].checked === 'true' && !/· Urgent/.test(one.footer) && one.reviewable,
+      `with one search left Urgent is not disabled beside its cost and the sentence, or Standard is not available: ${JSON.stringify(one)}`)
+    ok(!none.reviewable, `with no searches left a search can still start: ${JSON.stringify(none)}`)
+  }
+}
 
 // HOW SOON, both states, at both widths. The words are the board's and the issue's, byte for byte.
 for (const [width, h] of Object.entries(howSoon)) {

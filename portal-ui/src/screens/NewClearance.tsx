@@ -79,7 +79,7 @@ import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
 import type { CreatedCompany } from '../contract/api.ts'
 import { seesEverything } from '../shell/permissions.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
-import { allowanceLine, searchesLeft } from '../contract/allowance.ts'
+import { allowanceLine, searchesLeft, overOneLeft, ONE_SEARCH_LEFT } from '../contract/allowance.ts'
 
 /**
  * What a read did, in three separable parts, because they are three different kinds of claim.
@@ -436,7 +436,11 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // HOW SOON. Urgent is offered only where it runs fast (`api.searches().urgent`); elsewhere the order is Standard,
   // whatever the draft last held, so the footer, the review and the wire never say Urgent for a Standard search.
   const urgentAvailable = searches?.kind === 'ok' ? searches.value.urgent.available : false
-  const urgentOn = draft.urgent && urgentAvailable
+  // ONE SEARCH LEFT (design ruling 2026-11-26): an Urgent order counts two, so with exactly one left it cannot
+  // be chosen and Standard stays available. Asked of the same count the quote charges; the server refuses the
+  // same order in the same words if the balance moves after this screen was drawn.
+  const urgentOverAllowance = overOneLeft(searchesLeft(usage ?? null), searchesCounted({ levers: { ...machineryFor(draft.pick, activeLevel), urgent: true }, names: 1, classes: 0, platforms: 0, density: null }))
+  const urgentOn = draft.urgent && urgentAvailable && !urgentOverAllowance
 
   const effort: EffortInput = {
     levers: { ...machinery, urgent: urgentOn },
@@ -1538,6 +1542,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
               ? `${rangeInWords(turnaroundBounds({ ...effort, levers: { ...machinery, urgent: true } }))} · uses ${searchesLabel(searchesCounted({ ...effort, levers: { ...machinery, urgent: true } }))}`
               : "Not available with this installation's AI service. Searches run at Standard."}
             urgentAvailable={urgentAvailable}
+            urgentOverAllowance={urgentOverAllowance}
             urgent={urgentOn}
             onChoose={(urgent) => edit({ urgent })}
           />
@@ -1908,10 +1913,12 @@ const searchesLabel = (n: number): string => `${n} search${n === 1 ? '' : 'es'}`
  * A radio group by keyboard as by pointer: the chosen option takes the tab stop, and an arrow key moves the
  * choice to the other option when that one can be chosen.
  */
-function HowSoon({ standardLine, urgentLine, urgentAvailable, urgent, onChoose }: {
+function HowSoon({ standardLine, urgentLine, urgentAvailable, urgentOverAllowance, urgent, onChoose }: {
   readonly standardLine: string
   readonly urgentLine: string
   readonly urgentAvailable: boolean
+  /** Exactly one search left, and Urgent counts two: disabled, with the allowance's own sentence beside its cost. */
+  readonly urgentOverAllowance: boolean
   readonly urgent: boolean
   readonly onChoose: (urgent: boolean) => void
 }) {
@@ -1919,11 +1926,11 @@ function HowSoon({ standardLine, urgentLine, urgentAvailable, urgent, onChoose }
   const options = [
     { label: 'Standard', line: standardLine, note: null, chosen: !urgent, disabled: false, value: false },
     { label: 'Urgent', line: urgentLine,
-      note: urgentAvailable ? "The slowest steps run on the AI service's faster setting, which costs twice as much." : null,
-      chosen: urgent, disabled: !urgentAvailable, value: true },
+      note: !urgentAvailable ? null : urgentOverAllowance ? ONE_SEARCH_LEFT : "The slowest steps run on the AI service's faster setting, which costs twice as much.",
+      chosen: urgent, disabled: !urgentAvailable || urgentOverAllowance, value: true },
   ] as const
   const onKey = (e: ReactKeyboardEvent<HTMLDivElement>) => {
-    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key) || !urgentAvailable) return
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key) || !urgentAvailable || urgentOverAllowance) return
     e.preventDefault()
     const next = !urgent
     onChoose(next)
