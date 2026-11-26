@@ -1321,7 +1321,7 @@ const EVIDENCE_HELPERS = `
     const b = [...document.querySelectorAll('button.nc-disclose')].find((x) => re.test(x.textContent.trim()));
     if (!b || b.getAttribute('aria-expanded') === 'true') return;
     b.click();
-    await settle(done, 3000);
+    if (!await settle(done, 3000)) throw new Error('the fold ' + String(re) + ' did not open');
   };
   const reviewed = async () => {
     byText('button', /Review search/).click();
