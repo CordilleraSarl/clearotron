@@ -491,6 +491,16 @@ const httpsUrlOrNull = (v) => {
 // Map a raw Signa record → the NEUTRAL normalized shape the driver + skill consume. officeHint = the
 // office of the synthetic ref the caller cited (keeps cited==logged); record's jurisdiction_code is the
 // fallback (Signa records carry an ISO jurisdiction_code directly, so no office map is needed).
+/**
+ * A FILING'S RECORD FROM THE SEARCH ROW THE RUN ALREADY HOLDS. A Signa search answer carries the whole trademark record,
+ * and a Knockout never makes the separate record fetch, so its page had no record to open and no logo to draw. The row is
+ * read with the same normaliser the record fetch uses and marked as a search result; nothing is asked of the register,
+ * and a field the row lacks stays missing. Null for a row with no record in it. PURE.
+ */
+export function recordFromSearchRow(row) {
+  return row?.raw && typeof row.raw === "object" ? { ...normalizeRecord(row.raw, row.office || null), _source: "search_row" } : null;
+}
+
 export function normalizeRecord(rec, officeHint = null) {
   if (!rec || typeof rec !== "object") return rec;
   const office = officeHint || rec.jurisdiction_code || rec.office_code || "xx";
