@@ -966,8 +966,23 @@ export async function doMarkImage(base, link, tctx) {
     return { ok: false, cause: `the request threw: ${String(e?.message ?? e).slice(0, 120)}` };
   }
   logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts: 1, took_ms: Date.now() - t0, bytes: bytes.length, cache_hit: false, endpoint: IMAGE_ENDPOINT, credits_charged: creditsCharged(resp) });
-  if (!resp.ok) return { ok: false, cause: `HTTP ${resp.status}` };
+  if (!resp.ok) return { ok: false, cause: imageFailureCause(resp.status, bytes) };
   return { ok: true, bytes, contentType: resp.headers.get("content-type") };
+}
+
+/**
+ * Why an image request failed, as the register said it: its status and, where the body is Signa's JSON error, the
+ * error's `type` and `detail` and whether it called itself retryable. Measured on 2026-11-25: two EU logo images answered
+ * 503 and the run kept only "HTTP 503", so nothing said which backend failed or whether asking again would help. PURE.
+ */
+export function imageFailureCause(status, bytes) {
+  let body = null;
+  try { body = JSON.parse(Buffer.from(bytes ?? []).toString("utf8")); } catch { body = null; }
+  const err = body && typeof body === "object" ? (body.error && typeof body.error === "object" ? body.error : body) : null;
+  const one = (v) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, 160);
+  const parts = [err?.type ? one(err.type) : null, err?.detail ? one(err.detail) : null,
+    typeof err?.retryable === "boolean" ? (err.retryable ? "retryable" : "not retryable") : null].filter(Boolean);
+  return parts.length ? `HTTP ${status}: ${parts.join(" — ")}` : `HTTP ${status}`;
 }
 
 // ── Record fetch ─────────────────────────────────────────────────────────────────────────────────

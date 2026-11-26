@@ -10901,6 +10901,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/signa/test/a-failed-image-says-why-the-register-refused-it.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/signa/test/a-rate-limit-refusal-is-waited-out.test.mjs": {
           "tests": 10,
           "asserts": 41,
