@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { renderKnockoutHtml, cardFilings } from "../publish/render-knockout.mjs";
+import { renderKnockoutHtml, cardFilings, picturesForNamePage } from "../publish/render-knockout.mjs";
 import { parseFrameworkManifest } from "../framework.mjs";
 import { citedRefs } from "../mark-logos.mjs";
 
@@ -45,4 +45,12 @@ test("the logo step asks about the filings the cards draw, beside the table's ro
     [EU, "/mark/gb/00000000-0000-4000-8000-000000000002"], "the cards' filings are not the ones the cards draw");
   const refs = citedRefs({ registerRecords, knockoutMarks: findings.marks, shown: (entry, m) => cardFilings(registerRecords, m, framework) });
   assert.ok(refs.includes(EU.toLowerCase()), "a card's filing is not asked about");
+});
+
+test("a name's page reads its own name's web pictures, keyed by the name's place in the run", () => {
+  const pics = new Map([["k0-1", ["first name"]], ["k2-1", ["third name, card 1"]], ["k2-4", ["third name, card 4"]], ["k12-1", ["thirteenth name"]]]);
+  assert.deepEqual([...picturesForNamePage(pics, 2)], [["k0-1", ["third name, card 1"]], ["k0-4", ["third name, card 4"]]],
+    "a name's page took another name's pictures, or lost its own");
+  assert.deepEqual([...picturesForNamePage(pics, 1)], [], "a name with no pictures took another's");
+  assert.deepEqual([...picturesForNamePage(pics, 0)], [["k0-1", ["first name"]]]);
 });

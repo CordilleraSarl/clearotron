@@ -1666,6 +1666,16 @@ const CAVEAT_LEAD = K.caveatLead;
 // carries. What the document does not hold is the page's surface (which name, the workbook's portal address, the
 // confidentiality posture, the demo flag) and the two sets it holds by reference (each filing's saved record and each
 // saved logo), which publish resolves from the run. PURE given its inputs.
+/**
+ * A name's web pictures as its own page keys them. The run's picture record keys each finding card by the name's place in
+ * the run (`k<at>-<n>`), and a name's page draws its one name at place 0 (`k0-<n>`): read unchanged, every page but the
+ * first would look up the first name's pictures. PURE.
+ */
+export function picturesForNamePage(webPictures, at) {
+  const from = `k${Number(at)}-`;
+  return new Map([...(webPictures ?? new Map())].filter(([k]) => String(k).startsWith(from)).map(([k, v]) => [`k0-${String(k).slice(from.length)}`, v]));
+}
+
 function knockoutContextOf(doc, { at, filingRecords = new Map(), logos = new Map(), webPictures = new Map(), auditHref = null, delivery = null, demoData = false } = {}) {
   const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, framework = doc?.framework ?? {};
   const findings = client.findings ?? {};
@@ -1684,7 +1694,7 @@ function knockoutContextOf(doc, { at, filingRecords = new Map(), logos = new Map
     identity: { identity: product.name ?? null, stageLabel: product.stageLabel ?? null, template: product.template ?? null, banner: product.banner ?? null },
     matter: run.runId, auditHref,
     leftOpen: knockoutLeftOpenOf(doc, at),
-    registerRecordsUnreadable: client.registerRecordsUnreadable, filingRecords, logos, webPictures, demoData, depthNote: product.depthNote ?? null,
+    registerRecordsUnreadable: client.registerRecordsUnreadable, filingRecords, logos, webPictures: picturesForNamePage(webPictures, at), demoData, depthNote: product.depthNote ?? null,
     searchPolicy: scope.policy ?? null, delivery, servedModels: client.servedModels, frameworkMethod: framework.method,
   });
 }
