@@ -11,14 +11,14 @@
 // sign-in settings that no tool server is handed. It reads the record's file directly for the same reason: the record's
 // module imports the configuration, and its file name is pinned equal to RUN_CHOICES_FILE by a test.
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { driverDir } from "../../../shared/driver-dir.mjs";
 
 export const RUN_RECORD_FILE = "run-choices.json";
 
 /** Whether this run's dictated searches are its own AI program's. A stage experiment's shadow folder reads its run's record. IMPURE (reads). */
 export function ownSearchOn(runDir) {
   if (!runDir) return false;
-  const p = [runDir, String(runDir).split("/_experiments/")[0]].map((d) => join(d, "_driver", RUN_RECORD_FILE)).find((f) => existsSync(f));
+  const p = [runDir, String(runDir).split("/_experiments/")[0]].map((d) => driverDir(d, RUN_RECORD_FILE)).find((f) => existsSync(f));
   if (!p) return false;
   try { return String(JSON.parse(readFileSync(p, "utf8"))?.research ?? "").trim().toLowerCase() === "own"; } catch { return false; }
 }

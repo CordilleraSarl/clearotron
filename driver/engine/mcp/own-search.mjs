@@ -28,6 +28,7 @@ import { dirname, join } from "node:path";
 import { dictatedCells, connotationQueriesOf, reconcileGridLedger, findUnrecordedConnotationQueries, captureGridFromResponse } from "../../../providers/perplexity/src/core.js";
 import { gridProvenancePath } from "./grid-provenance.mjs";
 import { parsePrRiskResults } from "../../connotation-search.mjs";
+import { driverDir, ensureDriverDir } from "../../../shared/driver-dir.mjs";
 
 export { RUN_RECORD_FILE, ownSearchOn } from "./own-search-setting.mjs";
 
@@ -272,13 +273,13 @@ export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSIO
 // written there and nowhere else. A replay answers each dictated search from the latest record of the same words and
 // site, and sends nothing: a search the run never recorded is "not-sent" in the replay, never an empty one.
 export const SEARCH_RECORDS_FILE = "web-search-records.jsonl";
-const recordsPath = (runDir) => join(runDir, "_driver", SEARCH_RECORDS_FILE);
+const recordsPath = (runDir) => driverDir(runDir, SEARCH_RECORDS_FILE);
 
 /** Append the records to the run's file. Best-effort: a failed write never fails the searches. IMPURE. */
 export function keepSearchRecords(runDir, records) {
   if (!runDir || !records?.length) return;
   try {
-    mkdirSync(join(runDir, "_driver"), { recursive: true });
+    ensureDriverDir(runDir);
     appendFileSync(recordsPath(runDir), records.map((r) => JSON.stringify({ ts: new Date().toISOString(), ...r })).join("\n") + "\n");
   } catch { /* best-effort */ }
 }

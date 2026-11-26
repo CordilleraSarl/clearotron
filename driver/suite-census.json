@@ -3597,6 +3597,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-order-is-found-where-it-was-placed.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "an-ordered-field-is-a-field-the-tool-can-express.test.mjs": {
           "tests": 1,
           "asserts": 6,
@@ -9801,8 +9807,8 @@
           "todos": 0
         },
         "a-reference-names-an-order-only-to-its-own-account.test.mjs": {
-          "tests": 6,
-          "asserts": 28,
+          "tests": 10,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
@@ -9844,7 +9850,7 @@
         },
         "a-write-verb-says-whether-it-happened.test.mjs": {
           "tests": 3,
-          "asserts": 28,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -9884,9 +9890,15 @@
           "skips": 0,
           "todos": 0
         },
+        "an-order-status-reads-the-workspace-it-is-given.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 1,
+          "todos": 0
+        },
         "an-urgent-order-runs-at-the-speed-this-installation-can.test.mjs": {
-          "tests": 8,
-          "asserts": 35,
+          "tests": 9,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },

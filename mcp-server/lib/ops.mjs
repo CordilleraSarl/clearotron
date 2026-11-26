@@ -10,7 +10,7 @@
 
 import { writeFileSync, existsSync, mkdirSync, rmSync, renameSync, readFileSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
-import { createHash, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { config } from "./driver.mjs";
 import { validateJob } from "../../driver/enqueue-schema.mjs";
 import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
@@ -18,7 +18,7 @@ import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";   // the ledger the wall counts
 import { resolveEffectiveProfile } from "../../driver/profiles.mjs";
 import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";   // one search left and an Urgent order
-import { receiptIn, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // an id in any state is that order, not a new one
+import { ORDER_REF_RE, orderRefRefusal, filedReference, orderAlreadyFiled, orderReceipt, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // one rule for filing and finding an order
 import { orderUrgency } from "./urgent.mjs";   // whether this installation can run an Urgent order, as the run asks it   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
@@ -65,15 +65,12 @@ export function enqueuedViaFor(scope) {
   return String(scope?.sub ?? "") === PORTAL_TOKEN_SUB ? "portal/start_run" : "mcp/start_run";
 }
 
-// THE QUEUE ID'S RULE, STATED WHOLE IN THE REFUSAL. The id becomes a queue file name, so it is held to a slug
-// of at most this many characters that starts with a letter or digit. The refusal named only the characters, and an assistant whose id was
-// too long read it as a bad character, changed nothing that mattered, and lost the order's first call on
-// three mornings before it made one up that fit. stop_run's queue form holds a queued id to the same rule.
-const QUEUE_ID_MAX = 128;
-const QUEUE_ID_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${QUEUE_ID_MAX - 1}}$`);
-const queueIdRefusal = (id, max = QUEUE_ID_MAX) => `id ${JSON.stringify(id)}: Use an ID of 1–${max} characters. Start with an ASCII letter or digit. `
-  + `The remaining characters may also include a dot, underscore, @ or hyphen.${id.length > max ? ` This one has ${id.length} characters.` : ""}`;
-
+// THE QUEUE ID'S RULE, STATED WHOLE IN THE REFUSAL (driver/order-receipt.mjs: ORDER_REF_RE, orderRefRefusal). The id
+// becomes a queue file name, so it is held to a slug of at most 128 characters that starts with a letter or digit. The
+// refusal named only the characters, and an assistant whose id was too long read it as a bad character, changed nothing
+// that mattered, and lost the order's first call on three mornings before it made one up that fit. stop_run's queue
+// form holds a queued id to the same rule.
+//
 // ── AN ACCOUNT'S REFERENCE IS ITS OWN (design, 2026-11-26) ──────────────────────────────────────────────────────────
 //
 // A session that does not see every account names its order by a reference it may have chosen itself, and a session of
@@ -82,30 +79,13 @@ const queueIdRefusal = (id, max = QUEUE_ID_MAX) => `id ${JSON.stringify(id)}: Us
 // every order such a session files carries a fixed mark of its account, and of the organisation for Generic: two
 // accounts' references never meet, and a retry by the same account meets its own order and spends nothing. The reply
 // gives the reference the order is filed under; a reference that already ends in the session's own mark is that
-// reference, not a new one. A session that sees every account (an operator) files the reference as sent.
-const ACCOUNT_MARK_LEN = 12;
+// reference, not a new one. A session that sees every account (an operator) files the reference as sent. The rule
+// lives in the driver (filedReference, orderAlreadyFiled, orderReceipt), so every door files and finds by one rule.
 const seesEveryAccount = (scope) => scope?.accounts == null || scope.accounts === "*";
-function accountMark(job) {
-  const account = job.profileKey ?? "generic";
-  const organisation = account === "generic" ? (job.tenant ?? "") : "";
-  return createHash("sha256").update(`${account}\u0000${organisation}`).digest("hex").slice(0, ACCOUNT_MARK_LEN);
-}
-/** The reference an order is filed under: as sent for a session that sees every account, else carrying its account's mark. */
-function filedReference(asked, job, scope) {
-  if (seesEveryAccount(scope)) return asked;
-  const mark = `@${accountMark(job)}`;
-  if (asked.endsWith(mark)) return asked;
-  const max = QUEUE_ID_MAX - mark.length;
-  if (asked.length > max) throw new Error(queueIdRefusal(asked, max));
-  return `${asked}${mark}`;
-}
-/** Whether this session may see an order already filed: its account, and its organisation for Generic. */
-function mayseeOrder(scope, job) {
-  if (seesEveryAccount(scope)) return true;
-  if (!job) return false;
-  const account = job.profileKey ?? "generic";
-  return accountVisible(scope, account, account === "generic" ? (job.tenant ?? null) : null);
-}
+/** This session's visibility, in the form the receipt takes: every order, or the accounts its grant reaches. */
+const receiptScope = (scope) => (seesEveryAccount(scope) ? { everything: true } : { sees: (account, organisation) => accountVisible(scope, account, organisation) });
+/** A client's session is told why an order was refused before it ran; why a run stopped is the operator's to read. */
+const isClientSession = (scope) => scope?.kind === "account" || scope?.kind === "user";
 
 export function buildJob(args = {}, { scope } = {}) {
   // marks[] (search-depth spine): a knockout BATCH is ONE job carrying every mark — accept an explicit
@@ -119,7 +99,7 @@ export function buildJob(args = {}, { scope } = {}) {
   const id = String(args.id || `mcp-${Date.now().toString(36)}-${randomUUID().slice(0, 8)}`);
   // Input hardening: the id becomes a QUEUE FILENAME (join(qdir, `${id}.json`)) — a
   // path-shaped id would escape the queue directory. Slug-validated unconditionally, every caller.
-  if (id !== basename(id) || id.includes("..") || !QUEUE_ID_RE.test(id)) throw new Error(queueIdRefusal(id));
+  if (id !== basename(id) || id.includes("..") || !ORDER_REF_RE.test(id)) throw new Error(orderRefRefusal(id));
   const classes = Array.isArray(args.classes) ? args.classes.map(Number).filter(Number.isFinite) : undefined;
   // `||` not `??`: markName "" is falsy-but-not-nullish and must fall through to the
   // first batch mark, never enqueue an empty display name.
@@ -322,31 +302,26 @@ export function startRun(args = {}, { scope } = {}) {
   const qdir = queueDir(agent);
   // ONE builder shared with plan_run, so the preview a caller confirms is the job that actually runs.
   let job;
-  try { job = buildJob(args, { scope }); job.id = filedReference(job.id, job, scope); }
+  try { job = buildJob(args, { scope }); job.id = filedReference(job.id, job, { everyAccount: seesEveryAccount(scope) }); }
   catch (e) { throw new Error(`start_run: ${e.message}`); }
   const { id } = job;
   // AN ID IN ANY STATE IS THAT ORDER, asked before anything else so a retry is recognised as one: before validation, and
-  // before the allowance is counted again for an order already counted. The check before the write below saw only a
-  // waiting or claimed job, so a retry after a refusal, a park or a delivery wrote a second order under the same id.
-  //
-  // ONLY AN ORDER THIS SESSION MAY SEE IS ANSWERED FOR. An order filed under the bare reference before references carried
-  // an account's mark is this order where the session may see it, and nothing at all where it may not. Under the marked
-  // reference only the same account's order can be found; were another found (two marks the same), the refusal names
-  // nothing of it.
+  // before the allowance is counted again for an order already counted, so a retry at the day's limit is answered with
+  // its order rather than refused. The same account's order under the reference it is filed under, or under the
+  // reference as sent (an order filed before references carried a mark), IS this order: the answer is that order, and
+  // nothing is written or spent. Another account's order this session may see is not this one, and is refused as before;
+  // one it may not see is nothing at all under the reference as sent, and under the filed reference is refused naming
+  // nothing of it, never written over.
   {
-    let names = [];
-    try { names = readdirSync(qdir); } catch { /* no queue directory yet holds no order */ }
-    const bare = String(args.id ?? "");
-    for (const ref of bare && bare !== id ? [id, bare] : [id]) {
-      const existing = receiptIn(qdir, ref, names);
-      if (!existing) continue;
-      if (!mayseeOrder(scope, existing.job)) {
-        if (ref === id) throw new Error(`start_run: a job with id "${id}" is already queued/processing`);
-        continue;
-      }
-      if (["waiting", "checking", "running"].includes(existing.state)) throw new Error(`start_run: a job with id "${ref}" is already queued/processing`);
-      throw new Error(`start_run: a job with id "${ref}" already exists: ${RECEIPT_STATES[existing.state]}`);
+    const prior = orderAlreadyFiled({ queueDirs: [qdir], filed: id, asked: args.id != null ? String(args.id) : "", job, scope: receiptScope(scope) });
+    if (prior?.held === "mine") {
+      const r = prior.receipt;
+      return { ok: true, id: r.reference, existing: true, state: r.state, terminal: r.terminal, runId: r.runId,
+        reason: r.state === "refused" || !isClientSession(scope) ? r.reason : null, updatedAt: r.updatedAt };
     }
+    if (prior?.held === "hidden" || (prior?.held === "other" && ["waiting", "checking", "running"].includes(prior.state)))
+      throw new Error(`start_run: a job with id "${prior.reference}" is already queued/processing`);
+    if (prior?.held === "other") throw new Error(`start_run: a job with id "${prior.reference}" already exists: ${RECEIPT_STATES[prior.state]}`);
   }
 
   const v = validateJob(job);
@@ -408,6 +383,23 @@ export function startRun(args = {}, { scope } = {}) {
   };
 }
 
+// order_status — what became of an order, by the reference start_run returned or the one the caller sent, within this
+// session's own visibility (driver/order-receipt.mjs). An order this session may not see answers exactly as no order
+// at all. Reads only: nothing is written, counted or sent.
+export function orderStatus(args = {}, { scope } = {}) {
+  // A WORKSPACE THE CALLER NAMES IS THE ONLY ONE READ: the order went to that queue, so another queue can neither answer
+  // for it nor, unreadable, spoil the answer. Named by no one, the default queue and every known queue are read, under the
+  // same visibility, and two of them holding the reference is "ambiguous".
+  const queueDirs = args.agent ? [queueDir(String(args.agent))] : [queueDir(""), ...config.queueDirs];
+  const answer = orderReceipt({ queueDirs, reference: args.id, scope: receiptScope(scope) });
+  if (!answer.found) return { found: false, basis: answer.basis };
+  const r = answer.receipt;
+  const client = isClientSession(scope);
+  return { found: true, reference: r.reference, state: r.state, terminal: r.terminal, runId: r.runId,
+    reason: r.state === "refused" || !client ? r.reason : null, updatedAt: r.updatedAt,
+    ...(client ? {} : { account: r.account, organisation: r.organisation ?? null }) };
+}
+
 // stop_run — cancel. A not-yet-claimed queue job is removed (a REAL cancel before any spend). A running run
 // gets a .cancel sentinel + honest status; its turn in flight is ended from here only when `immediate` asks
 // for that. id cancels by queue id; runId cancels a started run.
@@ -419,7 +411,7 @@ export async function stopRun(args = {}, { scope, endTurn = endEngineChild } = {
     const qdir = queueDir(agent);
     // same filename hardening as start_run — the id is joined into the queue path
     const sid = String(args.id);
-    if (sid !== basename(sid) || sid.includes("..") || !QUEUE_ID_RE.test(sid)) throw new Error(`stop_run: ${queueIdRefusal(sid)}`);
+    if (sid !== basename(sid) || sid.includes("..") || !ORDER_REF_RE.test(sid)) throw new Error(`stop_run: ${orderRefRefusal(sid)}`);
     const f = join(qdir, `${String(args.id)}.json`);
     const NOT_FOUND = { ok: false, action: "not-found", id: args.id, note: "No queued job with that id (already run, or never queued)." };
     // ACCOUNT GATE: the runId form is gated at the dispatch chokepoint, but a QUEUED job
