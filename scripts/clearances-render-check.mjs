@@ -873,6 +873,16 @@ const phone = await value(PHONE)
 fullList = false
 await reload()
 const phoneStub = await value(PHONE)
+// The Retired tab at the same width: each search's Restore in reach, nothing scrolling sideways.
+const phoneRetired = await value(`(async () => {
+  [...document.querySelectorAll('.clr-tab')].find(t => /^Retired/.test((t.textContent || '').trim()))?.click();
+  await new Promise(r => setTimeout(r, 400));
+  const W = document.documentElement.clientWidth;
+  const restore = [...document.querySelectorAll('table.data tbody button')].filter(b => (b.textContent || '').trim() === 'Restore');
+  return { restores: restore.length, out: restore.filter(b => { const r = b.getBoundingClientRect(); return r.left < -1 || r.right > W + 1 }).length,
+    sideways: document.documentElement.scrollWidth - W,
+    wrapSideways: (() => { const w = document.querySelector('table.clr-retired-table')?.parentElement; return w ? w.scrollWidth - w.clientWidth : null })() };
+})()`)
 fullList = true
 await cmd('Emulation.clearDeviceMetricsOverride', {})
 fullList = false
@@ -1058,6 +1068,8 @@ ok(phone && phone.sideways <= 1, `at 400px the page scrolls sideways by ${phone?
 ok(phone && phone.out.length === 0, `at 400px part of a row is off the screen: ${JSON.stringify(phone?.out)}`)
 ok(phone && phone.midWord.length === 0, `at 400px a word in a name or status breaks inside itself: ${JSON.stringify(phone?.midWord)}`)
 ok(phoneStub && phoneStub.rows > 0 && phoneStub.out.length === 0 && phoneStub.sideways <= 1, `at 400px a stub row is off the screen: ${JSON.stringify(phoneStub)}`)
+ok(phoneRetired && phoneRetired.restores === 2 && phoneRetired.out === 0 && phoneRetired.sideways <= 1 && phoneRetired.wrapSideways !== null && phoneRetired.wrapSideways <= 1,
+  `at 400px the Retired tab does not keep Restore in reach: ${JSON.stringify(phoneRetired)}`)
 ok(phoneStub && phoneStub.midWord.length === 0, `at 400px a word in a stub row's name or status breaks inside itself: ${JSON.stringify(phoneStub?.midWord)}`)
 ok(phone && phone.riskWords.length > 0 && phone.riskWords.every((w) => w.startsWith('Risk ')), `at 400px a risk does not read "Risk {band}": ${JSON.stringify(phone?.riskWords)}`)
 for (const [width, f] of Object.entries(stubs)) {

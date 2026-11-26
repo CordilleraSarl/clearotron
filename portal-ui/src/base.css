@@ -3742,5 +3742,17 @@ ol.steps > li::before {
   .names-wrap table.data.fixed td.col-actions button.row-open { width: auto; white-space: nowrap; padding: 8px 12px; }
   .names-wrap table.data.fixed tr.read-row { background: var(--surface-sunken); }
   .names-wrap table.data.fixed tr.read-row > td { background-color: transparent; }
+  /* The Retired tab's searches as cards too: the name and Restore on the top line, the status beneath. */
+  .table-wrap table.data.clr-retired-table { display: block; min-width: 0; width: 100%; }
+  .table-wrap table.data.clr-retired-table thead { display: none; }
+  .table-wrap table.data.clr-retired-table tbody { display: block; }
+  .table-wrap table.data.clr-retired-table tr.row {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name actions" "status status";
+    align-items: start; column-gap: 8px; row-gap: 6px; padding: 10px 8px; border-bottom: 1px solid var(--border-hairline);
+  }
+  .table-wrap table.data.clr-retired-table tr.row > td { display: block; padding: 0; border: 0; min-width: 0; }
+  .table-wrap table.data.clr-retired-table td.clr-td-name { grid-area: name; }
+  .table-wrap table.data.clr-retired-table td.clr-td-status { grid-area: status; }
+  .table-wrap table.data.clr-retired-table td.col-actions { grid-area: actions; }
 }
 
