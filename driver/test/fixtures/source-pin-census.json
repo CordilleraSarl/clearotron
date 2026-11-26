@@ -1,5 +1,5 @@
 {
-  "total": 301,
+  "total": 302,
   "files": {
     "driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs": [
       0,
@@ -335,6 +335,10 @@
     ],
     "driver/test/an-unended-position-is-delivered-stated.test.mjs": [
       1,
+      0
+    ],
+    "driver/test/an-urgent-order-counts-two-searches-where-it-runs-fast.test.mjs": [
+      2,
       0
     ],
     "driver/test/attributed-span.test.mjs": [

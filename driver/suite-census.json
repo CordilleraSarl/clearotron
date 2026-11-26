@@ -3615,6 +3615,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-urgent-order-counts-two-searches-where-it-runs-fast.test.mjs": {
+          "tests": 4,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "an-urgent-run-asks-for-the-faster-setting-on-its-judgment-turns-only.test.mjs": {
           "tests": 12,
           "asserts": 53,
@@ -10280,8 +10286,8 @@
           "todos": 0
         },
         "effortModelParity.test.ts": {
-          "tests": 7,
-          "asserts": 31,
+          "tests": 8,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },

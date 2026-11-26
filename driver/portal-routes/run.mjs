@@ -18,6 +18,7 @@ import { quoteForJob } from "../run-quote.mjs";
 import { readJson } from "../run-record.mjs";
 import { countJobMarks, coverageDisclosure, kebabCollisions, policyFor, productAvailability, UNAVAILABLE_NOTE } from "../search-policy.mjs";
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../usage-ledger.mjs";
+import { admittedSearches } from "../urgent-count.mjs";   // what an order counts against its allowance, as the runner's wall counts it
 
 export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, trigger, stopRun, demo, orderRefusal, audit, upstream, readBuilt, readCanCount, readTerritories, loadProfilesImpl, usedJtis, sweepJtis, jobFor, selectorOf, refusalFor, allowanceExhaustedLine }, { method, parts, principal, body, query }) {
   // shared plan-time gates — run at BOTH doors so a body that would 422 at plan can never be
@@ -135,7 +136,8 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
     try { return quoteForJob({ job, profile, searchPolicy: resolved }); } catch { return null; }
   };
 
-  const quotaRefusal = async (account, organisation = null) => {
+  // `searches` is what the order counts (urgent-count.mjs admittedSearches), the number the runner's wall charges.
+  const quotaRefusal = async (account, organisation = null, searches = 1) => {
     if (seesEverything(principal) || !upstream) return null;
     let caps = null, capsRead = false;
     try {
@@ -173,7 +175,7 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
       audit({ event: "quota-precheck-blind", by: principal.email, account, basis: used.basis });
       return null;
     }
-    if (used.today + 1 <= limit) return null;
+    if (used.today + searches <= limit) return null;
     return { status: 429, json: { ok: false, errors: [allowanceExhaustedLine(limit, BRAND.name)] } };
   };
 
@@ -206,7 +208,7 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
     if (notConfigured) return notConfigured;
     const gates = planGates(job);
     if (gates.fail) return gates.fail;
-    const overQuota = await quotaRefusal(account, job.tenant ?? null);
+    const overQuota = await quotaRefusal(account, job.tenant ?? null, admittedSearches(job));
     if (overQuota) return overQuota;
     // ONE resolution, and the name, the stage, the turnaround and the effort all come off it.
     const { profile: planProfile, resolved: planResolved, scope: planScope } = resolveFor(job);
@@ -261,7 +263,7 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
     if (gates.fail) return gates.fail;
     // re-checked for the same reason the gates are: a token minted while the account still had
     // allowance must not spend it after another tab has used the last one.
-    const overQuota = await quotaRefusal(account, job.tenant ?? null);
+    const overQuota = await quotaRefusal(account, job.tenant ?? null, admittedSearches(job));
     if (overQuota) return overQuota;
     sweepJtis();
     const bad = verifyConfirmation({ secret, token: body.confirmationToken, account, email: principal.email,

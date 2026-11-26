@@ -929,6 +929,9 @@ export type Machinery = {
   readonly nativeLanguage: boolean
   readonly registerCounts: boolean
   readonly territories: readonly string[]
+  /** An Urgent order: the same search on the AI service's faster setting. Moves the count and the
+   *  turnaround row, never the work. Absent is Standard. */
+  readonly urgent?: boolean
 }
 
 /** The draft, as machinery. Every fact comes off the product row the server sent. */
@@ -1004,6 +1007,13 @@ export const gridCalls = (i: EffortInput): number =>
 /** Searches: a knockout carries the whole batch in ONE; a clearance is one name per search. */
 export const runCount = (i: EffortInput): number =>
   i.levers.pipeline === 'knockout' ? 1 : Math.max(1, i.names)
+
+/** How many searches an Urgent order counts as. Mirrors the server's URGENT_SEARCHES; the parity test pins both. */
+export const URGENT_SEARCHES = 2
+
+/** What the order counts against an allowance: its searches, twice over when Urgent. Apart from
+ *  `runCount`, which scales the work, because an Urgent search is the same work run faster. */
+export const searchesCounted = (i: EffortInput): number => runCount(i) * (i.levers.urgent === true ? URGENT_SEARCHES : 1)
 
 /**
  * The weights. Placeholders, and pinned against the server port weight by weight.
@@ -1095,13 +1105,18 @@ export const TURNAROUND_QUOTE = {
   clearance: { lowHours: 1.5, highHours: 2.5 },
   // — 5-10 minutes, a range. Mirrors the server; the parity test pins both.
   knockout: { lowHours: 5 / 60, highHours: 10 / 60 },
+  // — Urgent, one ruled row per pipeline (ruling 2026-11-25). Mirrors the server.
+  clearanceUrgent: { lowHours: 0.5, highHours: 1 },
+  knockoutUrgent: { lowHours: 3 / 60, highHours: 6 / 60 },
 } as const
 
 // THE PARAMETER IS THE ONE FIELD THIS READS, not the whole of Machinery. Home asks the same question of
 // a RUN, which is not a draft and has no levers — and widening here is what keeps that a second CALLER
 // rather than a second copy of the table. Every existing caller passes a Machinery and still satisfies it.
-export const quoteBoundsFor = (m: Pick<Machinery, 'pipeline'>): { lowHours: number; highHours: number } =>
-  m.pipeline === 'knockout' ? TURNAROUND_QUOTE.knockout : TURNAROUND_QUOTE.clearance
+export const quoteBoundsFor = (m: Pick<Machinery, 'pipeline' | 'urgent'>): { lowHours: number; highHours: number } =>
+  m.pipeline === 'knockout'
+    ? (m.urgent === true ? TURNAROUND_QUOTE.knockoutUrgent : TURNAROUND_QUOTE.knockout)
+    : (m.urgent === true ? TURNAROUND_QUOTE.clearanceUrgent : TURNAROUND_QUOTE.clearance)
 
 /** The ruled range, and nothing is done to it. Mirrors the server; the parity test pins both. */
 export const turnaroundBounds = (i: EffortInput): { lowHours: number; highHours: number } =>
@@ -1120,6 +1135,8 @@ export function turnaround(i: EffortInput): string {
     const lo = Math.round(lowHours * 60), hi = Math.round(highHours * 60)
     return lo === hi ? `~${hi} min` : `${lo}–${hi} min`
   }
+  // Under an hour to an hour or more: each bound in its own unit, "30 min–1 hour". Mirrors the server.
+  if (lowHours < 1) return `${Math.round(lowHours * 60)} min–${fmtHours(highHours)} ${highHours === 1 ? 'hour' : 'hours'}`
   if (lowHours === highHours) return `~${fmtHours(highHours)} ${highHours === 1 ? 'hour' : 'hours'}`
   return `${fmtHours(lowHours)}–${fmtHours(highHours)} hours`
 }

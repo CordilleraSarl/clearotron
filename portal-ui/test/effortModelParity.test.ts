@@ -18,7 +18,7 @@ import type { Machinery } from '../src/contract/composerProduct.ts'
 // EVERY SHAPE THE FOUR PRODUCTS CAN PRODUCE, plus the two impossible ones that must still agree. The
 // list used to be lever combinations, half of which named no product at all ("empty", "register-only");
 // it is machinery now, which is what both implementations actually take.
-const LEVER_SETS: ReadonlyArray<readonly [string, Machinery]> = [
+const STANDARD_SETS: ReadonlyArray<readonly [string, Machinery]> = [
   ['knockout', { pipeline: 'knockout', caseLaw: false, nativeLanguage: false, registerCounts: false, territories: [] }],
   ['knockout+counts', { pipeline: 'knockout', caseLaw: false, nativeLanguage: false, registerCounts: true, territories: [] }],
   ['knockout+territories', { pipeline: 'knockout', caseLaw: false, nativeLanguage: false, registerCounts: true, territories: ['France', 'Germany'] }],
@@ -32,6 +32,12 @@ const LEVER_SETS: ReadonlyArray<readonly [string, Machinery]> = [
   // exactly the class of bug that only shows on a request nobody meant to compose.
   ['knockout+strayNative', { pipeline: 'knockout', caseLaw: false, nativeLanguage: true, registerCounts: false, territories: [] }],
   ['knockout+strayCaseLaw', { pipeline: 'knockout', caseLaw: true, nativeLanguage: false, registerCounts: false, territories: [] }],
+]
+// EVERY SHAPE AGAIN, ORDERED URGENT (ruling 2026-11-25). Urgent is an order option rather than machinery, so
+// each product can carry it, and both halves must agree on the count and the turnaround row it selects.
+const LEVER_SETS: ReadonlyArray<readonly [string, Machinery]> = [
+  ...STANDARD_SETS,
+  ...STANDARD_SETS.map(([label, m]) => [`${label}+urgent`, { ...m, urgent: true }] as const),
 ]
 
 const NAMES = [1, 2, 7, 20]
@@ -72,6 +78,8 @@ test('effort model: server port is numerically identical to the browser model', 
             assert.equal(srv.effortUnits(i), ui.effortUnits(i), `effortUnits: ${where}`)
             assert.equal(srv.costBand(i), ui.costBand(i), `costBand: ${where}`)
             assert.equal(srv.runCount(i), ui.runCount(i), `runCount: ${where}`)
+            assert.equal(srv.searchesCounted(i), ui.searchesCounted(i), `searchesCounted: ${where}`)
+            assert.deepEqual(srv.turnaroundBounds(i), ui.turnaroundBounds(i), `turnaroundBounds: ${where}`)
             assert.equal(srv.turnaroundHours(i), ui.turnaroundHours(i), `turnaroundHours: ${where}`)
             assert.equal(srv.turnaround(i), ui.turnaround(i), `turnaround: ${where}`)
             checked++
@@ -80,7 +88,7 @@ test('effort model: server port is numerically identical to the browser model', 
       }
     }
   }
-  assert.ok(checked >= 700, `matrix should be broad, only checked ${checked}`)
+  assert.ok(checked >= 1400, `matrix should be broad, only checked ${checked}`)
 })
 
 test('effort model: the shared sub-calculations agree too (not just the totals)', () => {
@@ -104,6 +112,32 @@ test('effort model: the weight table itself matches, so a re-fit cannot land on 
   // Reaching into W on both sides is deliberate: the totals above would also catch a weight change, but
   // this says WHICH weight moved, and it fails even for a weight no matrix row happens to exercise.
   assert.deepEqual({ ...srv.W }, { ...ui.W as Record<string, number> })
+  assert.equal(srv.URGENT_SEARCHES, ui.URGENT_SEARCHES, 'an Urgent order counts the same on both sides')
+  assert.deepEqual(JSON.parse(JSON.stringify(srv.TURNAROUND_QUOTE)), JSON.parse(JSON.stringify(ui.TURNAROUND_QUOTE)), 'one ruled table, both halves')
+})
+
+// URGENT MOVES THE COUNT AND THE TURNAROUND ROW, AND NOTHING ELSE (ruling 2026-11-25). The same search runs
+// on the faster setting, so the work it is sized at stays put on both halves while the count doubles and
+// the quote reads the Urgent row: 0.5 to 1 hour for a clearance, 3 to 6 minutes for a Knockout.
+test('an Urgent order counts 2 searches and quotes its own row, and the work does not move', () => {
+  const rows = { clearance: { lowHours: 0.5, highHours: 1 }, knockout: { lowHours: 3 / 60, highHours: 6 / 60 } }
+  for (const [label, m] of STANDARD_SETS) {
+    const std = { levers: m, names: 1, classes: 3, platforms: 7, density: null }
+    const urg = { ...std, levers: { ...m, urgent: true } }
+    for (const side of [srv, ui] as const) {
+      assert.equal(side.searchesCounted(std), 1, `${label}: Standard counts one search`)
+      assert.equal(side.searchesCounted(urg), 2, `${label}: Urgent counts two searches`)
+      assert.equal(side.effortRaw(urg), side.effortRaw(std), `${label}: Urgent is the same work`)
+      assert.equal(side.effortUnits(urg), side.effortUnits(std), `${label}: and the same bar`)
+      assert.deepEqual({ ...side.turnaroundBounds(urg) }, rows[m.pipeline], `${label}: Urgent reads its ruled row`)
+    }
+    const q = srv.quoteEffort(urg)
+    assert.equal(q.urgent, true)
+    assert.equal(q.searches, ui.searchesCounted(urg), `${label}: the quote charges what the screen shows`)
+    assert.equal(q.turnaround, ui.turnaround(urg))
+  }
+  assert.equal(ui.turnaround({ levers: { ...STANDARD_SETS[3][1], urgent: true }, names: 1, classes: 3, platforms: 7, density: null }), '30 min–1 hour')
+  assert.equal(ui.turnaround({ levers: { ...STANDARD_SETS[0][1], urgent: true }, names: 1, classes: 3, platforms: 7, density: null }), '3–6 min')
 })
 
 test('effort model: quoteEffort carries the version, the absolute raw, and the relative bar', () => {
