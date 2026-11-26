@@ -653,6 +653,14 @@
   .panel.courtp{padding:14px 18px}.panel.courtp p{margin:0;font-size:14px;line-height:1.5}
 
   .ask-fi{margin-left:auto;font:600 12px/1 var(--font);padding:7px 10px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap}
+  /* Copy link (owner, 2026-11-25): drawn as Ask AI is, left of it, and shown only when the frame bridge marks the page as
+     inside the portal. The tick replaces the link icon once the portal says the copy landed. */
+  .copy-fi{display:none;margin-left:auto;font:600 12px/1 var(--font);padding:7px 10px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap;align-items:center;gap:7px}
+  html.rep-portal .copy-fi{display:inline-flex}
+  .fi-acts{margin-left:auto;display:inline-flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px}
+  .fi-acts .ask-fi,.fi-acts .copy-fi{margin-left:0}
+  .copy-fi .ci-tick,.copy-fi.copied .ci-link{display:none}
+  .copy-fi.copied .ci-tick{display:inline}
   .tb-ask{margin-right:8px}
   .cardhead .who.mark-first{font-size:17px;font-weight:800}
   .cardhead .who .where{font-weight:500;color:var(--slate);font-size:14px}
