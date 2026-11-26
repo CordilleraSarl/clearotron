@@ -121,7 +121,7 @@ export class RunChoiceUnavailable extends Error {
   constructor({ kind, recorded, machine = null, detail = null, run = null }) {
     if (!RUN_CHOICE_KINDS.includes(kind)) throw new Error(`RunChoiceUnavailable: unknown kind "${kind}"`);
     const what = kind === "register" ? `the ${recorded} register`
-      : kind === "research" ? `the ${recorded} web research` : `the ${recorded} engine`;
+      : kind === "research" ? (recorded === "own" ? "the AI program's own web search" : `the ${recorded} web research`) : `the ${recorded} engine`;
     const why = kind === "register" || kind === "research" ? "this runner cannot serve it"
       : kind === "engine" ? "this driver has no adapter for it"
       : kind === "engine-program" ? "its program is not installed here"

@@ -154,7 +154,7 @@ export async function openRun({ job, opts }) {
   // A RESUMED RUN WHOSE SERVICE THIS RUNNER CANNOT SERVE PARKS, by name, with its work kept: it never finishes on another
   // service. Any other run meets the door as before.
   if (!opts.recordFetcher) {
-    try { preflightResearchCredential(jobPolicy, engineEnv, { service: runResearch }); }
+    try { preflightResearchCredential(jobPolicy, engineEnv, { service: runResearch, engine: recorded.state === "recorded" ? recorded.engine : selectEngine().name }); }
     catch (e) {
       if (recorded.state !== "recorded") throw e;
       throw park({ kind: "research", recorded: runResearch, machine: machineResearch.service ?? null, detail: e?.message ?? e });

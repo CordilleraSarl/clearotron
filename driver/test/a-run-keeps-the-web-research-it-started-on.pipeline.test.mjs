@@ -90,7 +90,7 @@ test("a run recorded on its own AI program's search, resumed where that search c
     env: { CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_BEDROCK: "1", AWS_REGION: "eu-west-1", PERPLEXITY_API_KEY: "test-offline" } });
   assert.deepEqual({ kind: parkedFor.kind, recorded: parkedFor.recorded, machine: parkedFor.machine }, { kind: "research", recorded: "own", machine: "perplexity" });
   assert.match(parkedFor.detail ?? "", /Amazon Bedrock has no web search of its own/, "the door's own words ride with the park");
-  assert.match(marker.waitingOn, /the own web research/);
+  assert.match(marker.waitingOn, /the AI program's own web search, which this run started on/);
   assert.equal(recordOf(runDir).research, "own", "the park rewrote the run's record");
 });
 

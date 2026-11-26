@@ -1239,7 +1239,7 @@ export function preflightCredentials(env = process.env) {
  * @returns `{ checked: false }` when the product carries no common-law grid — a statement that the door
  *          did not apply, never a pass. An absence is a finding, so it is said rather than implied.
  */
-export function preflightResearchCredential(policy, env = process.env, { service = null } = {}) {
+export function preflightResearchCredential(policy, env = process.env, { service = null, engine = null } = {}) {
   if (policy?.components?.commonLawGrid !== true)
     return { checked: false, component: "commonLawGrid", credEnv: null, missing: [] };
   const install = service ? { service } : installWebResearch(env);
@@ -1247,7 +1247,7 @@ export function preflightResearchCredential(policy, env = process.env, { service
     throw new Error(`[preflight] ${WEB_RESEARCH_SETTING}=${install.invalid} names no web-research service on product "${policy.product}" `
       + `— one of: own (the AI program's own web search) or perplexity; refusing rather than guess which one searches`);
   if (install.service === "own") {
-    const can = webResearchCapability({ service: "own", env });
+    const can = webResearchCapability({ service: "own", engine, env });
     if (!can.ok)
       throw new Error(`[preflight] the AI program's own web search cannot run here for the common-law / marketplace sweep `
         + `on product "${policy.product}": ${can.why}. Set ${WEB_RESEARCH_SETTING}=perplexity with a Perplexity key, `

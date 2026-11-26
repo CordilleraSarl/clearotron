@@ -60,12 +60,12 @@ test("own search follows the engine's route; Perplexity needs its key; the check
 });
 
 test("a part own search does not run yet keeps needing the Perplexity key, and the check says which part", () => {
-  assert.deepEqual([...OWN_SEARCH_STILL_PERPLEXITY], ["follow-up questions"]);
+  assert.deepEqual([...OWN_SEARCH_STILL_PERPLEXITY], ["follow-up questions", "meaning re-asks"]);
   const r = webResearchCapability({ service: "own", env: {} });
   assert.equal(r.ok, false);
   assert.deepEqual(r.missing, ["PERPLEXITY_API_KEY"]);
-  assert.match(r.why, /still sends its follow-up questions to Perplexity/);
-  assert.deepEqual(webResearchCapability({ service: "own", env: { PERPLEXITY_API_KEY: "k" } }).stillPerplexity, ["follow-up questions"]);
+  assert.match(r.why, /still sends its follow-up questions and meaning re-asks to Perplexity/);
+  assert.deepEqual(webResearchCapability({ service: "own", env: { PERPLEXITY_API_KEY: "k" } }).stillPerplexity, ["follow-up questions", "meaning re-asks"]);
   assert.match(webResearchCapability({ service: "own", env: { CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_BEDROCK: "1" } }).why, /Amazon Bedrock/,
     "a route with no search is named first: a key would not make it run");
 });
@@ -74,7 +74,9 @@ test("the door checks the run's service, and the service handed in wins over the
   const p = policyFor("full-country-search");
   const KEY = { PERPLEXITY_API_KEY: "k" };
   assert.equal(preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own", ...KEY }).service, "own");
-  assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }), /still sends its follow-up questions to Perplexity/);
+  assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }), /still sends its follow-up questions and meaning re-asks to Perplexity/);
+  assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own", ...KEY, CLEAROTRON_AI: "openai-agent" }, { engine: "probe-retired" }), /probe-retired engine has no web search/,
+    "the door judges the engine the run uses, not the one the environment names");
   assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }, { service: "perplexity" }), /missing PERPLEXITY_API_KEY/,
     "a run recorded on Perplexity is checked there, whatever the installation now says");
   assert.equal(preflightResearchCredential(p, { PERPLEXITY_API_KEY: "k" }, { service: "own" }).service, "own");
@@ -104,5 +106,6 @@ test("the run's record holds its service, reads it back, and a run recorded befo
 test("a run whose service this runner cannot serve parks under its own kind", () => {
   const e = new RunChoiceUnavailable({ kind: "research", recorded: "own", machine: "perplexity", detail: "no web search", run: { codename: "probe" } });
   assert.deepEqual(e.dependency, { kind: "research", recorded: "own", machine: "perplexity", detail: "no web search" });
-  assert.match(e.message, /started on the own web research, and this runner cannot serve it/);
+  assert.match(e.message, /started on the AI program's own web search, and this runner cannot serve it/);
+  assert.match(new RunChoiceUnavailable({ kind: "research", recorded: "perplexity", run: null }).message, /started on the perplexity web research/);
 });
