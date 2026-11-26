@@ -24,7 +24,7 @@ import { readPartNotCompleted, slicesNotYetRecorded, unitsNotYetRecorded, writeP
 import { gridBatchFor } from "../profiles.mjs";
 import { countLaneCalls } from "../provider-usage.mjs";
 import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
-import { ownSearchOn, makeOwnSearchSessions, prepareOwnSearchGrid, reissueMeaningSearches } from "../engine/mcp/own-search.mjs";   // the run's own AI program runs the dictated searches, where this run says so
+import { ownSearchOn, makeOwnSearchSessions, prepareOwnSearchGrid, meaningReissuerFor } from "../engine/mcp/own-search.mjs";   // the run's own AI program runs the dictated searches, where this run says so
 import { foldSupplementalEntries, isProviderHardErrorReason, joinPlanToBands, mintSupplementalQid, partitionFoldDirectives, romanizedTermsFromPlan, screenThenCap } from "../register-plan.mjs";
 import { readRegisterTaint } from "../register-taint.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
@@ -139,9 +139,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
   await prepareGrids(...(clSplit ? GRID_SEATS.map((h) => P.gridSpecHalf(h)) : [P.gridSpec]));
   // ITS MEANING RE-ASKS GO THE SAME WAY: a run whose searches are its own re-issues a missing meaning search through its own
   // AI program, never through another service, and one with no session re-issues nothing and discloses the gap.
-  const reissueMeaning = ownSearchOn(run.runDir)
-    ? (queries, { spec } = {}) => reissueMeaningSearches(run.runDir, queries, { sessions: ownSearch, keep: spec?.results_per_cell ?? 8 })
-    : defaultConnotationReissuer;
+  const reissueMeaning = meaningReissuerFor(run.runDir, { sessions: ownSearch, otherwise: defaultConnotationReissuer });
   const clIndex = gather.findIndex((g) => g.name === "common-law");
   const clMember = () => (clIndex >= 0 ? gatherResults[clIndex] : null);
   // The plan-direct executor, resolved ONCE for the code-side saturation-probe unit here AND the

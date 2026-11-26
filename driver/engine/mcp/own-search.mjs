@@ -30,6 +30,7 @@ import { gridProvenancePath } from "./grid-provenance.mjs";
 import { parsePrRiskResults } from "../../connotation-search.mjs";
 import { driverDir, ensureDriverDir } from "../../../shared/driver-dir.mjs";
 
+import { ownSearchOn } from "./own-search-setting.mjs";
 export { RUN_RECORD_FILE, ownSearchOn } from "./own-search-setting.mjs";
 
 const words = (q) => String(q ?? "").trim().replace(/\s+/g, " ");
@@ -345,6 +346,17 @@ export async function reissueMeaningSearches(runDir, queries, { sessions, keep =
   } catch (e) {
     return { ok: false, cause: `own search: ${String(e?.message ?? e).slice(0, 160)}`, rows: [] };
   }
+}
+
+/**
+ * Which re-issue a run's missing meaning searches take: its own AI program's where its searches are its own (`sessions`
+ * as makeOwnSearchSessions made them, or null where none could be made), and `otherwise` only on a run that is not. A
+ * run whose searches are its own and that has no session re-issues nothing: the re-ask answers why. PURE but for the
+ * run's record.
+ */
+export function meaningReissuerFor(runDir, { sessions = null, otherwise }) {
+  if (!ownSearchOn(runDir)) return otherwise;
+  return (queries, { spec } = {}) => reissueMeaningSearches(runDir, queries, { sessions, keep: spec?.results_per_cell ?? 8 });
 }
 
 /**

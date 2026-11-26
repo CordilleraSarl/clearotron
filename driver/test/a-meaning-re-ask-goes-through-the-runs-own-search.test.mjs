@@ -9,10 +9,10 @@
 // is sent to another service, with no session or with one.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { reissueMeaningSearches, SEARCH_RECORDS_FILE } from "../engine/mcp/own-search.mjs";
+import { meaningReissuerFor, reissueMeaningSearches, savedSearchRecords, SEARCH_RECORDS_FILE } from "../engine/mcp/own-search.mjs";
 import { parsePrRiskResults } from "../connotation-search.mjs";
 
 const codexSearch = (queries, results) => ({ type: "item.completed",
@@ -61,17 +61,27 @@ test("with no session, nothing is searched anywhere and the reason is said", asy
     const threw = await reissueMeaningSearches(runDir, ["q"], { sessions: { search: "codex", session: async () => { throw new Error("stream lost"); } } });
     assert.deepEqual({ ok: threw.ok, rows: threw.rows }, { ok: false, rows: [] });
     assert.match(threw.cause, /stream lost/);
-    assert.equal(existsSync(join(runDir, "_driver", SEARCH_RECORDS_FILE)) ? readFileSync(join(runDir, "_driver", SEARCH_RECORDS_FILE), "utf8").trim() : "", "", "no record of a search that never ran");
+    assert.deepEqual(savedSearchRecords(runDir), [], "no record of a search that never ran");
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
-test("the sweep re-asks through the run's own search, and through Perplexity only on a run that is not its own", () => {
-  const src = readFileSync(new URL("../steps/register-sweep.mjs", import.meta.url), "utf8");
-  assert.equal((src.match(/opts\.connotationReissuer \?\? reissueMeaning\b/g) ?? []).length, 2, "both re-ask sites take the run's own re-issue");
-  assert.equal((src.match(/opts\.connotationReissuer \?\? defaultConnotationReissuer/g) ?? []).length, 0, "a site still re-asks Perplexity whatever the run's service");
-  const at = src.indexOf("const reissueMeaning = ownSearchOn(run.runDir)");
-  assert.ok(at > 0, "the re-ask is chosen by the run's own record");
-  const choice = src.slice(at, src.indexOf(";", at));
-  assert.match(choice, /reissueMeaningSearches\(run\.runDir/);
-  assert.match(choice, /:\s*defaultConnotationReissuer$/);
+test("a run re-asks through its own search, and through the other service only when its searches are not its own", async () => {
+  const runDir = aRun();
+  try {
+    const record = (research) => writeFileSync(join(runDir, "_driver", "run-choices.json"), JSON.stringify({ schema: 1, engine: "openai-agent", register: null, research }));
+    let otherAsked = 0;
+    const otherwise = async () => { otherAsked++; return { ok: true, rows: [] }; };
+    record("perplexity");
+    assert.equal(meaningReissuerFor(runDir, { sessions: null, otherwise }), otherwise);
+    record("own");
+    const sent = [];
+    const sessions = { search: "codex", engine: "openai-agent", session: async (batch) => { sent.push(...batch.map((d) => d.query));
+      return { answered: true, seconds: 1, usage: null, model: "gpt-6-luna", speed: "standard", events: batch.map((d) => codexSearch([d.query], [{ title: "a", url: "https://example.test/1" }, { title: "b", url: "https://example.test/2" }])) }; } };
+    const r = await meaningReissuerFor(runDir, { sessions, otherwise })(["what does qzorvak mean"], { spec: { results_per_cell: 1 } });
+    assert.deepEqual(sent, ["what does qzorvak mean"]);
+    assert.equal(r.rows[0].results.length, 1, "the spec's own result limit");
+    const none = await meaningReissuerFor(runDir, { sessions: null, otherwise })(["what does qzorvak mean"], {});
+    assert.equal(none.ok, false, "no session re-issues nothing");
+    assert.equal(otherAsked, 0, "the other service was asked on a run whose searches are its own");
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
