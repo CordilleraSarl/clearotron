@@ -68,7 +68,7 @@ test("a picture already as small as its box is kept as served when re-writing it
   assert.ok(t.kept === "as served" ? t.bytes === small : t.bytes.length < small.length, "a small picture was re-written larger");
 });
 
-test("the record keeps what the site served, stores the shrunk picture, and a PNG turned JPEG still draws", () => {
+test("the record keeps what the site served, stores the shrunk picture, and a PNG turned JPEG still draws", async () => {
   const run = mkdtempSync(join(tmpdir(), "web-picture-thumb-"));
   try {
     mkdirSync(join(run, "_driver"));
@@ -76,7 +76,7 @@ test("the record keeps what the site served, stores the shrunk picture, and a PN
     const sha = createHash("sha256").update(served).digest("hex");
     const result = { ms: 30, aborted: false, rows: [{ page: "https://ostrevin.example/shop", site: "ostrevin.example", state: "fetched", picture: "https://ostrevin.example/card.png",
       contentType: "image/png", bytes: served.length, sha256: sha, ms: 20, data: served }] };
-    shrinkPictures(result);
+    await shrinkPictures(result);
     assert.ok(Number.isFinite(result.shrinkMs), "the time the shrinking took is not kept");
     const rec = writePictureRecord(run, { cards: new Map([[1, ["https://ostrevin.example/shop"]]]), result, seconds: 20, concurrency: 6, takenAt: "2026-11-26T10:00:00.000Z" });
     const row = rec.rows[0];
@@ -114,7 +114,7 @@ test("an inner page whose picture is its site front page's is dropped; the front
   try {
     mkdirSync(join(run, "_driver"));
     const result = { ms: 1, aborted: false, rows };
-    shrinkPictures(result);
+    await shrinkPictures(result);
     writePictureRecord(run, { cards: new Map([[1, ["https://varnolde.example/shop", "https://varnolde.example/app"]]]), result, seconds: 5, concurrency: 6 });
     assert.deepEqual((webPicturesForReport(run).get("1") ?? []).map((p) => p.page), ["https://varnolde.example/app"], "not only the page's own picture is drawn");
   } finally { rmSync(run, { recursive: true, force: true }); }
