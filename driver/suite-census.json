@@ -473,7 +473,7 @@
         },
         "a-conflict-number-opens-its-card-beside-the-claim.test.mjs": {
           "tests": 5,
-          "asserts": 24,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -2472,6 +2472,12 @@
         "a-research-answer-is-kept-in-the-run-for-a-later-attempt-of-its-stage.test.mjs": {
           "tests": 3,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-research-record-is-read-one-way-by-every-reader.test.mjs": {
+          "tests": 5,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },

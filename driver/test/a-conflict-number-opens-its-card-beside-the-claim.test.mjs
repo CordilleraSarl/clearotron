@@ -70,6 +70,10 @@ test("the page carries the panel's words from the catalogue, and its script open
   assert.match(js, /c\.removeAttribute\('id'\);c\.setAttribute\('data-card-of','c'\+n\)/, "the panel's card duplicates the card's id");
   assert.match(js, /new CustomEvent\('rep-shift',\{detail:\{dy:dy\},cancelable:true\}\)/, "the reflow does not ask to keep the number's place");
   assert.match(js, /a\.focus\(\{preventScroll:true\}\)/, "focus does not return to the number that opened the panel");
+  // An Ask AI press on the panel's copy is handed to the card's own button, which every portal's bridge reads by its id,
+  // the bridge of a portal rolled back to an earlier version included.
+  assert.match(js, /panel\.addEventListener\('click',function\(e\)\{var b=e\.target\.closest&&e\.target\.closest\('\.ask-fi'\),of=b&&b\.closest\('\[data-card-of\]'\),o=of&&document\.getElementById\(of\.getAttribute\('data-card-of'\)\),ob=o&&o\.querySelector\('\.ask-fi'\);if\(!ob\)return;e\.stopPropagation\(\);ob\.click\(\);\},true\);/,
+    "an Ask AI press on the panel's card is not handed to the card's own button");
 });
 
 test("in the portal the bridge scrolls the portal for the page, re-posts its height, and reads a panel card's original id", () => {
