@@ -35,10 +35,11 @@ import https from "node:https";
 import zlib from "node:zlib";
 import { createHash } from "node:crypto";
 import { isIP } from "node:net";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { checkedLookup, isPublicAddress } from "./engine/mcp/public-fetch.mjs";
 import { imageTypeOf } from "./mark-logos.mjs";
+import { DRIVER_DIR, driverDir, ensureDriverDir } from "./run-record.mjs";
 
 export const CLEARANCE_PICTURE_SECONDS = 20;   // owner, 2026-11-26: at most 20 seconds a clearance report
 export const KNOCKOUT_PICTURE_SECONDS = 20;    // the Knockout's approved board: its own limit, which holds the same number
@@ -217,8 +218,8 @@ export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SEC
 
 // ── THE RECORD, AND WHAT THE REPORT DRAWS FROM IT ───────────────────────────────────────────────────────────────────
 //
-// `_driver/web-pictures.json` says what happened to every page, beside the logo step's record, and the pictures that
-// arrived are saved under `_driver/web-pictures/`, named by their bytes. A resume, a replay and a republish read it and
+// The run's picture record (PICTURES_FILE) says what happened to every page, beside the logo step's record, and the
+// pictures that arrived are saved in its folder (PICTURES_DIR), named by their bytes. A resume, a replay and a republish read it and
 // fetch nothing again. A row the rule for a site's general card drops carries `general: true` and is never drawn.
 export const PICTURES_FILE = "web-pictures.json";
 export const PICTURES_DIR = "web-pictures";
@@ -230,8 +231,7 @@ const EXT = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", "imag
  * @param {{ cards: Map<number, string[]>, result: { rows: object[], ms: number, aborted: boolean }, seconds: number, concurrency: number, takenAt?: string, general?: Set<string> }} step
  */
 export function writePictureRecord(runDir, { cards, result, seconds, concurrency, takenAt = new Date().toISOString(), general = new Set() }) {
-  const dir = join(runDir, "_driver", PICTURES_DIR);
-  mkdirSync(dir, { recursive: true });
+  const dir = ensureDriverDir(runDir, PICTURES_DIR);
   const byPage = new Map();
   for (const [ordinal, pages] of cards) for (const p of pages) byPage.set(p, [...(byPage.get(p) ?? []), ordinal]);
   const rows = result.rows.map(({ data, ...row }) => {
@@ -239,14 +239,14 @@ export function writePictureRecord(runDir, { cards, result, seconds, concurrency
     if (row.state === "fetched" && data && EXT[row.contentType]) {
       const name = `${row.sha256.slice(0, 24)}.${EXT[row.contentType]}`;
       writeFileSync(join(dir, name), data);
-      out.file = `_driver/${PICTURES_DIR}/${name}`;
+      out.file = `${DRIVER_DIR}/${PICTURES_DIR}/${name}`;   // relative to the run folder, the same on every system
     }
     if (row.sha256 && general.has(row.sha256)) out.general = true;
     return out;
   });
   const record = { schema: 1, takenAt, seconds, concurrency, ms: result.ms, aborted: result.aborted,
     cards: Object.fromEntries([...cards].map(([ordinal, pages]) => [String(ordinal), pages])), rows };
-  writeFileSync(join(runDir, "_driver", PICTURES_FILE), JSON.stringify(record, null, 2) + "\n");
+  writeFileSync(driverDir(runDir, PICTURES_FILE), JSON.stringify(record, null, 2) + "\n");
   return record;
 }
 
@@ -259,8 +259,8 @@ export function webPicturesForReport(runDir) {
   const out = new Map();
   if (!runDir) return out;
   let doc = null;
-  try { doc = JSON.parse(readFileSync(join(runDir, "_driver", PICTURES_FILE), "utf8")); } catch { return out; }
-  const folder = resolve(runDir, "_driver", PICTURES_DIR) + sep;
+  try { doc = JSON.parse(readFileSync(driverDir(runDir, PICTURES_FILE), "utf8")); } catch { return out; }
+  const folder = resolve(driverDir(runDir, PICTURES_DIR)) + sep;
   const fetchedOn = String(doc?.takenAt ?? "").slice(0, 10);
   const src = new Map();
   for (const row of Array.isArray(doc?.rows) ? doc.rows : []) {
