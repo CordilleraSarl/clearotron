@@ -198,7 +198,12 @@ export async function markLogos(runDir, { findingsPath = null, registerRecordsPa
     const registerRecords = read(registerRecordsPath);
     // The page's own rule for which filings a name's table shows, loaded only for a Knockout, with the run's own rated names
     // unless the caller names another file: left to each caller, a pass run by hand that forgot them asked about nothing.
-    const shown = registerRecordsPath ? (await import("./publish/render-knockout.mjs")).shownFilings : null;
+    // A Knockout's filing cards draw their filing's logo too (owner, 2026-11-25), so the logo step asks about the filings
+    // the cards draw beside the table's rows: at most three more a name. The card's own rule, with the run's frozen ladder.
+    const ko = registerRecordsPath ? await import("./publish/render-knockout.mjs") : null;
+    let ladder = null;
+    if (ko) { try { ladder = (await import("./framework.mjs")).parseFrameworkManifest(JSON.parse(readFileSync(driverDir(runDir, "framework.json"), "utf8"))); } catch { ladder = null; } }
+    const shown = ko ? (entry, m) => [...(ko.shownFilings(entry, m) ?? []), ...ko.cardFilings(registerRecords, m, ladder)] : null;
     const namesPath = knockoutFindingsPath ?? (registerRecordsPath ? (await import("./stages-knockout.mjs")).koPaths(runDir).findings : null);
     // A clearance card's own rule for which registrations it draws, over the records the run saved, as the page reads them.
     // A registration past the card's eighth is left out; one the run holds no record of stays, and asks nothing, as before.
