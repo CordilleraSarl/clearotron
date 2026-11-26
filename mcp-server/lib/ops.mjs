@@ -10,7 +10,7 @@
 
 import { writeFileSync, existsSync, mkdirSync, rmSync, renameSync, readFileSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { config } from "./driver.mjs";
 import { validateJob } from "../../driver/enqueue-schema.mjs";
 import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
@@ -71,8 +71,41 @@ export function enqueuedViaFor(scope) {
 // three mornings before it made one up that fit. stop_run's queue form holds a queued id to the same rule.
 const QUEUE_ID_MAX = 128;
 const QUEUE_ID_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${QUEUE_ID_MAX - 1}}$`);
-const queueIdRefusal = (id) => `id ${JSON.stringify(id)}: Use an ID of 1–${QUEUE_ID_MAX} characters. Start with an ASCII letter or digit. `
-  + `The remaining characters may also include a dot, underscore, @ or hyphen.${id.length > QUEUE_ID_MAX ? ` This one has ${id.length} characters.` : ""}`;
+const queueIdRefusal = (id, max = QUEUE_ID_MAX) => `id ${JSON.stringify(id)}: Use an ID of 1–${max} characters. Start with an ASCII letter or digit. `
+  + `The remaining characters may also include a dot, underscore, @ or hyphen.${id.length > max ? ` This one has ${id.length} characters.` : ""}`;
+
+// ── AN ACCOUNT'S REFERENCE IS ITS OWN (design, 2026-11-26) ──────────────────────────────────────────────────────────
+//
+// A session that does not see every account names its order by a reference it may have chosen itself, and a session of
+// another account may choose the same one. Any answer that differed only when they met (a refusal, a fresh reference,
+// the order's state) would tell one account about the other's order, and the file could only hold one of them. So
+// every order such a session files carries a fixed mark of its account, and of the organisation for Generic: two
+// accounts' references never meet, and a retry by the same account meets its own order and spends nothing. The reply
+// gives the reference the order is filed under; a reference that already ends in the session's own mark is that
+// reference, not a new one. A session that sees every account (an operator) files the reference as sent.
+const ACCOUNT_MARK_LEN = 12;
+const seesEveryAccount = (scope) => scope?.accounts == null || scope.accounts === "*";
+function accountMark(job) {
+  const account = job.profileKey ?? "generic";
+  const organisation = account === "generic" ? (job.tenant ?? "") : "";
+  return createHash("sha256").update(`${account}\u0000${organisation}`).digest("hex").slice(0, ACCOUNT_MARK_LEN);
+}
+/** The reference an order is filed under: as sent for a session that sees every account, else carrying its account's mark. */
+function filedReference(asked, job, scope) {
+  if (seesEveryAccount(scope)) return asked;
+  const mark = `@${accountMark(job)}`;
+  if (asked.endsWith(mark)) return asked;
+  const max = QUEUE_ID_MAX - mark.length;
+  if (asked.length > max) throw new Error(queueIdRefusal(asked, max));
+  return `${asked}${mark}`;
+}
+/** Whether this session may see an order already filed: its account, and its organisation for Generic. */
+function mayseeOrder(scope, job) {
+  if (seesEveryAccount(scope)) return true;
+  if (!job) return false;
+  const account = job.profileKey ?? "generic";
+  return accountVisible(scope, account, account === "generic" ? (job.tenant ?? null) : null);
+}
 
 export function buildJob(args = {}, { scope } = {}) {
   // marks[] (search-depth spine): a knockout BATCH is ONE job carrying every mark — accept an explicit
@@ -289,18 +322,31 @@ export function startRun(args = {}, { scope } = {}) {
   const qdir = queueDir(agent);
   // ONE builder shared with plan_run, so the preview a caller confirms is the job that actually runs.
   let job;
-  try { job = buildJob(args, { scope }); }
+  try { job = buildJob(args, { scope }); job.id = filedReference(job.id, job, scope); }
   catch (e) { throw new Error(`start_run: ${e.message}`); }
   const { id } = job;
   // AN ID IN ANY STATE IS THAT ORDER, asked before anything else so a retry is recognised as one: before validation, and
   // before the allowance is counted again for an order already counted. The check before the write below saw only a
   // waiting or claimed job, so a retry after a refusal, a park or a delivery wrote a second order under the same id.
+  //
+  // ONLY AN ORDER THIS SESSION MAY SEE IS ANSWERED FOR. An order filed under the bare reference before references carried
+  // an account's mark is this order where the session may see it, and nothing at all where it may not. Under the marked
+  // reference only the same account's order can be found; were another found (two marks the same), the refusal names
+  // nothing of it.
   {
     let names = [];
     try { names = readdirSync(qdir); } catch { /* no queue directory yet holds no order */ }
-    const existing = receiptIn(qdir, id, names);
-    if (existing && ["waiting", "checking", "running"].includes(existing.state)) throw new Error(`start_run: a job with id "${id}" is already queued/processing`);
-    if (existing) throw new Error(`start_run: a job with id "${id}" already exists: ${RECEIPT_STATES[existing.state]}`);
+    const bare = String(args.id ?? "");
+    for (const ref of bare && bare !== id ? [id, bare] : [id]) {
+      const existing = receiptIn(qdir, ref, names);
+      if (!existing) continue;
+      if (!mayseeOrder(scope, existing.job)) {
+        if (ref === id) throw new Error(`start_run: a job with id "${id}" is already queued/processing`);
+        continue;
+      }
+      if (["waiting", "checking", "running"].includes(existing.state)) throw new Error(`start_run: a job with id "${ref}" is already queued/processing`);
+      throw new Error(`start_run: a job with id "${ref}" already exists: ${RECEIPT_STATES[existing.state]}`);
+    }
   }
 
   const v = validateJob(job);
