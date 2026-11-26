@@ -81,3 +81,15 @@ test("the portal answers each person for their own company's orders only", async
   const staff = await get(STAFF, "portal-b-waiting");
   assert.deepEqual([staff.status, staff.json.state, staff.json.account], [200, "waiting", "zephyr"]);
 });
+
+test("a queue that would not open is not a missing order, for a company's person as for staff", async () => {
+  const qdir = queueOfOrders();
+  const unreadable = join(dirname(qdir), "not-a-directory");
+  writeFileSync(unreadable, "");   // readdir fails with ENOTDIR: the queue is there and cannot be read
+  const svc = makePortalService({ secret: "s".repeat(32), grants: GRANTS, audit: () => {}, queueDirs: () => [qdir, unreadable] });
+  const get = (who, ref, account) => svc.route("GET", `/portal/api/orders/${encodeURIComponent(ref)}`, who, {}, account ? { account } : {});
+  assert.deepEqual(await get(CLIENT_A, "portal-a-nothing", "demo-brand-owner"), { status: 503, json: { error: "could_not_look" } });
+  assert.equal((await get(STAFF, "portal-a-nothing")).json.unreadable, 1, "staff are told how many queues would not open");
+  // An order found in a queue that opened is still found.
+  assert.equal((await get(CLIENT_A, "portal-a-running", "demo-brand-owner")).status, 200);
+});
