@@ -540,7 +540,8 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   // The walk's runs in the order it read them, then the queued orders: the same rows, in the same order, the
   // portal's own walk produced before the connector and the portal shared one.
   for (const run of walk.runs) readRun(run);
-  for (const q of walk.queued) readQueued(q);
+  // An order is active work, so it belongs in the ordinary list; the retired index lists retired runs and nothing else.
+  if (!includeRetired) for (const q of walk.queued) readQueued(q);
   // Assign the ordinals last, across every lane at once. Cross-lane order is genuinely undefined —
   // the lanes are per-agent and drain concurrently against one shared pair of slots — so lanes are
   // ordered by path purely to make the result STABLE. An ordinal that reshuffled between two polls
