@@ -2205,6 +2205,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refusal-before-any-run-says-which-check-refused.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refusal-is-not-a-pass.test.mjs": {
           "tests": 6,
           "asserts": 10,
@@ -3599,7 +3605,7 @@
         },
         "an-order-is-found-where-it-was-placed.test.mjs": {
           "tests": 3,
-          "asserts": 19,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -10276,6 +10282,12 @@
         "allowanceParity.test.ts": {
           "tests": 3,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "anOrderIsFollowedFromStartToItsRunOrRefusal.test.ts": {
+          "tests": 6,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
