@@ -200,6 +200,10 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .report-head.compact .report-sections { flex: 1 1 auto; min-width: 0; }
+  /* Where the pinned row cannot hold the name, the sections and both actions, the full header is pinned instead. */
+  .report-head.pinned-full { position: fixed; top: 56px; z-index: 20; box-sizing: border-box; }
+  /* "Ask AI" stays one line in the pinned row; where the row cannot hold it whole, the full header is pinned instead. */
+  .report-head.compact .ask-ai-btn { white-space: nowrap; flex: none; }
   .report-head.compact .report-head-gap { flex: 0 0 0; }
 }
 .btn-ghost.report-back-icon { flex: none; padding: 6px 7px; border-color: var(--border-hairline); }

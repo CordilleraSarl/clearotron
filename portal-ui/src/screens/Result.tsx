@@ -11,18 +11,19 @@
 //   • The identity above the frame comes from the RUN, never from the document. A report's own title is
 //     model-authored; the mark, the company and the band on this screen come from the API.
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Run } from '../contract/api.ts'
 import { api } from '../contract/api.ts'
 import { readsFor, hasThread, readLabel, readLabelParts, displayName, openDocument, showsAssessment, searchHistory, type HistoryRow } from '../contract/reads.ts'
 import { inlineSpans } from '../contract/inlineMd.ts'
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from '../contract/summaryBlocks.ts'
 import { runProductLabel } from '../contract/home.ts'
-import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
+import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readFrameScrollBy, readCopyLink, cardAddress, cardFromSearch, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
 import type { FrameCommand, FrameSection, FrameTheme, FrameVerb } from '../contract/reportFrame.ts'
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { AskAi } from '../components/AskAi.tsx'
+import { compactRowFits } from '../components/pinnedRowFits.ts'
 import { asksOpen, findingAsked, issuedOn, withoutAskOpen } from '../contract/askAi.ts'
 import { useLoad } from '../state/useApi.ts'
 import { resultPath } from '../nav/nav.config.ts'
@@ -62,6 +63,8 @@ function usePortalTheme(): FrameTheme {
 // lands a section's headline. Shared with the reading line, so a section jumped to always counts as reached.
 const TOPBAR_PX = 56
 const LANDING_PX = 10
+// How long a report opened at a card keeps the card in place while the document's pictures and folds settle.
+const LANDING_SETTLE_MS = 4000
 /** Where the report header has two states: a desktop width. A phone keeps today's pinned header. */
 const DESKTOP = '(min-width: 900px)'
 /** The single pinned row's height before it has been drawn once, for a jump that lands before it exists. */
@@ -75,7 +78,8 @@ const PINNED_ROW_PX = 57
 function pinnedHeight(): number {
   const head = document.querySelector('.report-head')
   if (!(head instanceof HTMLElement)) return 48
-  if (window.matchMedia(DESKTOP).matches) return head.classList.contains('compact') ? head.offsetHeight : PINNED_ROW_PX
+  if (window.matchMedia(DESKTOP).matches)
+    return head.classList.contains('compact') || head.classList.contains('pinned-full') ? head.offsetHeight : PINNED_ROW_PX
   return head.offsetHeight
 }
 
@@ -120,7 +124,23 @@ function usePinnedHeader(ready: boolean) {
     window.addEventListener('resize', place)
     return () => { io.disconnect(); ro.disconnect(); window.removeEventListener('resize', place) }
   }, [desktop, ready])
-  return { slotRef, sentinelRef, compact, held, box }
+
+  // WHERE THE PINNED ROW CANNOT FIT, THE FULL HEADER STAYS (design, 2026-11-26). At 1,280 px with the sidebar open
+  // the row squeezed a seven-letter name, wrapped "Ask AI" and left the section links too narrow to read or
+  // select. So each time the row is drawn it is measured before it is painted, and if it does not fit, the full
+  // header is pinned instead, as a phone's is, so the name, the sections and both actions stay in reach. The width it
+  // failed at is kept: the row is tried again only once the header is wider than that, so it never flips back and
+  // forth at one width.
+  const [tooNarrow, setTooNarrow] = useState<number | null>(null)
+  const width = box?.width ?? null
+  const shown = compact && !(tooNarrow !== null && width !== null && width <= tooNarrow)
+  useLayoutEffect(() => {
+    if (!shown || width === null) return
+    const head = slotRef.current?.querySelector('.report-head.compact')
+    if (!(head instanceof HTMLElement)) return
+    if (!compactRowFits(head)) setTooNarrow(width)
+  }, [shown, width])
+  return { slotRef, sentinelRef, compact: shown, pinnedFull: compact && !shown, held, box }
 }
 
 /**
@@ -222,6 +242,19 @@ function useReportFrame() {
         }
         return
       }
+      // The document keeps the reader's place while its column reflows: it cannot scroll the page, so it says by
+      // how much, and the page moves at once (no smoothing, or the place would drift while it animated).
+      const by = readFrameScrollBy(e.data, mine)
+      if (by !== null) { window.scrollBy({ top: by }); return }
+      // A CARD'S "COPY LINK". The page writes the address of this report screen at that card, and tells the
+      // document whether the write landed, so the card shows its tick and says "Copied" only when it did.
+      const copy = readCopyLink(e.data, mine)
+      if (copy) {
+        const answer = (ok: boolean) => frame?.contentWindow?.postMessage(frameCommand('copied', ok), '*')
+        try { navigator.clipboard.writeText(cardAddress(window.location.href, copy.card)).then(() => answer(true), () => answer(false)) }
+        catch { answer(false) }
+        return
+      }
       const bad = readCommandFailure(e.data, mine)
       if (bad) { setFailed(`That did not work — the report could not ${bad.command}. (${bad.message})`); return }
       const asked = readAskAi(e.data, mine)
@@ -247,6 +280,36 @@ function useReportFrame() {
   // frame cannot read the choice the portal saved — so a dark portal framed a light page. Sent in on every
   // load of the document and on every change of the portal's theme; the document applies it in place,
   // so a change repaints the page without reloading it.
+  // LANDING ON A CARD. A report address that names a card (`?card=c12`, from a card's "Copy link") opens at that
+  // card: once the document has announced its sections, it is sent the same `section` command a breadcrumb sends,
+  // which opens any folded group around the card and jumps to it. Once per card named, not on every announcement.
+  //
+  // THE DOCUMENT IS STILL SETTLING WHEN IT ANNOUNCES. Pictures above the card load after the jump and push the card
+  // down the page (measured in the render check: 1,418px below where it was sent). So for a few seconds after the
+  // jump, each new height the document reports sends the jump again, and the first wheel, touch or key from the
+  // reader ends that at once: a reader who has started to scroll is never pulled back.
+  const landedOn = useRef<string | null>(null)
+  const settling = useRef<{ card: string; until: number } | null>(null)
+  useEffect(() => {
+    if (sections === null) return
+    const card = cardFromSearch(window.location.search)
+    if (card !== null && landedOn.current !== card) {
+      landedOn.current = card
+      settling.current = { card, until: Date.now() + LANDING_SETTLE_MS }
+      send('section', card)
+    }
+  }, [sections, send])
+  useEffect(() => {
+    const land = settling.current
+    if (land && Date.now() < land.until) send('section', land.card)
+  }, [height, send])
+  useEffect(() => {
+    const stop = () => { settling.current = null }
+    const opts = { passive: true } as const
+    window.addEventListener('wheel', stop, opts); window.addEventListener('touchstart', stop, opts); window.addEventListener('keydown', stop)
+    return () => { window.removeEventListener('wheel', stop); window.removeEventListener('touchstart', stop); window.removeEventListener('keydown', stop) }
+  }, [])
+
   const theme = usePortalTheme()
   useEffect(() => {
     if (hello) send('theme', theme)
@@ -648,9 +711,9 @@ export function Result({
           section links, Ask AI and Export. Its slot keeps the full header's height while it is pinned, so
           the switch never moves the report's text. Ask AI and Export keep their place among the children in
           both states, so a panel left open is not rebuilt when the header changes state. */}
-      <div className="report-head-slot" ref={pin.slotRef} style={pin.compact && pin.held ? { height: pin.held } : undefined}>
-      <div className={`report-head${pin.compact ? ' compact' : ''}`}
-        style={pin.compact && pin.box ? { left: pin.box.left, width: pin.box.width } : undefined}>
+      <div className="report-head-slot" ref={pin.slotRef} style={(pin.compact || pin.pinnedFull) && pin.held ? { height: pin.held } : undefined}>
+      <div className={`report-head${pin.compact ? ' compact' : ''}${pin.pinnedFull ? ' pinned-full' : ''}`}
+        style={(pin.compact || pin.pinnedFull) && pin.box ? { left: pin.box.left, width: pin.box.width } : undefined}>
       {/* ONE line, not a title block.
           The report restates all of this immediately below in its own hero — mark at 58px, band on the
           gauge, scope in the chips — because it is a document that has to stand alone when exported or

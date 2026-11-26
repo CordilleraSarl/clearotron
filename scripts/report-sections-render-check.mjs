@@ -330,6 +330,97 @@ for (const theme of ['light', 'dark']) {
   else ok.push(`${at}: a phone keeps today's pinned header`)
 }
 
+// ── THE PINNED ROW AT A LAPTOP WIDTH, SIDEBAR OPEN (design, 2026-11-26) ───────────────────────────────────────
+// At 1,280 px with the sidebar open the row must keep the seven-letter name whole, "Ask AI" on one line and every
+// section link readable, or the full header is pinned instead, every part of it in reach. 1,600 px is the control:
+// there the row pins as before.
+for (const [width, mustPin] of [[1280, false], [1600, true]]) {
+  for (const theme of ['light', 'dark']) {
+    const at = `${width} ${theme} sidebar open`
+    await cmd('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: false })
+    await cmd('Page.navigate', { url: `${origin}/portal/` })
+    await value(`(() => { try { localStorage.setItem('cordillera-theme', '${theme}') } catch (e) {} return 1 })()`)
+    await cmd('Page.navigate', { url: `${origin}/portal/result/${RUN_ID}` })
+    if (!(await until(`document.querySelectorAll('nav.report-sections .report-section').length === ${SECTIONS.length} && Boolean(document.querySelector('.sidebar, nav[aria-label]'))`))) {
+      fail.push(`${at}: the report never drew its header`); continue
+    }
+    await wait(600)
+    await value('(window.scrollTo(0, 3000), 1)')
+    await wait(800)
+    const row = await value(`(() => { const h = document.querySelector('.report-head'); const compact = h.classList.contains('compact'), full = h.classList.contains('pinned-full');
+      const q = (s) => h.querySelector(s); const name = q('.report-head-name'), strip = q('.report-sections'), ask = q('.ask-ai-btn'), r = q('.report-head-row');
+      const everyStrip = [...document.querySelectorAll('.report-head .report-sections, .report-nav .report-sections')].every((s) => s.scrollWidth <= s.clientWidth + 1);
+      return { compact, full, everyStrip, pinned: Math.round(h.getBoundingClientRect().top), name: name.textContent.trim(), nameCut: name.scrollWidth > name.clientWidth + 1,
+        stripCut: strip ? strip.scrollWidth > strip.clientWidth + 1 : null, askLines: ask ? Math.round(ask.getBoundingClientRect().height) : null,
+        rowSpill: r.scrollWidth > r.clientWidth + 1, sidebar: Math.round((document.querySelector('.report-head-slot') || h).getBoundingClientRect().left) } })()`)
+    if (!row) { fail.push(`${at}: the header could not be measured`); continue }
+    if (row.compact) {
+      if (row.nameCut || row.stripCut || row.rowSpill || (row.askLines ?? 0) > 40)
+        fail.push(`${at}: the pinned row does not fit: ${JSON.stringify(row)}`)
+      else ok.push(`${at}: the pinned row keeps "${row.name}" whole, Ask AI on one line and every section link (header starts at ${row.sidebar}px)`)
+    } else if (mustPin) fail.push(`${at}: the row no longer pins at a width it fitted before: ${JSON.stringify(row)}`)
+    else if (!row.full || row.pinned !== 56 || row.nameCut || !row.everyStrip)
+      fail.push(`${at}: the row does not fit, and the full header is not pinned whole in its place: ${JSON.stringify(row)}`)
+    else ok.push(`${at}: the row cannot hold the name, Ask AI and the sections here, so the full header is pinned under the top bar, "${row.name}" whole and every section link in reach`)
+    await shot(`header-${width}-sidebar-${theme}.png`)
+  }
+}
+
+// ── A CARD'S ADDRESS, AND THE PAGE SCROLLING FOR THE FRAME ────────────────────────────────────────────────────
+// The document cannot write the clipboard, know the portal's address or scroll the page, so it asks the page. A
+// card's "Copy link" must put this report screen's address with the card named on the clipboard and see its tick;
+// that address must open the report at the card, under the header; and a scroll-by from the frame must move the
+// page by exactly that distance.
+const inFrame = (expression) => new Promise((r) => { const i = ++id; pending.set(i, r); ws.send(JSON.stringify({ id: i, sessionId: frameSession, method: 'Runtime.evaluate',
+  params: { expression, awaitPromise: true, returnByValue: true, userGesture: true } })) }).then((a) => a.result?.result?.value ?? null)
+{
+  const at = '1440 light card link'
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false })
+  await cmd('Page.navigate', { url: `${origin}/portal/` })
+  await value(`(() => { try { localStorage.setItem('cordillera-theme', 'light') } catch (e) {} return 1 })()`)
+  await send('Browser.grantPermissions', { origin, permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'] })
+  // A headless page is never focused, and the clipboard refuses an unfocused document, read or write.
+  await cmd('Emulation.setFocusEmulationEnabled', { enabled: true })
+  await cmd('Page.navigate', { url: `${origin}/portal/result/${RUN_ID}?ask=open#elsewhere` })
+  await until(`document.querySelectorAll('nav.report-sections .report-section').length === ${SECTIONS.length}`)
+  await wait(800)
+  const card = await inFrame(`(() => { const b = [...document.querySelectorAll('.card .copy-fi')].pop(); if (!b) return null;
+    b.scrollIntoView(); b.click(); return b.closest('.card').id })()`)
+  if (!card) fail.push(`${at}: the report shows no card with a Copy link inside the portal`)
+  else {
+    await wait(500)
+    const copied = await value(`navigator.clipboard.readText().catch((e) => 'unreadable: ' + e.message)`)
+    const ticked = await inFrame(`Boolean(document.getElementById(${JSON.stringify(card)})?.querySelector('.copy-fi.copied'))`)
+    const expected = `${origin}/portal/result/${RUN_ID}?card=${card}`
+    if (copied !== expected) fail.push(`${at}: the clipboard holds ${JSON.stringify(copied)}, not ${expected}`)
+    else if (!ticked) fail.push(`${at}: the card's Copy link shows no tick after the copy landed`)
+    else ok.push(`${at}: Copy link on ${card} puts this report's address with the card named on the clipboard, and the card shows its tick`)
+    await shot('card-link-copied.png')
+
+    // LANDING: the copied address opens the report at that card, below the pinned header.
+    await cmd('Page.navigate', { url: expected })
+    await until(`document.querySelectorAll('nav.report-sections .report-section').length === ${SECTIONS.length}`)
+    await wait(1500)
+    const landed = await value(`(() => { const f = document.querySelector('iframe'); const h = document.querySelector('.report-head');
+      return { frameTop: f.getBoundingClientRect().top, headBottom: h.getBoundingClientRect().bottom, scrollY: window.scrollY } })()`)
+    const cardTop = await inFrame(`Math.round(document.getElementById(${JSON.stringify(card)}).getBoundingClientRect().top + window.scrollY)`)
+    const onScreen = landed && cardTop !== null ? Math.round(landed.frameTop + cardTop) : null
+    if (onScreen === null) fail.push(`${at}: the landing could not be measured`)
+    else if (landed.scrollY < 100 || onScreen < landed.headBottom - 2 || onScreen > landed.headBottom + 120)
+      fail.push(`${at}: the card's address left the card at ${onScreen}px, with the header ending at ${Math.round(landed.headBottom)}px (scrolled ${Math.round(landed.scrollY)})`)
+    else ok.push(`${at}: the card's address opens the report at ${card}, ${onScreen - Math.round(landed.headBottom)}px under the header`)
+    await shot('card-link-landed.png')
+
+    // SCROLL-BY: the frame asks the page to move by a distance, and the page moves by exactly that.
+    const before = await value('window.scrollY')
+    await inFrame(`(parent.postMessage({ source: 'cordillera-report', type: 'scrollBy', dy: 150 }, '*'), 1)`)
+    await wait(400)
+    const after = await value('window.scrollY')
+    if (after - before !== 150) fail.push(`${at}: a scroll-by of 150 moved the page by ${after - before}`)
+    else ok.push(`${at}: a scroll-by of 150 from the frame moves the page by 150`)
+  }
+}
+
 for (const line of ok) console.log(`  ok   ${line}`)
 for (const line of fail) console.log(`  FAIL ${line}`)
 try { ws.close() } catch { /* going anyway */ }
