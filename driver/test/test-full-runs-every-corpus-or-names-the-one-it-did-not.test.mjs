@@ -199,7 +199,9 @@ test("a stale generated file is reported as stale, and a minter that cannot look
 
 test("the whole check exits 0 on this tree, and every minter it found is current", () => {
   const out = execFileSync("node", ["scripts/generated-files-are-current.mjs"], { cwd: REPO, encoding: "utf8" });
-  assert.match(out, /checked [4-9]\d* minter\(s\)/);
+  // The count compared as a number: the pattern `[4-9]\d*` this used read 10 to 39 as fewer than four.
+  const checked = Number(out.match(/checked (\d+) minter\(s\)/)?.[1]);
+  assert.ok(checked >= 4, `expected at least the four minters it was written against, found ${checked}`);
   assert.doesNotMatch(out, /STALE/);
 });
 
