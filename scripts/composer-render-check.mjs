@@ -160,6 +160,8 @@ const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css
 
 /** The brief reader's capability the searches answer carries. Mutable for the reason `meEngine` is. */
 let readNow = { available: true, maxBrief: 12000, note: null }
+// Whether this installation runs an Urgent order fast. Off for every pass but How soon's, which drives both.
+let urgentNow = false
 
 const server = createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost')
@@ -267,6 +269,7 @@ const server = createServer((req, res) => {
       // null, or the key absent. A `?? null` here would tell every screen the register is unrestricted.
       ...(registerReach === undefined ? {} : { territories: registerReach }),
       ...(registerLabelNow ? { registerLabel: registerLabelNow } : {}),
+      urgent: { available: urgentNow },
     }))
     return
   }
@@ -1338,6 +1341,17 @@ const EVIDENCE = [
             await must(() => Boolean(document.querySelector('.pick-row-on')), 3000, 'nothing was preselected');
             if (!byText('button', /Review search/).disabled) throw new Error('the start is not refused with no searches left');` },
   { name: 'filled', usage: PLENTY, setup: 'await ready(); await described(true);' },
+  // HOW SOON (board Urgent clearance, approved 2026-11-25): Urgent chosen, and an installation that cannot run it.
+  { name: 'how-soon-urgent', usage: { today: 16, dailyRuns: 20 }, urgent: true,
+    setup: `await ready(); await described(true);
+            await must(() => document.querySelectorAll('.nc-how-soon [role="radio"]').length === 2, 3000, 'How soon never appeared');
+            document.querySelectorAll('.nc-how-soon [role="radio"]')[1].click(); await sleep(200);
+            await must(() => /· Urgent/.test(document.querySelector('.composer-footer')?.innerText ?? ''), 3000, 'the footer never said Urgent');
+            document.querySelector('.nc-how-soon').scrollIntoView({ block: 'center' });` },
+  { name: 'how-soon-unavailable', usage: PLENTY, urgent: false,
+    setup: `await ready(); await described(true);
+            await must(() => document.querySelector('.nc-how-soon [role="radio"][aria-disabled="true"]'), 3000, 'Urgent was not disabled');
+            document.querySelector('.nc-how-soon').scrollIntoView({ block: 'center' });` },
   // THE FOLDS OPENED: "Change" shows today's card in place, and "All four searches" the other three.
   { name: 'folds-open', usage: PLENTY,
     setup: `await ready(); await described(true);
@@ -1537,6 +1551,79 @@ const landing = (await evalIn(`(async () => {
 })()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
 runLanding = null
 
+// ── HOW SOON (board Urgent clearance, approved 2026-11-25) ─────────────────────────────────────────────
+// Standard and Urgent side by side below Which search, each with its turnaround and count from the effort
+// model; choosing Urgent moves the footer and the review, and the order sends `urgent: true`. Where this
+// installation cannot run Urgent fast, the option is disabled and says why. Driven at 1280 and at 400 px.
+const HOW_SOON = `(async () => {
+  ${EVIDENCE_HELPERS}
+  const radios = () => [...document.querySelectorAll('.nc-how-soon [role="radio"]')];
+  const read = () => radios().map((r) => ({ label: r.querySelector('.nc-speed-label')?.textContent ?? null, line: r.querySelector('.nc-speed-line')?.textContent ?? null,
+    note: r.querySelector('.nc-speed-note')?.textContent ?? null, checked: r.getAttribute('aria-checked'), disabled: r.getAttribute('aria-disabled'), tab: r.tabIndex }));
+  const footer = () => (document.querySelector('.composer-footer')?.innerText ?? '').replace(/\\s+/g, ' ');
+  const pickRow = async (re) => {
+    let row = [...document.querySelectorAll('.pick-row')].find((r) => re.test(r.innerText || ''));
+    if (!row) { const fold = [...document.querySelectorAll('button')].find((b) => /^All four searches$/.test((b.innerText || '').trim())); if (fold) { fold.click(); await sleep(200); }
+      row = [...document.querySelectorAll('.pick-row')].find((r) => re.test(r.innerText || '')); }
+    row?.querySelector('.pick-row-hit')?.click(); await sleep(250);
+  };
+  await ready();
+  set(names(), 'BRAVOLINE'); await sleep(120);
+  await pickRow(/Knockout search/);
+  await must(() => radios().length === 2, 4000, 'How soon never appeared under Which search');
+  const W = document.documentElement.clientWidth;
+  const pair = document.querySelector('.nc-speed-pair').getBoundingClientRect();
+  const out = { head: (document.querySelector('.nc-how-soon .nc-which-head')?.innerText ?? '').replace(/\\s+/g, ' ').trim(),
+    group: document.querySelector('.nc-speed-pair')?.getAttribute('role'), label: document.querySelector('.nc-speed-pair')?.getAttribute('aria-labelledby'),
+    sideBySide: radios()[0].getBoundingClientRect().top === radios()[1].getBoundingClientRect().top,
+    inside: radios().every((r) => { const b = r.getBoundingClientRect(); return b.left >= -1 && b.right <= W + 1; }), overflow: document.documentElement.scrollWidth - W,
+    afterWhich: Boolean(document.querySelector('#nc-all-searches')?.compareDocumentPosition(document.querySelector('.nc-how-soon')) & Node.DOCUMENT_POSITION_FOLLOWING),
+    ko: read(), koFooter: footer() };
+  radios()[1].click(); await sleep(200);
+  out.koUrgent = read(); out.koUrgentFooter = footer();
+  radios()[1].focus(); radios()[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })); await sleep(200);
+  out.byKey = { options: read(), focused: document.activeElement?.querySelector('.nc-speed-label')?.textContent ?? null };
+  await pickRow(/Global preliminary search/);
+  radios()[1]?.click(); await sleep(200);
+  out.gp = read(); out.gpFooter = footer();
+  const review = [...document.querySelectorAll('button')].find((b) => /Review search/.test(b.innerText || ''));
+  if (review && !review.disabled) { review.click(); await must(() => /Start search/.test(txt()), 6000, 'the review never opened');
+    out.review = [...document.querySelectorAll('.modal-card [class*="row"], .modal-card dt, .modal-card dd')].map((e) => (e.innerText || '').trim()).join(' | '); }
+  else out.review = 'Review search was not pressable: ' + (review ? 'disabled' : 'absent');
+  return out;
+})()`
+const UNAVAILABLE = `(async () => {
+  ${EVIDENCE_HELPERS}
+  const radios = () => [...document.querySelectorAll('.nc-how-soon [role="radio"]')];
+  await ready();
+  set(names(), 'BRAVOLINE'); await sleep(120);
+  const row = [...document.querySelectorAll('.pick-row')].find((r) => /Knockout search/.test(r.innerText || ''));
+  row?.querySelector('.pick-row-hit')?.click(); await sleep(250);
+  await must(() => radios().length === 2, 4000, 'How soon never appeared');
+  radios()[1].click(); await sleep(200);
+  return { options: radios().map((r) => ({ label: r.querySelector('.nc-speed-label')?.textContent, line: r.querySelector('.nc-speed-line')?.textContent,
+    note: r.querySelector('.nc-speed-note')?.textContent ?? null, checked: r.getAttribute('aria-checked'), disabled: r.getAttribute('aria-disabled') })),
+    footer: (document.querySelector('.composer-footer')?.innerText ?? '').replace(/\\s+/g, ' ') };
+})()`
+const howSoon = {}
+for (const width of [1280, 400]) {
+  urgentNow = true
+  const before = posted.length
+  await cdp('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 700 })
+  await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+  await new Promise((r) => setTimeout(r, 1200))
+  const got = (await evalIn(HOW_SOON)).result?.result
+  howSoon[width] = got?.value ?? { fatal: got?.description ?? 'evaluate returned nothing' }
+  howSoon[width].sent = posted.slice(before).filter((p) => p.path === '/portal/api/run/plan').map((p) => p.body.urgent ?? null)
+  urgentNow = false
+  await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+  await new Promise((r) => setTimeout(r, 1200))
+  const off = (await evalIn(UNAVAILABLE)).result?.result
+  howSoon[width].unavailable = off?.value ?? { fatal: off?.description ?? 'evaluate returned nothing' }
+}
+await cdp('Emulation.clearDeviceMetricsOverride', {})
+console.log(`how soon: ${JSON.stringify(howSoon)}`)
+
 // ── AN INSTALLATION THAT CANNOT READ A BRIEF OFFERS NO BOX TO WRITE ONE IN (approved 2026-11-25) ────
 // Describe it keeps its heading, its "optional" mark and the server's own sentence, and the first field a
 // person types in is Names to clear. The installation that can read one keeps the box: the first pass.
@@ -1566,6 +1653,7 @@ if (shotDir) {
   for (const st of EVIDENCE) {
     usageNow = { ...usageNow, ...st.usage }
     readNow = st.read ?? { available: true, maxBrief: 12000, note: null }
+    urgentNow = st.urgent ?? false
     // A state says what the deployment is, or inherits the default: no declared reach, no register name,
     // and no company territories. Reset every time rather than left set, so one state cannot silently
     // decide what the next one renders.
@@ -1668,6 +1756,34 @@ const planBody = planPosts[0]?.body ?? null
 const countsBody = planPosts.length > 1 ? planPosts[planPosts.length - 1].body : null
 const fail = []
 const ok = (cond, msg) => { if (!cond) fail.push(msg) }
+
+// HOW SOON, both states, at both widths. The words are the board's and the issue's, byte for byte.
+for (const [width, h] of Object.entries(howSoon)) {
+  const at = `How soon at ${width}px`
+  if (!h || h.fatal) { fail.push(`${at}: ${h?.fatal ?? 'no result'}`); continue }
+  ok(h.head === 'How soon Same search, same checks, same report', `${at}: the heading reads "${h.head}"`)
+  ok(h.group === 'radiogroup' && h.label === 'nc-how-soon-title' && h.afterWhich, `${at}: not a labelled radio group below Which search: ${JSON.stringify(h)}`)
+  ok(Number(width) < 560 ? !h.sideBySide : h.sideBySide, `${at}: the two options ${h.sideBySide ? 'sit side by side' : 'are stacked'}`)
+  ok(h.inside && h.overflow <= 1, `${at}: an option is off the screen or the page scrolls sideways (${h.overflow}px)`)
+  ok(JSON.stringify(h.ko?.map((o) => [o.label, o.line, o.checked])) === JSON.stringify([['Standard', '5 to 10 min · uses 1 search', 'true'], ['Urgent', '3 to 6 minutes · uses 2 searches', 'false']]),
+    `${at}: a Knockout's options read ${JSON.stringify(h.ko)}`)
+  ok(h.ko?.[1]?.note === "The slowest steps run on the AI service's faster setting, which costs twice as much." && h.ko?.[0]?.note === null, `${at}: the Urgent note reads ${JSON.stringify(h.ko?.[1]?.note)}`)
+  ok(!/Urgent/.test(h.koFooter) && /1 search/.test(h.koFooter) && /5 to 10 min/.test(h.koFooter), `${at}: the Standard footer reads "${h.koFooter}"`)
+  ok(/Knockout search · Urgent/.test(h.koUrgentFooter) && /2 searches/.test(h.koUrgentFooter) && /uses · 2 left today/i.test(h.koUrgentFooter) && /3 to 6 minutes/.test(h.koUrgentFooter),
+    `${at}: the Urgent footer reads "${h.koUrgentFooter}"`)
+  ok(h.koUrgent?.[1]?.checked === 'true' && h.koUrgent?.[1]?.tab === 0 && h.koUrgent?.[0]?.tab === -1, `${at}: choosing Urgent did not move the choice and the tab stop: ${JSON.stringify(h.koUrgent)}`)
+  ok(h.byKey?.options?.[0]?.checked === 'true' && h.byKey?.focused === 'Standard', `${at}: an arrow key did not move the choice back to Standard: ${JSON.stringify(h.byKey)}`)
+  ok(JSON.stringify(h.gp?.map((o) => [o.label, o.line])) === JSON.stringify([['Standard', '1.5 to 2.5 hours · uses 1 search'], ['Urgent', '30 minutes to 1 hour · uses 2 searches']]),
+    `${at}: a clearance's options read ${JSON.stringify(h.gp)}`)
+  ok(/Global preliminary search · Urgent/.test(h.gpFooter) && /30 minutes to 1 hour/.test(h.gpFooter), `${at}: the clearance's Urgent footer reads "${h.gpFooter}"`)
+  ok(/2 searches/.test(h.review) && /30 minutes to 1 hour/.test(h.review), `${at}: the review does not show the Urgent count and turnaround: ${h.review}`)
+  ok(h.sent.at(-1) === true, `${at}: the order sent urgent ${JSON.stringify(h.sent)}`)
+  const u = h.unavailable
+  if (!u || u.fatal) { fail.push(`${at}, unavailable: ${u?.fatal ?? 'no result'}`); continue }
+  ok(u.options?.[1]?.disabled === 'true' && u.options?.[1]?.line === "Not available with this installation's AI service. Searches run at Standard." && u.options?.[1]?.note === null,
+    `${at}: where Urgent cannot run its option reads ${JSON.stringify(u.options?.[1])}`)
+  ok(u.options?.[0]?.checked === 'true' && u.options?.[1]?.checked === 'false' && !/Urgent/.test(u.footer), `${at}: pressing the unavailable Urgent changed the order: ${JSON.stringify(u)}`)
+}
 
 if (out.fatal) {
   console.error('FATAL:', out.fatal)

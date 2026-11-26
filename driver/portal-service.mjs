@@ -146,6 +146,7 @@ import { makeUpstream } from "./portal-upstream.mjs";
 import { flagView } from "./portal-config-view.mjs";
 import { livePosture } from "./flag-snapshot.mjs";   // — for the capture-vs-box comparison only, never for a value
 import { DEFAULT_CLIENT_DAILY_RUNS, accountUsage } from "./usage-ledger.mjs";
+import { urgentRunsHere } from "./urgent-count.mjs";
 import { SOURCE_REPO } from "../shared/product-identity.mjs";   // AGPL §13 — one answer, three surfaces
 import { engineCommit } from "./engine-build.mjs";                  // — the SAME stamp pool meta records
 // — siblings, on their own line: the guard pins the line above and its subject is the JOIN
@@ -292,6 +293,9 @@ export const PORTAL_JOB_FIELDS = Object.freeze({
     "tenant",
     "jurisdictions", "platforms", "geography",
     "product", "recipeKey", "nativeLanguage", "caseLaw", "searchLevel", "deliveryRoute",
+    // An Urgent order, carried only as `true`: New clearance offers it with its count of searches, and
+    // admission counts it (urgent-count.mjs).
+    "urgent",
     "upfrontInstructions", "commercialFlexibility", "priorUse", "campaignShape", "deadline",
     // stamped by the ROUTE rather than copied by jobFor, and on the stored job all the same:
     // `clientPrincipal` from the verified principal's role. It can only ever ADD a cap to the run that
@@ -328,8 +332,6 @@ export const PORTAL_JOB_FIELDS = Object.freeze({
     forwarderDomain: "domain-based customer resolution is what the tenancy wall replaces here: the account "
       + "comes from the verified principal, never from a string the body chose.",
     provider: "which register vendor answers is a deployment fact, not a client's to pick.",
-    urgent: "an Urgent order. The New clearance screen offers it with its count of searches; until that option "
-      + "ships, a body value would run fast without being counted as the order says.",
     name: "the pre-markName spelling of the search subject. The composer sends markName/marks[]; carrying a "
       + "second name field would give one door two answers to 'what is being cleared'.",
     use: "the pre-goods spelling of the same field. Same reason as `name`.",
@@ -658,6 +660,9 @@ export function makePortalService({
   // injected for the reason `demo` is: the bootstrap below is the only place that reads the environment for it,
   // and a fixture can drive both answers. The default refuses nothing, which is every fixture that does not ask.
   orderRefusal = async () => null,
+  // — CAN AN URGENT ORDER RUN FAST HERE? The answer the run records when it starts (urgent-count.mjs `urgentRunsHere`),
+  // injected for the reason `orderRefusal` is. The default is no, so a fixture that does not ask offers Standard only.
+  urgentAvailable = () => false,
   audit = () => {},
   // The audit log's PATH, for the one surface that reads it back rather than writing to it
   // (/portal/admin/observed). Separate from `audit` above because that is a sink and this is a source,
@@ -858,6 +863,9 @@ export function makePortalService({
       // Whether the Describe-it half of the composer can actually read. Rides the capability payload
       // the composer already fetches rather than getting its own probe: one round trip decides what the
       // whole screen offers, and a second one would be a second thing to go stale.
+      // Whether an Urgent order runs on the faster setting here. New clearance offers Urgent only where it does,
+      // and says why not where it does not.
+      urgent: { available: urgentAvailable() === true },
       read: {
         available: Boolean(composeRead),
         maxBrief: MAX_BRIEF,
@@ -931,6 +939,9 @@ export function makePortalService({
       // carries verbatim for exactly that reason. A hand-rolled POST sending `false` believed it had
       // switched the investigation off; validateJob now refuses it, in products.mjs's own words.
       ...("nativeLanguage" in body && body.nativeLanguage != null ? { nativeLanguage: body.nativeLanguage } : {}),
+      // AN URGENT ORDER travels only as `true`, the run's own reading of the field. It is in the review's job hash,
+      // so a review confirmed at Standard cannot start an Urgent order (portal-confirmation.mjs).
+      ...(body.urgent === true ? { urgent: true } : {}),
       // `deliveryRoute` IS CARRIED, and its absence here was THE defect of this round.
       //
       // It is a DECLARED job field with a refusal sentence of its own (enqueue-schema PORTAL_ROUTE_-
@@ -1015,7 +1026,7 @@ export function makePortalService({
   // own constants a group prints or answers with, and what the request carries (`request`). A group answers a request it serves and returns undefined for any other, and the dispatcher asks the
   // groups in the order its routes have always been matched, so a request is answered by the route that answered it before.
   const svc = { poolRoot, workspaceRoot, secret, grants, localSignIn, writeGrants, revokeConnectorKeys, queueDirs, trigger,
-    stopRun, stopControl, demo, orderRefusal, audit, auditPath, auditLog, feedbackCapture, readBuilt, readCanCount,
+    stopRun, stopControl, demo, orderRefusal, urgentAvailable, audit, auditPath, auditLog, feedbackCapture, readBuilt, readCanCount,
     readTerritories, upstream, composeRead, readBudget, loadProfilesImpl, usedJtis, sweepJtis, searchesFor, jobFor, selectorOf,
     engineProgramDisputed, connectCaches, INSTALL_ROOT, INSTALL_CHANNEL, READ_OFF_NOTE, refusalFor, allowanceExhaustedLine };
 
@@ -2861,7 +2872,9 @@ const PORT = PORT_CHOICE.port;
     // demo out of one. Anything but the literal "1" is not a demo.
     demo: isDemo(process.env),   // — one name, shared with the MCP door
     // The runner's own order-time test, asked of the runner's own tables: the portal refuses what the runner would.
-    orderRefusal: async () => portalOrderRefusal({ tables: await runTables() }) });
+    orderRefusal: async () => portalOrderRefusal({ tables: await runTables() }),
+    // Whether an Urgent order runs fast here: the same answer the runner counts by and the run records.
+    urgentAvailable: urgentRunsHere });
   const { RateLimiter } = await import("../mcp-server/lib/ratelimit.mjs");
   const limiter = new RateLimiter({ perMinute: Number(process.env.PORTAL_RATE_PER_MIN || 120) });
   const { createServer } = await import("node:http");

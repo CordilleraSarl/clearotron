@@ -17,6 +17,7 @@ import { readFileSync } from 'node:fs'
 import {
   EMPTY_DRAFT, REGIONS, COUNTRIES, tierOf, vocabularyFor, territoryMatches, addTerritory,
   removeTerritory, takeOverOwnTerritories, notAvailableLine, geographyFor, nativeLanguageControl, toggleNativeLanguage,
+  rangeInWords, turnaroundInWords, TURNAROUND_QUOTE,
   chooseProduct, blockers, nameBudget, machineryFor, composeSaved, draftFromSaved, inherited, readiness,
   missingPieces,
   MAX_TERRITORIES, checksSummary, runsNote, turnaround, effortUnits,
@@ -552,4 +553,13 @@ test('the not-available line is the owner\'s ruled bytes, and names no register 
     'a blank label was printed as a register name')
   // The suggestion row already prints the territory, so the line carries no name of its own there.
   assert.equal(notAvailableLine([], 'Signa'), 'not available with register Signa')
+})
+
+// HOW SOON'S WORDS (board Urgent clearance, approved 2026-11-25): an Urgent turnaround is said in full words
+// from the ruled row, never as "0.5 hours"; the Standard figures keep their shipped spelling.
+test('an Urgent turnaround reads in the board’s words, from the ruled rows', () => {
+  assert.equal(rangeInWords(TURNAROUND_QUOTE.clearanceUrgent), '30 minutes to 1 hour')
+  assert.equal(rangeInWords(TURNAROUND_QUOTE.knockoutUrgent), '3 to 6 minutes')
+  assert.equal(rangeInWords(TURNAROUND_QUOTE.clearance), '1.5 to 2.5 hours')
+  assert.equal(turnaroundInWords('5–10 min'), '5 to 10 min', 'the shipped Standard Knockout spelling is unchanged')
 })
