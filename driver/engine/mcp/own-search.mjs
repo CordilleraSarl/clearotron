@@ -27,6 +27,7 @@ import { gunzipSync } from "node:zlib";
 import { dirname, join } from "node:path";
 import { dictatedCells, connotationQueriesOf, reconcileGridLedger, findUnrecordedConnotationQueries, captureGridFromResponse } from "../../../providers/perplexity/src/core.js";
 import { gridProvenancePath } from "./grid-provenance.mjs";
+import { parsePrRiskResults } from "../../connotation-search.mjs";
 
 export { RUN_RECORD_FILE, ownSearchOn } from "./own-search-setting.mjs";
 
@@ -319,6 +320,30 @@ export function dictatedSearches(spec) {
       site: String(platform).toLowerCase() === "web" ? null : String(platform) })),
     ...connotationQueriesOf(spec).map((q) => ({ meaning: true, query: String(q), site: null })),
   ];
+}
+
+/**
+ * THE MEANING RE-ASK, THROUGH THE RUN'S OWN AI PROGRAM: the dictated meaning searches in `queries` and nothing else of the
+ * grid, run in research-only sessions, each kept as a search record. It answers as the research service's re-issue does
+ * (provider-calls.mjs, defaultConnotationReissuer): `{ ok, rows, requested }`, a row for each search that was answered,
+ * in the shape the ledger's rows are read in. A search that was not answered is no row, so the caller's re-judge still
+ * finds it missing and discloses it; nothing here falls back to another service. `sessions` is makeOwnSearchSessions'.
+ * IMPURE.
+ */
+export async function reissueMeaningSearches(runDir, queries, { sessions, keep = 8 } = {}) {
+  if (!sessions?.session) return { ok: false, cause: `own search: ${sessions?.error ?? "no research-only session on this run"}`, rows: [] };
+  const asked = [...new Set((queries ?? []).map((q) => String(q).trim()).filter(Boolean))];
+  const items = asked.map((query) => ({ meaning: true, query, site: null }));
+  try {
+    const { outcomes, records } = await runDictatedSearches(sessions.search, items, sessions.session);
+    keepSearchRecords(runDir, records);
+    const rows = parsePrRiskResults(JSON.stringify(ledgerFromOutcomes(items, outcomes, { keep }))).filter((r) => asked.includes(r.query));
+    const counts = {};
+    for (const o of outcomes) counts[o?.outcome ?? "not-sent"] = (counts[o?.outcome ?? "not-sent"] ?? 0) + 1;
+    return { ok: true, rows, requested: asked.length, outcomes: counts };
+  } catch (e) {
+    return { ok: false, cause: `own search: ${String(e?.message ?? e).slice(0, 160)}`, rows: [] };
+  }
 }
 
 /**

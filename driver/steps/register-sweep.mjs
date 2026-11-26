@@ -24,7 +24,7 @@ import { readPartNotCompleted, slicesNotYetRecorded, unitsNotYetRecorded, writeP
 import { gridBatchFor } from "../profiles.mjs";
 import { countLaneCalls } from "../provider-usage.mjs";
 import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
-import { ownSearchOn, makeOwnSearchSessions, prepareOwnSearchGrid } from "../engine/mcp/own-search.mjs";   // the run's own AI program runs the dictated searches, where this run says so
+import { ownSearchOn, makeOwnSearchSessions, prepareOwnSearchGrid, reissueMeaningSearches } from "../engine/mcp/own-search.mjs";   // the run's own AI program runs the dictated searches, where this run says so
 import { foldSupplementalEntries, isProviderHardErrorReason, joinPlanToBands, mintSupplementalQid, partitionFoldDirectives, romanizedTermsFromPlan, screenThenCap } from "../register-plan.mjs";
 import { readRegisterTaint } from "../register-taint.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
@@ -137,6 +137,11 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
     }
   };
   await prepareGrids(...(clSplit ? GRID_SEATS.map((h) => P.gridSpecHalf(h)) : [P.gridSpec]));
+  // ITS MEANING RE-ASKS GO THE SAME WAY: a run whose searches are its own re-issues a missing meaning search through its own
+  // AI program, never through another service, and one with no session re-issues nothing and discloses the gap.
+  const reissueMeaning = ownSearchOn(run.runDir)
+    ? (queries, { spec } = {}) => reissueMeaningSearches(run.runDir, queries, { sessions: ownSearch, keep: spec?.results_per_cell ?? 8 })
+    : defaultConnotationReissuer;
   const clIndex = gather.findIndex((g) => g.name === "common-law");
   const clMember = () => (clIndex >= 0 ? gatherResults[clIndex] : null);
   // The plan-direct executor, resolved ONCE for the code-side saturation-probe unit here AND the
@@ -259,7 +264,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
         note(`the meaning half recorded all but ${short.length} of its dictated searches — the engine re-issues `
           + `${short.length === 1 ? "it" : "them"} itself rather than asking for the sweep again`);
         clConnotationReissueSpent = true;
-        const reissuer = stopsWithTheRun(run.runDir, "connotation-reissue", opts.connotationReissuer ?? defaultConnotationReissuer);
+        const reissuer = stopsWithTheRun(run.runDir, "connotation-reissue", opts.connotationReissuer ?? reissueMeaning);
         const r = await reissuer(short, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${h}-${Date.now()}.json`) });
         runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
           recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
@@ -589,7 +594,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
           runLog(run.runDir, { event: "connotation-reissue", count: missing.length });
           note(`${missing.length} dictated meaning quer${missing.length === 1 ? "y" : "ies"} missing after the `
             + "model's one repair turn — the engine re-issues them itself through the same tool");
-          const reissuer = stopsWithTheRun(run.runDir, "connotation-reissue", opts.connotationReissuer ?? defaultConnotationReissuer);
+          const reissuer = stopsWithTheRun(run.runDir, "connotation-reissue", opts.connotationReissuer ?? reissueMeaning);
           const r = await reissuer(missing, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${Date.now()}.json`) });
           runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
             recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
