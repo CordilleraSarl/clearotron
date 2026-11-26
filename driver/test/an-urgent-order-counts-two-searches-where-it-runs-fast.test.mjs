@@ -19,7 +19,7 @@ import { join } from "node:path";
 import { driverSource } from "./driver-source.mjs";
 
 const { quoteForJob } = await import("../run-quote.mjs");
-const { admittedSearches, urgentRunsHere } = await import("../urgent-count.mjs");
+const { admittedSearches, urgentRunsHere, ONE_SEARCH_LEFT, oneLeftRefusal } = await import("../urgent-count.mjs");
 const { checkRunCaps } = await import("../runner.mjs");
 const { accountUsage, ledgerSearches } = await import("../usage-ledger.mjs");
 const { URGENT_SEARCHES, TURNAROUND_QUOTE } = await import("../effort-model.mjs");
@@ -82,9 +82,7 @@ test("the daily and monthly caps add the order's count to what each row recorded
   const q = ledgerQueue(rows);
   const daily = { account: "acme", caps: { dailyRuns: 4 }, queueDirs: [q], now: DAY, clientRun: true };
   assert.equal(checkRunCaps({ ...daily, searches: 1 }), null, "3 used + 1 = 4: a Standard order fits");
-  const refused = checkRunCaps({ ...daily, searches: 2 });
-  assert.match(refused ?? "", /daily allowance/, "3 used + 2 = 5: an Urgent order does not");
-  assert.match(refused ?? "", /started 3 search\(es\) today/);
+  assert.equal(checkRunCaps({ ...daily, searches: 2 }), ONE_SEARCH_LEFT, "3 used + 2 = 5: an Urgent order does not fit the one left");
   const monthly = { account: "acme", caps: { dailyRuns: 100, monthlyRuns: 4 }, queueDirs: [q], now: DAY };
   assert.equal(checkRunCaps({ ...monthly, searches: 1 }), null);
   assert.match(checkRunCaps({ ...monthly, searches: 2 }) ?? "", /monthlyRuns=4/);
@@ -100,6 +98,30 @@ test("the runner checks the cap against the order's count and records that count
   const portal = driverSource("portal-service.mjs");
   assert.equal((portal.match(/quotaRefusal\(account, job\.tenant \?\? null, admittedSearches\(job, \{ runsHere: urgentAvailable \}\)\)/g) ?? []).length, 2,
     "the portal's review and start pre-checks ask with the same count");
+});
+
+// ── ONE SEARCH LEFT (design, 2026-11-26) ──────────────────────────────────────────────────────────────
+// With exactly one search left an Urgent order, which counts two, is refused in the order screen's own words, "1 search
+// left today.", and never run, or counted, as Standard. A Standard order still fits. None left keeps the wall's own
+// refusal; two left admits Urgent. Checked here at the wall, which also catches a balance that changed after the preview.
+test("at the wall: zero, one and two searches left, for an Urgent order and a Standard one", () => {
+  const today = (n) => ledgerQueue(Array.from({ length: n }, () => ({ profileKey: "acme", ts: DAY, clientPrincipal: true })));
+  const at = (used, searches) => checkRunCaps({ account: "acme", caps: { dailyRuns: 4 }, queueDirs: [today(used)], now: DAY, clientRun: true, searches });
+  assert.match(at(4, 2) ?? "", /daily allowance/, "none left: the wall's own refusal");
+  assert.match(at(4, 1) ?? "", /daily allowance/);
+  assert.equal(at(3, 2), "1 search left today.", "one left: the screen's sentence, word for word");
+  assert.equal(at(3, 1), null, "one left: Standard fits");
+  assert.equal(at(2, 2), null, "two left: Urgent fits");
+});
+
+test("the rule refuses only the one-left case, and an Urgent order that runs at Standard here counts one and fits", () => {
+  assert.equal(ONE_SEARCH_LEFT, "1 search left today.");
+  assert.equal(oneLeftRefusal({ used: 3, limit: 4, searches: 2 }), ONE_SEARCH_LEFT);
+  assert.equal(oneLeftRefusal({ used: 4, limit: 4, searches: 2 }), null, "none left is not this rule's");
+  assert.equal(oneLeftRefusal({ used: 2, limit: 4, searches: 2 }), null);
+  assert.equal(oneLeftRefusal({ used: 3, limit: 4, searches: admittedSearches({ ...JOB, urgent: true }, { runsHere: () => false }) }), null,
+    "the installation's own fallback keeps its rule: Standard, one search, admitted");
+  assert.equal(oneLeftRefusal({ used: 3, limit: null, searches: 2 }), null, "no limit read, no refusal invented");
 });
 
 // ── THE PORTAL DOOR ─────────────────────────────────────────────────────────────────────────────────

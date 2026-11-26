@@ -355,6 +355,42 @@ test("an exhausted CLIENT account is told before start_run, not by the runner af
   assert.equal(staff.account.usage.today, DEFAULT_CLIENT_DAILY_RUNS, "…while still being told the count");
 });
 
+test("one search left: an Urgent preview is blocked in the order screen's words and Standard fits; none and two keep their answers", () => {
+  // Design, 2026-11-26. On an installation where Urgent runs fast, so it counts two searches.
+  const saved = { CLEAROTRON_AI: process.env.CLEAROTRON_AI, CLEAROTRON_AI_BILLING: process.env.CLEAROTRON_AI_BILLING, CLAUDE_CODE_USE_BEDROCK: process.env.CLAUDE_CODE_USE_BEDROCK };
+  Object.assign(process.env, { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "subscription" });
+  delete process.env.CLAUDE_CODE_USE_BEDROCK;
+  try {
+    mkdirSync(STUDIO, { recursive: true });
+    const now = Date.now();
+    const used = (n) => writeFileSync(join(STUDIO, ".matter-ledger.jsonl"),
+      Array.from({ length: n }, () => JSON.stringify({ profileKey: "demo-brand-owner", ts: now, clientPrincipal: true })).join("\n") + (n ? "\n" : ""));
+    const client = { kind: "account", runId: null, sub: "lawyer@demo-brand-owner.example", accounts: ["demo-brand-owner"] };
+    const plan = (extra) => planRun({ ...BASE, ...extra }, { scope: client, now });
+
+    used(DEFAULT_CLIENT_DAILY_RUNS - 1);
+    const urgent = plan({ urgent: true });
+    assert.equal(urgent.howSoon.chosen, "urgent", "this installation runs Urgent, so the preview is of an Urgent order");
+    assert.equal(urgent.wouldRun, false);
+    assert.ok(urgent.blockers.includes("1 search left today."), JSON.stringify(urgent.blockers));
+    assert.deepEqual([urgent.howSoon.standard.withinAllowance, urgent.howSoon.urgent.withinAllowance], [true, false]);
+    const standard = plan({});
+    assert.equal(standard.wouldRun, true, "one left: Standard fits");
+    assert.ok(!standard.blockers.includes("1 search left today."));
+
+    used(DEFAULT_CLIENT_DAILY_RUNS - 2);
+    assert.equal(plan({ urgent: true }).wouldRun, true, "two left: Urgent fits");
+
+    used(DEFAULT_CLIENT_DAILY_RUNS);
+    const none = plan({ urgent: true });
+    assert.match(none.blockers.join(" "), /used all/, "none left keeps its own sentence");
+    assert.ok(!none.blockers.includes("1 search left today."));
+  } finally {
+    for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
+    writeFileSync(join(STUDIO, ".matter-ledger.jsonl"), "");
+  }
+});
+
 test("a ledger the preview could not read yields NO allowance, never a full one (#429)", () => {
   // The header above this function has always promised "a ledger that cannot be read yields no
   // allowance rather than a fabricated one". Nothing delivered it: the count never throws, it just comes

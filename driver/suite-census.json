@@ -3622,8 +3622,8 @@
           "todos": 0
         },
         "an-urgent-order-counts-two-searches-where-it-runs-fast.test.mjs": {
-          "tests": 7,
-          "asserts": 42,
+          "tests": 9,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -6178,8 +6178,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 139,
-          "asserts": 754,
+          "tests": 140,
+          "asserts": 760,
           "skips": 1,
           "todos": 0
         },
@@ -10017,8 +10017,8 @@
           "todos": 0
         },
         "plan.test.mjs": {
-          "tests": 29,
-          "asserts": 129,
+          "tests": 30,
+          "asserts": 138,
           "skips": 0,
           "todos": 0
         },
@@ -10202,8 +10202,8 @@
           "todos": 0
         },
         "allowanceParity.test.ts": {
-          "tests": 2,
-          "asserts": 6,
+          "tests": 3,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },

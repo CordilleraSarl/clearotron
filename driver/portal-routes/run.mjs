@@ -18,7 +18,7 @@ import { quoteForJob } from "../run-quote.mjs";
 import { readJson } from "../run-record.mjs";
 import { countJobMarks, coverageDisclosure, kebabCollisions, policyFor, productAvailability, UNAVAILABLE_NOTE } from "../search-policy.mjs";
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../usage-ledger.mjs";
-import { admittedSearches } from "../urgent-count.mjs";   // what an order counts against its allowance, as the runner's wall counts it
+import { admittedSearches, oneLeftRefusal } from "../urgent-count.mjs";   // what an order counts against its allowance, as the runner's wall counts it
 
 export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, trigger, stopRun, demo, orderRefusal, urgentAvailable = () => false, audit, upstream, readBuilt, readCanCount, readTerritories, loadProfilesImpl, usedJtis, sweepJtis, jobFor, selectorOf, refusalFor, allowanceExhaustedLine }, { method, parts, principal, body, query }) {
   // shared plan-time gates — run at BOTH doors so a body that would 422 at plan can never be
@@ -178,7 +178,10 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
       return null;
     }
     if (used.today + searches <= limit) return null;
-    return { status: 429, json: { ok: false, errors: [allowanceExhaustedLine(limit, BRAND.name)] } };
+    // One left and an order that counts two is not an account that has used everything: it is told so in the
+    // order screen's own words, the same the runner's wall gives (urgent-count.mjs oneLeftRefusal).
+    const oneLeft = oneLeftRefusal({ used: used.today, limit, searches });
+    return { status: 429, json: { ok: false, errors: [oneLeft ?? allowanceExhaustedLine(limit, BRAND.name)] } };
   };
 
   // ── AN INSTALL THAT CANNOT SEARCH REFUSES HERE, WHERE THE PERSON IS ─────────────────────────
