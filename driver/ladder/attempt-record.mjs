@@ -78,7 +78,7 @@ export function measureAttempt({ name, files, runDir }, { attempt, key, warm, tu
  * turn that never started reported nothing, so its row carries the stage's request with an unknown served speed.
  */
 export function attemptSpeed(turn, requested = "standard") {
-  return turn?.speed ?? { requested, served: null, basis: "unknown", calls: null, state: null, disabledReason: null, notice: null };
+  return turn?.speed ?? { requested, standardBecause: null, served: null, basis: "unknown", calls: null, state: null, disabledReason: null, notice: null };
 }
 
 export function writeAttemptRow({ name, engine, agent, model, speed, files, runDir, followup, bandSize, derivedLimit, auth },
@@ -286,9 +286,9 @@ export function writeAttemptEvent({ name, maxRetries, runDir, bandSize, derivedL
       //: the spine carries the same pair as the per-stage log, or the two disagree about what
       // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
       model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
-      // The speed, with the stage's declared tier beside it, so a run's rollup counts its judgment-tier calls from the
-      // spine alone (run-speed.mjs).
-      speed: attemptSpeed(turn, speed), tier: model ?? null,
+      // The speed the turn asked for and was served, so a run's rollup counts every session from the spine alone
+      // (run-speed.mjs).
+      speed: attemptSpeed(turn, speed),
       cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
     cliFloor: cli.floor ?? null, cliBelowFloor: cli.belowFloor ?? null,
       wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,

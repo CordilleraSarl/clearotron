@@ -31,6 +31,7 @@ import { join, dirname, sep } from "node:path";
 import { runStreamingChild, absolutizeSkillRefs, outputRule, FILE_OUTPUT, EVIDENCE_RULE, buildEnvelope, resolveSpawnCwd, isRecordTool } from "./common.mjs";
 import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
+import { sessionSpeed } from "./speed.mjs";   // — whether this session's model can take the speed its run asks for
 import { engineEnv, codexCommandWithheld } from "./engine-env.mjs";
 import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 
@@ -448,9 +449,12 @@ export function buildCodexArgs({ model, thinking, speed = "standard", resumeRef,
   if (runDir) base.push("--add-dir", runDir);                     // writable root for the stage's absolute output path
   const m = openaiModel(model); if (m) base.push("-m", m);
   base.push("-c", `model_reasoning_effort=${effortFor(thinking)}`);
-  if (speed === "fast") base.push(...CODEX_FAST_OVERRIDES);
-  if (resumeRef) return { args: [...base, "resume", resumeRef, "-"] };
-  return { args: [...base, "-"] };
+  // Every session of an Urgent run asks for the faster tier where the model sent above has one (engine/speed.mjs,
+  // sessionSpeed); on any other model it is not asked for, and the turn's record says why it ran at standard speed.
+  const sp = sessionSpeed({ ordered: speed, engine: "openai-agent", model: m });
+  if (sp.sent === "fast") base.push(...CODEX_FAST_OVERRIDES);
+  if (resumeRef) return { args: [...base, "resume", resumeRef, "-"], speed: sp };
+  return { args: [...base, "-"], speed: sp };
 }
 
 // Fold ONE codex --json line into the running event accumulator. `atMs` is when the line arrived, in ms from the
@@ -879,13 +883,14 @@ export function parseResetHint(text, now = Date.now()) {
 /**
  * One Codex turn's speed record, in the Claude adapter's shape (anthropic-agent.mjs, speedOfClaudeTurn). Codex reports no
  * served tier: neither `exec --json` nor its session record names one (measured on 0.162.0, 2026-11-25), so `served` is
- * null and `basis` says "unknown" on every turn, fast or not. PURE.
+ * null and `basis` says "unknown" on every turn, fast or not. `standardBecause` is why a session of a fast run asked for
+ * standard (engine/speed.mjs, sessionSpeed), null otherwise. PURE.
  */
-export function speedOfCodexTurn(requested = "standard") {
-  return { requested, served: null, basis: "unknown", calls: null, state: null, disabledReason: null, notice: null };
+export function speedOfCodexTurn(requested = "standard", standardBecause = null) {
+  return { requested, standardBecause, served: null, basis: "unknown", calls: null, state: null, disabledReason: null, notice: null };
 }
 
-function settleTuple({ r, ev, resumeRef, speed = "standard" }) {
+function settleTuple({ r, ev, resumeRef, speed = { sent: "standard", standardBecause: null } }) {
   const killed = !!r.killed, overflow = !!r.overflow, stallKill = !!r.stallKill;
   // A turn is OK iff it reached turn.completed, did not turn.failed, and was not killed/overflowed. The
   // file-truth gate (runStage) validates the actual output file separately — an empty agent_message is fine.
@@ -925,7 +930,7 @@ function settleTuple({ r, ev, resumeRef, speed = "standard" }) {
     // gateway.mjs records the absence as modelBasis:"unknown".
     modelWire: ev.model ?? null,
     // SPEED GAUGE: what the turn asked for, and that the program did not say what it served (speedOfCodexTurn).
-    speed: speedOfCodexTurn(speed),
+    speed: speedOfCodexTurn(speed.sent, speed.standardBecause),
     sessionRef: ev.threadId ?? resumeRef ?? null,
     // hardWall vs stall: same null-usage kill shape, distinguished for classifyWedge (a hard-wall grind is
     // a `timeout`, a 0-token stall is a `lane_wedge`).
@@ -1080,7 +1085,7 @@ export const openaiAgentEngine = {
           withheldFromCommands: codexCommandWithheld() }));
 
       const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
-      const { args } = buildCodexArgs({ model, thinking, speed, resumeRef, runDir });
+      const { args, speed: sent } = buildCodexArgs({ model, thinking, speed, resumeRef, runDir });
       // Stamped HERE, not at function entry: everything above is file writes that can take a moment, and
       // a floor set too early would let a previous turn's rollout back in on a shared home.
       const spawnedAtMs = Date.now();
@@ -1112,7 +1117,7 @@ export const openaiAgentEngine = {
       if (!ev.usage) { ev.usage = readRolloutUsage(codexHome, spawnedAtMs); ev.usageFromRollout = ev.usage != null; }
       // A resumed turn's turn.completed states its thread's running total, earlier turns included. Its own share is in the same rollout; where that cannot be read the total stands, overstated and never understated.
       else if (resumeRef) ev.usage = readRolloutUsage(codexHome, spawnedAtMs) ?? ev.usage;
-      return settleTuple({ r, ev, resumeRef, speed });
+      return settleTuple({ r, ev, resumeRef, speed: sent });
     } finally {
       // BEFORE the home can be deleted, here or by the ladder that owns it. A failed write-back leaves the
       // turn's result as it was; the next turn is seeded from the master either way.

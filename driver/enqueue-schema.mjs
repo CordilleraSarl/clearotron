@@ -149,8 +149,8 @@ export const DECLARED_JOB_FIELDS = Object.freeze([
   // `{ counts?: "<dir>", records?: "<dir>" }`. Absent ⇒ the provider is called, which is the only
   // behaviour a production job has ever had.
   "registerFixtures",
-  // — AN URGENT ORDER: `true` runs the judgment-tier stages on the vendor's faster setting where this installation
-  // can (engine/speed.mjs). Read once, when the run starts, as `job.urgent === true`; any other value is a standard
+  // — AN URGENT ORDER: `true` runs every session of the order on the vendor's faster setting where this installation
+  // and the session's model can (engine/speed.mjs). Read once, when the run starts, as `job.urgent === true`; any other value is a standard
   // order. Declared so each door classifies it; the order screens and the connector carry it with their order option.
   "urgent",
 ]);

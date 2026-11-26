@@ -320,7 +320,7 @@ export function stampTokenRollup(runDir, phase) {
     // call sites is how one gets missed (the knockout lane went a whole release without a token stamp for
     // exactly that reason). Its own try/catch: an economics failure must never cost the token stamp.
     try { stampRunEconomics(runDir, phase); } catch { /* measurement is never load-bearing */ }
-    // And the run's speed: ordered Urgent or not, and its judgment-tier calls served fast out of how many (run-speed.mjs).
+    // And the run's speed: ordered Urgent or not, and what every session it started asked for and was served (run-speed.mjs).
     stampSpeedRollup(runDir, phase);
     return tokens;
   } catch (e) {

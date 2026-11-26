@@ -20,7 +20,8 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { claudeTurnInstructions, FILE_OUTPUT, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool, stallMs, engineMaxBufferChars, startGovernedChild, governWatchdog, readGovernedStreams } from "./common.mjs";   // the child, its watchdog, its reader, and the stall and buffer limits both engines share
-import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
+import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";
+import { sessionSpeed } from "./speed.mjs";   // — whether this session's model can take the speed its run asks for   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { clearEngineChild } from "./child-record.mjs";   // the shared child (startGovernedChild) writes the record; this clears it at settle
 import { engineEnv } from "./engine-env.mjs";   // — the program's environment, by list (see spawnEnv)
@@ -345,7 +346,10 @@ export function buildClaudeArgs({ message, model, thinking, speed = "standard", 
   args.push("--effort", effortFor(thinking));
   // THE SPEED is a setting, not a flag: `fastMode` in the one `--settings` value below (stageSettings), the vendor's
   // unattended form (https://code.claude.com/docs/en/fast-mode, "Toggle fast mode": `claude -p --settings
-  // '{"fastMode": true}'`, v2.1.205 or later). Only a judgment-tier turn of an Urgent run asks for it (engine/speed.mjs).
+  // '{"fastMode": true}'`, v2.1.205 or later). Every session of an Urgent run asks for it where the model sent above has
+  // a faster setting (engine/speed.mjs, sessionSpeed); on any other model it is not asked for, so the model stays the
+  // one the stage chose, and the turn's record says why it ran at standard speed.
+  const sp = sessionSpeed({ ordered: speed, engine: "anthropic-agent", model: m });
   // Stages WRITE their output file; acceptEdits auto-approves Write/Edit in non-interactive -p (Read is
   // always allowed). Gather tools (E3) ride --allowedTools so they never prompt either.
   args.push("--permission-mode", "acceptEdits");
@@ -399,8 +403,8 @@ export function buildClaudeArgs({ message, model, thinking, speed = "standard", 
   const granted = rd.grant ? runDir : null;
   if (granted) args.push("--add-dir", granted);
   const boundary = writeBoundarySettings({ skillsRoots: grantRoots, profilesDir, runDir: granted });
-  args.push("--settings", stageSettings(boundary, { fast: speed === "fast" }));
-  return { args, input, grantNote: rd.note };
+  args.push("--settings", stageSettings(boundary, { fast: sp.sent === "fast" }));
+  return { args, input, grantNote: rd.note, speed: sp };
 }
 
 /**
@@ -501,7 +505,7 @@ export const anthropicAgentEngine = {
   resolveModelId(model) { return resolveModel(model); },
   async runTurn({ message, model, thinking, speed = "standard", timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
-    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, speed, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
+    const { args, input, grantNote, speed: sent } = buildClaudeArgs({ message, model, thinking, speed, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);
@@ -525,7 +529,7 @@ export const anthropicAgentEngine = {
     const pollMs = Math.max(50, Math.min(1000, Math.floor(Math.min(STALL, NOPROG) / 2)));  // tight enough for fast tests, ≤1s in prod
     return await new Promise((resolve) => {
       // The turn's state, which every phase below reads and writes (the phases follow the adapter).
-      const st = { resolve, resumeRef, cwd, runDir, progressFiles, streamFile, args, input, t0, STALL, NOPROG, MIN_RATE, WARMUP, hardMs, pollMs, speed };
+      const st = { resolve, resumeRef, cwd, runDir, progressFiles, streamFile, args, input, t0, STALL, NOPROG, MIN_RATE, WARMUP, hardMs, pollMs, speed: sent.sent, standardBecause: sent.standardBecause };
       st.settle = (code) => settle(st, code);   // declared before any phase, as the hoisted function it was
       if (!spawnTurn(st)) return;
       streamState(st);
@@ -1278,7 +1282,7 @@ function wireStreams(st) {
       // declaration above.
       modelWire: st.wireModelAssistant ?? (st.answeredItself ? null : st.wireModelInit),
       // SPEED GAUGE: what the turn asked for beside what the program reported serving (speedOfClaudeTurn).
-      speed: speedOfClaudeTurn({ requested: st.speed, result: st.resultEvent, init: st.fastInit, calls: st.speedByMessage, notice: st.fastNotice }),
+      speed: speedOfClaudeTurn({ requested: st.speed, standardBecause: st.standardBecause, result: st.resultEvent, init: st.fastInit, calls: st.speedByMessage, notice: st.fastNotice }),
       // PROVIDER GAUGE: the program's own word for who served the turn, read from the result's per-model
       // usage ("firstParty" on Anthropic's own API and "foundry" on Azure Foundry, measured 2026-09-14),
       // or null when the stream never said or its models disagree. Recorded, never inferred from config.
@@ -1316,19 +1320,20 @@ function wireStreams(st) {
  *
  * `served` is the result's `usage.speed`, the program's word for the turn; where the result says nothing, the calls'
  * own words decide it (`mixed` when they disagree), and null where none spoke. `calls` counts the turn's API calls by
- * the speed each reported, so a run can say how many of its judgment-tier calls ran fast. `state` and `disabledReason`
+ * the speed each reported, so a run can say how many of its calls ran fast. `state` and `disabledReason`
  * are the program's `fast_mode_state` and `fast_mode_disabled_reason` (measured on 2.1.295 and 2.1.326: `on`; `off` with
  * `sdk_opt_in_required` when the turn did not ask), and `notice` its own words when it ran a fast request at standard
- * speed for want of usage credits. Nothing here is inferred from what the turn asked for.
+ * speed for want of usage credits. `standardBecause` is why a session of a fast run asked for standard (engine/speed.mjs,
+ * sessionSpeed), null otherwise. Nothing here is inferred from what the turn asked for.
  */
-export function speedOfClaudeTurn({ requested = "standard", result = null, init = null, calls = new Map(), notice = null } = {}) {
+export function speedOfClaudeTurn({ requested = "standard", standardBecause = null, result = null, init = null, calls = new Map(), notice = null } = {}) {
   const count = { fast: 0, standard: 0, unknown: 0 };
   for (const v of calls.values()) count[v === "fast" ? "fast" : v === "standard" ? "standard" : "unknown"]++;
   const reported = typeof result?.usage?.speed === "string" && result.usage.speed ? result.usage.speed : null;
   const fromCalls = count.fast && count.standard ? "mixed" : count.fast ? "fast" : count.standard ? "standard" : null;
   const served = reported ?? fromCalls;
   return {
-    requested, served, basis: served ? "reported" : "unknown", calls: count,
+    requested, standardBecause: standardBecause ?? null, served, basis: served ? "reported" : "unknown", calls: count,
     state: result?.fast_mode_state ?? init?.state ?? null,
     disabledReason: result?.fast_mode_disabled_reason ?? init?.reason ?? null,
     notice: notice ?? null,

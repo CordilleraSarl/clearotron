@@ -119,7 +119,7 @@ export function envelopeFromTurnText(text, toolName) {
  */
 export async function runJxTurn({ body, turn, kind, started, truncatedCause, parse }) {
   const t0 = Number.isFinite(started) ? started : Date.now();
-  const blank = { tookMs: 0, model: null, vendor: null, authMode: null, cloud: null, usage: null };
+  const blank = { tookMs: 0, model: null, vendor: null, authMode: null, cloud: null, usage: null, speed: null };
   if (typeof turn !== "function") return { ok: false, cause: `${kind}: no turn runner was supplied`, ...blank };
 
   const { prompt, toolName } = promptFromRequest(body);
@@ -135,6 +135,8 @@ export async function runJxTurn({ body, turn, kind, started, truncatedCause, par
     // cache and total tokens from the rollup, and a zeroed object in place of null would report a
     // measurement nobody took. Tokens only — never currency.
     usage: r?.usage ?? null,
+    // The turn's speed record, whole, as the driver's turn runner handed it over; null where none was.
+    speed: r?.speed ?? null,
   };
   if (!r?.ok) return { ok: false, cause: r?.cause || `${kind}: the turn did not complete`, ...attribution };
   // The truncation degrade, carried across the transport change. It was `stop_reason: "max_tokens"` on

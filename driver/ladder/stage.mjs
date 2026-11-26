@@ -74,9 +74,10 @@ export function stageOf(name, opts, stageHome, engine) {
   // EACH TURN'S OWN COPY of the stage's tool config, carrying that turn's time to stop sending: ahead of the turn's
   // deadline by the reserve, so a plan call returns what it holds while the turn can still write it (send-until.mjs).
   const turnConfig = (sec) => withSendUntil(gatherMcpConfig, Date.now() + sec * 1000 - sendReserveMs(sec));
-  // THE STAGE'S SPEED, fixed for the ladder: fast on a judgment-tier stage of a run recorded Urgent, standard otherwise
-  // (engine/speed.mjs). Every attempt, warm resume and repair below asks for it, so none pays for its context twice.
-  const speed = turnSpeed({ urgent: urgentForRun(runDir), model });
+  // THE STAGE'S SPEED, fixed for the ladder: fast on every stage of a run recorded Urgent, standard otherwise
+  // (engine/speed.mjs). Every attempt, warm resume and repair below asks for it, so none pays for its context twice; the
+  // adapter sends it only where the stage's model has a faster setting, and the attempt's record says so where not.
+  const speed = turnSpeed({ urgent: urgentForRun(runDir) });
   return { name, engine, stageHome, agent, message, refreshMessage, model, thinking, speed, sessionKey, timeoutSec, stallSec, files, validate,
     maxRetries, runDir, followup, bandSize, derivedLimit, adds, supplementalLane, auth, gatherAllowedTools, gatherSeatWrites: seatWrites,
     declaration: declared, turnOutput: turnOutputOf(declared ?? STAGE_DECLARATIONS[declaredStageOfLabel(name)] ?? null), engineSkillsDir, engineSkillsGrantRoots, engineResolveSkill, turnConfig };
