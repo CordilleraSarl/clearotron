@@ -5625,6 +5625,12 @@
           "skips": 0,
           "todos": 0
         },
+        "missing-four-answers-ride-a-writer-repair-already-owed.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "mock-closure-fixture.test.mjs": {
           "tests": 2,
           "asserts": 10,
