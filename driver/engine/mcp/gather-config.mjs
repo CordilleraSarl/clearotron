@@ -861,6 +861,11 @@ const BUILTIN_TOOLS = Object.freeze({ "knockout-register-read": Object.freeze(["
   // THE REVIEW AND THE CORRECTION ARE HANDED WHAT THEY CHECK, so a consult is one deliberate read: measured in testing, 2026-11-24,
   // with file search the review searched the run's files call after call, and each call carried everything before it.
   "knockout-review": Object.freeze(["Read", "ToolSearch"]), "knockout-correct": Object.freeze(["Read", "ToolSearch"]) });
+/**
+ * Every built-in tool any stage is granted, once each. The run's footing check (engine/probe.mjs) asks the program to
+ * offer exactly these and reads back which it does, so a program that stopped offering one is found at the door.
+ */
+export const EVERY_STAGE_BUILTIN_TOOL = Object.freeze([...new Set([...READ_SEARCH_AND_WRITE, ...Object.values(BUILTIN_TOOLS).flat()])]);
 export function builtinToolsFor(stage) {
   const declared = declaredStageOfLabel(stage);
   if (!declared) return null;

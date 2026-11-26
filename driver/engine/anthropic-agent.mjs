@@ -339,7 +339,7 @@ export const OWN_SEARCH_TOOLS = Object.freeze(["WebSearch"]);
 /** The program's tools that write a file. A result that comes back an error is a write that failed. */
 const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
-export function buildClaudeArgs({ message, model, thinking, speed = "standard", resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
+export function buildClaudeArgs({ message, model, thinking, speed = "standard", footing = null, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
   const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
   const m = claudeModel(model); if (m) args.push("--model", m);
@@ -402,8 +402,11 @@ export function buildClaudeArgs({ message, model, thinking, speed = "standard", 
   const rd = runDirGrant({ runDir, dispatch: grantDispatch ?? input, seatWrites });
   const granted = rd.grant ? runDir : null;
   if (granted) args.push("--add-dir", granted);
-  const boundary = writeBoundarySettings({ skillsRoots: grantRoots, profilesDir, runDir: granted });
+  const boundary = writeBoundarySettings({ skillsRoots: grantRoots, profilesDir, runDir: granted, footingWord: footing?.word ?? null });
   args.push("--settings", stageSettings(boundary, { fast: sp.sent === "fast" }));
+  // THE FOOTING CHECK reads the program's hook events, which it reports only when asked (`--include-hook-events`, the
+  // vendor's CLI help: "Include all hook lifecycle events in the output stream"). Only the check's own turn asks.
+  if (footing?.word) args.push("--include-hook-events");
   return { args, input, grantNote: rd.note, speed: sp };
 }
 
@@ -447,7 +450,7 @@ export function stageSettings(boundary, { fast = false } = {}) {
  * NOTE for whoever next edits the flag list: `--bare` disables hooks. Adding it removes this boundary
  * silently, exactly as `--add-dir` silently granted write.
  */
-export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, runDir = null, hookPath = null } = {}) {
+export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, runDir = null, hookPath = null, footingWord = null } = {}) {
   const trees = authorityTrees({ skillsRoots, profilesDir, runDir });
   if (!trees.length) return null;
   const hook = hookPath ?? join(dirname(fileURLToPath(import.meta.url)), "deny-authority-write.mjs");
@@ -464,9 +467,14 @@ export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, ru
   // that runs every clearance with no boundary and says nothing.
   try { statSync(hook); }
   catch { throw new Error(`write_boundary_hook_missing:${hook} (the deny-hook is not in this deployment; a missing hook command fails OPEN in the CLI, so the dispatch is refused rather than run unprotected)`); }
-  const payload = Buffer.from(JSON.stringify({ trees, runDir: runDir ?? null }), "utf8").toString("base64");
+  // THE FOOTING CHECK'S WORD, on the check's turn alone (engine/probe.mjs). The same program and the same policy are
+  // installed on the session's start too, and answer there with the word, on stderr: proof from the program's own
+  // output that the hooks this value carries run in this session. Every other turn carries neither.
+  const footing = typeof footingWord === "string" && footingWord ? footingWord : null;
+  const payload = Buffer.from(JSON.stringify({ trees, runDir: runDir ?? null, ...(footing ? { footing } : {}) }), "utf8").toString("base64");
   return JSON.stringify({
     hooks: {
+      ...(footing ? { SessionStart: [{ hooks: [{ type: "command", command: process.execPath, args: [hook, payload] }] }] } : {}),
       PreToolUse: [{
         // Bash is in the matcher because seats had it and it walked past this hook entirely. The command
         // tools are now removed from every stage (COMMAND_TOOLS, above), and the arm stays for a program
@@ -503,9 +511,9 @@ export const anthropicAgentEngine = {
   writeBoundary: "enforced",
   // The id a turn's rows record as asked for: the tier through Claude's catalog, `opus` → `anthropic/claude-opus`.
   resolveModelId(model) { return resolveModel(model); },
-  async runTurn({ message, model, thinking, speed = "standard", timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, speed = "standard", footing = null, timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
-    const { args, input, grantNote, speed: sent } = buildClaudeArgs({ message, model, thinking, speed, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
+    const { args, input, grantNote, speed: sent } = buildClaudeArgs({ message, model, thinking, speed, footing, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);
@@ -612,6 +620,8 @@ function streamState(st) {
   st.fastInit = null;                     // init's fast_mode_state and fast_mode_disabled_reason: the session's start
   st.fastNotice = null;                   // the program's own notice about fast mode (out of usage credits), first one
   st.sessionInit = null;                  // the session's id as init states it: what a turn killed before its result resumes
+  st.sessionReport = null;                // init's own account of the session: tools, helpers, key source, version
+  st.hookResponses = [];                  // the hooks the program reports it ran, when the turn asked to be told
   st.foldUsage = (key, u) => {
     if (!u) return;
     const was = st.perMessage.get(key);
@@ -866,6 +876,20 @@ function lineParser(st) {
       // of the session to resume: handed the stage's own key instead, the program refuses it ("requires a valid session
       // ID"), and the retry is spent on the refusal (measured in testing, 2026-11-26).
       if (typeof ev.session_id === "string" && ev.session_id) st.sessionInit ??= ev.session_id;
+      // WHAT THE PROGRAM SAYS ABOUT ITS OWN SESSION: the built-in tools it offers, the helpers it can hand work to, where
+      // its API key came from, and its version. The footing check reads these (engine/probe.mjs); recording only here.
+      st.sessionReport ??= {
+        tools: Array.isArray(ev.tools) ? ev.tools.map(String) : null,
+        agents: Array.isArray(ev.agents) ? ev.agents.map(String) : null,
+        apiKeySource: typeof ev.apiKeySource === "string" ? ev.apiKeySource : null,
+        version: typeof ev.claude_code_version === "string" ? ev.claude_code_version : null,
+      };
+    }
+    // A HOOK THE PROGRAM RAN, as it reports one when asked (`--include-hook-events`): which event, how it ended, and the
+    // start of what it wrote to stderr. Bounded, since only the footing check reads them.
+    else if (ev.type === "system" && ev.subtype === "hook_response") {
+      if (st.hookResponses.length < 20) st.hookResponses.push({ hook: ev.hook_event ?? null, outcome: ev.outcome ?? null,
+        exitCode: Number.isFinite(ev.exit_code) ? ev.exit_code : null, stderr: String(ev.stderr ?? "").slice(0, 200) });
     }
     // THE PROGRAM'S NOTICE ABOUT FAST MODE. Out of usage credits, it retries each fast request at standard speed and says so
     // "on the message stream as a `system` message with subtype `notification`" (the vendor's fast-mode page, "Handle rate
@@ -1283,6 +1307,9 @@ function wireStreams(st) {
       modelWire: st.wireModelAssistant ?? (st.answeredItself ? null : st.wireModelInit),
       // SPEED GAUGE: what the turn asked for beside what the program reported serving (speedOfClaudeTurn).
       speed: speedOfClaudeTurn({ requested: st.speed, standardBecause: st.standardBecause, result: st.resultEvent, init: st.fastInit, calls: st.speedByMessage, notice: st.fastNotice }),
+      // FOOTING: what the program reported about its own session, and the hooks it reported running. Null when it said
+      // nothing at start, which the footing check reads as a session it could not see (engine/probe.mjs).
+      footing: st.sessionReport ? { ...st.sessionReport, hooks: [...st.hookResponses] } : null,
       // PROVIDER GAUGE: the program's own word for who served the turn, read from the result's per-model
       // usage ("firstParty" on Anthropic's own API and "foundry" on Azure Foundry, measured 2026-09-14),
       // or null when the stream never said or its models disagree. Recorded, never inferred from config.
@@ -1347,7 +1374,7 @@ function errResult(t0, e, resumeRef) {
     // reads: a spawn error means NO turn ran — [] is the true observation (nothing was read), not a gap.
     // modelWire: null for the opposite reason — no turn ran, so the wire said nothing about a model, and
     // the record must say UNKNOWN rather than inherit the alias that was asked for.
-    json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, providerWire: null, sessionRef: resumeRef ?? null,
+    json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, providerWire: null, sessionRef: resumeRef ?? null, footing: null,
     // No session ran, so there is nothing to have been interrupted and no stream: null, never an empty record.
     toolCallsByName: null, toolCallsErroredByName: null, session: null, stream: null,
   };
