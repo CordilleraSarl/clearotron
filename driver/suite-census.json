@@ -3197,7 +3197,7 @@
         },
         "a-web-picture-is-embedded-at-the-size-of-its-box.test.mjs": {
           "tests": 7,
-          "asserts": 34,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
