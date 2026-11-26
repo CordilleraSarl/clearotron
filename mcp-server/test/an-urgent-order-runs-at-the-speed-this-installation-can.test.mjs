@@ -25,6 +25,7 @@ const { makeServer } = await import("../server.mjs");
 const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
 const { InMemoryTransport } = await import("@modelcontextprotocol/sdk/inMemory.js");
 const { URGENT_UNAVAILABLE } = await import("../lib/urgent.mjs");
+const { withinAllowance } = await import("../lib/plan.mjs");
 
 // THE TWO INSTALLATIONS: Claude on a subscription can run Urgent; Claude through Amazon Bedrock cannot (the vendor's
 // fast-mode page, read in engine/speed.mjs).
@@ -103,6 +104,10 @@ test("plan_run previews both options' turnaround and count, from the shared effo
     assert.equal(typeof opt.turnaround, "string");
     assert.equal(typeof opt.searches, "number");
   }
+  // THE SHARED COUNT: Urgent uses twice Standard's searches, on its own ruled turnaround (0.5 to 1 hour).
+  assert.equal(can.urgent.searches, 2 * can.standard.searches);
+  assert.deepEqual([can.urgent.turnaroundLowHours, can.urgent.turnaroundHighHours], [0.5, 1]);
+  assert.deepEqual([can.standard.turnaroundLowHours, can.standard.turnaroundHighHours], [1.5, 2.5]);
   installation(CANNOT);
   const cannot = JSON.parse((await call("plan_run", order({ urgent: true }))).content[0].text);
   assert.equal(cannot.howSoon.chosen, "standard", "previewed as it would run: Standard");
@@ -110,4 +115,13 @@ test("plan_run previews both options' turnaround and count, from the shared effo
   assert.equal(cannot.howSoon.urgent, null);
   assert.equal(cannot.howSoon.urgentNote, URGENT_UNAVAILABLE);
   assert.ok(cannot.warnings.includes(URGENT_UNAVAILABLE));
+});
+
+test("an option fits today's allowance by the wall's own rule: with one search left, Standard fits and Urgent does not", () => {
+  const oneLeft = { capped: true, complete: true, today: 3, dailyRunsEffective: 4 };
+  assert.equal(withinAllowance(oneLeft, 1), true);
+  assert.equal(withinAllowance(oneLeft, 2), false);
+  assert.equal(withinAllowance({ ...oneLeft, today: 2 }, 2), true, "two left: Urgent fits");
+  assert.equal(withinAllowance({ ...oneLeft, capped: false }, 2), null, "no cap applies to this session");
+  assert.equal(withinAllowance({ ...oneLeft, complete: false }, 2), null, "today's usage could not be read");
 });

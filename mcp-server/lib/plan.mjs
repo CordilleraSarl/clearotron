@@ -188,6 +188,17 @@ function bindingLayersForOrder(jurisdictions) {
  *
  * Takes the SAME args as start_run. Confirming is a separate, explicit start_run call with the same args.
  */
+/**
+ * WHETHER AN OPTION FITS WHAT THE ACCOUNT HAS LEFT TODAY, by the wall's own rule: admission refuses an order whose
+ * count would take the day past the cap (`today + searches > dailyRuns`, driver/urgent-count.mjs). An Urgent order
+ * counts two, so with one search left Standard fits and Urgent does not. Null where no cap applies to this session,
+ * or where today's usage could not be read: a preview must not claim either answer on no evidence.
+ */
+export function withinAllowance(allowance, searches) {
+  if (!allowance?.capped || !allowance.complete || typeof searches !== "number") return null;
+  return allowance.today + searches <= allowance.dailyRunsEffective;
+}
+
 export function planRun(args = {}, { scope, now = Date.now() } = {}) {
   // Resolved, not merely checked — and BEFORE buildJob, so the preview describes the job start_run
   // would build, including the account it would run under when the request named none.
@@ -314,7 +325,8 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
   // HOW SOON: both options' turnaround and count, each from the shared effort model for this search as configured —
   // the same quote the portal's footer reads — so the preview never carries a second copy of either figure.
   const quoteAs = (urgent) => quoteForJob({ job: { ...job, urgent }, profile, searchPolicy: resolved, scope: eff });
-  const option = (q) => (q ? { turnaround: q.turnaround, turnaroundLowHours: q.turnaroundLowHours, turnaroundHighHours: q.turnaroundHighHours, searches: q.searches } : null);
+  const option = (q) => (q ? { turnaround: q.turnaround, turnaroundLowHours: q.turnaroundLowHours, turnaroundHighHours: q.turnaroundHighHours,
+    searches: q.searches, withinAllowance: withinAllowance(allowance, q.searches) } : null);
   // The daily allowance, reported for every principal and BLOCKING only for a client account (the one
   // kind the wall actually caps). Advice, not a gate — see allowanceFor.
   const allowance = allowanceFor(profile, { scope, now });
