@@ -98,6 +98,9 @@
     "buffers": "file:vendor/buffers",
     "exceljs": "^4.4.0",
     "jose": "^6.2.3",
+    "jpeg-js": "^0.4.4",
+    "omggif": "^1.0.10",
+    "pngjs": "^7.0.0",
     "undici": "^7.29.1"
   },
   "bin": {

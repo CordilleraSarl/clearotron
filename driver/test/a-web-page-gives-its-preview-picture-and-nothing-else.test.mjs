@@ -66,7 +66,7 @@ const local = (u, o) => fetchBytes(u, { ...o, allow: () => ({ ok: true }) });
 
 test("each page gives its declared picture or a recorded reason, and only the four image types count", async () => {
   const { rows } = await fetchPagePictures([`${base}/page`, `${base}/direct.png`, `${base}/bare`, `${base}/svgpage`, `${base}/missing`, `${base}/moved`],
-    { seconds: 10, fetcher: local });
+    { seconds: 10, fetcher: local, compareFrontPages: false });   // the rule for a site's general card has its own test
   assert.deepEqual(rows.map((r) => r.state), ["fetched", "fetched", "none", "not-a-picture", "refused", "fetched"]);
   assert.equal(rows[0].picture, `${base}/pic.png`);
   assert.equal(rows[0].contentType, "image/png");
@@ -76,7 +76,7 @@ test("each page gives its declared picture or a recorded reason, and only the fo
 
 test("at the limit an open request is abandoned and an unrequested page is not tried; nothing later is kept", async () => {
   const pages = Array.from({ length: 4 }, (_, i) => `${base}/slow${i}`);
-  const { rows, aborted } = await fetchPagePictures(pages, { seconds: 0.4, concurrency: 2, fetcher: local });
+  const { rows, aborted } = await fetchPagePictures(pages, { seconds: 0.4, concurrency: 2, fetcher: local, compareFrontPages: false });
   assert.ok(aborted);
   assert.deepEqual(rows.map((r) => r.state), ["not-arrived", "not-arrived", "not-tried", "not-tried"]);
   assert.ok(rows.every((r) => r.data === null), "a picture arriving after the limit was kept");
