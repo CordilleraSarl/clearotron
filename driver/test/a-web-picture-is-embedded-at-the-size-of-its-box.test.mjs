@@ -16,7 +16,7 @@ import jpeg from "jpeg-js";
 import pngjs from "pngjs";
 import omggif from "omggif";
 import { thumbnailOf, fittedSize, PICTURE_BOX, PICTURE_PIXEL_RATIO, SERVED_WEBP_MAX_BYTES } from "../picture-thumbnail.mjs";
-import { fetchPagePictures, shrinkPictures, writePictureRecord, webPicturesForReport, frontPageOf } from "../web-pictures.mjs";
+import { fetchPagePictures, writePictureRecord, webPicturesForReport, frontPageOf } from "../web-pictures.mjs";
 
 const MAX_W = PICTURE_BOX.width * PICTURE_PIXEL_RATIO, MAX_H = PICTURE_BOX.height * PICTURE_PIXEL_RATIO;
 const pixels = (w, h, { clear = false } = {}) => {
@@ -68,16 +68,23 @@ test("a picture already as small as its box is kept as served when re-writing it
   assert.ok(t.kept === "as served" ? t.bytes === small : t.bytes.length < small.length, "a small picture was re-written larger");
 });
 
-test("the record keeps what the site served, stores the shrunk picture, and a PNG turned JPEG still draws", async () => {
+// A fake web: each page declares `/<name>.png` as its preview, and the pictures are bytes chosen per test.
+const fakeWeb = (pictures, { hang = new Set() } = {}) => async (url, { signal }) => {
+  const u = new URL(url);
+  if (hang.has(u.href)) return new Promise((_, reject) => signal.addEventListener("abort", () => reject(new Error("aborted")), { once: true }));
+  if (u.pathname.endsWith(".png")) return { ok: true, status: 200, url: u.href, contentType: "image/png", bytes: pictures[u.href] };
+  const name = u.pathname === "/" ? "front" : u.pathname.slice(1);
+  return { ok: true, status: 200, url: u.href, contentType: "text/html", bytes: Buffer.from(`<meta property="og:image" content="/${name}.png">`) };
+};
+
+test("each picture is shrunk as it arrives; the record keeps what the site served and stores the shrunk picture, which still draws", async () => {
   const run = mkdtempSync(join(tmpdir(), "web-picture-thumb-"));
   try {
     mkdirSync(join(run, "_driver"));
     const served = pngOf(1200, 630);
     const sha = createHash("sha256").update(served).digest("hex");
-    const result = { ms: 30, aborted: false, rows: [{ page: "https://ostrevin.example/shop", site: "ostrevin.example", state: "fetched", picture: "https://ostrevin.example/card.png",
-      contentType: "image/png", bytes: served.length, sha256: sha, ms: 20, data: served }] };
-    await shrinkPictures(result);
-    assert.ok(Number.isFinite(result.shrinkMs), "the time the shrinking took is not kept");
+    const result = await fetchPagePictures(["https://ostrevin.example/shop"], { seconds: 20, fetcher: fakeWeb({ "https://ostrevin.example/shop.png": served }), compareFrontPages: false });
+    assert.ok(Number.isFinite(result.shrinkMs), "the time shrinking took is not kept");
     const rec = writePictureRecord(run, { cards: new Map([[1, ["https://ostrevin.example/shop"]]]), result, seconds: 20, concurrency: 6, takenAt: "2026-11-26T10:00:00.000Z" });
     const row = rec.rows[0];
     assert.deepEqual([row.contentType, row.bytes, row.sha256, row.width, row.height], ["image/png", served.length, sha, 1200, 630], "what the site served is not kept as evidence");
@@ -91,14 +98,23 @@ test("the record keeps what the site served, stores the shrunk picture, and a PN
   } finally { rmSync(run, { recursive: true, force: true }); }
 });
 
-// A fake web: each page declares `/<name>.png` as its preview, and the pictures are bytes chosen per test.
-const fakeWeb = (pictures, { hang = new Set() } = {}) => async (url, { signal }) => {
-  const u = new URL(url);
-  if (hang.has(u.href)) return new Promise((_, reject) => signal.addEventListener("abort", () => reject(new Error("aborted")), { once: true }));
-  if (u.pathname.endsWith(".png")) return { ok: true, status: 200, url: u.href, contentType: "image/png", bytes: pictures[u.href] };
-  const name = u.pathname === "/" ? "front" : u.pathname.slice(1);
-  return { ok: true, status: 200, url: u.href, contentType: "text/html", bytes: Buffer.from(`<meta property="og:image" content="/${name}.png">`) };
-};
+test("a picture still being shrunk at the limit is recorded as not shrunk in time, keeps no bytes and is not drawn", async () => {
+  // A pool whose worker never answers: only the limit ends its work.
+  const stuck = () => { const held = []; return { shrink: () => new Promise((resolve) => held.push(resolve)), close: () => held.forEach((r) => r({ unfinished: true })) }; };
+  const result = await fetchPagePictures(["https://pellavine.example/app"], { seconds: 0.3, compareFrontPages: false, makeShrinker: stuck,
+    fetcher: fakeWeb({ "https://pellavine.example/app.png": pngOf(30, 20) }) });
+  const [row] = result.rows;
+  assert.ok(result.aborted, "the step did not end at its limit");
+  assert.equal(row.state, "fetched");
+  assert.equal(row.notStored, "not shrunk within the limit");
+  assert.equal(row.data, null, "a picture not shrunk in time kept its bytes");
+  const run = mkdtempSync(join(tmpdir(), "web-picture-late-"));
+  try {
+    mkdirSync(join(run, "_driver"));
+    writePictureRecord(run, { cards: new Map([[1, ["https://pellavine.example/app"]]]), result, seconds: 0.3, concurrency: 6 });
+    assert.equal(webPicturesForReport(run).size, 0, "a picture not shrunk in time was drawn");
+  } finally { rmSync(run, { recursive: true, force: true }); }
+});
 
 test("an inner page whose picture is its site front page's is dropped; the front page is asked on the same clock and gives no card a picture", async () => {
   const general = pngOf(20, 10), own = pngOf(10, 20);
@@ -114,9 +130,7 @@ test("an inner page whose picture is its site front page's is dropped; the front
   const run = mkdtempSync(join(tmpdir(), "web-picture-front-"));
   try {
     mkdirSync(join(run, "_driver"));
-    const result = { ms: 1, aborted: false, rows };
-    await shrinkPictures(result);
-    writePictureRecord(run, { cards: new Map([[1, ["https://varnolde.example/shop", "https://varnolde.example/app"]]]), result, seconds: 5, concurrency: 6 });
+    writePictureRecord(run, { cards: new Map([[1, ["https://varnolde.example/shop", "https://varnolde.example/app"]]]), result: { ms: 1, aborted: false, rows }, seconds: 5, concurrency: 6 });
     assert.deepEqual((webPicturesForReport(run).get("1") ?? []).map((p) => p.page), ["https://varnolde.example/app"], "not only the page's own picture is drawn");
   } finally { rmSync(run, { recursive: true, force: true }); }
 });
