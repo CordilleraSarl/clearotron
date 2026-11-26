@@ -26,7 +26,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type React
 import type { Run } from '../contract/api.ts'
 import { api, saveFailureText } from '../contract/api.ts'
 import { bandRank } from '../contract/tone.ts'
-import { displayName, inSentence, newestFirst, readLabel, readLabelParts, readTime } from '../contract/reads.ts'
+import { displayName, inSentence, newestFirst, readLabel, readLabelParts, readTime, sameDateAsAnother } from '../contract/reads.ts'
 import { marksOf, nameCount, rowsOf, NO_FAMILIES } from '../contract/grouping.ts'
 import type { Families, MarkGroup, Row } from '../contract/grouping.ts'
 import { BOARD_SHARES_FROM, clearancesColumns, pageWindow } from '../contract/listView.ts'
@@ -1492,7 +1492,7 @@ function MarkRow({
           indent={indent}
           showOwner={showOwner}
           latest={r.runId === mark.latestReport?.runId}
-          sameDayAsAnother={mark.reads.some((o) => o.runId !== r.runId && o.date === r.date)}
+          sameDayAsAnother={sameDateAsAnother(mark.reads, r)}
           {...(threaded ? { onRetire: onRetireRun } : {})}
         />
       )) : null}

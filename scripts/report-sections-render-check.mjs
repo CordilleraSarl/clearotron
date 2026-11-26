@@ -64,6 +64,11 @@ const RUNS = Array.from({ length: 12 }, (_, i) => {
     issuedAt: `2026-09-${day}T12:00:00.000Z`, product, productName, runId: `tmpa-read-${i + 1}`,
   }
 })
+// THE CASES THE SEARCH HISTORY TELLS APART (refinement picture search-history.png, approved 2026-11-25): two
+// reports of one day, issued at different times, and a search still running. The newest is the report read.
+Object.assign(RUNS[0], { date: '2026-09-18', issuedAt: '2026-09-18T15:45:00.000Z' })
+Object.assign(RUNS[1], { date: '2026-09-18', issuedAt: '2026-09-18T09:20:00.000Z' })
+Object.assign(RUNS[2], { state: 'running', report: null, date: '2026-09-17', issuedAt: '2026-09-17T08:00:00.000Z', band: null, tone: null })
 const RUN_ID = RUNS[0].runId
 
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.json': 'application/json', '.png': 'image/png', '.woff2': 'font/woff2' }
@@ -238,6 +243,91 @@ for (const width of [1440, 400]) {
     else if (filled(s) !== (foot ? SECTIONS.length : target + 1)) fail.push(`${at}: after the jump to "${SECTIONS[target]}" the strip reads "${s}"`)
     else ok.push(`${at}: a press jumps to "${SECTIONS[target]}" and marks it — ${s}`)
   }
+}
+
+// ── THE HEADER'S TWO STATES (board ReportHeader, approved 2026-11-25) ────────────────────────────────────
+//
+// At the top of the page the header is today's, with "Search history" over the chips. Past it, the same
+// header is one pinned row, in the board's order, and the switch moves nothing in the document. The search
+// history opens from that row and reads as the refinement picture does; Escape closes it and gives focus
+// back. A phone keeps today's header, so it never becomes the single row.
+for (const theme of ['light', 'dark']) {
+  const at = `1440 ${theme} header`
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false })
+  await cmd('Page.navigate', { url: `${origin}/portal/` })
+  await value(`(() => { try { localStorage.setItem('cordillera-theme', '${theme}') } catch (e) {} return 1 })()`)
+  await cmd('Page.navigate', { url: `${origin}/portal/result/${RUN_ID}` })
+  if (!(await until(`document.querySelectorAll('.report-nav .pill').length === ${RUNS.length} && Boolean(document.querySelector('iframe'))`))) {
+    fail.push(`${at}: the report never drew its header and frame`); continue
+  }
+  await wait(800)
+  const top = await value(`({ label: [...document.querySelectorAll('.report-nav .eyebrow')].map((e) => e.textContent.trim()), compact: Boolean(document.querySelector('.report-head.compact')), ask: /Ask AI/.test(document.querySelector('.report-head-row').textContent || '') })`)
+  if (!(top && top.label.includes('Search history') && !top.label.includes('Reads') && !top.compact)) fail.push(`${at}: at the top the header is not today's with "Search history" over the chips (${JSON.stringify(top)})`)
+  else ok.push(`${at}: at the top, today's header with "Search history" over the chips`)
+  const docTop = `Math.round(document.querySelector('iframe').getBoundingClientRect().top + window.scrollY)`
+  const before = await value(docTop)
+  const past = await value(`Math.round(document.querySelector('.report-head-slot').getBoundingClientRect().bottom + window.scrollY - ${56} + 240)`)
+  await value(`(window.scrollTo(0, ${past}), 1)`)
+  await until(`Boolean(document.querySelector('.report-head.compact'))`, 3000)
+  await wait(300)
+  const after = await value(docTop)
+  if (before !== after) fail.push(`${at}: the switch moved the report from ${before} to ${after} in the page`)
+  else ok.push(`${at}: the switch to the single row moves nothing in the page (report at ${after})`)
+  const row = await value(`(() => {
+    const h = document.querySelector('.report-head.compact'); if (!h) return null;
+    const kids = [...h.querySelector('.report-head-row').children];
+    const where = (pred) => kids.findIndex(pred);
+    const name = h.querySelector('h1'); const cs = name ? getComputedStyle(name) : null;
+    return {
+      back: (h.querySelector('.report-back-icon') || {}).getAttribute?.('aria-label') ?? null,
+      order: [where((k) => k.classList.contains('report-back-icon')), where((k) => k.tagName === 'H1'), where((k) => k.classList.contains('risk-dot')),
+        where((k) => k.classList.contains('report-history')), where((k) => k.classList.contains('report-sections')),
+        where((k) => /Ask AI/.test(k.textContent || '')), where((k) => /Export/.test(k.textContent || ''))],
+      history: (h.querySelector('.report-history-btn') || {}).textContent?.trim() ?? null,
+      oneRow: Math.round(h.getBoundingClientRect().height),
+      ellipsis: cs ? cs.textOverflow === 'ellipsis' && cs.whiteSpace === 'nowrap' : false,
+      pinnedAt: Math.round(h.getBoundingClientRect().top),
+    };
+  })()`)
+  // Ask AI is drawn where this deployment offers it, in both states or in neither: this fixture offers none.
+  const drawn = row ? row.order.filter((n, i) => !(i === 5 && !top?.ask)) : []
+  const inOrder = row && (row.order[5] >= 0) === Boolean(top?.ask) && drawn.every((n, i) => n >= 0 && (i === 0 || n > drawn[i - 1]))
+  if (!row || !inOrder || row.back !== 'All Clearances' || row.history !== `Search history · ${RUNS.length}` || row.pinnedAt !== 56 || !row.ellipsis || row.oneRow > 64) {
+    fail.push(`${at}: the single row is not the board's (${JSON.stringify(row)})`)
+  } else ok.push(`${at}: one pinned row, ${row.oneRow}px, in the board's order: back, name, band, "${row.history}", sections, ${top?.ask ? 'Ask AI, ' : ''}Export`)
+  await value(`(document.querySelector('.report-history-btn').click(), 1)`)
+  await until(`Boolean(document.querySelector('.report-history-list'))`, 3000)
+  const list = await value(`[...document.querySelectorAll('.report-history-row')].map((b) => ({ text: b.innerText.replace(/\s+/g, ' ').trim(), current: b.getAttribute('aria-current') === 'true', latest: Boolean(b.querySelector('.report-history-tag')), live: (b.querySelector('.report-history-live') || {}).textContent || null }))`)
+  const want = list && list.length === RUNS.length
+    && list.filter((r) => r.current).length === 1 && list[0].current
+    && list.filter((r) => r.latest).length === 1 && list[0].latest
+    && /09-18 · 15:45 UTC/.test(list[0].text) && /09-18 · 09:20 UTC/.test(list[1].text)
+    && list[2].live === 'Running' && !/UTC/.test(list[2].text)
+    && list.slice(3).every((r) => !/UTC/.test(r.text))
+  if (!want) fail.push(`${at}: the search history does not read as the refinement picture (${JSON.stringify(list)})`)
+  else ok.push(`${at}: the search history lists ${list.length}, newest first: the one read ticked, "Latest report" once, times only on one day's two reports, "Running" with no time`)
+  await shot(`header-pinned-history-${theme}.png`)
+  await value(`(document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })), 1)`)
+  await wait(150)
+  const closed = await value(`!document.querySelector('.report-history-list') && document.activeElement === document.querySelector('.report-history-btn')`)
+  if (!closed) fail.push(`${at}: Escape did not close the search history and give focus back to its button`)
+  else ok.push(`${at}: Escape closes the search history and gives focus back`)
+  await value(`(window.scrollTo(0, 0), 1)`)
+  await until(`!document.querySelector('.report-head.compact')`, 3000)
+  if (await value(`Boolean(document.querySelector('.report-head.compact'))`)) fail.push(`${at}: back at the top, the full header did not return`)
+  else ok.push(`${at}: back at the top, the full header returns`)
+  await shot(`header-top-${theme}.png`)
+}
+{
+  const at = '400 light header'
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 400, height: 900, deviceScaleFactor: 1, mobile: true })
+  await cmd('Page.navigate', { url: `${origin}/portal/result/${RUN_ID}` })
+  await until(`document.querySelectorAll('.report-nav .pill').length === ${RUNS.length}`)
+  await value(`(window.scrollTo(0, 3000), 1)`)
+  await wait(500)
+  const phone = await value(`({ compact: Boolean(document.querySelector('.report-head.compact')), pinned: Math.round(document.querySelector('.report-head').getBoundingClientRect().top) })`)
+  if (!phone || phone.compact || phone.pinned !== 56) fail.push(`${at}: a phone does not keep today's pinned header (${JSON.stringify(phone)})`)
+  else ok.push(`${at}: a phone keeps today's pinned header`)
 }
 
 for (const line of ok) console.log(`  ok   ${line}`)

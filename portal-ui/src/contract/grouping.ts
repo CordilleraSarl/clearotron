@@ -35,7 +35,7 @@
 
 import type { Run } from './api.ts'
 import type { Band, Tone } from './tone.ts'
-import { displayName, markKey, newestFirst } from './reads.ts'
+import { displayName, latestIssued, markKey, newestFirst } from './reads.ts'
 import { worstBand, bandRank } from './tone.ts'
 import { runKey } from './genericKey.ts'
 
@@ -193,8 +193,9 @@ export function marksOf(runs: readonly Run[], families: Families = NO_FAMILIES):
   for (const [id, bucket] of byKey) {
     const reads = [...bucket].sort(newestFirst)
     const current = reads[0]!
-    // Newest first already, so the first delivered read is the latest report.
-    const latestReport = reads.find((r) => r.state === 'delivered') ?? null
+    // Newest first already, so the first delivered read is the latest report — the one rule the report's
+    // Search history tags it by too.
+    const latestReport = latestIssued(reads)
     // The row's own bands, worst first. A single mark has exactly one; a batch has what its names came
     // back with. Reported, never computed — see bandsPresent.
     const rowBands = bandsPresent(
