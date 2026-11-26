@@ -299,10 +299,11 @@ function useReportFrame() {
       send('section', card)
     }
   }, [sections, send])
-  useEffect(() => {
+  const reland = useCallback(() => {
     const land = settling.current
     if (land && Date.now() < land.until) send('section', land.card)
-  }, [height, send])
+  }, [send])
+  useEffect(() => { reland() }, [height, reland])
   useEffect(() => {
     const stop = () => { settling.current = null }
     const opts = { passive: true } as const
@@ -315,7 +316,7 @@ function useReportFrame() {
     if (hello) send('theme', theme)
   }, [theme, hello, send])
 
-  return { ref, height, send, failed, controls, sections, askedFrom, clearFailed: () => setFailed(null) }
+  return { ref, height, send, reland, failed, controls, sections, askedFrom, clearFailed: () => setFailed(null) }
 }
 
 /**
@@ -563,6 +564,12 @@ export function Result({
   // after them would change call order between renders.
   const frame = useReportFrame()
   const pin = usePinnedHeader(Boolean(run))
+  // A HEADER THAT CHANGES STATE WHILE A CARD IS LANDING changes how much of the page it covers. Where the row cannot
+  // fit, the full header is pinned once the jump has passed it, taller than the row the jump allowed for, and it
+  // covered the card (measured: card at 123px, header ending at 249px). So the landing is sent again, against the
+  // header now pinned.
+  const { reland } = frame
+  useEffect(() => { reland() }, [pin.compact, pin.pinnedFull, reland])
   const history = useMemo(() => (run ? searchHistory(reads, run.runId) : []), [reads, run])
 
   // HOW MANY SECTIONS THE READER HAS REACHED (owner, 2026-09-19): the strip shows progress through the
