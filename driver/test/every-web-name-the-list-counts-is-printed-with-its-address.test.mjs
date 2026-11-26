@@ -17,6 +17,7 @@ import { fileURLToPath } from "node:url";
 import { webAddresses, clearedNames } from "../publish/search-depth.mjs";
 import { parseReport } from "../publish/parse.mjs";
 import { renderHtml } from "../publish/render.mjs";
+import { REPORT_ROOT_DARK } from "../../shared/brand.mjs";
 
 const at = (p) => fileURLToPath(new URL(p, import.meta.url));
 
@@ -120,3 +121,11 @@ for (const demo of ["global-preliminary-search", "multi-country-focus-search"]) 
     }
   });
 }
+
+// IN THE DARK THEME THE ADDRESSES TAKE THE DARK LINK COLOUR. report.css's .crow .curl out-ranked the dark theme's bare
+// link rule, so the addresses stayed the light crimson on the dark ground, about 1.8:1 (measured 2026-11-26).
+test("in the dark theme the list's addresses take the page's dark link colour", () => {
+  const linkColour = REPORT_ROOT_DARK.match(/\[data-theme="dark"\] a,[^{]*\{color:(#[0-9a-fA-F]{6})\}/)?.[1];
+  assert.ok(linkColour, "the dark theme names no link colour, so nothing below was checked");
+  assert.match(REPORT_ROOT_DARK, new RegExp(`\\[data-theme="dark"\\] \\.crow \\.curl\\{color:${linkColour}\\}`), "the addresses keep the light crimson in the dark theme");
+});
