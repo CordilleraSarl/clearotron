@@ -42,6 +42,7 @@ test("sent again while it waits, after a refusal before starting, or after it fi
   const filed = (r) => { const s = r.structuredContent ?? {}; return [r.isError ?? false, s.outcome, s.id, s.state, s.reason]; };
   const whileWaiting = await call("start_run", order("retry-1"));
   assert.deepEqual(filed(whileWaiting), [false, "already-filed", "retry-1", "waiting", null], text(whileWaiting));
+  assert.deepEqual(jsonFiles(), ["retry-1.json"], "the first order, and no second beside it");
 
   // The runner refused it at the claim: the marker it leaves, and the reason beside it.
   renameSync(join(QUEUE, "retry-1.json"), join(QUEUE, "retry-1.failed"));
@@ -53,5 +54,6 @@ test("sent again while it waits, after a refusal before starting, or after it fi
   renameSync(join(QUEUE, "retry-1.failed"), join(QUEUE, "retry-1.done"));
   const afterDelivery = await call("start_run", order("retry-1"));
   assert.deepEqual(filed(afterDelivery).slice(0, 4), [false, "already-filed", "retry-1", "delivered"]);
+  assert.equal(afterDelivery.structuredContent.terminal, true, "a delivered order is finished");
   assert.deepEqual(jsonFiles(), [], "nothing new in the queue at any point");
 });
