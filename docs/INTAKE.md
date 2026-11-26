@@ -14,7 +14,7 @@ validated by the same `driver/enqueue-schema.mjs` (one validator, two doors):
    order answers to it.
 2. **The ops-MCP `start_run` tool** (`mcp-server/lib/ops.mjs`) — same job assembly + validation,
    for agent/programmatic operators over MCP. `order_status` answers what became of an order by its
-   reference, within the session's own accounts.
+   reference, among the companies the session may see.
 
 Anything else that writes a syntactically valid job file into a queue dir will also run — the two
 doors are conveniences with validation at the edge, not gatekeepers — but they are the supported

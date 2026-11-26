@@ -40,7 +40,7 @@ shows in a diff of that file.
 - The six tools that change something (`start_run`, `stop_run`, `feed_context`, `what_if_run`,
   `mark_sent`, `ack_event`) add an `outcome` field that says whether it happened. A refusal answers
   `outcome: "refused"`, with the refusal's sentence in `reason`. `start_run` sent the reference of an order the
-  same account already placed answers `outcome: "already-filed"` with that order's state, and queues nothing.
+  same company already placed answers `outcome: "already-filed"` with that order's state, and queues nothing.
 - The six report readers (`brief`, `list_findings`, `get_finding`, `list_evidence`, `list_searches`,
   `get_search_coverage`) add a `document` field naming the report document version they read, such as
   `report-document/clearance-1`, or null where they read the run's own files.
