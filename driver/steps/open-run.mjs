@@ -63,15 +63,16 @@ export async function openRun({ job, opts }) {
   const unserved = unservedChoice(recorded, { engineRegistered: recorded.state === "recorded" && Boolean(engineNamed(recorded.engine)) });
   if (unserved) throw park({ ...unserved, ...(unserved.kind === "engine" ? { detail: `registered: ${registeredEngines().join(", ")}` } : {}) });
   const engineEnv = recorded.state === "recorded" ? { ...process.env, CLEAROTRON_AI: recorded.engine } : process.env;
-  // THE WEB-RESEARCH SERVICE THIS RUN SEARCHES WITH (web-research.mjs). A resumed run keeps the one it recorded, and one
-  // recorded before the service was ran on Perplexity, as did a resumed run with no record at all, which predates the
-  // record; a new run takes the installation's setting. A setting that
-  // names no service refuses every run, as an unknown billing word does: it is a configuration fault, not a missing
-  // search service, so the Knockout's rule of running without one does not cover it.
+  // THE WEB-RESEARCH SERVICE THIS RUN SEARCHES WITH (web-research.mjs). A resumed run keeps the one it recorded, none
+  // included, and one recorded before the service was ran on Perplexity, as did a resumed run with no record at all,
+  // which predates the record; a new run takes the installation's setting, and an installation that names none gives
+  // it none, which the research door below refuses unless the order names a Knockout. A setting that names no service
+  // refuses every new run, as an unknown billing word does: it is a configuration fault, not a missing search service,
+  // so the Knockout's rule of running without one does not cover it.
   const machineResearch = installWebResearch(process.env);
-  const runResearch = recorded.state === "recorded" ? recorded.research ?? WEB_RESEARCH_BEFORE_THE_SETTING
+  const runResearch = recorded.state === "recorded" ? (Object.hasOwn(recorded, "research") ? recorded.research : WEB_RESEARCH_BEFORE_THE_SETTING)
     : resuming ? WEB_RESEARCH_BEFORE_THE_SETTING : machineResearch.service;
-  if (!runResearch)
+  if (!runResearch && recorded.state !== "recorded" && !resuming && machineResearch.invalid)
     throw new Error(`${WEB_RESEARCH_SETTING}=${machineResearch.invalid} names no web-research service — one of: own (the AI program's own web search) or perplexity; refusing rather than guess which one searches`);
   // A recorded engine whose program or sign-in this machine lacks parks the run too; a run with no record meets the
   // doors as before. Only a refusal is caught: a door that passes, or fails open on weather, runs on unchanged.
@@ -330,11 +331,13 @@ export async function openRun({ job, opts }) {
       note(`[run-choices] this run started on the ${held.register ?? "(none)"} register; this machine is set to ${machine.register ?? "(none)"}, and serves the run on the run's own`);
   } catch (e) {
     try { runLog(run.runDir, { event: "run-choices", state: "not-written", detail: String(e?.message ?? e).slice(0, 300) }); } catch { /* best-effort */ }
-    // EXCEPT FOR THE AI PROGRAM'S OWN SEARCH, which the research server and the sweep read from this record alone: a run
-    // without it would search with Perplexity instead, or refuse its grid after the register stages were paid. Nothing has
-    // been spent yet, so it stops here and says why.
+    // EXCEPT FOR THE AI PROGRAM'S OWN SEARCH, AND FOR NO SERVICE AT ALL, which the research server and the sweep read from
+    // this record alone: a run without it would search with Perplexity instead, or refuse its grid after the register
+    // stages were paid. Nothing has been spent yet, so it stops here and says why.
     if (!isResume && runResearch === "own")
       throw new Error(`the run's record of its web-research service could not be written, so its own web search cannot be used: ${String(e?.message ?? e).slice(0, 300)}`);
+    if (!isResume && runResearch == null)
+      throw new Error(`the run's record that this installation chose no web-research service could not be written, so its web half could be searched with a service nobody chose: ${String(e?.message ?? e).slice(0, 300)}`);
   }
   // — WHICH ENGINE THIS RUN LOADED, beside the doctrine store whose commit sits one line up. Those
   // two `head`s are different repositories, which is the whole reason this event names its key

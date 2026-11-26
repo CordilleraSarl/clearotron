@@ -13,10 +13,11 @@
 // through `webResearchCapability`. Nothing decides the service from which keys are present: a Perplexity key on an
 // installation set to "own" is not used for its searches, and a missing key on one set to "own" refuses nothing.
 //
-// AN INSTALLATION THAT NAMES NO SERVICE KEEPS PERPLEXITY, the only service any installation had before this setting
-// existed, so an upgrade keeps the route that worked. That is the installation's existing route, not an inference from
-// its keys: with no key it still refuses at the door, by name, as before. It is reported as not chosen (`chosen:
-// false`), so doctor can say the choice was never made.
+// AN INSTALLATION THAT NAMES NO SERVICE HAS CHOSEN NONE, and nothing chooses for it. A clearance that needs the web half
+// is refused at the door with what to set, before anything is spent; a Knockout, whose answer stands without the web
+// half, runs its register half and says the web half did not run. An installation upgraded from before the setting
+// had the setting written once, by the upgrade, from its own record of research that ran on Perplexity
+// (web-research-upgrade.mjs), never from its keys.
 //
 // A RUN KEEPS THE SERVICE IT STARTED ON (engine/run-choices.mjs). A run recorded before the setting existed ran on
 // Perplexity and resumes there.
@@ -34,12 +35,13 @@ const ENGINE_SEARCH = Object.freeze({ "anthropic-agent": "Claude", "openai-agent
 const DEFAULT_ENGINE = "anthropic-agent";
 
 /**
- * The installation's web-research service: `{ service, chosen }`, or `{ service: null, chosen: true, invalid }` for a
- * value that names no service. An invalid value is never read as either service: the door refuses it by name. PURE.
+ * The installation's web-research service: `{ service, chosen: true }`; `{ service: null, chosen: false, unset: true }`
+ * for an installation that names none; `{ service: null, chosen: true, invalid }` for a value that names no service.
+ * Neither null is ever read as a service: the door refuses each by name. PURE.
  */
 export function installWebResearch(env = process.env) {
   const raw = String(env?.[WEB_RESEARCH_SETTING] ?? "").trim().toLowerCase();
-  if (!raw) return { service: WEB_RESEARCH_BEFORE_THE_SETTING, chosen: false };
+  if (!raw) return { service: null, chosen: false, unset: true };
   if (WEB_RESEARCH_SERVICES.includes(raw)) return { service: raw, chosen: true };
   return { service: null, chosen: true, invalid: raw };
 }
@@ -83,15 +85,30 @@ export function webResearchCapability({ service, engine = null, env = process.en
 }
 
 /**
- * THE RUN DOOR FOR WEB RESEARCH: the run's service (`service`, a resumed run's recorded one) or the installation's,
- * checked on the engine the run uses. Throws, as the configuration's door does, before anything is spent. A setting
- * that names no service is refused by name, never read as either service. IMPURE only through `env`.
+ * THE RUN DOOR FOR WEB RESEARCH: the run's service (`service`; a resumed run's recorded one, or null for a run recorded
+ * as having none) or, where `service` is not given, the installation's, checked on the engine the run uses. Throws, as
+ * the configuration's door does, before anything is spent. A setting that names no service is refused by name, never
+ * read as either service. No service at all passes only a product whose answer stands without the web half, which is
+ * known only where the order names it: an order whose product its profile settles later is refused. IMPURE only
+ * through `env`.
  */
-export function researchDoor(policy, env = process.env, { service = null, engine = null } = {}) {
-  const install = service ? { service } : installWebResearch(env);
-  if (!install.service)
+export function researchDoor(policy, env = process.env, { service, engine = null } = {}) {
+  const install = service === undefined ? installWebResearch(env) : { service };
+  if (install.invalid)
     throw new Error(`[preflight] ${WEB_RESEARCH_SETTING}=${install.invalid} names no web-research service on product "${policy?.product}" `
       + `— one of: own (the AI program's own web search) or perplexity; refusing rather than guess which one searches`);
+  if (!install.service) {
+    if (policy?.components?.commonLawGrid === false) return { checked: false, component: "commonLawGrid", service: null, credEnv: null, missing: [] };
+    throw new Error(notChosenRefusal(policy));
+  }
   return preflightResearchCredential(policy, env, { service: install.service,
     own: install.service === "own" ? webResearchCapability({ service: "own", engine, env }) : null });
+}
+
+/** The door's words for an installation that has chosen no web-research service. PURE. */
+export function notChosenRefusal(policy) {
+  return `[preflight] ${WEB_RESEARCH_SETTING} is not set, so this installation has chosen no web-research service for the `
+    + `common-law / marketplace sweep${policy?.product ? ` on product "${policy.product}"` : ""}; refusing rather than choose one for it. `
+    + `Run \`npx clearotron install\` to choose, or set ${WEB_RESEARCH_SETTING}=perplexity with ${PERPLEXITY_KEY} in the installation's `
+    + "settings and restart (a Knockout search names its product and runs without it, saying its web half did not run)";
 }

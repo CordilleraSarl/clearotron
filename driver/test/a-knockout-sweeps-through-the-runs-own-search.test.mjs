@@ -95,6 +95,22 @@ test("a route with no web search of its own skips the web half under its own cau
   } finally { for (const [k, v] of Object.entries(env)) pinEnv(process.env, k, v); }
 });
 
+test("a run whose installation chose no web-research service searches the web with none, whatever key is set", () => {
+  const saved = process.env.PERPLEXITY_API_KEY;
+  const runDir = aRun(null);
+  try {
+    writeFileSync(join(runDir, "_driver", "run-choices.json"), JSON.stringify({ schema: 1, engine: "anthropic-agent", register: null, research: null }));
+    pinEnv(process.env, "PERPLEXITY_API_KEY", "test-offline");
+    const r = resolveSweepExecutor({}, { runDir });
+    assert.deepEqual({ source: r.source, grid: r.grid, exec: r.exec, skipped: r.skipped },
+      { source: "none", grid: null, exec: null, skipped: "web-research-not-chosen" }, "nobody chose Perplexity for it, so a key does not send its searches there");
+    // Neither a missing key nor a route that cannot search: its own cause, whose sentence is the owner's to give.
+    assert.equal(CAPABILITY_SKIPPED_NOTE["web-research-not-chosen"], undefined);
+    rmSync(join(runDir, "_driver", "run-choices.json"));
+    assert.equal(resolveSweepExecutor({}, { runDir }).source, "perplexity", "a run with no record meets the route it always had");
+  } finally { pinEnv(process.env, "PERPLEXITY_API_KEY", saved); rmSync(runDir, { recursive: true, force: true }); }
+});
+
 test("an owner lookup that was never sent is recorded as not run, not as one that did not answer", async () => {
   const runDir = aRun("own");
   try {

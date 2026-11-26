@@ -75,7 +75,7 @@ const SUPERVISOR = {
   ...AS_FOUND,
   CLEAROTRON_DATABASE: "signa", SIGNA_API_KEY: "k",
   CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: "/usr/local/bin/claude",
-  CLEAROTRON_AI_BILLING: "subscription", PERPLEXITY_API_KEY: "p",
+  CLEAROTRON_AI_BILLING: "subscription", PERPLEXITY_API_KEY: "p", CLEAROTRON_WEB_RESEARCH: "perplexity",
 };
 
 /** What `bin/start.mjs` does to build the unit environment, in the same order. */
@@ -154,7 +154,7 @@ test("composing from the supervisor's own configuration is what makes that box w
   // because AS_FOUND would have had to be complete already — which is the defect, inverted.
   const carried = Object.keys(composed).filter((k) => !(k in AS_FOUND));
   nonEmpty(carried, "the composer added nothing — this arm would pass over a no-op");
-  for (const n of [REGISTER_ENV, "SIGNA_API_KEY", "CLEAROTRON_AI", "CLEAROTRON_CLAUDE_PATH", RESEARCH_ENV])
+  for (const n of [REGISTER_ENV, "SIGNA_API_KEY", "CLEAROTRON_AI", "CLEAROTRON_CLAUDE_PATH", RESEARCH_ENV, "CLEAROTRON_WEB_RESEARCH"])
     assert.ok(carried.includes(n), `${n} did not travel into the unit environment`);
 });
 
@@ -181,6 +181,14 @@ test("a value that NARROWS the product never refuses a start — a Knockout box 
   const row = runRequirements(knockoutOnly, T).find((r) => r.name === RESEARCH_ENV);
   assert.equal(row.blocking, false);
   assert.match(row.why, /Knockout/, "the reason must say which product still works, or it reads as a dead install");
+  // THE CHOICE OF WHO RUNS THE WEB RESEARCH NARROWS IN THE SAME WAY: without it the clearances refuse at the research
+  // door, and a Knockout search still runs.
+  delete knockoutOnly.CLEAROTRON_WEB_RESEARCH;
+  const unchosen = missingRequirements(knockoutOnly, T);
+  assert.deepEqual(unchosen.blocking.map((r) => r.name), [], "no web-research choice blocked the start");
+  const choice = unchosen.narrowing.find((r) => r.name === "CLEAROTRON_WEB_RESEARCH");
+  assert.ok(choice, "the operator is not told no web-research service is chosen");
+  assert.match(choice.why, /Knockout/);
 });
 
 test("the billing row names only the ways the configured engine can be paid for, and never refuses a start", () => {

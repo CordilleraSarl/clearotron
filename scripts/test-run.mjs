@@ -258,6 +258,12 @@ const providerChosen = ["CLEAROTRON_DATABASE"]
   .some((n) => String(process.env[n] ?? "").trim() !== "");
 if (!providerChosen) process.env.CLEAROTRON_DATABASE = "corsearch";
 
+// WHO RUNS THE WEB RESEARCH, CHOSEN FOR THE SUITE AS THE REGISTER IS. An installation that names no service has chosen
+// none, and its clearances refuse at the research door (driver/web-research.mjs), so a suite that named none would meet
+// that refusal in every clearance it runs. Never over an explicit value; the refusal itself is covered by tests that
+// clear the setting.
+if (String(process.env.CLEAROTRON_WEB_RESEARCH ?? "").trim() === "") process.env.CLEAROTRON_WEB_RESEARCH = "perplexity";
+
 // ── THE SUITE'S OWN COMPANY FIXTURES, ASKED FOR IN ONE PLACE ──────────────────────────────────
 //
 // Three profiles in `driver/profiles/` are the suite's, and a resolved roster no longer offers them:

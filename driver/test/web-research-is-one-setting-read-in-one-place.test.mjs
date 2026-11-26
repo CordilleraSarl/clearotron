@@ -3,10 +3,10 @@
 //
 // WEB RESEARCH IS ONE SETTING, READ IN ONE PLACE (web-research.mjs).
 //
-// The installation names its service; an installation that names none keeps Perplexity, its route before the setting
-// existed, and says the choice was never made. What each service can run here is decided from the engine and its
-// billing route, never from which keys are present, and the check places no search. The run door and the run's record
-// read the same answers.
+// The installation names its service; an installation that names none has chosen none, and nothing chooses for it: a
+// clearance that needs the web half is refused with what to set, and a Knockout runs its register half. What each
+// service can run here is decided from the engine and its billing route, never from which keys are present, and the
+// check places no search. The run door and the run's record read the same answers.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -15,20 +15,20 @@ import { join } from "node:path";
 import { installWebResearch, researchDoor, webResearchCapability, OWN_SEARCH_STILL_PERPLEXITY, WEB_RESEARCH_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
 import { preflightResearchCredential } from "../driver.config.mjs";
 import { policyFor } from "../search-policy.mjs";
-import { readRunChoices, recordRunChoices, researchForRun, RunChoiceUnavailable } from "../engine/run-choices.mjs";
+import { readRunChoices, recordRunChoices, researchForRun, researchNotChosen, RunChoiceUnavailable } from "../engine/run-choices.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 
-test("the setting names one of two services; unset keeps Perplexity, unchosen; anything else is no service", () => {
+test("the setting names one of two services; unset chooses none; anything else is no service", () => {
   assert.deepEqual(WEB_RESEARCH_SERVICES, ["own", "perplexity"]);
-  assert.deepEqual(installWebResearch({}), { service: "perplexity", chosen: false });
-  assert.deepEqual(installWebResearch({ [WEB_RESEARCH_SETTING]: "  " }), { service: "perplexity", chosen: false });
+  assert.deepEqual(installWebResearch({}), { service: null, chosen: false, unset: true });
+  assert.deepEqual(installWebResearch({ [WEB_RESEARCH_SETTING]: "  " }), { service: null, chosen: false, unset: true });
   assert.deepEqual(installWebResearch({ [WEB_RESEARCH_SETTING]: " Own " }), { service: "own", chosen: true });
   assert.deepEqual(installWebResearch({ [WEB_RESEARCH_SETTING]: "perplexity" }), { service: "perplexity", chosen: true });
   assert.deepEqual(installWebResearch({ [WEB_RESEARCH_SETTING]: "google" }), { service: null, chosen: true, invalid: "google" });
 });
 
 test("a key is never what decides the service", () => {
-  assert.equal(installWebResearch({ PERPLEXITY_API_KEY: "k" }).chosen, false, "a key present is not a choice");
+  assert.deepEqual(installWebResearch({ PERPLEXITY_API_KEY: "k" }), { service: null, chosen: false, unset: true }, "a key present is not a choice");
   assert.equal(installWebResearch({ [WEB_RESEARCH_SETTING]: "own", PERPLEXITY_API_KEY: "k" }).service, "own", "a key present does not override the choice");
 });
 
@@ -87,6 +87,26 @@ test("the door checks the run's service, and the service handed in wins over the
     "a Knockout is never refused at this door");
 });
 
+test("an installation that names no service is refused a clearance by name, with what to set; a Knockout runs without one", () => {
+  const KEY = { PERPLEXITY_API_KEY: "k" };
+  for (const product of ["global-preliminary-search", "multi-country-focus-search", "full-country-search"]) {
+    assert.throws(() => researchDoor(policyFor(product), KEY), (e) => {
+      assert.match(e.message, new RegExp(`${WEB_RESEARCH_SETTING} is not set, so this installation has chosen no web-research service`));
+      assert.match(e.message, new RegExp(`on product "${product}"`));
+      assert.match(e.message, /npx clearotron install/);
+      assert.match(e.message, new RegExp(`${WEB_RESEARCH_SETTING}=perplexity with PERPLEXITY_API_KEY`));
+      return true;
+    }, `${product}: a key present chose nothing`);
+    assert.throws(() => researchDoor(policyFor(product), KEY, { service: null }), /has chosen no web-research service/, "a run recorded with none is refused too");
+  }
+  assert.throws(() => researchDoor(null, KEY), /has chosen no web-research service/,
+    "an order whose product its profile settles later is refused: nothing says it is a Knockout");
+  assert.deepEqual(researchDoor(policyFor("knockout-search"), KEY),
+    { checked: false, component: "commonLawGrid", service: null, credEnv: null, missing: [] });
+  assert.throws(() => researchDoor(policyFor("knockout-search"), { [WEB_RESEARCH_SETTING]: "google" }), /names no web-research service/,
+    "a setting that names no service is a fault every run is refused over, a Knockout's included");
+});
+
 test("the configuration's door never reads the setting: it checks the service it is handed, Perplexity when none is", () => {
   const p = policyFor("full-country-search");
   assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }), /missing PERPLEXITY_API_KEY/);
@@ -96,7 +116,7 @@ test("the configuration's door never reads the setting: it checks the service it
   assert.throws(() => preflightResearchCredential(p, {}, { service: "google" }), /not a web-research service/);
 });
 
-test("the run's record holds its service, reads it back, and a run recorded before the service keeps Perplexity", () => {
+test("the run's record holds its service or that none was chosen, and a run recorded before the service keeps Perplexity", () => {
   const runDir = mkdtempSync(join(tmpdir(), "web-research-record-"));
   try {
     assert.equal(researchForRun(runDir), null, "no record, no service: the caller meets the installation's setting");
@@ -109,6 +129,16 @@ test("the run's record holds its service, reads it back, and a run recorded befo
     assert.equal(researchForRun(runDir), "perplexity");
     writeFileSync(driverDir(runDir, "run-choices.json"), JSON.stringify({ schema: 1, engine: "anthropic-agent", register: null, research: "google" }));
     assert.equal(readRunChoices(runDir).state, "unreadable", "a service this driver does not know is never read as either service");
+    rmSync(driverDir(runDir, "run-choices.json"));
+    assert.equal(recordRunChoices(runDir, { engine: "anthropic-agent", register: null, research: null }).research, null);
+    const rec = readRunChoices(runDir);
+    assert.ok(Object.hasOwn(rec, "research") && rec.research === null, "none chosen reads back as none, not as a record from before the service");
+    assert.equal(researchForRun(runDir), null);
+    assert.equal(researchNotChosen(runDir), true);
+    rmSync(driverDir(runDir, "run-choices.json"));
+    recordRunChoices(runDir, { engine: "anthropic-agent", register: null });
+    assert.equal(Object.hasOwn(readRunChoices(runDir), "research"), false, "a caller that names no service records nothing about it");
+    assert.equal(researchNotChosen(runDir), false);
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 

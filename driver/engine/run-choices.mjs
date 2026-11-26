@@ -32,12 +32,14 @@ const nameOf = (v) => (v == null ? null : String(v).trim().toLowerCase() || null
  * Write the run's engine and register, once. A record already on disk is never rewritten: the call answers
  * with what is there and `written: false`, so a cold start that is retried keeps its first choice.
  * `register` is null when the machine has none set; that is recorded as it was, not guessed.
- * `research` is the web-research service the run's door admitted (web-research.mjs); null records none.
+ * `research` is the web-research service the run's door admitted (web-research.mjs); null records that the installation
+ * chose none, which a Knockout runs without; left out, nothing is recorded about it.
  */
-export function recordRunChoices(runDir, { engine, register, urgent = null, research = null }) {
+export function recordRunChoices(runDir, { engine, register, urgent = null, research }) {
   const held = readRunChoices(runDir);
   if (held.state !== "none") return { written: false, ...held };
-  const e = nameOf(engine), r = nameOf(register), w = nameOf(research);
+  const e = nameOf(engine), r = nameOf(register), w = research == null ? null : nameOf(research);
+  const researchKey = research === undefined ? {} : { research: w };
   if (w !== null && !WEB_RESEARCH_SERVICES.includes(w))
     throw new Error(`run-choices: "${w}" is not a web-research service (${WEB_RESEARCH_SERVICES.join(", ")})`);
   if (!e || !Object.hasOwn(ENGINE_BINARIES, e))
@@ -47,9 +49,9 @@ export function recordRunChoices(runDir, { engine, register, urgent = null, rese
   const u = urgentOf(urgent);
   ensureDriverDir(runDir);
   const p = driverDir(runDir, RUN_CHOICES_FILE);
-  writeFileSync(`${p}.tmp`, JSON.stringify({ schema: 1, engine: e, register: r, ...(u ? { urgent: u } : {}), ...(w ? { research: w } : {}) }, null, 2) + "\n");
+  writeFileSync(`${p}.tmp`, JSON.stringify({ schema: 1, engine: e, register: r, ...(u ? { urgent: u } : {}), ...researchKey }, null, 2) + "\n");
   renameSync(`${p}.tmp`, p);
-  return { written: true, state: "recorded", engine: e, register: r, ...(u ? { urgent: u } : {}), ...(w ? { research: w } : {}) };
+  return { written: true, state: "recorded", engine: e, register: r, ...(u ? { urgent: u } : {}), ...researchKey };
 }
 
 /**
@@ -71,13 +73,19 @@ export function urgentForRun(runDir) {
 }
 
 /**
- * The web-research service a run keeps: the one it recorded, Perplexity for a run recorded before the service was
- * (WEB_RESEARCH_BEFORE_THE_SETTING: it ran there), and null for a run with no readable record, which the caller
- * meets with the installation's setting as before. PURE but for the read.
+ * The web-research service a run keeps: the one it recorded (null where it recorded that none was chosen), Perplexity
+ * for a run recorded before the service was (WEB_RESEARCH_BEFORE_THE_SETTING: it ran there), and null for a run with no
+ * readable record, which the caller meets with the installation's setting as before. PURE but for the read.
  */
 export function researchForRun(runDir) {
   const rec = readRunChoices(runDir);
-  return rec.state === "recorded" ? rec.research ?? WEB_RESEARCH_BEFORE_THE_SETTING : null;
+  return rec.state === "recorded" ? (Object.hasOwn(rec, "research") ? rec.research : WEB_RESEARCH_BEFORE_THE_SETTING) : null;
+}
+
+/** Whether the run recorded that its installation chose no web-research service, which only a Knockout runs with. PURE but for the read. */
+export function researchNotChosen(runDir) {
+  const rec = readRunChoices(runDir);
+  return rec.state === "recorded" && Object.hasOwn(rec, "research") && rec.research === null;
 }
 
 /**
@@ -98,7 +106,8 @@ export function readRunChoices(runDir) {
   const urgent = urgentOf(o?.urgent);
   const research = o?.research == null ? null : nameOf(o.research);
   if (o?.research != null && !WEB_RESEARCH_SERVICES.includes(research)) return { state: "unreadable", detail: "its web-research service is not one this driver knows" };
-  return { state: "recorded", engine, register, ...(urgent ? { urgent } : {}), ...(research ? { research } : {}) };
+  return { state: "recorded", engine, register, ...(urgent ? { urgent } : {}),
+    ...(research ? { research } : Object.hasOwn(o ?? {}, "research") && o.research === null ? { research: null } : {}) };
 }
 
 /**

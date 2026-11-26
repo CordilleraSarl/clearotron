@@ -121,6 +121,8 @@ import { namingProgram } from "../driver/engine/probe.mjs";   // the bare `claud
 import { wslTarget } from "../shared/wsl.mjs";   // — and which distribution a row should start the server in
 import { ensureDemoProgram } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
+import { webResearchToAdd, installationRunDirs, UPGRADE_NOTE } from "../driver/web-research-upgrade.mjs";   // — the web-research setting an upgraded install is given once
+import { WEB_RESEARCH_SETTING } from "../driver/web-research-names.mjs";
 import { mcpOriginFor } from "../shared/lane-address.mjs";   // — one author for the origin
 import { SERVER_INSTALL_SET, SERVER_UNITS, BACKGROUND_RETIRED, aBackgroundStartRefreshes, unitsToRestartOnRefresh, unitHealthVerdict } from "../shared/server-units.mjs";   // — one authority, two callers
 // — the door --background now INSTALLS, and the one authority for the settings
@@ -1522,6 +1524,13 @@ if (isMain) {
     : secretFor("TRADEMARK_MCP_TOKEN_SECRET");
   if (!process.env.PORTAL_LOCAL_USER) generated.PORTAL_LOCAL_USER = user;
   const stores = DEMO ? {} : storesForOtherReaders(paths);
+  // AN INSTALLATION UPGRADED FROM BEFORE THE WEB-RESEARCH SETTING is given it once, from its own runs' record of research
+  // that ran on Perplexity (driver/web-research-upgrade.mjs); one that names a service keeps it, and one whose record
+  // cannot settle it is given nothing and asked by setup. Written add-only beside the stores, so a line an operator
+  // wrote wins, and set in this process only once written, so this start's services and the services' file read what
+  // the settings file says.
+  const research = DEMO ? { add: null } : webResearchToAdd(process.env, installationRunDirs(paths.workspace));
+  const researchAdded = research.add ?? {};
 
   // A DEMO WRITES NO SECRETS AND NO ADDRESS. They are generated per run and live in memory only, which
   // is the same posture the ops key already has here — and it is what makes "removing the demo is one
@@ -1530,10 +1539,10 @@ if (isMain) {
   // THE STORES ARE WRITTEN EVEN WHEN NO SECRET IS. An install whose secrets are already in the file is
   // exactly the install whose connector and doctor could not see its saved searches, and a gate on the
   // secrets alone would never reach it.
-  if ((Object.keys(generated).length || Object.keys(stores).length) && !DEMO) {
+  if ((Object.keys(generated).length || Object.keys(stores).length || Object.keys(researchAdded).length) && !DEMO) {
     let existing = "";
     try { existing = readFileSync(ENV_PATH, "utf8"); } catch (e) { if (e.code !== "ENOENT") fatal(`${ENV_PATH} exists but could not be read (${e.code}).`); }
-    const merged = mergeEnvFile(existing, { ...generated, ...stores }, { notes: STORE_NOTES });
+    const merged = mergeEnvFile(existing, { ...generated, ...stores, ...researchAdded }, { notes: { ...STORE_NOTES, [WEB_RESEARCH_SETTING]: UPGRADE_NOTE } });
     if (merged.added.length) {
       // ONE WRITER FOR EVERY FILE THAT HOLDS CREDENTIALS, and it creates the directory. This site had its
       // own copy of the write and did not learn what the wizard's copy learned when `.env` moved under
@@ -1546,6 +1555,7 @@ if (isMain) {
       }
       // NAMES only. Some of what this file holds is credentials.
       say(`  wrote          ${merged.added.join(", ")} to ${ENV_PATH} (mode 600)`);
+      for (const k of merged.added) if (Object.hasOwn(researchAdded, k)) process.env[k] = researchAdded[k];
     }
   }
   process.env.TRADEMARK_MCP_TOKEN_SECRET = tokenSecret;   // mintToken reads it from the environment

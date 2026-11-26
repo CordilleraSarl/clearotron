@@ -9,7 +9,7 @@
 
 export const WEB_RESEARCH_SETTING = "CLEAROTRON_WEB_RESEARCH";
 export const WEB_RESEARCH_SERVICES = Object.freeze(["own", "perplexity"]);
-/** The service of an installation that names none, and of a run recorded before the setting existed. */
+/** The service of a run recorded before the setting existed, which ran there. An installation that names none chooses none. */
 export const WEB_RESEARCH_BEFORE_THE_SETTING = "perplexity";
 export const PERPLEXITY_KEY = "PERPLEXITY_API_KEY";
 

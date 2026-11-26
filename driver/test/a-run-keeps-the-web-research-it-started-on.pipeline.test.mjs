@@ -5,8 +5,8 @@
 //
 // A cold start records the installation's service beside its engine and register. A resume is checked on the service it
 // recorded, never on the machine's current setting, and one this runner cannot serve parks by name with its work kept. A
-// run recorded before the service was ran on Perplexity and is checked there. A setting that names no service refuses a
-// new run before anything is spent. The order is the one the engine-record tests use; the resumes name a product whose
+// run recorded before the service was ran on Perplexity and is checked there. An installation that names no service, and
+// a setting that names none, each refuse a new run before anything is spent. The order is the one the engine-record tests use; the resumes name a product whose
 // answer needs the web half, so the research door applies to them.
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
@@ -71,12 +71,12 @@ async function resumeParked(root, codename, runDir, opts) {
   return { parkedFor: res.parkedFor, marker };
 }
 
-test("a cold start records the installation's web-research service, and says whether it was chosen", async () => {
-  const unset = await startedAndFailed(undefined);
-  assert.equal(recordOf(unset.runDir).research, "perplexity", "an installation that names no service keeps the service it always had");
-  const row = choicesRows(unset.runDir)[0];
+test("a cold start records the installation's web-research service, and says it was chosen", async () => {
+  const perplexity = await startedAndFailed("perplexity");
+  assert.equal(recordOf(perplexity.runDir).research, "perplexity");
+  const row = choicesRows(perplexity.runDir)[0];
   assert.deepEqual({ research: row.research, machineResearch: row.machineResearch, researchChosen: row.researchChosen },
-    { research: "perplexity", machineResearch: "perplexity", researchChosen: false });
+    { research: "perplexity", machineResearch: "perplexity", researchChosen: true });
   const own = await startedAndFailed("own");
   assert.equal(recordOf(own.runDir).research, "own");
   assert.equal(choicesRows(own.runDir)[0].researchChosen, true);
@@ -95,7 +95,7 @@ test("a run recorded on its own AI program's search, resumed where that search c
 });
 
 test("a run recorded before the service was is checked on Perplexity, where it ran, whatever the machine is set to", async () => {
-  const { root, runDir, codename } = await startedAndFailed(undefined);
+  const { root, runDir, codename } = await startedAndFailed("perplexity");
   const { research, ...older } = recordOf(runDir);
   assert.equal(research, "perplexity");
   writeFileSync(driverDir(runDir, "run-choices.json"), JSON.stringify(older));
@@ -114,4 +114,15 @@ test("a setting that names no service refuses a new run before anything is spent
   TEMP_DIRS.push(root);
   await assert.rejects(segment(root, { research: "google" }), /CLEAROTRON_WEB_RESEARCH=google names no web-research service/);
   assert.equal(existsSync(join(root, "pool")), false, "nothing was delivered");
+});
+
+test("an installation that names no service is refused a new clearance before anything is spent, with what to set", async () => {
+  for (const job of [JOB, { ...JOB, product: WITH_THE_WEB_HALF }]) {
+    const root = mkdtempSync(join(tmpdir(), "clearotron-web-research-"));
+    TEMP_DIRS.push(root);
+    await assert.rejects(segment(root, { research: undefined, job, env: { PERPLEXITY_API_KEY: "test-offline" } }),
+      /CLEAROTRON_WEB_RESEARCH is not set, so this installation has chosen no web-research service.*npx clearotron install/s,
+      `${job.product ?? "an order whose product its profile settles"}: a key present chose nothing`);
+    assert.equal(existsSync(join(root, "pool")), false, "nothing was delivered");
+  }
 });
