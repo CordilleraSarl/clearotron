@@ -59,6 +59,68 @@
           "type": "object",
           "required": [
             "outcome",
+            "ok",
+            "id",
+            "existing",
+            "state",
+            "terminal",
+            "runId",
+            "reason",
+            "updatedAt"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "already-filed"
+            },
+            "ok": {
+              "const": true
+            },
+            "id": {
+              "type": "string"
+            },
+            "existing": {
+              "const": true
+            },
+            "state": {
+              "enum": [
+                "waiting",
+                "checking",
+                "running",
+                "resumable",
+                "refused",
+                "failed",
+                "delivered",
+                "cancelled"
+              ]
+            },
+            "terminal": {
+              "type": "boolean"
+            },
+            "runId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "reason": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "updatedAt": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
             "reason"
           ],
           "additionalProperties": false,
@@ -1211,6 +1273,182 @@
           }
         }
       }
+    }
+  },
+  "order_status": {
+    "staff": {
+      "type": "object",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "found",
+            "reference",
+            "state",
+            "terminal",
+            "runId",
+            "reason",
+            "updatedAt",
+            "account",
+            "organisation"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "found": {
+              "const": true
+            },
+            "reference": {
+              "type": "string"
+            },
+            "state": {
+              "enum": [
+                "waiting",
+                "checking",
+                "running",
+                "resumable",
+                "refused",
+                "failed",
+                "delivered",
+                "cancelled"
+              ]
+            },
+            "terminal": {
+              "type": "boolean"
+            },
+            "runId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "reason": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "updatedAt": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "account": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "organisation": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "found",
+            "basis"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "found": {
+              "const": false
+            },
+            "basis": {
+              "enum": [
+                "not-found",
+                "invalid-reference",
+                "could-not-look",
+                "ambiguous"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "client": {
+      "type": "object",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "found",
+            "reference",
+            "state",
+            "terminal",
+            "runId",
+            "reason",
+            "updatedAt"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "found": {
+              "const": true
+            },
+            "reference": {
+              "type": "string"
+            },
+            "state": {
+              "enum": [
+                "waiting",
+                "checking",
+                "running",
+                "resumable",
+                "refused",
+                "failed",
+                "delivered",
+                "cancelled"
+              ]
+            },
+            "terminal": {
+              "type": "boolean"
+            },
+            "runId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "reason": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "updatedAt": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "found",
+            "basis"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "found": {
+              "const": false
+            },
+            "basis": {
+              "enum": [
+                "not-found",
+                "invalid-reference",
+                "could-not-look",
+                "ambiguous"
+              ]
+            }
+          }
+        }
+      ]
     }
   },
   "list_profiles": {

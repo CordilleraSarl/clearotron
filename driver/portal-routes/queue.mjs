@@ -12,9 +12,10 @@ import { orderReceipt } from "../order-receipt.mjs";
 export async function queueRoutes({ poolRoot, workspaceRoot, queueDirs, stopRun, audit }, { method, parts, principal, body, query }) {
   // /portal/api/orders/<reference> — what became of an accepted order, by the reference its start returned, within this
   // person's own visibility: every order for someone who sees everything, else the named account's (and organisation's,
-  // for Generic). Whatever this person may not see answers exactly as no order at all: 404, nothing else. The reason a
-  // run stopped is an operator's diagnostic and is given to someone who sees everything; a refusal before any run is the
-  // requester's own answer and is given to them.
+  // for Generic). Whatever this person may not see answers exactly as no order at all: 404, nothing else. A queue that
+  // would not open (503) and two of this person's own orders under one reference (409) say nothing of anyone else's. The
+  // reason a run stopped is an operator's diagnostic and is given to someone who sees everything; a refusal before any
+  // run is the requester's own answer and is given to them.
   if (parts[1] === "api" && parts[2] === "orders" && parts[3] && !parts[4] && method === "GET") {
     const everything = seesEverything(principal);
     let scope = { everything: true };
@@ -25,8 +26,8 @@ export async function queueRoutes({ poolRoot, workspaceRoot, queueDirs, stopRun,
     }
     const answer = orderReceipt({ queueDirs: queueDirs(), reference: decodeURIComponent(parts[3]), scope });
     if (!answer.found) {
-      if (everything && answer.basis === "could-not-look") return { status: 503, json: { error: "could_not_look", unreadable: answer.unreadable } };
-      if (everything && answer.basis === "ambiguous") return { status: 409, json: { error: "ambiguous" } };
+      if (answer.basis === "could-not-look") return { status: 503, json: { error: "could_not_look", ...(everything ? { unreadable: answer.unreadable } : {}) } };
+      if (answer.basis === "ambiguous") return { status: 409, json: { error: "ambiguous" } };
       return { status: 404, json: { error: "not_found" } };
     }
     const r = answer.receipt;

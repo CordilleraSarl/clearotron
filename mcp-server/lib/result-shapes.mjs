@@ -33,7 +33,7 @@ export function outputSchemaFor(name, { client = false } = {}) {
 // THE SIX VERBS THAT CHANGE SOMETHING, and how each says whether it happened. Each reads a field the verb already
 // returns, so the outcome is the verb's own fact under one name, never a second judgement of it.
 const OUTCOMES = {
-  start_run: (r) => (r?.queued === true ? "queued" : null),
+  start_run: (r) => (r?.queued === true ? "queued" : r?.existing === true ? "already-filed" : null),
   stop_run: (r) => (typeof r?.action === "string" ? r.action : null),
   feed_context: (r) => (r?.ok === true ? "written" : null),
   mark_sent: (r) => (r?.alreadySent === true ? "already-sent" : r?.alreadySent === false ? "marked-sent" : null),

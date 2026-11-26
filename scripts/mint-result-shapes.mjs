@@ -19,6 +19,7 @@
 import { writeFileSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { RECEIPT_STATES } from "../driver/order-receipt.mjs";   // the states an order can be in, named once
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "mcp-server", "result-shapes.json");
@@ -36,6 +37,12 @@ const immediate = { type: ["object", "null"] };
 const startRun = closed(["outcome", "ok", "id", "agent", "queue", "queued", "warnings", "queuePath", "queueWatched", "note"], {
   outcome: { const: "queued" }, ok: { const: true }, id: S, agent: S, queue: S, queued: { const: true }, classify: {},
   warnings: { type: "array", items: S }, queuePath: S, queueWatched: S, note: S });
+// A RETRY IS THE ORDER IT REPEATS: the same account's order already filed under that reference, answered as it stands,
+// with nothing written or counted (driver/order-receipt.mjs orderAlreadyFiled).
+const ORDER_STATES = { enum: Object.keys(RECEIPT_STATES) };
+const startRunExisting = closed(["outcome", "ok", "id", "existing", "state", "terminal", "runId", "reason", "updatedAt"], {
+  outcome: { const: "already-filed" }, ok: { const: true }, id: S, existing: { const: true }, state: ORDER_STATES, terminal: B,
+  runId: SN, reason: SN, updatedAt: SN });
 
 const stopRun = [
   closed(["outcome", "ok", "action", "id", "note"], { outcome: { const: "dequeued" }, ok: { const: true }, action: { const: "dequeued" }, id: S, note: S }),
@@ -86,10 +93,18 @@ const staffRunRow = closed(RUN_ROW_REQUIRED, runRowProps);
 const { url: _u, agent: _a, ...clientRowProps } = runRowProps;
 const clientRunRow = closed(RUN_ROW_REQUIRED.filter((k) => !["url", "agent", "reason"].includes(k)), { ...clientRowProps, reason: S, reasonRedacted: { const: true } });
 
+const orderFound = (extra) => closed(["found", "reference", "state", "terminal", "runId", "reason", "updatedAt", ...Object.keys(extra)],
+  { found: { const: true }, reference: S, state: ORDER_STATES, terminal: B, runId: SN, reason: SN, updatedAt: SN, ...extra });
+const orderNotFound = closed(["found", "basis"], { found: { const: false }, basis: { enum: ["not-found", "invalid-reference", "could-not-look", "ambiguous"] } });
+
 const reads = {
   server_info: { all: closed(["name", "version", "commit", "sourceRepo", "sourceUrl", "license", "copyright"],
     { name: S, version: SN, commit: SN, sourceRepo: S, sourceUrl: S, license: S, copyright: S }) },
   list_runs: { staff: items(staffRunRow), client: items(clientRunRow) },
+  // What became of one order (driver/order-receipt.mjs). The operator's answer names the account it belongs to and why a
+  // run stopped; a client's names neither, and gives the reason only for an order refused before it ran.
+  order_status: { staff: { type: "object", anyOf: [orderFound({ account: SN, organisation: SN }), orderNotFound] },
+    client: { type: "object", anyOf: [orderFound({}), orderNotFound] } },
   list_profiles: { all: closed(["_note", "clients", "genericFallback"], { _note: S, clients: { type: "array", items: O }, genericFallback: S, storeUnreadable: S, unreadable: A }) },
   get_run: {
     staff: closed(["run", "stages", "failover", "artifacts", "coverageSummary"], { run: staffRunRow, product: { const: "knockout" }, stages: A, failover: A, artifacts: A, coverageSummary: O }),
@@ -175,7 +190,7 @@ const describeOptions = closed(["_note", "products", "scopeRules", "urgent", "ac
 const preOrder = { plan_run: { all: planRun }, describe_options: { all: describeOptions } };
 
 const shapes = {
-  start_run: { all: either(startRun) },
+  start_run: { all: either(startRun, startRunExisting) },
   stop_run: { all: either(...stopRun) },
   feed_context: { all: either(feedContext) },
   mark_sent: { all: either(markSent) },
