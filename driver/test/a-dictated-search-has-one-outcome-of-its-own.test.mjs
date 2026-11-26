@@ -46,6 +46,8 @@ test("Claude: found, confirmed empty, capped, all off-site and failed are five o
   assert.deepEqual(o["qzorvak candles"].results.map((r) => r.offSite), [false, true], "a result off the site is kept and marked");
   assert.equal(o["qzorvak wax"].outcome, "empty", "a search that ran and returned nothing confirms it");
   assert.equal(o["qzorvak lantern"].outcome, "capped", "past the budget: a search count of 0 and 'not performed'");
+  const unexplained = outcomes("claude", claudeSearch({ query: "qzorvak soap" }, { urls: [], searchCount: 0, text: "" }));
+  assert.equal(unexplained["qzorvak soap"].outcome, "no-results-reported", "no count and no 'not performed': only what was seen");
   assert.equal(o["qzorvak wick"].outcome, "wrong-site", "every result from another site answers nothing");
   assert.equal(o["qzorvak soap"].outcome, "not-sent");
   const failed = outcomes("claude", claudeSearch({ query: "qzorvak soap" }, { isError: true, text: "tool error" }));
@@ -123,7 +125,10 @@ test("one retry, in smaller batches, for searches not sent, pooled or refused; w
   assert.deepEqual(calls[1].sort(), ["qzorv", "qzorva", "what does qzorvak mean"], "only the unanswered are asked again");
   assert.ok(records.some((r) => r.attempt === 2 && r.query === "qzorva" && r.outcome === "found"));
   assert.ok(records.some((r) => r.attempt === 1 && r.query === "qzorv" && r.outcome === "pooled"), "the first attempt's outcome is kept in the records");
-  assert.ok(records.every((r) => r.service === "codex" && "usage" in r && "seconds" in r));
+  const sentRecords = records.filter((r) => r.outcome !== "too-long");
+  assert.ok(sentRecords.every((r) => r.service === "codex" && "sessionUsage" in r && "sessionSeconds" in r && Number.isInteger(r.session)));
+  assert.equal(new Set(sentRecords.map((r) => r.session)).size, calls.length, "one session number per session, so its tokens are counted once");
+  assert.equal(records.find((r) => r.outcome === "too-long").session, null, "words never sent belong to no session");
 });
 
 test("the ledger: answered searches are cells and receipts with their on-site results; every other outcome is a gap", () => {
@@ -202,7 +207,7 @@ test("the records are kept with the run, and a replay answers from them without 
   keepSearchRecords(runDir, records);
   const kept = savedSearchRecords(runDir);
   assert.equal(kept.length, 2);
-  assert.ok(kept.every((r) => r.service === "codex" && r.model === "gpt-6-luna" && r.speed === "fast" && r.seconds === 2 && r.usage && r.ts));
+  assert.ok(kept.every((r) => r.service === "codex" && r.model === "gpt-6-luna" && r.speed === "fast" && r.sessionSeconds === 2 && r.sessionUsage && r.ts));
   const before = calls;
   const replay = replayedOutcomes([...items, ITEMS[4]], kept);
   assert.equal(calls, before, "a replay calls nothing");

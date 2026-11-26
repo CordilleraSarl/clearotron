@@ -27,15 +27,7 @@ import { dirname, join } from "node:path";
 import { dictatedCells, connotationQueriesOf, reconcileGridLedger, findUnrecordedConnotationQueries } from "../../../providers/perplexity/src/core.js";
 import { gridProvenancePath } from "./grid-provenance.mjs";
 
-export const OWN_SEARCH_SETTING_FILE = "research-search.json";
-
-/** Whether this run's dictated searches are its own AI program's. A stage experiment's shadow folder reads its run's setting. IMPURE (reads). */
-export function ownSearchOn(runDir) {
-  if (!runDir) return false;
-  const p = [runDir, String(runDir).split("/_experiments/")[0]].map((d) => join(d, "_driver", OWN_SEARCH_SETTING_FILE)).find((f) => existsSync(f));
-  if (!p) return false;
-  try { return JSON.parse(readFileSync(p, "utf8"))?.service === "own"; } catch { return false; }
-}
+export { OWN_SEARCH_SETTING_FILE, ownSearchOn } from "./own-search-setting.mjs";
 
 const words = (q) => String(q ?? "").trim().replace(/\s+/g, " ");
 const unquote = (q) => words(String(q ?? "").replace(/"/g, " ")).toLowerCase();
@@ -121,7 +113,8 @@ export function searchOutcomes(search, items, events = [], { answered = false } 
     if (rec.pooled) return { ...base, outcome: "pooled", results: [] };
     if (rec.capped) return { ...base, outcome: "capped", results: [] };
     if (search === "codex" && rec.noList) return { ...base, outcome: "no-results-reported", results: [] };
-    if (!results.length) return { ...base, outcome: rec.ran ? "empty" : "capped", results: [] };
+    // No results, no search count and no "not performed": nothing says why, so only what was seen is recorded.
+    if (!results.length) return { ...base, outcome: rec.ran ? "empty" : "no-results-reported", results: [] };
     if (results.every((r) => r.offSite)) return { ...base, outcome: "wrong-site", results };
     return { ...base, outcome: "found", results };
   });
@@ -172,22 +165,26 @@ export function batchesOf(items, size) {
  */
 export async function runDictatedSearches(search, items, session, { batch = BATCH, retryBatch = RETRY_BATCH } = {}) {
   const outcomes = new Map(), records = [];
+  let sessions = 0;
   const ask = async (list, size, attempt) => {
     for (const b of batchesOf(list, size)) {
       const r = await session(b);
+      const sessionNo = ++sessions;
       for (const o of searchOutcomes(search, b, r.events ?? [], { answered: Boolean(r.answered) })) {
         const key = itemKey(o);
         outcomes.set(key, o);
         records.push({ attempt, service: search, model: r.model ?? null, speed: r.speed ?? null, query: o.query, site: o.site,
           sent: sent(search, o), outcome: o.outcome, links: o.results.map(({ url, title, offSite }) => ({ url, title, offSite })),
-          seconds: r.seconds ?? null, usage: r.usage ?? null, batchSize: b.length });
+          // The session's seconds and tokens are the whole batch's, so they ride under the session's own number: a reader
+          // that sums them sums each session once, never once per search.
+          session: sessionNo, sessionSeconds: r.seconds ?? null, sessionUsage: r.usage ?? null, batchSize: b.length });
       }
     }
   };
   const tooLong = items.filter((d) => String(d.query ?? "").length > MAX_QUERY_CHARS);
   for (const d of tooLong) {
     outcomes.set(itemKey(d), { query: d.query, site: d.site ?? null, outcome: "too-long", results: [] });
-    records.push({ attempt: 1, service: search, model: null, speed: null, query: d.query, site: d.site ?? null, sent: null, outcome: "too-long", links: [], seconds: 0, usage: null, batchSize: 0 });
+    records.push({ attempt: 1, service: search, model: null, speed: null, query: d.query, site: d.site ?? null, sent: null, outcome: "too-long", links: [], session: null, sessionSeconds: null, sessionUsage: null, batchSize: 0 });
   }
   await ask(items.filter((d) => !tooLong.includes(d)), batch, 1);
   const again = items.filter((d) => RETRIED_OUTCOMES.includes(outcomes.get(itemKey(d))?.outcome));
@@ -263,7 +260,7 @@ export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSIO
 // ── THE RECORDS, KEPT WITH THE RUN, AND A REPLAY THAT CALLS NOTHING ─────────────────────────────────────────────────
 //
 // Every search's record is kept in the run folder, one line each: the service, the model, the speed, the words sent,
-// the site, the outcome, the links, the seconds and the token categories. They are the matter's own content, so they are
+// the site, the outcome, the links, and its session's number, seconds and token categories. They are the matter's own content, so they are
 // written there and nowhere else. A replay answers each dictated search from the latest record of the same words and
 // site, and sends nothing: a search the run never recorded is "not-sent" in the replay, never an empty one.
 export const SEARCH_RECORDS_FILE = "web-search-records.jsonl";
