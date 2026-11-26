@@ -324,10 +324,14 @@ export function engineRow(
   readonly mono: string
   readonly state: string
   readonly faults: readonly string[]
+  /** The setup wizard's command, on the row whose engine is not chosen: the wizard asks for it first. */
+  readonly command?: string | null
 } {
   const faults = engineRowFaults(engine, { programDisputed, channel, name })
   // THE UNSET SELECTION, SHOWN AS UNSET: not the default's name, not its id, and not what would pay for it.
-  if (engine.selected === false) return { ok: false, name: 'Not set', mono: '', state: 'Missing', faults }
+  if (engine.selected === false) {
+    return { ok: false, name: 'Not set', mono: '', state: 'Missing', faults, command: `npx ${setupPackage(channel)} install` }
+  }
   return {
     ok: faults.length === 0,
     name: engine.vendor ?? engine.id,

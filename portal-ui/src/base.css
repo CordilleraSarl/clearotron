@@ -1505,6 +1505,34 @@ input.filter {
   background: var(--text-faint);
 }
 
+/* An optional source not set up: the off look, with the dot open (board SettingsProposed, 2026-11-25). */
+.cfg-dot.off.open {
+  box-sizing: border-box;
+  background: transparent;
+  border: 1.5px solid var(--text-muted);
+}
+
+/* Needed and Optional: headings over their categories, each with a rule to the right. */
+.cfg-group-head {
+  display: flex; align-items: center; gap: 12px; margin: 0;
+  font-size: 15px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--text-strong);
+}
+.cfg-group-head::after { content: ''; flex: 1; height: 1px; background: var(--border-hairline); }
+
+/* The command that fixes a row's problem, with Copy at its right (board SettingsCommand, 2026-11-25). */
+.cfg-cmd {
+  display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 6px 6px 6px 14px;
+  border: 1px solid var(--border-hairline); border-radius: 8px; background: var(--surface-sunken);
+}
+.cfg-cmd code { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 13px; color: var(--text-strong); overflow-wrap: anywhere; }
+.cfg-copy {
+  flex: none; min-height: 44px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 7px;
+  background: var(--surface-raised); color: var(--text-strong); font: inherit; font-size: 12.5px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+}
+.cfg-copy:hover { border-color: var(--accent-ink); color: var(--text-accent); }
+.cfg-copy.is-copied { color: var(--tone-low); }
+
 /* ── mobile ──────────────────────────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 899px) {

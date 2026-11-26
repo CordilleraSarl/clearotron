@@ -1142,6 +1142,12 @@ export type ProviderState = {
    * the hop; the reason and the file stay with the server.
    */
   readonly credential: 'absent' | 'usable' | 'unusable' | 'unreadable' | null
+  /**
+   * WHETHER A SEARCH REFUSES TO RUN WITHOUT THIS SOURCE, as the server decides it from the order door's own
+   * requirements: true for the register and the research key, false for every source a search runs without
+   * and discloses. Null from an older server, which the page draws as needed, the look every row had.
+   */
+  readonly needed: boolean | null
 }
 
 /**
@@ -2665,6 +2671,7 @@ export const api = {
                 const s = asRecord(r['credential'])['state']
                 return s === 'absent' || s === 'usable' || s === 'unusable' || s === 'unreadable' ? s : null
               })(),
+              needed: typeof r['needed'] === 'boolean' ? r['needed'] : null,
             }
           })
         : null,

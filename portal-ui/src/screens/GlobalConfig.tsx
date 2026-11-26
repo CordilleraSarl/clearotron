@@ -37,7 +37,7 @@
 // Read-only on purpose. Flipping a switch from a browser would be a production change with no review
 // and no record; these move in configuration management, where they are seen.
 
-import type { CSSProperties, ReactNode } from 'react'
+import { useState, type CSSProperties, type ReactNode } from 'react'
 import { api, isOk } from '../contract/api.ts'
 import { engineRow } from '../contract/engineState.ts'
 import type { EngineState, FlagView } from '../contract/api.ts'
@@ -99,7 +99,12 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
           </div>
         </Group>
 
-        <Group title="Engine">
+        {/* NEEDED, THEN OPTIONAL (board approved 2026-11-25): a source a search refuses to run without, and
+            one it runs without and discloses. Which group a category sits in is the server's `needed`, the
+            same answer the order door refuses by; the engine is always needed. */}
+        <Group title="Needed" heading>
+          <div className="cfg-cat">
+          <div className="cfg-sub">Engine</div>
           <div className="cfg-rows">
             {v.engine ? (
               <Engine
@@ -118,9 +123,7 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
             )}
             {engineCapabilityRows(v.providers ?? []).map((r) => <Row key={r.name} {...r} repo={repo} />)}
           </div>
-        </Group>
-
-        <Group title="Providers">
+          </div>
           {v.providers === null ? (
             <NotRecorded what="which providers are configured" source={v.source} />
           ) : v.providers.length === 0 ? (
@@ -134,17 +137,15 @@ export function GlobalConfig({ ctx }: { readonly ctx: ShellContext }) {
               page as suspect and check the engine&rsquo;s last drain.
             </div>
           ) : (
-            providerCategories(v.providers).map((c) => (
-              <div className="cfg-cat" key={c.key}>
-                <div className="cfg-sub">{c.label}</div>
-                {c.note ? <p className="cfg-cat-note">{c.note}</p> : null}
-                <div className="cfg-rows">
-                  {c.rows.map((r, i) => <Row key={`${r.name}:${i}`} {...r} repo={repo} />)}
-                </div>
-              </div>
-            ))
+            <Categories categories={providerCategories(v.providers, { channel: ctx.me.channel ?? null }).filter((c) => c.needed)} repo={repo} />
           )}
         </Group>
+
+        {v.providers && v.providers.length ? (
+          <Group title="Optional" heading>
+            <Categories categories={providerCategories(v.providers, { channel: ctx.me.channel ?? null }).filter((c) => !c.needed)} repo={repo} />
+          </Group>
+        ) : null}
 
         {/* WHAT THIS PAGE IS SHOWING, AND WHAT THE LAST RUN SAW — ruling 2026-09-05:
             the page shows LIVE configuration, always, and the age banner is retired.
@@ -243,6 +244,26 @@ const NotServed = () => (
 //
 // One call site, spread whole, so the row is covered by construction rather than by this file agreeing
 // with another one. `engineState.test.ts` holds both the relation and this call site.
+/** A group's categories, each under its own name, with its note said once. */
+function Categories({ categories, repo }: {
+  readonly categories: readonly ReturnType<typeof providerCategories>[number][]
+  readonly repo: string | null
+}) {
+  return (
+    <>
+      {categories.map((c) => (
+        <div className="cfg-cat" key={c.key}>
+          <div className="cfg-sub">{c.label}</div>
+          {c.note ? <p className="cfg-cat-note">{c.note}</p> : null}
+          <div className="cfg-rows">
+            {c.rows.map((r, i) => <Row key={`${r.name}:${i}`} {...r} repo={repo} />)}
+          </div>
+        </div>
+      ))}
+    </>
+  )
+}
+
 function Engine({ engine, programDisputed = false, channel = null, name }: {
   readonly engine: EngineState
   readonly programDisputed?: boolean
@@ -260,10 +281,11 @@ function Engine({ engine, programDisputed = false, channel = null, name }: {
  * nothing but the colour its `ok` and `off` already name.
  */
 function Row({
-  ok, off = false, name, mono, state, faults, note = null, detail = null, guide = null, repo = null,
+  ok, off = false, open = false, name, mono, state, faults, note = null, detail = null, guide = null, command = null, repo = null,
 }: {
   readonly ok: boolean
   readonly off?: boolean
+  readonly open?: boolean
   readonly name: string
   readonly mono: string | null
   readonly state: string
@@ -271,13 +293,16 @@ function Row({
   readonly note?: string | null
   readonly detail?: string | null
   readonly guide?: SetupGuide | null
+  readonly command?: string | null
   readonly repo?: string | null
 }) {
   const tone = ok ? '' : off ? ' off' : ' bad'
+  // AN OPTIONAL SOURCE'S LINE IS MUTED, like its dot and its state: nothing a search needs is missing.
+  const faultTone = off ? 'cfg-note' : 'cfg-note bad'
   return (
     <div className="cfg-row">
       <div className="cfg-line">
-        <span className={`cfg-dot${tone}`} />
+        <span className={`cfg-dot${tone}${open ? ' open' : ''}`} />
         <span className="cfg-name">{name}</span>
         {mono ? <span className="cfg-val">{mono}</span> : null}
         <span className={`cfg-state${tone}`}>{state}</span>
@@ -289,13 +314,39 @@ function Row({
       {faults.map((f, i) =>
         guide && i === faults.length - 1 ? (
           <div className="cfg-act" key={f}>
-            <p className="cfg-note bad"><Ticked text={f} /></p>
+            <p className={faultTone}><Ticked text={f} /></p>
             <GuideButton guide={guide} repo={repo} />
           </div>
         ) : (
-          <p className="cfg-note bad" key={f}><Ticked text={f} /></p>
+          <p className={faultTone} key={f}><Ticked text={f} /></p>
         ),
       )}
+      {command ? <CommandLine command={command} /> : null}
+    </div>
+  )
+}
+
+/**
+ * THE COMMAND THAT FIXES WHAT THE ROW SHOWS, to be typed in a terminal: setup stays there, and nothing on
+ * this page sets a value. Copy puts it on the clipboard and shows it worked with a tick, and no new word.
+ */
+function CommandLine({ command }: { readonly command: string }) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <div className="cfg-cmd">
+      <code>{command}</code>
+      <button
+        type="button"
+        className={`cfg-copy${copied ? ' is-copied' : ''}`}
+        onClick={() => {
+          void navigator.clipboard.writeText(command).then(
+            () => { setCopied(true); window.setTimeout(() => setCopied(false), 2600) },
+            () => setCopied(false),
+          )
+        }}
+      >
+        <Icon name={copied ? 'check' : 'copy'} size={13} />Copy
+      </button>
     </div>
   )
 }
@@ -316,10 +367,11 @@ function GuideButton({ guide, repo }: { readonly guide: SetupGuide; readonly rep
   )
 }
 
-function Group({ title, children }: { readonly title: string; readonly children: ReactNode }) {
+function Group({ title, heading = false, children }: { readonly title: string; readonly heading?: boolean; readonly children: ReactNode }) {
   return (
     <div className="cfg-group">
-      <div className="eyebrow">{title}</div>
+      {/* Needed and Optional are headings, so a screen reader can move between them. */}
+      {heading ? <h2 className="eyebrow cfg-group-head">{title}</h2> : <div className="eyebrow">{title}</div>}
       {children}
     </div>
   )
