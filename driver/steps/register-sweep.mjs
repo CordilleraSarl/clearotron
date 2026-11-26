@@ -24,6 +24,7 @@ import { readPartNotCompleted, slicesNotYetRecorded, unitsNotYetRecorded, writeP
 import { gridBatchFor } from "../profiles.mjs";
 import { countLaneCalls } from "../provider-usage.mjs";
 import { atomicWrite, driverDir, readJson } from "../run-record.mjs";
+import { ownSearchOn, makeOwnSearchSessions, prepareOwnSearchGrid } from "../engine/mcp/own-search.mjs";   // the run's own AI program runs the dictated searches, where this run says so
 import { foldSupplementalEntries, isProviderHardErrorReason, joinPlanToBands, mintSupplementalQid, partitionFoldDirectives, romanizedTermsFromPlan, screenThenCap } from "../register-plan.mjs";
 import { readRegisterTaint } from "../register-taint.mjs";
 import { repairFollowup } from "../repair-composers.mjs";
@@ -33,7 +34,7 @@ import { closureBlocksOf } from "../web-grid.mjs";
 import { readWithheldFamilies, releasedFamilyQids } from "../withheld-families.mjs";
 import { existsSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { seedUnplannedBands } from "../register-unit-record.mjs";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { stopsWithTheRun } from "../cancel.mjs";   // every paid call the code makes itself reads the stop first
 import { connotationRemedyToken, recordConnotationAudit, taintDisposition, taintParkJudgmentArtifacts } from "../connotation-audit-run.mjs";
 import { defaultConnotationReissuer, noteAdapter, resultsPerCellOf } from "../provider-calls.mjs";
@@ -119,6 +120,23 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
   // run and [0] silently becomes a register unit, and the grid-ledger pass below would then send a
   // grid-ledger save followup addressed to the common-law session into it rather than skip (its guard is
   // gridVariants × !skipped × no-ledger, and gridVariants comes from the manifest either way).
+  // THE RUN'S OWN SEARCHES (engine/mcp/own-search.mjs). Where this run's dictated searches are its own AI program's, each
+  // grid's ledger is prepared here by the driver, before the stage that would call for it, and served to that stage as
+  // recorded: the research server cannot start a session of the run's engine itself. A grid already recorded is not
+  // searched again, and a run whose engine cannot start a session says so and goes on, its grid then refused by the
+  // research server rather than sent to another service.
+  const ownSearch = (clSplit || runCommonLaw) && ownSearchOn(run.runDir)
+    ? await makeOwnSearchSessions({ runDir: run.runDir, sessionDir: driverDir(run.runDir, "own-search-sessions") }) : null;
+  if (ownSearch?.error) note(`[own-search] no research-only session on this run: ${ownSearch.error}`);
+  const prepareGrids = async (...specPaths) => {
+    if (!ownSearch?.session) return;
+    for (const sp of specPaths) {
+      if (!existsSync(sp)) continue;
+      const r = await prepareOwnSearchGrid(run.runDir, sp, { sessions: ownSearch });
+      runLog(run.runDir, { event: "own-search-grid", spec: basename(sp), ...r });
+    }
+  };
+  await prepareGrids(...(clSplit ? GRID_SEATS.map((h) => P.gridSpecHalf(h)) : [P.gridSpec]));
   const clIndex = gather.findIndex((g) => g.name === "common-law");
   const clMember = () => (clIndex >= 0 ? gatherResults[clIndex] : null);
   // The plan-direct executor, resolved ONCE for the code-side saturation-probe unit here AND the
@@ -662,6 +680,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
         // targeted edits to any file would be the two halves of one message disagreeing about where
         // the work lands — the routing gap closed, kept closed under the typed transport.
         const followup = repairFollowup("common-law-half:connotation-remedy", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), tok });
+        await prepareGrids(P.gridSpecHalf(h));
         const r = await stage("common-law-half", { ...ctx, axis: h }, { force: true, followup, sessionKey: clHalves[h].sessionKey, trigger: "connotation-remedy" });
         if (!r.ok) note(`connotation remedy (half ${h}) failed mechanically (${r.fail}) — the re-merge below decides`);
       });
@@ -1403,6 +1422,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
       const followup = ctx.gridSpecPath
         ? repairFollowup("common-law:grid-ledger", { gridLedger: P.commonLawGrid, gridSpecPath: ctx.gridSpecPath })
         : repairFollowup("common-law:grid-ledger-no-spec", { gridLedger: P.commonLawGrid });
+      await prepareGrids(P.gridSpec);
       must(await stage("common-law", ctx, { force: true, followup, sessionKey: cl.sessionKey, trigger: "grid-ledger" }), "common-law(grid-ledger)");
       if (!existsSync(P.commonLawGrid)) throw new StageFailure("common-law", "grid ledger never saved (machine-receipts contract)");
       runLog(run.runDir, { event: "grid-ledger-saved", recovered: true });
@@ -1495,6 +1515,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
       if (!clSplit) {
         const suppSpec = closable.length ? buildSuppSpec(closable, null) : null;
         const followup = repairFollowup("common-law:coverage-closure", { findingsFile: P.commonLaw, suppSpec, suppSpecPath: P.gridSpecSupp(null, "closure"), closable, cellKey });
+        if (suppSpec) await prepareGrids(P.gridSpecSupp(null, "closure"));
         const r = await stage("common-law", ctx, { force: true, followup, sessionKey: clMember()?.sessionKey, trigger: "coverage-closure" });
         if (!r.ok) note(`coverage closure pass failed mechanically (${r.fail}) — surviving cells ship as the genuine limitation`);
         // Fold AFTER the stage returns ok (caveat 3): the stage re-validated the UNCHANGED canonical ledger
@@ -1554,6 +1575,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
           if (!cells.length) return;
           const suppSpec = buildSuppSpec(cells, h);
           const followup = repairFollowup("common-law-half:coverage-closure", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), suppSpec, suppSpecPath: P.gridSpecSupp(h, "closure"), cells, cellKey });
+          if (suppSpec) await prepareGrids(P.gridSpecSupp(h, "closure"));
           const r = await stage("common-law-half", { ...ctx, axis: h }, { force: true, followup, sessionKey: clHalves[h].sessionKey, trigger: "coverage-closure" });
           if (!r.ok) note(`coverage closure pass (half ${h}) failed mechanically (${r.fail}) — surviving cells ship as the genuine limitation`);
         });

@@ -98,3 +98,17 @@ test("the case-law step keeps its page fetch on both engines", () => {
   assert.match(toml, /^\[mcp_servers\.fetch\]$/m, "codex's page fetcher is gone from the case-law step");
   assert.match(toml, /^enabled_tools = \["fetch_url"\]$/m);
 });
+
+// THE ONE SESSION THAT KEEPS IT: a research-only session of the run's own AI program, handed nothing but its dictated
+// searches (engine/mcp/own-search.mjs). It is named here, so a stage that set the option would not pass unseen: no stage
+// in the walk above passes it, and the option is the only way to keep the program's search.
+test("only a research-only session keeps the program's own search: Claude still removes the command tools, Codex turns it live", () => {
+  const { args } = buildClaudeArgs({ message: "x", model: "haiku", thinking: "low", cwd: "/tmp", builtinTools: ["WebSearch"], allowedTools: "WebSearch", webSearch: true });
+  assert.deepEqual(removed(args), [...COMMAND_TOOLS].sort(), "the command tools are still removed");
+  assert.equal(args[args.indexOf("--tools") + 1], "WebSearch", "and the search is its only built-in tool");
+  const toml = renderCodexConfigToml({ developerInstructions: "SEARCH.", fence: null, toolTimeoutSec: 600, webSearch: true });
+  assert.ok(toml.split("\n").includes('web_search = "live"'));
+  assert.ok(!renderCodexConfigToml({ developerInstructions: "x", fence: null, toolTimeoutSec: 600, webSearch: "yes" }).includes('"live"'),
+    "only true turns it on");
+});
+

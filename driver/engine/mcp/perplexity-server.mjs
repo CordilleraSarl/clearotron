@@ -29,6 +29,7 @@ import { parsePrRiskResults, connotationObligations, renderConnotationObligation
 // What stays is the GRID path's own need — the obligations sidecar written beside the grid's ledger.
 import { obligationsSidecarPath } from "../../disposition-tool.mjs";
 import { writeGridProvenance } from "./grid-provenance.mjs";   // — what served the grid, beside the ledger
+import { ownSearchOn } from "./own-search-setting.mjs";   // a run whose dictated searches are its own AI program's
 import { insideRun } from "../../../shared/inside-run.mjs";   // a path a tool is handed is served only inside this run
 import { keepResearchAnswer, isResearchAnswer, replayAnswersFrom, researchReplayOn, savedResearchAnswer, researchRequestKey, heldAnswerToRequest } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage, which is answered from it; a replay answers from them
 
@@ -230,10 +231,15 @@ async function research(params) {
   // A REFUSED QUESTION IS LOGGED as a failed one is. It left no line, so the run's record could not tell a question
   // refused for want of a credential from one never asked, and a writer whose every question was refused wrote
   // "no result" with nothing in the log to say otherwise. The reason names the refusal, never the key.
+  // A RUN WHOSE SEARCHES ARE ITS OWN AI PROGRAM'S (engine/mcp/own-search.mjs) needs no key for its grid: the driver has
+  // prepared the grid's ledger, and it is served below as recorded. Its questions still go to this service.
+  const ownSearch = ownSearchOn(RUN_DIR);
   if (!API_KEY) {
-    logCall("perplexity_research", { task: params?.task ?? "", ...(params?.grid_spec_path ? { grid: true } : {}) },
-      { ok: false, error: "refused: no research credential" });
-    return "ERROR: PERPLEXITY_API_KEY not set — marketplace research unavailable.";
+    if (!(ownSearch && params?.grid_spec_path)) {
+      logCall("perplexity_research", { task: params?.task ?? "", ...(params?.grid_spec_path ? { grid: true } : {}) },
+        { ok: false, error: "refused: no research credential" });
+      return "ERROR: PERPLEXITY_API_KEY not set — marketplace research unavailable.";
+    }
   }
   // THE STEP CHOOSES THE QUESTION AND ITS SEARCH CONTROLS, NEVER THE TIER, THE MODEL OR AN OUTPUT SCHEMA: the run's frozen
   // settings decide those. A depth, model or schema a step still sends (an older call shape) is read and ignored.
@@ -267,7 +273,9 @@ async function research(params) {
       if (Number(part) > 1) return judgeBlock(cands, part, grid_spec_path, obligationsReserve(spec, ledgerJson)).trimStart();
       let owed = "";
       try { owed = tellObligations(spec, ledgerJson); } catch { /* best-effort — see tellObligations */ }
-      writeGridProvenance(spec, { ran: false, present: already.present, requested: already.requested, model: modelOverride });
+      // A grid this run's own program searched keeps the record its search wrote beside it: this service bought
+      // nothing for it, and a record naming this service would say a search ran somewhere it never did.
+      if (!ownSearch) writeGridProvenance(spec, { ran: false, present: already.present, requested: already.requested, model: modelOverride });
       return `Grid ALREADY RECORDED for this spec (${already.present}/${already.requested} cells present) at ${spec.output_path} — every dictated cell is accounted and every dictated meaning query carries a receipt, so it was NOT run again. The sweep is a fact of this run, not of this attempt.\n` +
         `Do NOT write the grid ledger yourself — it is already saved. ${LEDGER_HOLDS_EVERY_CELL}` +
         judgeBlock(cands, 1, grid_spec_path, owed ? owed.length + 2 : 0) +
@@ -277,6 +285,11 @@ async function research(params) {
     // becomes a new search: that is the first page's call, made with the path alone.
     if (Number(part) > 1)
       return requiredLedgerRefusal(`ERROR: page ${Math.floor(Number(part))} of this grid cannot be served: no saved result was found at ${spec.output_path}. Call perplexity_research with grid_spec_path alone for the first page.`, { spec, gridSpecPath: grid_spec_path });
+    // A GRID THIS RUN'S OWN PROGRAM SEARCHES IS NEVER SENT HERE. The driver prepares it before the stage; one it did not
+    // prepare is refused, and nothing is sent, so a run keeps one search service.
+    if (ownSearch) {
+      return requiredLedgerRefusal(`ERROR: this run's searches are run by its own AI program, and the driver has not prepared the grid at ${spec.output_path}, so nothing was searched and nothing was sent elsewhere. Do not retry the call.`, { spec, gridSpecPath: grid_spec_path });
+    }
     const gridTask = buildGridProgramTask(spec);
     try {
       const data = await callAgentAPI(API_KEY, buildRequestBody({ task: gridTask, preset: "pro-search", modelOverride, enableSandbox: true }));
