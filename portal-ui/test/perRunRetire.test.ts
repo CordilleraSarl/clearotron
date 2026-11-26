@@ -37,7 +37,8 @@ test('a per-READ retire exists and sends exactly one run id', () => {
   // `mark.reads` to run ids with no single-run path beside it, so what is pinned is the single-run path:
   // a handler taking a Run and sending a one-element array. `retireMark`'s own array-over-reads stays —
   // criterion 1 says the group act remains available, so its absence would be a different defect.
-  assert.match(body, /const retireRun = async \(run: Run\) =>/, 'a retire handler bound to ONE run')
+  // It asks first now, in the product's own dialog (board Clearances, approved 2026-11-25).
+  assert.match(body, /const retireRun = \(run: Run, name: string = displayName\(run\)\) =>/, 'a retire handler bound to ONE run')
   const fn = body.slice(body.indexOf('const retireRun'))
   assert.match(
     fn.slice(0, fn.indexOf('\n  const ')),
@@ -76,7 +77,9 @@ test('the two retires do not both read "Retire" on a threaded name', () => {
   // Two adjacent controls with one word between them, one taking the whole name and one taking a single
   // read, is the ambiguity the issue opened with restated as a UI rather than removed. Criterion 1 asks
   // for the group act to stay "clearly-labelled", which is a claim about the label and testable as one.
-  assert.match(body, /threaded \? `Retire all \$\{mark\.reads\.length\}` : 'Retire'/, 'the group control says how many it takes')
+  // Approved words (board Clearances, 2026-11-25): "Retire all {n} searches…" on the name, and on a name with
+  // one search, and on a search row, "Retire this search…".
+  assert.match(body, /threaded \? `Retire all \$\{mark\.reads\.length\} searches…` : 'Retire this search…'/, 'the group control says how many it takes')
 })
 
 test('both retires are gated by the SAME capability expression', () => {
@@ -108,8 +111,9 @@ test('c5 the failed names keep exactly one route in', () => {
   // A removal with no route back is the thing this file's own rule calls worse than the defect: "a run
   // that silently disappears from the list is worse than one that says it stopped." The tab IS the
   // route, so its absence would turn a ruling about tidiness into data loss from the user's side.
-  assert.match(body, /\['failed', failedCount \? `Failed \(\$\{failedCount\}\)` : 'Failed'\]/, 'a Failed tab, labelled with its count')
-  assert.match(body, /type Filter = 'all' \| 'progress' \| 'finished' \| 'failed'/, "and 'failed' is a real member of the filter, not a string that happens to match nothing")
+  // "Failed {n}" (board Clearances, approved 2026-11-25): the count beside the word, not in brackets.
+  assert.match(body, /\{ key: 'failed', label: 'Failed', count: failedCount \}/, 'a Failed tab, labelled with its count')
+  assert.match(body, /type Filter = 'all' \| 'progress' \| 'finished' \| 'failed' \| 'retired'/, "and 'failed' is a real member of the filter, not a string that happens to match nothing")
 })
 
 test('c5 `failed` stays in TERMINAL, or the older bug comes back', () => {

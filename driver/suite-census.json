@@ -309,6 +309,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-claude-turn-stopped-before-its-result-keeps-its-session-id.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-clean-install-offers-generic-alone.test.mjs": {
           "tests": 9,
           "asserts": 16,
@@ -466,8 +472,8 @@
           "todos": 0
         },
         "a-conflict-number-opens-its-card-beside-the-claim.test.mjs": {
-          "tests": 4,
-          "asserts": 22,
+          "tests": 5,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -2799,6 +2805,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-signa-knockout-opens-its-filings-from-the-search-it-holds.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs": {
           "tests": 10,
           "asserts": 20,
@@ -3172,14 +3184,20 @@
           "todos": 0
         },
         "a-web-page-gives-its-preview-picture-and-nothing-else.test.mjs": {
-          "tests": 8,
-          "asserts": 33,
+          "tests": 9,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
         "a-web-page-is-declined-like-a-record.test.mjs": {
           "tests": 10,
           "asserts": 55,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-web-picture-is-embedded-at-the-size-of-its-box.test.mjs": {
+          "tests": 7,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
@@ -9734,6 +9752,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-report-reader-names-the-document-it-read.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-run-answers-the-same-from-its-report-document.test.mjs": {
           "tests": 1,
           "asserts": 4,
@@ -10107,8 +10131,8 @@
           "todos": 0
         },
         "the-portal-and-the-connector-read-one-list-of-runs.test.mjs": {
-          "tests": 3,
-          "asserts": 15,
+          "tests": 4,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -10371,7 +10395,7 @@
         },
         "measure.test.ts": {
           "tests": 25,
-          "asserts": 93,
+          "asserts": 95,
           "skips": 0,
           "todos": 0
         },
@@ -10908,8 +10932,8 @@
           "todos": 0
         },
         "providers/signa/test/a-failed-image-says-why-the-register-refused-it.test.mjs": {
-          "tests": 2,
-          "asserts": 7,
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },

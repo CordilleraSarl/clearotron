@@ -28,6 +28,10 @@
 // own public-address check (checkedLookup), so a page cannot point the fetch at a private or cloud-metadata address.
 // Bytes are kept as bytes: the engine's text fetch decodes every answer as UTF-8, which would corrupt a picture.
 //
+// A SITE'S GENERAL CARD is not the name in use: an inner page whose picture is its site front page's is dropped
+// (frontPageRule). WHAT IS EMBEDDED is each picture brought down to its box on this machine (shrinkPictures), never the
+// bytes as served, which grew measured reports more than tenfold.
+//
 // RECORDING ONLY, and it never throws: a page that refuses, times out or offers no picture is recorded, and the card shows
 // nothing for it. A refusal is never worked around.
 import http from "node:http";
@@ -35,10 +39,12 @@ import https from "node:https";
 import zlib from "node:zlib";
 import { createHash } from "node:crypto";
 import { isIP } from "node:net";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { checkedLookup, isPublicAddress } from "./engine/mcp/public-fetch.mjs";
 import { imageTypeOf } from "./mark-logos.mjs";
+import { thumbnailOf } from "./picture-thumbnail.mjs";
+import { DRIVER_DIR, driverDir, ensureDriverDir } from "./run-record.mjs";
 
 export const CLEARANCE_PICTURE_SECONDS = 20;   // owner, 2026-11-26: at most 20 seconds a clearance report
 export const KNOCKOUT_PICTURE_SECONDS = 20;    // the Knockout's approved board: its own limit, which holds the same number
@@ -90,6 +96,24 @@ export function clearancePages(findings) {
       .filter((u) => !onRegisterRecordHost(u));
     if (pages.length) out.set(Number(f.ordinal), [...new Set(pages)]);
   }
+  return out;
+}
+
+/**
+ * A Knockout's pages, by card (`k<name position>-<number>`, the card's id on the page): a finding card's evidence entries
+ * that are http(s) addresses, in the order the card prints them after "Sources:", less any register's own record. A
+ * register filing's card opens none (owner, 2026-11-26). PURE.
+ * @returns {Map<string, string[]>}
+ */
+export function knockoutPages(doc) {
+  const out = new Map();
+  (Array.isArray(doc?.marks) ? doc.marks : []).forEach((m, mi) => {
+    (Array.isArray(m?.findings) ? m.findings : []).forEach((f, i) => {
+      const pages = [...new Set((Array.isArray(f?.evidence) ? f.evidence : []).filter((u) => /^https?:\/\//i.test(String(u)))
+        .map((u) => String(u).replace(/#.*$/, "")).filter((u) => !onRegisterRecordHost(u)))];
+      if (pages.length) out.set(`k${mi}-${Number(f?.ordinal) || i + 1}`, pages);
+    });
+  });
   return out;
 }
 
@@ -180,9 +204,18 @@ export async function fetchBytes(rawUrl, { signal, maxBytes = 5 * 1024 * 1024, a
  * @param {string[]} pages
  * @param {{seconds?: number, concurrency?: number, fetcher?: typeof fetchBytes, now?: () => number}} [opts]
  */
-export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SECONDS, concurrency = PICTURE_CONCURRENCY, fetcher = fetchBytes, now = () => performance.now() } = {}) {
+export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SECONDS, concurrency = PICTURE_CONCURRENCY, fetcher = fetchBytes, now = () => performance.now(), compareFrontPages = true } = {}) {
   const list = [...new Set((Array.isArray(pages) ? pages : []).map(String))];
-  const rows = list.map((page) => ({ page, site: siteOf(page), state: "not-tried", picture: null, contentType: null, bytes: 0, sha256: null, ms: null, data: null }));
+  // Each inner page's site front page is asked right after it, in the same pool and on the same clock, for the rule of
+  // a site's general card (frontPageRule); a front page a card cites is not asked twice.
+  const order = [];
+  for (const page of list) {
+    order.push({ page, forComparison: false });
+    const front = compareFrontPages && !isFrontPage(page) ? frontPageOf(page) : null;
+    if (front && !list.includes(front) && !order.some((o) => o.page === front)) order.push({ page: front, forComparison: true });
+  }
+  const rows = order.map(({ page, forComparison }) => ({ page, site: siteOf(page), ...(forComparison ? { forComparison: true } : {}),
+    state: "not-tried", picture: null, contentType: null, bytes: 0, sha256: null, ms: null, data: null }));
   const abort = new AbortController();
   const t0 = now();
   let timer = null;
@@ -212,14 +245,63 @@ export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SEC
   const worker = async () => { while (next < rows.length && !abort.signal.aborted) await one(rows[next++]); };
   try { await Promise.all(Array.from({ length: Math.max(1, Math.min(concurrency, rows.length)) }, worker)); }
   finally { if (timer) clearTimeout(timer); }
+  if (compareFrontPages) frontPageRule(rows);
   return { rows, ms: Math.round(now() - t0), aborted: abort.signal.aborted };
+}
+
+/** A site's front page: its scheme and host, path `/`. Null for anything that is not a URL. PURE. */
+export function frontPageOf(page) {
+  try { const u = new URL(String(page)); return `${u.protocol}//${u.host}/`; } catch { return null; }
+}
+const isFrontPage = (page) => { try { return new URL(String(page)).pathname === "/"; } catch { return false; } };
+
+/**
+ * THE RULE FOR A SITE'S GENERAL CARD (2026-11-26, adopted as a trial on the clearance report after a measured check of
+ * 13 pages). Many sites declare one picture for every page, and a card would show the site's general card as
+ * if it were the name in use. A cited inner page's picture is dropped (`general: true`) when its bytes, before any
+ * resizing, equal the picture of the site's front page. A front page fetched only for this comparison never gives a
+ * card a picture, and keeps no bytes. Where the cited page is itself the front page, its picture is the use evidence and
+ * stays. A comparison not finished at the limit leaves the picture out (`comparison: "unfinished"`). MUTATES the rows.
+ */
+export function frontPageRule(rows) {
+  const byPage = new Map(rows.map((r) => [r.page, r]));
+  for (const row of rows) {
+    if (row.forComparison || row.state !== "fetched" || isFrontPage(row.page)) continue;
+    const front = byPage.get(frontPageOf(row.page));
+    if (!front) continue;
+    if (front.state === "not-arrived" || front.state === "not-tried") row.comparison = "unfinished";
+    else if (front.state === "fetched" && front.sha256 === row.sha256) row.general = true;
+  }
+  for (const row of rows) if (row.forComparison) row.data = null;
+  return rows;
+}
+
+/**
+ * Bring each picture the report will draw down to its box (picture-thumbnail.mjs), after the step and outside its limit:
+ * decoding holds the process, and the limit's timer could not fire during it. A picture that is not drawn (a general
+ * card, an unfinished comparison, a comparison's front page) is not decoded. Each shrunk row keeps what the site served
+ * (`contentType`, `bytes`, `sha256`) and gains what is stored (`stored: { contentType, bytes, width, height, kept }`);
+ * one that cannot be shrunk gains `notStored`, with the reason, and is not shown. Returns how long it took. MUTATES.
+ */
+export function shrinkPictures(result, { now = () => performance.now() } = {}) {
+  const t0 = now();
+  for (const row of result?.rows ?? []) {
+    if (row.state !== "fetched" || !row.data || row.general || row.comparison || row.forComparison) continue;
+    const t = thumbnailOf(row.data);
+    if (t.refused) { row.notStored = t.refused; row.data = null; continue; }
+    row.stored = { contentType: t.contentType, bytes: t.bytes.length, width: t.width, height: t.height, kept: t.kept };
+    row.data = t.bytes;
+  }
+  result.shrinkMs = Math.round(now() - t0);
+  return result.shrinkMs;
 }
 
 // ── THE RECORD, AND WHAT THE REPORT DRAWS FROM IT ───────────────────────────────────────────────────────────────────
 //
-// `_driver/web-pictures.json` says what happened to every page, beside the logo step's record, and the pictures that
-// arrived are saved under `_driver/web-pictures/`, named by their bytes. A resume, a replay and a republish read it and
-// fetch nothing again. A row the rule for a site's general card drops carries `general: true` and is never drawn.
+// The run's picture record (PICTURES_FILE) says what happened to every page, beside the logo step's record, and the
+// pictures that arrived are saved in its folder (PICTURES_DIR), each brought down to its box and named by the bytes the
+// site served. A resume, a replay and a republish read it and fetch nothing again. A row the rule for a site's general
+// card drops (`general: true`), one whose comparison was unfinished, and a front page fetched only to compare are never drawn.
 export const PICTURES_FILE = "web-pictures.json";
 export const PICTURES_DIR = "web-pictures";
 const EXT = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", "image/webp": "webp" };
@@ -230,28 +312,28 @@ const EXT = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", "imag
  * @param {{ cards: Map<number, string[]>, result: { rows: object[], ms: number, aborted: boolean }, seconds: number, concurrency: number, takenAt?: string, general?: Set<string> }} step
  */
 export function writePictureRecord(runDir, { cards, result, seconds, concurrency, takenAt = new Date().toISOString(), general = new Set() }) {
-  const dir = join(runDir, "_driver", PICTURES_DIR);
-  mkdirSync(dir, { recursive: true });
+  const dir = ensureDriverDir(runDir, PICTURES_DIR);
   const byPage = new Map();
   for (const [ordinal, pages] of cards) for (const p of pages) byPage.set(p, [...(byPage.get(p) ?? []), ordinal]);
   const rows = result.rows.map(({ data, ...row }) => {
     const out = { ...row, cards: byPage.get(row.page) ?? [] };
-    if (row.state === "fetched" && data && EXT[row.contentType]) {
-      const name = `${row.sha256.slice(0, 24)}.${EXT[row.contentType]}`;
+    const type = row.stored?.contentType ?? row.contentType;   // what is saved: the picture brought down to its box, where it was
+    if (row.state === "fetched" && data && EXT[type]) {
+      const name = `${row.sha256.slice(0, 24)}.${EXT[type]}`;   // named by the bytes the site served
       writeFileSync(join(dir, name), data);
-      out.file = `_driver/${PICTURES_DIR}/${name}`;
+      out.file = `${DRIVER_DIR}/${PICTURES_DIR}/${name}`;   // relative to the run folder, the same on every system
     }
-    if (row.sha256 && general.has(row.sha256)) out.general = true;
+    if (row.general || (row.sha256 && general.has(row.sha256))) out.general = true;
     return out;
   });
-  const record = { schema: 1, takenAt, seconds, concurrency, ms: result.ms, aborted: result.aborted,
+  const record = { schema: 1, takenAt, seconds, concurrency, ms: result.ms, aborted: result.aborted, ...(Number.isFinite(result.shrinkMs) ? { shrinkMs: result.shrinkMs } : {}),
     cards: Object.fromEntries([...cards].map(([ordinal, pages]) => [String(ordinal), pages])), rows };
-  writeFileSync(join(runDir, "_driver", PICTURES_FILE), JSON.stringify(record, null, 2) + "\n");
+  writeFileSync(driverDir(runDir, PICTURES_FILE), JSON.stringify(record, null, 2) + "\n");
   return record;
 }
 
 /**
- * What each card draws, by the finding's ordinal: its pages' pictures in the card's order, each once (by its bytes), at
+ * What each card draws, by its key in the record (a clearance finding's ordinal, a Knockout card's id): its pages' pictures in the card's order, each once (by its bytes), at
  * most 8, as `{ page, site, src, fetchedOn }`. Empty for a run with no record. Only a saved file inside the run's picture
  * folder that still opens as the type recorded is drawn. PURE but for reading the run folder.
  */
@@ -259,18 +341,19 @@ export function webPicturesForReport(runDir) {
   const out = new Map();
   if (!runDir) return out;
   let doc = null;
-  try { doc = JSON.parse(readFileSync(join(runDir, "_driver", PICTURES_FILE), "utf8")); } catch { return out; }
-  const folder = resolve(runDir, "_driver", PICTURES_DIR) + sep;
+  try { doc = JSON.parse(readFileSync(driverDir(runDir, PICTURES_FILE), "utf8")); } catch { return out; }
+  const folder = resolve(driverDir(runDir, PICTURES_DIR)) + sep;
   const fetchedOn = String(doc?.takenAt ?? "").slice(0, 10);
   const src = new Map();
   for (const row of Array.isArray(doc?.rows) ? doc.rows : []) {
-    if (row?.state !== "fetched" || row.general === true || typeof row.file !== "string" || !EXT[row.contentType]) continue;
+    const type = row?.stored?.contentType ?? row?.contentType;
+    if (row?.state !== "fetched" || row.general === true || row.comparison || row.forComparison || typeof row.file !== "string" || !EXT[type]) continue;
     const at = resolve(runDir, row.file);
     if (!at.startsWith(folder)) continue;
     try {
       const bytes = readFileSync(at);
-      if (imageTypeOf(bytes)?.type !== row.contentType) continue;
-      src.set(row.page, { page: row.page, site: siteOf(row.page), sha256: row.sha256, src: `data:${row.contentType};base64,${bytes.toString("base64")}`, fetchedOn });
+      if (imageTypeOf(bytes)?.type !== type) continue;
+      src.set(row.page, { page: row.page, site: siteOf(row.page), sha256: row.sha256, src: `data:${type};base64,${bytes.toString("base64")}`, fetchedOn });
     } catch { /* a picture that cannot be read is not shown */ }
   }
   // Each card in its own order, the use check's pages first and the page it was found on last; a picture two of its
@@ -281,7 +364,7 @@ export function webPicturesForReport(runDir) {
       const pic = src.get(page);
       if (pic && !list.some((p) => p.sha256 === pic.sha256)) list.push(pic);
     }
-    if (list.length) out.set(Number(ordinal), list.slice(0, 8));
+    if (list.length) out.set(String(ordinal), list.slice(0, 8));
   }
   return out;
 }

@@ -537,7 +537,8 @@ test('ONE BUTTON INTO THE ARCHIVE, ONE SPELLING — the rail, Home and the scree
 
   // And the screen it leads to says the same word, so a reader who follows it lands somewhere named
   // what they pressed.
-  assert.ok(CLEARANCES.includes(`title="${label}"`), 'the screen does not name itself as the rail does')
+  // The title carries its count of names beside it (board Clearances, approved 2026-11-25).
+  assert.ok(CLEARANCES.includes(`title={<>${label} <span className="clr-title-count">`), 'the screen does not name itself as the rail does')
 })
 
 test('THE TAIL IS RECENT WORK AND THEN THE COUNT — not an archive with one row', () => {

@@ -7,7 +7,7 @@
 // skill work may also touch). Keep SKIP_DIRS in sync with progress.mjs if that walk ever changes.
 
 import { readdirSync } from "node:fs";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { channelPackage } from "../../shared/permanent-install.mjs";   // — the check a reader is sent to, on this install's channel
 import { config, paths, reportIdentityFor } from "./driver.mjs";
 import { readJson, readJsonOrNull } from "../../driver/run-record.mjs";
@@ -126,15 +126,21 @@ function markMatches(run, mark) {
 }
 
 // All runs (newest-first), optionally filtered by agent / state / slug / mark.
-export function enumerateRuns({ agent, state, slug, mark } = {}) {
+//
+// `listed` asks for the run LIST, which leaves out a run retired from the portal's list (the pool's archive tags):
+// retiring a run takes it out of discovery on both faces. Every other caller resolves runs, and a retired run stays
+// readable by an already-authorised caller who names it, so links already sent keep working.
+export function enumerateRuns({ agent, state, slug, mark, listed = false } = {}) {
   const runs = [];
-  for (const { dir, agent: a, status } of walkRuns({ workspaceRoot: config.workspaceRoot, archive: true, orders: false }).runs) {
+  const walk = walkRuns({ poolRoot: listed ? config.poolRootOrNull : null, workspaceRoot: config.workspaceRoot, archive: true, orders: false });
+  for (const { dir, agent: a, status } of walk.runs) {
     if (agent && a !== agent) continue;
     const r = runFromStatus(dir, status, a);
     if (!r) continue;
     if (state && r.state !== state) continue;
     if (slug && r.slug !== slug) continue;
     if (mark && !markMatches(r, mark)) continue;
+    if (listed && (walk.retired.has(r.runId) || walk.retired.has(basename(dir)))) continue;
     runs.push(r);
   }
   const seen = new Set();

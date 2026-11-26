@@ -7,10 +7,11 @@
 // self-reported trail), meta.json batch stamps, and the email composer. Deliberately separate from publishReport (single-clearance-shaped); shares the exported
 // palette (TONE_TIER, resolved against the run's FROZEN framework) so driver and interactive output
 // can never drift and a knockout never reads the clearance composer's module state.
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { publishRun } from './shell.mjs';
 import { plainDeferralReason, plainCause } from '../deferral-row.mjs'; import { knockoutStepFailures, PART_NAMES, RULED_WORDS, NOT_COMPLETED, linkNotOnRegisterSite } from '../degraded-parts.mjs'; import { ownersOwedACheck, composeOwnerQuery } from '../owner-use-check.mjs'; import { KNOCKOUT_WEB } from '../stages-knockout.mjs';   // — the reader's words for a search left open; and the parts that failed as a whole
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { recordFromSearchRow as signaSearchRow } from '../../providers/signa/src/core.js';   // a Signa search row is a whole record
 import { EMAIL_TIER } from '../../shared/brand.mjs';
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
@@ -791,13 +792,13 @@ function readTheRunRecord({ findings, framework, profile }) {
 /** What readKnockoutDocument returns: the facts every read made, under the names the surfaces take them by. */
 function knockoutRead(r) {
   const { receipts, dates, issued, searched, sweepReceipts, registerCounts, registerCountsUnreadable, registerRecords,
-    registerRecordsUnreadable, filingRecords, logos, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod,
+    registerRecordsUnreadable, filingRecords, logos, webPictures, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod,
     recordLinksDropped, officeLinks, qcFlags, machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints,
     identity, probeRan, markRows, single, origin, reportUrlFor, demoData, served, statement, markNames, organisation,
     framework, overall, engineCommit } = r;
   return {
     receipts, dates, issued, searched, sweepReceipts, registerCounts, registerCountsUnreadable, registerRecords,
-    registerRecordsUnreadable, filingRecords, logos, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped,
+    registerRecordsUnreadable, filingRecords, logos, webPictures, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped,
     officeLinks, qcFlags, machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints, identity, probeRan,
     markRows, single, origin, reportUrlFor, demoData, served, statement, markNames, organisation,
     // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
@@ -883,12 +884,12 @@ const KNOCKOUT_SHAPE = {
     const w = knockoutWorkbookOf(reportDocument);
     return buildKnockoutWorkbook(w.findings, w.sweepReceipts, at, w.registerCounts, w.qcFlags, w.framework, w.registerRecords, w.frameworkMethod, w.ownerChecks, w.parts);
   }),
-  surfaces({ writeRO, writeDataFile }, reportDocument, { doc: { markRows, single, reportUrlFor, filingRecords, logos, demoData, origin, overallBadge }, named, runId, findings, overall, searchPolicy, delivery }, _kept, { auditFile }) {
+  surfaces({ writeRO, writeDataFile }, reportDocument, { doc: { markRows, single, reportUrlFor, filingRecords, logos, webPictures, demoData, origin, overallBadge }, named, runId, findings, overall, searchPolicy, delivery }, _kept, { auditFile }) {
     const reports = markRows.map((m, at) => {
       const { slug, file, band: markBand } = named[at];
       // The page reads the run's report document as written, for this name, with its surface beside it.
       writeRO(file, renderReport(pageDocument(reportDocument), {
-        at, filingRecords, logos, demoData, delivery,
+        at, filingRecords, logos, webPictures, demoData, delivery,
         // The page's workbook control links the portal's audit route, the one the cover note links: the pool path to the
         // file reaches no handler. Null when the workbook could not be written, and then no control is drawn.
         auditHref: auditFile ? auditRouteFor(origin, runId) : null,
@@ -1087,15 +1088,41 @@ function knockoutMetaOf(document, { reports }) {
   };
 }
 
-function filingRecordBodies(runDir, registerRecords) {
+// A REGISTER WHOSE SEARCH ROW IS A WHOLE RECORD (design, 2026-11-26: for the page only). Where the run saved no record
+// body for a listed filing, the page reads the search row the run already holds, through the register's own normaliser.
+// Nothing is written: what the rater reads (filing-goods.mjs, held bodies) is unchanged on both engines.
+const SEARCH_ROW_RECORD = { signa: signaSearchRow };
+
+/** The search rows the run's register units hold, by normalised record id. */
+function searchRowsOf(runDir) {
+  const out = new Map();
+  let dir, names = [];
+  try { dir = dirname(paths(runDir).registerBand('x')); names = readdirSync(dir).filter((n) => n.endsWith('.json')); } catch { return out; }
+  for (const n of names) {
+    let units = null;
+    try { units = JSON.parse(readFileSync(join(dir, n), 'utf8')); } catch { continue; }
+    for (const u of Array.isArray(units) ? units : [units]) {
+      for (const row of Array.isArray(u?.records) ? u.records : []) {
+        const key = normalizeRecordUri(row?.record_id);
+        if (key && !out.has(key)) out.set(key, row);
+      }
+    }
+  }
+  return out;
+}
+
+export function filingRecordBodies(runDir, registerRecords) {
   const out = new Map();
   if (!runDir || !registerRecords) return out;
   const saved = readRecordArtifacts(runDir);
+  const fromRow = SEARCH_ROW_RECORD[registerRecords.provider] ?? null;
+  let rows = null;
   for (const m of Array.isArray(registerRecords.marks) ? registerRecords.marks : []) {
     for (const r of Array.isArray(m?.records) ? m.records : []) {
       const key = normalizeRecordUri(r?.recordId);
       if (!key || out.has(key)) continue;
-      const body = saved.get(key) ?? recordBodyFromLog(paths(runDir).registerRecordBodies, r.recordId);
+      let body = saved.get(key) ?? recordBodyFromLog(paths(runDir).registerRecordBodies, r.recordId);
+      if (!body && fromRow) { rows ??= searchRowsOf(runDir); const row = rows.get(key); body = row ? fromRow(row) : null; }
       if (body && typeof body === 'object' && !Array.isArray(body)) out.set(key, body);
     }
   }

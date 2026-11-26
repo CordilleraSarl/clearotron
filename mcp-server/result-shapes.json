@@ -2143,5 +2143,332 @@
         }
       }
     }
+  },
+  "brief": {
+    "all": {
+      "type": "object",
+      "required": [
+        "_note",
+        "runId",
+        "markName",
+        "product",
+        "overall",
+        "tier",
+        "caption",
+        "state",
+        "date",
+        "source",
+        "brief",
+        "document"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "_note": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        },
+        "markName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "product": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "overall": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tier": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "caption": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "brief": {
+          "type": "string"
+        },
+        "document": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "list_findings": {
+    "all": {
+      "type": "object",
+      "required": [
+        "_note",
+        "kind",
+        "items",
+        "document"
+      ],
+      "properties": {
+        "_note": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "owner": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "band": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "net": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "basis": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "source": {
+          "type": "string"
+        },
+        "group": {
+          "type": "string"
+        },
+        "available": {
+          "type": "boolean"
+        },
+        "product": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "note": {
+          "type": "string"
+        },
+        "document": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "get_finding": {
+    "all": {
+      "type": "object",
+      "required": [
+        "id",
+        "document"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "document": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "band": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "net": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "basis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "list_evidence": {
+    "all": {
+      "type": "object",
+      "required": [
+        "source",
+        "records",
+        "document"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "document": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "list_searches": {
+    "all": {
+      "type": "object",
+      "required": [
+        "count",
+        "searches",
+        "document"
+      ],
+      "properties": {
+        "count": {
+          "type": "number"
+        },
+        "searches": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "totalCount": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        },
+        "document": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "get_search_coverage": {
+    "all": {
+      "type": "object",
+      "required": [
+        "areas",
+        "document"
+      ],
+      "properties": {
+        "areas": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "note": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "document": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
   }
 }

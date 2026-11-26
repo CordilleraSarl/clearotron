@@ -8,7 +8,9 @@
 // between the faces is either a projection one face owns (the portal folds three waits into "paused") or one of
 // the differences named below, each asserted by name, so a new difference fails here rather than reaching a reader.
 //
-// An unclaimed order is listed by both faces to the company that placed it, and to nobody else.
+// An unclaimed order is listed by both faces to the company that placed it, and to nobody else. A run retired from the
+// list leaves both faces' lists, stays readable by name, sits in the portal's retired index alone, and comes back when
+// it is restored.
 import { mkdtempSync, mkdirSync, writeFileSync, cpSync, readdirSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
@@ -87,15 +89,16 @@ before(() => {
     writeFileSync(join(QUEUE, `${id}.json`), JSON.stringify({ id, profileKey: owner, ...(tenant ? { tenant } : {}), markName: `ORDER${id.slice(2).toUpperCase()}`, classes: [9] }));
 });
 
-async function connectorList(scope) {
+async function connectorCall(scope, name, args = {}) {
   const [a, b] = InMemoryTransport.createLinkedPair();
   await makeServer({ scope, local: scope === null ? null : false }).connect(b);
   const client = new Client({ name: "one-list-test", version: "1" });
   await client.connect(a);
-  const r = await client.callTool({ name: "list_runs", arguments: {} });
+  const r = await client.callTool({ name, arguments: args });
   await client.close();
-  return JSON.parse(r.content[0].text);
+  return r;
 }
+const connectorList = async (scope) => JSON.parse((await connectorCall(scope, "list_runs")).content[0].text);
 const portalList = (account, generic = null) => scanAccountRuns({ poolRoot: POOL, workspaceRoot: ROOT, account, generic, queueDirs: [QUEUE] });
 
 /** A portal row's state in the engine's own words: the paused fold undone. */
@@ -105,9 +108,10 @@ const canonical = (row) => (row.state === "paused" ? UNFOLD[row.pausedKind] : ro
 test("both faces list the same runs, in the same state, at the same step, except the differences named here", async () => {
   const portal = new Map(scanAllRuns({ poolRoot: POOL, workspaceRoot: ROOT, queueDirs: [QUEUE] }).map((r) => [r.runId, r]));
   const connector = new Map((await connectorList(null)).map((r) => [r.runId, r]));
-  // THE RECORDED DIFFERENCES, each by name. A retired run leaves the portal's list and stays on the connector's;
-  // a delivered run with no pool copy is the connector's alone.
-  const onlyConnector = [RETIRED, IDS.nopool].sort();
+  // THE RECORDED DIFFERENCE, by name: a delivered run with no pool copy is the connector's alone (design, 2026-11-26:
+  // the connector can read it from its own record; the portal has no copy to open). A retired run is on neither list.
+  const onlyConnector = [IDS.nopool];
+  assert.ok(!portal.has(RETIRED) && !connector.has(RETIRED), "a retired run is on neither face's list");
   assert.deepEqual([...connector.keys()].filter((id) => !portal.has(id)).sort(), onlyConnector, "the runs only the connector lists");
   assert.deepEqual([...portal.keys()].filter((id) => !connector.has(id)), [], "the runs only the portal lists");
   assert.ok(!connector.has("shadow") && !portal.has("shadow"), "a what-if shadow, a register unit and history are not runs");
@@ -142,7 +146,7 @@ test("an unclaimed order is listed to the company that placed it, on both faces,
     assert.deepEqual(orders(connector), sees, `${label}: the connector's orders`);
     assert.deepEqual(orders(portal), sees, `${label}: the portal's orders`);
     // ACCESS DOES NOT CHANGE: the same runs on both faces, and nothing of another company's.
-    const ids = (rows) => rows.map((r) => r.runId).filter((id) => id !== RETIRED && id !== IDS.nopool).sort();
+    const ids = (rows) => rows.map((r) => r.runId).filter((id) => id !== IDS.nopool).sort();
     assert.deepEqual(ids(connector), ids(portal), `${label}: the same runs on both faces`);
   }
 });
@@ -152,4 +156,29 @@ test("a connector lookup reads neither the pool nor the queue", () => {
   assert.equal(walk.records.length, 0);
   assert.equal(walk.queued.length, 0);
   assert.ok(walk.runs.length >= 11, `the walk read ${walk.runs.length} runs`);
+});
+
+test("a retired run leaves both lists, stays readable by name, sits alone in the retired index, and returns when restored", async () => {
+  const retiredIndex = (account = null) => scanAccountRuns({ poolRoot: POOL, workspaceRoot: ROOT, account, includeRetired: true, queueDirs: [QUEUE] });
+  // THE RETIRED INDEX lists retired runs and nothing else: no live run, no queued order.
+  assert.deepEqual(retiredIndex().map((r) => r.runId), [RETIRED], "the staff retired index");
+  assert.deepEqual(retiredIndex("acme").map((r) => r.runId), [], "an unrelated company's retired index");
+  // OUT OF DISCOVERY on both faces, for staff and for the owning company; another company never saw it.
+  const owner = { kind: "account", accounts: ["demo-brand-owner"], sub: "d@demo.example" };
+  for (const [label, rows] of [["staff connector", await connectorList(null)], ["owner connector", await connectorList(owner)],
+    ["staff portal", scanAllRuns({ poolRoot: POOL, workspaceRoot: ROOT, queueDirs: [QUEUE] })], ["owner portal", portalList("demo-brand-owner")]])
+    assert.ok(!rows.some((r) => r.runId === RETIRED), `${label} lists a retired run`);
+  // READABLE BY NAME for a caller already allowed to see it, so a link already sent keeps working.
+  const byName = await connectorCall(owner, "get_run", { runId: RETIRED });
+  assert.equal(byName.isError, undefined, JSON.stringify(byName.content));
+  assert.equal(JSON.parse(byName.content[0].text).run.runId, RETIRED);
+  // RESTORED, it is back on both lists and gone from the retired index.
+  writeFileSync(join(POOL, "archive-tags.json"), JSON.stringify({ archived: [] }));
+  try {
+    assert.ok((await connectorList(null)).some((r) => r.runId === RETIRED), "restored: the connector lists it");
+    assert.ok(scanAllRuns({ poolRoot: POOL, workspaceRoot: ROOT, queueDirs: [QUEUE] }).some((r) => r.runId === RETIRED), "restored: the portal lists it");
+    assert.deepEqual(retiredIndex(), [], "restored: the retired index is empty");
+  } finally {
+    writeFileSync(join(POOL, "archive-tags.json"), JSON.stringify({ archived: [RETIRED] }));
+  }
 });

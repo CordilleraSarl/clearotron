@@ -66,7 +66,7 @@ const local = (u, o) => fetchBytes(u, { ...o, allow: () => ({ ok: true }) });
 
 test("each page gives its declared picture or a recorded reason, and only the four image types count", async () => {
   const { rows } = await fetchPagePictures([`${base}/page`, `${base}/direct.png`, `${base}/bare`, `${base}/svgpage`, `${base}/missing`, `${base}/moved`],
-    { seconds: 10, fetcher: local });
+    { seconds: 10, fetcher: local, compareFrontPages: false });   // the rule for a site's general card has its own test
   assert.deepEqual(rows.map((r) => r.state), ["fetched", "fetched", "none", "not-a-picture", "refused", "fetched"]);
   assert.equal(rows[0].picture, `${base}/pic.png`);
   assert.equal(rows[0].contentType, "image/png");
@@ -76,7 +76,7 @@ test("each page gives its declared picture or a recorded reason, and only the fo
 
 test("at the limit an open request is abandoned and an unrequested page is not tried; nothing later is kept", async () => {
   const pages = Array.from({ length: 4 }, (_, i) => `${base}/slow${i}`);
-  const { rows, aborted } = await fetchPagePictures(pages, { seconds: 0.4, concurrency: 2, fetcher: local });
+  const { rows, aborted } = await fetchPagePictures(pages, { seconds: 0.4, concurrency: 2, fetcher: local, compareFrontPages: false });
   assert.ok(aborted);
   assert.deepEqual(rows.map((r) => r.state), ["not-arrived", "not-arrived", "not-tried", "not-tried"]);
   assert.ok(rows.every((r) => r.data === null), "a picture arriving after the limit was kept");
@@ -111,13 +111,13 @@ test("the record keeps every page's outcome, and a card draws its own pages' pic
     assert.deepEqual(rec.rows.map((r) => r.state), ["fetched", "fetched", "fetched", "none"], "a page's outcome was lost");
     assert.ok(rec.rows.every((r) => !("data" in r)), "the record carries picture bytes");
     let drawn = webPicturesForReport(run);
-    assert.deepEqual([...drawn.keys()], [3], "a card with no picture is drawn, or one with pictures is not");
-    assert.deepEqual(drawn.get(3).map((p) => p.site), ["three.example", "one.example"], "not the card's order, or a picture two pages share showed twice");
-    assert.match(drawn.get(3)[0].src, /^data:image\/png;base64,/);
-    assert.equal(drawn.get(3)[0].fetchedOn, "2026-11-26");
+    assert.deepEqual([...drawn.keys()], ["3"], "a card with no picture is drawn, or one with pictures is not");
+    assert.deepEqual(drawn.get("3").map((p) => p.site), ["three.example", "one.example"], "not the card's order, or a picture two pages share showed twice");
+    assert.match(drawn.get("3")[0].src, /^data:image\/png;base64,/);
+    assert.equal(drawn.get("3")[0].fetchedOn, "2026-11-26");
     writePictureRecord(run, { cards, result, seconds: 20, concurrency: 6, general: new Set(["b".repeat(64)]) });
     drawn = webPicturesForReport(run);
-    assert.deepEqual(drawn.get(3).map((p) => p.site), ["one.example"], "a site's general card was drawn");
+    assert.deepEqual(drawn.get("3").map((p) => p.site), ["one.example"], "a site's general card was drawn");
     writeFileSync(join(run, "_driver", "web-pictures.json"), JSON.stringify({ takenAt: "x", cards: { 1: ["https://e.example/"] },
       rows: [{ page: "https://e.example/", state: "fetched", contentType: "image/png", sha256: "c", file: "../outside.png" }] }));
     assert.equal(webPicturesForReport(run).size, 0, "a file outside the run's picture folder was drawn");
@@ -131,7 +131,7 @@ test("a card draws On the web after Register, captioned with the site and openin
     const parsed = parseReport(join(dir, "r.report.md"));
     const f = { ordinal: 4, mark: "SKARVEL", composite: 4, net: "A sentence.", owner: { name: "Brannock Tools Ltd", registrations: [] }, source: { source_type: "common-law-web" } };
     const src = `data:image/png;base64,${PNG.toString("base64")}`;
-    const html = renderHtml(parsed, [f], [], { runId: "pictures", webPictures: new Map([[4, [{ page: "https://shop.example/skarvel", site: "shop.example", src, fetchedOn: "2026-11-26" }]]]) });
+    const html = renderHtml(parsed, [f], [], { runId: "pictures", webPictures: new Map([["4", [{ page: "https://shop.example/skarvel", site: "shop.example", src, fetchedOn: "2026-11-26" }]]]) });
     const line = html.match(/<div class="pic-line">([\s\S]*?)<\/div><\/div><\/div>/)?.[1] ?? "";
     assert.match(line, /<span class="pic-lab">On the web<\/span>/, "the frame is missing or mislabelled");
     assert.match(line, /<a href="https:\/\/shop\.example\/skarvel" target="_blank" rel="noopener noreferrer"><img src="data:image\/png;base64,[^"]+" alt="SKARVEL, picture shown by shop\.example, fetched 2026-11-26"><\/a><figcaption>shop\.example<\/figcaption>/,
@@ -145,4 +145,27 @@ test("a request that does not answer within its own limit fails, so no page hold
   const slow = (u, o) => fetchBytes(u, { ...o, timeoutMs: 300, allow: () => ({ ok: true }) });
   const { rows } = await fetchPagePictures([`${base}/slow-one`], { seconds: Infinity, fetcher: slow });
   assert.equal(rows[0].state, "failed", "a request past its own limit was not given up");
+});
+
+import { knockoutPages } from "../web-pictures.mjs";
+import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
+import { parseFrameworkManifest } from "../framework.mjs";
+import { readFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+test("a Knockout finding card collects its Sources addresses in order, and draws the earliest one's picture alone", () => {
+  const RUN = join(dirname(fileURLToPath(import.meta.url)), "fixtures", "report-pages", "knockout-with-findings", "run");
+  const doc = JSON.parse(readFileSync(join(RUN, "knockout-findings.json"), "utf8"));
+  const pages = knockoutPages({ marks: [{ findings: [{ ordinal: 1, evidence: ["https://a.example/x#top", "/mark/eu/1", "https://euipo.europa.eu/eSearch/1", "https://b.example/y"] }, { ordinal: 2, evidence: ["/mark/gb/2"] }] }] });
+  assert.deepEqual([...pages.entries()], [["k0-1", ["https://a.example/x", "https://b.example/y"]]], "a filing, a register record or a fragment was collected, or the order changed");
+  const src = `data:image/png;base64,${PNG.toString("base64")}`;
+  const pics = new Map([["k0-1", [{ page: "https://talvoren.example.test/products", site: "talvoren.example.test", src, fetchedOn: "2026-11-26" },
+    { page: "https://second.example.test/", site: "second.example.test", src, fetchedOn: "2026-11-26" }]]]);
+  const html = renderKnockoutHtml(doc, parseFrameworkManifest(JSON.parse(readFileSync(join(RUN, "_driver", "framework.json"), "utf8"))),
+    { registerRecords: JSON.parse(readFileSync(join(RUN, "_driver", "register-records.json"), "utf8")), webPictures: pics });
+  const card = html.match(/<div class="card ko-find" id="k0-1"[\s\S]*?<p class="ko-findnet">/)?.[0] ?? "";
+  assert.match(card, /<p class="ko-findmeta">[^<]*<\/p>\s*<div class="pic-line"><div class="pic-set"><div class="pic-head"><span class="pic-lab">On the web<\/span><\/div><div class="rr-logos rr-band"><figure class="rr-lg"><a href="https:\/\/talvoren\.example\.test\/products" target="_blank" rel="noopener noreferrer"><img src="data:image\/png;base64,[^"]+" alt="Talvoren Systems, picture shown by talvoren\.example\.test, fetched 2026-11-26"><\/a><figcaption>talvoren\.example\.test<\/figcaption><\/figure><\/div><\/div><\/div>/,
+    "the finding card has no On the web frame with its earliest picture under its meta line");
+  assert.equal((card.match(/<figure class="rr-lg">/g) ?? []).length, 1, "a Knockout finding card shows more than one web picture");
 });

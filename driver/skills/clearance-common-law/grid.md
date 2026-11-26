@@ -203,7 +203,7 @@ If an answer is "no" or "unsure" and closing it could change what you tell the c
 The grid call returns recorded candidates, not judged findings — **the legal filtering is yours.**
 For every cell in the candidate list the grid call returns, review its candidates: identical / confusingly similar /
 conceptually related listings become findings; plain noise (unrelated products that merely share a
-common word) does not. Then categorise each finding into one of:
+common word) does not. List each identifiable name found. Put summaries of searches that found no relevant name in the negative-results section, with their receipts. Then categorise each finding into one of:
 
 - **Consumer-confusion risks** — overlap in the product's field(s): gaming, **and the collaborated / non-gaming field for collab matters**; identical/similar mark in same product space; direct or near-direct competitors
 - **Commercial awareness** — identical/similar in unrelated fields; crowded field evidence; competitor intelligence (existing brand partnerships)

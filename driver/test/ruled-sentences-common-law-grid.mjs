@@ -24,4 +24,7 @@ export const GRID_SENTENCES = Object.freeze({
     + "own tier.",
   oneGridCallPerMark: "One grid call per mark, as dictated. Ask a targeted follow-up when its answer could change what you "
     + "tell the client. The grid already searches each flagged element on the general web; judge its results.",
+  // Ruled 2026-11-26: a summary of a search that found no relevant name was listed and counted as a web name.
+  listEachIdentifiableName: "List each identifiable name found. Put summaries of searches that found no relevant name in the "
+    + "negative-results section, with their receipts.",
 });
