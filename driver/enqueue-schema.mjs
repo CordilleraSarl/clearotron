@@ -698,6 +698,10 @@ export function validateJob(job, { atClaim = false } = {}) {
   // nativeLanguage: the ONE toggle in the offering. Shape first, then the two ways it can be wrong.
   if ("nativeLanguage" in job && job.nativeLanguage != null && typeof job.nativeLanguage !== "boolean")
     errs.push(`nativeLanguage ${JSON.stringify(job.nativeLanguage)} must be a boolean — true adds the native-language investigation to a ${productName("multi-country-focus-search")}`);
+  // urgent: an ORDER OPTION, so a value that is not a boolean is refused rather than run, and counted, as a standard
+  // order: the engine reads only `job.urgent === true`, and a client who sent "yes" would lose the option silently.
+  if ("urgent" in job && job.urgent != null && typeof job.urgent !== "boolean")
+    errs.push(`urgent ${JSON.stringify(job.urgent)} must be a boolean`);
   // `false` is REFUSED, not dropped — the caseLaw rule on the sibling toggle. The toggle only ever added,
   // so `false` asked to remove something no product runs conditionally, and all four assembling doors
   // dropped it: a requester who sent it on a Full country search believed they had switched the
