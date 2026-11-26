@@ -15,8 +15,9 @@
 // IT REPORTS AND DOES NOT JUDGE: exit 0 means no difference was found in the samples given, and a sample that could not
 // publish is a could-not-look, which exits 2.
 //
-// `pages` prints the fingerprint of each demo run's report page, and `--write` stores it. The stored copy is
-// driver/test/fixtures/demo-report-pages.json, the record the report-page guard in render-frozen.test.mjs compares with.
+// `pages` prints the fingerprint of each report-page sample's page, and `--write` stores it. The samples are the demo runs
+// and the guard's own saved runs under driver/test/fixtures/report-pages/, which draw what no demo reaches. The stored copy
+// is driver/test/fixtures/demo-report-pages.json, the record the report-page guard in render-frozen.test.mjs compares with.
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
@@ -82,18 +83,35 @@ function recordSample(sample, repo, out) {
   return { name: sample.name, files: Object.keys(record.files).length };
 }
 
+/** The saved runs in one folder, one per sub-folder holding `meta.json`. */
+function savedRuns(dir) {
+  return readdirSync(dir).filter((n) => existsSync(join(dir, n, "meta.json"))).map((n) => ({ name: n, dir: join(dir, n) })).sort((a, b) => a.name.localeCompare(b.name));
+}
+
 /** The saved runs under the checkout's `demo/`, one per folder holding `meta.json`. */
 export function demoSamples(repo) {
-  const demo = join(repo, "demo");
-  return readdirSync(demo).filter((n) => existsSync(join(demo, n, "meta.json"))).map((n) => ({ name: n, dir: join(demo, n) })).sort((a, b) => a.name.localeCompare(b.name));
+  return savedRuns(join(repo, "demo"));
 }
 
 /**
- * Each demo run's report page, by sample and then by its path in the report folder. Only `report.html` is kept: it is
+ * The samples the report-page guard publishes: the demo runs, then the saved runs under driver/test/fixtures/report-pages/.
+ * Those are written from invented names to draw what no demo reaches (a Knockout finding block, the clearance card's
+ * "The read" fold); `demo/` is the public demo and is not changed to suit the guard.
+ */
+export function reportPageSamples(repo) {
+  const samples = [...demoSamples(repo), ...savedRuns(join(repo, "driver", "test", "fixtures", "report-pages"))];
+  const names = samples.map((s) => s.name);
+  const twice = names.filter((n, i) => names.indexOf(n) !== i);
+  if (twice.length) throw new Error(`publish-compare: two report-page samples share the name ${twice.join(", ")}; rename one`);
+  return samples;
+}
+
+/**
+ * Each report-page sample's page, by sample and then by its path in the report folder. Only `report.html` is kept: it is
  * what the two renderers write, and the folder's other files belong to the data, workbook and index code.
  */
-export function demoReportPages(repo) {
-  return Object.fromEntries(demoSamples(repo).map((s) => {
+export function reportPages(repo) {
+  return Object.fromEntries(reportPageSamples(repo).map((s) => {
     const { files } = publishSample(s, repo);
     return [s.name, Object.fromEntries(Object.entries(files).filter(([path]) => basename(path) === "report.html"))];
   }));
@@ -140,7 +158,7 @@ function main(argv) {
     return total ? 1 : 0;
   }
   if (argv[0] === "pages") {
-    const pages = demoReportPages(resolve(at("--repo") ?? join(HERE, "..", "..", "..")));
+    const pages = reportPages(resolve(at("--repo") ?? join(HERE, "..", "..", "..")));
     const text = JSON.stringify(pages, null, 1) + "\n";
     if (at("--write")) { writeFileSync(resolve(at("--write")), text); console.log(`publish-compare: wrote ${Object.keys(pages).length} sample(s) to ${at("--write")}`); }
     else process.stdout.write(text);

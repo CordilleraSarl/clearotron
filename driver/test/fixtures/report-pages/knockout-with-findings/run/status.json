@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "runId": "fixture-knockout-talvorene-2026-11-26-report-pages",
+  "slug": "fixture-knockout-talvorene",
+  "codename": "report-pages",
+  "date": "2026-11-26",
+  "ref": "FIXTURE-knockout-findings",
+  "state": "delivered",
+  "lane": "knockout",
+  "engineCommit": "0000000000000000000000000000000000000000",
+  "startedAt": "2026-11-26T09:00:00.000Z",
+  "updatedAt": "2026-11-26T09:05:00.000Z",
+  "markName": "TALVORENE",
+  "marks": ["TALVORENE"],
+  "classes": [9, 42],
+  "stageLabel": "Knockout search",
+  "verdict": "Medium",
+  "statement": "Knockout screen — 1 mark: 1 Medium.",
+  "deliveredAt": "2026-11-26T09:05:00.000Z",
+  "endedAt": "2026-11-26T09:05:00.000Z"
+}

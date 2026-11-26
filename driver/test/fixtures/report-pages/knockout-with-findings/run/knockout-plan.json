@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "batch": {
+    "productContext": "An invented client launching scheduling software for greenhouse irrigation, sold by subscription.",
+    "executionOrder": ["TALVORENE"]
+  },
+  "marks": [
+    {
+      "ref": "fixture-tal-01",
+      "name": "TALVORENE",
+      "classes": [9, 42],
+      "beltAndBraces": [],
+      "classesPlain": "downloadable irrigation-scheduling software (9); software as a service for irrigation scheduling (42)",
+      "contextFraming": "TALVORENE is an invented name, used here only to exercise the report page.",
+      "priority": 1
+    }
+  ]
+}

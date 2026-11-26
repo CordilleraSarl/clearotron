@@ -1184,7 +1184,7 @@ test("spec-48 C1: region groups are labeled by registration system from DATA; un
   assert.match(html, /<span class="rcode">US<\/span><span class="rname">United States<\/span><span class="kc [a-z]+">C\d<\/span><span class="rsub">First-to-use<\/span>/);
   assert.match(html, /<span class="rcode">EU<\/span><span class="rname">European Union<\/span><span class="kc [a-z]+">C\d<\/span><span class="rsub">First-to-register<\/span>/);
   // the common-law pseudo-region is NOT a legal system — unlabeled
-  assert.match(html, /<span class="rcode">C\/L<\/span><span class="rname">Common-law \/ marketplace<\/span><span class="kc [a-z]+">C\d<\/span><span class="rsub"><span style="white-space:nowrap">Unregistered use<\/span><\/span>/);
+  assert.match(html, /<span class="rcode">C\/L<\/span><span class="rname">Common-law \/ marketplace<\/span><span class="kc [a-z]+">C\d<\/span><span class="rsub">Unregistered use<\/span>/);
 });
 
 test("spec-48 C2: a record filed inside the Paris-priority window flags on its registration line; no asOf = no flag", () => {
@@ -1580,7 +1580,8 @@ test("wp50: the C/L group renders AFTER the region list, labelled and cross-link
   assert.match(html, /\(<a href="#c2">[^<]*<\/a>\)/, "cross-link to the common-law card, which the page draws");
   assert.match(html, /id="c2"/);
   const usIdx = html.indexOf('<span class="rcode">US</span>');
-  const clIdx = html.indexOf('Common-law / marketplace');
+  // The C/L row itself: the chart's dots now name a common-law conflict's group too, above the key.
+  const clIdx = html.indexOf('<span class="rcode">C/L</span>');
   assert.ok(usIdx > 0 && clIdx > usIdx, "C/L block sits after the region list");
   // no-CL run: no C/L block at all
   const none = renderHtml(parsedOf(REPORT), [findings[0]], COVERAGE, {});
@@ -1921,8 +1922,8 @@ test("leftovers: the C/L rights-holder group is collapsed by default; geographic
       dispute_type: "register-only", meters: {}, quadrant: { x: 0.7, y: 0.7 }, source: { source_type: "common-law-marketplace" } },
   ];
   const html = renderHtml(parsedOf(REPORT), mixed, COVERAGE, {});
-  const cl = html.match(/<details class="rrow"[^>]*><summary><span class="rcode">C\/L<\/span>[\s\S]*?<\/summary>/)[0];
-  assert.doesNotMatch(cl, /rrow" open/, "C/L group collapsed even with an on-field CL finding");
+  const cl = html.match(/<details class="rrow rcl"[^>]*><summary><span class="rcode">C\/L<\/span>[\s\S]*?<\/summary>/)[0];
+  assert.doesNotMatch(cl, /rrow rcl" open/, "C/L group collapsed even with an on-field CL finding");
   assert.match(html, /<details class="rrow" open><summary><span class="rcode">US<\/span>/, "on-field geographic region still open");
 });
 

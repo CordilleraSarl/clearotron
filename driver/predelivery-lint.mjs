@@ -215,12 +215,12 @@ export function templateChecks({ headerName, ratedNames, searchedNames }) {
 
 // THE LINES THE DELIVERED PAGE DRAWS FROM THE RECORD, OUTSIDE report.md, THAT CAN NAME A PARTY. The page (render.mjs)
 // draws the coverage rows that are not clean under "What was searched", less a driver-composed follow-up row that another
-// row already restates, and the first PAGE_WEB_NAMES_SHOWN web and marketplace names under "Also considered". A party
+// row already restates, and every web and marketplace name under "Also considered" (search-depth.mjs's clearedNames
+// decides which blocks are names, so the page and this read one list). A party
 // named only in a row the page hides is not shown to the reader, so the page's rules are applied here exactly. They are
 // copied rather than imported: importing the page renderer would hand every tool server that loads this lint the
 // branding settings the renderer reads. The test a-party-the-page-shows-is-introduced-to-the-reader renders a page and
 // holds this copy to it, the hidden follow-up row included.
-export const PAGE_WEB_NAMES_SHOWN = 8;
 const PAGE_FOLLOW_UP_PREFIX = "Follow-up / ";
 const PAGE_AXIS_LABELLED = /\s\/\s/;
 const PAGE_COV_STOPWORDS = new Set(["the", "a", "an", "as", "for", "of", "in", "on", "and", "or", "to", "is",
@@ -249,7 +249,7 @@ function pageDrawnCoverage(coverage, followUpKinds = null) {
 export function pageNameLines({ coverage = [], webNames = [], followUpKinds = null } = {}) {
   return [
     ...pageDrawnCoverage(coverage, followUpKinds).map((c) => `${c.area ?? ""} ${c.note ?? ""}`),
-    ...(Array.isArray(webNames) ? webNames : []).slice(0, PAGE_WEB_NAMES_SHOWN).map((w) => String(w?.title ?? "")),
+    ...(Array.isArray(webNames) ? webNames : []).map((w) => String(w?.title ?? "")),
   ];
 }
 /** The parties a step names, read as the check below reads the step's line on the page: its text and condition. PURE. */

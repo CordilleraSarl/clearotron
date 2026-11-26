@@ -24,7 +24,12 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const RUN = join(HERE, "..", "..", "demo", "global-preliminary-search", "run");
 const FRAMEWORK = parseFrameworkManifest(JSON.parse(readFileSync(join(RUN, "_driver", "framework.json"), "utf8")));
 const fullCards = (html) => [...html.matchAll(/<div class="card" id="c(\d+)">/g)].map((m) => Number(m[1]));
-const lower = (html) => html.match(/<details class="rgroup lowerband"><summary><span class="gname">([^<]*)<\/span><\/summary><div class="gbody">([\s\S]*?)\n  <\/div><\/details>/);
+const lower = (html) => html.match(/<details class="rgroup lowerband"><summary><span class="gname"[^>]*>([^<]*)<\/span>(?:<span class="lb-show[^"]*" aria-hidden="true">(?:<span class="lb-(?:closed|open)">[^<]*<\/span>){2}<\/span>)?<\/summary><div class="gbody">([\s\S]*?)\n  <\/div><\/details>/);
+/** The header's control: its words while folded and while open, and its attributes. */
+const control = (html) => {
+  const m = html.match(/<details class="rgroup lowerband"><summary><span class="gname"[^>]*>[^<]*<\/span><span class="(lb-show[^"]*)" aria-hidden="(true)"><span class="lb-closed">([^<]*)<\/span><span class="lb-open">([^<]*)<\/span><\/span><\/summary>/);
+  return m ? { cls: m[1], hidden: m[2], folded: m[3], open: m[4] } : null;
+};
 
 test("on the demo, the three Moderate conflicts keep full cards and the twenty-eight Manageable ones sit behind the heading, unticked", () => {
   const v = parseFindingsJson(readFileSync(join(RUN, "findings.json"), "utf8"));
@@ -80,4 +85,30 @@ test("the export leaves the heading out of the PDF when none of its cards is tic
   assert.match(exportPdf, /querySelectorAll\('details\.lowerband'\)\.forEach\(function\(d\)\{if\(!d\.querySelector\('\.card:not\(\.print-hidden\)'\)\)\{d\.classList\.add\('print-hidden'\);_hidden\.push\(d\);\}\}\)/,
     "the export does not hide a heading whose cards are all unticked");
   assert.ok(exportPdf.indexOf("details.lowerband") > exportPdf.indexOf("card.classList.add('print-hidden')"), "the heading is judged before its cards are hidden");
+});
+
+// THE HEADER SAYS HOW MUCH IT HOLDS (owner, 2026-11-25). A control at the header's right end reads "Show all {n}" folded,
+// with the title's own number, "Show" for one conflict, and "Hide" open. It is words inside the one summary, hidden from
+// assistive technology so the header's name stays its title, and it never prints.
+test("the header's control says Show all with the title's count, Show for one, and Hide, and is words inside the one header", () => {
+  const many = control(render([conflict(1, "Moderate"), conflict(2, "Manageable"), conflict(3, "Manageable")]));
+  assert.ok(many, "the folded list's header carries no control");
+  assert.deepEqual([many.folded, many.open], ["Show all 2", "Hide"]);
+  assert.equal(many.hidden, "true", "the control's words reach assistive technology, so the header's name is not its title alone");
+  assert.match(many.cls, /\bno-print\b/, "the control reaches paper");
+  const one = control(render([conflict(1, "Moderate"), conflict(2, "Manageable")]));
+  assert.deepEqual([one?.folded, one?.open], ["Show", "Hide"], "a list of one conflict does not say Show");
+  const html = render([conflict(1, "Moderate"), conflict(2, "Manageable"), conflict(3, "Manageable")]);
+  const summary = html.match(/<details class="rgroup lowerband"><summary>([\s\S]*?)<\/summary>/)?.[1] ?? "";
+  assert.doesNotMatch(summary, /<(?:button|a|input)\b|tabindex/, "the control is a second focus stop inside the header");
+});
+
+test("the control's words follow the open state from the stylesheet alone, and the pile is drawn on screen only", () => {
+  const css = readFileSync(join(HERE, "..", "publish", "templates", "report.css"), "utf8");
+  assert.match(css, /\.lb-show \.lb-open,\.rgroup\.lowerband\[open\]>summary \.lb-show \.lb-closed\{display:none\}/, "the folded words stay while open, or Hide shows while folded");
+  assert.match(css, /\.rgroup\.lowerband\[open\]>summary \.lb-show \.lb-open\{display:inline\}/);
+  const screen = css.match(/@media screen\{\n(\s+\.rgroup\.lowerband\{[^\n]*\n\s+\.rgroup\.lowerband:not\(\[open\]\)\{[^\n]*)\n\s*\}/)?.[1] ?? "";
+  assert.match(screen, /box-shadow:[^;]*0 13px 0[^;]*0 26px 0/, "the pile's two edges are not drawn under @media screen");
+  assert.match(screen, /margin-bottom:32px/, "the folded list keeps no room for the pile");
+  assert.doesNotMatch(css.replace(screen, ""), /0 26px 0 -12px/, "the pile is drawn outside @media screen, so it can reach paper");
 });

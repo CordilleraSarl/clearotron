@@ -1,14 +1,20 @@
 {
  "full-country-search": {
-  "tmpdemo2014fullcountrysearch-venqori-2026-11-20-sample-capture/report.html": "2f864f814bff6cc00c4bfe081867763c1a3c0a3fdff3e3d7defda95ddd58484f"
+  "tmpdemo2014fullcountrysearch-venqori-2026-11-20-sample-capture/report.html": "f8a39f6b986537a424d767835f0f1a7d603721737c33b2e2021934730e6c3689"
  },
  "global-preliminary-search": {
-  "tmpdemo2014globalpreliminarysearch-venqori-2026-11-20-sample-capture/report.html": "eeb18094a3aacc5295f96da8d67b9da36b4a35e6788a280db5d61954bf53506d"
+  "tmpdemo2014globalpreliminarysearch-venqori-2026-11-20-sample-capture/report.html": "8e1fb162c41c943225333a27ab3e016d91df530859601c12568699d9210f2963"
  },
  "knockout-search": {
-  "tmpdemo2014knockoutsearch-venqori-2026-11-20-sample-capture/report.html": "ba7d3cf8afa0d637bf7d8e22022e891834b7320d3b5a63cefc53fd29c6932d73"
+  "tmpdemo2014knockoutsearch-venqori-2026-11-20-sample-capture/report.html": "f84e389f151c2e4e61c5249f8f6731a72007d5b50a44e8b27e12f10c9fd697cf"
  },
  "multi-country-focus-search": {
-  "tmpdemo2014multicountryfocussearch-venqori-2026-11-20-sample-capture/report.html": "0ce239a9d85c27aa06edc553153fe8bfaec9ccd7898a9989df252e1211b93f39"
+  "tmpdemo2014multicountryfocussearch-venqori-2026-11-20-sample-capture/report.html": "8225d05b76de3d29adf9581dafbb8f9d286c9640c76927c6f68f4f1ca1b395e1"
+ },
+ "clearance-the-read": {
+  "fixture-clearance-talvorene-2026-11-26-report-pages/report.html": "3ff7c0f5a799bed2a35084f3abc23dbeddb594af243b3b91a2fe5b5f43e5e7ca"
+ },
+ "knockout-with-findings": {
+  "fixture-knockout-talvorene-2026-11-26-report-pages/report.html": "4dc292e02407c36e9b697d64e8c07f6ded96bad36bda090016dc3cac1e81d995"
  }
 }
