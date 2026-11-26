@@ -32,6 +32,11 @@ export const WEB_RESEARCH_BEFORE_THE_SETTING = "perplexity";
 export const PERPLEXITY_KEY = "PERPLEXITY_API_KEY";
 
 const ENGINE_SEARCH = Object.freeze({ "anthropic-agent": "Claude", "openai-agent": "Codex" });
+
+// THE PARTS OF A CLEARANCE'S WEB RESEARCH THAT OWN SEARCH DOES NOT RUN YET, each still sent to Perplexity. While one is
+// listed, own search needs the Perplexity key for it, and says so: a part with no service would be a question the writer
+// is refused, which a report reads as "no result". Each part leaves the list when own search runs it.
+export const OWN_SEARCH_STILL_PERPLEXITY = Object.freeze(["follow-up questions"]);
 const DEFAULT_ENGINE = "anthropic-agent";
 
 /**
@@ -75,5 +80,8 @@ export function webResearchCapability({ service, engine = null, env = process.en
       : `Claude's own web search is not proved through ${auth.cloud === "gateway" ? "a gateway" : auth.cloud === "vertex" ? "Google Vertex" : "Microsoft Foundry"}`;
     return { ok: false, service, missing: [], why, cloud: auth.cloud };
   }
-  return { ok: true, service, missing: [], why: null, search: ENGINE_SEARCH[name], billing: auth.mode };
+  if (OWN_SEARCH_STILL_PERPLEXITY.length && String(env?.[PERPLEXITY_KEY] ?? "").trim() === "")
+    return { ok: false, service, missing: [PERPLEXITY_KEY], search: ENGINE_SEARCH[name], billing: auth.mode,
+      why: `${PERPLEXITY_KEY} is not set, and own search still sends its ${OWN_SEARCH_STILL_PERPLEXITY.join(" and ")} to Perplexity` };
+  return { ok: true, service, missing: [], why: null, search: ENGINE_SEARCH[name], billing: auth.mode, stillPerplexity: [...OWN_SEARCH_STILL_PERPLEXITY] };
 }

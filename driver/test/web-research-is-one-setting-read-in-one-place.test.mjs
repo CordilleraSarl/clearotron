@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { installWebResearch, webResearchCapability, WEB_RESEARCH_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
+import { installWebResearch, webResearchCapability, OWN_SEARCH_STILL_PERPLEXITY, WEB_RESEARCH_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
 import { preflightResearchCredential } from "../driver.config.mjs";
 import { policyFor } from "../search-policy.mjs";
 import { readRunChoices, recordRunChoices, researchForRun, RunChoiceUnavailable } from "../engine/run-choices.mjs";
@@ -48,8 +48,10 @@ test("own search follows the engine's route; Perplexity needs its key; the check
     [{ service: "perplexity", env: { PERPLEXITY_API_KEY: "secret-value" } }, true],
     [{ service: "google" }, false, /names no service/],
   ];
+  // Own search still sends its follow-up questions to Perplexity, so the cases that pass hold its key.
+  const KEY = { PERPLEXITY_API_KEY: "secret-value" };
   for (const [args, ok, why] of cases) {
-    const r = webResearchCapability({ env: {}, ...args });
+    const r = webResearchCapability({ ...args, env: { ...(args.service === "own" ? KEY : {}), ...(args.env ?? {}) } });
     assert.equal(r.ok, ok, JSON.stringify(args));
     if (why) assert.match(r.why, why, JSON.stringify(args));
     assert.ok(!JSON.stringify(r).includes("secret-value"), "a value reached the answer");
@@ -57,10 +59,22 @@ test("own search follows the engine's route; Perplexity needs its key; the check
   assert.deepEqual(webResearchCapability({ service: "perplexity", env: {} }).missing, ["PERPLEXITY_API_KEY"]);
 });
 
-test("the door checks the run's service: own search owes no key, and the service handed in wins over the setting", () => {
+test("a part own search does not run yet keeps needing the Perplexity key, and the check says which part", () => {
+  assert.deepEqual([...OWN_SEARCH_STILL_PERPLEXITY], ["follow-up questions"]);
+  const r = webResearchCapability({ service: "own", env: {} });
+  assert.equal(r.ok, false);
+  assert.deepEqual(r.missing, ["PERPLEXITY_API_KEY"]);
+  assert.match(r.why, /still sends its follow-up questions to Perplexity/);
+  assert.deepEqual(webResearchCapability({ service: "own", env: { PERPLEXITY_API_KEY: "k" } }).stillPerplexity, ["follow-up questions"]);
+  assert.match(webResearchCapability({ service: "own", env: { CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_BEDROCK: "1" } }).why, /Amazon Bedrock/,
+    "a route with no search is named first: a key would not make it run");
+});
+
+test("the door checks the run's service, and the service handed in wins over the setting", () => {
   const p = policyFor("full-country-search");
-  assert.equal(preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }).service, "own");
-  assert.equal(preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }).credEnv, null);
+  const KEY = { PERPLEXITY_API_KEY: "k" };
+  assert.equal(preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own", ...KEY }).service, "own");
+  assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }), /still sends its follow-up questions to Perplexity/);
   assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }, { service: "perplexity" }), /missing PERPLEXITY_API_KEY/,
     "a run recorded on Perplexity is checked there, whatever the installation now says");
   assert.equal(preflightResearchCredential(p, { PERPLEXITY_API_KEY: "k" }, { service: "own" }).service, "own");
