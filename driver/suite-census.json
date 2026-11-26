@@ -5079,6 +5079,12 @@
           "skips": 1,
           "todos": 0
         },
+        "expand-all-reaches-every-fold-and-paper-counts-what-it-prints.test.mjs": {
+          "tests": 5,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "experiment-context.test.mjs": {
           "tests": 27,
           "asserts": 91,

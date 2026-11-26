@@ -1499,10 +1499,10 @@ function keyPanel(findings, recordsByUri = new Map()) {
   const all = groupByRegion(findings);
   const regions = all.filter(g => g.code !== COMMON_LAW);
   const clGroup = all.find(g => g.code === COMMON_LAW);
-  const detail = (g, label, sub, collapsed = false) => {
+  const detail = (g, label, sub, collapsed = false, cls = '') => {
     const kc = g.hasOnField ? 'med' : 'low';
     const rows = g.findings.map(f => keyRow(f, recordsByUri)).join('');
-    return `<details class="rrow"${!collapsed && g.hasOnField ? ' open' : ''}><summary><span class="rcode">${esc(g.code)}</span><span class="rname">${esc(label ?? g.name)}</span><span class="kc ${kc}">${g.chip}</span><span class="rsub">${sub ?? esc(cap(registrationSystem(g.code) ?? ''))}</span><span class="rcount">${g.count}</span></summary><div class="rbody">${rows}</div></details>`;
+    return `<details class="rrow${cls ? ` ${cls}` : ''}"${!collapsed && g.hasOnField ? ' open' : ''}><summary><span class="rcode">${esc(g.code)}</span><span class="rname">${esc(label ?? g.name)}</span><span class="kc ${kc}">${g.chip}</span><span class="rsub">${sub ?? esc(cap(registrationSystem(g.code) ?? ''))}</span><span class="rcount">${g.count}</span></summary><div class="rbody">${rows}</div></details>`;
   };
   // doc-55 A2 (whitespace): open ONLY the single highest-risk region — the first on-field group in
   // exposure order (groups are sorted by lowest ordinal) — and collapse every other region to its
@@ -1520,7 +1520,7 @@ function keyPanel(findings, recordsByUri = new Map()) {
   const clFirst = cardTarget((findings.find((f) => regionCode(f) === COMMON_LAW && isOnField(f)) ?? clGroup?.findings[0])?.ordinal);
   const clLink = clFirst ? `<a href="#${clFirst}">${esc(R.key.commonLawSectionLink)}</a>` : esc(R.key.commonLawSectionLink);
   const clBlock = clGroup
-    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(clLink)}</p>${detail(clGroup, R.key.commonLawGroup, `<span style="white-space:nowrap">${R.key.unregisteredUse}</span>`, true)}`
+    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(clLink)}</p>${detail(clGroup, R.key.commonLawGroup, R.key.unregisteredUse, true, 'rcl')}`
     : '';
   return `<div class="panel keypanel">
       <div class="label">${R.key.title}</div>
@@ -2173,6 +2173,11 @@ function findingCard(f, card, recordsByUri = new Map()) {
 // 2026-11-19). A conflict with no band on the ladder keeps its full card, since nothing says it is below the risk. A
 // run with no framework renders every card in full, as it always has.
 //
+// ON PAPER THE HEADER COUNTS THE CARDS PRINTED UNDER IT. The export leaves out every unticked card, so with two of 28
+// ticked the paper read "28 more conflicts rated Manageable" over two cards. The header carries its own words for one
+// card and, after the number, for several, both composed here by the catalogue's function, and the export writes the
+// printed count into it; after printing the screen's words come back. No words are added.
+//
 // THE HEADER SAYS HOW MUCH IT HOLDS (owner, 2026-11-25): most of a report's conflicts can sit behind this one line, so
 // its right end carries a control, "Show all {n}" folded and "Hide" open, drawn as a card's Ask AI pill, and folded it
 // reads as a pile of cards. The control is words inside the summary, not a second button: the header stays one control
@@ -2190,7 +2195,8 @@ function conflictCards(onField, cardFor, recordsByUri) {
   const bands = [...new Set(below.map(severityRank))].sort((a, b) => a - b).map((i) => FRAMEWORK.bands[i].label);
   const cards = below.map((f) => compactCard(f, cardFor(f), recordsByUri, { ticked: false })).join('\n      ');
   return `${full(kept)}
-  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length, bands))}</span><span class="lb-show no-print" aria-hidden="true"><span class="lb-closed">${
+  <details class="rgroup lowerband"><summary><span class="gname" data-print-one="${escAttr(R.lowerBand(1, bands))}" data-print-many="${
+    escAttr(R.lowerBand(2, bands).slice((2).toLocaleString('en-GB').length))}">${esc(R.lowerBand(below.length, bands))}</span><span class="lb-show no-print" aria-hidden="true"><span class="lb-closed">${
     esc(R.lowerBandShow(below.length))}</span><span class="lb-open">${esc(R.lowerBandHide)}</span></span></summary><div class="gbody">
       ${cards}
   </div></details>`;
@@ -2436,11 +2442,14 @@ const NAV_SHEET = NAV_CSS;
 // own sheet, after the base sheet whose print rule opens every fold, which the Knockout keeps. The verdict caption is not a
 // fold the reader chose: the page opens it before printing, and its label stays off the paper.
 const CLEARANCE_PRINT = readFileSync(join(HERE, 'templates', 'clearance-print.css'), 'utf8');
+// EXPAND ALL MEANS EVERY FOLD. openAll named five kinds of fold and left six alone on the demo, the term lists and
+// translation notes inside the register records among them, so a search of the page missed them and the PDF printed
+// a header with nothing under it. It reads every fold on the page, so a kind added later cannot fall behind it.
 const REP_OVERRIDE = '.rep-stickyhead .sitenav{position:static;box-shadow:none;border-bottom:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}';
 const PAGE_JS = `var _hidden=[];
-function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});document.querySelectorAll('details.lowerband').forEach(function(d){if(!d.querySelector('.card:not(.print-hidden)')){d.classList.add('print-hidden');_hidden.push(d);}});window.print();}
+function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});document.querySelectorAll('details.lowerband').forEach(function(d){if(!d.querySelector('.card:not(.print-hidden)')){d.classList.add('print-hidden');_hidden.push(d);}});document.querySelectorAll('details.lowerband:not(.print-hidden)>summary>.gname').forEach(function(g){var n=g.closest('details').querySelectorAll('.card:not(.print-hidden)').length;if(!g.dataset.printOne||!g.dataset.printMany)return;g.dataset.screen=g.textContent;g.textContent=n===1?g.dataset.printOne:n.toLocaleString('en-GB')+g.dataset.printMany;});window.print();}
 function pickAll(v){document.querySelectorAll('input.pickbox').forEach(function(cb){cb.checked=v;});}
-function openAll(v){document.querySelectorAll('details.drill,details.method,details.scope,details.rgroup,details.rrow').forEach(function(d){d.open=v;});}
+function openAll(v){document.querySelectorAll('details').forEach(function(d){d.open=v;});}
 // doc-55 A1: a rights-holder / marker / cross-link click targets a card by #c<ordinal>. When that card sits
 // inside a collapsed <details> (a secondary region's .rgroup, a .rrow), a plain anchor jump lands wrong or
 // nowhere. Open every <details> ancestor of the target FIRST, then land on the card top — scroll-margin-top
@@ -2452,7 +2461,7 @@ document.addEventListener('click',function(e){var a=e.target.closest?e.target.cl
 window.addEventListener('hashchange',_cardHashGo);
 window.addEventListener('load',_cardHashGo);
 window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';});document.querySelectorAll('details.sub-more').forEach(function(d){d.open=true;});document.querySelectorAll('.card').forEach(function(c){var b=c.querySelector('input.pickbox');if(b&&!b.checked)return;c.querySelectorAll('details').forEach(function(d){d.open=true;});for(var p=c.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});});
-window.addEventListener('afterprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=d.dataset.o==='1';});_hidden.forEach(function(c){c.classList.remove('print-hidden');});_hidden=[];});
+window.addEventListener('afterprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=d.dataset.o==='1';});document.querySelectorAll('.gname[data-screen]').forEach(function(g){g.textContent=g.dataset.screen;delete g.dataset.screen;});_hidden.forEach(function(c){c.classList.remove('print-hidden');});_hidden=[];});
 ${EXPORT_MENU_JS}`;
 
 // Render a parsed report + findings.json to a full self-contained HTML string.

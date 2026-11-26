@@ -1876,8 +1876,10 @@ export const KNOCKOUT_PAGE = Object.freeze({
    input.pickbox anywhere, so a select-all would tick nothing. The shell reads what is defined here and
    offers only that, so an absent verb is an absent menu item instead of a control that fails.
    NO BACKTICKS IN THIS COMMENT. It sits inside a template literal, and a backtick ends it -- the failure
-   arrives at IMPORT time naming a token nobody wrote (portal-report.test.mjs pins the same rule). */
-function openAll(v){document.querySelectorAll('details.ko-full').forEach(function(d){d.open=!!v;});}
+   arrives at IMPORT time naming a token nobody wrote (portal-report.test.mjs pins the same rule).
+   EXPAND ALL MEANS EVERY FOLD. It opened only the full assessment and left 20 of the demo's 21 folds alone, so a
+   search of the page missed every term list and register record. It reads every fold, so a fold added later is in. */
+function openAll(v){document.querySelectorAll('details').forEach(function(d){d.open=!!v;});}
 /* No tick filter — there is nothing to filter. The beforeprint handler below opens every collapsed
    narrative first, so what prints is the whole document rather than whatever happened to be expanded. */
 function exportPDF(){window.print();}

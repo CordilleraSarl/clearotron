@@ -24,10 +24,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const RUN = join(HERE, "..", "..", "demo", "global-preliminary-search", "run");
 const FRAMEWORK = parseFrameworkManifest(JSON.parse(readFileSync(join(RUN, "_driver", "framework.json"), "utf8")));
 const fullCards = (html) => [...html.matchAll(/<div class="card" id="c(\d+)">/g)].map((m) => Number(m[1]));
-const lower = (html) => html.match(/<details class="rgroup lowerband"><summary><span class="gname">([^<]*)<\/span>(?:<span class="lb-show[^"]*" aria-hidden="true">(?:<span class="lb-(?:closed|open)">[^<]*<\/span>){2}<\/span>)?<\/summary><div class="gbody">([\s\S]*?)\n  <\/div><\/details>/);
+const lower = (html) => html.match(/<details class="rgroup lowerband"><summary><span class="gname"[^>]*>([^<]*)<\/span>(?:<span class="lb-show[^"]*" aria-hidden="true">(?:<span class="lb-(?:closed|open)">[^<]*<\/span>){2}<\/span>)?<\/summary><div class="gbody">([\s\S]*?)\n  <\/div><\/details>/);
 /** The header's control: its words while folded and while open, and its attributes. */
 const control = (html) => {
-  const m = html.match(/<details class="rgroup lowerband"><summary><span class="gname">[^<]*<\/span><span class="(lb-show[^"]*)" aria-hidden="(true)"><span class="lb-closed">([^<]*)<\/span><span class="lb-open">([^<]*)<\/span><\/span><\/summary>/);
+  const m = html.match(/<details class="rgroup lowerband"><summary><span class="gname"[^>]*>[^<]*<\/span><span class="(lb-show[^"]*)" aria-hidden="(true)"><span class="lb-closed">([^<]*)<\/span><span class="lb-open">([^<]*)<\/span><\/span><\/summary>/);
   return m ? { cls: m[1], hidden: m[2], folded: m[3], open: m[4] } : null;
 };
 

@@ -398,6 +398,11 @@
   .rcode{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--slate);background:var(--bg2);border:1px solid var(--line);padding:2px 6px;border-radius:5px;min-width:30px;text-align:center;flex:none}
   .rname{font-weight:700;font-size:13px;flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .rsub{flex:1;min-width:0;font-size:11px}
+  /* The common-law row's name is the longest in the key, so beside its band and its count "Unregistered use" had no room
+     and ran under the count. Its header may take a second line: an item that does not fit moves down whole, the label
+     keeps its width and the count stays at the right of the last line. No words change. */
+  .rrow.rcl>summary{flex-wrap:wrap;row-gap:4px}
+  .rrow.rcl .rsub{flex:1 0 auto}
   .rcount{font-size:11px;font-weight:700;color:var(--slate);flex:none}
   .rbody{padding:2px 2px 6px 8px}
   .rgroup{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:13px;box-shadow:var(--shadow);overflow:hidden}
