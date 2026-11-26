@@ -36,6 +36,7 @@ import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the run
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { attachFramework } from "./run-attachments.mjs";   // the one framework freeze, both products'
+import { stampKnockoutPlainLanguage } from "./knockout-plain-language.mjs";
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc, filingsOnce, expandFilingsOnce, sameRecord, calibrationExcerptOf, readerProviderDoc } from "./stages-knockout.mjs";
 import { workedExamplesFor } from "./framework.mjs";   // which worked examples the rating's calibration comes from
 import { familiesDefect } from "./knockout-frame-record.mjs";
@@ -1660,6 +1661,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
           });
           sentinel(run.runDir, ".published", published);
           runLog(run.runDir, { event: "knockout-published", url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), overall, marks: merged.marks.length });
+          // The plain-language counts by rating group and field, as saved and as published (knockout-plain-language.mjs).
+          stampKnockoutPlainLanguage(run.runDir, merged);
         }
         // The knockout lane put its token total in the PUBLISHED ARTIFACT but never stamped the run itself,
         // so `status.json.tokens` was empty for every Stage-0 run however it ended (fixed 2026-07-28) — and

@@ -1425,6 +1425,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-records-its-plain-language-counts-by-group-and-field.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-refusal-is-routed-as-the-knockout-records.test.mjs": {
           "tests": 2,
           "asserts": 6,

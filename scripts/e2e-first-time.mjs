@@ -223,7 +223,7 @@ export const NOT_COUNTED_EVENTS = {
     // wrong, a question re-asked or an attempt repeated, so it does not bear on "first time" (515).
     // The target moved off this line to the run's own, above: the bar is about a run and this span is
     // one stage of it.
-    "knockout-sweep-total", "level-scope-note",
+    "knockout-plain-language", "knockout-sweep-total", "level-scope-note",
     "named-band-merged", "named-band-remerged", "late-evidence", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred",
