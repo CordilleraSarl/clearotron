@@ -30,7 +30,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor, unreadableRunsReason } from "./lib/runs.mjs";
+import { enumerateRuns, queuedOrders, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor, unreadableRunsReason } from "./lib/runs.mjs";
 import { ORDERABLE_PRODUCTS } from "../driver/search-policy.mjs";
 import { demoServing } from "./demo-mode.mjs";
 import { DEMO_SWAPS, demoText, demoGuidance } from "./lib/demo-texts.mjs";   // — a demo names no tool it withholds
@@ -69,7 +69,8 @@ import { buildBrief } from "./lib/brief.mjs";
 import { providerUsage } from "./lib/usage.mjs";
 import { coverage, artifactStatus } from "./lib/coverage.mjs";
 import { trace } from "./lib/trace.mjs";
-import { REGISTER_AXES, STAGE_ORDER, parseFront, parseSections, paths, compareCmd, loadProfiles, loadProjects, config } from "./lib/driver.mjs";
+import { REGISTER_AXES, STAGE_ORDER, parseFront, parseSections, paths, compareCmd, loadProfiles, loadProjects, config, reportIdentityFor } from "./lib/driver.mjs";
+import { RUN_STATES } from "../driver/portal-runs.mjs";   // the one list of run states the portal folds and the connector passes through
 import { readCapped, mimeFor } from "./lib/util.mjs";
 import { readEvents, projectTimeline } from "./lib/events.mjs";
 import { tokenize, scoreLine } from "./lib/lexsearch.mjs";
@@ -248,6 +249,30 @@ function runSummary(run) {
   };
 }
 
+/**
+ * An order no worker has claimed, as a run-list row: the run row's fields, with what an order has not got yet set to
+ * null. Its step is the portal's own words for the same order (driver/portal-runs.mjs queuedStep). No queue position:
+ * this list is filtered to the caller's companies after it is built, and a position counted before that filter
+ * would tell one company how much work another has queued.
+ */
+function queuedSummary(o) {
+  const none = { sent: false, messageId: null, sentAt: null };
+  return {
+    ...(demoServing() ? { demo: DEMO_LABEL } : {}),
+    runId: o.runId, slug: null, codename: null, date: o.queuedAt.slice(0, 10), agent: o.agent,
+    client: { key: o.account, name: null },
+    project: o.projectKey ? { key: o.projectKey, name: o.projectKey } : null,
+    product: o.product ? reportIdentityFor(o.product).identity ?? null : null,
+    state: "queued", location: "queue", tier: null, caption: null, url: null,
+    markName: o.markName, ref: o.ref, classes: o.classes,
+    step: o.step,
+    startedAt: null, updatedAt: o.queuedAt, deliveredAt: null,
+    failedStage: null, reason: null, resetsAt: null, recoveryResumesAt: null, parkedKind: null, terminalKind: null,
+    sendPending: false, sent: false,
+    channels: { email: none, whatsapp: none },
+  };
+}
+
 function channelState(runDir) {
   const legacySent = existsSync(join(runDir, ".sent"));
   let receipts = {};
@@ -297,6 +322,11 @@ const tools = {
     });
     if (unreadable) throw new Error(unreadable);
     let out = enumerateRuns({ agent, state, slug, mark }).map(runSummary);
+    // AN ACCEPTED ORDER IS LISTED BEFORE A WORKER STARTS IT, as the portal lists it. A slug names a started run,
+    // so a slug filter leaves orders out; a state filter keeps them only when it asks for `queued`. Merged by time
+    // into the newest-first list, where a stable sort keeps every run where it was.
+    if (!slug && (state == null || state === "queued"))
+      out = [...out, ...queuedOrders({ agent, mark }).map(queuedSummary)].sort((x, y) => String(y.updatedAt ?? "").localeCompare(String(x.updatedAt ?? "")));
     if (sendPending === true || sendPending === false) out = out.filter((r) => r.sendPending === sendPending);
     const cap = limit ?? (sendPending === true ? out.length : 50);
     return out.slice(0, cap);
@@ -684,7 +714,7 @@ const TOOL_DEFS = [
   // recipient is a lawyer who layers advice on top, and a tool description promising advice is how it
   // comes back. The brief names WHICH PRODUCT the run was instead, resolved from the registry.
   { name: "brief", description: "START HERE for any 'what do you have on X / what did the search find' question — ONE plain-language briefing of a run, in the client-voiced wording (which search product this run was, overall risk in plain words, each conflict in 1–2 plain sentences, any conditions on the result). Facts, never advice. No internal stage names, no risk-formula codes, no model names. Reach for the audit tools (get_run, trace, decision_timeline, get_telemetry) only when the user asks HOW the system reached a conclusion.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },
-  { name: "list_runs", description: "List the searches this session can see (in progress and finished), newest first. A session may hold more than one client, so the list is NOT one client's: every row names the client it was run for, and the project where there is one. TO FIND ONE CLIENT'S SEARCHES, pass `mark` with the client's name — the same name-shaped filter reads the client and the project as well as the mark. TO FIND A SEARCH BY THE NAME IT CLEARED, pass `mark` — the stored identifier is a longer prefixed slug a client has never seen, so a bare mark name will not match `slug`. If a filtered call comes back empty, list unfiltered and read down the mark names before telling anyone there is nothing there. States: 'postponed' = paused on a provider cap and resuming by itself (resetsAt); 'recovering' = backing off and retrying (recoveryResumesAt); 'parked-for-human' = interrupted mid-search, resumes on the next activation. sendPending:true is the authoritative list of finished searches still owed their delivery notification. Follow up with brief for a plain-language summary of one search.", inputSchema: { type: "object", properties: { agent: { type: "string" }, state: { type: "string", enum: ["running", "delivered", "failed", "postponed", "recovering", "parked-for-human", "cancelled"] }, mark: { type: "string", description: "Find a search by NAME: the mark it cleared, the client it was run for, the project it was run under, or the identifier — case-insensitively, on part of the word. This is the parameter a name-shaped question wants, whichever of those names the asker holds." }, slug: { type: "string", description: "EXACT identifier match, for a caller that already holds one. A mark name is not a slug — use `mark`." }, sendPending: { type: "boolean", description: "true = only searches still owed a delivery notification; false = only already-settled ones." }, limit: { type: "number" } } } },
+  { name: "list_runs", description: "List the searches this session can see (in progress and finished), newest first. A session may hold more than one client, so the list is NOT one client's: every row names the client it was run for, and the project where there is one. TO FIND ONE CLIENT'S SEARCHES, pass `mark` with the client's name — the same name-shaped filter reads the client and the project as well as the mark. TO FIND A SEARCH BY THE NAME IT CLEARED, pass `mark` — the stored identifier is a longer prefixed slug a client has never seen, so a bare mark name will not match `slug`. If a filtered call comes back empty, list unfiltered and read down the mark names before telling anyone there is nothing there. States: 'postponed' = paused on a provider cap and resuming by itself (resetsAt); 'recovering' = backing off and retrying (recoveryResumesAt); 'parked-for-human' = interrupted mid-search, resumes on the next activation. sendPending:true is the authoritative list of finished searches still owed their delivery notification. Follow up with brief for a plain-language summary of one search.", inputSchema: { type: "object", properties: { agent: { type: "string" }, state: { type: "string", enum: [...RUN_STATES] }, mark: { type: "string", description: "Find a search by NAME: the mark it cleared, the client it was run for, the project it was run under, or the identifier — case-insensitively, on part of the word. This is the parameter a name-shaped question wants, whichever of those names the asker holds." }, slug: { type: "string", description: "EXACT identifier match, for a caller that already holds one. A mark name is not a slug — use `mark`." }, sendPending: { type: "boolean", description: "true = only searches still owed a delivery notification; false = only already-settled ones." }, limit: { type: "number" } } } },
   { name: "list_profiles", description: "List the customer ACCOUNTS the firm runs clearotron clearances for (key + name + industry + their PROJECTS) — the roster the intake step resolves a job's profileKey (and optional projectKey) against. profileKey selects that customer's marketplaces, default classes/jurisdictions, report format and risk posture; a project (spec 62) is an engagement UNDER a customer that overlays its own marketplaces/classes/sector/posture. Resolve by JUDGMENT (explicit name, misspelling, or implicit reference); OMIT profileKey for a new/unknown customer (uses the neutral generic profile — a customer who does not exist here yet never blocks a search; tell the requester it is running under the neutral profile, and that their own company can be set up in the portal if they want its framework, territories and marketplaces applied instead); set projectKey only when the request names a specific project in that customer's projects[], else OMIT it (runs on the customer profile); never pick a profile from the sender's email domain. Read-only.", inputSchema: { type: "object", properties: {} } },
   { name: "get_run", description: "ENGINEERING/AUDIT view — full run mechanics: status, every pipeline stage (trigger/outcome), failover facts, artifact validity, and a coverage summary. Use when the user asks how the run executed; for 'what did it find', call brief instead.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },
   { name: "read_artifact", description: "Read a run artifact's raw text (or one '# Section', or its front-matter). For briefing a person, the report is the plain-language layer; the rest are internal working documents. Names: report, audit, narrative, registerFindings, commonLaw, placement, matterContext, variantManifest, skepticFlags, seniorEyeReview, caseLaw, clientSummary (internal cover-note source; ops only), a register axis (e.g. primary-sweep), status.json, run.jsonl.", inputSchema: { type: "object", properties: { ...runIdProp, name: { type: "string" }, section: { type: "string", description: "Return only this '# Section'." }, frontMatterOnly: { type: "boolean" } }, required: ["runId", "name"] } },
@@ -1167,6 +1197,8 @@ export function filterByAccounts(scope, name, result) {
     return { ...result, clients: result.clients.filter((c) => scope.accounts.includes(c.key)) };
   if ((name === "list_runs" || name === "search_runs") && Array.isArray(result)) {
     const map = accountOf();
+    // An order is not a run yet, so its owner comes from the order itself, read by the same walk.
+    if (name === "list_runs") for (const o of queuedOrders()) if (!map.has(o.runId)) map.set(o.runId, { account: o.account, organisation: o.organisation });
     return result.filter((r) => seen(map, r.runId ?? r.id ?? null));
   }
   // search_runs answers an OBJECT ({query, mode, scope, runsScanned, hits, truncated}) — the array
