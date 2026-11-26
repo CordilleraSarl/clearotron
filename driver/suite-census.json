@@ -1365,6 +1365,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-names-the-same-failed-reader-on-every-run.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-owner-lookup-that-got-no-answer-is-in-its-audit-trail.test.mjs": {
           "tests": 2,
           "asserts": 9,
