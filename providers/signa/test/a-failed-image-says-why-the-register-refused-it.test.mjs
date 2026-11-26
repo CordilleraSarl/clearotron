@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A FAILED LOGO IMAGE SAYS WHY THE REGISTER REFUSED IT. Measured on 2026-11-25: two logo images answered 503 and the run
-// kept only "HTTP 503", so nothing said which backend failed or whether asking again would help. The logo row's cause now
-// carries the register's own error type and detail, and whether it called itself retryable.
+// A FAILED LOGO IMAGE SAYS WHY THE REGISTER REFUSED IT. A bare "HTTP 503" says neither which part of the register failed
+// nor whether asking again could help. The logo row's cause carries the register's own error type and detail, and whether
+// it called itself retryable.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { doMarkImage, imageFailureCause } from "../src/core.js";
