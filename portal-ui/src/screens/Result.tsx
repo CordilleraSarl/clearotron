@@ -18,7 +18,7 @@ import { readsFor, hasThread, readLabel, readLabelParts, displayName, openDocume
 import { inlineSpans } from '../contract/inlineMd.ts'
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from '../contract/summaryBlocks.ts'
 import { runProductLabel } from '../contract/home.ts'
-import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
+import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCopyLink, cardAddress, cardFromSearch, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
 import type { FrameCommand, FrameSection, FrameTheme, FrameVerb } from '../contract/reportFrame.ts'
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
@@ -62,6 +62,8 @@ function usePortalTheme(): FrameTheme {
 // lands a section's headline. Shared with the reading line, so a section jumped to always counts as reached.
 const TOPBAR_PX = 56
 const LANDING_PX = 10
+// How long a report opened at a card keeps the card in place while the document's pictures and folds settle.
+const LANDING_SETTLE_MS = 4000
 /** Where the report header has two states: a desktop width. A phone keeps today's pinned header. */
 const DESKTOP = '(min-width: 900px)'
 /** The single pinned row's height before it has been drawn once, for a jump that lands before it exists. */
@@ -222,6 +224,15 @@ function useReportFrame() {
         }
         return
       }
+      // A CARD'S "COPY LINK". The page writes the address of this report screen at that card, and tells the
+      // document whether the write landed, so the card shows its tick and says "Copied" only when it did.
+      const copy = readCopyLink(e.data, mine)
+      if (copy) {
+        const answer = (ok: boolean) => frame?.contentWindow?.postMessage(frameCommand('copied', ok), '*')
+        try { navigator.clipboard.writeText(cardAddress(window.location.href, copy.card)).then(() => answer(true), () => answer(false)) }
+        catch { answer(false) }
+        return
+      }
       const bad = readCommandFailure(e.data, mine)
       if (bad) { setFailed(`That did not work — the report could not ${bad.command}. (${bad.message})`); return }
       const asked = readAskAi(e.data, mine)
@@ -247,6 +258,36 @@ function useReportFrame() {
   // frame cannot read the choice the portal saved — so a dark portal framed a light page. Sent in on every
   // load of the document and on every change of the portal's theme; the document applies it in place,
   // so a change repaints the page without reloading it.
+  // LANDING ON A CARD. A report address that names a card (`?card=c12`, from a card's "Copy link") opens at that
+  // card: once the document has announced its sections, it is sent the same `section` command a breadcrumb sends,
+  // which opens any folded group around the card and jumps to it. Once per card named, not on every announcement.
+  //
+  // THE DOCUMENT IS STILL SETTLING WHEN IT ANNOUNCES. Pictures above the card load after the jump and push the card
+  // down the page (measured in the render check: 1,418px below where it was sent). So for a few seconds after the
+  // jump, each new height the document reports sends the jump again, and the first wheel, touch or key from the
+  // reader ends that at once: a reader who has started to scroll is never pulled back.
+  const landedOn = useRef<string | null>(null)
+  const settling = useRef<{ card: string; until: number } | null>(null)
+  useEffect(() => {
+    if (sections === null) return
+    const card = cardFromSearch(window.location.search)
+    if (card !== null && landedOn.current !== card) {
+      landedOn.current = card
+      settling.current = { card, until: Date.now() + LANDING_SETTLE_MS }
+      send('section', card)
+    }
+  }, [sections, send])
+  useEffect(() => {
+    const land = settling.current
+    if (land && Date.now() < land.until) send('section', land.card)
+  }, [height, send])
+  useEffect(() => {
+    const stop = () => { settling.current = null }
+    const opts = { passive: true } as const
+    window.addEventListener('wheel', stop, opts); window.addEventListener('touchstart', stop, opts); window.addEventListener('keydown', stop)
+    return () => { window.removeEventListener('wheel', stop); window.removeEventListener('touchstart', stop); window.removeEventListener('keydown', stop) }
+  }, [])
+
   const theme = usePortalTheme()
   useEffect(() => {
     if (hello) send('theme', theme)

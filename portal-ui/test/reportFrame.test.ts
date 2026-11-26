@@ -20,6 +20,7 @@ import {
   readFrameHeight,
   readFrameScroll,
   readAskAi,
+  readCopyLink, cardAddress, cardFromSearch,
 } from '../src/contract/reportFrame.ts'
 
 const height = (h: unknown) => ({ source: FRAME_TAG, type: 'height', height: h })
@@ -141,4 +142,21 @@ test('A FINDING\'S ASK AI crosses the frame with its number, and a card with no 
   assert.equal(readAskAi(ask({ ordinal: 3 }), false), null, 'from anywhere but the report being shown, ignored')
   assert.equal(readAskAi({ source: 'other', type: 'askAi', ordinal: 3 }, true), null)
   assert.equal(readAskAi('askAi', true), null)
+})
+
+test("a card's Copy link names a card the page draws, and the address carries the run and the card only", () => {
+  assert.deepEqual(readCopyLink({ source: FRAME_TAG, type: 'copyLink', card: 'c12', ordinal: 12, markIndex: null }, true), { card: 'c12' })
+  assert.deepEqual(readCopyLink({ source: FRAME_TAG, type: 'copyLink', card: 'k2-3', ordinal: 3, markIndex: 2 }, true), { card: 'k2-3' })
+  for (const card of ['', 'c', 'x12', 'c12?x=1', 'k2-3#top', 'javascript:alert(1)', 12])
+    assert.equal(readCopyLink({ source: FRAME_TAG, type: 'copyLink', card }, true), null, `refused: ${String(card)}`)
+  assert.equal(readCopyLink({ source: FRAME_TAG, type: 'copyLink', card: 'c12' }, false), null, 'another window is ignored')
+  const at = cardAddress('https://portal.example/portal/result/run-1/name-a?ask=open&from=report#x', 'k1-4')
+  assert.equal(at, 'https://portal.example/portal/result/run-1/name-a?card=k1-4', 'the path stays; every other query and the fragment go')
+})
+
+test('a report address that names a card lands on it; a malformed one names none', () => {
+  assert.equal(cardFromSearch('?card=c3'), 'c3')
+  assert.equal(cardFromSearch('?ask=open&card=k1-2'), 'k1-2')
+  assert.equal(cardFromSearch('?card=c3%3Cscript%3E'), null)
+  assert.equal(cardFromSearch(''), null)
 })
