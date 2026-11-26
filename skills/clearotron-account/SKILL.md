@@ -230,8 +230,8 @@ that would actually be searched, the expected turnaround, and any blockers. Rela
 would surprise them — most often a scope narrower than the words they used. Only then `start_run`,
 with the same arguments.
 
-**When time is short, offer Urgent, and let the user choose.** Urgent is the same search and the same
-report, with the slowest steps run on the AI service's faster setting. Offer it when the deadline (an
+**When time is short, offer Urgent, and let the user choose.** Urgent requests the AI service's faster
+setting wherever it is available. The search and report are the same. Offer it when the deadline (an
 order's `deadline`, or a time the user states) falls before the end of the Standard turnaround in
 `plan_run`'s `howSoon`, or when the user says urgent, today, ASAP or the like. State Urgent's
 turnaround, that it uses 2 searches, and what the account has left today, all as `plan_run` reports

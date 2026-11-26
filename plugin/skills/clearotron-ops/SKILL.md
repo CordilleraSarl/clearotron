@@ -50,13 +50,13 @@ account's default, or a saved search), the territories and marketplaces that wou
 the turnaround, and any blockers, as questions to put back. It is a check, not a gate. Put what it
 reports in the confirmation, above all a search or a scope narrower than the words the requester used.
 
-**When time is short, offer Urgent, and start on the answer.** Urgent is the same search and the same
-report, with the slowest steps run on the AI service's faster setting. Offer it when the deadline falls
+**When time is short, offer Urgent, and start on the answer.** Urgent requests the AI service's faster
+setting wherever it is available. The search and report are the same. Offer it when the deadline falls
 before the end of the Standard turnaround in `plan_run`'s `howSoon`, or when the requester says urgent,
 today, ASAP or the like. In the confirmation, state Urgent's turnaround, that it uses 2 searches, and
 what the account has left today, all as `plan_run` reports them, and ask: Urgent or Standard? This is
-the one question that waits for its answer: start the search when it comes, with `urgent: true` only
-on Urgent. Never set it yourself.
+the one question that waits for its answer: start the search when it comes, with `urgent: true` only on
+Urgent. Never set it yourself.
 - If `howSoon.urgentAvailable` is false, give the notice in its `urgentNote`, and start at Standard at
   once if it fits.
 - If Urgent exceeds today's allowance, give the remaining count and Urgent's cost from the preview.
