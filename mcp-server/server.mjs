@@ -321,7 +321,7 @@ const tools = {
       workReadError: readError(config.workspaceRoot),
     });
     if (unreadable) throw new Error(unreadable);
-    let out = enumerateRuns({ agent, state, slug, mark }).map(runSummary);
+    let out = enumerateRuns({ agent, state, slug, mark, listed: true }).map(runSummary);
     // AN ACCEPTED ORDER IS LISTED BEFORE A WORKER STARTS IT, as the portal lists it. A slug names a started run,
     // so a slug filter leaves orders out; a state filter keeps them only when it asks for `queued`. Merged by time
     // into the newest-first list, where a stable sort keeps every run where it was.
