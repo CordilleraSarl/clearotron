@@ -35,6 +35,8 @@ import https from "node:https";
 import zlib from "node:zlib";
 import { createHash } from "node:crypto";
 import { isIP } from "node:net";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join, resolve, sep } from "node:path";
 import { checkedLookup, isPublicAddress } from "./engine/mcp/public-fetch.mjs";
 import { imageTypeOf } from "./mark-logos.mjs";
 
@@ -207,4 +209,75 @@ export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SEC
   try { await Promise.all(Array.from({ length: Math.max(1, Math.min(concurrency, rows.length)) }, worker)); }
   finally { if (timer) clearTimeout(timer); }
   return { rows, ms: Math.round(now() - t0), aborted: abort.signal.aborted };
+}
+
+// ── THE RECORD, AND WHAT THE REPORT DRAWS FROM IT ───────────────────────────────────────────────────────────────────
+//
+// `_driver/web-pictures.json` says what happened to every page, beside the logo step's record, and the pictures that
+// arrived are saved under `_driver/web-pictures/`, named by their bytes. A resume, a replay and a republish read it and
+// fetch nothing again. A row the rule for a site's general card drops carries `general: true` and is never drawn.
+export const PICTURES_FILE = "web-pictures.json";
+export const PICTURES_DIR = "web-pictures";
+const EXT = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", "image/webp": "webp" };
+
+/**
+ * Save the step's outcome with the run: the pictures that arrived, and a row for every page. Returns the record.
+ * @param {string} runDir
+ * @param {{ cards: Map<number, string[]>, result: { rows: object[], ms: number, aborted: boolean }, seconds: number, concurrency: number, takenAt?: string, general?: Set<string> }} step
+ */
+export function writePictureRecord(runDir, { cards, result, seconds, concurrency, takenAt = new Date().toISOString(), general = new Set() }) {
+  const dir = join(runDir, "_driver", PICTURES_DIR);
+  mkdirSync(dir, { recursive: true });
+  const byPage = new Map();
+  for (const [ordinal, pages] of cards) for (const p of pages) byPage.set(p, [...(byPage.get(p) ?? []), ordinal]);
+  const rows = result.rows.map(({ data, ...row }) => {
+    const out = { ...row, cards: byPage.get(row.page) ?? [] };
+    if (row.state === "fetched" && data && EXT[row.contentType]) {
+      const name = `${row.sha256.slice(0, 24)}.${EXT[row.contentType]}`;
+      writeFileSync(join(dir, name), data);
+      out.file = `_driver/${PICTURES_DIR}/${name}`;
+    }
+    if (row.sha256 && general.has(row.sha256)) out.general = true;
+    return out;
+  });
+  const record = { schema: 1, takenAt, seconds, concurrency, ms: result.ms, aborted: result.aborted,
+    cards: Object.fromEntries([...cards].map(([ordinal, pages]) => [String(ordinal), pages])), rows };
+  writeFileSync(join(runDir, "_driver", PICTURES_FILE), JSON.stringify(record, null, 2) + "\n");
+  return record;
+}
+
+/**
+ * What each card draws, by the finding's ordinal: its pages' pictures in the card's order, each once (by its bytes), at
+ * most 8, as `{ page, site, src, fetchedOn }`. Empty for a run with no record. Only a saved file inside the run's picture
+ * folder that still opens as the type recorded is drawn. PURE but for reading the run folder.
+ */
+export function webPicturesForReport(runDir) {
+  const out = new Map();
+  if (!runDir) return out;
+  let doc = null;
+  try { doc = JSON.parse(readFileSync(join(runDir, "_driver", PICTURES_FILE), "utf8")); } catch { return out; }
+  const folder = resolve(runDir, "_driver", PICTURES_DIR) + sep;
+  const fetchedOn = String(doc?.takenAt ?? "").slice(0, 10);
+  const src = new Map();
+  for (const row of Array.isArray(doc?.rows) ? doc.rows : []) {
+    if (row?.state !== "fetched" || row.general === true || typeof row.file !== "string" || !EXT[row.contentType]) continue;
+    const at = resolve(runDir, row.file);
+    if (!at.startsWith(folder)) continue;
+    try {
+      const bytes = readFileSync(at);
+      if (imageTypeOf(bytes)?.type !== row.contentType) continue;
+      src.set(row.page, { page: row.page, site: siteOf(row.page), sha256: row.sha256, src: `data:${row.contentType};base64,${bytes.toString("base64")}`, fetchedOn });
+    } catch { /* a picture that cannot be read is not shown */ }
+  }
+  // Each card in its own order, the use check's pages first and the page it was found on last; a picture two of its
+  // pages share shows once, with the first of those pages.
+  for (const [ordinal, pages] of Object.entries(doc?.cards ?? {})) {
+    const list = [];
+    for (const page of Array.isArray(pages) ? pages : []) {
+      const pic = src.get(page);
+      if (pic && !list.some((p) => p.sha256 === pic.sha256)) list.push(pic);
+    }
+    if (list.length) out.set(Number(ordinal), list.slice(0, 8));
+  }
+  return out;
 }

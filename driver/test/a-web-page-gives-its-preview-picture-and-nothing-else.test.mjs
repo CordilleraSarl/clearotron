@@ -89,3 +89,54 @@ test("the address check refuses this machine, so a page cannot point the fetch i
   const { rows } = await fetchPagePictures([`${base}/page`], { seconds: 5 });
   assert.equal(rows[0].state, "refused");
 });
+
+// ── THE RECORD AND THE FRAME ─────────────────────────────────────────────────────────────────────────────────────────
+import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { writePictureRecord, webPicturesForReport } from "../web-pictures.mjs";
+import { parseReport } from "../publish/parse.mjs";
+import { renderHtml } from "../publish/render.mjs";
+
+test("the record keeps every page's outcome, and a card draws its own pages' pictures in its order, each once, never a general card", () => {
+  const run = mkdtempSync(join(tmpdir(), "web-pictures-run-"));
+  try {
+    mkdirSync(join(run, "_driver"));
+    const other = Buffer.concat([PNG, Buffer.from([0])]);
+    const row = (page, data, extra = {}) => ({ page, site: new URL(page).hostname, state: data ? "fetched" : "none", picture: data ? `${page}.png` : null,
+      contentType: data ? "image/png" : null, bytes: data ? data.length : 0, sha256: data ? (data === PNG ? "a".repeat(64) : "b".repeat(64)) : null, ms: 10, data, ...extra });
+    const result = { ms: 40, aborted: false, rows: [row("https://one.example/a", PNG), row("https://two.example/b", PNG), row("https://three.example/c", other), row("https://four.example/d", null)] };
+    const cards = new Map([[3, ["https://three.example/c", "https://one.example/a", "https://two.example/b"]], [5, ["https://four.example/d"]]]);
+    const rec = writePictureRecord(run, { cards, result, seconds: 20, concurrency: 6, takenAt: "2026-11-26T10:00:00.000Z" });
+    assert.deepEqual(rec.rows.map((r) => r.state), ["fetched", "fetched", "fetched", "none"], "a page's outcome was lost");
+    assert.ok(rec.rows.every((r) => !("data" in r)), "the record carries picture bytes");
+    let drawn = webPicturesForReport(run);
+    assert.deepEqual([...drawn.keys()], [3], "a card with no picture is drawn, or one with pictures is not");
+    assert.deepEqual(drawn.get(3).map((p) => p.site), ["three.example", "one.example"], "not the card's order, or a picture two pages share showed twice");
+    assert.match(drawn.get(3)[0].src, /^data:image\/png;base64,/);
+    assert.equal(drawn.get(3)[0].fetchedOn, "2026-11-26");
+    writePictureRecord(run, { cards, result, seconds: 20, concurrency: 6, general: new Set(["b".repeat(64)]) });
+    drawn = webPicturesForReport(run);
+    assert.deepEqual(drawn.get(3).map((p) => p.site), ["one.example"], "a site's general card was drawn");
+    writeFileSync(join(run, "_driver", "web-pictures.json"), JSON.stringify({ takenAt: "x", cards: { 1: ["https://e.example/"] },
+      rows: [{ page: "https://e.example/", state: "fetched", contentType: "image/png", sha256: "c", file: "../outside.png" }] }));
+    assert.equal(webPicturesForReport(run).size, 0, "a file outside the run's picture folder was drawn");
+  } finally { rmSync(run, { recursive: true, force: true }); }
+});
+
+test("a card draws On the web after Register, captioned with the site and opening the page; without pictures, nothing", () => {
+  const dir = mkdtempSync(join(tmpdir(), "web-pictures-page-"));
+  try {
+    writeFileSync(join(dir, "r.report.md"), ["---", "type: clearance-clearance", "matter: pictures", "title: OSTREVIN", "run: 2026-11-26", "---", ""].join("\n"));
+    const parsed = parseReport(join(dir, "r.report.md"));
+    const f = { ordinal: 4, mark: "SKARVEL", composite: 4, net: "A sentence.", owner: { name: "Brannock Tools Ltd", registrations: [] }, source: { source_type: "common-law-web" } };
+    const src = `data:image/png;base64,${PNG.toString("base64")}`;
+    const html = renderHtml(parsed, [f], [], { runId: "pictures", webPictures: new Map([[4, [{ page: "https://shop.example/skarvel", site: "shop.example", src, fetchedOn: "2026-11-26" }]]]) });
+    const line = html.match(/<div class="pic-line">([\s\S]*?)<\/div><\/div><\/div>/)?.[1] ?? "";
+    assert.match(line, /<span class="pic-lab">On the web<\/span>/, "the frame is missing or mislabelled");
+    assert.match(line, /<a href="https:\/\/shop\.example\/skarvel" target="_blank" rel="noopener noreferrer"><img src="data:image\/png;base64,[^"]+" alt="SKARVEL, picture shown by shop\.example, fetched 2026-11-26"><\/a><figcaption>shop\.example<\/figcaption>/,
+      "the picture does not open its page, carry its alt text, or caption its site");
+    const none = renderHtml(parsed, [f], [], { runId: "pictures" });
+    assert.doesNotMatch(none, /class="pic-line"|pic-lab">On the web/, "a card with no pictures drew a frame");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
