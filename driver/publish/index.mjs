@@ -1368,7 +1368,7 @@ function clearanceRead(r) {
   const { parsed, fm, deliv, dates, issued, asOf, demoData, demoMd, inputsAbsent, findings, coverage, contextNotes,
     quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc,
     fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri,
-    logos, followUpKinds, runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo,
+    logos, webPictures, followUpKinds, runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo,
     droppedConditions, undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis,
     searchedJurisdictions, registerReach, registerScope, planTerritories, caseLawByOrdinal, caseLawNotice,
     enforcerSignals, officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly,
@@ -1378,7 +1378,7 @@ function clearanceRead(r) {
   return {
     parsed, fm, deliv, dates, issued, asOf, demoData, demoMd, inputsAbsent, findings, coverage, contextNotes,
     quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc,
-    fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, followUpKinds,
+    fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, webPictures, followUpKinds,
     runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo, droppedConditions,
     undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis, searchedJurisdictions, registerReach, registerScope,
     planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, officeLinks, reviewReceipts, clientGate,
