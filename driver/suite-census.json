@@ -10400,8 +10400,8 @@
           "todos": 0
         },
         "reads.test.ts": {
-          "tests": 18,
-          "asserts": 38,
+          "tests": 19,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -10425,7 +10425,7 @@
         },
         "reportSections.test.ts": {
           "tests": 13,
-          "asserts": 41,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },

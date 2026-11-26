@@ -252,7 +252,10 @@ const SHELL = `<!doctype html><html><head><meta charset="utf-8"><title>render-ch
 <body><div class="app"><aside class="sidebar"></aside><div class="main">
   <header class="topbar"><h1>Clearances</h1></header>
   <div class="screen report">
-    <div class="report-head" id="hdr"><div style="display:flex;align-items:center;gap:12px">
+    <!-- THE PINNED STATE. On a desktop width the report header pins as one row once the reader is past it
+         (board ReportHeader, approved 2026-11-25), which the portal's script marks with \`compact\`; this
+         shell has no script, so it draws that state from the start. -->
+    <div class="report-head compact" id="hdr"><div style="display:flex;align-items:center;gap:12px">
       <h1 style="font-size:19px;margin:0">Mark</h1><span style="flex:1"></span>
       <button class="nav-item" id="exp" style="width:auto">Export</button></div></div>
     <div data-anon="mark" style="margin-top:12px">

@@ -26,7 +26,7 @@
 // and a wrongly-split thread shows fewer reads rather than someone else's. When parentRunId starts
 // flowing, `readsFor` gains a lineage branch and the heuristic becomes a fallback.
 
-import type { Run } from './api.ts'
+import type { Run, RunState } from './api.ts'
 import { runKey } from './genericKey.ts'
 
 /**
@@ -251,4 +251,57 @@ export function readLabel(run: Run): string {
  */
 export function readLabelParts(run: Run): { readonly head: string | null; readonly date: string | null } {
   return { head: run.productName || run.stageLabel || null, date: run.date || null }
+}
+
+// ── A NAME'S SEARCHES, AS THE CLEARANCES LIST AND THE REPORT'S SEARCH HISTORY BOTH LIST THEM ──────────────
+//
+// One set of rules for both screens (board ReportHeader and its refinement, approved 2026-11-25), so the two
+// lists of one name's searches cannot come to disagree about which is the latest report or which needs its
+// time of day.
+
+/** The newest search of a name that delivered: the one tagged "Latest report". `reads` newest first. PURE. */
+export function latestIssued(reads: readonly Run[]): Run | null {
+  return reads.find((r) => r.state === 'delivered') ?? null
+}
+
+/** Whether another search of this name carries the same date — the case a date alone cannot tell apart. PURE. */
+export function sameDateAsAnother(reads: readonly Pick<Run, 'runId' | 'date'>[], run: Pick<Run, 'runId' | 'date'>): boolean {
+  return reads.some((o) => o.runId !== run.runId && o.date === run.date)
+}
+
+/** A search still in flight, in the word its status shows: "Queued", "Paused" or "Running"; null once ended. PURE. */
+export function inFlightWord(state: RunState): 'Queued' | 'Paused' | 'Running' | null {
+  return state === 'queued' ? 'Queued' : state === 'paused' ? 'Paused' : state === 'running' ? 'Running' : null
+}
+
+/** One row of a name's Search history. */
+export type HistoryRow = {
+  readonly run: Run
+  /** "{search} · {date}", the label its chip carries. */
+  readonly label: string
+  /** "{HH:MM} UTC" where another search of this name has the same date and the time is recorded; else null. */
+  readonly time: string | null
+  /** The report being read. */
+  readonly current: boolean
+  /** The newest issued report. */
+  readonly latest: boolean
+  /** A search still in flight: its status word, and then no time. */
+  readonly live: 'Queued' | 'Paused' | 'Running' | null
+}
+
+/** A name's searches for its Search history, newest first, each with what tells it apart. `reads` newest first. PURE. */
+export function searchHistory(reads: readonly Run[], currentRunId: string): readonly HistoryRow[] {
+  const latest = latestIssued(reads)
+  return reads.map((run) => {
+    const live = inFlightWord(run.state)
+    const t = readTime(run)
+    return {
+      run,
+      label: readLabel(run),
+      time: !live && t && sameDateAsAnother(reads, run) ? `${t} UTC` : null,
+      current: run.runId === currentRunId,
+      latest: run === latest,
+      live,
+    }
+  })
 }

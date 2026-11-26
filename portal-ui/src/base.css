@@ -171,6 +171,66 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   padding: 10px 0 12px;
   border-bottom: 1px solid var(--border-hairline);
 }
+.report-head-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 2px; }
+.report-head-name { font-size: 19px; font-weight: 700; margin: 0; color: var(--text-strong); }
+.report-head-gap { flex: 1; }
+
+/* ONE HEADER, TWO STATES, on a desktop width (board ReportHeader, approved 2026-11-25). At the top of the
+   page the header sits in the page and scrolls with it; once the reader is past it, the same header is pinned
+   under the topbar as one row. Its slot keeps the full header's height meanwhile, so nothing under it moves.
+   A phone keeps the pinned header above. No transition, so a reader who asked for reduced motion gets none
+   and nobody else gets any either. */
+.report-head-slot { position: relative; }
+.report-head-sentinel { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; pointer-events: none; }
+/* A PHONE KEEPS THE PINNED HEADER, and a sticky box sticks only inside its parent: the slot would carry the
+   header away with it. Below the desktop width the slot is no box at all, and the sentinel is not drawn. */
+@media (max-width: 899px) {
+  .report-head-slot { display: contents; }
+  .report-head-sentinel { display: none; }
+}
+@media (min-width: 900px) {
+  .report-head { position: static; }
+  .report-head.compact {
+    position: fixed; top: 56px; z-index: 20;
+    padding: 8px 0; box-sizing: border-box;
+  }
+  .report-head.compact .report-head-row { flex-wrap: nowrap; gap: 10px; margin-bottom: 0; }
+  .report-head.compact .report-head-name {
+    font-size: 15px; flex: 0 1 auto; min-width: 3ch; max-width: 24ch;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .report-head.compact .report-sections { flex: 1 1 auto; min-width: 0; }
+  .report-head.compact .report-head-gap { flex: 0 0 0; }
+}
+.btn-ghost.report-back-icon { flex: none; padding: 6px 7px; border-color: var(--border-hairline); }
+
+/* SEARCH HISTORY, one press away in the pinned row (refinement picture search-history.png). */
+.report-history { position: relative; flex: none; }
+.report-history-btn {
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  padding: 5px 12px; border: 1px solid var(--accent); border-radius: 999px;
+  background: var(--accent-wash); color: var(--text-accent); font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+}
+.report-history-list {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 30; min-width: 360px;
+  max-height: calc(100vh - 140px); overflow-y: auto;
+  list-style: none; margin: 0; padding: 6px; display: flex; flex-direction: column; gap: 4px;
+  background: var(--surface-float); border: 1px solid var(--border-strong); border-radius: 10px; box-shadow: var(--shadow-lg);
+}
+.report-history-row {
+  width: 100%; display: flex; align-items: center; gap: 10px; text-align: left;
+  padding: 8px 10px; border: 1px solid transparent; border-radius: 8px;
+  background: transparent; color: var(--text-body); font: inherit; cursor: pointer;
+}
+.report-history-row:hover, .report-history-row:focus-visible { background: var(--surface-sunken); }
+.report-history-row.current { background: var(--accent-wash); border-color: var(--accent); }
+.report-history-nodot { width: 7px; height: 7px; flex: none; }
+.report-history-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.report-history-search { font-size: 13px; font-weight: 700; color: var(--text-strong); white-space: nowrap; }
+.report-history-date { font-size: 12px; color: var(--text-muted); }
+.report-history-tag { flex: none; }
+.report-history-live { flex: none; font-size: 12px; color: var(--text-muted); }
+.report-history-tick { flex: none; display: inline-flex; color: var(--text-accent); }
 
 /* THE HEADER'S LOWER ROWS: which read you are in, then where you are inside it.
    The Reads strip used to sit BELOW this box and the report's own section breadcrumb inside the frame,
