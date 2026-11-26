@@ -23,7 +23,10 @@ const CLI = join(HERE, "..", "enqueue.mjs");
 const RUNNER = join(HERE, "..", "runner.mjs");
 chmodSync(CLAUDE, 0o755);
 
-/** A receiver on loopback: records each notice it takes, with the id it was sent under. */
+/**
+ * A receiver on loopback: records each notice it takes, with the id it was sent under. `mode` is "accept" (a bare
+ * 2xx), "receipt" (a 2xx that says it sent the notice on, with the downstream message's id) or "silent".
+ */
 async function receiver({ dedupe = false } = {}) {
   const records = [], seen = new Set();
   const state = { mode: "accept" };
@@ -36,7 +39,7 @@ async function receiver({ dedupe = false } = {}) {
       if (!(dedupe && seen.has(key))) records.push({ key, notice: JSON.parse(body) });
       seen.add(key);
       res.writeHead(200, { "content-type": "application/json" });
-      res.end("{}");
+      res.end(state.mode === "receipt" ? JSON.stringify({ sent: { messageId: `downstream-${key}` } }) : "{}");
     });
   });
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
@@ -99,6 +102,7 @@ test("the worker tells each company's submitter, and the operator, through the c
     submit(box, "notice-a-refused", "demo-brand-owner");                 // a demo account without the demo marker: refused at the claim
     submit(box, "notice-b-stops", "zephyr", { demoRun: true });           // a run that stops at its first stage
     const env = routeEnv(rx.url, "submitter,operator", { MOCK_FAIL_STAGE: "record_matter_frame" });
+    rx.state.mode = "receipt";   // the receiver sends each notice on, and says so
     await drain(box, env);
 
     const byKind = (kind, audience) => rx.records.filter((r) => r.notice.kind === kind && r.notice.audience === audience);
@@ -129,12 +133,13 @@ test("the worker tells each company's submitter, and the operator, through the c
       for (const word of other) assert.doesNotMatch(JSON.stringify(r.notice), new RegExp(word), `${r.notice.recipient.account}'s notice names ${word}`);
     }
 
-    // Every notice is recorded confirmed, and the stopped run's owed send is settled as mark_sent settles it.
+    // Every notice is recorded confirmed, and the receiver's downstream receipt settles the stopped run's owed send as
+    // mark_sent settles it, with the downstream message's id, never the delivery id.
     assert.equal(rx.records.length, 3, JSON.stringify(rx.records.map((r) => [r.notice.kind, r.notice.audience])));
     assert.deepEqual(deliveries(box).map((d) => d.state), ["confirmed", "confirmed", "confirmed"]);
     const result = JSON.parse(readFileSync(join(box.qdir, "notice-b-stops.failed.result"), "utf8"));
     const sent = JSON.parse(readFileSync(join(result.runDir, ".sent"), "utf8"));
-    assert.deepEqual([sent.via, sent.settled, sent.messageId], ["notice-route", "failure", stopped.key]);
+    assert.deepEqual([sent.via, sent.settled, sent.messageId], ["notice-route", "failure", `downstream-${stopped.key}`]);
     assert.equal(JSON.parse(readFileSync(join(result.runDir, "status.json"), "utf8")).sendPending, false);
 
     // The worker runs again, and a marker is dropped again for the run: nothing is sent a second time.
@@ -429,6 +434,56 @@ test("an uncertain notice the receiver cannot drop is the operator's: listed wit
     assert.deepEqual([operatorSays(box, "received", byRef["settle-received"]).code, operatorSays(box, "received", byRef["settle-received"]).out.reason], [4, "not-reconcilable:confirmed"]);
     assert.equal(operatorSays(box, "absent", "0".repeat(24)).out.reason, "no-such-notice");
     assert.equal(operatorSays(box, "unknown", byRef["settle-unknown"]).code, 2, "an unknown answer is not a command");
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
+  }
+});
+
+// ── WHAT AN ACKNOWLEDGEMENT SETTLES (design, 2026-11-26) ──────────────────────────────────────────────────────────────
+
+test("a bare 2xx says the receiver took the notice, not that the person was told: the run stays owed, and nothing is handed over twice", async () => {
+  const box = install();
+  const rx = await receiver();   // "accept": a 2xx with no downstream receipt
+  const env = routeEnv(rx.url, "submitter", { MOCK_FAIL_STAGE: "record_matter_frame" });
+  try {
+    submit(box, "bare-b-stops", "zephyr", { demoRun: true });
+    await drain(box, env);
+    assert.equal(rx.records.length, 1, JSON.stringify(rx.records.map((r) => r.notice)));
+    assert.equal(deliveries(box)[0].state, "confirmed");
+    const result = JSON.parse(readFileSync(join(box.qdir, "bare-b-stops.failed.result"), "utf8"));
+    assert.equal(existsSync(join(result.runDir, ".sent")), false, "a bare 2xx settled the run's send");
+    assert.equal(JSON.parse(readFileSync(join(result.runDir, "status.json"), "utf8")).sendPending, true);
+    await drain(box, env);
+    assert.equal(rx.records.length, 1, "the accepted notice was handed over again");
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
+  }
+});
+
+test("an old acknowledgement that arrives after the run recovered settles nothing: the new report stays owed", async () => {
+  const box = install();
+  const rx = await receiver();
+  rx.state.mode = "silent";   // the first handoff gets no answer
+  try {
+    submit(box, "late-b-stops", "zephyr", { demoRun: true });
+    await drain(box, routeEnv(rx.url, "submitter", { MOCK_FAIL_STAGE: "record_matter_frame" }));
+    assert.equal(deliveries(box)[0].state, "ambiguous", "guard: the first handoff was not left uncertain");
+    // The run recovers and finishes: it now owes its report, a different send from the failure the notice was about.
+    const result = JSON.parse(readFileSync(join(box.qdir, "late-b-stops.failed.result"), "utf8"));
+    const { paths } = await import("../run-record.mjs");
+    writeFileSync(paths(result.runDir).delivery, JSON.stringify({ runId: result.runId ?? null, subject: "an invented report" }));
+    const sp = join(result.runDir, "status.json");
+    writeFileSync(sp, JSON.stringify({ ...JSON.parse(readFileSync(sp, "utf8")), state: "delivered", sendPending: true }));
+    // The receiver that drops repeats is sent the notice again, and now answers with a downstream receipt.
+    rx.state.mode = "receipt";
+    const later = Date.now() + 5 * 60_000;   // past the wait before an uncertain notice is sent again
+    const { out } = await pass(box, routeEnv(rx.url, "submitter", { CLEAROTRON_NOTICE_DEDUPE: "1" }), { now: () => later });
+    assert.equal(out.confirmed, 1, "guard: the late acknowledgement did not arrive");
+    assert.equal(deliveries(box)[0].downstream?.messageId?.startsWith("downstream-"), true);
+    assert.equal(existsSync(join(result.runDir, ".sent")), false, "the failure's acknowledgement marked the new report sent");
+    assert.equal(JSON.parse(readFileSync(sp, "utf8")).sendPending, true, "the new report is no longer owed");
   } finally {
     await rx.close();
     rmSync(box.root, { recursive: true, force: true });

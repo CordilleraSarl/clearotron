@@ -13,8 +13,11 @@
 // are the owner's.
 //
 // THE RECEIVER'S CONTRACT. One POST per notice, `Content-Type: application/json`, carrying the notice's delivery id
-// in the body and in `Idempotency-Key`. A 2xx answer takes the notice. Any other answer, or no connection, leaves it
-// to be sent again; the search is never repeated. A request that went out and got no answer is neither: the
+// in the body and in `Idempotency-Key`. A 2xx answer takes the notice: the receiver accepted it, and it is not handed
+// over again. It does not say the recipient was told (design, 2026-11-26). Where the receiver has sent the notice on
+// to its recipient, its 2xx body says so, `{"sent":{"messageId":"<that message's id>"}}`: a downstream send receipt,
+// which is what settles a stopped run's owed send. Any other answer, or no connection, leaves the notice to be sent
+// again; the search is never repeated. A request that went out and got no answer is neither: the
 // receiver may hold it. A receiver that drops a repeated delivery id says so through CLEAROTRON_NOTICE_DEDUPE=1,
 // and only then is such a notice sent again.
 import { request as httpRequest } from "node:http";
@@ -55,13 +58,14 @@ export function noticeRoute(env = process.env) {
 
 /**
  * Send one notice to the receiver. Never throws. Resolves one of:
- *   { outcome: "confirmed", status }          the receiver answered 2xx: it holds the notice
+ *   { outcome: "confirmed", status, sent }    the receiver answered 2xx: it holds the notice. `sent` is its downstream
+ *                                             send receipt, `{ messageId }`, where its body carried one, else null
  *   { outcome: "failed", status?, detail }    not reached, or the receiver answered that it did not take it
  *   { outcome: "ambiguous", detail }          the request went out and no answer came back: it may hold it
  */
 export function postNotice(url, body, { deliveryId, timeoutMs = 10_000 } = {}) {
   return new Promise((resolve) => {
-    let sent = false, done = false;
+    let sent = false, done = false, answered = null;
     const finish = (r) => { if (!done) { done = true; resolve(r); } };
     let data;
     try { data = Buffer.from(JSON.stringify(body)); } catch (e) { finish({ outcome: "failed", detail: `unserialisable: ${e?.message ?? e}` }); return; }
@@ -71,13 +75,30 @@ export function postNotice(url, body, { deliveryId, timeoutMs = 10_000 } = {}) {
         method: "POST", timeout: timeoutMs,
         headers: { "content-type": "application/json", "content-length": data.length, "idempotency-key": String(deliveryId ?? "") },
       }, (res) => {
-        res.resume();
         const status = res.statusCode ?? 0;
-        finish(status >= 200 && status < 300 ? { outcome: "confirmed", status } : { outcome: "failed", status, detail: `the receiver answered ${status}` });
+        if (status < 200 || status >= 300) { res.resume(); finish({ outcome: "failed", status, detail: `the receiver answered ${status}` }); return; }
+        // Accepted. The body is read only for a downstream send receipt; a body that is cut off or is not one leaves
+        // the notice accepted, with no receipt.
+        answered = status;
+        const chunks = [];
+        let size = 0;
+        res.on("data", (c) => { size += c.length; if (size <= 65_536) chunks.push(c); });
+        res.on("end", () => finish({ outcome: "confirmed", status, sent: sendReceiptIn(Buffer.concat(chunks).toString("utf8")) }));
+        res.on("error", () => finish({ outcome: "confirmed", status, sent: null }));
+        res.on("aborted", () => finish({ outcome: "confirmed", status, sent: null }));
       });
     } catch (e) { finish({ outcome: "failed", detail: e?.code ?? String(e?.message ?? e) }); return; }
     req.on("timeout", () => req.destroy(Object.assign(new Error("no answer in time"), { code: "ETIMEDOUT" })));
-    req.on("error", (e) => finish({ outcome: sent ? "ambiguous" : "failed", detail: e?.code ?? String(e?.message ?? e) }));
+    req.on("error", (e) => finish(answered != null ? { outcome: "confirmed", status: answered, sent: null }
+      : { outcome: sent ? "ambiguous" : "failed", detail: e?.code ?? String(e?.message ?? e) }));
     req.end(data, () => { sent = true; });
   });
+}
+
+/** The downstream send receipt a receiver's 2xx body carries, `{ messageId }`, or null. PURE. */
+export function sendReceiptIn(text) {
+  try {
+    const id = JSON.parse(text)?.sent?.messageId;
+    return typeof id === "string" && id.trim() ? { messageId: id.trim().slice(0, 500) } : null;
+  } catch { return null; }
 }

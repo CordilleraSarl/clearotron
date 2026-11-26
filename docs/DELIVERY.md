@@ -257,9 +257,11 @@ in `<outbox>/deliveries/route-since.json`, and an audience the route stops servi
 Neither carries a sentence for the recipient: the words are the receiver's to choose. Nothing sent for
 one company names another company or its orders.
 
-**The answer.** A `2xx` takes the notice. Anything else, or no connection, leaves it `failed`, and it is
-sent again after a wait: one minute, doubling, at most fifteen. Only the notice is sent again, never the
-search.
+**The answer.** A `2xx` takes the notice: the receiver accepted it, and it is not handed over again. It does
+not say the recipient was told. A receiver that has sent the notice on to its recipient says so in the same
+answer's body, `{"sent":{"messageId":"<that message's id>"}}`: a downstream send receipt. Anything else, or no
+connection, leaves the notice `failed`, and it is sent again after a wait: one minute, doubling, at most fifteen.
+Only the notice is sent again, never the search.
 
 **The record.** Each notice has one file in `<outbox>/deliveries/`, named by its delivery id, a hash of
 the event, the audience and the recipient, so restarts and retries keep it. Its `state` is `pending`,
@@ -272,7 +274,7 @@ otherwise it waits for the operator to settle it with the receiver.
 found:
 
     node driver/notice-delivery.mjs list               # every notice not confirmed: its id, state and next action
-    node driver/notice-delivery.mjs received <id>      # the receiver holds it: that notice alone is confirmed
+    node driver/notice-delivery.mjs received <id>      # the receiver holds it: that notice alone is confirmed, nothing settled
     node driver/notice-delivery.mjs absent <id>        # it does not: that notice alone is sent again, under the same id
 
 Where the answer stays unknown, nothing is given and the notice stays ambiguous. Each answer prints JSON; a refusal
@@ -280,10 +282,13 @@ exits 4 with its reason code (`no-such-notice`, `not-reconcilable:<state>`). `li
 `retriesByItself`, true for one the worker sends again by itself, and `nextAction: settle-with-receiver` for one
 that waits on the operator.
 
-**Settling the send.** When the person who placed a stopped run is told, the run's owed send is settled
-exactly as `mark_sent` settles it: `.sent` is written with `via: "notice-route"` and the delivery id as
-`messageId`, `sendPending` is cleared, and the run's markers are removed. A run already settled is not
-sent at all.
+**Settling the send.** A stopped run's owed send is settled only by a downstream send receipt for the person
+who placed it. The settle is made exactly as `mark_sent` makes it: `.sent` is written with `via: "notice-route"`
+and the receipt's `messageId`, `sendPending` is cleared, and the run's markers are removed. A bare `2xx` settles
+nothing, and neither does the delivery id, which is minted before the send. The settle is bound to the failure the
+notice was about. Where the run has since recovered and owes its report, or its failure packet is a later one, the
+run stays owed. Otherwise it is settled by the courier's `mark_sent`, or an operator's attestation of the send. A
+run already settled is not sent at all.
 
 ## Legacy notes
 

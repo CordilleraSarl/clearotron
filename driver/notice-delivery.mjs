@@ -29,9 +29,10 @@
 // another's reference, account or mark.
 //
 // ONE ROUTE PER EVENT AND RECIPIENT. The route serves the audiences the install names (CLEAROTRON_NOTICE_AUDIENCES);
-// an audience it does not name stays with the courier, through the outbox, untouched. A notice confirmed to the
-// person who placed a stopped run is settled as mark_sent settles it (send-settle.mjs), so the run is no longer
-// owed and a courier added later does not tell them again; a run already settled is not sent at all.
+// an audience it does not name stays with the courier, through the outbox, untouched. A receiver's 2xx stops any
+// further handoff of that notice. Where the receiver also returns a downstream send receipt for the person who placed
+// a stopped run, that run's owed send is settled as mark_sent settles it (send-settle.mjs), for that failure only; a
+// run already settled is not sent at all.
 //
 // THE RECORD. One file per notice, `<outbox>/deliveries/<id>.json`, a folder no courier's `*.pending` glob reaches.
 // The id is a hash of the event, the audience and the recipient: it survives restarts and retries, and it travels to
@@ -51,7 +52,8 @@ import { config } from "./driver.config.mjs";
 import { receiptIn } from "./order-receipt.mjs";
 import { NOTICE_AUDIENCES, noticeRoute, postNotice } from "./notice-route.mjs";
 import { engineCheckDir } from "./engine/health.mjs";
-import { sendSettled, settleSend } from "./send-settle.mjs";
+import { owedPacket, sendSettled, settleSend } from "./send-settle.mjs";
+import { paths } from "./run-record.mjs";
 import { runDirFor } from "./outbox-backoff.mjs";   // the run a stuck marker names, live or archived
 import { note } from "./log.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
@@ -149,7 +151,8 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
         const kind = "run-stopped";
         if (reachable(submitter) && !(runDir && sendSettled(runDir)))
           owed.push({ eventKey, kind, audience: "submitter", recipient: submitter, at: r.updatedAt, body: { order: clientView(r) },
-            ...(runDir ? { settle: { runDir, runId: r.runId } } : {}) });
+            // The send this notice settles is THIS failure's: its packet's own stamp, so a later delivery is never it.
+            ...(runDir ? { settle: { runDir, runId: r.runId, failureTs: readJsonSafe(paths(runDir).failure)?.ts ?? null } } : {}) });
         owed.push({ eventKey, kind, audience: "operator", recipient: OPERATOR, at: r.updatedAt,
           body: { fault: { kind, ...fault, failedStage: result?.failedStage ?? null, reason: r.reason ?? null, nextAction: NEXT_ACTIONS["read-the-run"] } } });
       }
@@ -289,7 +292,11 @@ export async function deliverNotices({ env = process.env, now = () => Date.now()
       rec = { ...rec, state: answer.outcome, updatedAt: new Date(now()).toISOString(), attempts: [...rec.attempts.slice(0, -1), last],
         ...(answer.outcome === "confirmed" ? { nextAttemptAt: null } : { nextAttemptAt: new Date(now() + retryWaitMs(failures)).toISOString() }) };
       writeAtomic(path, rec);
-      if (answer.outcome === "confirmed") { confirmed++; settleIfOwed(n, rec); }
+      if (answer.outcome === "confirmed") {
+        confirmed++;
+        if (answer.sent) { rec = { ...rec, downstream: { ...answer.sent, at: new Date(now()).toISOString() } }; writeAtomic(path, rec); }
+        settleIfOwed(n, rec);
+      }
       else note(`[notices] ${n.kind} for the ${n.audience} not delivered (${answer.outcome}: ${answer.detail ?? answer.status ?? "?"}); recorded as ${rec.state}`);
     }
   } catch (e) {
@@ -298,16 +305,27 @@ export async function deliverNotices({ env = process.env, now = () => Date.now()
   return { route, sent, confirmed };
 }
 
-/** A confirmed notice to the person who placed a stopped run settles the run's owed send, once. */
+/**
+ * The receiver's downstream send receipt for the person who placed a stopped run settles that run's owed send, once
+ * (design, 2026-11-26). A bare 2xx does not: it says the receiver accepted the notice, not that the person was told,
+ * and the delivery id is a correlation id minted before the send, not evidence of it. The settle is bound to the
+ * failure this notice was about: where the run has since recovered and now owes another send (its report), or the
+ * failure packet is not the one the notice was minted for, nothing is settled and the run stays owed.
+ */
 function settleIfOwed(n, rec) {
   const settle = n?.settle ?? rec?.settle;
-  if (!settle?.runDir || sendSettled(settle.runDir)) return;
-  n = { ...n, settle };
+  const messageId = rec?.downstream?.messageId;
+  if (!settle?.runDir || !messageId || sendSettled(settle.runDir)) return;
+  const owed = owedPacket(settle.runDir);
+  if (owed?.settled !== "failure" || (readJsonSafe(owed.path)?.ts ?? null) !== (settle.failureTs ?? null)) {
+    note(`[notices] ${settle.runId ?? "?"}: the receiver's receipt is for an earlier failure; the run now owes another send, which it leaves owed`);
+    return;
+  }
   try {
-    const status = readJsonSafe(join(n.settle.runDir, "status.json")) ?? {};
-    settleSend({ run: { runId: n.settle.runId ?? status.runId, runDir: n.settle.runDir, slug: status.slug ?? null, codename: status.codename ?? null },
-      evidence: { messageId: rec.id }, via: "notice-route" });
-  } catch (e) { note(`[notices] settle of ${n.settle.runId ?? "?"} FAILED (the notice stands confirmed; the run stays owed): ${e?.message ?? e}`); }
+    const status = readJsonSafe(join(settle.runDir, "status.json")) ?? {};
+    settleSend({ run: { runId: settle.runId ?? status.runId, runDir: settle.runDir, slug: status.slug ?? null, codename: status.codename ?? null },
+      evidence: { messageId }, via: "notice-route" });
+  } catch (e) { note(`[notices] settle of ${settle.runId ?? "?"} FAILED (the notice stands confirmed; the run stays owed): ${e?.message ?? e}`); }
 }
 
 /**
@@ -328,8 +346,8 @@ export function undeliveredNotices({ env = process.env } = {}) {
 /**
  * The operator's answer for one notice, by its delivery id, after checking the receiver (design, 2026-11-26). A
  * supported action, so nobody edits a record by hand:
- *   "received"  the receiver holds it: this notice alone is confirmed, and a stopped run it told its submitter of is
- *               settled, as a 2xx would have settled it
+ *   "received"  the receiver holds it: this notice alone is confirmed, the same fact its 2xx would have stated; it
+ *               settles no run
  *   "absent"    the receiver does not hold it: this notice alone is sent again, under the same id, on the next pass
  * An answer that stays unknown is not given, and the notice keeps its state. Only a notice that was sent and is not
  * confirmed takes an answer. Returns { ok: true, id, state } or { ok: false, reason }, a code.
@@ -347,9 +365,8 @@ export function reconcileNotice(id, answer, { now = Date.now() } = {}) {
     const at = new Date(now).toISOString();
     const attempts = [...rec.attempts, { at, outcome: answer === "received" ? "confirmed" : "absent", by: "operator" }];
     if (answer === "received") {
-      const next = { ...rec, state: "confirmed", updatedAt: at, nextAttemptAt: null, attempts };
-      writeAtomic(path, next);
-      settleIfOwed(null, next);
+      // The same fact as the receiver's own 2xx: it holds the notice. Nothing is settled by it.
+      writeAtomic(path, { ...rec, state: "confirmed", updatedAt: at, nextAttemptAt: null, attempts });
       return { ok: true, id, state: "confirmed" };
     }
     writeAtomic(path, { ...rec, state: "failed", updatedAt: at, nextAttemptAt: at, attempts });
