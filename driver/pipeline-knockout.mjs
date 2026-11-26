@@ -30,6 +30,9 @@ import { fileURLToPath } from "node:url";
 
 import { keepPriorOutput, runLaneStage } from "./stage-runner.mjs";   // the one stage skeleton both lanes run through
 import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, missingCredentials } from "./driver.config.mjs";
+import { ownSearchOn, ownSearchKnockoutGrid } from "./engine/mcp/own-search.mjs";   // a run whose searches are its own AI program's
+import { webResearchCapability } from "./web-research.mjs";
+import { readRunChoices } from "./engine/run-choices.mjs";
 import { registerAdapter as adapterForRegister } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { StageFailure } from "./run-outcome.mjs";
 import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the runner and the delivered ending both products share
@@ -740,7 +743,9 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
 //         one question, which the owner lookups ask.
 // The fixtures dir holds <mark-kebab>.grid.json, the grid program's printed ledger for a mark, and
 // <mark-kebab>.md, the answer to a question asked about that mark.
-export function resolveSweepExecutor(opts) {   // exported for its test, like readBackLadder above
+/** The engine a run recorded, or null: own search is judged on the engine the run uses, never the environment's. */
+const engineOfRun = (runDir) => { const r = readRunChoices(runDir); return r.state === "recorded" ? r.engine : null; };
+export function resolveSweepExecutor(opts, { runDir = null } = {}) {   // exported for its test, like readBackLadder above
   if (typeof opts?.gridExecutor === "function" || typeof opts?.sweepExecutor === "function")
     return { grid: opts.gridExecutor ?? null, exec: opts.sweepExecutor ?? null, source: "injected" };
   const fixDir = process.env.CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES;
@@ -781,6 +786,22 @@ export function resolveSweepExecutor(opts) {   // exported for its test, like re
   // per mark, the cred-guard would degrade each one, and the batch would die at the all-failed branch
   // AFTER the paid frame turn — worse than the refusal, and it costs money to reach. Not-attempted and
   // attempted-and-failed are different runs; this is the first.
+  // A RUN WHOSE SEARCHES ARE ITS OWN AI PROGRAM'S sweeps through that program (engine/mcp/own-search.mjs), never through
+  // Perplexity. Its owner lookups are questions, which own search does not run yet (web-research.mjs): they go to
+  // Perplexity where its key is set, and otherwise are not run, each recorded as not run with why. A route that carries no
+  // web search of its own skips the web half, as a missing key does, under its own cause.
+  if (ownSearchOn(runDir)) {
+    const can = webResearchCapability({ service: "own", engine: engineOfRun(runDir), stillPerplexity: [] });
+    if (!can.ok) return { source: "own", grid: null, exec: null, skipped: "own-search-unavailable", why: can.why };
+    const keyed = Boolean(process.env.PERPLEXITY_API_KEY);
+    return {
+      source: `own:${can.search.toLowerCase()}`,
+      grid: ownSearchKnockoutGrid(runDir),
+      exec: keyed ? (task, { preset }) => RESEARCH_PROVIDERS.perplexity.research(task, { preset })
+        : async () => ({ ok: false, notRun: true, cause: "not run: own search does not run owner lookups yet, and no Perplexity key is set" }),
+      ownerChecksBy: keyed ? "perplexity" : null,
+    };
+  }
   if (!process.env.PERPLEXITY_API_KEY) return { source: "perplexity", grid: null, exec: null, skipped: "common-law-no-credential" };
   return {
     source: "perplexity",
@@ -955,7 +976,11 @@ export async function knockoutInner(ctx, job, opts = {}) {
         // "the cred-guard degrades every mark per-call and the batch dies all-failed only AFTER the paid
         // frame turn" is exactly what a skip prevents, and prevents earlier than a throw did.
         // (pipelineInner's register preflight is skipped for this lane — knockout has no register machinery.)
-        sweep = resolveSweepExecutor(opts);
+        sweep = resolveSweepExecutor(opts, { runDir: run.runDir });
+        // A SKIPPED HALF THAT NO SENTENCE DISCLOSES would deliver a screen silent about what it did not search, so a cause
+        // with no sentence of its own stops here, before anything is spent: the sentence is the owner's, never improvised.
+        if (sweep.skipped && !CAPABILITY_SKIPPED_NOTE[sweep.skipped])
+          throw new Error(`the open-web half would be skipped (${sweep.skipped}${sweep.why ? `: ${sweep.why}` : ""}) and no approved sentence discloses that cause, so the screen is not run silent about it`);
         // Every paid call the lane makes itself reads the stop first (cancel.mjs stopsWithTheRun): the web grid, the owner
         // checks that share its executor, and below, the register counts and listings.
         sweep = { ...sweep, grid: stopsWithTheRun(run.runDir, "knockout-sweep", sweep.grid), exec: stopsWithTheRun(run.runDir, "knockout-owner-checks", sweep.exec) };

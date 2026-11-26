@@ -198,6 +198,8 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
         mark: s.mark, owner: s.owner, recordIds: s.recordIds, classes: s.classes, filingMarks: s.filingMarks ?? null,
         query, preset, ok, source, payloadFile,
         ...(ok ? {} : { cause: String(r?.cause ?? "no result").slice(0, 300) }),
+        // A LOOKUP THAT WAS NEVER SENT says so, and is not a lookup that did not answer: nothing searched for it.
+        ...(r?.notRun === true ? { notRun: true } : {}),
         ...(r?.outage === true ? { outage: true } : {}),
         ...(k > 0 ? { sharedQuestion: true } : {}),
         ts, took_ms: took,

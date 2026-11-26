@@ -349,6 +349,33 @@ export async function reissueMeaningSearches(runDir, queries, { sessions, keep =
 }
 
 /**
+ * THE KNOCKOUT'S SWEEP, THROUGH THE RUN'S OWN AI PROGRAM: an executor in the shape the Knockout lane calls its web grid in
+ * (pipeline-knockout.mjs, resolveSweepExecutor), `async (spec) -> { ok, ledgerJson, requested, present, missing, bytes,
+ * tookMs }` or `{ ok: false, cause }`. One name's dictated searches run in research-only sessions, made once per run when
+ * the first name asks; each search's record is kept with the run, and the ledger passes the grid's own capture, so the
+ * same reconciliation and floors judge it as judge the other service's. A cause never starts "grid: ", which the lane
+ * reads as a program fault worth one more call: own search has already retried what it retries. IMPURE.
+ */
+export function ownSearchKnockoutGrid(runDir, { makeSessions = makeOwnSearchSessions } = {}) {
+  let made = null;
+  const sessions = () => (made ??= Promise.resolve(makeSessions({ runDir, sessionDir: driverDir(runDir, "own-search-sessions") })));
+  return async (spec) => {
+    const started = Date.now();
+    const s = await sessions();
+    if (!s?.session) return { ok: false, cause: `own search: ${s?.error ?? "no research-only session on this run"}`, tookMs: Date.now() - started };
+    const items = dictatedSearches(spec);
+    const { outcomes, records } = await runDictatedSearches(s.search, items, s.session);
+    keepSearchRecords(runDir, records);
+    const ledger = ledgerFromOutcomes(items, outcomes, { keep: spec.results_per_cell ?? 8 });
+    const cap = captureGridFromResponse({ output: [{ type: "sandbox_results", code: `own search (${s.search})`,
+      results: [{ stdout: JSON.stringify(ledger), stderr: "", exit_code: 0, status: "completed" }] }] }, spec);
+    if (!cap.ok) return { ok: false, cause: `own search: below the grid's checks: ${String(cap.error ?? "").slice(0, 200)}`, tookMs: Date.now() - started };
+    return { ok: true, ledgerJson: cap.ledgerJson, present: cap.present, requested: cap.requested, missing: cap.missing.length,
+      bytes: Buffer.byteLength(cap.ledgerJson), tookMs: Date.now() - started, search: s.search };
+  };
+}
+
+/**
  * Which re-issue a run's missing meaning searches take: its own AI program's where its searches are its own (`sessions`
  * as makeOwnSearchSessions made them, or null where none could be made), and `otherwise` only on a run that is not. A
  * run whose searches are its own and that has no session re-issues nothing: the re-ask answers why. PURE but for the

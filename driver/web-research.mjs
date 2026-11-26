@@ -47,7 +47,9 @@ export function installWebResearch(env = process.env) {
 /**
  * Whether this installation can run `service`'s web research: `{ ok, service, missing, why }`. `missing` names the
  * settings a reader can add, never a value; `why` says in a phrase what stands in the way. It places no search and
- * calls no service: a credential that is set but refused is the service's own door's to find. PURE.
+ * calls no service: a credential that is set but refused is the service's own door's to find. `stillPerplexity` is the
+ * parts own search still sends to Perplexity for the product asking, which then need its key; a Knockout asks with none,
+ * since its owner lookups take their own course without the key. PURE.
  *
  * Own search follows the engine's route, from the vendors' documentation read on 2026-11-25:
  *   · Claude on a subscription or an API key carries its web search;
@@ -56,7 +58,7 @@ export function installWebResearch(env = process.env) {
  *     not documented here, so on those three it is not proved and not offered;
  *   · Codex on a subscription or an API key carries its web search, and the product has no cloud route for Codex.
  */
-export function webResearchCapability({ service, engine = null, env = process.env } = {}) {
+export function webResearchCapability({ service, engine = null, env = process.env, stillPerplexity = OWN_SEARCH_STILL_PERPLEXITY } = {}) {
   if (!WEB_RESEARCH_SERVICES.includes(service))
     return { ok: false, service: service ?? null, missing: [WEB_RESEARCH_SETTING], why: `${WEB_RESEARCH_SETTING} names no service (one of: ${WEB_RESEARCH_SERVICES.join(", ")})` };
   if (service === "perplexity") {
@@ -74,10 +76,10 @@ export function webResearchCapability({ service, engine = null, env = process.en
       : `Claude's own web search is not proved through ${auth.cloud === "gateway" ? "a gateway" : auth.cloud === "vertex" ? "Google Vertex" : "Microsoft Foundry"}`;
     return { ok: false, service, missing: [], why, cloud: auth.cloud };
   }
-  if (OWN_SEARCH_STILL_PERPLEXITY.length && String(env?.[PERPLEXITY_KEY] ?? "").trim() === "")
+  if (stillPerplexity.length && String(env?.[PERPLEXITY_KEY] ?? "").trim() === "")
     return { ok: false, service, missing: [PERPLEXITY_KEY], search: ENGINE_SEARCH[name], billing: auth.mode,
-      why: `${PERPLEXITY_KEY} is not set, and own search still sends its ${OWN_SEARCH_STILL_PERPLEXITY.join(" and ")} to Perplexity` };
-  return { ok: true, service, missing: [], why: null, search: ENGINE_SEARCH[name], billing: auth.mode, stillPerplexity: [...OWN_SEARCH_STILL_PERPLEXITY] };
+      why: `${PERPLEXITY_KEY} is not set, and own search still sends its ${stillPerplexity.join(" and ")} to Perplexity` };
+  return { ok: true, service, missing: [], why: null, search: ENGINE_SEARCH[name], billing: auth.mode, stillPerplexity: [...stillPerplexity] };
 }
 
 /**
