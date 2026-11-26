@@ -821,7 +821,7 @@
         },
         "a-dictated-search-has-one-outcome-of-its-own.test.mjs": {
           "tests": 13,
-          "asserts": 81,
+          "asserts": 84,
           "skips": 0,
           "todos": 0
         },
@@ -2592,6 +2592,12 @@
         "a-run-keeps-the-engine-it-started-on.test.mjs": {
           "tests": 14,
           "asserts": 56,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-keeps-the-web-research-it-started-on.pipeline.test.mjs": {
+          "tests": 4,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -9618,6 +9624,12 @@
         "wave-boundaries.test.mjs": {
           "tests": 3,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "web-research-is-one-setting-read-in-one-place.test.mjs": {
+          "tests": 6,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
