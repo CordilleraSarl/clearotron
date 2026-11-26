@@ -17,8 +17,8 @@ import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-produ
 import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";   // the ledger the wall counts
 import { resolveEffectiveProfile } from "../../driver/profiles.mjs";
-import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";
-import { receiptIn, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // an id in any state is that order, not a new one   // one search left and an Urgent order
+import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";   // one search left and an Urgent order
+import { receiptIn, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // an id in any state is that order, not a new one
 import { orderUrgency } from "./urgent.mjs";   // whether this installation can run an Urgent order, as the run asks it   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
