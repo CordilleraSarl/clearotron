@@ -819,6 +819,12 @@
           "skips": 6,
           "todos": 0
         },
+        "a-dictated-search-has-one-outcome-of-its-own.test.mjs": {
+          "tests": 13,
+          "asserts": 81,
+          "skips": 0,
+          "todos": 0
+        },
         "a-directory-over-four-files-has-a-front-door.test.mjs": {
           "tests": 4,
           "asserts": 14,
@@ -2661,6 +2667,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-run-whose-searches-are-its-own-keeps-one-search-service.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-run-with-nothing-chosen-says-what-doctor-says.test.mjs": {
           "tests": 4,
           "asserts": 11,
@@ -2748,6 +2760,12 @@
         "a-search-not-carried-out-says-why-in-plain-words.test.mjs": {
           "tests": 5,
           "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-search-session-runs-through-each-engine-and-keeps-its-records.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -5691,12 +5709,6 @@
           "skips": 0,
           "todos": 0
         },
-        "missing-four-answers-ride-a-writer-repair-already-owed.test.mjs": {
-          "tests": 3,
-          "asserts": 15,
-          "skips": 0,
-          "todos": 0
-        },
         "mock-closure-fixture.test.mjs": {
           "tests": 2,
           "asserts": 10,
@@ -5776,8 +5788,8 @@
           "todos": 0
         },
         "no-stage-is-offered-the-engines-own-web-search.test.mjs": {
-          "tests": 4,
-          "asserts": 10,
+          "tests": 5,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -6994,8 +7006,8 @@
           "todos": 0
         },
         "runner.dedup.test.mjs": {
-          "tests": 4,
-          "asserts": 49,
+          "tests": 5,
+          "asserts": 62,
           "skips": 0,
           "todos": 0
         },
