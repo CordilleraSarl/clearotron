@@ -604,6 +604,14 @@ function checkedFamilies(runDir, rows, plan) {
   if (defect) { runLog(runDir, { event: "knockout-families-refused", defect: defect.slice(0, 300) }); return null; }
   return families;
 }
+/**
+ * The readers that did not finish, in reader order rather than the order they settled in, sorted in place. The failure
+ * rethrown, the note and the run log's cause then name the lowest-numbered reader, so two runs of one order record the
+ * same one.
+ */
+export function inReaderOrder(failures) {   // @internal — driven by its test
+  return failures.sort((a, b) => a.c - b.c);
+}
 function orderFamilies(runDir, names, plan) {
   const groups = koChunks(names, checkedFamilies(runDir, names, plan));
   runLog(runDir, { event: "knockout-families", source: plan?.batch?.families ? "intake" : "none", groups: groups.map((g) => g.length) });
@@ -682,6 +690,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
           } });
         } catch (e) { readerFailures.push({ c, e }); }
       }, { stop: () => readerFailures.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
+      inReaderOrder(readerFailures);
       const hard = readerFailures.find((f) => rateLimited(f) || f.e instanceof RunCancelled);
       if (hard) throw hard.e;
       // A STOP RECORDED WHILE THE READERS RAN ends the run here as a stop: a reader it cut short is not a reading that failed.
