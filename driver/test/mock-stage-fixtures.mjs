@@ -42,6 +42,7 @@ import { recordKnockoutCorrection } from "../knockout-correction-record.mjs";
 import { addedClassQuestions, knockoutAxis, knockoutBandBlocks, knockoutBandPath, knockoutProposals, questionsOwed } from "../knockout-register-read.mjs";
 import { fixtureRecordsDir } from "../register-fixture-marker.mjs";
 import { fixtureFileName } from "../register-records.mjs";
+import { realShapedFilings } from "./snapshot/real-shaped.mjs";   // the filings of a real run's size, every name invented
 import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
 import { recordSynthesis, uncarriedCoverageLimits, lastAcceptedCall, synthesisCallPaths } from "../synthesis-record.mjs";
@@ -1156,6 +1157,23 @@ export function mockUnitBandWrite(runDir, axis, msg = "") {
   // another owner, so the band placement read moves under it after placement ran. Its mark is the mark itself, a floor,
   // unless MOCK_ESCALATION_ADDS_MARK names another.
   const reRun = /RESUMING your own register-unit session|your earlier register-unit work (?:\(axis "[^"]*"\) |for axis "[^"]*" )?is not in your context/.test(msg);
+  // MOCK_BAND_REAL_SHAPED=<count>: the first write of MOCK_BAND_REAL_SHAPED_AXIS's band (primary-sweep unless named) carries
+  // `count` filings of a real run's size and shape (snapshot/real-shaped.mjs), each screened as the real screen marks it:
+  // live in the order's classes surfaces, dead drops, live outside them drops out of class.
+  const realShapedAxis = process.env.MOCK_BAND_REAL_SHAPED_AXIS || "primary-sweep";
+  if (process.env.MOCK_BAND_REAL_SHAPED && axis === realShapedAxis && !existsSync(bandPath)) {
+    const block = fresh.find((b) => b?.state === "enumerated" && Array.isArray(b.records));
+    if (block) {
+      const classes = new Set([9, 41]);   // the snapshot order's classes
+      for (const f of realShapedFilings("NOVAPULSE", { count: Number(process.env.MOCK_BAND_REAL_SHAPED) || 0 })) {
+        const live = f.status_class === "live";
+        block.records.push({ record_id: f.record_id, mark_text: f.mark_text, classes: f.classes, status: f.status, owner_name: f.owner_name,
+          owner_country: f.owner_country, raw: f.raw,
+          screen_verdict: !live ? "drop:dead" : f.classes.some((c) => classes.has(c)) ? "surface:in-scope-live" : "drop:out-of-class" });
+      }
+      block.total_hits = block.records.length;
+    }
+  }
   if (reRun && process.env.MOCK_ESCALATION_ADDS_FLOOR === axis) {
     const block = fresh.find((b) => b?.state === "enumerated" && Array.isArray(b.records));
     if (block) { block.records.push({ record_id: "/mark/us/90000077", mark_text: process.env.MOCK_ESCALATION_ADDS_MARK || "NOVAPULSE", classes: [9], status: "Registered",
