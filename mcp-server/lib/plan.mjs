@@ -34,6 +34,7 @@ import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor
 import { gateResolvedRequest } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
 import { quoteForJob } from "../../driver/run-quote.mjs";
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";
+import { orderUrgency, urgentHere, URGENT_UNAVAILABLE } from "./urgent.mjs";   // the How soon option, as this installation can run it
 import { config } from "./driver.mjs";
 import { demoServing } from "../demo-mode.mjs";   // — a demo's preview names no tool it withholds
 import { buildJob, resolveScopedProfileKey } from "./ops.mjs";
@@ -187,16 +188,32 @@ function bindingLayersForOrder(jurisdictions) {
  *
  * Takes the SAME args as start_run. Confirming is a separate, explicit start_run call with the same args.
  */
+/**
+ * WHETHER AN OPTION FITS WHAT THE ACCOUNT HAS LEFT TODAY, by the wall's own rule: admission refuses an order whose
+ * count would take the day past the cap (`today + searches > dailyRuns`, driver/urgent-count.mjs). An Urgent order
+ * counts two, so with one search left Standard fits and Urgent does not. Null where no cap applies to this session,
+ * or where today's usage could not be read: a preview must not claim either answer on no evidence.
+ */
+export function withinAllowance(allowance, searches) {
+  if (!allowance?.capped || !allowance.complete || typeof searches !== "number") return null;
+  return allowance.today + searches <= allowance.dailyRunsEffective;
+}
+
 export function planRun(args = {}, { scope, now = Date.now() } = {}) {
   // Resolved, not merely checked — and BEFORE buildJob, so the preview describes the job start_run
   // would build, including the account it would run under when the request named none.
   args = resolveScopedProfileKey(args, scope, "plan_run");
   // The EXACT job start_run would build — not a lookalike assembled here, which could drift from it.
-  const job = buildJob(args, { scope });
+  const built = buildJob(args, { scope });
 
   // validateJob NORMALIZES in place (jurisdiction dedupe, the bare-string fix, deadline shape), so what
   // is reported below is what the engine would actually receive, not what the caller typed.
-  const v = validateJob(job);
+  const v = validateJob(built);
+  // THE ORDER AS THIS INSTALLATION WOULD RUN IT, the same answer start_run applies: an Urgent order it cannot run is
+  // previewed as Standard, with the board's sentence among the warnings.
+  const urgency = v.ok ? orderUrgency(built) : { job: built, warnings: [] };
+  const job = urgency.job;
+  const urgentHereNow = urgentHere();
 
   let profile = null, projectKey = null, origins = null;
   // Profile resolution reads the roster off disk; infra trouble must degrade the PREVIEW, never throw —
@@ -305,6 +322,11 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
   // is worth nothing. `effort: null` says honestly that we could not size it.
   // `eff` is passed so the scope is not resolved twice; quoteForJob would resolve the same thing itself.
   const effort = quoteForJob({ job, profile, searchPolicy: resolved, scope: eff });
+  // HOW SOON: both options' turnaround and count, each from the shared effort model for this search as configured —
+  // the same quote the portal's footer reads — so the preview never carries a second copy of either figure.
+  const quoteAs = (urgent) => quoteForJob({ job: { ...job, urgent }, profile, searchPolicy: resolved, scope: eff });
+  const option = (q) => (q ? { turnaround: q.turnaround, turnaroundLowHours: q.turnaroundLowHours, turnaroundHighHours: q.turnaroundHighHours,
+    searches: q.searches, withinAllowance: withinAllowance(allowance, q.searches) } : null);
   // The daily allowance, reported for every principal and BLOCKING only for a client account (the one
   // kind the wall actually caps). Advice, not a gate — see allowanceFor.
   const allowance = allowanceFor(profile, { scope, now });
@@ -372,7 +394,7 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
         : "NOTHING HAS BEEN STARTED and nothing has been charged. This is what would run. Show it to the requester, and call start_run with the SAME arguments only once they have confirmed it.")
       : "NOTHING HAS BEEN STARTED. This request cannot run as stated — the blockers below are questions to put back to the requester, not failures to retry.",
     blockers: blocking,
-    warnings: [...(v.warnings ?? []), ...gates.warnings, ...(quotaWarning ? [quotaWarning] : []),
+    warnings: [...(v.warnings ?? []), ...gates.warnings, ...urgency.warnings, ...(quotaWarning ? [quotaWarning] : []),
       ...(coverage ? [coverage.note] : [])],
     caveat: PLAN_CAVEAT,
     search: {
@@ -428,6 +450,13 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
     // accounts and must never be used as a billing quantity; `raw` is the absolute figure. `unitsVersion`
     // says which weight set produced them, so a later re-fit cannot make this quote unreadable.
     effort,
+    howSoon: {
+      chosen: job.urgent === true ? "urgent" : "standard",
+      urgentAvailable: urgentHereNow.available,
+      ...(urgentHereNow.available ? {} : { urgentNote: URGENT_UNAVAILABLE }),
+      standard: option(quoteAs(false)),
+      urgent: urgentHereNow.available ? option(quoteAs(true)) : null,
+    },
     account: {
       profileKey: profile?.key ?? null,
       name: profile?.name ?? null,

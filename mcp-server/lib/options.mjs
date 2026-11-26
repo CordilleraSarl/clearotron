@@ -45,6 +45,7 @@ import { loadProfiles, loadProjects, recipeProseGuard } from "../../driver/profi
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";
 import { config } from "./driver.mjs";
 import { BRAND } from "../../shared/brand.mjs";   // — the operator name in the allowance notes, from the tenant seam
+import { urgentHere, URGENT_UNAVAILABLE } from "./urgent.mjs";   // the How soon option, as this installation can run it
 
 // What each product IS, in the words a requester uses. The registry knows its components; a client does
 // not, and must not have to: `jxLanes`, `commonLawGrid` and `registerProbe` are the machinery's names for
@@ -362,6 +363,9 @@ export function describeOptions(args = {}, { scope, now = Date.now() } = {}) {
     // disclosed deferred coverage rows, which is what the engine already does with them.
     ...(territories === undefined ? {} : { registerTerritories: territories }),
     scopeRules: SCOPE_RULES,
+    // WHETHER THIS INSTALLATION CAN RUN AN URGENT ORDER, from the same answer the run itself reads (lib/urgent.mjs).
+    // Where it cannot, the board's own sentence says what an Urgent order does instead.
+    urgent: urgentHere().available ? { available: true } : { available: false, note: URGENT_UNAVAILABLE },
     account,
     ...(accountsGranted ? { accountsGranted } : {}),
     ...(account || accountsGranted ? {} : {

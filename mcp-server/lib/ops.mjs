@@ -14,7 +14,8 @@ import { randomUUID } from "node:crypto";
 import { config } from "./driver.mjs";
 import { validateJob } from "../../driver/enqueue-schema.mjs";
 import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
-import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";   //
+import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";
+import { orderUrgency } from "./urgent.mjs";   // whether this installation can run an Urgent order, as the run asks it   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
 import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one marker shape, shared with the engine
@@ -146,6 +147,9 @@ export function buildJob(args = {}, { scope } = {}) {
     // field and silently ignores it. validateJob owns the vocabulary (see the note above); it refuses,
     // in the same sentence the portal and the CLI refuse with.
     ...("caseLaw" in args && args.caseLaw != null ? { caseLaw: args.caseLaw } : {}),
+    // URGENT, carried verbatim like the toggle above: `true` orders the faster setting, `false` and absence are a
+    // standard order, and any other value reaches validateJob, which refuses it rather than run it as Standard.
+    ...("urgent" in args && args.urgent != null ? { urgent: args.urgent } : {}),
     ...("searchLevel" in args ? { searchLevel: args.searchLevel } : {}),   // presence, null included
     ...(args.customerUnknown === true ? { customerUnknown: true } : {}),
     ...(args.dupOverride === true ? { dupOverride: true } : {}),
@@ -209,6 +213,8 @@ export const START_RUN_JOB_FIELDS = Object.freeze({
     // and "I said nothing" are two different searches and only a positive instruction can tell them apart.
     "geography",
     "product", "recipeKey", "nativeLanguage", "caseLaw", "searchLevel", "deliveryRoute", "parentRunId",
+    // the order's How soon option: true is Urgent. Carried as sent; validateJob refuses a value that is not a boolean.
+    "urgent",
     "customer", "profileKey", "projectKey", "customerUnknown", "tenant",
     "upfrontInstructions", "brief", "rawRequest", "deliverableSpec", "commercialFlexibility",
     "priorUse", "campaignShape", "deadline",
@@ -229,8 +235,6 @@ export const START_RUN_JOB_FIELDS = Object.freeze({
       + "name field would give one door two answers to 'what is being cleared'.",
     use: "the pre-goods spelling of the goods description. Same reason as `name`.",
     tmp: "the pre-ref spelling of the reference number. Same reason as `name`.",
-    urgent: "an Urgent order. start_run and plan_run carry it with the Urgent option and its count of searches; "
-      + "until that option ships, an argument would run fast without being counted as the order says.",
   }),
 });
 
@@ -294,6 +298,10 @@ export function startRun(args = {}, { scope } = {}) {
     e.classify = "clarify";
     throw e;
   }
+  // AN URGENT ORDER THIS INSTALLATION CANNOT RUN starts at Standard, counts one search, and says so; it is never
+  // refused and never held. The job is written as Standard, so the run and its count agree with the reply.
+  const urgency = orderUrgency(job);
+  job = urgency.job;
 
   mkdirSync(qdir, { recursive: true });
   const tmp = join(qdir, `${id}.json.tmp`);
@@ -306,7 +314,7 @@ export function startRun(args = {}, { scope } = {}) {
   const watch = probeQueueWatch({ queueDirs: [qdir] });
   return {
     ok: true, id, agent: agent || config.defaultAgent, queue: qdir, queued: true, classify: v.classify,
-    warnings: [...(v.warnings || []), ...gates.warnings,
+    warnings: [...(v.warnings || []), ...gates.warnings, ...urgency.warnings,
       ...(watch.state === "fail" ? [unwatchedQueueWarning(qdir, watch.unitPath)] : [])],
     queuePath: dest, queueWatched: watch.state,
     note: "Queued. The runner assigns a runId/codename on claim — poll list_runs (filter by markName) or run_changes for progress.",
