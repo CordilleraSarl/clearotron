@@ -259,6 +259,15 @@ function completeTurn(text, { noNewline } = {}) {
   process.exit(0);
 }
 
+// — MOCK_CODEX_WEB_SEARCH=<json>: the program's own web search, in a research-only session (engine/mcp/own-search.mjs).
+// A list of { queries, results? }: each is a `web_search` item (several queries is a pooled search; no `results` is a
+// search whose list the program did not report), then a reply.
+if (process.env.MOCK_CODEX_WEB_SEARCH) {
+  JSON.parse(process.env.MOCK_CODEX_WEB_SEARCH).forEach((w, i) => send({ type: "item.completed", item: { id: `ws_${i}`, type: "web_search",
+    action: w.queries.length > 1 ? { type: "search", queries: w.queries } : { type: "search", query: w.queries[0] }, ...(w.results ? { results: w.results } : {}) } }));
+  completeTurn("done");
+}
+
 // ── Warm-patch ladder substrate (parity with mock-claude MOCK_WARM_MODE). ──
 if (process.env.MOCK_WARM_MODE) {
   const cFile = process.env.MOCK_COUNT_FILE;
