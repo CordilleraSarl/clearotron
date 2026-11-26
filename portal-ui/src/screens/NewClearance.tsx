@@ -1926,9 +1926,9 @@ function HowSoon({ standardLine, urgentLine, urgentAvailable, urgentOverAllowanc
   const options = [
     { label: 'Standard', line: standardLine, note: null, chosen: !urgent, disabled: false, value: false },
     { label: 'Urgent', line: urgentLine,
-      // "REQUESTS", NOT "RUNS ON": every session of an Urgent order asks for the faster setting, and a provider need not
-      // say which speed it served, so the note promises only the request.
-      note: !urgentAvailable ? null : urgentOverAllowance ? ONE_SEARCH_LEFT : "Urgent requests the AI service's faster setting wherever it is available. The faster setting costs twice as much.",
+      // The owner's words for the note (2026-11-26). Every session of an Urgent order asks for the faster setting, and a
+      // provider need not say which speed it served.
+      note: !urgentAvailable ? null : urgentOverAllowance ? ONE_SEARCH_LEFT : "Uses AI fast mode setting at increased cost.",
       chosen: urgent, disabled: !urgentAvailable || urgentOverAllowance, value: true },
   ] as const
   const onKey = (e: ReactKeyboardEvent<HTMLDivElement>) => {
