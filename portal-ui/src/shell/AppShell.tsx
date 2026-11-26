@@ -20,7 +20,8 @@ import { api, onSessionEnded, PRODUCT_NAME } from '../contract/api.ts'
 import { navGroupsFor, avatarMenuFor, avatarEntryOf, scopeOf, screenForPath, HOME, type NavEntry, type ScreenId } from '../nav/nav.config.ts'
 import { Icon } from '../components/Icon.tsx'
 import { Logo, wordmarkFor } from '../components/Logo.tsx'
-import { useLoad } from '../state/useApi.ts'
+import { useLoad, useEndedWhileHidden } from '../state/useApi.ts'
+import { tabTitle } from '../contract/tabTitle.ts'
 import { confirmDiscard, attachBeforeUnload } from '../state/guard.ts'
 import { readBlurChoice, writeBlurChoice } from '../state/blurChoice.ts'
 import { ALL_OWNERS, ownerNameMap, ownerNameFrom } from '../contract/ownerNames.ts'
@@ -389,9 +390,10 @@ export function AppShell({ render }: { readonly render: (screen: ScreenId, ctx: 
   // THE TAB CARRIES THE INSTALLATION'S NAME once /me says what it is. index.html's title is the product's,
   // and stays the title of an installation that names nothing.
   const brandName = meResult?.kind === 'ok' ? meResult.value.brandName : PRODUCT_NAME
-  useEffect(() => {
-    if (brandName !== PRODUCT_NAME) document.title = `${brandName} · Trademark clearance`
-  }, [brandName])
+  // AND A COUNT AT ITS FRONT of this person's searches that ended while the tab was out of view, which goes
+  // the moment the tab is looked at (board TabTitle, approved 2026-11-25). In view, never a count.
+  const endedWhileHidden = useEndedWhileHidden(meResult?.kind === 'ok')
+  useEffect(() => { document.title = tabTitle(brandName, endedWhileHidden) }, [brandName, endedWhileHidden])
 
   // THE WAIT IS NAMED, NOT LEFT BLANK. This frame stands for the whole of the /me round trip, and no
   // screen is mounted behind it — so a screen's own loading state cannot cover this window, however

@@ -237,6 +237,8 @@ const STATES = {
 }
 
 let current = 'busy'
+/** How many times the page asked for its runs: the hidden tab's readings are counted from this. */
+let runsAsked = 0
 /** Requests deliberately left unanswered, so they can be cut loose before the next state runs. */
 const held = new Set()
 
@@ -262,6 +264,7 @@ const server = createServer((req, res) => {
       accountNames: { coastline: 'Coastline Drinks', foxglade: 'Foxglade Interactive', ridgeform: 'Ridgeform', generic: 'Generic default' } })
   }
   if (path === '/portal/api/runs') {
+    runsAsked++
     // What portal-service actually answers a multi-owner client who has named nobody. The browser
     // decodes it to `pickAccount`, which is a UI state, never an error to print at someone.
     if (s.status) {
@@ -841,6 +844,49 @@ for (const [name, spec] of Object.entries(STATES)) {
       }
     }
   }
+}
+
+// ── THE TAB'S TITLE COUNTS WHAT ENDED WHILE IT WAS OUT OF VIEW (board TabTitle, approved 2026-11-25) ──
+//
+// The page is told it is hidden the way a browser tells it, by `visibilityState` and its event, and the
+// hidden tab's minute between readings is shortened so the check does not wait one. One running search
+// ends while the tab is away: the title leads with "(1)", and the count goes the moment the tab is seen.
+{
+  STATES.tabcount = { runs: [run({ runId: 't1', mark: 'CORAL FREEZE', state: 'running', ...at(displayStepsFor('full-country-search'), 3), startedAt: ago(30) }), ...FINISHED] }
+  current = 'tabcount'
+  await cmd('Page.enable')   // a script for new documents is installed only on an enabled page
+  const shim = await cmd('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
+    let hidden = false
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => (hidden ? 'hidden' : 'visible') })
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => hidden })
+    window.__setHidden = (h) => { hidden = h; document.dispatchEvent(new Event('visibilitychange')) }
+    const later = window.setTimeout.bind(window)
+    window.setTimeout = (f, ms, ...rest) => later(f, ms >= 60000 ? 400 : ms, ...rest)
+  })()` })
+  await navigateOrRefuse(cmd, `${origin}/portal/home`, { what: 'home-render-check tab title' })
+  const titleWhen = async (pred, ms = 6000) => {
+    const t0 = Date.now()
+    let t = ''
+    while (Date.now() - t0 < ms) { t = (await evalIn('document.title')) ?? ''; if (pred(t)) return t; await new Promise((r) => setTimeout(r, 100)) }
+    return t
+  }
+  // Hidden only once Home has painted its card: before the sign-in answers there is nobody's search to count.
+  for (let i = 0; i < 100 && !(await evalIn("Boolean(document.querySelector('.home2-card'))")); i++) await new Promise((r) => setTimeout(r, 100))
+  const inView = await titleWhen((t) => / · Trademark clearance$/.test(t) && !t.startsWith('('))
+  say(/^[^(].* · Trademark clearance$/.test(inView), `tab title in view carries no count ("${inView}")`)
+  say((await evalIn('typeof window.__setHidden')) === 'function', 'the page can be told it is hidden')
+  const asked = runsAsked
+  await evalIn('window.__setHidden(true); true')
+  await new Promise((r) => setTimeout(r, 600))
+  say((await evalIn('document.visibilityState')) === 'hidden', 'the page reads itself as hidden')
+  STATES.tabcount.runs[0] = { ...STATES.tabcount.runs[0], state: 'delivered' }
+  const counted = await titleWhen((t) => t.startsWith('(1) '))
+  say(runsAsked - asked >= 2, `the hidden tab read the searches when it was hidden and again later (${runsAsked - asked} reads)`)
+  say(counted.startsWith('(1) ') && counted.endsWith(' · Trademark clearance'), `a search that ended while the tab was hidden leads the title with "(1)" ("${counted}")`)
+  await evalIn('window.__setHidden(false); true')
+  const back = await titleWhen((t) => !t.startsWith('('))
+  say(!back.startsWith('('), `the count goes the moment the tab is looked at ("${back}")`)
+  await cmd('Page.removeScriptToEvaluateOnNewDocument', { identifier: shim.result?.identifier })
 }
 
 // — SIGNAL THE GROUP, NOT THE PROCESS. `chrome.kill` reaches only the process spawned here;
