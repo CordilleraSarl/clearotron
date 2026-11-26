@@ -1671,6 +1671,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-meaning-re-ask-goes-through-the-runs-own-search.test.mjs": {
+          "tests": 4,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "a-memo-has-a-door-onto-it.test.mjs": {
           "tests": 26,
           "asserts": 88,
