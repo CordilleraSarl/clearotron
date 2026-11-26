@@ -76,6 +76,7 @@ import { fileURLToPath } from "node:url";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { driverDir } from "../../shared/driver-dir.mjs";   // a run's driver folder, reached through its one helper
 
 /** The server the probe hands the engine, named as a stage names its own (`mcp__<server>__<tool>`). */
 export const PROBE_SERVER = "probe";
@@ -309,7 +310,7 @@ export async function lastRanClaudeVersion({ workspaceRoot = null, maxRuns = 30 
       .sort((a, b) => b.status.startedAt.localeCompare(a.status.startedAt)).slice(0, maxRuns);
     for (const r of newest) {
       let text = null;
-      try { text = readFileSync(join(r.dir, "_driver", "run.jsonl"), "utf8"); } catch { continue; }
+      try { text = readFileSync(driverDir(r.dir, "run.jsonl"), "utf8"); } catch { continue; }
       const v = lastClaudeVersionIn(text);
       if (v) return v;
     }
