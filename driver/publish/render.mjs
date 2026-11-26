@@ -2516,8 +2516,36 @@ a.addEventListener('focus',function(){if(keyFocus(a))show(a);});
 a.addEventListener('blur',function(){if(cur===a)hide();});});
 tip.addEventListener('pointerenter',function(){clearTimeout(timer);});
 tip.addEventListener('pointerleave',soon);
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!tip.hidden)hide();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!tip.hidden){hide();e.preventDefault();}});
 window.addEventListener('beforeprint',hide);})();
+(function(){var wrap=document.querySelector('.wrap'),words=document.getElementById('cpanel-words');if(!wrap||!words)return;
+var root=document.documentElement,panel=null,opener=null,WIDE=500,NARROW=452,GW=30,GN=22,EDGE=16,MINCOL=600,FULL=parseFloat(getComputedStyle(wrap).maxWidth)||1120;
+function roomFor(){var vw=root.clientWidth;if(!root.classList.contains('rep-narrow')&&vw-wrap.getBoundingClientRect().right>=GW+WIDE+EDGE)return {mode:'wide',w:WIDE};
+var col=Math.min(vw-EDGE-GN-NARROW-EDGE,FULL);if(col<MINCOL)return null;return {mode:'narrow',col:col,w:Math.min(WIDE,vw-EDGE-col-GN-EDGE)};}
+function keepPlace(el,change){var before=el.getBoundingClientRect().top;change();var dy=Math.round(el.getBoundingClientRect().top-before);if(!dy)return;
+var ev=null;try{ev=new CustomEvent('rep-shift',{detail:{dy:dy},cancelable:true});}catch(e){}if(!ev||document.dispatchEvent(ev))window.scrollBy({top:dy,left:0,behavior:'instant'});}
+function reflowed(){try{document.dispatchEvent(new CustomEvent('rep-reflow'));}catch(e){}}
+function place(){if(!panel||!opener)return;var r=wrap.getBoundingClientRect(),blk=opener.closest('.panel')||opener.parentElement;
+panel.style.width=panel._w+'px';panel.style.left=Math.round(r.right+window.scrollX+(panel._mode==='wide'?GW:GN))+'px';
+panel.style.top=Math.round(blk.getBoundingClientRect().top+window.scrollY)+'px';}
+function fill(n){var card=document.getElementById('c'+n);if(!card)return false;var c=card.cloneNode(true);c.removeAttribute('id');c.setAttribute('data-card-of','c'+n);
+[].forEach.call(c.querySelectorAll('[id]'),function(e){e.removeAttribute('id');});[].forEach.call(c.querySelectorAll('label.pick'),function(e){e.parentNode.removeChild(e);});
+if(!c.querySelector('.copy-fi')&&words.content){var ask=c.querySelector('.ask-fi'),cp=words.content.querySelector('.copy-fi');if(ask&&cp)ask.parentNode.insertBefore(cp.cloneNode(true),ask);}
+var body=panel.querySelector('.cp-body');body.innerHTML='';body.appendChild(c);panel.setAttribute('aria-label',words.getAttribute('data-name').replace('{n}',n));return true;}
+function build(){panel=document.createElement('aside');panel.className='cpanel no-print';panel.tabIndex=-1;
+panel.innerHTML='<button type="button" class="cp-close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg></button><div class="cp-body"></div>';
+var x=panel.querySelector('.cp-close');x.setAttribute('aria-label',words.getAttribute('data-close'));x.addEventListener('click',shut);document.body.appendChild(panel);}
+function open(a,room){var n=(a.getAttribute('href')||'').slice(2);if(!document.getElementById('c'+n))return false;if(!panel)build();fill(n);
+if(opener&&opener!==a)opener.classList.remove('cite-on');opener=a;a.classList.add('cite-on');panel._mode=room.mode;panel._w=room.w;
+if(room.mode==='narrow'&&!root.classList.contains('rep-narrow'))keepPlace(a,function(){root.style.setProperty('--rep-col',room.col+'px');root.style.setProperty('--rep-left',EDGE+'px');root.classList.add('rep-narrow');});
+place();try{panel.focus({preventScroll:true});}catch(e){panel.focus();}reflowed();return true;}
+function shut(){if(!panel)return;var a=opener;panel.parentNode.removeChild(panel);panel=null;opener=null;
+if(root.classList.contains('rep-narrow'))keepPlace(a,function(){root.classList.remove('rep-narrow');root.style.removeProperty('--rep-col');root.style.removeProperty('--rep-left');});
+if(a){a.classList.remove('cite-on');try{a.focus({preventScroll:true});}catch(e){a.focus();}}reflowed();}
+document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('.fa-ords a[href^="#c"]'):null;if(!a)return;var room=roomFor();if(room&&open(a,room)){e.preventDefault();e.stopImmediatePropagation();}},true);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&panel&&!e.defaultPrevented)shut();});
+window.addEventListener('resize',function(){if(!panel)return;var room=roomFor();if(!room||room.mode!==panel._mode){shut();return;}
+panel._w=room.w;if(room.mode==='narrow')keepPlace(opener,function(){root.style.setProperty('--rep-col',room.col+'px');});place();reflowed();});})();
 window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';});document.querySelectorAll('details.sub-more').forEach(function(d){d.open=true;});document.querySelectorAll('.card').forEach(function(c){var b=c.querySelector('input.pickbox');if(b&&!b.checked)return;c.querySelectorAll('details').forEach(function(d){d.open=true;});for(var p=c.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});});
 window.addEventListener('afterprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=d.dataset.o==='1';});document.querySelectorAll('.gname[data-screen]').forEach(function(g){g.textContent=g.dataset.screen;delete g.dataset.screen;});_hidden.forEach(function(c){c.classList.remove('print-hidden');});_hidden=[];});
 ${EXPORT_MENU_JS}`;
@@ -3123,7 +3151,10 @@ export const CLEARANCE_PAGE = Object.freeze({
       return line;
     })()}</span>
     ${logoLockup({ mark: 16 })}`,
-  afterWrap: () => `\n<script>${PAGE_JS}</script>`,
+  // The conflict panel's words, read by the page script: its name, its close control's name, and the Copy link a compact
+  // card gains in the panel.
+  afterWrap: () => `\n<template id="cpanel-words" data-name="${escAttr(R.conflictPanel.name('{n}'))}" data-close="${escAttr(R.conflictPanel.close)}">${
+    copyLinkButton(R.card.copyLink, R.card.copied)}</template>\n<script>${PAGE_JS}</script>`,
   strip: STRIP,
 });
 
