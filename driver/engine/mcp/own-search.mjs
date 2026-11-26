@@ -412,3 +412,39 @@ export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSIO
   };
 }
 
+// ── THE RECORDS, KEPT WITH THE RUN, AND A REPLAY THAT CALLS NOTHING ─────────────────────────────────────────────────
+//
+// Every search's record is kept in the run folder, one line each: the service, the model, the speed, the words sent,
+// the site, the outcome, the links, the seconds and the token categories. They are the matter's own content, so they are
+// written there and nowhere else. A replay answers each dictated search from the latest record of the same words and
+// site, and sends nothing: a search the run never recorded is "not-sent" in the replay, never an empty one.
+export const SEARCH_RECORDS_FILE = "web-search-records.jsonl";
+const recordsPath = (runDir) => join(runDir, "_driver", SEARCH_RECORDS_FILE);
+
+/** Append the records to the run's file. Best-effort: a failed write never fails the searches. IMPURE. */
+export function keepSearchRecords(runDir, records) {
+  if (!runDir || !records?.length) return;
+  try {
+    mkdirSync(join(runDir, "_driver"), { recursive: true });
+    appendFileSync(recordsPath(runDir), records.map((r) => JSON.stringify({ ts: new Date().toISOString(), ...r })).join("\n") + "\n");
+  } catch { /* best-effort */ }
+}
+
+/** The run's kept records, oldest first; [] where there are none. IMPURE (reads). */
+export function savedSearchRecords(runDir) {
+  if (!runDir) return [];
+  try { return readFileSync(recordsPath(runDir), "utf8").split("\n").filter((l) => l.trim()).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); }
+  catch { return []; }
+}
+
+/** The dictated searches' outcomes from the run's kept records, sending nothing. PURE over `records`. */
+export function replayedOutcomes(items, records) {
+  const latest = new Map();
+  for (const r of records) latest.set(itemKey(r), r);
+  return items.map((d) => {
+    const r = latest.get(itemKey(d));
+    return r ? { query: d.query, site: d.site ?? null, outcome: r.outcome, results: (r.links ?? []).map(({ url, title, offSite }) => ({ url, title, offSite: Boolean(offSite) })) }
+      : { query: d.query, site: d.site ?? null, outcome: "not-sent", results: [] };
+  });
+}
+

@@ -189,3 +189,23 @@ test("a run whose engine cannot be resolved gets no session, and says why", asyn
   const sessions = await makeOwnSearchSessions({ sessionDir: tmpdir(), makeRunner: (o) => makeJxTurnRunner({ ...o, env: {} }) });
   assert.match(String(sessions.error), /\S/);
 });
+
+// ── KEPT WITH THE RUN, AND REPLAYED WITHOUT A CALL.
+const { keepSearchRecords, savedSearchRecords, replayedOutcomes } = await import("../engine/mcp/own-search.mjs");
+
+test("the records are kept with the run, and a replay answers from them without a call; an unrecorded search is not-sent", async () => {
+  const runDir = mkdtempSync(join(tmpdir(), "own-search-records-"));
+  let calls = 0;
+  const session = async (batch) => { calls++; return { events: batch.map((d) => codexSearch([d.site ? `${d.query} site:${d.site}` : d.query], [{ title: "t", url: d.site ? `https://${d.site}/i` : "https://example.test/i" }])), answered: true, seconds: 2, usage: { input_tokens: 3 }, model: "gpt-6-luna", speed: "fast" }; };
+  const items = [ITEMS[0], ITEMS[2]];
+  const { records } = await runDictatedSearches("codex", items, session);
+  keepSearchRecords(runDir, records);
+  const kept = savedSearchRecords(runDir);
+  assert.equal(kept.length, 2);
+  assert.ok(kept.every((r) => r.service === "codex" && r.model === "gpt-6-luna" && r.speed === "fast" && r.seconds === 2 && r.usage && r.ts));
+  const before = calls;
+  const replay = replayedOutcomes([...items, ITEMS[4]], kept);
+  assert.equal(calls, before, "a replay calls nothing");
+  assert.deepEqual(replay.map((o) => o.outcome), ["found", "found", "not-sent"]);
+  assert.equal(replay[0].results[0].url, "https://etsy.com/i");
+});
