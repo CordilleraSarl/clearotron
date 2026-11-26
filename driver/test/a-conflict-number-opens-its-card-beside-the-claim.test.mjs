@@ -80,3 +80,13 @@ test("in the portal the bridge scrolls the portal for the page, re-posts its hei
   assert.match(page, /addEventListener\('rep-reflow',function\(\)\{schedule\(\);\}\)/, "a reflow does not re-post the height and the section tops");
   assert.match(page, /var cid=card\?\(card\.id\|\|card\.getAttribute\('data-card-of'\)\|\|''\):'';/, "Ask AI on the panel's card loses its finding");
 });
+
+// AT THE BOARD'S WIDTH THE COLUMN DOES NOT MOVE (design, 2026-11-26). Where the window holds the full column and the panel,
+// a clearance page keeps that room on the right from the start, so opening the panel moves nothing sideways. Measured in
+// headless Chrome on the Global preliminary demo at 1,820 and 1,700 px: the column's left edge and width (16 px, 1,120 px)
+// and the citation's screen position are the same before opening, while open and after shutting.
+test("where the window holds the column and the panel, a clearance page reserves the panel's room before it opens", () => {
+  assert.match(CSS, /@media screen and \(min-width:1682px\)\{body:has\(> #cpanel-words\) > \.wrap\{margin-left:16px;margin-right:auto\}\}/,
+    "the wide layout does not reserve the panel's room, so opening it would move the column");
+  assert.equal(16 + 1120 + 30 + 500 + 16, 1682, "the threshold no longer matches the column, the gap, the panel and the edges");
+});
