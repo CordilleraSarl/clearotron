@@ -387,8 +387,11 @@ export function startRun(args = {}, { scope } = {}) {
 // session's own visibility (driver/order-receipt.mjs). An order this session may not see answers exactly as no order
 // at all. Reads only: nothing is written, counted or sent.
 export function orderStatus(args = {}, { scope } = {}) {
-  const agent = args.agent ? String(args.agent) : "";
-  const answer = orderReceipt({ queueDirs: [queueDir(agent), ...config.queueDirs], reference: args.id, scope: receiptScope(scope) });
+  // A WORKSPACE THE CALLER NAMES IS THE ONLY ONE READ: the order went to that queue, so another queue can neither answer
+  // for it nor, unreadable, spoil the answer. Named by no one, the default queue and every known queue are read, under the
+  // same visibility, and two of them holding the reference is "ambiguous".
+  const queueDirs = args.agent ? [queueDir(String(args.agent))] : [queueDir(""), ...config.queueDirs];
+  const answer = orderReceipt({ queueDirs, reference: args.id, scope: receiptScope(scope) });
   if (!answer.found) return { found: false, basis: answer.basis };
   const r = answer.receipt;
   const client = isClientSession(scope);
