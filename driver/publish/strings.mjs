@@ -655,6 +655,8 @@ export const REPORT_PAGE = Object.freeze({
   // one conflict, and "Hide" while open. {n} is the number the title opens with.
   lowerBandShow: (count) => (count === 1 ? 'Show' : `Show all ${count.toLocaleString('en-GB')}`),
   lowerBandHide: 'Hide',
+  // The conflict panel (owner, 2026-11-25): its name for a screen reader, and the name of the control that shuts it.
+  conflictPanel: Object.freeze({ name: (n) => `Conflict ${n}`, close: 'Close' }),
   // The chart of conflicts: its axes, its zone and its legend.
   chart: Object.freeze({
     goodsAxis: 'Goods / services proximity →',
