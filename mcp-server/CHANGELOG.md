@@ -1,5 +1,21 @@
 # trademark-artifacts-mcp
 
+## 0.8.0-beta.0
+
+### Minor Changes
+
+- New: The connector's six actions now declare the shape of their answer: starting, stopping or adding context to a search, running a what-if, marking a delivery sent and acknowledging an event. Each answer says in a field whether the action happened, or why it was refused, so a program built on the connector reads the outcome without parsing a sentence. The text an assistant reads is unchanged.
+- New: The connector's tools that list searches and read a search's record now declare the shape of their answer too, and return it as structured data beside the same text as before. That covers the run list, a run's steps, its timeline, its changes, its telemetry, its coverage, the search tools, an order's free preview and the list of searches that can be ordered. A program built on the connector can rely on the fields each answer carries.
+- New: The connector's tools that answer from a delivered report (the brief, the findings, a single finding, the evidence, the searches and the coverage) now declare the shape of their answer. Each answer names the version of the report record it was read from. Where a field means what the published report data means, it is declared the same way.
+- New: An assistant connected to the connector can order a search Urgent. Before it orders, it can see whether this installation can run Urgent, and both options' turnaround and count of searches. Where the installation cannot run Urgent, the search starts at Standard, counts as one search, and the reply says so.
+- New: An assistant connected to the connector now lists a search a company has just ordered, as queued, before a worker starts it. The portal already showed it this way, in the same words, "Waiting to start". Another company's order stays out of the list.
+- New: When a request's deadline is tight, or it says urgent, today or ASAP, an assistant connected to the connector offers Urgent. It gives Urgent's turnaround, its cost of 2 searches and what is left today, then asks Urgent or Standard, and orders Urgent only when you say so. Where Urgent cannot run or does not fit today's searches, it says so and offers Standard.
+
+### Patch Changes
+
+- Fixed: An order a company sends through the connector under its own reference is now filed under that reference with a mark of the company added, and the reply gives the reference it is filed under. Two companies that choose the same reference no longer meet. A company that sends its reference again is told its own order is already filed, and nothing is spent. It is never told anything of another company's order.
+- Fixed: A search retired from the portal's list no longer appears in the run list an assistant reads through the connector. It can still be read by name, so a link already sent keeps working, and it comes back when it is restored.
+
 ## 0.7.0
 
 ### Patch Changes
