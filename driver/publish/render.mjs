@@ -2011,7 +2011,10 @@ function logoLine(f, recordsByUri, { small = false } = {}) {
     })
     .filter(Boolean);
   if (!figures.length) return '';
-  if (!small) return `<div class="rr-logos rr-band">${figures.join('')}</div>`;
+  // THE PICTURE LINE (owner, 2026-11-25): each set of pictures in a frame of its own under its label, so a reader can
+  // tell which set is which. "Register" holds the logos the run fetched, drawn as before; it is drawn only when it holds
+  // one. The rows under "Marks that can coexist" keep their small unframed logos.
+  if (!small) return `<div class="pic-line"><div class="pic-set"><div class="pic-head"><span class="pic-lab">${esc(R.pictures.register)}</span></div><div class="rr-logos rr-band">${figures.join('')}</div></div></div>`;
   return `<div class="rr-logos rr-sm">${figures.slice(0, 3).join('')}${figures.length > 3 ? `<span class="rr-more">+${figures.length - 3}</span>` : ''}</div>`;
 }
 
