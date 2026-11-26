@@ -5050,8 +5050,8 @@
           "todos": 0
         },
         "every-web-name-the-list-counts-is-printed-with-its-address.test.mjs": {
-          "tests": 4,
-          "asserts": 25,
+          "tests": 5,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
