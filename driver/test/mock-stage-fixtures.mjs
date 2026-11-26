@@ -3060,7 +3060,15 @@ export function applyStageWrites(msg, argv) {
              reason: "Exact match in the target class held by an active same-field filer — the customer base overlaps directly and the registration is live." }]
         : [{ kind: "seat", mark: "LUMENGARDE", owner: "Acme", jurisdiction: "DK", records: [], tier: "headline-candidate",
              reason: "Exact match in the target class held by an active same-field filer — the customer base overlaps directly and the registration is live." }];
-      writeFileSync(join(dir, "placement-form.json"), JSON.stringify({ rows: [...rows, ...(setAside ?? [])] }, null, 2) + "\n");
+      // MOCK_PLACEMENT_SELECTS=<record id>: the step also places that record, where the fold holds it.
+      const also = process.env.MOCK_PLACEMENT_SELECTS ? String(process.env.MOCK_PLACEMENT_SELECTS).toLowerCase() : null;
+      let held = false;
+      try {
+        held = Boolean(also) && JSON.parse(readFileSync(driverDir(dir, "register-positions.json"), "utf8")).positions
+          .some((x) => (x?.records ?? []).some((id) => String(id).toLowerCase() === also));
+      } catch { /* no fold in reach: nothing to place */ }
+      const placedToo = held ? [{ select: also, tier: "headline-candidate", reason: "A live identical filing in the target class, for the same goods." }] : [];
+      writeFileSync(join(dir, "placement-form.json"), JSON.stringify({ rows: [...rows, ...placedToo, ...(setAside ?? [])] }, null, 2) + "\n");
     }
     if (basename(out) === "narrative.md" && !process.env.MOCK_CANDSELF && !process.env.MOCK_NARRATIVE_RECO) {
       writeFileSync(join(dirname(out), "findings.json"), synthesisFindings(dirname(out), msg));
