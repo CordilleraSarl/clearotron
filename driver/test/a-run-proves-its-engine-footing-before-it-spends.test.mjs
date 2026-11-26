@@ -118,3 +118,61 @@ test("the real program: started normally its footing holds, and in its minimal m
     const minimal = await footingTurn({ simulateMinimalMode: true });
     assert.equal(minimal.verdict?.mode, "minimal-mode", `${realClaude}: ${JSON.stringify(minimal)}`);
   });
+
+// THE MINIMAL MODE'S REMEDY NAMES THE VERSION THIS INSTALL LAST RAN (the owner's approved words, his item 1345), read from
+// the install's own run records, and only on that refusal. A fresh install, or the same version, keeps the words that
+// name no number. Every version and folder here is invented.
+test("the minimal mode's remedy names the version this install last ran, and names none where none is known", async () => {
+  const { minimalModeRemedy } = await import("../engine/probe.mjs");
+  const head = "No search starts until it starts normally. Nothing in this install asks for that mode, so this Claude Code version starts in it by default.";
+  assert.equal(minimalModeRemedy("2.1.340", "2.1.332 (Claude Code)"), `${head} Install Claude Code 2.1.332, the version this install last ran, then run this check again.`);
+  const unnamed = `${head} Install the Claude Code version this install last ran, then run this check again.`;
+  assert.equal(minimalModeRemedy("2.1.340", null), unnamed, "a fresh install was told a version");
+  assert.equal(minimalModeRemedy("2.1.340 (Claude Code)", "2.1.340"), unnamed, "the refused version was named as the one to install");
+  assert.equal(minimalModeRemedy("2.1.340", () => { throw new Error("unreadable"); }), unnamed);
+  const v = classifyFooting({ engine: "anthropic-agent", report: report({ version: "2.1.340", tools: ["Edit", "Read"], hooks: [] }), expect: { word: WORD, tools: TOOLS },
+    auth: { mode: "subscription" }, completed: true, env: {}, lastRanVersion: "2.1.332" });
+  assert.match(v.fix, /Install Claude Code 2\.1\.332, the version this install last ran, then run this check again\.$/);
+});
+
+test("the version last run is the newest Claude attempt in the install's newest runs; a Codex run and a run with none are passed over", async () => {
+  const { lastClaudeVersionIn, lastRanClaudeVersion } = await import("../engine/probe.mjs");
+  const { studioDirFor } = await import("../../shared/pre-rename-spellings.mjs");
+  const { mkdtempSync, mkdirSync, writeFileSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const row = (engine, cliVersion) => JSON.stringify({ event: "attempt", stage: "matter-frame", engine, cliVersion });
+  assert.equal(lastClaudeVersionIn([row("anthropic-agent", "2.1.320 (Claude Code)"), row("anthropic-agent", "2.1.326 (Claude Code)"), row("openai-agent", "0.162.0"), "{torn"].join("\n")), "2.1.326");
+  assert.equal(lastClaudeVersionIn(row("openai-agent", "0.162.0")), null);
+  const root = mkdtempSync(join(tmpdir(), "footing-last-ran-"));
+  const studio = studioDirFor(join(root, "workspace-agentx"));
+  const run = (slug, leaf, startedAt, lines) => {
+    const dir = join(studio, slug, leaf);
+    mkdirSync(join(dir, "_driver"), { recursive: true });
+    writeFileSync(join(dir, "status.json"), JSON.stringify({ state: "delivered", startedAt }));
+    writeFileSync(join(dir, "_driver", "run.jsonl"), lines.join("\n") + "\n");
+  };
+  run("matter-a", "2026-11-01-old", "2026-11-01T09:00:00.000Z", [row("anthropic-agent", "2.1.320 (Claude Code)")]);
+  run("matter-b", "2026-11-20-mid", "2026-11-20T09:00:00.000Z", [row("anthropic-agent", "2.1.332 (Claude Code)")]);
+  run("matter-c", "2026-11-25-new", "2026-11-25T09:00:00.000Z", [row("openai-agent", "0.162.0")]);
+  run("matter-d", "2026-11-26-none", "2026-11-26T09:00:00.000Z", [JSON.stringify({ event: "start" })]);
+  assert.equal(await lastRanClaudeVersion({ workspaceRoot: root }), "2.1.332");
+  assert.equal(await lastRanClaudeVersion({ workspaceRoot: join(root, "absent") }), null, "a fresh install named a version");
+});
+
+test("through the real adapter: the door's minimal-mode refusal names the version last run, read only on that refusal", async () => {
+  let reads = 0;
+  const lastRanVersion = async () => { reads++; return "2.1.332"; };
+  const keys = [...Object.keys(CLAUDE), "MOCK_CLAUDE_BARE"];
+  const saved = Object.fromEntries(keys.map((k) => [k, process.env[k]]));
+  for (const [k, v] of Object.entries(CLAUDE)) pinEnv(process.env, k, v);
+  try {
+    const ok = await probeEngineTurn({ env: CLAUDE, lastRanVersion });
+    assert.equal(ok.ok, true, JSON.stringify(ok));
+    assert.equal(reads, 0, "the run records were read on a check that passed");
+    process.env.MOCK_CLAUDE_BARE = "1";
+    const bare = await probeEngineTurn({ env: CLAUDE, lastRanVersion });
+    assert.equal(bare.mode, "minimal-mode");
+    assert.equal(reads, 1);
+    assert.match(bare.fix, /Install Claude Code 2\.1\.332, the version this install last ran, then run this check again\.$/);
+  } finally { for (const k of keys) { if (saved[k] === undefined) delete process.env[k]; else process.env[k] = saved[k]; } }
+});

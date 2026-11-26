@@ -2590,8 +2590,8 @@
           "todos": 0
         },
         "a-run-proves-its-engine-footing-before-it-spends.test.mjs": {
-          "tests": 10,
-          "asserts": 31,
+          "tests": 13,
+          "asserts": 45,
           "skips": 1,
           "todos": 0
         },

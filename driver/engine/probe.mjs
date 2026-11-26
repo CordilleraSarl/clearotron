@@ -265,6 +265,58 @@ const capitalised = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 // fetching as WebFetch itself, no `web-fetch` helper), and `apiKeySource` "none".
 export const FOOTING_ENGINES = Object.freeze(new Set(["anthropic-agent"]));
 
+/** The version number in a program's version string ("2.1.332 (Claude Code)" → "2.1.332"), or null. PURE. */
+const versionNumber = (s) => String(s ?? "").match(/\d+\.\d+\.\d+/)?.[0] ?? null;
+
+/**
+ * THE MINIMAL MODE'S REMEDY, in the owner's approved words (his item 1345). Where the install's run records name the
+ * Claude Code version it last ran, and that is not the version now refused, the remedy names it; where none is known (a
+ * fresh install) or it is the same version, the words name no number. `lastRanVersion` is the version, or a function
+ * that reads it, called only here, so the read is paid for only on this refusal. PURE but for that function.
+ */
+export function minimalModeRemedy(currentVersion, lastRanVersion = null) {
+  let last = null;
+  try { last = versionNumber(typeof lastRanVersion === "function" ? lastRanVersion() : lastRanVersion); } catch { last = null; }
+  const head = "No search starts until it starts normally. Nothing in this install asks for that mode, so this Claude Code version starts in it by default.";
+  return last && last !== versionNumber(currentVersion)
+    ? `${head} Install Claude Code ${last}, the version this install last ran, then run this check again.`
+    : `${head} Install the Claude Code version this install last ran, then run this check again.`;
+}
+
+/** The Claude Code version the newest Claude attempt in one run's spine (its `run.jsonl` text) recorded, or null. PURE. */
+export function lastClaudeVersionIn(spineText) {
+  const lines = String(spineText ?? "").split("\n");
+  for (let i = lines.length - 1; i >= 0; i--) {
+    const l = lines[i];
+    if (!l.includes('"cliVersion"') || !l.includes('"anthropic-agent"')) continue;
+    try { const e = JSON.parse(l); if (e?.event === "attempt" && e.engine === "anthropic-agent") { const n = versionNumber(e.cliVersion); if (n) return n; } } catch { /* a torn line */ }
+  }
+  return null;
+}
+
+/**
+ * The Claude Code version this install last ran, read from its own run records: the newest runs first, by their start,
+ * the first whose spine holds a Claude attempt with its program's version (ladder/attempt-record.mjs writes it on every
+ * attempt). Null where no run holds one, a fresh install, or the workspace cannot be read: it only shapes advice, so it
+ * never fails the check. Reads at most `maxRuns` spines. IMPURE (reads).
+ */
+export async function lastRanClaudeVersion({ workspaceRoot = null, maxRuns = 30 } = {}) {
+  try {
+    const { walkRuns } = await import("../portal-runs.mjs");
+    const root = workspaceRoot ?? (await import("../driver.config.mjs")).config.workspaceRoot;
+    const { runs } = walkRuns({ workspaceRoot: root, archive: true, orders: false });
+    const newest = runs.filter((r) => typeof r.status?.startedAt === "string")
+      .sort((a, b) => b.status.startedAt.localeCompare(a.status.startedAt)).slice(0, maxRuns);
+    for (const r of newest) {
+      let text = null;
+      try { text = readFileSync(join(r.dir, "_driver", "run.jsonl"), "utf8"); } catch { continue; }
+      const v = lastClaudeVersionIn(text);
+      if (v) return v;
+    }
+  } catch { /* advice only: the words then name no number */ }
+  return null;
+}
+
 /** What a credential source the program reports should be, by billing mode. */
 const EXPECTED_KEY_SOURCE = Object.freeze({ "api-key": "ANTHROPIC_API_KEY", subscription: "none", cloud: "none" });
 
@@ -276,7 +328,7 @@ const EXPECTED_KEY_SOURCE = Object.freeze({ "api-key": "ANTHROPIC_API_KEY", subs
  * its tools is left to the verdicts below it, which name that death; a turn that COMPLETED without the program listing
  * them is a session nobody can vouch for, and is refused.
  */
-export function classifyFooting({ engine, report, expect, auth = null, completed = false, env = process.env } = {}) {
+export function classifyFooting({ engine, report, expect, auth = null, completed = false, env = process.env, lastRanVersion = null } = {}) {
   const id = String(engine ?? "").trim().toLowerCase();
   const v = (mode, headline, fix, detail = null) => ({ ok: false, engine: id, mode, basis: "session-report", headline, fix, detail });
   // A session the program did not list its tools for is one it gave no account of. On a turn that failed, the verdicts
@@ -297,7 +349,7 @@ export function classifyFooting({ engine, report, expect, auth = null, completed
     return v("minimal-mode", `Claude Code${version} started in its minimal mode, in which it does not stop a search from writing over its own instructions`,
       simple
         ? "No search starts until it starts normally. CLAUDE_CODE_SIMPLE is set in this install's environment, which turns that mode on: remove it, then run this check again."
-        : "No search starts until it starts normally. Nothing in this install asks for that mode, so this Claude Code version starts in it by default. Install the Claude Code version this install last ran, then run this check again.",
+        : minimalModeRemedy(report.version, lastRanVersion),
       `missing tools: ${missing.join(", ")}`);
   if (!guardRan)
     return v("guard-off", `Claude Code${version} did not start the check that stops a search from writing over its own instructions`,
@@ -335,7 +387,7 @@ export function classifyProbe(args = {}) {
   // the program said nothing. The anthropic adapter always sets it, so every probe of the real program is judged; a
   // tuple some other code made up carries no such key and is judged as it always was.
   if (error || !tuple || !(expect && typeof expect === "object" && expect.footing) || !("footing" in tuple)) return verdict;
-  const f = classifyFooting({ engine, report: tuple.footing, expect: expect.footing, auth, completed: tuple.code === 0 });
+  const f = classifyFooting({ engine, report: tuple.footing, expect: expect.footing, auth, completed: tuple.code === 0, lastRanVersion: args.lastRanVersion ?? null });
   if (!f) return verdict;
   // A turn that completed without its footing is refused whatever else it managed. A turn that failed keeps its own
   // verdict, unless that verdict is the one the minimal mode wears: a sign-in it refused to read, or a bare failure.
@@ -729,6 +781,8 @@ export async function probeEngineTurn({
   env = process.env,
   engine: injectedEngine = null,
   runTurn: injectedRunTurn = null,
+  // Where the version this install last ran is read from, on the minimal-mode refusal only (lastRanClaudeVersion).
+  lastRanVersion: readLastRan = lastRanClaudeVersion,
   loadAdapter = defaultLoadAdapter,
   timeoutSec = PROBE_TIMEOUT_SEC,
   stallSec = PROBE_STALL_SEC,
@@ -795,7 +849,12 @@ export async function probeEngineTurn({
       ...(footing ? { footing: { word: footing.word }, builtinTools: footing.tools } : {}) });
     let written = null;
     try { written = readFileSync(file, "utf8"); } catch { /* not written: classifyProbe says what that means */ }
-    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program, expect: { words, written, ...(command ? { command, commandFile } : {}), ...(footing ? { footing } : {}) } });
+    const probed = { engine: id, tuple, timeoutSec, auth, program, expect: { words, written, ...(command ? { command, commandFile } : {}), ...(footing ? { footing } : {}) } };
+    const verdict = classifyProbe(probed);
+    // THE MINIMAL MODE'S REMEDY NAMES THE VERSION THIS INSTALL LAST RAN, read from its run records only on this refusal.
+    if (verdict?.mode !== "minimal-mode" || String(env?.CLAUDE_CODE_SIMPLE ?? "").trim()) return verdict;
+    const last = await Promise.resolve().then(() => readLastRan()).catch(() => null);
+    return last ? classifyProbe({ ...probed, lastRanVersion: last }) : verdict;
   } catch (e) {
     return classifyProbe({ engine: id, error: e, timeoutSec, auth, program });
   } finally {
