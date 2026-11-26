@@ -1949,7 +1949,7 @@
         },
         "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
           "tests": 4,
-          "asserts": 21,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -8682,6 +8682,12 @@
         "the-reasoning-notes-follow-the-ruled-method.test.mjs": {
           "tests": 3,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-recall-gate-is-judged-again-when-the-repeated-placement-pass-answers-a-floor.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
