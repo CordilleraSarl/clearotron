@@ -188,6 +188,7 @@ row that names a file this folder does not hold.
 | `mint-plugin-folder.mjs` | by hand |
 | `mint-public-residue.mjs` | by hand |
 | `mint-reference-strip-backlog.mjs` | by hand |
+| `mint-result-shapes.mjs` | by hand |
 | `mint-search-level-tags.mjs` | by hand |
 | `mint-source-pin-census.mjs` | by hand |
 | `mint-suite-census.mjs` | CI |
