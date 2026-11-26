@@ -2601,6 +2601,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-run-proves-its-engine-footing-before-it-spends.test.mjs": {
+          "tests": 13,
+          "asserts": 45,
+          "skips": 1,
+          "todos": 0
+        },
         "a-run-reads-nothing-another-run-left-in-the-temp-folder.test.mjs": {
           "tests": 5,
           "asserts": 16,

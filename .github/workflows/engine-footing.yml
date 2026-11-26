@@ -1,0 +1,60 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+#
+# The engine's footing on the newest Claude Code: does the release a fresh install would get still start the way every
+# run depends on?
+#
+# Anthropic has announced that Claude Code's minimal mode will become the default for scripted calls in a future
+# release, with no date. In that mode the program skips the hooks this engine's write boundary is, offers fewer built-in
+# tools and reads no subscription sign-in. Installs take the newest release and the program updates itself, so the run
+# door checks every run (driver/engine/probe.mjs, classifyFooting). This job checks the newest release every day, so a
+# release that changes how the program starts shows here first, as a red run, before it reaches anyone's order.
+#
+# WHAT IT RUNS. `scripts/engine-footing.mjs`, twice, against `@anthropic-ai/claude-code@latest` installed at job time:
+# once as installed, where the footing must hold, and once with CLAUDE_CODE_SIMPLE=1, the minimal mode, which must be
+# refused as that mode. The second run proves the check can still see the change it exists for.
+#
+# IT CALLS NO MODEL AND HOLDS NO KEY. The program gets a home folder with no sign-in in it and no key: it reports its
+# session and fails at sign-in. A read-only token, no secrets. The credential half of the run door's check needs a
+# signed-in program and is not checked here.
+name: Engine footing
+
+on:
+  schedule:
+    - cron: '41 4 * * *'
+  workflow_dispatch:
+  # And on a push that changes the check, on any branch, so a change to it runs before it reaches main.
+  push:
+    paths:
+      - .github/workflows/engine-footing.yml
+      - scripts/engine-footing.mjs
+
+permissions:
+  contents: read
+
+jobs:
+  footing:
+    name: The newest Claude Code starts with the write guard and every tool
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22.23.2'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install the newest Claude Code release
+        run: |
+          npm install --no-audit --no-fund --prefix "$RUNNER_TEMP/claude-code" @anthropic-ai/claude-code@latest
+          echo "CLEAROTRON_CLAUDE_PATH=$RUNNER_TEMP/claude-code/node_modules/.bin/claude" >> "$GITHUB_ENV"
+          "$RUNNER_TEMP/claude-code/node_modules/.bin/claude" --version
+
+      - name: Its footing holds as installed
+        run: node scripts/engine-footing.mjs
+
+      - name: Started in its minimal mode, it is refused as that mode
+        run: node scripts/engine-footing.mjs --simulate-minimal-mode

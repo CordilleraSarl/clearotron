@@ -166,6 +166,7 @@ row that names a file this folder does not hold.
 | `e2e-unread-terminals.mjs` | by hand |
 | `e2e.mjs` | by hand |
 | `engine-pins.mjs` | CI |
+| `engine-footing.mjs` | CI |
 | `engine-probe.mjs` | by hand, `npm run engine-probe` |
 | `env-audit.mjs` | by hand |
 | `env-classify.mjs` | by hand |

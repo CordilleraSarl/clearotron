@@ -34,6 +34,10 @@
 //                               bytes, <ms> apart: the character reaches the engine split across two chunks
 //   MOCK_CLAUDE_TOOLS_UNUSED=1    — handed the engine probe's tool, answer WITHOUT calling it (by default the
 //                                   reply carries the word the probe's tool returns, as a working engine's does)
+//   MOCK_CLAUDE_BARE=1            — the program's minimal mode: no --settings hook runs, built-in tools cut to Bash/Read/Edit
+//   MOCK_CLAUDE_KEY_SOURCE=<word> — init's apiKeySource, whatever the environment holds
+//   MOCK_CLAUDE_WEB_FETCH_AGENT=1 — page fetching as the `web-fetch` helper, the subscription sign-in's shape
+//   MOCK_CLAUDE_SPEED_SERVED=<word> — the speed every call reports serving, whatever the turn asked for
 //   MOCK_CLAUDE_FILE=<content>    — the output file content (default a tiny valid stub)
 //   MOCK_CLAUDE_COST=<usd>        — total_cost_usd (default 0.0123)
 //   MOCK_CLAUDE_SESSION=<id>      — session_id (default derived); a --resume value echoes back as the session
@@ -61,6 +65,7 @@
 //                               detected via the engine-agnostic patch message ("RESUMING your own session").
 import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, writeSync } from "node:fs";
 import { dirname } from "node:path";
+import { spawnSync } from "node:child_process";
 import { applyStageWrites, beforeForcedFailure, breakFindingsAfterWrites } from "./mock-stage-fixtures.mjs";
 import { stageTextOf } from "../manuals-inline.mjs";
 import { stallTree } from "./mock-stall-tree.mjs";
@@ -182,7 +187,34 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) stallTree();
 const bootMs = Number(process.env.MOCK_CLAUDE_BOOT_MS || 0);
 if (bootMs > 0) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, bootMs);
 
-send({ type: "system", subtype: "init", cwd: process.cwd(), session_id: session, model: wireModel, permissionMode: "acceptEdits", apiKeySource: "none", tools: ["Read", "Write", "Edit"], mcp_servers: [], ...fastFields });
+// THE SESSION'S OWN ACCOUNT OF ITSELF, as the real program gives it (measured on 2.1.326, 2026-11-26, offline):
+//   · `tools` is the built-in set `--tools` named, or Read, Write and Edit when it named none;
+//   · in the minimal mode (`--bare`, CLAUDE_CODE_SIMPLE=1, or MOCK_CLAUDE_BARE=1 here) the program skips every hook passed
+//     with `--settings` and offers only Bash, Read and Edit of what was named;
+//   · `apiKeySource` is "ANTHROPIC_API_KEY" when that key is in its environment, else "none" (MOCK_CLAUDE_KEY_SOURCE=<word>
+//     reports <word> instead);
+//   · MOCK_CLAUDE_WEB_FETCH_AGENT=1 is the subscription sign-in's shape from 2.1.287: page fetching is the `web-fetch`
+//     helper in `agents`, and `tools` does not name WebFetch.
+// With `--include-hook-events`, each SessionStart hook in the --settings value is RUN, as the program runs it (exec form,
+// the hook input on stdin), and reported as hook_started then hook_response, before init.
+const bare = argv.includes("--bare") || process.env.CLAUDE_CODE_SIMPLE === "1" || Boolean(process.env.MOCK_CLAUDE_BARE);
+const namedTools = (() => { const i = argv.indexOf("--tools"); return i >= 0 ? String(argv[i + 1] ?? "").split(",").map((t) => t.trim()).filter(Boolean) : ["Read", "Write", "Edit"]; })();
+const webFetchAgent = Boolean(process.env.MOCK_CLAUDE_WEB_FETCH_AGENT);
+const offeredTools = namedTools.filter((t) => !bare || ["Bash", "Read", "Edit"].includes(t)).filter((t) => !(webFetchAgent && t === "WebFetch")).sort();
+const agents = ["claude", "Explore", "general-purpose", ...(webFetchAgent && !bare ? ["web-fetch"] : [])];
+const keySource = process.env.MOCK_CLAUDE_KEY_SOURCE || (process.env.ANTHROPIC_API_KEY ? "ANTHROPIC_API_KEY" : "none");
+if (argv.includes("--include-hook-events") && !bare) {
+  for (const group of settingsArg?.hooks?.SessionStart ?? []) for (const h of group?.hooks ?? []) {
+    if (h?.type !== "command" || !h.command) continue;
+    const id = `mock-hook-${Math.random().toString(36).slice(2)}`;
+    send({ type: "system", subtype: "hook_started", hook_id: id, hook_name: "SessionStart:startup", hook_event: "SessionStart", session_id: session });
+    const r = spawnSync(h.command, Array.isArray(h.args) ? h.args : [], { input: JSON.stringify({ hook_event_name: "SessionStart", source: "startup", session_id: session }), encoding: "utf8" });
+    send({ type: "system", subtype: "hook_response", hook_id: id, hook_name: "SessionStart:startup", hook_event: "SessionStart",
+      output: r.stdout ?? "", stdout: r.stdout ?? "", stderr: r.stderr ?? "", exit_code: r.status, outcome: r.status === 0 ? "success" : "error", session_id: session });
+  }
+}
+
+send({ type: "system", subtype: "init", cwd: process.cwd(), session_id: session, model: wireModel, permissionMode: "acceptEdits", apiKeySource: keySource, tools: offeredTools, mcp_servers: [], agents, claude_code_version: "2.1.293", ...fastFields });
 
 // — MOCK_CLAUDE_WEB_SEARCH=<json>: the program's own web search, in a research-only session (engine/mcp/own-search.mjs).
 // A list of { query, allowed_domains?, urls?, searchCount?, text?, isError? }: each is a WebSearch call and its result,
