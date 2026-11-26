@@ -9629,7 +9629,7 @@
         },
         "web-research-is-one-setting-read-in-one-place.test.mjs": {
           "tests": 7,
-          "asserts": 34,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
