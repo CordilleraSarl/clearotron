@@ -209,3 +209,50 @@ test("the records are kept with the run, and a replay answers from them without 
   assert.deepEqual(replay.map((o) => o.outcome), ["found", "found", "not-sent"]);
   assert.equal(replay[0].results[0].url, "https://etsy.com/i");
 });
+
+// ── ONE GRID PREPARED BEFORE ITS STAGE: the ledger where the spec says, served as recorded, and nothing asked twice.
+const { prepareOwnSearchGrid, gridRecorded, dictatedSearches, ownSearchOn, OWN_SEARCH_SETTING_FILE } = await import("../engine/mcp/own-search.mjs");
+const { reconcileGridLedger } = await import("../../providers/perplexity/src/core.js");
+const { mkdirSync: mkdir, readFileSync: readF, existsSync: exists } = await import("node:fs");
+
+test("a grid's ledger is prepared where its spec says, its checks read it as recorded, and a second call asks nothing", async () => {
+  const runDir = mkdtempSync(join(tmpdir(), "own-search-grid-"));
+  mkdir(join(runDir, "_driver"), { recursive: true });
+  const specPath = join(runDir, "_driver", "grid-spec.json");
+  const spec = { terms: ["QZORVAK"], platforms: ["web", "etsy.com"], use: "candles", output_path: join(runDir, "common-law-grid.json"),
+    results_per_cell: 2, connotation: { queries: ["what does qzorvak mean"] } };
+  writeFileSync(specPath, JSON.stringify(spec));
+  assert.deepEqual(dictatedSearches(spec).map((d) => `${d.query}|${d.site}`), ["QZORVAK candles|null", "QZORVAK candles|etsy.com", "what does qzorvak mean|null"]);
+  let calls = 0;
+  const sessions = { search: "codex", engine: "openai-agent", session: async (batch) => {
+    calls++;
+    return { answered: true, seconds: 1, usage: null, model: "gpt-6-luna", speed: "standard",
+      events: batch.filter((d) => d.site !== "etsy.com").map((d) => codexSearch([d.query], [{ title: "a", url: "https://example.test/1" }, { title: "b", url: "https://example.test/2" }, { title: "c", url: "https://example.test/3" }])) };
+  } };
+  const r = await prepareOwnSearchGrid(runDir, specPath, { sessions });
+  assert.equal(r.prepared, true);
+  // Not sent in the first batch; on its retry the session sent nothing at all and still answered, so it refused it.
+  assert.deepEqual(r.outcomes, { found: 2, refused: 1 });
+  const ledger = JSON.parse(readF(spec.output_path, "utf8"));
+  assert.equal(ledger.cells.length, 1);
+  assert.equal(ledger.cells[0].candidates.length, 2, "the spec's own result limit");
+  assert.deepEqual(ledger.gaps, ["QZORVAK | etsy.com | own search: refused"]);
+  assert.equal(ledger.extras.pr_risk.length, 1);
+  assert.equal(reconcileGridLedger(JSON.stringify(ledger), spec).missing.length, 0, "every cell is accounted for, the gap as a gap");
+  assert.equal(gridRecorded(spec), true, "the research server serves it as recorded");
+  assert.ok(exists(join(runDir, "_driver", "web-search-records.jsonl")));
+  const before = calls;
+  assert.deepEqual(await prepareOwnSearchGrid(runDir, specPath, { sessions }), { prepared: false, why: "recorded" });
+  assert.equal(calls, before, "a prepared grid is not searched again");
+});
+
+test("the run's own searches are switched on per run, and only by the setting's own word", () => {
+  const runDir = mkdtempSync(join(tmpdir(), "own-search-setting-"));
+  assert.equal(ownSearchOn(runDir), false);
+  mkdir(join(runDir, "_driver"), { recursive: true });
+  writeFileSync(join(runDir, "_driver", OWN_SEARCH_SETTING_FILE), JSON.stringify({ service: "perplexity" }));
+  assert.equal(ownSearchOn(runDir), false);
+  writeFileSync(join(runDir, "_driver", OWN_SEARCH_SETTING_FILE), JSON.stringify({ service: "own" }));
+  assert.equal(ownSearchOn(runDir), true);
+  assert.equal(ownSearchOn(join(runDir, "_experiments", "arm-1")), true, "a stage experiment reads its run's setting");
+});
