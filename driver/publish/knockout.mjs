@@ -791,13 +791,13 @@ function readTheRunRecord({ findings, framework, profile }) {
 /** What readKnockoutDocument returns: the facts every read made, under the names the surfaces take them by. */
 function knockoutRead(r) {
   const { receipts, dates, issued, searched, sweepReceipts, registerCounts, registerCountsUnreadable, registerRecords,
-    registerRecordsUnreadable, filingRecords, logos, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod,
+    registerRecordsUnreadable, filingRecords, logos, webPictures, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod,
     recordLinksDropped, officeLinks, qcFlags, machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints,
     identity, probeRan, markRows, single, origin, reportUrlFor, demoData, served, statement, markNames, organisation,
     framework, overall, engineCommit } = r;
   return {
     receipts, dates, issued, searched, sweepReceipts, registerCounts, registerCountsUnreadable, registerRecords,
-    registerRecordsUnreadable, filingRecords, logos, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped,
+    registerRecordsUnreadable, filingRecords, logos, webPictures, ownerChecks, instructedScope, scopeUnreadable, frameworkMethod, recordLinksDropped,
     officeLinks, qcFlags, machineChecksFailed, steps, lookupsNotRun, recordsNotKept, openPoints, identity, probeRan,
     markRows, single, origin, reportUrlFor, demoData, served, statement, markNames, organisation,
     // WHICH BUILD produced this, read once for every surface that records it. null off a git checkout.
@@ -883,12 +883,12 @@ const KNOCKOUT_SHAPE = {
     const w = knockoutWorkbookOf(reportDocument);
     return buildKnockoutWorkbook(w.findings, w.sweepReceipts, at, w.registerCounts, w.qcFlags, w.framework, w.registerRecords, w.frameworkMethod, w.ownerChecks, w.parts);
   }),
-  surfaces({ writeRO, writeDataFile }, reportDocument, { doc: { markRows, single, reportUrlFor, filingRecords, logos, demoData, origin, overallBadge }, named, runId, findings, overall, searchPolicy, delivery }, _kept, { auditFile }) {
+  surfaces({ writeRO, writeDataFile }, reportDocument, { doc: { markRows, single, reportUrlFor, filingRecords, logos, webPictures, demoData, origin, overallBadge }, named, runId, findings, overall, searchPolicy, delivery }, _kept, { auditFile }) {
     const reports = markRows.map((m, at) => {
       const { slug, file, band: markBand } = named[at];
       // The page reads the run's report document as written, for this name, with its surface beside it.
       writeRO(file, renderReport(pageDocument(reportDocument), {
-        at, filingRecords, logos, demoData, delivery,
+        at, filingRecords, logos, webPictures, demoData, delivery,
         // The page's workbook control links the portal's audit route, the one the cover note links: the pool path to the
         // file reaches no handler. Null when the workbook could not be written, and then no control is drawn.
         auditHref: auditFile ? auditRouteFor(origin, runId) : null,

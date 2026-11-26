@@ -94,6 +94,24 @@ export function clearancePages(findings) {
   return out;
 }
 
+/**
+ * A Knockout's pages, by card (`k<name position>-<number>`, the card's id on the page): a finding card's evidence entries
+ * that are http(s) addresses, in the order the card prints them after "Sources:", less any register's own record. A
+ * register filing's card opens none (owner, 2026-11-26). PURE.
+ * @returns {Map<string, string[]>}
+ */
+export function knockoutPages(doc) {
+  const out = new Map();
+  (Array.isArray(doc?.marks) ? doc.marks : []).forEach((m, mi) => {
+    (Array.isArray(m?.findings) ? m.findings : []).forEach((f, i) => {
+      const pages = [...new Set((Array.isArray(f?.evidence) ? f.evidence : []).filter((u) => /^https?:\/\//i.test(String(u)))
+        .map((u) => String(u).replace(/#.*$/, "")).filter((u) => !onRegisterRecordHost(u)))];
+      if (pages.length) out.set(`k${mi}-${Number(f?.ordinal) || i + 1}`, pages);
+    });
+  });
+  return out;
+}
+
 const ENTITIES = { amp: "&", quot: '"', apos: "'", lt: "<", gt: ">", "#39": "'", "#x27": "'", "#x2F": "/", "#47": "/" };
 const decode = (s) => String(s).replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (m, e) => ENTITIES[e] ?? ENTITIES[e.toLowerCase()] ?? m);
 
@@ -251,7 +269,7 @@ export function writePictureRecord(runDir, { cards, result, seconds, concurrency
 }
 
 /**
- * What each card draws, by the finding's ordinal: its pages' pictures in the card's order, each once (by its bytes), at
+ * What each card draws, by its key in the record (a clearance finding's ordinal, a Knockout card's id): its pages' pictures in the card's order, each once (by its bytes), at
  * most 8, as `{ page, site, src, fetchedOn }`. Empty for a run with no record. Only a saved file inside the run's picture
  * folder that still opens as the type recorded is drawn. PURE but for reading the run folder.
  */
@@ -281,7 +299,7 @@ export function webPicturesForReport(runDir) {
       const pic = src.get(page);
       if (pic && !list.some((p) => p.sha256 === pic.sha256)) list.push(pic);
     }
-    if (list.length) out.set(Number(ordinal), list.slice(0, 8));
+    if (list.length) out.set(String(ordinal), list.slice(0, 8));
   }
   return out;
 }
