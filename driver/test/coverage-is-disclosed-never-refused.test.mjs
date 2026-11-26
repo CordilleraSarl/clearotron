@@ -250,6 +250,8 @@ test("D7 — the turnaround is a flat ruled range and does not move with territo
   // AND THE PARAMETER STILL ADMITS NO MORE THAN THE PIPELINE. Written as an alternation of the two
   // spellings that satisfy the rule, so a widening BACK to something that carries territories reds here
   // rather than passing because the body happens still to read `pipeline`.
-  assert.match(decl, /quoteBoundsFor = \(m: (?:Machinery|Pick<Machinery, 'pipeline'>)\)/,
+  // An Urgent order reads its own ruled row (ruling 2026-11-25), so the parameter also carries `urgent`:
+  // reviewed against this rule, and still no territory.
+  assert.match(decl, /quoteBoundsFor = \(m: (?:Machinery|Pick<Machinery, 'pipeline'>|Pick<Machinery, 'pipeline' \| 'urgent'>)\)/,
     "the browser's bounds take a parameter that was not reviewed against this rule");
 });

@@ -10280,8 +10280,8 @@
           "todos": 0
         },
         "effortModelParity.test.ts": {
-          "tests": 7,
-          "asserts": 31,
+          "tests": 8,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },

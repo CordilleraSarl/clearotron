@@ -29,7 +29,8 @@ import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES, withFoldedGoods } from "./queue-markers.mjs";
-import { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
+import { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS, ledgerSearches } from "./usage-ledger.mjs";
+import { admittedSearches } from "./urgent-count.mjs";   // what an order counts against its allowance, decided at claim   // ONE ledger-path calculation, shared with the portal pre-check
 import { orderTimeRefusal, START_ENV_FILE_FLAG } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
 import { runTables } from "./order-tables.mjs";   // the tables the portal's order door reads too, so the two cannot disagree
 import { howItRuns } from "./how-it-runs.mjs";   // how this runner runs, for the remedy its refusal names
@@ -252,7 +253,9 @@ function recordMatter(qdir, entry) {
 // test is how the screen comes to advertise one allowance while the gate enforces another.
 export { DEFAULT_CLIENT_DAILY_RUNS };
 
-export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, now = Date.now(), clientRun = false, organisation = null }) {
+// `searches` is what the order in hand counts (urgent-count.mjs admittedSearches): 2 for an Urgent order that runs
+// fast here, else 1. Each ledger row counts what its own admission recorded (usage-ledger.mjs ledgerSearches).
+export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, now = Date.now(), clientRun = false, organisation = null, searches = 1 }) {
   // GENERIC IS CAPPED LIKE ANY COMPANY, one lane per organisation (ruling 2026-09-10: "every
   // organisation's Generic lane carries the daily cap; the exemption goes"). A Generic run counts in the
   // lane of the organisation it was filed under and nowhere else, so one organisation's day cannot use up
@@ -313,10 +316,10 @@ export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, no
         // is why a monthlyRuns value is worth setting on any account this matters for.
         if (e.failed === true) continue;
         if (inLane(e.profileKey, e.organisation) && e.clientPrincipal === true
-          && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 10) === dayKey) today++;
+          && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 10) === dayKey) today += ledgerSearches(e);
       }
     }
-    if (today + 1 > caps.dailyRuns) {
+    if (today + searches > caps.dailyRuns) {
       return `daily allowance: ${lane} has started ${today} search(es) today (runCaps.dailyRuns=${caps.dailyRuns}) — the allowance resets at midnight UTC, or ask your ${BRAND.name} contact to run this one for you`;
     }
   }
@@ -324,10 +327,10 @@ export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, no
     let month = 0;
     for (const qd of queueDirs) {
       for (const e of readMatterLedger(qd)) {
-        if (inLane(e.profileKey, e.organisation) && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 7) === monthKey) month++;
+        if (inLane(e.profileKey, e.organisation) && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 7) === monthKey) month += ledgerSearches(e);
       }
     }
-    if (month + 1 > caps.monthlyRuns) {
+    if (month + searches > caps.monthlyRuns) {
       return `admission cap: ${lane} has started ${month} run(s) this month (runCaps.monthlyRuns=${caps.monthlyRuns}) — the cap resets at month end; raise it in the customer profile if this is intended growth`;
     }
   }
@@ -1024,9 +1027,12 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   // Per-account admission caps (Phase 3b) — the resolved effective profile is in hand; over-cap
   // clarifies before any spend and before the matter is recorded.
   if (!effProfile) note(`[runner] ${base} run-caps skipped — profile resolution errored, caps not evaluable for this admission (fail-open by doctrine, logged for visibility)`);
+  // WHAT THIS ORDER COUNTS, decided once, here: 2 for an Urgent order that runs fast on this installation, else 1.
+  // The cap is checked against it and the ledger row records it, so tomorrow's count reads what today charged.
+  const searches = admittedSearches(job);
   const capMsg = checkRunCaps({ account: effProfile?.key ?? null, caps: effProfile?.runCaps, queueDirs: config.queueDirs,
     inHandTagged: Boolean(job.profileKey), clientRun: job.clientPrincipal === true,
-    organisation: typeof job.tenant === "string" && job.tenant ? job.tenant : null });
+    organisation: typeof job.tenant === "string" && job.tenant ? job.tenant : null, searches });
   if (capMsg) {
     note(`[runner] ${base} ${capMsg}`);
     await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: [capMsg] }, [capMsg]);
@@ -1053,7 +1059,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
       return null;
     }
   }
-  recordMatter(qdir, { sig, conversationId, msgId: job.msgId, id: job.id, ts: dupNow,
+  recordMatter(qdir, { sig, conversationId, msgId: job.msgId, id: job.id, ts: dupNow, searches,
     // Generic is tagged too, with the organisation whose lane it counts in. An untagged Generic row
     // counted towards nothing, which was the exemption the owner's 2026-09-10 ruling removed.
     ...(effProfile?.key ? { profileKey: effProfile.key } : {}),
