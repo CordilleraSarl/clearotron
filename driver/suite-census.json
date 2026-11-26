@@ -9820,7 +9820,7 @@
         },
         "describe-options.test.mjs": {
           "tests": 24,
-          "asserts": 108,
+          "asserts": 109,
           "skips": 1,
           "todos": 0
         },
@@ -10479,7 +10479,7 @@
         },
         "tabTitle.test.ts": {
           "tests": 3,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },

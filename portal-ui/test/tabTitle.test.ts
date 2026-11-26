@@ -30,5 +30,6 @@ test('a hidden tab keeps asking only while something is in flight, at a slow rat
   assert.ok(HIDDEN_POLL_MS >= 60_000, 'a hidden tab asks faster than once a minute')
   const poll = readFileSync(new URL('../src/state/useApi.ts', import.meta.url), 'utf8')
   assert.match(poll, /if \(r\.kind === 'rateLimited'\) timer = window\.setTimeout\(\(\) => \{ void read\(\) \}, BACKOFF_MS\)/, 'a refusal does not keep the back-off')
-  assert.match(poll, /else setCount\(0\)/, 'the count outlives a look at the tab')
+  assert.match(poll, /if \(document\.visibilityState !== 'hidden'\) \{ setCount\(0\); return \}/, 'the count outlives a look at the tab')
+  assert.match(poll, /seen = lastSeenRunStates\(\)/, 'going out of view asks for a reading the page already holds')
 })

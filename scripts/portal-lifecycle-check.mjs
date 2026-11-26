@@ -511,8 +511,10 @@ ${HELPERS}
   // reads its owner in the Account corner instead. So this timed out on every client run, and because
   // settle returned false without objecting it degraded into an 8-second sleep. Waits on the context
   // card the composer draws for every identity, which is what the next line reads.
-  await mustSettle(() => Boolean(document.querySelector('.ctx-card')), 8000,
-    'the composer never painted its context card');
+  // The company's settings fold into one line behind "Change" (board approved 2026-11-25), so the line is
+  // what every identity's composer paints.
+  await mustSettle(() => Boolean(document.querySelector('.nc-company-line')), 8000,
+    'the composer never painted its company line');
   // THE COMPANY IS THE FORM'S FIRST FIELD, above Describe it — it moved out of the card, which now holds
   // what the company carries. Read where it is drawn: the picker's chosen option for a reader with
   // several companies, the plain name for a reader with one.
@@ -980,8 +982,12 @@ ${ROW_MENU_HELPERS}
   // thing standing between a retired engagement and a clearance filed under it.
   await goto('/portal/new');
   // Same identity-dependent wait as above, same cure.
-  await mustSettle(() => Boolean(document.querySelector('.ctx-card')), 8000,
-    'the composer never painted its context card on return');
+  await mustSettle(() => Boolean(document.querySelector('.nc-company-line')), 8000,
+    'the composer never painted its company line on return');
+  // The project picker is in the company's card, behind "Change": opened the way a reader opens it.
+  const change = [...document.querySelectorAll('button.nc-disclose')].find((b) => b.textContent.trim() === 'Change');
+  if (change && change.getAttribute('aria-expanded') === 'false') change.click();
+  await mustSettle(() => Boolean(document.querySelector('.ctx-card')), 4000, '"Change" did not open the company card');
   const projectSelect = [...document.querySelectorAll('select')].find((s) => s.getAttribute('aria-label') === 'Project');
   out.composerProjectOptions = projectSelect ? [...projectSelect.options].map((o) => o.textContent.trim()) : null;
   return out;

@@ -881,7 +881,7 @@ for (const [name, spec] of Object.entries(STATES)) {
   say((await evalIn('document.visibilityState')) === 'hidden', 'the page reads itself as hidden')
   STATES.tabcount.runs[0] = { ...STATES.tabcount.runs[0], state: 'delivered' }
   const counted = await titleWhen((t) => t.startsWith('(1) '))
-  say(runsAsked - asked >= 2, `the hidden tab read the searches when it was hidden and again later (${runsAsked - asked} reads)`)
+  say(runsAsked - asked >= 2, `the hidden tab read the searches again while one was in flight (${runsAsked - asked} reads)`)
   say(counted.startsWith('(1) ') && counted.endsWith(' · Trademark clearance'), `a search that ended while the tab was hidden leads the title with "(1)" ("${counted}")`)
   await evalIn('window.__setHidden(false); true')
   const back = await titleWhen((t) => !t.startsWith('('))

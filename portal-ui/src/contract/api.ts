@@ -26,6 +26,11 @@ import type { CompanyFacts } from './companyFacts.ts'
 import { wireAccount } from './genericKey.ts'
 import type { BillingRefusal } from './engineState.ts'
 
+/** Each of this person's searches and its state, as the last answer to `runsMine` gave them; null before one. */
+let lastRunStates: ReadonlyMap<string, RunState> | null = null
+/** The last reading of this person's searches, for the tab title's count: no request of its own. */
+export const lastSeenRunStates = (): ReadonlyMap<string, RunState> | null => lastRunStates
+
 export type Result<T> =
   | { kind: 'ok'; value: T }
   /** 422 WITH a classify block — the engine needs an answer before it can plan. */
@@ -2042,11 +2047,14 @@ export const api = {
    * everywhere. Two capabilities, two names.
    */
   runsMine: (): Promise<Result<readonly Run[]>> =>
-    call('/portal/api/runs?scope=mine', (b) =>
-      asArray(b['runs'])
+    call('/portal/api/runs?scope=mine', (b) => {
+      const runs = asArray(b['runs'])
         .map(decodeRun)
-        .filter((r): r is Run => r !== null),
-    ),
+        .filter((r): r is Run => r !== null)
+      // KEPT AS THE LAST READING, so a tab going out of view knows what is in flight without asking again.
+      lastRunStates = new Map(runs.map((r) => [r.runId, r.state]))
+      return runs
+    }),
 
   /**
    *  — THE CROSS-MARK PARAGRAPH for a run published over several names.

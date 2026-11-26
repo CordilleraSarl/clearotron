@@ -124,7 +124,11 @@ test("THE BUNDLES ARE GONE — there is one menu, and it is the offering", () =>
   const src = readFileSync(join(HERE, "..", "..", "portal-ui", "src", "contract", "composerProduct.ts"), "utf8");
   assert.doesNotMatch(src, /export const TEMPLATES/, "the composer's own hand-written bundles are gone too");
   const screen = readFileSync(join(HERE, "..", "..", "portal-ui", "src", "screens", "NewClearance.tsx"), "utf8");
-  assert.match(screen, /\{levels\.map\(\(t\) => \(\s*<PickRow/,
+  // The rows drawn are the offering, or the offering narrowed to the chosen search with the rest one press
+  // away (board approved 2026-11-25), and never a list of their own.
+  assert.match(screen, /\{shownLevels\.map\(\(t\) => \(\s*<PickRow/,
+    "the picker is built from the fetched offering, so there is nothing left to keep in step");
+  assert.match(screen, /const shownLevels = allSearchesOpen \? levels : levels\.filter\(/,
     "the picker is built from the fetched offering, so there is nothing left to keep in step");
 });
 
