@@ -2804,6 +2804,20 @@ details[open] > .fold-summary .fold-chev {
 .nc-company-name { font-size: 15px; font-weight: 600; color: var(--text-strong); }
 .nc-project { max-width: 340px; flex: 1; }
 .nc-describe-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px; }
+/* The company's settings as one line, with "Change" (board NewClearanceProposed, 2026-11-25). */
+.nc-company-line {
+  display: flex; align-items: center; gap: 16px; padding: 16px 18px;
+  border: 1px solid var(--border-hairline); border-radius: 12px; background: var(--surface-raised);
+}
+.nc-company-line-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.nc-company-line-value { font-size: 14.5px; color: var(--text-body); overflow-wrap: anywhere; }
+/* "Change" and "All four searches": real buttons that say whether what they open is open. */
+.nc-disclose {
+  flex: none; min-height: 44px; padding: 0 18px; border: 1px solid var(--border-strong); border-radius: 8px;
+  background: var(--surface-raised); color: var(--text-strong); font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
+}
+.nc-disclose:hover { border-color: var(--accent-ink); color: var(--text-accent); }
+.nc-all-searches { align-self: flex-start; margin-top: 12px; }
 .nc-optional { font-size: 11.5px; color: var(--text-faint); }
 .nc-which-head {
   display: flex;

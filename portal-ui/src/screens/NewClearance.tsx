@@ -347,6 +347,32 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // What this search will be scoped to: the override if the user set one, else what is inherited.
   const classes = draft.classes ?? own.classes
 
+  // ── THE COMPANY'S SETTINGS, FOLDED INTO ONE LINE (board approved 2026-11-25) ───────────────────────
+  //
+  // Their values come from the company and are usually right, so the card starts folded under one line
+  // that states what this search will use. "Change" opens today's card in place, and it stays open until
+  // the page is left. It starts open when there is something to put right: no classes, which is the
+  // card's one value that can fail (the "None set" line in it). Not before the company's settings have
+  // loaded, though: an empty list then means "not read yet", not "none on file".
+  const [companyOpened, setCompanyOpened] = useState(false)
+  const companyNeedsAttention = profile != null && classes.length === 0
+  useEffect(() => { if (companyNeedsAttention) setCompanyOpened(true) }, [companyNeedsAttention])
+  const companyOpen = companyOpened || companyNeedsAttention
+  const companyCardRef = useRef<HTMLDivElement>(null)
+  const focusCompanyCard = useRef(false)
+  useEffect(() => {
+    if (!companyOpen || !focusCompanyCard.current) return
+    focusCompanyCard.current = false
+    companyCardRef.current?.querySelector<HTMLElement>('select, input, button, textarea')?.focus()
+  }, [companyOpen])
+
+  // ── WHICH SEARCH SHOWS THE CHOSEN SEARCH, the other three one press away ─────────────────────────────
+  // With none chosen all four show, as before. Once opened the list stays open, and choosing another
+  // search leaves it open.
+  const [allSearchesOpened, setAllSearchesOpened] = useState(false)
+  const searchListRef = useRef<HTMLDivElement>(null)
+  const focusSearchList = useRef(false)
+
 
   // The row this draft is running, when it is running one. Looked up ONCE: the depth, the gates and the
   // "Start point" line all have to be answering about the same record, and three separate finds is
@@ -369,6 +395,19 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // before a product is chosen — reading `=== 'clearance'` blanked it at rest, which is the one moment
   // it is doing its whole job: telling somebody what they already carry, before they choose.
   const marketplacesApply = activePipeline !== 'knockout'
+  const allSearchesOpen = allSearchesOpened || !levels.some((l) => l.key === activeBase)
+  const shownLevels = allSearchesOpen ? levels : levels.filter((l) => l.key === activeBase)
+  useEffect(() => {
+    if (!allSearchesOpen || !focusSearchList.current) return
+    focusSearchList.current = false
+    searchListRef.current?.querySelector<HTMLElement>('.pick-row-hit:not(:disabled)')?.focus()
+  }, [allSearchesOpen])
+  // THE LINE STATES WHAT THIS SEARCH WILL USE, edits in the open card and a brief's values included: the
+  // project, the classes this search sends, and the marketplaces it sweeps, the account's own plus any
+  // named for this search.
+  const marketplaceCount = own.platforms.length + (marketplacesApply ? parseList(draft.platforms).length : 0)
+  const companyLine = `${projectLabel ?? 'No project'} · Classes ${classes.length ? classes.join(', ') : '—'} · `
+    + `${marketplaceCount} marketplace${marketplaceCount === 1 ? '' : 's'}`
   // Which geography control this product gets, and what it says at that control. Both come off the
   // OFFERING rather than being decided here, so the screen cannot offer a shape the wall refuses.
   // WHICH SEARCH THE WHERE PANEL FITS ITSELF TO. A search the reader chose — a row, a brief that asked for
@@ -1165,8 +1204,29 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
               are working. Nothing replaces it. */}
         </div>
 
+        {/* ── the company's settings: one line, and today's card behind "Change" ── */}
+        <div className="nc-company-line">
+          <div className="nc-company-line-text">
+            <div className="field-label" style={{ marginBottom: 0 }} data-anon="mark">From {ownerLabel}</div>
+            <div className="nc-company-line-value" data-anon="mark">{companyLine}</div>
+          </div>
+          <button
+            type="button"
+            className="nc-disclose"
+            aria-expanded={companyOpen}
+            aria-controls="nc-company-card"
+            onClick={() => {
+              if (companyOpen) companyCardRef.current?.querySelector<HTMLElement>('select, input, button, textarea')?.focus()
+              else { focusCompanyCard.current = true; setCompanyOpened(true) }
+            }}
+          >
+            Change
+          </button>
+        </div>
+
         {/* ── the company card: what this company already carries ── */}
-        <div className="ctx-card">
+        {companyOpen ? (
+        <div className="ctx-card" id="nc-company-card" ref={companyCardRef}>
           <div className="field-label">Project</div>
           <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             {projects.length ? (
@@ -1326,6 +1386,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             </div>
           </div>
         </div>
+        ) : null}
 
         {/* ── WHICH SEARCH ── */}
         <div>
@@ -1375,8 +1436,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             </p>
           ) : null}
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {levels.map((t) => (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }} id="nc-all-searches" ref={searchListRef}>
+            {shownLevels.map((t) => (
               <PickRow
                 key={t.key}
                 // The TEMPLATE's search is the selected row while one is applied, because that is the
@@ -1443,6 +1504,20 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
               </PickRow>
             ))}
           </div>
+          {levels.some((l) => l.key === activeBase) ? (
+            <button
+              type="button"
+              className="nc-disclose nc-all-searches"
+              aria-expanded={allSearchesOpen}
+              aria-controls="nc-all-searches"
+              onClick={() => {
+                if (allSearchesOpen) searchListRef.current?.querySelector<HTMLElement>('.pick-row-hit:not(:disabled)')?.focus()
+                else { focusSearchList.current = true; setAllSearchesOpened(true) }
+              }}
+            >
+              All four searches
+            </button>
+          ) : null}
         </div>
 
         {/* THE FOUR SIDE BY SIDE. A client choosing between them is asking "am I buying the right one",
@@ -1656,6 +1731,23 @@ function DescribeIt({ value, onChange, can, reading, error, receipt, onRead }: {
   readonly onRead: () => void
 }) {
   const tooLong = value.length > can.maxBrief
+  // AN INSTALLATION THAT CANNOT READ A BRIEF OFFERS NO BOX TO WRITE ONE IN (approved 2026-11-25). The
+  // heading, its "optional" mark and the server's own sentence stay, so a reader learns the section
+  // exists and why it is empty; typing starts at Names to clear. The screen draws only once the server's
+  // answer has loaded, so `available` false here is that answer, never a fetch still in flight.
+  if (!can.available) {
+    return (
+      <div style={{ paddingBottom: 22, borderBottom: '1px solid var(--border-hairline)' }}>
+        <div className="nc-describe-head">
+          <span className="section-title" style={{ marginBottom: 0 }}>Describe it</span>
+          <span className="nc-optional">optional</span>
+        </div>
+        <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-muted)' }}>
+          {can.note ?? 'Reading a brief is not switched on here yet — set the search up below.'}
+        </p>
+      </div>
+    )
+  }
   return (
     <div style={{ paddingBottom: 22, borderBottom: '1px solid var(--border-hairline)' }}>
       {/* THE EXAMPLE IS INSIDE THE BOX, and nothing above it restates what the box is for: the heading
