@@ -9776,6 +9776,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-reference-names-an-order-only-to-its-own-account.test.mjs": {
+          "tests": 6,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
         "a-removed-person-loses-their-assistant-too.test.mjs": {
           "tests": 4,
           "asserts": 12,
