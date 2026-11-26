@@ -202,7 +202,7 @@ export async function markLogos(runDir, { findingsPath = null, registerRecordsPa
     // the cards draw beside the table's rows: at most three more a name. The card's own rule, with the run's frozen ladder.
     const ko = registerRecordsPath ? await import("./publish/render-knockout.mjs") : null;
     let ladder = null;
-    if (ko) { try { ladder = (await import("./framework.mjs")).parseFrameworkManifest(JSON.parse(readFileSync(driverDir(runDir, "framework.json"), "utf8"))); } catch { ladder = null; } }
+    if (ko) { try { ladder = (await import("./framework.mjs")).parseFrameworkManifest(JSON.parse(readFileSync(paths(runDir).framework, "utf8"))); } catch { ladder = null; } }
     const shown = ko ? (entry, m) => [...(ko.shownFilings(entry, m) ?? []), ...ko.cardFilings(registerRecords, m, ladder)] : null;
     const namesPath = knockoutFindingsPath ?? (registerRecordsPath ? (await import("./stages-knockout.mjs")).koPaths(runDir).findings : null);
     // A clearance card's own rule for which registrations it draws, over the records the run saved, as the page reads them.
