@@ -2011,7 +2011,7 @@ function registerRecordBlock(f, recordsByUri, numberOf) {
 // themselves, saved by the picture step, each in the logo's box, captioned with its site alone and opening the page it
 // came from. Drawn only when it holds a picture; a page that gave none leaves no trace.
 function webFrame(f) {
-  const pics = WEB_PICTURES.get(Number(f.ordinal)) ?? [];
+  const pics = WEB_PICTURES.get(String(f.ordinal)) ?? [];
   if (!pics.length) return '';
   const figures = pics.slice(0, 8).map((p) => {
     const href = hrefAttr(p.page);

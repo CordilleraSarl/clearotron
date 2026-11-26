@@ -703,7 +703,19 @@ function evidenceCell(u, { filings = null, provider = null } = {}) {
   return link?.label ? officeRecordCell({ officeLink: link }, esc(handle)) : esc(handle);
 }
 
-function findingBlock(v, framework, markIndex, method = null, cite = {}) {
+// A FINDING CARD'S ONE WEB PICTURE (owner, 2026-11-25): the picture of its earliest candidate page that arrived, saved by
+// the picture step, in an "On the web" frame under the meta line, captioned with its site and opening the page. A card
+// whose pages gave none draws no frame.
+function findingWebFrame(v, markIndex, webPictures = new Map()) {
+  const p = (webPictures.get(koCardId(markIndex, v.ordinal)) ?? [])[0];
+  if (!p) return '';
+  const href = isHttpUrl(p.page) ? escAttr(p.page) : null;
+  const img = `<img src="${escAttr(p.src)}" alt="${escAttr(K.pictures.webAlt(v.name ?? '', p.site ?? '', p.fetchedOn ?? ''))}">`;
+  return `<div class="pic-line"><div class="pic-set"><div class="pic-head"><span class="pic-lab">${esc(K.pictures.onTheWeb)}</span></div><div class="rr-logos rr-band"><figure class="rr-lg">${
+    href ? `<a href="${href}" target="_blank" rel="noopener noreferrer">${img}</a>` : img}<figcaption>${esc(p.site ?? '')}</figcaption></figure></div></div></div>`;
+}
+
+function findingBlock(v, framework, markIndex, method = null, cite = {}, webPictures = new Map()) {
   const meta = [v.type, v.owner].filter(Boolean).map((s) => esc(s)).join(' · ');
   const ev = v.evidence.map((u) => evidenceCell(u, cite)).join(' · ');
   // THE CLEARANCE REPORT'S CARD, AND THE KNOCKOUT'S LOCATOR — both classes, deliberately. report.css
@@ -734,7 +746,7 @@ function findingBlock(v, framework, markIndex, method = null, cite = {}) {
     v.band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(v.band, method, v.inputs)}</span>` : ''}${sourceChips(v)}
               <span class="fi-acts no-print">${copyLinkButton()}<button class="ask-fi no-print">${K.finding.askAi}</button></span>
             </div>
-            ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}
+            ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}${findingWebFrame(v, markIndex, webPictures)}
             ${v.lead ? `<p class="ko-findnet">${inlineMd(v.lead)}</p>` : ''}
             ${/* The 2026-09-16 report redesign — head, meta and the one-line read stay visible; the rest folds, as on
                  a clearance card, so a screen of many names reads as a screen. */''}
@@ -1501,7 +1513,7 @@ function readBlock(m, framework, { opening = '' } = {}) {
   ].filter(Boolean).join('');
 }
 
-function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null, opening = '', filingRecords = new Map(), logos = new Map() } = {}) {
+function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null, opening = '', filingRecords = new Map(), logos = new Map(), webPictures = new Map() } = {}) {
   const cite = { filings: filingsByHandle(registerRecords), provider: registerRecords?.provider ?? null };
   const cards = marks.map((m, markIndex) => {
     const bullets = readBlock(m, framework, { opening });
@@ -1527,7 +1539,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // nothing anywhere saying so. findings-model.mjs's view reads both shapes and drops nothing.
     const views = knockoutFindingViews(m, { manifest: framework });
     const weighsAFiling = (v) => Array.isArray(v?.weighedFilings) && v.weighedFilings.length > 0;
-    const findsOf = (list) => list.map((v) => findingBlock(v, framework, markIndex, frameworkMethod, cite)).join('');
+    const findsOf = (list) => list.map((v) => findingBlock(v, framework, markIndex, frameworkMethod, cite, webPictures)).join('');
     // — THE REGISTER CARDS ARE INSIDE `body`, and that is the fall-through guard. A mark whose only
     // conflict is a filing on the register used to reach the sentence below and be published as clean.
     // The guard is deliberately TIGHT: a listed filing that is dead or out of the counted classes does
@@ -1654,7 +1666,7 @@ const CAVEAT_LEAD = K.caveatLead;
 // carries. What the document does not hold is the page's surface (which name, the workbook's portal address, the
 // confidentiality posture, the demo flag) and the two sets it holds by reference (each filing's saved record and each
 // saved logo), which publish resolves from the run. PURE given its inputs.
-function knockoutContextOf(doc, { at, filingRecords = new Map(), logos = new Map(), auditHref = null, delivery = null, demoData = false } = {}) {
+function knockoutContextOf(doc, { at, filingRecords = new Map(), logos = new Map(), webPictures = new Map(), auditHref = null, delivery = null, demoData = false } = {}) {
   const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, framework = doc?.framework ?? {};
   const findings = client.findings ?? {};
   const m = (findings.marks ?? [])[at];
@@ -1672,7 +1684,7 @@ function knockoutContextOf(doc, { at, filingRecords = new Map(), logos = new Map
     identity: { identity: product.name ?? null, stageLabel: product.stageLabel ?? null, template: product.template ?? null, banner: product.banner ?? null },
     matter: run.runId, auditHref,
     leftOpen: knockoutLeftOpenOf(doc, at),
-    registerRecordsUnreadable: client.registerRecordsUnreadable, filingRecords, logos, demoData, depthNote: product.depthNote ?? null,
+    registerRecordsUnreadable: client.registerRecordsUnreadable, filingRecords, logos, webPictures, demoData, depthNote: product.depthNote ?? null,
     searchPolicy: scope.policy ?? null, delivery, servedModels: client.servedModels, frameworkMethod: framework.method,
   });
 }
@@ -1686,7 +1698,7 @@ function knockoutContext(findings, framework, {
   // `registerRecords.unavailable` and anything invented for it would become client-facing wording.
   registerRecordsUnreadable = false,
   // Each listed filing's saved record and logo, by its normalised record id; empty draws the table as before.
-  filingRecords = new Map(), logos = new Map(),
+  filingRecords = new Map(), logos = new Map(), webPictures = new Map(),
   // The searches this run did not complete, as Left open rows ({area, state, note}); empty draws no section.
   leftOpen = [],
   // The driver's own record of the owner lookups it ran. Defaults to [] so an
@@ -1787,7 +1799,7 @@ function knockoutContext(findings, framework, {
   // a disclosure, which is the one failure that would matter on a client-facing page. A similarity score
   // could; that is why there isn't one.
   const newCaveats = caveats.filter((c) => saysSomethingNew(c, SCOPE_BLOCK_TEXT));
-  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder, opening: findings?.batch?.executiveSummary, filingRecords, logos });
+  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder, opening: findings?.batch?.executiveSummary, filingRecords, logos, webPictures });
   // The request-level notes, gathered across every mark on the document and rendered ONCE at the top.
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
