@@ -1205,7 +1205,22 @@ function reviewerNotesBlock(m) {
   return '';
 }
 
-function registerFindingBlock(v, markIndex, reads = null, framework = null, ownerChecks = [], method = null) {
+// THE FILING'S LOGO ON ITS CARD (owner, 2026-11-25): one "Register" frame holding that filing's logo where the run fetched
+// one, captioned with its register as a clearance card's logo is, with the alt text and the office link the filings table
+// gives it. A filing the run holds no record of, or whose logo did not arrive, draws no frame.
+function filingLogoFrame(r, { filingRecords = new Map(), logos = new Map() } = {}) {
+  const key = normalizeRecordUri(r?.recordId);
+  const rec = key ? filingRecords.get(key) : null;
+  const fig = rec ? logoFigureHtml(rec, { uri: key, logo: logos.get(key), href: r.officeLink?.href ? escAttr(r.officeLink.href) : null, caption: true }) : null;
+  return fig ? `<div class="pic-line"><div class="pic-set"><div class="pic-head"><span class="pic-lab">${esc(K.pictures.register)}</span></div><div class="rr-logos rr-band">${fig}</div></div></div>` : '';
+}
+
+/** The filings a name's register cards draw, for the logo step to ask about as it asks about the table's rows. */
+export function cardFilings(registerRecords, mark, framework) {
+  return registerCardsOnPage(registerCardViews(mark, framework, registerRecords).cards, mark, framework).map((v) => v.record);
+}
+
+function registerFindingBlock(v, markIndex, reads = null, framework = null, ownerChecks = [], method = null, pictures = {}) {
   const r = v.record;
   // — THE RATER'S OWN READ OF THIS FILING, when it recorded one. `registerReads` is
   // joined to the record store by the validator, so a row that reaches here names a filing this run
@@ -1246,6 +1261,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
               <span class="fi-acts no-print">${copyLinkButton()}<button class="ask-fi no-print">${K.finding.askAi}</button></span>
             </div>
             <p class="ko-findmeta">${meta}</p>
+            ${filingLogoFrame(r, pictures)}
             <p class="ko-findnet">${esc(v.statement)}</p>
             ${/* The 2026-09-16 report redesign — the head, the meta line and the one-line read stay visible; the rest
                  sits behind a fold, as it does on a clearance card, so a screen of many names reads as a
@@ -1485,7 +1501,7 @@ function readBlock(m, framework, { opening = '' } = {}) {
   ].filter(Boolean).join('');
 }
 
-function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null, opening = '' } = {}) {
+function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null, opening = '', filingRecords = new Map(), logos = new Map() } = {}) {
   const cite = { filings: filingsByHandle(registerRecords), provider: registerRecords?.provider ?? null };
   const cards = marks.map((m, markIndex) => {
     const bullets = readBlock(m, framework, { opening });
@@ -1496,7 +1512,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // before this order keeps the one it was delivered with: its findings, then its filing cards.
     const reg = registerCardViews(m, framework, registerRecords);
     const drawn = registerCardsOnPage(reg.cards, m, framework);
-    const regBlocks = drawn.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks, frameworkMethod)).join('');
+    const regBlocks = drawn.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks, frameworkMethod, { filingRecords, logos })).join('');
     // The overflow counts what is NOT on the page against what met the promotion test — cards held back
     // by the cap and cards the rater put on the lowest rung alike, because from the reader's side they
     // are the same fact: further filings for this name, all of them listed below.
@@ -1771,7 +1787,7 @@ function knockoutContext(findings, framework, {
   // a disclosure, which is the one failure that would matter on a client-facing page. A similarity score
   // could; that is why there isn't one.
   const newCaveats = caveats.filter((c) => saysSomethingNew(c, SCOPE_BLOCK_TEXT));
-  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder, opening: findings?.batch?.executiveSummary });
+  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder, opening: findings?.batch?.executiveSummary, filingRecords, logos });
   // The request-level notes, gathered across every mark on the document and rendered ONCE at the top.
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.

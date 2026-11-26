@@ -1299,6 +1299,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-filing-card-shows-its-registered-logo.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-filing-carries-the-goods-the-run-holds.test.mjs": {
           "tests": 10,
           "asserts": 40,
