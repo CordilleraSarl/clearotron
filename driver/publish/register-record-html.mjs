@@ -7,7 +7,7 @@
 // The rows come from registerRecordView, which copies every fact from the saved record; this module lays them out
 // once, so the two pages cannot drift apart. What differs between the pages is an input: the register number's cell,
 // which each page already prints its own way, the receipt line, and the owner's name as that page resolves it.
-import { registerRecordView, RECORD_LABELS as L, countryOf, LOGO_NOT_RETRIEVED } from './register-record.mjs';
+import { registerRecordView, RECORD_LABELS as L, countryOf } from './register-record.mjs';
 import { REC, inPriorityWindow } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { normRegion } from './regions.mjs';
@@ -88,16 +88,14 @@ export function recordEntryHtml(rec, { uri = '', jurisdiction = '', receipt = nu
 }
 
 /**
- * One logo in its fixed box: the saved image, or "Logo not retrieved" where the fetch failed, opening the office's
- * record at `href` when there is one. `logo` is { state, src } from the run's logo step; `caption` draws the
- * register under the box. Null when the registration has no logo to show. PURE.
+ * One logo in its fixed box: the saved image, opening the office's record at `href` when there is one. `logo` is
+ * { state, src } from the run's logo step; `caption` draws the register under the box. Null when the run saved no
+ * image, a failed fetch included: a picture is a real one or nothing (owner, 2026-11-25). PURE.
  */
 export function logoFigureHtml(rec, { uri = '', logo = null, href = null, caption = true }) {
-  if (!logo || (logo.state !== 'fetched' && logo.state !== 'failed')) return null;
+  if (logo?.state !== 'fetched') return null;
   const { logo: v } = registerRecordView(rec, { uri });
-  const link = (inner, cls = '') => (href ? `<a${cls} href="${href}" target="_blank" rel="noopener noreferrer">${inner}</a>` : inner);
-  const body = logo.state === 'fetched'
-    ? link(`<img src="${logo.src}" alt="${escAttr(v.alt || '')}">`)
-    : (href ? link(esc(LOGO_NOT_RETRIEVED), ' class="rr-nologo"') : `<span class="rr-nologo">${esc(LOGO_NOT_RETRIEVED)}</span>`);
+  const img = `<img src="${logo.src}" alt="${escAttr(v.alt || '')}">`;
+  const body = href ? `<a href="${href}" target="_blank" rel="noopener noreferrer">${img}</a>` : img;
   return `<figure class="rr-lg">${body}${caption && v.caption ? `<figcaption>${esc(v.caption)}</figcaption>` : ''}</figure>`;
 }

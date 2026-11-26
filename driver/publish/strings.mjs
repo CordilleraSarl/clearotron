@@ -307,7 +307,6 @@ export const REGISTER_RECORD = Object.freeze({
   mtNote: 'For the original wording, open the register number or use Ask AI.',
   noGoods: 'The record states no goods or services.',
   classNotStated: 'Class not stated',
-  logoNotRetrieved: 'Logo not retrieved',
   registrationsCount: (n) => `${n} registrations`,
   showAllTerms: (n) => `Show all ${n} terms`,
   // `language` is the record's language by its English name, or null when the record does not say.
