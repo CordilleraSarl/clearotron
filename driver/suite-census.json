@@ -3172,8 +3172,8 @@
           "todos": 0
         },
         "a-web-page-gives-its-preview-picture-and-nothing-else.test.mjs": {
-          "tests": 7,
-          "asserts": 32,
+          "tests": 8,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
