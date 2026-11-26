@@ -656,7 +656,11 @@ export const REPORT_PAGE = Object.freeze({
   lowerBandShow: (count) => (count === 1 ? 'Show' : `Show all ${count.toLocaleString('en-GB')}`),
   lowerBandHide: 'Hide',
   // A conflict card's picture line (owner, 2026-11-25): each set of pictures sits in a frame of its own under its label.
-  pictures: Object.freeze({ register: 'Register' }),
+  pictures: Object.freeze({
+    register: 'Register',
+    onTheWeb: 'On the web',
+    webAlt: (mark, site, date) => `${mark}, picture shown by ${site}, fetched ${date}`,
+  }),
   // The conflict panel (owner, 2026-11-25): its name for a screen reader, and the name of the control that shuts it.
   conflictPanel: Object.freeze({ name: (n) => `Conflict ${n}`, close: 'Close' }),
   // The chart of conflicts: its axes, its zone and its legend.
