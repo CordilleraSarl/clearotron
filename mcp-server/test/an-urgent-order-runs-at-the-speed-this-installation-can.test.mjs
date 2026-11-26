@@ -10,7 +10,7 @@
 //     sentence. It is never refused and never held;
 //   - a value that is not a boolean is refused, so an Urgent order is never quietly run, and counted, as Standard.
 // describe_options says which, and plan_run previews both options' turnaround and count from the shared effort model.
-import { mkdtempSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -26,6 +26,9 @@ const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
 const { InMemoryTransport } = await import("@modelcontextprotocol/sdk/inMemory.js");
 const { URGENT_UNAVAILABLE } = await import("../lib/urgent.mjs");
 const { withinAllowance } = await import("../lib/plan.mjs");
+const { config } = await import("../lib/driver.mjs");
+const { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS } = await import("../../driver/usage-ledger.mjs");
+const { resolveEffectiveProfile } = await import("../../driver/profiles.mjs");
 
 // THE TWO INSTALLATIONS: Claude on a subscription can run Urgent; Claude through Amazon Bedrock cannot (the vendor's
 // fast-mode page, read in engine/speed.mjs).
@@ -40,9 +43,9 @@ function installation(env) {
 }
 afterEach(() => { for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; } });
 
-async function call(name, args) {
+async function call(name, args, scope) {
   const [a, b] = InMemoryTransport.createLinkedPair();
-  await makeServer().connect(b);
+  await makeServer(scope ? { scope, local: false } : undefined).connect(b);
   const client = new Client({ name: "urgent-order-test", version: "1" });
   await client.connect(a);
   await client.listTools();   // the SDK client checks every answer of a tool that declares one
@@ -125,3 +128,34 @@ test("an option fits today's allowance by the wall's own rule: with one search l
   assert.equal(withinAllowance({ ...oneLeft, capped: false }, 2), null, "no cap applies to this session");
   assert.equal(withinAllowance({ ...oneLeft, complete: false }, 2), null, "today's usage could not be read");
 });
+
+// ONE SEARCH LEFT (design, 2026-11-26). A company's own session that sends an Urgent order with exactly one search left is
+// refused at start_run in the order screen's words, "1 search left today.", and nothing is queued: the order is never
+// written as Standard, and never left for the wall to refuse at claim, where this caller would not see it. Standard
+// still fits; two left admit Urgent. Zero, one and two left, on an installation that runs Urgent.
+test("start_run with one search left: an Urgent order is refused in the screen's words and nothing is queued", async () => {
+  installation(CAN);
+  const company = { kind: "account", accounts: ["demo-brand-owner"], sub: "orders@company.example", permissions: { run: true, manage: false } };
+  // The company's own daily limit, as the wall reads it; the rows go in ONE ledger, since every queue's ledger is counted.
+  const caps = resolveEffectiveProfile({ profileKey: "demo-brand-owner" }).profile?.runCaps;
+  const LIMIT = Number.isInteger(caps?.dailyRuns) ? caps.dailyRuns : DEFAULT_CLIENT_DAILY_RUNS;
+  const used = (n) => config.queueDirs.forEach((qd, i) => { mkdirSync(qd, { recursive: true });
+    writeFileSync(matterLedgerPath(qd), i ? "" : Array.from({ length: n }, () => JSON.stringify({ profileKey: "demo-brand-owner", ts: Date.now(), clientPrincipal: true })).join("\n") + (n ? "\n" : "")); });
+  try {
+    used(LIMIT - 1);
+    const urgent = await call("start_run", order({ urgent: true }), company);
+    assert.equal(urgent.structuredContent?.outcome, "refused", JSON.stringify(urgent.content));
+    assert.match(urgent.structuredContent.reason, /1 search left today\.$/);
+    const standard = await call("start_run", order({}), company);
+    assert.equal(standard.structuredContent?.outcome, "queued", "one left: Standard fits");
+    used(LIMIT - 2);
+    assert.equal((await call("start_run", order({ urgent: true }), company)).structuredContent?.outcome, "queued", "two left: Urgent fits");
+    used(LIMIT);
+    const none = await call("start_run", order({ urgent: true }), company);
+    assert.notEqual(none.structuredContent?.reason?.endsWith("1 search left today."), true, "none left is not this rule's");
+    // Staff are not bound by a company's allowance, as at the wall.
+    used(LIMIT - 1);
+    assert.equal((await call("start_run", order({ urgent: true }))).structuredContent?.outcome, "queued");
+  } finally { used(0); }
+});
+

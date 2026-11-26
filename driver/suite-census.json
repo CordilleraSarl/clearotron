@@ -9837,8 +9837,8 @@
           "todos": 0
         },
         "an-urgent-order-runs-at-the-speed-this-installation-can.test.mjs": {
-          "tests": 7,
-          "asserts": 29,
+          "tests": 8,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
