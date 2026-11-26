@@ -1812,7 +1812,7 @@ for (const [width, h] of Object.entries(howSoon)) {
   ok(h.inside && h.overflow <= 1, `${at}: an option is off the screen or the page scrolls sideways (${h.overflow}px)`)
   ok(JSON.stringify(h.ko?.map((o) => [o.label, o.line, o.checked])) === JSON.stringify([['Standard', '5 to 10 min · uses 1 search', 'true'], ['Urgent', '3 to 6 minutes · uses 2 searches', 'false']]),
     `${at}: a Knockout's options read ${JSON.stringify(h.ko)}`)
-  ok(h.ko?.[1]?.note === "The slowest steps run on the AI service's faster setting, which costs twice as much." && h.ko?.[0]?.note === null, `${at}: the Urgent note reads ${JSON.stringify(h.ko?.[1]?.note)}`)
+  ok(h.ko?.[1]?.note === "Uses AI fast mode setting at increased cost." && h.ko?.[0]?.note === null, `${at}: the Urgent note reads ${JSON.stringify(h.ko?.[1]?.note)}`)
   ok(!/Urgent/.test(h.koFooter) && /1 search/.test(h.koFooter) && /5 to 10 min/.test(h.koFooter), `${at}: the Standard footer reads "${h.koFooter}"`)
   ok(/Knockout search · Urgent/.test(h.koUrgentFooter) && /2 searches/.test(h.koUrgentFooter) && /uses · 2 left today/i.test(h.koUrgentFooter) && /3 to 6 minutes/.test(h.koUrgentFooter),
     `${at}: the Urgent footer reads "${h.koUrgentFooter}"`)
