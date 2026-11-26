@@ -229,6 +229,8 @@ export const START_RUN_JOB_FIELDS = Object.freeze({
       + "name field would give one door two answers to 'what is being cleared'.",
     use: "the pre-goods spelling of the goods description. Same reason as `name`.",
     tmp: "the pre-ref spelling of the reference number. Same reason as `name`.",
+    urgent: "an Urgent order. start_run and plan_run carry it with the Urgent option and its count of searches; "
+      + "until that option ships, an argument would run fast without being counted as the order says.",
   }),
 });
 

@@ -328,6 +328,8 @@ export const PORTAL_JOB_FIELDS = Object.freeze({
     forwarderDomain: "domain-based customer resolution is what the tenancy wall replaces here: the account "
       + "comes from the verified principal, never from a string the body chose.",
     provider: "which register vendor answers is a deployment fact, not a client's to pick.",
+    urgent: "an Urgent order. The New clearance screen offers it with its count of searches; until that option "
+      + "ships, a body value would run fast without being counted as the order says.",
     name: "the pre-markName spelling of the search subject. The composer sends markName/marks[]; carrying a "
       + "second name field would give one door two answers to 'what is being cleared'.",
     use: "the pre-goods spelling of the same field. Same reason as `name`.",

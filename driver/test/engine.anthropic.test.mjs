@@ -202,17 +202,17 @@ test("buildClaudeArgs: print + stream-json + model/effort/permission, and the op
   assert.equal(b[b.indexOf("--allowedTools") + 1], "mcp__a__b");
 });
 
-test("buildClaudeArgs: --settings never carries fast mode (REMOVED — it ~2.5x'd subscription usage, tripped the 5h cap 2026-06-17)", () => {
-  // Full revert: no stage sets fastMode and the engine no longer threads it. A stray/legacy fastMode arg must
-  // NOT resurrect it (the flag is gone from the signature; this guards against silent reintroduction). Every
-  // turn now carries one --settings, the read fence (READ_FENCE), so the guard reads what it carries.
-  for (const extra of [{ fastMode: true }, {}]) {
+test("buildClaudeArgs: --settings carries fast mode only on a turn that asks for the faster speed", () => {
+  // The speed is decided by the run (engine/speed.mjs) and handed in as `speed`. A stray `fastMode` argument is not a
+  // request, and a standard turn's settings are the fence alone. Every turn carries one --settings.
+  for (const extra of [{ fastMode: true }, {}, { speed: "standard" }]) {
     const { args } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high", ...extra });
     const at = args.indexOf("--settings");
     assert.ok(at > 0 && args.indexOf("--settings", at + 1) < 0, "one --settings, the read fence");
-    assert.ok(!/fastMode/i.test(args[at + 1]), `fast mode came back: ${args[at + 1]}`);
     assert.deepEqual(JSON.parse(args[at + 1]), { permissions: { blockReadsOutsideWorkingDirectories: true } }, "a plain stage's settings are the fence alone");
   }
+  const { args } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high", speed: "fast" });
+  assert.deepEqual(JSON.parse(args[args.indexOf("--settings") + 1]), { permissions: { blockReadsOutsideWorkingDirectories: true }, fastMode: true });
 });
 
 test("rate-limit / session-cap: rejected rate_limit_event + 429 result -> signals.rateLimited + resetsAt (ISO of epoch-seconds)", async () => {

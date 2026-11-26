@@ -12,8 +12,9 @@
 //   - a run with no record is left without one. Nothing here writes a record for a run that has already started,
 //     because that would date today's setting back to a start nobody recorded.
 //
-// The record holds the two names and nothing else. Each must name an engine this driver ships or a register it
-// knows, so no other string (a credential included) can be written into it.
+// The record holds the two names and the run's Urgent decision, nothing else. Each name must name an engine this driver
+// ships or a register it knows, and the decision is two booleans and a fixed word (engine/speed.mjs), so no other
+// string (a credential included) can be written into it.
 //
 // A LEAF: it reads the shipped-engine table, not the engine registry. The jurisdiction lanes' turn runner reads the
 // record, tool servers reach that runner, and the registry would bring both engine adapters and every setting they
@@ -31,7 +32,7 @@ const nameOf = (v) => (v == null ? null : String(v).trim().toLowerCase() || null
  * with what is there and `written: false`, so a cold start that is retried keeps its first choice.
  * `register` is null when the machine has none set; that is recorded as it was, not guessed.
  */
-export function recordRunChoices(runDir, { engine, register }) {
+export function recordRunChoices(runDir, { engine, register, urgent = null }) {
   const held = readRunChoices(runDir);
   if (held.state !== "none") return { written: false, ...held };
   const e = nameOf(engine), r = nameOf(register);
@@ -39,15 +40,34 @@ export function recordRunChoices(runDir, { engine, register }) {
     throw new Error(`run-choices: "${e}" is not an engine this driver ships (${Object.keys(ENGINE_BINARIES).join(", ")})`);
   if (r !== null && !Object.hasOwn(PROVIDERS, r))
     throw new Error(`run-choices: "${r}" is not a register this driver knows (${Object.keys(PROVIDERS).join(", ")})`);
+  const u = urgentOf(urgent);
   ensureDriverDir(runDir);
   const p = driverDir(runDir, RUN_CHOICES_FILE);
-  writeFileSync(`${p}.tmp`, JSON.stringify({ schema: 1, engine: e, register: r }, null, 2) + "\n");
+  writeFileSync(`${p}.tmp`, JSON.stringify({ schema: 1, engine: e, register: r, ...(u ? { urgent: u } : {}) }, null, 2) + "\n");
   renameSync(`${p}.tmp`, p);
-  return { written: true, state: "recorded", engine: e, register: r };
+  return { written: true, state: "recorded", engine: e, register: r, ...(u ? { urgent: u } : {}) };
 }
 
 /**
- * What the run recorded: `{ state: "recorded", engine, register }`, `{ state: "none" }` for a run that has no
+ * The Urgent decision in the one shape the record holds (engine/speed.mjs urgentDecision), or null for none or for
+ * anything else. A record that predates the decision, or holds one in another shape, runs at standard speed: nothing
+ * here parks or fails a run over its speed. PURE.
+ */
+function urgentOf(u) {
+  if (!u || typeof u !== "object" || typeof u.ordered !== "boolean" || typeof u.fast !== "boolean") return null;
+  const reason = u.reason == null ? null : String(u.reason);
+  if (reason !== null && !/^[a-z-]{1,40}$/.test(reason)) return null;
+  return { ordered: u.ordered, fast: u.ordered && u.fast, reason };
+}
+
+/** The run's recorded Urgent decision, or null for a run with no record or none in it. PURE but for the read. */
+export function urgentForRun(runDir) {
+  const rec = readRunChoices(runDir);
+  return rec.state === "recorded" ? rec.urgent ?? null : null;
+}
+
+/**
+ * What the run recorded: `{ state: "recorded", engine, register, urgent? }`, `{ state: "none" }` for a run that has no
  * record, or `{ state: "unreadable", detail }` for one whose record does not read back as the two names.
  */
 export function readRunChoices(runDir) {
@@ -60,7 +80,8 @@ export function readRunChoices(runDir) {
   const engine = nameOf(o?.engine), register = nameOf(o?.register);
   if (!engine) return { state: "unreadable", detail: "names no engine" };
   if (o?.register != null && typeof o.register !== "string") return { state: "unreadable", detail: "its register is not a name" };
-  return { state: "recorded", engine, register };
+  const urgent = urgentOf(o?.urgent);
+  return { state: "recorded", engine, register, ...(urgent ? { urgent } : {}) };
 }
 
 /**

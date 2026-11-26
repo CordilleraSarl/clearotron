@@ -300,6 +300,11 @@ export function reconcileStamps(runDir, inputsFor, exclude = null, { project = n
       // axis-qualified stamp of that stage ("register-digest" covers "register-digest:primary-sweep").
       if (skip.has(doc.label) || skip.has(doc.label.replace(/:.*$/, ""))) continue;   // stays stale so the resume recomputes it
       const fresh = fingerprint(inputsFor(doc.label) ?? [], { label: doc.label, project });
+      // AN EMPTY FINGERPRINT NEVER REPLACES A RECORDED ONE. `inputsFor` is the clearance's table of stage inputs, and a
+      // label it does not name gets nothing back: every Knockout label does, and a failed Knockout pass used to have its
+      // stages' records emptied here, so the resume ran the intake and every stage after it again. A label whose inputs
+      // this reconcile cannot compute keeps the record its stage wrote, and its own freshness check judges it.
+      if (!fresh.length && Array.isArray(doc.inputs) && doc.inputs.length) continue;
       if (JSON.stringify(fresh) === JSON.stringify(doc.inputs)) continue;
       doc.inputs = fresh;
       doc.reconciledAt = new Date().toISOString();
