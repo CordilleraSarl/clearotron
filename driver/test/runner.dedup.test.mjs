@@ -80,13 +80,14 @@ assert.ok(stripped > 0,
 pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", customersDir);
 
 // Dynamic import AFTER env is set (driver.config captures workspaceRoot at module load).
-const { main, matterSignature, findDuplicateMatter, recordMatter, dropMatter } = await import("../runner.mjs");
+const { main, matterSignature, matterOwner, findDuplicateMatter, recordMatter, dropMatter } = await import("../runner.mjs");
 
-function enqueue(q, base, { msgId, mark, classes, customer, profileKey, forwarder = "relay", conversationId, dupOverride }) {
+function enqueue(q, base, { msgId, mark, classes, customer, profileKey, tenant, forwarder = "relay", conversationId, dupOverride }) {
   writeFileSync(join(q, `${base}.markName.md`), mark + "\n");           // prose sidecar
   writeFileSync(join(q, `${base}.json`), JSON.stringify({              // scalar manifest (undefined convId is dropped)
     id: base, msgId, conversationId, forwarder, forwarderDomain: "example.com", provider: "corsearch", classes, customer,
     ...(profileKey ? { profileKey } : {}),
+    ...(tenant ? { tenant } : {}),
     ...(dupOverride ? { dupOverride: true } : {}),
   }));
 }
@@ -150,6 +151,34 @@ test("ledger: reply dedups; same-msgId/different-matter/stale do NOT; a failed r
   assert.equal(findDuplicateMatter(q, { sig, conversationId: "CONV-A", msgId: "<reply@x>" }, now + 60_000), null, "a dropped entry no longer blocks a re-send (neither matter nor thread)");
 });
 
+// A DUPLICATE IS THE SAME ACCOUNT'S MATTER (design, 2026-11-26). Two companies, or two Generic organisations, that send
+// one forwarder's same mark and classes have each ordered a search, and both run. A row whose owner the ledger does not
+// hold never refuses an order whose owner is known; an order whose owner is unknown meets only rows as ownerless as it.
+test("a duplicate is the same account's matter: another company, another Generic organisation, or an ownerless row never refuses", () => {
+  const q = join(mkdtempSync(join(tmpdir(), "owners-")), "queue");
+  mkdirSync(q, { recursive: true });
+  const sig = matterSignature({ forwarder: "relay", markName: "OWNMARK", classes: [9], customer: "Shared" });
+  const now = Date.now();
+  const A = matterOwner("petcary", null), B = matterOwner("zephyr", null);
+  const G1 = matterOwner("generic", "org-alpha"), G2 = matterOwner("generic", "org-beta");
+  assert.equal(matterOwner("zephyr", "org-alpha"), B, "a company's organisation field was read as part of its owner");
+  recordMatter(q, { sig, conversationId: "CONV-O", msgId: "<a@x>", id: "a", ts: now, profileKey: "petcary" });
+  recordMatter(q, { sig, conversationId: "", msgId: "<g1@x>", id: "g1", ts: now, profileKey: "generic", organisation: "org-alpha" });
+  recordMatter(q, { sig, conversationId: "", msgId: "<anon@x>", id: "anon", ts: now });
+  assert.equal(findDuplicateMatter(q, { sig, msgId: "<a2@x>", owner: A }, now + 1000)?.msgId, "<a@x>", "the same account's re-send is not a duplicate");
+  assert.equal(findDuplicateMatter(q, { sig, conversationId: "CONV-O", msgId: "<b@x>", owner: B }, now + 1000), null,
+    "another company's same matter, or its same thread, was refused as a duplicate");
+  assert.equal(findDuplicateMatter(q, { sig, msgId: "<g1b@x>", owner: G1 }, now + 1000)?.msgId, "<g1@x>", "a Generic organisation's re-send is not a duplicate");
+  assert.equal(findDuplicateMatter(q, { sig, msgId: "<g2@x>", owner: G2 }, now + 1000), null, "another Generic organisation's same matter was refused");
+  assert.equal(findDuplicateMatter(q, { sig, msgId: "<anon2@x>", owner: null }, now + 1000)?.msgId, "<anon@x>",
+    "an order with no known owner lost its duplicate protection against a row as ownerless as it");
+  const onlyAnon = join(mkdtempSync(join(tmpdir(), "owners-")), "queue");
+  mkdirSync(onlyAnon, { recursive: true });
+  recordMatter(onlyAnon, { sig, conversationId: "", msgId: "<anon@x>", id: "anon", ts: now });
+  assert.equal(findDuplicateMatter(onlyAnon, { sig, msgId: "<c@x>", owner: A }, now + 1000), null,
+    "a row whose owner the ledger does not hold refused an order whose owner is known");
+});
+
 test("integration: signature + same-mark-thread dedup park .duplicate; distinct-mark thread + dupOverride run",
   async () => {
   const q = join(root, "workspace-intake-agent", "studio", "clearance-search", "queue");
@@ -175,6 +204,15 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   recordMatter(q, { sig: ovrSig, conversationId: "", msgId: "<ovr-prior@x>", id: "ovr-prior", ts: Date.now() });
   assert.ok(findDuplicateMatter(q, { sig: ovrSig, msgId: "<ovr-force@x>" }, Date.now()), "the seeded prior really would dedup — so a successful run proves dupOverride bypassed it");
   enqueue(q, "ovr-force", { msgId: "<ovr-force@x>", mark: "OVERMARK", classes: [9], customer: "Ovr", dupOverride: true });
+  // (5) ONE MATTER, TWO COMPANIES, then the first company again (design, 2026-11-26): both companies run, and only the
+  //     same company's re-send parks, naming its own earlier order.
+  enqueue(q, "own-a",   { msgId: "<own-a@x>",   mark: "SHAREMARK", classes: [9], customer: "Shared", profileKey: "petcary" });
+  enqueue(q, "own-b",   { msgId: "<own-b@x>",   mark: "SHAREMARK", classes: [9], customer: "Shared", profileKey: "zephyr" });
+  enqueue(q, "own-a2",  { msgId: "<own-a2@x>",  mark: "sharemark", classes: [9], customer: "Shared", profileKey: "petcary" });
+  // (6) ONE MATTER, TWO GENERIC ORGANISATIONS, then the first organisation again.
+  enqueue(q, "gen-1",   { msgId: "<gen-1@x>",   mark: "GENMARK", classes: [9], customer: "Shared", profileKey: "generic", tenant: "org-alpha" });
+  enqueue(q, "gen-2",   { msgId: "<gen-2@x>",   mark: "GENMARK", classes: [9], customer: "Shared", profileKey: "generic", tenant: "org-beta" });
+  enqueue(q, "gen-1b",  { msgId: "<gen-1b@x>",  mark: "GENMARK", classes: [9], customer: "Shared", profileKey: "generic", tenant: "org-alpha" });
 
   await main({ once: true });
   // — BEFORE the assertions below. If the runner refused before any run
@@ -243,18 +281,38 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   assert.ok(existsSync(join(q, "ovr-force.done")), "a dupOverride job runs even though its matter matches a prior ledger entry");
   assert.ok(!existsSync(join(q, "ovr-force.duplicate")), "a dupOverride job is never parked as a duplicate");
 
-  // Ledger records the seeded prior + every RUN matter (vel 1, thr 2, drf 1, other 1, ovr-force 1), never the
-  // three parked dups (vel, drf).
+  // (5) and (6): each company and each Generic organisation ran its matter once; only the same owner's re-send parked,
+  // and it named its own owner's earlier order. Nothing anywhere names the other owner's order.
+  const reasonOf = (b) => readFileSync(join(q, `${b}.duplicate.reason`), "utf8");
+  const packetOf = (b) => readFileSync(join(root, "clearance-outbox", `intake-${b}.duplicate.pending`), "utf8");
+  for (const [pair, other, otherMsg] of [[["own-a", "own-a2"], "own-b", "<own-b@x>"], [["gen-1", "gen-1b"], "gen-2", "<gen-2@x>"]]) {
+    assert.ok(existsSync(join(q, `${other}.done`)), `${other}: another owner's same matter did not run`);
+    const parked = pair.filter((b) => existsSync(join(q, `${b}.duplicate`)));
+    const ran = pair.filter((b) => existsSync(join(q, `${b}.done`)));
+    assert.equal(parked.length, 1, `${pair}: the same owner's re-send did not park exactly once (parked ${parked})`);
+    assert.equal(ran.length, 1, `${pair}: the same owner's matter did not run exactly once (ran ${ran})`);
+    const ownMsg = `<${ran[0]}@x>`;
+    assert.match(reasonOf(parked[0]), new RegExp(`matches prior msgId ${ownMsg}`), "the re-send's reason does not name its own earlier order");
+    assert.ok(JSON.parse(packetOf(parked[0])).text.includes(ownMsg), "the re-send's notice does not name its own earlier order");
+    for (const b of pair) {
+      for (const text of [existsSync(join(q, `${b}.duplicate.reason`)) ? reasonOf(b) : "", existsSync(join(q, `${b}.duplicate`)) ? packetOf(b) : ""]) {
+        assert.ok(!text.includes(otherMsg), `${b}: a reason or notice names another owner's order`);
+      }
+    }
+  }
+
+  // Ledger records the seeded prior + every RUN matter (vel 1, thr 2, drf 1, other 1, ovr-force 1, own 2, gen 2), never the
+  // four parked dups (vel, drf, own, gen).
   const ledgerPath = join(root, "workspace-intake-agent", "studio", "clearance-search", ".matter-ledger.jsonl");
   const ledger = readFileSync(ledgerPath, "utf8").trim().split("\n").map((l) => JSON.parse(l));
-  assert.equal(ledger.length, 7, `ledger has the seeded prior + six runs (got ${ledger.length})`);
+  assert.equal(ledger.length, 11, `ledger has the seeded prior + ten runs (got ${ledger.length})`);
 
-  // One duplicate event packet per parked dup (vel + drf = 2), with the duplicate-skip wording; no
+  // One duplicate event packet per parked dup (vel + drf + own + gen = 4), with the duplicate-skip wording; no
   // intake-rejected packets; and NO gateway calls at all (handoff default — no gateway is ever invoked, so
   // the call log never even comes into existence).
   const outbox = join(root, "clearance-outbox");
   const dupPackets = readdirSync(outbox).filter((f) => f.startsWith("intake-") && f.endsWith(".duplicate.pending"));
-  assert.equal(dupPackets.length, 2, "one duplicate packet per parked dup");
+  assert.equal(dupPackets.length, 4, "one duplicate packet per parked dup");
   for (const f of dupPackets) {
     const pk = JSON.parse(readFileSync(join(outbox, f), "utf8"));
     assert.equal(pk.kind, "duplicate-skipped");
