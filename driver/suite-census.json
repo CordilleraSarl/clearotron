@@ -23,7 +23,7 @@
       "perFile": {
         "a-backgrounded-install-can-actually-run-a-clearance.test.mjs": {
           "tests": 10,
-          "asserts": 46,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
@@ -1522,8 +1522,8 @@
           "todos": 0
         },
         "a-knockout-sweeps-through-the-runs-own-search.test.mjs": {
-          "tests": 5,
-          "asserts": 23,
+          "tests": 6,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -2608,8 +2608,8 @@
           "todos": 0
         },
         "a-run-keeps-the-web-research-it-started-on.pipeline.test.mjs": {
-          "tests": 4,
-          "asserts": 20,
+          "tests": 5,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -3678,6 +3678,12 @@
         "an-unreadable-sidecar-is-not-an-absent-one.test.mjs": {
           "tests": 7,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-upgraded-install-keeps-perplexity-only-where-its-runs-show-it.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -9646,8 +9652,8 @@
           "todos": 0
         },
         "web-research-is-one-setting-read-in-one-place.test.mjs": {
-          "tests": 8,
-          "asserts": 40,
+          "tests": 9,
+          "asserts": 55,
           "skips": 0,
           "todos": 0
         },
