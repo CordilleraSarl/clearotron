@@ -2433,6 +2433,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-report-takes-the-pictures-ready-at-publication-and-waits-for-none.test.mjs": {
+          "tests": 3,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-report-whose-overview-cannot-finish-delivers-its-rating-and-cards.pipeline.test.mjs": {
           "tests": 2,
           "asserts": 17,
