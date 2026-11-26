@@ -131,6 +131,8 @@ const PER_RUN = {
   run_changes: (runId) => [{ runId }, { runId, since: "2026-01-01T00:00:00Z" }],
   diff_artifact: (runId) => [{ runId, name: "report" }, { runId, name: "registerFindings" }],
   what_if_plan: (runId) => [{ runId, stage: "report-overview" }, { runId }],
+  list_findings: (runId) => [{ runId }, { runId, kind: "negatives" }, { runId, kind: "audit" }, { runId, group: "on-field" }],
+  get_finding: (runId) => [{ runId, id: "F1" }, { runId, id: "NR1" }, { runId, id: "AT1" }],
 };
 
 /** Every read tool this session is offered with a declared shape, called on every run: the SDK client checks each answer. */
@@ -172,6 +174,7 @@ for (const demo of [false, true]) {
       }
       for (const name of ["list_runs", "get_run", "server_info", "decision_timeline", "get_provider_usage", "get_coverage", "search", "run_changes",
         "search_runs", "list_outbox_events", "get_telemetry", "read_artifact", "trace", "list_profiles", "get_delivery_packet",
+        "brief", "list_findings", "get_finding", "list_evidence", "list_searches", "get_search_coverage",
         // An install serving its demo withholds the what-if tools (a-demo-names-no-tool-it-withholds.test.mjs).
         ...(demo ? [] : ["what_if_plan", "what_if_result"])])
         assert.ok(total.has(name), `${name} was never offered with a declared shape on any door`);

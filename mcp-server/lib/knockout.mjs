@@ -34,6 +34,7 @@ import { PART_NAMES } from "../../driver/degraded-parts.mjs";
 import { readerRowHead } from "../../driver/coverage-ledger.mjs";
 import { knockoutLeftOpenOf } from "../../driver/publish/knockout-left-open.mjs";   // a name's Left open rows, as its page lists them
 import { REPORT_PAGE } from "../../driver/publish/strings.mjs";
+import { noteDocumentRead } from "./document-reads.mjs";   // the answer names the document version it was read from
 
 
 /**
@@ -54,7 +55,7 @@ export function knockoutDoc(run) {
   if (!run?.runDir) return null;
   // The findings record as publishing held it, where the run's report document has it; the run's own file otherwise.
   const document = readJsonOrNull(paths(run.runDir).reportDocument);
-  if (document?.document === "report-document/knockout-1" && document.client?.findings) return document.client.findings;
+  if (document?.document === "report-document/knockout-1" && document.client?.findings) return noteDocumentRead(document).client.findings;
   return readJsonOrNull(koPaths(run.runDir).findings);
 }
 
@@ -334,7 +335,7 @@ export function knockoutSearches(run) {
 // evidence, and the answers below state the edition the report delivered. null for a run published before the document.
 const deliveredDocument = (run) => {
   const document = run?.runDir ? readJsonOrNull(paths(run.runDir).reportDocument) : null;
-  return document?.document === "report-document/knockout-1" ? document : null;
+  return document?.document === "report-document/knockout-1" ? noteDocumentRead(document) : null;
 };
 const registerRecordsOf = (run) => {
   const document = deliveredDocument(run);

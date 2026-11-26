@@ -80,7 +80,8 @@ import { authorize, visibleTools, USER_ARTIFACTS, ACCOUNT_ARTIFACTS, accountMayR
 // this file already loads, so there is nothing here for a lazy import to save.
 import { accountRun, accountTrace, accountTimeline, accountFinding, accountFindingList,
   accountWhatIfPlan, accountWhatIfQueued, accountWhatIfResult, CLIENT_FAILURE_NOTE as clientFailureNote } from "./lib/audit-view.mjs";
-import { outputSchemaFor, structuredResult, structuredRefusal } from "./lib/result-shapes.mjs";   // each tool's declared result (mcp-server/result-shapes.json)
+import { outputSchemaFor, structuredResult, structuredRefusal } from "./lib/result-shapes.mjs";
+import { withDocumentReads } from "./lib/document-reads.mjs";   // which report document version a call read   // each tool's declared result (mcp-server/result-shapes.json)
 import { scrubMarkdown, scrubBody, scrubFrontMatter, scrubCards } from "./lib/scrub.mjs";
 import { evidenceRecords, searchLog, coverageStatement, registrationGoods, deliveredRegistration } from "./lib/evidence.mjs";
 // The knockout lane's projections. Every audit tool below branches on `isKnockoutRun` because the
@@ -1001,14 +1002,16 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
       }
     }
     try {
-      let result = await fn(authedArgs, { scope });
+      // Run inside the call's own record of which report document it read (lib/document-reads.mjs).
+      const { value, documents } = await withDocumentReads(() => fn(authedArgs, { scope }));
+      let result = value;
       // ACCOUNT FILTER: enumeration results narrow to the grant. Events with no resolvable run
       // (intake rejections before a run exists) stay visible only to full-grant sessions.
       if (Array.isArray(scope?.accounts)) result = filterByAccounts(scope, name, result);
       // CLIENT VIEW: a client principal gets the client cut of artifact text ( R1).
       result = presentForPrincipal(scope, name, result);
       // THE TEXT IS TODAY'S, BYTE FOR BYTE; the structured result rides beside it for a tool that declares one.
-      const structured = structuredResult(name, result);
+      const structured = structuredResult(name, result, { documents });
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }], ...(structured ? { structuredContent: structured } : {}) };
     } catch (e) {
       log(`tool ${name} error: ${e.message}`);
