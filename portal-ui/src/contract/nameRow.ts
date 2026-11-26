@@ -68,10 +68,10 @@ export function reportLine(mark: MarkGroup): string | null {
 }
 
 /** `reportLine` in its two parts, so a screen can keep the date whole on a narrow line. */
-export function reportLineParts(mark: MarkGroup): { readonly label: 'latest report'; readonly date: string | null } | null {
+export function reportLineParts(mark: MarkGroup): { readonly label: 'Latest report'; readonly date: string | null } | null {
   const report = shownReport(mark)
   if (!report || inProgress(mark) === 0) return null
-  return { label: 'latest report', date: report.date }
+  return { label: 'Latest report', date: report.date }
 }
 
 /**
@@ -99,14 +99,22 @@ export function groupStatus(family: FamilyGroup): { readonly text: string; reado
 }
 
 /** The line under a group's name, saying what its Risk cell rolls up. */
-export const GROUP_RISK_LINE = 'Highest risk across the latest report for each name.'
+/**
+ * A family's line under its name (board Clearances, approved 2026-11-25): the highest band across its
+ * names' latest reports, and how many of its searches are still in progress, each only where there is one.
+ */
+export function familyLine(family: FamilyGroup): string {
+  const live = family.queued + family.running
+  return ['Highest risk across latest reports', family.band, live ? `${searchesLabel(live)} in progress` : null]
+    .filter((x): x is string => Boolean(x)).join(' · ')
+}
 
 /** The line under a stopped name's status. */
 export const STOPPED_LINE = 'No report will be produced. Completed work stays readable through Ask AI.'
 
 export type NameActions = {
   /** The bordered button, or null. Its label is also its accessible name. */
-  readonly open: { readonly label: 'Open' | 'Open latest report'; readonly read: Run } | null
+  readonly open: { readonly label: 'Open report' | 'Open latest report'; readonly read: Run } | null
   /** The read Ask AI composes its question from, or null for no Ask AI. */
   readonly askAbout: Run | null
 }
@@ -125,7 +133,7 @@ export function nameActions(mark: MarkGroup): NameActions {
   const report = shownReport(mark)
   if (report) {
     return {
-      open: hasReport(report) ? { label: mark.reads.length > 1 ? 'Open latest report' : 'Open', read: report } : null,
+      open: hasReport(report) ? { label: mark.reads.length > 1 ? 'Open latest report' : 'Open report', read: report } : null,
       askAbout: report,
     }
   }

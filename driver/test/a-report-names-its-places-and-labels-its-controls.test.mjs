@@ -73,6 +73,6 @@ test("each card's export checkbox is named for its conflict, and the chart title
   }
   const svg = html.match(/<svg viewBox="0 0 560 430"[^>]*>\s*<title>([^<]*)<\/title>([\s\S]*?)<\/svg>/);
   assert.ok(svg, "the chart has no <title> first");
-  const points = [...svg[2].matchAll(/<a href="#c\d+">/g)].length;
+  const points = [...svg[2].matchAll(/<a href="#c\d+"[ >]/g)].length;
   assert.equal(svg[1], `Chart of ${points} conflict${points === 1 ? "" : "s"}, placed by how similar each mark is and how close its goods are; each number links to its card below.`);
 });

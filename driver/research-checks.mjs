@@ -14,6 +14,7 @@ import { readFileSync, writeFileSync, renameSync } from "node:fs";
 import { join } from "node:path";
 import { isUseCheckNoResult } from "./findings-model.mjs";
 import { questionKey, sameStageSession } from "./research-answers.mjs";
+import { researchCall } from "./research-records.mjs";   // one reading of a research call's record, for every reader
 import { RESEARCH_CHECKS_FILE, paths, readJson } from "./run-record.mjs";
 
 export { RESEARCH_CHECKS_FILE };
@@ -64,6 +65,26 @@ export function researchChecksText(findings, held, asked) {
 }
 
 /**
+ * The research questions the stage of `sessionKey` asked, oldest first, as `asked` ({ question, ok, error }), and how many
+ * of that stage's research calls had a record that could not be read (`unreadable`). A grid is not a question. A call
+ * whose record cannot be read, but whose question can, is listed as not completed: it is never a search that found
+ * nothing. IMPURE.
+ */
+export function researchAsked(runDir, sessionKey) {
+  const own = (s) => sameStageSession(s, sessionKey);
+  const asked = [];
+  let unreadable = 0;
+  for (const row of rows(paths(runDir).readingLog)) {
+    const call = researchCall(row);
+    if (!call || !own(call.session)) continue;
+    if (!call.known) unreadable++;
+    if (call.kind === "grid" || typeof call.question !== "string" || !call.question.trim()) continue;
+    asked.push({ question: call.question, ok: call.known && call.ok === true, error: (call.known ? call.error : row?.error) ?? null });
+  }
+  return { asked, unreadable };
+}
+
+/**
  * Write the file for the record that now stands (`findingsAt`, the folded findings.json). `held` is what the record
  * checked against; `sessionKey` the writer's session: every session of its stage asked as the writer, so the file the
  * review reads after a correction still lists the main pass's questions. Best-effort: a file
@@ -72,10 +93,7 @@ export function researchChecksText(findings, held, asked) {
 export function writeResearchChecks(runDir, { findingsAt, held = null, sessionKey = null } = {}) {
   try {
     const doc = readJson(findingsAt);
-    const own = (s) => sameStageSession(s, sessionKey);
-    const asked = rows(paths(runDir).readingLog)
-      .filter((r) => r?.tool === "perplexity_research" && own(r.session) && !r.args?.grid && typeof r.args?.task === "string" && r.args.task.trim())
-      .map((r) => ({ question: r.args.task, ok: r.ok === true, error: r.error ?? null }));
+    const { asked } = researchAsked(runDir, sessionKey);
     const at = join(runDir, RESEARCH_CHECKS_FILE);
     writeFileSync(`${at}.tmp`, researchChecksText(doc?.findings, held, asked));
     renameSync(`${at}.tmp`, at);

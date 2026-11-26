@@ -29,7 +29,8 @@ import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES, withFoldedGoods } from "./queue-markers.mjs";
-import { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
+import { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS, ledgerSearches } from "./usage-ledger.mjs";
+import { admittedSearches, oneLeftRefusal } from "./urgent-count.mjs";   // what an order counts against its allowance, decided at claim   // ONE ledger-path calculation, shared with the portal pre-check
 import { orderTimeRefusal, START_ENV_FILE_FLAG } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
 import { runTables } from "./order-tables.mjs";   // the tables the portal's order door reads too, so the two cannot disagree
 import { howItRuns } from "./how-it-runs.mjs";   // how this runner runs, for the remedy its refusal names
@@ -183,7 +184,19 @@ function readMatterLedger(qdir) {
 // never collapse on an empty key). TRADEOFF: a mark *correction* in a proceed-reply (same thread, slightly
 // different mark string) now runs twice — accepted vs. the production false-positive, and that case belongs
 // in the §B5b late-bind, not a fresh enqueue.
-function findDuplicateMatter(qdir, { sig, conversationId, msgId }, now) {
+// ── WHOSE MATTER IT IS (design, 2026-11-26) ───────────────────────────────────────────────────────────────────────────
+// A duplicate is the same matter ordered again by the SAME account: the one the order counts against, and for Generic
+// the organisation within it, exactly as recordMatter writes them and the caps read them. Two companies, or two
+// Generic organisations, that send one forwarder's same mark and classes are two orders, and both run. A row whose
+// owner the ledger does not hold cannot show that an order with a known owner is the same account's, so it never
+// refuses one; an order whose own owner is unknown is compared only with rows that are as ownerless as it is.
+function matterOwner(account, organisation) {
+  if (!account) return null;
+  return account === "generic" ? `generic|${organisation ?? ""}` : String(account);
+}
+const rowOwner = (e) => matterOwner(e?.profileKey ?? null, e?.organisation ?? null);
+
+function findDuplicateMatter(qdir, { sig, conversationId, msgId, owner = null }, now) {
   if (DEDUP_WINDOW_MS <= 0) return null;
   const curMark = sig.split("|")[1] || "";
   const hasMark = Boolean(curMark);
@@ -209,6 +222,7 @@ function findDuplicateMatter(qdir, { sig, conversationId, msgId }, now) {
   // stopped tracking it".
   for (const e of readMatterLedger(qdir)) {
     if (e.failed || e.msgId === msgId || (now - (e.ts ?? 0)) >= DEDUP_WINDOW_MS) continue;   // failed rows never block a re-send (they still count for the monthly cap)
+    if (rowOwner(e) !== owner) continue;   // another account's order, or one whose owner is not known to be this one
     const priorMark = String(e.sig ?? "").split("|")[1] || "";
     const marksAgree = !curMark || !priorMark || curMark === priorMark; // conservative when either absent
     // Search-depth spine (review 2026-07-17): the THREAD dimension must be level-aware too — the headline
@@ -252,7 +266,9 @@ function recordMatter(qdir, entry) {
 // test is how the screen comes to advertise one allowance while the gate enforces another.
 export { DEFAULT_CLIENT_DAILY_RUNS };
 
-export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, now = Date.now(), clientRun = false, organisation = null }) {
+// `searches` is what the order in hand counts (urgent-count.mjs admittedSearches): 2 for an Urgent order that runs
+// fast here, else 1. Each ledger row counts what its own admission recorded (usage-ledger.mjs ledgerSearches).
+export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, now = Date.now(), clientRun = false, organisation = null, searches = 1 }) {
   // GENERIC IS CAPPED LIKE ANY COMPANY, one lane per organisation (ruling 2026-09-10: "every
   // organisation's Generic lane carries the daily cap; the exemption goes"). A Generic run counts in the
   // lane of the organisation it was filed under and nowhere else, so one organisation's day cannot use up
@@ -313,10 +329,13 @@ export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, no
         // is why a monthlyRuns value is worth setting on any account this matters for.
         if (e.failed === true) continue;
         if (inLane(e.profileKey, e.organisation) && e.clientPrincipal === true
-          && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 10) === dayKey) today++;
+          && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 10) === dayKey) today += ledgerSearches(e);
       }
     }
-    if (today + 1 > caps.dailyRuns) {
+    if (today + searches > caps.dailyRuns) {
+      // One left and an order that counts two: refused in the order screen's words, never run as Standard.
+      const oneLeft = oneLeftRefusal({ used: today, limit: caps.dailyRuns, searches });
+      if (oneLeft) return oneLeft;
       return `daily allowance: ${lane} has started ${today} search(es) today (runCaps.dailyRuns=${caps.dailyRuns}) — the allowance resets at midnight UTC, or ask your ${BRAND.name} contact to run this one for you`;
     }
   }
@@ -324,10 +343,10 @@ export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, no
     let month = 0;
     for (const qd of queueDirs) {
       for (const e of readMatterLedger(qd)) {
-        if (inLane(e.profileKey, e.organisation) && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 7) === monthKey) month++;
+        if (inLane(e.profileKey, e.organisation) && typeof e.ts === "number" && new Date(e.ts).toISOString().slice(0, 7) === monthKey) month += ledgerSearches(e);
       }
     }
-    if (month + 1 > caps.monthlyRuns) {
+    if (month + searches > caps.monthlyRuns) {
       return `admission cap: ${lane} has started ${month} run(s) this month (runCaps.monthlyRuns=${caps.monthlyRuns}) — the cap resets at month end; raise it in the customer profile if this is intended growth`;
     }
   }
@@ -347,7 +366,7 @@ function dropMatter(qdir, msgId) {
 }
 
 // Exported for unit tests (the integration path exercises them via claimAndRun).
-export { matterSignature, matterLedgerPath, findDuplicateMatter, recordMatter, dropMatter, readMatterLedger };
+export { matterSignature, matterOwner, matterLedgerPath, findDuplicateMatter, recordMatter, dropMatter, readMatterLedger };
 
 // WHOSE NOTICE THIS IS, for the three notices filed before any run exists. A run's account is read from
 // the profile frozen into it; these notices have no run, so the door could not tell whose they were and
@@ -622,7 +641,7 @@ async function failAtIntake(procPath, qdir, base, agentId, job, v, reasons) {
 
 // Best-effort duplicate-skip notice (mirrors intakeNotify: one outbox packet). Returns the audit-trail
 // outcome string for the .reason file.
-async function duplicateNotify(agentId, base, job, prior = null, sig = null) {
+async function duplicateNotify(agentId, base, job, prior = null, sig = null, shown = true) {
   const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
   // ── A REFUSAL DELIVERED AS SILENCE IS INDISTINGUISHABLE FROM A LOST JOB ────────
   //
@@ -640,8 +659,10 @@ async function duplicateNotify(agentId, base, job, prior = null, sig = null) {
   // so it is where the override belongs; `--dup-override` on the CLI, `dupOverride` on `start_run` and
   // the cockpit's checkbox are the product paths, and naming one here is what stops a hand edit to the
   // ledger being the only route anybody finds.
-  const when = prior?.ts ? new Date(prior.ts).toISOString() : null;
-  const which = prior?.msgId
+  // THE EARLIER ORDER IS NAMED ONLY TO ITS OWN ACCOUNT (design, 2026-11-26): its reference, when it was recorded and
+  // the matter's signature are told to a requester who may see that order, and to nobody else.
+  const when = shown && prior?.ts ? new Date(prior.ts).toISOString() : null;
+  const which = shown && prior?.msgId
     ? ` The run already under way was submitted as ${prior.msgId}${when ? ` at ${when}` : ""} — that is the one that will deliver.`
     : " The earlier run will deliver.";
   const text = `⚠️ Clearotron request "${mark}" matches a matter already in progress or just delivered, so it was `
@@ -657,9 +678,9 @@ async function duplicateNotify(agentId, base, job, prior = null, sig = null) {
     // THE COLLIDING SIGNATURE AND THE PRIOR RUN, AS FIELDS. The sentence is for a person; these are for
     // whatever reads the packet — and a field is what lets a surface show which run without re-deriving
     // a signature it would compute differently.
-    matterSignature: sig ?? null,
-    priorMsgId: prior?.msgId ?? null,
-    priorJobId: prior?.id ?? null,
+    matterSignature: shown ? (sig ?? null) : null,
+    priorMsgId: shown ? (prior?.msgId ?? null) : null,
+    priorJobId: shown ? (prior?.id ?? null) : null,
     priorRecordedAt: when,
     matchedBy: prior?.conversationId && prior.conversationId === String(job?.conversationId ?? "").trim()
       ? "thread" : "matter-signature",
@@ -671,22 +692,25 @@ async function duplicateNotify(agentId, base, job, prior = null, sig = null) {
 // Park a claimed job as a DUPLICATE: consume the .processing claim (so the 90s timer never re-claims it),
 // record why, ping the forwarder once. Recoverable — re-enqueue with "dupOverride": true to force a genuine
 // re-run (a bare .duplicate -> .json rename re-matches the prior within the dedup window and re-parks).
-async function parkDuplicate(procPath, qdir, base, agentId, job, prior, sig) {
+async function parkDuplicate(procPath, qdir, base, agentId, job, prior, sig, owner = null) {
   renameSync(procPath, join(qdir, `${base}.duplicate`));
   cleanupClaimSidecars(procPath);
   cleanupProseParts(qdir, base);
   const conv = String(job.conversationId ?? "").trim();
   const matchedBy = prior.conversationId && prior.conversationId === conv ? "thread (conversationId)" : "matter signature";
+  // Named only where the requester's account is known and is the earlier order's own (findDuplicateMatter matched on it).
+  const shown = owner !== null && rowOwner(prior) === owner;
   const reason = [
     `duplicate clearotron — not run (a second search for the same matter)`,
     `matched by: ${matchedBy}`,
     `matter: ${sig}`,
     `conversationId: ${conv || "-"}`,
-    `matches prior msgId ${prior.msgId} (recorded ${new Date(prior.ts).toISOString()}, within ${DEDUP_WINDOW_MS / 3600000}h)`,
+    shown ? `matches prior msgId ${prior.msgId} (recorded ${new Date(prior.ts).toISOString()}, within ${DEDUP_WINDOW_MS / 3600000}h)`
+      : `matches an earlier order within ${DEDUP_WINDOW_MS / 3600000}h whose account could not be established, so it is not named`,
     `to force a genuine re-run, re-enqueue with "dupOverride": true (a bare ${base}.duplicate -> ${base}.json rename re-matches the prior within the ${DEDUP_WINDOW_MS / 3600000}h window and re-parks)`,
   ].join("\n");
   writeFileSync(join(qdir, `${base}.duplicate.reason`), reason + "\n");
-  const notified = await duplicateNotify(agentId, base, job, prior, sig);
+  const notified = await duplicateNotify(agentId, base, job, prior, sig, shown);
   try { appendFileSync(join(qdir, `${base}.duplicate.reason`), `notify: ${notified}\n`); } catch { /* best-effort */ }
 }
 
@@ -1024,9 +1048,12 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   // Per-account admission caps (Phase 3b) — the resolved effective profile is in hand; over-cap
   // clarifies before any spend and before the matter is recorded.
   if (!effProfile) note(`[runner] ${base} run-caps skipped — profile resolution errored, caps not evaluable for this admission (fail-open by doctrine, logged for visibility)`);
+  // WHAT THIS ORDER COUNTS, decided once, here: 2 for an Urgent order that runs fast on this installation, else 1.
+  // The cap is checked against it and the ledger row records it, so tomorrow's count reads what today charged.
+  const searches = admittedSearches(job);
   const capMsg = checkRunCaps({ account: effProfile?.key ?? null, caps: effProfile?.runCaps, queueDirs: config.queueDirs,
     inHandTagged: Boolean(job.profileKey), clientRun: job.clientPrincipal === true,
-    organisation: typeof job.tenant === "string" && job.tenant ? job.tenant : null });
+    organisation: typeof job.tenant === "string" && job.tenant ? job.tenant : null, searches });
   if (capMsg) {
     note(`[runner] ${base} ${capMsg}`);
     await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: [capMsg] }, [capMsg]);
@@ -1039,6 +1066,8 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   // RESOLVED level (a level change is never a duplicate — the escalation flow).
   const sig = matterSignature(job, { product: policy.product });
   const conversationId = String(job.conversationId ?? "").trim();
+  // The order's owner, as the ledger row below records it: only this owner's earlier orders can make it a duplicate.
+  const owner = matterOwner(effProfile?.key ?? null, effProfile?.key === "generic" && typeof job.tenant === "string" && job.tenant ? job.tenant : null);
   const dupNow = Date.now();
   // dupOverride: an explicit, requester-confirmed "yes, genuinely re-run this mark". Skip the dedup GATE
   // but STILL record the matter, so a forced run seeds the ledger and any later true duplicate is caught.
@@ -1046,14 +1075,14 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   if (job.dupOverride) {
     note(`[runner] ${base} carries dupOverride — skipping matter-dedup gate (forced run; sig=${sig} conv=${conversationId || "-"})`);
   } else {
-    const prior = findDuplicateMatter(qdir, { sig, conversationId, msgId: job.msgId }, dupNow);
+    const prior = findDuplicateMatter(qdir, { sig, conversationId, msgId: job.msgId, owner }, dupNow);
     if (prior) {
       note(`[runner] duplicate ${base} (sig=${sig} conv=${conversationId || "-"}) matches msgId ${prior.msgId} — parking as .duplicate, not running`);
-      await parkDuplicate(procPath, qdir, base, agentId, job, prior, sig);
+      await parkDuplicate(procPath, qdir, base, agentId, job, prior, sig, owner);
       return null;
     }
   }
-  recordMatter(qdir, { sig, conversationId, msgId: job.msgId, id: job.id, ts: dupNow,
+  recordMatter(qdir, { sig, conversationId, msgId: job.msgId, id: job.id, ts: dupNow, searches,
     // Generic is tagged too, with the organisation whose lane it counts in. An untagged Generic row
     // counted towards nothing, which was the exemption the owner's 2026-09-10 ruling removed.
     ...(effProfile?.key ? { profileKey: effProfile.key } : {}),

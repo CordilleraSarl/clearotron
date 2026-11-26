@@ -50,6 +50,19 @@ account's default, or a saved search), the territories and marketplaces that wou
 the turnaround, and any blockers, as questions to put back. It is a check, not a gate. Put what it
 reports in the confirmation, above all a search or a scope narrower than the words the requester used.
 
+**When time is short, offer Urgent, and start on the answer.** Urgent requests the AI service's faster
+setting wherever it is available. The search and report are the same. Offer it when the deadline falls
+before the end of the Standard turnaround in `plan_run`'s `howSoon`, or when the requester says urgent,
+today, ASAP or the like. In the confirmation, state Urgent's turnaround, that it uses 2 searches, and
+what the account has left today, all as `plan_run` reports them, and ask: Urgent or Standard? This is
+the one question that waits for its answer: start the search when it comes, with `urgent: true` only on
+Urgent. Never set it yourself.
+- If `howSoon.urgentAvailable` is false, give the notice in its `urgentNote`, and start at Standard at
+  once if it fits.
+- If Urgent exceeds today's allowance, give the remaining count and Urgent's cost from the preview.
+  Offer Standard if it fits. If the requester chose Urgent, wait for agreement before submitting
+  Standard. With no searches left today, neither option fits.
+
 **4. Send the confirmation in three groups, in this order.**
 - **Corrections and commitments:** a correction to the mark, the deadline diarised, the recipients, the
   billing, and anything instructed that you will do or cannot do.
@@ -60,15 +73,16 @@ reports in the confirmation, above all a search or a scope narrower than the wor
 - **Given:** what the request stated, said back briefly.
 
 End with **"Submitted on this understanding — reply to correct anything."** Call `start_run` with the
-same arguments at once. If validation refuses the submission, correct the named input and try once more.
-If the ID is already queued or processing, check the existing order. If the outcome is unknown, check its
-status before trying again. Confirm submission only after acceptance or after verifying that this order
-was already submitted. Give the requester the actionable reason in plain words. Keep raw diagnostics for
-staff.
+same arguments at once. When you asked Urgent or Standard, end with that question instead, and call
+`start_run` when it is answered. If validation refuses the submission, correct the named input and try
+once more. If the ID is already queued or processing, check the existing order. If the outcome is
+unknown, check its status before trying again. Confirm submission only after acceptance or after
+verifying that this order was already submitted. Give the requester the actionable reason in plain
+words. Keep raw diagnostics for staff.
 
-**5. What holds a search back.** Only two things: a mark that cannot be made out (absent, or with no
-clearly likely reading), and goods and classes both absent. Ask for the missing item, and start when the
-answer arrives. Nothing else holds a search:
+**5. What holds a search back.** Besides the Urgent question, only two things: a mark that cannot be
+made out (absent, or with no clearly likely reading), and goods and classes both absent. Ask for the
+missing item, and start when the answer arrives. Nothing else holds a search:
 - A mark with one obvious mistyping is searched on the corrected reading, with the correction first in
   the confirmation ("the form wrote NOVAPLUSE; searched as NOVAPULSE — say so if that is wrong").
 - A missing reference never holds a search.

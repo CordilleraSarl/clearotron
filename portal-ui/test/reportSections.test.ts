@@ -67,13 +67,16 @@ test('a breadcrumb press is a command with an id, not a boolean', () => {
 // owner actually sees — both steering controls in the pinned header rather than under it.
 const RESULT = readFileSync(new URL('../src/screens/Result.tsx', import.meta.url), 'utf8')
 
-test('the Reads strip and the breadcrumb are both inside the pinned header', () => {
-  const head = RESULT.indexOf('<div className="report-head">')
+test('the search history and the breadcrumb are both inside the pinned header', () => {
+  // ONE HEADER, TWO STATES (board ReportHeader, approved 2026-11-25): its class carries the pinned state.
+  const head = RESULT.indexOf('<div className={`report-head${pin.compact ? \' compact\' : \'\'}${pin.pinnedFull ? \' pinned-full\' : \'\'}`}')
   const nav = RESULT.indexOf('<div className="report-nav">')
   const frame = RESULT.indexOf('<ReportFrame')
   assert.ok(head >= 0 && nav >= 0 && frame >= 0)
   assert.ok(nav > head && nav < frame, 'the merged row sits inside the header, above the document')
-  assert.ok(RESULT.indexOf('hasThread(reads)') > head, 'the Reads strip moved into the header with it')
+  assert.ok(RESULT.indexOf('hasThread(reads)') > head, 'the search history moved into the header with it')
+  assert.match(RESULT, />Search history<\/span>/, '"Reads" is back over the chips, where "Search history" was approved')
+  assert.doesNotMatch(RESULT, />Reads<\/span>/, '"Reads" is back over the chips')
   assert.match(RESULT, /frame\.send\('section', sec\.id\)/, 'a press asks the document where that section is')
 })
 

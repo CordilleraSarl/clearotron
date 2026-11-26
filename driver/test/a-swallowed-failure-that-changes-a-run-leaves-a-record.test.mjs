@@ -50,7 +50,9 @@ test("a digest queue that is there and does not read keeps the digest stale; wit
       writeFileSync(input, "[1]\n");
       writeStamp(d, "register-digest:primary-sweep", [input]);
       writeFileSync(input, "[1, 2]\n");   // the stamp is now stale against its input
-      const P = { runDir: d, digestQueue: driverDir(d, "digest-queue.json") };
+      // The band is the digest's declared input (stages.mjs, stageInputs), so the reconcile computes a real fingerprint for
+      // it. An empty one never replaces a recorded stamp, so without it the no-queue arm would reconcile nothing.
+      const P = { runDir: d, digestQueue: driverDir(d, "digest-queue.json"), registerNamedBand: input };
       if (queue !== null) writeFileSync(P.digestQueue, queue);
       reconcilePassStamps({ paths: P }, { paths: P });
       const stamp = readStamp(d, "register-digest:primary-sweep");

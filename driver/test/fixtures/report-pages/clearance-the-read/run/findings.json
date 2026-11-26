@@ -1,0 +1,42 @@
+{
+  "schema_version": 7,
+  "rated_under_framework": "fixture-scale",
+  "findings": [
+    {
+      "ordinal": 1,
+      "mark": "TALVOREN",
+      "owner": { "name": "Talvoren Systems", "country": "DE", "registrations": [ { "uri": "/mark/eu/00000000-0000-4000-8000-000000000001" } ] },
+      "band": "Moderate",
+      "net": "Talvoren Systems' registered TALVOREN covers greenhouse software, the company's own field.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": { "token": "high", "basis": "verified-from-record", "source": "/mark/eu/00000000-0000-4000-8000-000000000001" },
+        "goods_proximity": { "token": "high", "basis": "verified-from-record", "source": "/mark/eu/00000000-0000-4000-8000-000000000001" },
+        "use": { "token": "unknown", "basis": "inferred-from-signal" },
+        "enforcer": { "token": "unknown", "basis": "inferred-from-signal" }
+      },
+      "quadrant": { "x": 0.7, "y": 0.7 },
+      "source": { "source_type": "register-vendor", "resolved_link": "" },
+      "legal_position": "The registration covers the same software and the names differ by one letter, so an objection is likely.",
+      "practical_position": "The owner's enforcement history is unknown."
+    },
+    {
+      "ordinal": 2,
+      "mark": "TALVERINE",
+      "owner": { "name": "Talverine Analytics Ltd", "country": "GB", "registrations": [ { "uri": "/mark/gb/00000000-0000-4000-8000-000000000002" } ] },
+      "band": "Manageable",
+      "net": "Talverine Analytics' pending TALVERINE sits in soil analysis, a neighbouring field.",
+      "disposition": "adversarial",
+      "meters": {
+        "mark_similarity": { "token": "medium", "basis": "verified-from-record", "source": "/mark/gb/00000000-0000-4000-8000-000000000002" },
+        "goods_proximity": { "token": "low", "basis": "verified-from-record", "source": "/mark/gb/00000000-0000-4000-8000-000000000002" },
+        "use": { "token": "unknown", "basis": "inferred-from-signal" },
+        "enforcer": { "token": "unknown", "basis": "inferred-from-signal" }
+      },
+      "quadrant": { "x": 0.3, "y": 0.3 },
+      "source": { "source_type": "register-vendor", "resolved_link": "" },
+      "legal_position": "The goods sit in a neighbouring field.",
+      "practical_position": "The application is pending."
+    }
+  ]
+}

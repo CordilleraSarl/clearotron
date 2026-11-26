@@ -339,7 +339,16 @@ export const RECORD_LINKS = Object.freeze({
 });
 
 /** The Knockout report page: its own words, section by section. A value a sentence carries arrives formatted. */
+// A card's picture line (owner, 2026-11-25), one set of words for both report pages: each set of pictures sits in a
+// frame of its own under its label.
+const PICTURES = Object.freeze({
+  register: 'Register',
+  onTheWeb: 'On the web',
+  webAlt: (mark, site, date) => `${mark}, picture shown by ${site}, fetched ${date}`,
+});
+
 export const KNOCKOUT_PAGE = Object.freeze({
+  pictures: PICTURES,
   // The jump strip, in its order.
   strip: Object.freeze({ summary: 'Summary', findings: 'Findings', filings: 'Also considered', next: 'Next steps' }),
   degradedNote: 'Automated research for this name was unavailable — manual verification is recommended before relying on this rating.',
@@ -404,6 +413,9 @@ export const KNOCKOUT_PAGE = Object.freeze({
   finding: Object.freeze({
     unnamed: 'Unnamed finding',
     askAi: '\u2726 Ask AI about this finding',
+    // Inside the portal only (owner, 2026-11-25): a link to this card, and the word a screen reader hears once it is copied.
+    copyLink: 'Copy link',
+    copied: 'Copied',
     fullDetail: 'Full detail',
     sources: 'Sources: ',
   }),
@@ -648,6 +660,14 @@ export const REPORT_PAGE = Object.freeze({
   // The closed heading over the conflicts below the risk (2026-11-18; the singular form 2026-11-19): their count, and
   // each band below the risk by the framework's own word, joined by "or". One conflict reads in the singular.
   lowerBand: (count, bands) => `${count.toLocaleString('en-GB')} more conflict${count === 1 ? '' : 's'} rated ${bands.join(' or ')}`,
+  // The folded list's control, on screen only (owner, 2026-11-25): "Show all {n}" while folded, "Show" where the list holds
+  // one conflict, and "Hide" while open. {n} is the number the title opens with.
+  lowerBandShow: (count) => (count === 1 ? 'Show' : `Show all ${count.toLocaleString('en-GB')}`),
+  lowerBandHide: 'Hide',
+  // A conflict card's picture line (owner, 2026-11-25): each set of pictures sits in a frame of its own under its label.
+  pictures: PICTURES,
+  // The conflict panel (owner, 2026-11-25): its name for a screen reader, and the name of the control that shuts it.
+  conflictPanel: Object.freeze({ name: (n) => `Conflict ${n}`, close: 'Close' }),
   // The chart of conflicts: its axes, its zone and its legend.
   chart: Object.freeze({
     goodsAxis: 'Goods / services proximity →',
@@ -686,6 +706,9 @@ export const REPORT_PAGE = Object.freeze({
     theRead: 'The read',
     includeInPdf: (n) => `Include conflict ${n} in the PDF`,
     askAi: '\u2726 Ask AI about this finding',
+    // Inside the portal only (owner, 2026-11-25): a link to this card, and the word a screen reader hears once it is copied.
+    copyLink: 'Copy link',
+    copied: 'Copied',
   }),
   // The mark itself: what the mark is, before any conflict.
   markItself: Object.freeze({

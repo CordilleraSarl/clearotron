@@ -98,6 +98,11 @@ const isHttpUrl = (u) => /^https?:\/\//i.test(String(u ?? '').trim());
 // The sandbox already permits it: allow-popups allow-popups-to-escape-sandbox have been on that frame
 // since the Result screen's first commit (3654a76), so the popup is not what was missing. `rel` stays
 // beside it — noopener severs window.opener, noreferrer withholds the run's URL from the evidence host.
+// COPY LINK, as on a clearance card (owner, 2026-11-25): inside the portal only, shown by the frame bridge, never printed.
+const COPY_ICONS = '<svg class="ci-link" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a3 3 0 004.2.3l2-2a3 3 0 00-4.2-4.2l-1 1"/><path d="M8 6a3 3 0 00-4.2-.3l-2 2a3 3 0 004.2 4.2l1-1"/></svg><svg class="ci-tick" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>';
+const copyLinkButton = () => `<button type="button" class="copy-fi no-print" data-copied="${escAttr(K.finding.copied)}">${COPY_ICONS}<span>${esc(K.finding.copyLink)}</span></button>`;
+// A card's own address on the page: a Knockout numbers its findings again for each name, so the name's position leads.
+const koCardId = (markIndex, ordinal) => `k${Number(markIndex)}-${Number(ordinal)}`;
 const linkOrText = (u) => (isHttpUrl(u) ? `<a href="${escAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(u)}</a>` : esc(u));
 // The audit workbook's link, attribute-safe: the portal's route where the publisher hands one in, else the workbook's
 // own file name beside the page, else none.
@@ -698,7 +703,19 @@ function evidenceCell(u, { filings = null, provider = null } = {}) {
   return link?.label ? officeRecordCell({ officeLink: link }, esc(handle)) : esc(handle);
 }
 
-function findingBlock(v, framework, markIndex, method = null, cite = {}) {
+// A FINDING CARD'S ONE WEB PICTURE (owner, 2026-11-25): the picture of its earliest candidate page that arrived, saved by
+// the picture step, in an "On the web" frame under the meta line, captioned with its site and opening the page. A card
+// whose pages gave none draws no frame.
+function findingWebFrame(v, markIndex, webPictures = new Map()) {
+  const p = (webPictures.get(koCardId(markIndex, v.ordinal)) ?? [])[0];
+  if (!p) return '';
+  const href = isHttpUrl(p.page) ? escAttr(p.page) : null;
+  const img = `<img src="${escAttr(p.src)}" alt="${escAttr(K.pictures.webAlt(v.name ?? '', p.site ?? '', p.fetchedOn ?? ''))}">`;
+  return `<div class="pic-line"><div class="pic-set"><div class="pic-head"><span class="pic-lab">${esc(K.pictures.onTheWeb)}</span></div><div class="rr-logos rr-band"><figure class="rr-lg">${
+    href ? `<a href="${href}" target="_blank" rel="noopener noreferrer">${img}</a>` : img}<figcaption>${esc(p.site ?? '')}</figcaption></figure></div></div></div>`;
+}
+
+function findingBlock(v, framework, markIndex, method = null, cite = {}, webPictures = new Map()) {
   const meta = [v.type, v.owner].filter(Boolean).map((s) => esc(s)).join(' · ');
   const ev = v.evidence.map((u) => evidenceCell(u, cite)).join(' · ');
   // THE CLEARANCE REPORT'S CARD, AND THE KNOCKOUT'S LOCATOR — both classes, deliberately. report.css
@@ -720,16 +737,16 @@ function findingBlock(v, framework, markIndex, method = null, cite = {}) {
   // manifest and can be any ladder a customer configures. Mapping one onto the other would be a second
   // table to keep in step — the same inline var the band chip already uses is the honest join.
   const stop = bandStop(framework, v.band);
-  return `<div class="card ko-find" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
+  return `<div class="card ko-find" id="${koCardId(markIndex, v.ordinal)}" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
         <div class="top">
           <div class="rail" style="background:var(${stop})"></div>
           <div class="body">
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(v.name ?? K.finding.unnamed)}</h3>${
     v.band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(v.band, method, v.inputs)}</span>` : ''}${sourceChips(v)}
-              <button class="ask-fi no-print">${K.finding.askAi}</button>
+              <span class="fi-acts no-print">${copyLinkButton()}<button class="ask-fi no-print">${K.finding.askAi}</button></span>
             </div>
-            ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}
+            ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}${findingWebFrame(v, markIndex, webPictures)}
             ${v.lead ? `<p class="ko-findnet">${inlineMd(v.lead)}</p>` : ''}
             ${/* The 2026-09-16 report redesign — head, meta and the one-line read stay visible; the rest folds, as on
                  a clearance card, so a screen of many names reads as a screen. */''}
@@ -1200,7 +1217,22 @@ function reviewerNotesBlock(m) {
   return '';
 }
 
-function registerFindingBlock(v, markIndex, reads = null, framework = null, ownerChecks = [], method = null) {
+// THE FILING'S LOGO ON ITS CARD (owner, 2026-11-25): one "Register" frame holding that filing's logo where the run fetched
+// one, captioned with its register as a clearance card's logo is, with the alt text and the office link the filings table
+// gives it. A filing the run holds no record of, or whose logo did not arrive, draws no frame.
+function filingLogoFrame(r, { filingRecords = new Map(), logos = new Map() } = {}) {
+  const key = normalizeRecordUri(r?.recordId);
+  const rec = key ? filingRecords.get(key) : null;
+  const fig = rec ? logoFigureHtml(rec, { uri: key, logo: logos.get(key), href: r.officeLink?.href ? escAttr(r.officeLink.href) : null, caption: true }) : null;
+  return fig ? `<div class="pic-line"><div class="pic-set"><div class="pic-head"><span class="pic-lab">${esc(K.pictures.register)}</span></div><div class="rr-logos rr-band">${fig}</div></div></div>` : '';
+}
+
+/** The filings a name's register cards draw, for the logo step to ask about as it asks about the table's rows. */
+export function cardFilings(registerRecords, mark, framework) {
+  return registerCardsOnPage(registerCardViews(mark, framework, registerRecords).cards, mark, framework).map((v) => v.record);
+}
+
+function registerFindingBlock(v, markIndex, reads = null, framework = null, ownerChecks = [], method = null, pictures = {}) {
   const r = v.record;
   // — THE RATER'S OWN READ OF THIS FILING, when it recorded one. `registerReads` is
   // joined to the record store by the validator, so a row that reaches here names a filing this run
@@ -1231,16 +1263,17 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
   const meta = [r.owner ? esc(r.owner) : K.filingCard.proprietorNotStated, r.territory ? esc(r.territory) : null]
     .filter(Boolean).join(' · ');
   const receipt = officeRecordCell(r, isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? K.filingCard.noRecordAddress));
-  return `<div class="card ko-find" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
+  return `<div class="card ko-find" id="${koCardId(markIndex, v.ordinal)}" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
         <div class="top">
           <div class="rail" style="background:var(${stop ?? '--faint'})"></div>
           <div class="body">
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(r.mark ?? K.filingCard.unnamed)}</h3>${
     band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">${K.chips.register}</span>
-              <button class="ask-fi no-print">${K.finding.askAi}</button>
+              <span class="fi-acts no-print">${copyLinkButton()}<button class="ask-fi no-print">${K.finding.askAi}</button></span>
             </div>
             <p class="ko-findmeta">${meta}</p>
+            ${filingLogoFrame(r, pictures)}
             <p class="ko-findnet">${esc(v.statement)}</p>
             ${/* The 2026-09-16 report redesign — the head, the meta line and the one-line read stay visible; the rest
                  sits behind a fold, as it does on a clearance card, so a screen of many names reads as a
@@ -1480,7 +1513,7 @@ function readBlock(m, framework, { opening = '' } = {}) {
   ].filter(Boolean).join('');
 }
 
-function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null, opening = '' } = {}) {
+function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null, cardOrder = null, opening = '', filingRecords = new Map(), logos = new Map(), webPictures = new Map() } = {}) {
   const cite = { filings: filingsByHandle(registerRecords), provider: registerRecords?.provider ?? null };
   const cards = marks.map((m, markIndex) => {
     const bullets = readBlock(m, framework, { opening });
@@ -1491,7 +1524,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // before this order keeps the one it was delivered with: its findings, then its filing cards.
     const reg = registerCardViews(m, framework, registerRecords);
     const drawn = registerCardsOnPage(reg.cards, m, framework);
-    const regBlocks = drawn.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks, frameworkMethod)).join('');
+    const regBlocks = drawn.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks, frameworkMethod, { filingRecords, logos })).join('');
     // The overflow counts what is NOT on the page against what met the promotion test — cards held back
     // by the cap and cards the rater put on the lowest rung alike, because from the reader's side they
     // are the same fact: further filings for this name, all of them listed below.
@@ -1506,7 +1539,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // nothing anywhere saying so. findings-model.mjs's view reads both shapes and drops nothing.
     const views = knockoutFindingViews(m, { manifest: framework });
     const weighsAFiling = (v) => Array.isArray(v?.weighedFilings) && v.weighedFilings.length > 0;
-    const findsOf = (list) => list.map((v) => findingBlock(v, framework, markIndex, frameworkMethod, cite)).join('');
+    const findsOf = (list) => list.map((v) => findingBlock(v, framework, markIndex, frameworkMethod, cite, webPictures)).join('');
     // — THE REGISTER CARDS ARE INSIDE `body`, and that is the fall-through guard. A mark whose only
     // conflict is a filing on the register used to reach the sentence below and be published as clean.
     // The guard is deliberately TIGHT: a listed filing that is dead or out of the counted classes does
@@ -1633,7 +1666,17 @@ const CAVEAT_LEAD = K.caveatLead;
 // carries. What the document does not hold is the page's surface (which name, the workbook's portal address, the
 // confidentiality posture, the demo flag) and the two sets it holds by reference (each filing's saved record and each
 // saved logo), which publish resolves from the run. PURE given its inputs.
-function knockoutContextOf(doc, { at, filingRecords = new Map(), logos = new Map(), auditHref = null, delivery = null, demoData = false } = {}) {
+/**
+ * A name's web pictures as its own page keys them. The run's picture record keys each finding card by the name's place in
+ * the run (`k<at>-<n>`), and a name's page draws its one name at place 0 (`k0-<n>`): read unchanged, every page but the
+ * first would look up the first name's pictures. PURE.
+ */
+export function picturesForNamePage(webPictures, at) {
+  const from = `k${Number(at)}-`;
+  return new Map([...(webPictures ?? new Map())].filter(([k]) => String(k).startsWith(from)).map(([k, v]) => [`k0-${String(k).slice(from.length)}`, v]));
+}
+
+function knockoutContextOf(doc, { at, filingRecords = new Map(), logos = new Map(), webPictures = new Map(), auditHref = null, delivery = null, demoData = false } = {}) {
   const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, framework = doc?.framework ?? {};
   const findings = client.findings ?? {};
   const m = (findings.marks ?? [])[at];
@@ -1651,7 +1694,7 @@ function knockoutContextOf(doc, { at, filingRecords = new Map(), logos = new Map
     identity: { identity: product.name ?? null, stageLabel: product.stageLabel ?? null, template: product.template ?? null, banner: product.banner ?? null },
     matter: run.runId, auditHref,
     leftOpen: knockoutLeftOpenOf(doc, at),
-    registerRecordsUnreadable: client.registerRecordsUnreadable, filingRecords, logos, demoData, depthNote: product.depthNote ?? null,
+    registerRecordsUnreadable: client.registerRecordsUnreadable, filingRecords, logos, webPictures: picturesForNamePage(webPictures, at), demoData, depthNote: product.depthNote ?? null,
     searchPolicy: scope.policy ?? null, delivery, servedModels: client.servedModels, frameworkMethod: framework.method,
   });
 }
@@ -1665,7 +1708,7 @@ function knockoutContext(findings, framework, {
   // `registerRecords.unavailable` and anything invented for it would become client-facing wording.
   registerRecordsUnreadable = false,
   // Each listed filing's saved record and logo, by its normalised record id; empty draws the table as before.
-  filingRecords = new Map(), logos = new Map(),
+  filingRecords = new Map(), logos = new Map(), webPictures = new Map(),
   // The searches this run did not complete, as Left open rows ({area, state, note}); empty draws no section.
   leftOpen = [],
   // The driver's own record of the owner lookups it ran. Defaults to [] so an
@@ -1766,7 +1809,7 @@ function knockoutContext(findings, framework, {
   // a disclosure, which is the one failure that would matter on a client-facing page. A similarity score
   // could; that is why there isn't one.
   const newCaveats = caveats.filter((c) => saysSomethingNew(c, SCOPE_BLOCK_TEXT));
-  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder, opening: findings?.batch?.executiveSummary });
+  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod, cardOrder: findings?.cardOrder, opening: findings?.batch?.executiveSummary, filingRecords, logos, webPictures });
   // The request-level notes, gathered across every mark on the document and rendered ONCE at the top.
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
@@ -1876,8 +1919,10 @@ export const KNOCKOUT_PAGE = Object.freeze({
    input.pickbox anywhere, so a select-all would tick nothing. The shell reads what is defined here and
    offers only that, so an absent verb is an absent menu item instead of a control that fails.
    NO BACKTICKS IN THIS COMMENT. It sits inside a template literal, and a backtick ends it -- the failure
-   arrives at IMPORT time naming a token nobody wrote (portal-report.test.mjs pins the same rule). */
-function openAll(v){document.querySelectorAll('details.ko-full').forEach(function(d){d.open=!!v;});}
+   arrives at IMPORT time naming a token nobody wrote (portal-report.test.mjs pins the same rule).
+   EXPAND ALL MEANS EVERY FOLD. It opened only the full assessment and left 20 of the demo's 21 folds alone, so a
+   search of the page missed every term list and register record. It reads every fold, so a fold added later is in. */
+function openAll(v){document.querySelectorAll('details').forEach(function(d){d.open=!!v;});}
 /* No tick filter — there is nothing to filter. The beforeprint handler below opens every collapsed
    narrative first, so what prints is the whole document rather than whatever happened to be expanded. */
 function exportPDF(){window.print();}

@@ -1,0 +1,161 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+//
+// AN URGENT ORDER RUNS AT THE SPEED THIS INSTALLATION CAN, AND THE CONNECTOR SAYS WHICH BEFORE AND AFTER.
+//
+// The connector carries the order's How soon option, `urgent`. Whether this installation can run it is the answer the
+// run itself reads at its start (engine/speed.mjs urgentAvailability, through lib/urgent.mjs):
+//   - where it can, the order is written Urgent;
+//   - where it cannot, the order starts at Standard, counts as one search, and the reply says so in the board's own
+//     sentence. It is never refused and never held;
+//   - a value that is not a boolean is refused, so an Urgent order is never quietly run, and counted, as Standard.
+// describe_options says which, and plan_run previews both options' turnaround and count from the shared effort model.
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
+
+const ROOT = mkdtempSync(join(tmpdir(), "urgent-order-"));
+pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
+pinEnv(process.env, "CLEAROTRON_QUEUE_DIR", join(ROOT, "queue"));
+
+const { test, afterEach } = await import("node:test");
+const assert = (await import("node:assert/strict")).default;
+const { makeServer } = await import("../server.mjs");
+const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
+const { InMemoryTransport } = await import("@modelcontextprotocol/sdk/inMemory.js");
+const { URGENT_UNAVAILABLE } = await import("../lib/urgent.mjs");
+const { withinAllowance } = await import("../lib/plan.mjs");
+const { config } = await import("../lib/driver.mjs");
+const { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS } = await import("../../driver/usage-ledger.mjs");
+const { resolveEffectiveProfile } = await import("../../driver/profiles.mjs");
+
+// THE TWO INSTALLATIONS: Claude on a subscription can run Urgent; Claude through Amazon Bedrock cannot (the vendor's
+// fast-mode page, read in engine/speed.mjs).
+const CAN = { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "subscription", CLAUDE_CODE_USE_BEDROCK: undefined };
+const CANNOT = { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_BEDROCK: "1" };
+const saved = {};
+function installation(env) {
+  for (const [k, v] of Object.entries(env)) {
+    if (!(k in saved)) saved[k] = process.env[k];
+    if (v === undefined) delete process.env[k]; else process.env[k] = v;
+  }
+}
+afterEach(() => { for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; } });
+
+async function call(name, args, scope) {
+  const [a, b] = InMemoryTransport.createLinkedPair();
+  await makeServer(scope ? { scope, local: false } : undefined).connect(b);
+  const client = new Client({ name: "urgent-order-test", version: "1" });
+  await client.connect(a);
+  await client.listTools();   // the SDK client checks every answer of a tool that declares one
+  const r = await client.callTool({ name, arguments: args });
+  await client.close();
+  return r;
+}
+const order = (extra) => ({ markName: `URGENT${Math.random().toString(36).slice(2, 7).toUpperCase()}`, forwarder: "requester", classes: [9],
+  profileKey: "demo-brand-owner", product: "multi-country-focus-search", jurisdictions: ["EU", "US"], ...extra });
+const queuedJob = (r) => JSON.parse(readFileSync(r.structuredContent.queuePath, "utf8"));
+
+test("where this installation can run Urgent, the order is written Urgent and nothing is added to the reply", async () => {
+  installation(CAN);
+  const r = await call("start_run", order({ urgent: true }));
+  assert.equal(r.structuredContent?.outcome, "queued", JSON.stringify(r.content));
+  assert.equal(queuedJob(r).urgent, true);
+  assert.ok(!r.structuredContent.warnings.includes(URGENT_UNAVAILABLE));
+});
+
+test("where it cannot, the order starts at Standard, is never refused, and its reply says so in the board's sentence", async () => {
+  installation(CANNOT);
+  const r = await call("start_run", order({ urgent: true }));
+  assert.equal(r.isError, undefined, JSON.stringify(r.content));
+  assert.equal(r.structuredContent.outcome, "queued");
+  assert.equal(queuedJob(r).urgent, false, "written Standard, so it runs and counts as one search");
+  assert.ok(r.structuredContent.warnings.includes("Not available with this installation's AI service. Searches run at Standard."));
+});
+
+test("a Standard order, sent or omitted, is written as sent on either installation", async () => {
+  for (const env of [CAN, CANNOT]) {
+    installation(env);
+    assert.equal(queuedJob(await call("start_run", order({ urgent: false }))).urgent, false);
+    assert.equal("urgent" in queuedJob(await call("start_run", order({}))), false);
+  }
+});
+
+test("a value that is not a boolean is refused, on both tools, rather than run as Standard", async () => {
+  installation(CAN);
+  for (const tool of ["start_run", "plan_run"]) {
+    const r = await call(tool, order({ urgent: "yes" }));
+    const said = tool === "start_run" ? r.structuredContent?.reason ?? r.content[0].text : JSON.parse(r.content[0].text).blockers.join("\n");
+    assert.match(said, /urgent "yes" must be a boolean/, `${tool}: ${said}`);
+  }
+});
+
+test("describe_options says whether this installation can run Urgent", async () => {
+  installation(CAN);
+  assert.deepEqual(JSON.parse((await call("describe_options", {})).content[0].text).urgent, { available: true });
+  installation(CANNOT);
+  assert.deepEqual(JSON.parse((await call("describe_options", {})).content[0].text).urgent, { available: false, note: URGENT_UNAVAILABLE });
+});
+
+test("plan_run previews both options' turnaround and count, from the shared effort model", async () => {
+  installation(CAN);
+  const can = JSON.parse((await call("plan_run", order({ urgent: true }))).content[0].text).howSoon;
+  assert.equal(can.chosen, "urgent");
+  assert.equal(can.urgentAvailable, true);
+  for (const opt of [can.standard, can.urgent]) {
+    assert.equal(typeof opt.turnaround, "string");
+    assert.equal(typeof opt.searches, "number");
+  }
+  // THE SHARED COUNT: Urgent uses twice Standard's searches, on its own ruled turnaround (0.5 to 1 hour).
+  assert.equal(can.urgent.searches, 2 * can.standard.searches);
+  assert.deepEqual([can.urgent.turnaroundLowHours, can.urgent.turnaroundHighHours], [0.5, 1]);
+  assert.deepEqual([can.standard.turnaroundLowHours, can.standard.turnaroundHighHours], [1.5, 2.5]);
+  installation(CANNOT);
+  const cannot = JSON.parse((await call("plan_run", order({ urgent: true }))).content[0].text);
+  assert.equal(cannot.howSoon.chosen, "standard", "previewed as it would run: Standard");
+  assert.equal(cannot.howSoon.urgentAvailable, false);
+  assert.equal(cannot.howSoon.urgent, null);
+  assert.equal(cannot.howSoon.urgentNote, URGENT_UNAVAILABLE);
+  assert.ok(cannot.warnings.includes(URGENT_UNAVAILABLE));
+});
+
+test("an option fits today's allowance by the wall's own rule: with one search left, Standard fits and Urgent does not", () => {
+  const oneLeft = { capped: true, complete: true, today: 3, dailyRunsEffective: 4 };
+  assert.equal(withinAllowance(oneLeft, 1), true);
+  assert.equal(withinAllowance(oneLeft, 2), false);
+  assert.equal(withinAllowance({ ...oneLeft, today: 2 }, 2), true, "two left: Urgent fits");
+  assert.equal(withinAllowance({ ...oneLeft, capped: false }, 2), null, "no cap applies to this session");
+  assert.equal(withinAllowance({ ...oneLeft, complete: false }, 2), null, "today's usage could not be read");
+});
+
+// ONE SEARCH LEFT (design, 2026-11-26). A company's own session that sends an Urgent order with exactly one search left is
+// refused at start_run in the order screen's words, "1 search left today.", and nothing is queued: the order is never
+// written as Standard, and never left for the wall to refuse at claim, where this caller would not see it. Standard
+// still fits; two left admit Urgent. Zero, one and two left, on an installation that runs Urgent.
+test("start_run with one search left: an Urgent order is refused in the screen's words and nothing is queued", async () => {
+  installation(CAN);
+  const company = { kind: "account", accounts: ["demo-brand-owner"], sub: "orders@company.example", permissions: { run: true, manage: false } };
+  // The company's own daily limit, as the wall reads it; the rows go in ONE ledger, since every queue's ledger is counted.
+  const caps = resolveEffectiveProfile({ profileKey: "demo-brand-owner" }).profile?.runCaps;
+  const LIMIT = Number.isInteger(caps?.dailyRuns) ? caps.dailyRuns : DEFAULT_CLIENT_DAILY_RUNS;
+  const used = (n) => config.queueDirs.forEach((qd, i) => { mkdirSync(qd, { recursive: true });
+    writeFileSync(matterLedgerPath(qd), i ? "" : Array.from({ length: n }, () => JSON.stringify({ profileKey: "demo-brand-owner", ts: Date.now(), clientPrincipal: true })).join("\n") + (n ? "\n" : "")); });
+  try {
+    used(LIMIT - 1);
+    const urgent = await call("start_run", order({ urgent: true }), company);
+    assert.equal(urgent.structuredContent?.outcome, "refused", JSON.stringify(urgent.content));
+    assert.match(urgent.structuredContent.reason, /1 search left today\.$/);
+    const standard = await call("start_run", order({}), company);
+    assert.equal(standard.structuredContent?.outcome, "queued", "one left: Standard fits");
+    used(LIMIT - 2);
+    assert.equal((await call("start_run", order({ urgent: true }), company)).structuredContent?.outcome, "queued", "two left: Urgent fits");
+    used(LIMIT);
+    const none = await call("start_run", order({ urgent: true }), company);
+    assert.notEqual(none.structuredContent?.reason?.endsWith("1 search left today."), true, "none left is not this rule's");
+    // Staff are not bound by a company's allowance, as at the wall.
+    used(LIMIT - 1);
+    assert.equal((await call("start_run", order({ urgent: true }))).structuredContent?.outcome, "queued");
+  } finally { used(0); }
+});
+

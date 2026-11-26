@@ -64,6 +64,23 @@ test("a principal that can commission searches is told what to do for a client w
   }
 });
 
+// URGENT IS OFFERED, NEVER CHOSEN. A tight deadline, or a request that says urgent, is grounds to offer
+// the faster setting at twice the count; the assistant states the turnaround and the count from the free
+// preview and asks, and only the person's answer sets it. Pinned to the served briefing, as above. The
+// report link orders nothing, so it is told nothing about it.
+test("a principal that can commission searches offers Urgent and asks; it never sets Urgent itself", () => {
+  for (const kind of ["account", "ops"]) {
+    const text = instructionsFor({ kind });
+    assert.match(text, /Urgent or Standard\?/, `the ${kind} pack never puts the choice to the person`);
+    assert.match(text, /Never set it yourself/, `the ${kind} pack does not forbid switching Urgent on unasked`);
+    assert.match(text, /`urgent: true`/, `the ${kind} pack does not say how the person's yes is passed on`);
+    assert.match(text, /2 searches/, `the ${kind} pack does not make the assistant state Urgent's count`);
+    assert.match(text, /howSoon/, `the ${kind} pack does not point at the preview's turnaround and count`);
+    assert.match(text, /neither option fits/, `the ${kind} pack does not cover an account with no searches left`);
+  }
+  assert.doesNotMatch(instructionsFor({ kind: "user" }), /urgent/i, "the report link orders nothing, so it must offer nothing");
+});
+
 // The same briefing has to carry the composition rule, for the same reason: the assistant in the
 // reported case reasoned from the territory list alone because that is all it was given, and composed a
 // country plus its region — which is a different product, carrying no case-law reading. What binds a

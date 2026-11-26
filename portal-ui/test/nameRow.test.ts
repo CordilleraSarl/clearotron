@@ -14,7 +14,8 @@ import type { FamilyGroup, MarkGroup } from '../src/contract/grouping.ts'
 import type { Run } from '../src/contract/api.ts'
 import type { Band } from '../src/contract/tone.ts'
 import {
-  GROUP_RISK_LINE,
+  familyLine,
+
   STOPPED_LINE,
   groupStatus,
   hasReport,
@@ -83,7 +84,7 @@ test('WHILE A SEARCH IS UNDER WAY the row shows the latest report, dated — nev
   assert.equal(mark.current.runId, 'q', 'premise: the newest read is the queued one')
   assert.equal(shownReport(mark)?.runId, 'r2', 'the band comes from the newest DELIVERED read')
   assert.deepEqual(mark.reportBands, ['Medium'])
-  assert.equal(reportLine(mark), 'latest report · 2026-09-02', 'and the line beneath says which report it is')
+  assert.equal(reportLine(mark), 'Latest report · 2026-09-02', 'and the line beneath says which report it is')
   assert.equal(statusCount(mark), '1 search', 'the status counts the search under way: "Queued · 1 search"')
   // `band` still speaks for the newest read, which has none — the field the rest of the product reads
   // for "where the name stands now" is unchanged.
@@ -107,7 +108,7 @@ test('the count and the dated line appear TOGETHER, and only when there is somet
     ...REREAD,
   ])
   assert.equal(statusCount(two), '2 searches')
-  assert.equal(reportLine(two), 'latest report · 2026-09-02')
+  assert.equal(reportLine(two), 'Latest report · 2026-09-02')
 })
 
 test('a STOPPED name shows no band, even over an older report — its standing is that it stopped', () => {
@@ -122,7 +123,7 @@ test('a STOPPED name shows no band, even over an older report — its standing i
 
 test('THE BUTTONS: Open and Ask AI on a report, Ask AI alone once stopped, nothing while it first runs', () => {
   const single = nameActions(one([run({ runId: 'a' })]))
-  assert.equal(single.open?.label, 'Open')
+  assert.equal(single.open?.label, 'Open report')
   assert.equal(single.askAbout?.runId, 'a')
 
   const threaded = nameActions(one([run({ runId: 'a', date: '2026-09-02' }), run({ runId: 'b', date: '2026-08-01' })]))
@@ -208,7 +209,8 @@ test('the group\'s band is the highest across each name\'s LATEST REPORT — a w
   // each name's newest search would say Manageable while AQUAPLUS's own row says Medium one line below.
   const fam = family([...REREAD, AQUAMAX])
   assert.equal(fam.band, 'Medium')
-  assert.equal(GROUP_RISK_LINE, 'Highest risk across the latest report for each name.')
+  // The family's line says it, with the band and what is still in progress (board Clearances, approved 2026-11-25).
+  assert.match(familyLine(fam), /^Highest risk across latest reports · Medium( · \d+ (search|searches) in progress)?$/)
 })
 
 test('the counts are NAMES: a group of two is two, and the total is the sum of what is listed', () => {

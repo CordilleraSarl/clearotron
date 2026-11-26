@@ -12,6 +12,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { allowanceLine } from '../src/contract/allowance.ts'
 import { allowanceExhaustedLine } from '../../driver/portal-service.mjs'
+import { ONE_SEARCH_LEFT } from '../../driver/urgent-count.mjs'
 
 const spent = (cap: number) => ({ account: 'a', today: cap, thisMonth: cap, queued: 0,
   dailyRuns: cap, monthlyRuns: null, maxQueued: null, capped: true })
@@ -28,6 +29,14 @@ test('the screen warns in the sentence the server refuses with', () => {
         `${label}, ${cap} a day: the screen and the server tell one reader two different things`)
     }
   }
+})
+
+test('one search left: the server refuses an Urgent order in the sentence the screen opens with', () => {
+  // The connector's preview, the portal's pre-check and the runner's wall all refuse an order that counts two with one
+  // search left in these words (driver/urgent-count.mjs), and the screen shows them beside the Urgent cost.
+  const oneLeft = { ...spent(4), today: 3 }
+  const line = allowanceLine(oneLeft, 'Northwind Group') ?? ''
+  assert.ok(line.startsWith(`${ONE_SEARCH_LEFT} `), `the screen says ${JSON.stringify(line)}; the server says ${JSON.stringify(ONE_SEARCH_LEFT)}`)
 })
 
 test('the sentence addresses the operator by name, never around it', () => {

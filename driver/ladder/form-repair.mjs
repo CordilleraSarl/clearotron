@@ -93,7 +93,7 @@ export async function repairFormInDispatch(stage, { judgeArtifacts }, { attempt,
     // — AND THE OUTPUT RULE IS THE STAGE'S, on both engines. A recording stage's form repair is a record call, so the turn
     // keeps that stage's rule (engine/common.mjs, outputRule). It is read from the declaration, so the grant decided above
     // is not touched.
-    const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking, output: turnOutput,
+    const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking, speed: stage.speed, output: turnOutput,
       timeoutSec: effTimeout, resumeRef: repairRef, stageHome, mcpConfig: turnConfig(effTimeout), allowedTools: gatherAllowedTools, builtinTools: builtinToolsFor(name),
       skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files, streamFile: streamFilePath(runDir, name, attempt, formRepairsUsed + 1) });

@@ -20,6 +20,7 @@ The axis is *what the script assumes exists*, not where it happens to be run.
 | `report-print-check.mjs` | Shows what the exported PDF actually renders under print media. Run by CI. |
 | `report-offline-render-check.mjs` | Opens every demo report, from disk and served under the portal's report policy, and every pool index, and fails on any request to another machine or an embedded font that did not load. Run by CI. |
 | `report-overflow-check.mjs` | Checks the same two kinds of report for sideways overflow on screen — the print check cannot see a width, because print sets the watermark to `display:none` and the watermark was the overflow. Kept outside this repository. |
+| `readme-pictures.mjs` | Retakes the README's three portal pictures from this checkout's own demo: New clearance, a finished report and its conflict landscape. By hand, whenever a change alters one of those screens; see `docs/assets/README.md`. |
 | `portal-lifecycle-check.mjs` | Asks whether the portal names a brand owner and whether a person can manage their searches. Run by CI. |
 | `portal-strings.mjs` | Reads every string the portal can show out of its source, as a reader meets it. `--check <approved list>` refuses a string on a screen that is neither approved nor in `portal-ui/strings-backlog.json`; `--backlog-shrinks --base <ref>` refuses a backlog line the base did not have. The approved list is kept with the designs, outside this repository. CI runs the backlog half. |
 | `validate-profiles.mjs` | Validates a customer-config store's profile bundles. Read-only. |
@@ -188,6 +189,7 @@ row that names a file this folder does not hold.
 | `mint-plugin-folder.mjs` | by hand |
 | `mint-public-residue.mjs` | by hand |
 | `mint-reference-strip-backlog.mjs` | by hand |
+| `mint-result-shapes.mjs` | by hand |
 | `mint-search-level-tags.mjs` | by hand |
 | `mint-source-pin-census.mjs` | by hand |
 | `mint-suite-census.mjs` | CI |
@@ -234,6 +236,7 @@ row that names a file this folder does not hold.
 | `report-header-render-check.mjs` | CI |
 | `report-offline-render-check.mjs` | CI |
 | `report-print-check.mjs` | CI |
+| `readme-pictures.mjs` | by hand |
 | `report-screenshot.mjs` | by hand |
 | `report-sections-render-check.mjs` | CI |
 | `report-theme-render-check.mjs` | CI |

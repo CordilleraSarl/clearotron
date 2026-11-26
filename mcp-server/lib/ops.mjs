@@ -10,11 +10,16 @@
 
 import { writeFileSync, existsSync, mkdirSync, rmSync, renameSync, readFileSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { config } from "./driver.mjs";
 import { validateJob } from "../../driver/enqueue-schema.mjs";
 import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
-import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";   //
+import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";
+import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";   // the ledger the wall counts
+import { resolveEffectiveProfile } from "../../driver/profiles.mjs";
+import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";   // one search left and an Urgent order
+import { receiptIn, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // an id in any state is that order, not a new one
+import { orderUrgency } from "./urgent.mjs";   // whether this installation can run an Urgent order, as the run asks it   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
 import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one marker shape, shared with the engine
@@ -66,8 +71,41 @@ export function enqueuedViaFor(scope) {
 // three mornings before it made one up that fit. stop_run's queue form holds a queued id to the same rule.
 const QUEUE_ID_MAX = 128;
 const QUEUE_ID_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${QUEUE_ID_MAX - 1}}$`);
-const queueIdRefusal = (id) => `id ${JSON.stringify(id)}: Use an ID of 1–${QUEUE_ID_MAX} characters. Start with an ASCII letter or digit. `
-  + `The remaining characters may also include a dot, underscore, @ or hyphen.${id.length > QUEUE_ID_MAX ? ` This one has ${id.length} characters.` : ""}`;
+const queueIdRefusal = (id, max = QUEUE_ID_MAX) => `id ${JSON.stringify(id)}: Use an ID of 1–${max} characters. Start with an ASCII letter or digit. `
+  + `The remaining characters may also include a dot, underscore, @ or hyphen.${id.length > max ? ` This one has ${id.length} characters.` : ""}`;
+
+// ── AN ACCOUNT'S REFERENCE IS ITS OWN (design, 2026-11-26) ──────────────────────────────────────────────────────────
+//
+// A session that does not see every account names its order by a reference it may have chosen itself, and a session of
+// another account may choose the same one. Any answer that differed only when they met (a refusal, a fresh reference,
+// the order's state) would tell one account about the other's order, and the file could only hold one of them. So
+// every order such a session files carries a fixed mark of its account, and of the organisation for Generic: two
+// accounts' references never meet, and a retry by the same account meets its own order and spends nothing. The reply
+// gives the reference the order is filed under; a reference that already ends in the session's own mark is that
+// reference, not a new one. A session that sees every account (an operator) files the reference as sent.
+const ACCOUNT_MARK_LEN = 12;
+const seesEveryAccount = (scope) => scope?.accounts == null || scope.accounts === "*";
+function accountMark(job) {
+  const account = job.profileKey ?? "generic";
+  const organisation = account === "generic" ? (job.tenant ?? "") : "";
+  return createHash("sha256").update(`${account}\u0000${organisation}`).digest("hex").slice(0, ACCOUNT_MARK_LEN);
+}
+/** The reference an order is filed under: as sent for a session that sees every account, else carrying its account's mark. */
+function filedReference(asked, job, scope) {
+  if (seesEveryAccount(scope)) return asked;
+  const mark = `@${accountMark(job)}`;
+  if (asked.endsWith(mark)) return asked;
+  const max = QUEUE_ID_MAX - mark.length;
+  if (asked.length > max) throw new Error(queueIdRefusal(asked, max));
+  return `${asked}${mark}`;
+}
+/** Whether this session may see an order already filed: its account, and its organisation for Generic. */
+function mayseeOrder(scope, job) {
+  if (seesEveryAccount(scope)) return true;
+  if (!job) return false;
+  const account = job.profileKey ?? "generic";
+  return accountVisible(scope, account, account === "generic" ? (job.tenant ?? null) : null);
+}
 
 export function buildJob(args = {}, { scope } = {}) {
   // marks[] (search-depth spine): a knockout BATCH is ONE job carrying every mark — accept an explicit
@@ -146,6 +184,9 @@ export function buildJob(args = {}, { scope } = {}) {
     // field and silently ignores it. validateJob owns the vocabulary (see the note above); it refuses,
     // in the same sentence the portal and the CLI refuse with.
     ...("caseLaw" in args && args.caseLaw != null ? { caseLaw: args.caseLaw } : {}),
+    // URGENT, carried verbatim like the toggle above: `true` orders the faster setting, `false` and absence are a
+    // standard order, and any other value reaches validateJob, which refuses it rather than run it as Standard.
+    ...("urgent" in args && args.urgent != null ? { urgent: args.urgent } : {}),
     ...("searchLevel" in args ? { searchLevel: args.searchLevel } : {}),   // presence, null included
     ...(args.customerUnknown === true ? { customerUnknown: true } : {}),
     ...(args.dupOverride === true ? { dupOverride: true } : {}),
@@ -209,6 +250,8 @@ export const START_RUN_JOB_FIELDS = Object.freeze({
     // and "I said nothing" are two different searches and only a positive instruction can tell them apart.
     "geography",
     "product", "recipeKey", "nativeLanguage", "caseLaw", "searchLevel", "deliveryRoute", "parentRunId",
+    // the order's How soon option: true is Urgent. Carried as sent; validateJob refuses a value that is not a boolean.
+    "urgent",
     "customer", "profileKey", "projectKey", "customerUnknown", "tenant",
     "upfrontInstructions", "brief", "rawRequest", "deliverableSpec", "commercialFlexibility",
     "priorUse", "campaignShape", "deadline",
@@ -256,15 +299,55 @@ export function resolveScopedProfileKey(args, scope, verb) {
 
 // start_run — enqueue a clearotron job the runner will drain. Returns the queue id + slug; the runId/codename is
 // assigned by the runner on claim, so the caller polls list_runs(slug) / run_changes for it.
+/**
+ * The one-left sentence for a session the daily allowance binds, or null. The same count the preview reads (plan.mjs
+ * allowanceFor) and the same rule the wall applies (urgent-count.mjs). A ledger or profile that cannot be read refuses
+ * nothing: the wall still holds. Generic is answered as the preview answers it, by the wall alone.
+ */
+function oneLeftAtStart(job, scope) {
+  if (scope?.kind !== "account" || scope?.everything === true) return null;
+  try {
+    const profile = resolveEffectiveProfile(job).profile;
+    if (!profile?.key || profile.key === "generic") return null;
+    const limit = Number.isInteger(profile.runCaps?.dailyRuns) ? profile.runCaps.dailyRuns : DEFAULT_CLIENT_DAILY_RUNS;
+    const used = accountUsage({ queueDirs: config.queueDirs, account: profile.key });
+    if (!used?.complete) return null;
+    return oneLeftRefusal({ used: used.today, limit, searches: admittedSearches(job) });
+  } catch { return null; }
+}
+
 export function startRun(args = {}, { scope } = {}) {
   const agent = args.agent ? String(args.agent) : "";
   args = resolveScopedProfileKey(args, scope, "start_run");
   const qdir = queueDir(agent);
   // ONE builder shared with plan_run, so the preview a caller confirms is the job that actually runs.
   let job;
-  try { job = buildJob(args, { scope }); }
+  try { job = buildJob(args, { scope }); job.id = filedReference(job.id, job, scope); }
   catch (e) { throw new Error(`start_run: ${e.message}`); }
   const { id } = job;
+  // AN ID IN ANY STATE IS THAT ORDER, asked before anything else so a retry is recognised as one: before validation, and
+  // before the allowance is counted again for an order already counted. The check before the write below saw only a
+  // waiting or claimed job, so a retry after a refusal, a park or a delivery wrote a second order under the same id.
+  //
+  // ONLY AN ORDER THIS SESSION MAY SEE IS ANSWERED FOR. An order filed under the bare reference before references carried
+  // an account's mark is this order where the session may see it, and nothing at all where it may not. Under the marked
+  // reference only the same account's order can be found; were another found (two marks the same), the refusal names
+  // nothing of it.
+  {
+    let names = [];
+    try { names = readdirSync(qdir); } catch { /* no queue directory yet holds no order */ }
+    const bare = String(args.id ?? "");
+    for (const ref of bare && bare !== id ? [id, bare] : [id]) {
+      const existing = receiptIn(qdir, ref, names);
+      if (!existing) continue;
+      if (!mayseeOrder(scope, existing.job)) {
+        if (ref === id) throw new Error(`start_run: a job with id "${id}" is already queued/processing`);
+        continue;
+      }
+      if (["waiting", "checking", "running"].includes(existing.state)) throw new Error(`start_run: a job with id "${ref}" is already queued/processing`);
+      throw new Error(`start_run: a job with id "${ref}" already exists: ${RECEIPT_STATES[existing.state]}`);
+    }
+  }
 
   const v = validateJob(job);
   if (v.classify === "reject" || !v.ok) {
@@ -292,6 +375,20 @@ export function startRun(args = {}, { scope } = {}) {
     e.classify = "clarify";
     throw e;
   }
+  // AN URGENT ORDER THIS INSTALLATION CANNOT RUN starts at Standard, counts one search, and says so; it is never
+  // refused and never held. The job is written as Standard, so the run and its count agree with the reply.
+  const urgency = orderUrgency(job);
+  job = urgency.job;
+  // ONE SEARCH LEFT AND AN ORDER THAT COUNTS TWO (design, 2026-11-26): refused here in the order screen's words, as the
+  // portal's start and the runner's wall refuse it, rather than queued for the wall to refuse at claim, where this
+  // caller never sees it. Never written as Standard instead.
+  const oneLeft = oneLeftAtStart(job, scope);
+  if (oneLeft) {
+    const e = new Error(`start_run: job rejected — ${oneLeft}`);
+    e.errors = [oneLeft];
+    e.classify = "clarify";
+    throw e;
+  }
 
   mkdirSync(qdir, { recursive: true });
   const tmp = join(qdir, `${id}.json.tmp`);
@@ -304,7 +401,7 @@ export function startRun(args = {}, { scope } = {}) {
   const watch = probeQueueWatch({ queueDirs: [qdir] });
   return {
     ok: true, id, agent: agent || config.defaultAgent, queue: qdir, queued: true, classify: v.classify,
-    warnings: [...(v.warnings || []), ...gates.warnings,
+    warnings: [...(v.warnings || []), ...gates.warnings, ...urgency.warnings,
       ...(watch.state === "fail" ? [unwatchedQueueWarning(qdir, watch.unitPath)] : [])],
     queuePath: dest, queueWatched: watch.state,
     note: "Queued. The runner assigns a runId/codename on claim — poll list_runs (filter by markName) or run_changes for progress.",

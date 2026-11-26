@@ -151,6 +151,17 @@ const probeWords = (() => {
 })();
 const probeWord = probeWords ? probeWords.join(" ") : null;
 
+// THE SPEED. `fastMode: true` in the one --settings value asks for the faster setting, and the real program then reports
+// `fast_mode_state: "on"` and each call's `usage.speed: "fast"`; without it, `"off"` with `"sdk_opt_in_required"` and
+// `"standard"` (measured on 2.1.295, 2026-11-25). MOCK_CLAUDE_SPEED_SERVED=<word> reports <word> as the speed served
+// whatever was asked, the shape of a fast request the program ran at standard speed.
+const settingsArg = (() => { const i = argv.indexOf("--settings"); try { return i >= 0 ? JSON.parse(argv[i + 1]) : {}; } catch { return {}; } })();
+const askedFast = settingsArg?.fastMode === true;
+const servedSpeed = process.env.MOCK_CLAUDE_SPEED_SERVED || (askedFast ? "fast" : "standard");
+const fastFields = askedFast
+  ? { fast_mode_state: servedSpeed === "fast" ? "on" : "cooldown", fast_mode_disabled_reason: null }
+  : { fast_mode_state: "off", fast_mode_disabled_reason: "sdk_opt_in_required" };
+
 // system:init — mirrors the real shape (apiKeySource etc.)
 // MOCK_CLAUDE_BOOT_MS=<ms> — block for <ms> before ANY output: the shape a STARVED SPAWN has from the
 // parent's side, where the child exists, has produced nothing, and is NOT idle. Blocking rather than a
@@ -171,7 +182,7 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) stallTree();
 const bootMs = Number(process.env.MOCK_CLAUDE_BOOT_MS || 0);
 if (bootMs > 0) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, bootMs);
 
-send({ type: "system", subtype: "init", cwd: process.cwd(), session_id: session, model: wireModel, permissionMode: "acceptEdits", apiKeySource: "none", tools: ["Read", "Write", "Edit"], mcp_servers: [] });
+send({ type: "system", subtype: "init", cwd: process.cwd(), session_id: session, model: wireModel, permissionMode: "acceptEdits", apiKeySource: "none", tools: ["Read", "Write", "Edit"], mcp_servers: [], ...fastFields });
 
 // — MOCK_CLAUDE_STRAY_RELATIVE=<name>: write <name> RELATIVE to process.cwd. This is the model
 // inventing a filename instead of using the absolute path it was given, which is exactly how four
@@ -218,7 +229,7 @@ if (process.env.MOCK_WARM_MODE) {
   const okTurn = () => {
     send({ type: "result", subtype: "success", is_error: false, duration_ms: 5, num_turns: 1, result: "done",
       stop_reason: "end_turn", session_id: session, total_cost_usd: 0.001,
-      usage: { input_tokens: 10, output_tokens: 5, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } });
+      usage: { input_tokens: 10, output_tokens: 5, cache_read_input_tokens: 0, cache_creation_input_tokens: 0, speed: servedSpeed }, ...fastFields });
     process.exit(0);
   };
   switch (process.env.MOCK_WARM_MODE) {
@@ -517,7 +528,7 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
       duration_ms: 12, num_turns: 1, result: process.env.MOCK_CLAUDE_RESULT || probeWord || "mock claude ok",
       stop_reason: fail ? "error" : "end_turn", session_id: session,
       total_cost_usd: process.env.MOCK_CLAUDE_COST != null ? Number(process.env.MOCK_CLAUDE_COST) : 0.0123,
-      usage,
+      usage: { speed: servedSpeed, ...usage }, ...fastFields,
       // MOCK_CLAUDE_PROVIDER=<word> — the per-model usage the real program reports, naming its provider
       // ("firstParty", "foundry"). Absent by default, as it was before the provider gauge read it.
       ...(process.env.MOCK_CLAUDE_PROVIDER ? { modelUsage: { [wireModel]: { provider: process.env.MOCK_CLAUDE_PROVIDER } } } : {}),

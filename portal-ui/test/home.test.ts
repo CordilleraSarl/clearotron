@@ -5,7 +5,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import {
   inFlight, recentFailures, acknowledged, FAILURE_WINDOW_DAYS, finished, recentlyFinished, recentProjects, ownerSummaries, ownerNote,
-  sentence, openingLine, count, slotNote, elapsed, pips, projectNote,
+  sentence, openingLine, count, slotNote, elapsed, pips, stepList, projectNote,
   active, waiting, runProductLabel, cardReason, limitLine, moveBefore, readStamps,
 } from '../src/contract/home.ts'
 import type { Run } from '../src/contract/api.ts'
@@ -365,6 +365,21 @@ test('PIPS COME FROM THE RUN, never from a constant', () => {
   assert.deepEqual(pips(null, 9), { total: 9, filled: 0 })
 })
 
+test('a running card lists every step by name from the run\'s own list, marked against the step it is in now', () => {
+  // The names are the run's (the wire's `steps`), never a copy here. These are fixture words only.
+  const steps = ['One', 'Two', 'Three', 'Four']
+  assert.deepEqual(stepList(steps, 3, 4), [
+    { name: 'One', mark: 'done' }, { name: 'Two', mark: 'done' },
+    { name: 'Three', mark: 'current' }, { name: 'Four', mark: 'todo' },
+  ])
+  assert.deepEqual(stepList(steps, 1, 4)!.map((s) => s.mark), ['current', 'todo', 'todo', 'todo'])
+  assert.deepEqual(stepList(steps, 9, 4)!.map((s) => s.mark), ['done', 'done', 'done', 'current'], 'never past its own list')
+  assert.equal(stepList(null, 2, 9), null, 'no names on the wire: the card keeps its single line')
+  assert.equal(stepList([], 2, 9), null)
+  assert.equal(stepList(steps, null, 4), null, 'no step recorded: no list, as no line today')
+  assert.equal(stepList(steps, 2, 9), null, 'a count that disagrees with the names is not drawn')
+})
+
 test('elapsed is coarse, and never a countdown', () => {
   const t0 = Date.parse('2026-07-27T10:00:00Z')
   assert.equal(elapsed(new Date(t0).toISOString(), t0 + 30_000), 'just started')
@@ -522,7 +537,8 @@ test('ONE BUTTON INTO THE ARCHIVE, ONE SPELLING — the rail, Home and the scree
 
   // And the screen it leads to says the same word, so a reader who follows it lands somewhere named
   // what they pressed.
-  assert.ok(CLEARANCES.includes(`title="${label}"`), 'the screen does not name itself as the rail does')
+  // The title carries its count of names beside it (board Clearances, approved 2026-11-25).
+  assert.ok(CLEARANCES.includes(`title={<>${label} <span className="clr-title-count">`), 'the screen does not name itself as the rail does')
 })
 
 test('THE TAIL IS RECENT WORK AND THEN THE COUNT — not an archive with one row', () => {

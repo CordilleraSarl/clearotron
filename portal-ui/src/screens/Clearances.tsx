@@ -23,16 +23,15 @@
 //      than one that says it stopped: the user goes on believing it is still going.
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import type { Run } from '../contract/api.ts'
+import type { Result, Run } from '../contract/api.ts'
 import { api, saveFailureText } from '../contract/api.ts'
 import { bandRank } from '../contract/tone.ts'
-import { displayName, inSentence, newestFirst, readLabel, readLabelParts, readTime } from '../contract/reads.ts'
+import { displayName, newestFirst, readLabel, readLabelParts, readTime, sameDateAsAnother } from '../contract/reads.ts'
 import { marksOf, nameCount, rowsOf, NO_FAMILIES } from '../contract/grouping.ts'
 import type { Families, MarkGroup, Row } from '../contract/grouping.ts'
 import { BOARD_SHARES_FROM, clearancesColumns, pageWindow } from '../contract/listView.ts'
 import {
-  GROUP_RISK_LINE,
-  groupStatus,
+  familyLine,
   hasReport,
   nameActions,
   namesLabel,
@@ -47,7 +46,6 @@ import { PinnedScrollbar } from '../components/PinnedScrollbar.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { useLoad, usePoll } from '../state/useApi.ts'
 import type { ShellContext } from '../shell/AppShell.tsx'
-import { CompanyChips } from '../shell/CompanyChips.tsx'
 import { canManage, canRun } from '../shell/permissions.ts'
 import { runKey } from '../contract/genericKey.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
@@ -55,27 +53,26 @@ import { allowanceLine } from '../contract/allowance.ts'
 import { runProductLabel } from '../contract/home.ts'
 import { AskAi } from '../components/AskAi.tsx'
 import { askAiOffer } from '../contract/askAi.ts'
-import { SEARCH_LEVELS, atLevel, levelsOf, type LevelFilter, type SearchLevel } from '../contract/levelTags.ts'
+import { SEARCH_LEVELS, atLevel, type LevelFilter } from '../contract/levelTags.ts'
 
 // criterion 5 — 'failed' is a tab, not a member of the other three. The owner's ruling was
 // "Failed runs on clearance screen - no", and a tab is how a screen says no to something without
 // making it unfindable: this file's own rule two comments down is that a run which silently
 // disappears from the list is worse than one that says it stopped.
-type Filter = 'all' | 'progress' | 'finished' | 'failed'
-type SortKey = 'title' | 'state' | 'risk' | 'date'
-
-// The direction a column takes on its FIRST click. One shared default cannot be right for all of them:
-// "newest first" is descending, "worst first" and "A to Z" are ascending. Since bandRank puts the worst
-// band at 0 (the manifest order — see contract/tone.ts), a descending first click on Risk would surface
-// the UNRATED runs at the top and bury the worst rated one at the bottom, and the user would have to
-// click twice to get the thing they asked for.
-const FIRST_CLICK_DESC: Record<SortKey, boolean> = {
-  date: true,     // newest first
-  risk: false,    // worst first
-  title: false,   // A to Z
-  state: false,
+type Filter = 'all' | 'progress' | 'finished' | 'failed' | 'retired'
+/** A change to the shared list, asked in a dialog: what it says, what it does, and what to say once done. */
+type Ask = {
+  readonly title: string
+  readonly body: string
+  readonly confirm: string
+  /** The accessible name of the control that asked, which takes focus back when the dialog closes. */
+  readonly returnTo: string
+  readonly act: () => Promise<Result<unknown>>
+  readonly done: string
+  readonly after: () => void
 }
-
+/** How the list is ordered, from the Filters panel: newest activity first, by name, or worst risk first. */
+type SortBy = 'activity' | 'name' | 'risk'
 // Terminal = nothing more will happen to it, NOT "it succeeded". A stopped run belongs here for the
 // same reason a failed one does: leaving it out of the set would keep it under "In progress" forever
 // and keep the list polling for a run that is never coming back.
@@ -139,7 +136,20 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // WHICH KIND OF SEARCH, beside the status filter and on the same terms: it narrows the SEARCHES, so a name
   // with none of that kind drops out and a name that keeps some speaks for those alone (contract/levelTags.ts).
   const [level, setLevel] = useState<LevelFilter>('all')
-  const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: 'date', desc: true })
+  const [sortBy, setSortBy] = useState<SortBy>('activity')
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  // THE GROUPING DIALOG, opened from "Group names", a name's menu or a family's menu: null is closed, and
+  // `family` names the family being added to, or null for a new one.
+  const [grouping, setGrouping] = useState<{ readonly family: string | null; readonly seed: readonly string[] } | null>(null)
+  const openGrouping = (family: string | null, seed: readonly string[] = []) => setGrouping({ family, seed })
+  // THE QUESTION BEING ASKED, if one is, and the line that says what the last action did.
+  const [ask, setAsk] = useState<Ask | null>(null)
+  const [note, setNote] = useState<string | null>(null)
+  useEffect(() => {
+    if (!note) return
+    const t = window.setTimeout(() => setNote(null), 8000)
+    return () => window.clearTimeout(t)
+  }, [note])
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set())
   const [page, setPage] = useState(0)
@@ -214,9 +224,6 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // same one the report carries.
   const [askFor, setAskFor] = useState<string | null>(null)
 
-  // Which marks are ticked for grouping. Cleared whenever the grouping changes, so the checkboxes never
-  // outlive the rows they referred to.
-  const [picked, setPicked] = useState<ReadonlySet<string>>(new Set())
   // Grouping marks into a family and retiring a run are CURATION — changing what the archive says —
   // so they ask Manage, the one permission that changes things for other people, AND that the reader
   // sees everything, because every curation route is an installation route the server serves to no one
@@ -230,7 +237,6 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // with nothing behind it is indistinguishable from one hiding six months of work, and the person who
   // filed something needs to see that it is filed. Staff curation, staff-only upstream — a client's 404
   // decodes to notFound, `retired` stays empty and the control never renders.
-  const [showRetired, setShowRetired] = useState(false)
   const { result: retiredResult, reload: reloadRetired } = useLoad(
     () => (canGroup ? api.retiredRuns(account) : Promise.resolve({ kind: 'notFound' as const })),
     [account, canGroup],
@@ -240,7 +246,6 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // The comment above is a promise the code has to keep: switching company replaces every row,
   // so a selection made under the previous owner is ticks over rows that no longer exist — the
   // grouping bar shows a stale count and "Group as a family" can only fail.
-  useEffect(() => { setPicked(new Set()) }, [ownerFilter])
 
   usePoll(reload, {
     active: runs.some((r) => !TERMINAL.has(r.state)),
@@ -334,32 +339,24 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
     // on purpose and nobody asked for it to disappear. Over-applying a removal hides things no one
     // chose to hide, which is the harder mistake to notice.
     const marks = marksOf(filtered, families).filter((m) => (filter === 'failed') === (m.current.state === 'failed'))
-    const dir = sort.desc ? -1 : 1
     return [...rowsOf(marks, families)].sort((a, b) => {
       // Owner leads when grouping, or a heading would reappear every time the sort interleaved two
-      // owners' rows. Within a group the user's chosen sort is untouched.
+      // owners' rows. Within a group the chosen order is untouched.
       if (grouped && runKey(a) !== runKey(b)) return runKey(a).localeCompare(runKey(b))
-      switch (sort.key) {
-        case 'title':
-          return dir * a.name.localeCompare(b.name)
-        case 'state':
-          return dir * a.state.localeCompare(b.state)
+      switch (sortBy) {
+        case 'name':
+          return a.name.localeCompare(b.name)
         case 'risk':
-          // Ranked against each row's own ladder, so two customers' vocabularies interleave correctly
-          // instead of sorting alphabetically against each other.
-          // By the band each row SHOWS: a name with a re-read under way shows its latest report's band,
-          // and a sort that ordered it as unrated would put it where its own Risk cell says it is not.
-          return dir * (bandRank(a.bands, shownBand(a)) - bandRank(b.bands, shownBand(b)))
-        case 'date':
+          // Worst first, ranked against each row's own ladder, so two customers' vocabularies interleave
+          // correctly instead of sorting alphabetically against each other. By the band each row SHOWS.
+          return bandRank(a.bands, shownBand(a)) - bandRank(b.bands, shownBand(b))
+        case 'activity':
         default:
-          // Same defect as the home card's, same fix: `date` is day precision, so every pair of
-          // rows last touched on the same day tied here and the column's order between them was whatever
-          // grouping yielded. `newestFirst` is already descending, so the direction is negated rather
-          // than multiplied — `dir` is +1 for ASCENDING everywhere else in this switch.
-          return -dir * newestFirst(a, b)
+          // `date` is day precision, so `newestFirst` orders by the issue time where there is one.
+          return newestFirst(a, b)
       }
     })
-  }, [runs, filter, level, query, sort, grouped, families])
+  }, [runs, filter, level, query, sortBy, grouped, families])
 
   // Paging and cross-owner disambiguation are decided in contract/listView.ts, where they can be
   // tested — this screen has no DOM harness, so logic left inline here is logic nothing checks.
@@ -419,92 +416,78 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
 
   // A family is asserted over RUNS, because a mark is a grouping the browser derives rather than
   // anything the pool stores. Ticking a name therefore files every read of it.
-  const allMarks = rows.flatMap((r) => (r.kind === 'family' ? r.marks : [r]))
-  const pickedRunIds = () => allMarks.filter((m) => picked.has(m.id)).flatMap((m) => m.reads.map((r) => r.runId))
-  // — the family header's own ungroup. A family is asserted over RUNS (see above), so dissolving
-  // one files every read of every name in it — the same `setFamily({action:'ungroup'})` the multi-select
-  // button calls, over a set the header already knows. It CONFIRMS, because one click here undoes a
-  // grouping somebody made deliberately and the multi-select route makes you tick the members first.
-  const ungroupFamily = async (family: Extract<Row, { kind: 'family' }>) => {
+  // EVERY NAME ON THE LIST, whatever the tab shows, for the grouping dialog; and each family by its id.
+  const allNames = marksOf(runs, families)
+  const familyIndex = new Map(allNames.flatMap((m) => (m.familyId
+    ? [[m.familyId, { name: families.names[m.familyId] ?? m.familyId, company: runKey(m) }] as const] : [])))
+  // ── EVERY CHANGE TO THE SHARED LIST ASKS IN A DIALOG OF ITS OWN (board Clearances, approved 2026-11-25) ──
+  // The browser's own confirm box named reads and "Show retired", which this screen no longer has, and it
+  // could not say what happens in the product's words. Each question below names what it affects, the
+  // answer is one press, and the line under the toolbar says what was done.
+  const searchOf = (run: Run) => readLabelParts(run).head ?? readLabel(run)
+  const companyOf = (key: string) => ctx.ownerName(key)
+  const ungroupFamily = (family: Extract<Row, { kind: 'family' }>) => {
     const runIds = family.marks.flatMap((m) => m.reads.map((r) => r.runId))
     if (!runIds.length) return
-    const n = family.marks.length
-    if (!window.confirm(`Ungroup "${inSentence(family.name)}"? The ${n} ${n === 1 ? 'name' : 'names'} stay exactly as they are — only the family goes.`)) return
-    const r = await api.setFamily({ action: 'ungroup', runIds })
-    if (r.kind !== 'ok') {
-      window.alert(saveFailureText(r))
-      return
-    }
-    setPicked(new Set())
-    reloadFamilies()
+    setAsk({
+      title: `Ungroup ${family.name}?`,
+      body: `Its ${namesLabel(family.marks.length)} and their searches will appear directly under ${companyOf(runKey(family))}.`,
+      confirm: 'Ungroup family',
+      returnTo: `More actions for ${family.name}`,
+      act: () => api.setFamily({ action: 'ungroup', runIds }),
+      done: 'Family ungrouped.',
+      after: () => reloadFamilies(),
+    })
   }
-  // — RETIRE, NOT DELETE. The owner asked for a way to get a clearance off this page; the answer is
-  // the pool's existing visibility tag, which is reversible by construction — the run, its artifacts and
-  // its report link are untouched and `restore` puts the row back exactly as it was. Nothing on this
-  // screen deletes anything, and nothing here should ever be able to.
-  //
-  // A ROW IS A NAME, AND THE TAG IS PER RUN. Retiring the row therefore files every read of that name —
-  // the same rule the grouping controls use two functions up, and for the same reason: leaving one read
-  // of a retired name on the list is a half-done curation act that reads as a bug.
-  //
-  // It CONFIRMS, and the confirm says what is NOT lost. "Retire" is unambiguous to us and the person
-  // clicking it has just been handed a control they did not have yesterday; the thing they fear is
-  // losing the report, so the sentence answers that before it asks.
-  const retireMark = async (mark: MarkGroup) => {
+  const removeFromFamily = (mark: MarkGroup, familyName: string) => {
     const runIds = mark.reads.map((r) => r.runId)
     if (!runIds.length) return
+    setAsk({
+      title: `Remove ${mark.name} from ${familyName}?`,
+      body: `The name and its searches will appear directly under ${companyOf(runKey(mark))}.`,
+      confirm: 'Remove from family',
+      returnTo: `More actions for ${mark.name}`,
+      act: () => api.setFamily({ action: 'ungroup', runIds }),
+      done: `${mark.name} removed from ${familyName}.`,
+      after: () => reloadFamilies(),
+    })
+  }
+  const retireRun = (run: Run, name: string = displayName(run)) => {
+    setAsk({
+      title: 'Retire this search?',
+      body: `${searchOf(run)} for ${name}${run.date ? ` · ${run.date}` : ''} will move to Retired for everyone. Existing report links keep working. You can restore each search there.`,
+      confirm: 'Retire search',
+      returnTo: `More actions for ${readLabel(run)}`,
+      act: () => api.setRetired({ action: 'retire', runIds: [run.runId] }),
+      done: 'Moved 1 search to Retired.',
+      after: () => { reload(); reloadRetired() },
+    })
+  }
+  const retireMark = (mark: MarkGroup) => {
+    const runIds = mark.reads.map((r) => r.runId)
+    if (!runIds.length) return
+    if (runIds.length === 1) { retireRun(mark.reads[0]!, mark.name); return }
     const n = runIds.length
-    const what = n === 1 ? 'The read stays' : `All ${n} reads stay`
-    // — BOUNDED GOING IN. This composed the name whole, and a 200-character
-    // one pushed the question mark past a paragraph and buried the sentence that says what is not lost.
-    if (!window.confirm(`Retire ${inSentence(mark.name)}? ${what} in the pool and the report links keep working — it comes off this list, and "Show retired" brings it back.`)) return
-    const r = await api.setRetired({ action: 'retire', runIds })
-    if (r.kind !== 'ok') {
-      window.alert(saveFailureText(r))
-      return
-    }
-    reload()
-    reloadRetired()
+    const live = mark.reads.some((r) => !TERMINAL.has(r.state))
+    setAsk({
+      title: `Retire all ${n} searches?`,
+      body: `${n} searches under ${mark.name} will move to Retired for everyone. Existing report links keep working. You can restore each search there.${live ? ' A search in progress will continue.' : ''}`,
+      confirm: `Retire ${n} searches`,
+      returnTo: `More actions for ${mark.name}`,
+      act: () => api.setRetired({ action: 'retire', runIds }),
+      done: `Moved ${n} searches to Retired.`,
+      after: () => { reload(); reloadRetired() },
+    })
   }
-  // — RETIRE ONE READ. The owner's words: "i can only retire ALL runs under that grouped name not
-  // individual runs." The transport was never the obstacle — `setRetired` has taken a `runIds` ARRAY in
-  // both directions since, and `restoreRun` below has always passed exactly one. What was missing
-  // was a place to click: retire was bound to the MarkGroup and its own inverse was bound to the run, so
-  // you could retire a name and restore one read of it, which is not a coherent pair. This is the other
-  // half of that pair, and it makes the two directions symmetrical for the first time.
-  //
-  // NAMED FOR THE READ, NOT THE NAME. The confirm quotes `readLabel` — the same string the row shows —
-  // because the whole defect is a control acting on more than the row it sits on, and a confirm that
-  // said "Retire VENZY?" from a read row would be the identical ambiguity in words.
-  const retireRun = async (run: Run) => {
-    if (!window.confirm(`Retire this read — ${inSentence(readLabel(run), 80)}? Only this one read comes off the list. Its report link keeps working, the other reads of this name stay where they are, and "Show retired" brings it back.`)) return
-    const r = await api.setRetired({ action: 'retire', runIds: [run.runId] })
-    if (r.kind !== 'ok') {
-      window.alert(saveFailureText(r))
-      return
-    }
-    reload()
-    reloadRetired()
-  }
-  // The way back, and NO confirm on it: restoring is the safe direction, and a control whose inverse
-  // interrogates you is one people stop using.
   const restoreRun = async (run: Run) => {
     const r = await api.setRetired({ action: 'restore', runIds: [run.runId] })
-    if (r.kind !== 'ok') {
-      window.alert(saveFailureText(r))
-      return
-    }
+    if (r.kind !== 'ok') { setNote(saveFailureText(r)); return }
+    setNote(run.state === 'failed'
+      ? `Restored ${searchOf(run)} for ${displayName(run)} to Failed.`
+      : `Restored ${searchOf(run)} for ${displayName(run)}.`)
     reload()
     reloadRetired()
   }
-
-  const pick = (id: string) =>
-    setPicked((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
 
   const toggle = (id: string) =>
     setOpen((prev) => {
@@ -541,34 +524,35 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
     open: () => setAskFor(read.runId),
   })
 
-  const sortBtn = (key: SortKey, label: string) => (
-    <button
-      type="button"
-      onClick={() => {
-        setSort((s) => ({ key, desc: s.key === key ? !s.desc : FIRST_CLICK_DESC[key] }))
-        resetPage()
-      }}
-    >
-      {label}
-      {sort.key === key ? <span aria-hidden="true">{sort.desc ? '↓' : '↑'}</span> : null}
-      <span style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
-        {sort.key === key ? (sort.desc ? ', sorted descending' : ', sorted ascending') : ', not sorted'}
-      </span>
-    </button>
-  )
+  // THE NARROWING IN FORCE, each said as a chip that takes it off (board Clearances, approved 2026-11-25).
+  // Grouping by company is on by default, so turning it off is the narrowing worth naming.
+  const companyKeys = [...new Set(allRuns.map(runKey))].sort((x, y) => ctx.ownerName(x).localeCompare(ctx.ownerName(y)))
+  const levelName = SEARCH_LEVELS.find((l) => l.product === level)?.name ?? null
+  const activeFilters: readonly { readonly key: string; readonly label: string; readonly clear: () => void }[] = [
+    ...(ownerFilter ? [{ key: 'company', label: ctx.ownerName(ownerFilter), clear: () => { ctx.setOwner(null); resetPage() } }] : []),
+    ...(level !== 'all' && levelName ? [{ key: 'level', label: levelName, clear: () => { setLevel('all'); resetPage() } }] : []),
+    ...(groupable && !groupByOwner ? [{ key: 'combined', label: 'Companies combined', clear: () => { setGroupByOwner(true); writeGroupPref(true); resetPage() } }] : []),
+  ]
+  // EVERY NAME AGAIN: the company, the search type, the name search and the tab, each back to all.
+  const showAllNames = () => { ctx.setOwner(null); setLevel('all'); setQuery(''); setFilter('all'); resetPage() }
+  // THE STATUS TABS. Retired is a tab for whoever can retire, with its count; Failed carries its own.
+  // The Retired tab follows the same company and search-type narrowing, and the same name search.
+  const retiredShown = retired.filter((r) => (!ownerFilter || runKey(r) === ownerFilter) && atLevel(r, level)
+    && (!query.trim() || displayName(r).toLowerCase().includes(query.trim().toLowerCase())))
+  const tabs: readonly { readonly key: Filter; readonly label: string; readonly count: number }[] = [
+    { key: 'all', label: 'All', count: 0 },
+    { key: 'progress', label: 'In progress', count: 0 },
+    { key: 'finished', label: 'Finished', count: 0 },
+    { key: 'failed', label: 'Failed', count: failedCount },
+    ...(canGroup ? [{ key: 'retired' as const, label: 'Retired', count: retired.length }] : []),
+  ]
 
   return (
     <div className="screen">
-      {/* THE TITLE NAMES THE SCREEN AND THE LEDE NAMES THE FILTER. These were an eyebrow over a
-          heading — "All Clearances" above the company's name — and that pair is the one place on the
-          portal where the two lines were not saying the same thing twice. Collapsing it would have cost
-          either the screen's name or what you are looking at, so it keeps a second line; it just is not
-          a second header any more. With no company selected the title says it all and the filter line
-          is the allowance alone.
-          THE OLD SUBTITLE IS STILL GONE. "Every name in clearance and where it stands" restated the
-          heading for a reader who had already read it. The allowance was the load-bearing part. */}
+      {/* THE TITLE NAMES THE SCREEN AND COUNTS ITS NAMES; "Group names" sits at its right (board Clearances,
+          approved 2026-11-25). The lede names the company in view and the allowance, as before. */}
       <PageHeader
-        title="Clearances"
+        title={<>Clearances <span className="clr-title-count">{namesLabel(nameCount(rows))}</span></>}
         lede={<>
           {/* No separator after the company: the allowance line is a block of its own beneath it, and
               renders nothing at all above five searches left — a trailing "·" would then point at
@@ -576,183 +560,118 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
           {ownerFilter ? <span data-anon="mark">{ctx.ownerName(ownerFilter)}</span> : null}
           <AllowanceLine account={account} brand={ctx.me.brand} />
         </>}
+        actions={canGroup ? (
+          <button type="button" className="btn-ghost clr-group-btn" onClick={() => openGrouping(null)}>
+            <Icon name="layers" size={15} />Group names
+          </button>
+        ) : null}
       />
 
-      {/* Which company's clearances these are, as a filter rather than as a fact about the rail. This
-          screen has always been filtered by the switcher; the chips are the first thing on it to SAY
-          so, and they set the same value the switcher sets. */}
-      <div className="controls">
-        <CompanyChips ctx={ctx} label="Filter by company" />
-      </div>
-
-      <div className="controls">
-        <div className="segmented" role="group" aria-label="Filter by status">
-          {(
-            [
-              ['all', 'All'],
-              ['progress', 'In progress'],
-              ['finished', 'Finished'],
-              // criterion 5 — the failed names' one route in. Labelled with its count for the same
-              // reason "Show retired (N)" is, and rendered even at zero: a tab that appears only when
-              // something breaks is one nobody knows to look for on the day something does.
-              ['failed', failedCount ? `Failed (${failedCount})` : 'Failed'],
-            ] as const
-          ).map(([k, label]) => (
-            <button
-              key={k}
-              type="button"
-              aria-pressed={filter === k}
-              onClick={() => {
-                setFilter(k)
-                resetPage()
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* WHICH KIND OF SEARCH. Its buttons and their hover text come from the registry's own list, in its
-            order, so a product cannot be sold without a button here. It stays on screen when nothing matches,
-            like the company chips and the status filter, so the way out of an empty view is where it was. */}
-        <div className="segmented" role="group" aria-label="Filter by search">
-          <button
-            type="button"
-            aria-pressed={level === 'all'}
-            onClick={() => {
-              setLevel('all')
+      {/* FIND A NAME, AND THE REST OF THE NARROWING BEHIND "Filters": company, search type, sorting and
+          grouping by company. What is narrowed is said as chips under the bar, each one removable. The
+          company is the sidebar's own value, so the two selections cannot disagree. */}
+      <div className="clr-toolbar">
+        <label className="clr-find">
+          <Icon name="search" size={15} />
+          <input
+            type="search"
+            placeholder="Find a name"
+            aria-label="Find a name"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value)
               resetPage()
             }}
-          >
-            All
-          </button>
-          {SEARCH_LEVELS.map((l) => (
-            <button
-              key={l.product}
-              type="button"
-              aria-pressed={level === l.product}
-              title={l.name}
-              onClick={() => {
-                setLevel(l.product)
-                resetPage()
-              }}
-            >
-              {l.tag}
+          />
+        </label>
+        <button type="button" className="btn-ghost clr-filters-btn" aria-expanded={filtersOpen} aria-controls="clr-filters"
+          onClick={() => setFiltersOpen((v) => !v)}>
+          <Icon name="sliders" size={15} />Filters
+          {activeFilters.length ? <span className="clr-filters-count">{activeFilters.length}</span> : null}
+        </button>
+      </div>
+      {filtersOpen ? (
+        <div className="clr-filters" id="clr-filters">
+          {ctx.me.accounts.length > 1 || seesAll ? (
+            <label className="clr-filter">
+              <span className="field-label">Company</span>
+              <select className="ctx-select" value={ownerFilter ?? ''} data-anon="mark"
+                onChange={(e) => { ctx.setOwner(e.target.value || null); resetPage() }}>
+                <option value="">All companies</option>
+                {companyKeys.map((k) => <option key={k} value={k}>{ctx.ownerName(k)}</option>)}
+              </select>
+            </label>
+          ) : null}
+          <label className="clr-filter">
+            <span className="field-label">Search type</span>
+            <select className="ctx-select" value={level} onChange={(e) => { setLevel(e.target.value as LevelFilter); resetPage() }}>
+              <option value="all">All search types</option>
+              {SEARCH_LEVELS.map((l) => <option key={l.product} value={l.product}>{l.name}</option>)}
+            </select>
+          </label>
+          <label className="clr-filter">
+            <span className="field-label">Sort by</span>
+            <select className="ctx-select" value={sortBy} onChange={(e) => { setSortBy(e.target.value as SortBy); resetPage() }}>
+              <option value="activity">Latest activity</option>
+              <option value="name">Name A to Z</option>
+              <option value="risk">Highest risk</option>
+            </select>
+          </label>
+          {groupable ? (
+            <label className="group-toggle clr-filter-check">
+              <input
+                type="checkbox"
+                className="pickbox"
+                checked={groupByOwner}
+                onChange={(e) => {
+                  setGroupByOwner(e.target.checked)
+                  writeGroupPref(e.target.checked)
+                  resetPage()
+                }}
+              />
+              Group by company
+            </label>
+          ) : null}
+        </div>
+      ) : null}
+      {activeFilters.length ? (
+        <div className="clr-chips">
+          {activeFilters.map((f) => (
+            <button key={f.key} type="button" className="chip clr-chip" aria-label={`Remove ${f.label} filter`} onClick={f.clear}>
+              <span data-anon={f.key === 'company' ? 'mark' : undefined}>{f.label}</span> <span aria-hidden="true">×</span>
             </button>
           ))}
-        </div>
-
-        {/* NO COMPANY SELECT HERE. It lived in this toolbar beside an identical sidebar switcher —
-            two controls for one decision, and the reader had no way to tell which was live. The nav
-            switcher is the one, and it now scopes this list (see ownerFilter above). */}
-
-        {/* — the toggle's state is visible WITHOUT opening a menu, which is why this is a checkbox
-            in the toolbar rather than an item in an overflow. It appears only when it can do something:
-            one owner in view, or the nav already scoped to one, and there is nothing to group. */}
-        {groupable ? (
-          <label className="group-toggle">
-            <input
-              type="checkbox"
-              className="pickbox"
-              checked={groupByOwner}
-              onChange={(e) => {
-                setGroupByOwner(e.target.checked)
-                writeGroupPref(e.target.checked)
-                resetPage()
-              }}
-            />
-            Group by company
-          </label>
-        ) : null}
-        {/* NAMES, NOT ROWS. A group is one row holding several names, so a count of rows disagreed with
-            the company headings below it the moment a family existed. Both count through `nameCount`. */}
-        <span className="mono" style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontSize: 13 }}>
-          {namesLabel(nameCount(rows))}
-        </span>
-        <input
-          className="filter"
-          type="search"
-          placeholder="Filter by name"
-          aria-label="Filter by name"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value)
-            resetPage()
-          }}
-        />
-      </div>
-
-      {/* THE FAMILY BAR. Present only for a person with Manage, and only once something is ticked — a control
-          that does nothing until you have made a selection is better introduced BY the selection.
-          — IT OVERLAYS RATHER THAN INSERTS. It used to be a `.notice` in normal flow, above the
-          table header, so ticking a box pushed the entire table down and the page jumped under the
-          cursor. It is now pinned to the bottom of the viewport: selecting or clearing a row moves
-          nothing at all. The issue also rejects reserving space with a permanent empty band, which is
-          the other way to stop the jump and leaves a hole on every visit.
-          And it is no longer `.notice`. That treatment is not a one-off — it is what the error and
-          empty states on this same screen use, which is exactly why it is wrong here: a notice is a
-          persistent thing you read, and this is a transient thing you act on. There was no treatment
-          for the second kind, so `.selection-bar` is one. */}
-      {canGroup && picked.size > 0 ? (
-        <div className="selection-bar" role="region" aria-label="Selected names">
-          <b>
-            {picked.size} {picked.size === 1 ? 'name' : 'names'} selected
-          </b>
-          {/* ONE WORD: family. The header said "pick", the action says "family", and neither word
-              appeared in the other place. The header is gone; this is the only vocabulary left. */}
-          <span style={{ flex: 1 }} />
-          <button
-            type="button"
-            className="nav-item"
-            style={{ width: 'auto', margin: 0, padding: '6px 11px', border: '1px solid var(--border-hairline)' }}
-            onClick={async () => {
-              const name = window.prompt('Group these names under which family?')
-              if (!name?.trim()) return
-              const runIds = pickedRunIds()
-              const r = await api.setFamily({ action: 'group', name: name.trim(), runIds })
-              if (r.kind !== 'ok') {
-                window.alert(saveFailureText(r, 'That grouping could not be saved.'))
-                return
-              }
-              setPicked(new Set())
-              reloadFamilies()
-            }}
-          >
-            Group as a family
-          </button>
-          {/* Only offered when something ticked is actually IN a family. Enforcement without matching
-              invitation control is how a dead button ends up on screen — and  is what that cost:
-              the owner asked whether ungrouping was possible at all. The invitation now lives on the
-              family header (FamilyRows); this stays exactly as it was, for taking ONE name out. */}
-          {[...picked].some((id) => rows.flatMap((r) => (r.kind === 'family' ? r.marks : [r])).find((m) => m.id === id)?.familyId) ? (
-            <button
-              type="button"
-              className="nav-item"
-              style={{ width: 'auto', margin: 0, padding: '6px 11px', border: '1px solid var(--border-hairline)' }}
-              onClick={async () => {
-                const r = await api.setFamily({ action: 'ungroup', runIds: pickedRunIds() })
-                if (r.kind !== 'ok') {
-                  window.alert(saveFailureText(r))
-                  return
-                }
-                setPicked(new Set())
-                reloadFamilies()
-              }}
-            >
-              Remove from family
-            </button>
-          ) : null}
-          <button
-            type="button"
-            className="nav-item"
-            style={{ width: 'auto', margin: 0, padding: '6px 11px' }}
-            onClick={() => setPicked(new Set())}
-          >
-            Clear
-          </button>
         </div>
       ) : null}
 
+      {/* WHAT THE LAST CHANGE DID, said once and then gone. */}
+      {note ? <p className="clr-note" role="status" data-anon="mark">{note}</p> : null}
+      {ask ? <AskDialog ask={ask} onDone={(n) => { setAsk(null); setNote(n) }} onClose={() => setAsk(null)} /> : null}
+      {grouping ? (
+        <GroupingDialog
+          marks={allNames}
+          families={familyIndex}
+          initialCompany={grouping.family ? familyIndex.get(grouping.family)?.company ?? companyKeys[0]!
+            : grouping.seed.length ? runKey(allNames.find((m) => m.id === grouping.seed[0]) ?? allNames[0]!) : ownerFilter ?? companyKeys[0]!}
+          initialFamily={grouping.family}
+          seed={grouping.seed}
+          companyName={ctx.ownerName}
+          onSaved={(n) => { setGrouping(null); setNote(n); reloadFamilies() }}
+          onClose={() => setGrouping(null)}
+        />
+      ) : null}
+
+      {/* THE STATUS TABS, Retired among them: retiring is a state a search is in, so its list is a tab rather
+          than a fold under the table. A count is shown where there is one. */}
+      <div className="clr-tabs" role="group" aria-label="Show searches by status">
+        {tabs.map((t) => (
+          <button key={t.key} type="button" className="clr-tab" aria-pressed={filter === t.key}
+            onClick={() => { setFilter(t.key); resetPage() }}>
+            {t.label}{t.count ? <span className="clr-tab-count">{t.count}</span> : null}
+          </button>
+        ))}
+      </div>
+      {filter !== 'retired' ? (<>
       <div className="table-wrap names-wrap" ref={namesWrap}>
         {/* THE GRID IS DECLARED, NOT EMERGENT.
             The table had no `table-layout` and no column widths at all, so every column was sized by
@@ -772,19 +691,16 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             holds them to 100 in every mode. */}
         <table className="data fixed">
           <colgroup>
-            {clearancesColumns({ pick: canGroup, owner: showOwnerColumn }, { wide: tableWidth >= BOARD_SHARES_FROM }).map((c) => (
+            {clearancesColumns({ pick: false, owner: showOwnerColumn, updated: false }, { wide: tableWidth >= BOARD_SHARES_FROM }).map((c) => (
               <col key={c.key} style={{ width: `${c.share}%` }} />
             ))}
           </colgroup>
           <thead>
             <tr>
               <th />
-              {/* — NO HEADER. `PICK` named nothing a first-time reader could act on, and the
-                  feature it belongs to is called `family` everywhere else. The issue rejects renaming
-                  it: a checkbox column does not need a label, and a better word would keep a header
-                  that earns nothing. The column is named for screen readers on each checkbox instead. */}
-              {canGroup ? <th aria-label="Select for grouping" /> : null}
-              <th>{sortBtn('title', 'Name')}</th>
+              {/* NO HEADER over the disclosure column: each disclosure button is named for its own row
+                  ("Expand searches for {name}"), so a header word would add nothing. */}
+              <th>Name and searches</th>
               {/* — UNGROUPED, THE OWNER MOVES INTO A COLUMN. The issue rejects an ungrouped mode
                   that drops the company: the information has to survive the toggle. A column rather
                   than a chip, so it is sortable-adjacent, scannable, and in the grid  built. */}
@@ -795,12 +711,11 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                   — so the column has nothing left to encode. The retired keys survive only in
                   search-policy.mjs RETIRED_POLICIES, which is what lets an archived run re-render under
                   the name it was sold under. */}
-              <th>{sortBtn('state', 'Status')}</th>
-              <th>{sortBtn('risk', 'Risk')}</th>
-              <th>{sortBtn('date', 'Updated')}</th>
+              <th>Status</th>
+              <th>Risk</th>
               {/* The actions column carries buttons whose own labels say what they do, so its header is
-                  for screen readers only — the same reason the checkbox column has none. */}
-              <th aria-label="Actions" />
+                  for screen readers only. */}
+              <th className="col-actions-head">Report and actions</th>
             </tr>
           </thead>
           <tbody>
@@ -809,9 +724,11 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                 an empty view is where it was when you arrived at it. */}
             {!visible.length ? (
               <tr>
-                <td colSpan={(canGroup ? 7 : 6) + (showOwnerColumn ? 1 : 0)} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
+                <td colSpan={5 + (showOwnerColumn ? 1 : 0)} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
+                  {/* THE WAY OUT, ON THE EMPTY VIEW ITSELF (board Clearances, approved 2026-11-25). */}
                   <span className="list-empty">
-                    No clearances match this view. Pick another company above, or widen the filters.
+                    No names match this view.{' '}
+                    <button type="button" className="linkish clr-show-all" onClick={showAllNames}>Show all names</button>
                   </span>
                 </td>
               </tr>
@@ -834,7 +751,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                     // lowest-contrast, most letterspaced type on the page, which read as a rule between
                     // rows rather than as "everything below this belongs to Foxglade Interactive".
                     <tr className="group-head">
-                      <td colSpan={(canGroup ? 7 : 6) + (showOwnerColumn ? 1 : 0)}>
+                      <td colSpan={5 + (showOwnerColumn ? 1 : 0)}>
                         <span className="owner-name" data-anon="mark">
                           {ctx.ownerName(runKey(r))}
                         </span>
@@ -850,12 +767,12 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       isOpen={(id) => open.has(id)}
                       onToggle={toggle}
                       go={ctx.go}
-                      picking={canGroup}
                       showOwner={showOwnerColumn}
                       ownerLabel={ctx.ownerName(runKey(r))}
-                      isPicked={(id) => picked.has(id)}
-                      onPick={pick}
                       onUngroup={canGroup ? ungroupFamily : undefined}
+                      onAddNames={canGroup ? (f) => openGrouping(f.id) : undefined}
+                      onGroupWith={canGroup ? (m) => openGrouping(null, [m.id]) : undefined}
+                      onRemoveFromFamily={canGroup ? removeFromFamily : undefined}
                       onRetire={canGroup ? retireMark : undefined}
                       onRetireRun={canGroup ? retireRun : undefined}
                       askAi={askAi}
@@ -867,11 +784,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       open={open.has(r.id)}
                       onToggle={() => toggle(r.id)}
                       go={ctx.go}
-                      picking={canGroup}
                       showOwner={showOwnerColumn}
                       ownerLabel={ctx.ownerName(runKey(r))}
-                      picked={picked.has(r.id)}
-                      onPick={() => pick(r.id)}
+                      onGroupWith={canGroup ? (m) => openGrouping(null, [m.id]) : undefined}
                       onRetire={canGroup ? retireMark : undefined}
                       onRetireRun={canGroup ? retireRun : undefined}
                       askAi={askAi}
@@ -885,59 +800,46 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
         </table>
       </div>
       <PinnedScrollbar target={namesWrapEl} />
+      </>) : null}
 
-      {/* — THE WAY BACK. A one-way hide is how a run gets lost rather than filed, so the control
-          and its inverse both live on this page. Rendered only when something IS retired: an empty fold
-          on every visit is a permanent question about a state nobody is in.
-          RUNS, NOT NAMES. The main table groups reads under a mark because that is how you read a book
-          of work; this is a recovery list, the tag is per run, and showing what you would actually be
-          restoring beats a tidier shape that hides it. */}
-      {canGroup && retired.length ? (
-        <div style={{ marginTop: 18 }}>
-          <button
-            type="button"
-            className="linkish"
-            style={{ font: 'inherit', fontSize: 13, background: 'none', border: 'none', padding: 0, color: 'var(--text-muted)', cursor: 'pointer', textDecoration: 'underline' }}
-            aria-expanded={showRetired}
-            onClick={() => setShowRetired((v) => !v)}
-          >
-            {showRetired ? 'Hide retired' : `Show retired (${retired.length})`}
-          </button>
-          {showRetired ? (
-            <div className="table-wrap" style={{ marginTop: 10 }}>
-              <table className="data">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Company</th>
-                    <th>Updated</th>
-                    <th aria-label="Restore" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {retired.map((run) => (
-                    <tr key={run.runId} className="row">
-                      <td>
-                        <b data-anon="mark" style={{ color: 'var(--text-strong)' }}>{displayName(run)}</b>
-                      </td>
-                      <td data-anon="mark" style={{ color: 'var(--text-muted)' }}>{ctx.ownerName(runKey(run))}</td>
-                      <td className="mono" style={{ color: 'var(--text-muted)', fontSize: 13 }}>{run.date ?? ''}</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="linkish"
-                          style={{ font: 'inherit', fontSize: 12, background: 'none', border: 'none', padding: 0, color: 'var(--text-muted)', cursor: 'pointer', textDecoration: 'underline' }}
-                          onClick={() => void restoreRun(run)}
-                        >
-                          Restore
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : null}
+      {/* THE RETIRED TAB: individual searches, each with Restore — a failed one included, which goes back to
+          Failed. RUNS, NOT NAMES: this is a recovery list, and showing what would actually be restored beats
+          a tidier shape that hides it. The way back from a one-way hide lives on the same page. */}
+      {filter === 'retired' ? (
+        <div className="table-wrap" style={{ marginTop: 6 }}>
+          <table className="data clr-retired-table">
+            <thead>
+              <tr>
+                <th>Name and searches</th>
+                <th>Status</th>
+                <th aria-label="Report and actions">Report and actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!retiredShown.length ? (
+                <tr><td colSpan={3} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
+                  <span className="list-empty">No retired searches in this view.</span>
+                </td></tr>
+              ) : null}
+              {retiredShown.map((run) => (
+                <tr key={run.runId} className="row">
+                  <td className="clr-td-name">
+                    <b data-anon="mark" style={{ color: 'var(--text-strong)' }}>{displayName(run)}</b>
+                    <div className="sub" style={{ color: 'var(--text-muted)', fontSize: 12.5 }}>
+                      {readLabel(run)}
+                      {groupable && !grouped ? <> · <span data-anon="mark">{ctx.ownerName(runKey(run))}</span></> : null}
+                    </div>
+                  </td>
+                  <td className="clr-td-status">
+                    <StatusCell state={run.state} step={null} reason={run.state === 'failed' ? run.reason : null} failedStage={run.state === 'failed' ? run.failedStage : null} />
+                  </td>
+                  <td className="col-actions" style={{ textAlign: 'right' }}>
+                    <button type="button" className="btn-ghost clr-open" onClick={() => void restoreRun(run)}>Restore</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : null}
 
@@ -992,9 +894,8 @@ function Loading() {
  * `aria-hidden` — it is decoration beside the name, and announcing "chevron" helps nobody.
  *
  * The NAME is passed in rather than composed here, and the reason is the issue's own instruction: copy
- * the naming pattern that is current when you build, not today's string. changed what a row is
- * called and removed the word "grouping" from the checkbox flow, so a name assembled in this
- * component would be a second convention drifting from the first.
+ * the naming pattern that is current when you build, not today's string. A name assembled in this
+ * component would be a second convention drifting from the caller's.
  */
 function Twisty({ open, label, onToggle }: { readonly open: boolean; readonly label: string; readonly onToggle: () => void }) {
   return (
@@ -1103,7 +1004,8 @@ function MenuItem({ onSelect, title, children }: {
  * The browser check measures both, at the widest and the narrowest width it drives.
  */
 function RowActions({ open, ask, menu }: {
-  readonly open: { readonly label: string; readonly go: () => void } | null
+  /** The report button: its words, where it goes, and the name a screen reader hears for it. */
+  readonly open: { readonly label: string; readonly go: () => void; readonly name?: string } | null
   readonly ask: ReactNode
   readonly menu: ReactNode
 }) {
@@ -1114,17 +1016,18 @@ function RowActions({ open, ask, menu }: {
     <div className="row-actions">
       <span className="row-actions-open">
         {open ? (
-          // THE LABEL IS THE NAME. No aria-label: a screen reader and a sighted reader are offered the
-          // same words, which is what lets someone say "press Open latest report" to either of them.
+          // The visible words lead the screen-reader name, which adds the row's name, search and date
+          // (board Clearances, approved 2026-11-25), so "press Open latest report" still finds it.
           <button
             type="button"
             className="row-open"
+            aria-label={open.name}
             onClick={(e) => {
               e.stopPropagation()
               open.go()
             }}
           >
-            {open.label}
+            <Icon name="doc" size={14} />{open.label}
           </button>
         ) : null}
       </span>
@@ -1144,27 +1047,28 @@ function FamilyRows({
   isOpen,
   onToggle,
   go,
-  picking,
   showOwner = false,
   ownerLabel = '',
-  isPicked,
-  onPick,
   onUngroup,
+  onAddNames,
+  onGroupWith,
+  onRemoveFromFamily,
   onRetire,
   onRetireRun,
   askAi,
   askMenu,
 }: {
   readonly family: Extract<Row, { kind: 'family' }>
+  /** Opens the grouping dialog on this family. Absent ⇒ no control, as for every curation act. */
+  readonly onAddNames?: ((family: Extract<Row, { kind: 'family' }>) => void) | undefined
+  readonly onGroupWith?: ((mark: MarkGroup) => void) | undefined
+  readonly onRemoveFromFamily?: ((mark: MarkGroup, familyName: string) => void) | undefined
   readonly isOpen: (id: string) => boolean
   readonly onToggle: (id: string) => void
   readonly go: (p: string) => void
-  readonly picking: boolean
   /** — ungrouped, the company is a column, so every row shape needs its cell. */
   readonly showOwner?: boolean
   readonly ownerLabel?: string
-  readonly isPicked: (id: string) => boolean
-  readonly onPick: (id: string) => void
   /** — absent ⇒ no control, so a read-only caller cannot grow one by accident. Explicitly
       `| undefined` because the project runs exactOptionalPropertyTypes. */
   readonly onUngroup?: ((family: Extract<Row, { kind: 'family' }>) => void) | undefined
@@ -1181,29 +1085,24 @@ function FamilyRows({
   const open = isOpen(family.id)
   // A GROUP FOLLOWS ITS MEMBERS. When any name in it has a search under way the status says how many,
   // rather than rolling the members' states into one word that hides which of them is moving.
-  const busy = groupStatus(family)
   return (
     <>
       {/* The group expands and opens nothing: a family is several names, with no single report. */}
       <tr className="row" onClick={() => onToggle(family.id)}>
-        <td>
+        <td className="clr-td-twisty">
           <Twisty open={open} onToggle={() => onToggle(family.id)} label={`${open ? 'Collapse' : 'Expand'} ${family.name}`} />
         </td>
-        {/* A family has no checkbox of its own: it IS the grouping. Ticking its members is how you take
-            them out of it, which is the only move left at this level. */}
-        {picking ? <td /> : null}
-        <td>
-          <span className="row-kind">Group ·</span>
+        {/* A family's own menu adds names or ungroups it; a member leaves through its own row's menu. */}
+        <td className="clr-td-name">
+          <span className="clr-family-icon" aria-hidden="true"><Icon name="layers" size={14} /></span>
           <b data-anon="mark" style={{ color: 'var(--text-strong)' }}>
             {family.name}
           </b>
-          <span className="pill" style={{ marginLeft: 8 }}>
-            {namesLabel(family.marks.length)}
-          </span>
+          <span className="clr-meta"> · {namesLabel(family.marks.length)}</span>
           {/* What the Risk cell rolls up, said once under the name — "worst" is the one thing about a
               group row that is not obvious from looking at it, and "worst of 2" said it without saying
               worst of WHAT. */}
-          <span className="sub">{GROUP_RISK_LINE}</span>
+          <span className="sub">{familyLine(family)}</span>
           {/* NO TAGS ON A GROUP. Tags go under a NAME, and a group is several names: each one inside it carries
               its own when the group is opened, and the risk line stays the last thing in this cell. */}
         </td>
@@ -1216,22 +1115,10 @@ function FamilyRows({
             {ownerLabel}
           </td>
         ) : null}
-        <td>
-          {busy ? (
-            <span className="status">
-              <span className={`dot ${busy.state}`} />
-              {/* A PHRASE, NOT A COUNT: it wraps between its words in a narrow column rather than running
-                  on under Risk, and the number stays with its noun. */}
-              <span>{busy.text.replace(/^(\d+) /, '$1\u00a0')}</span>
-            </span>
-          ) : (
-            <StatusCell state={family.state} step={null} reason={null} failedStage={null} />
-          )}
-        </td>
-        <td>{family.band ? <RiskDot tone={family.tone} label={family.band} /> : <span style={{ color: 'var(--text-faint)' }}>—</span>}</td>
-        <td className="mono col-date" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
-          {family.date ?? ''}
-        </td>
+        {/* THE FAMILY'S LINE SAYS ITS RISK AND WHAT IS IN PROGRESS, so its Status and Risk cells stay empty
+            rather than saying it twice on one row (board Clearances, approved 2026-11-25). */}
+        <td className="clr-td-status" />
+        <td className="clr-td-risk" />
         <td className="col-actions">
           {/* — UNGROUP LIVES WHERE THE FAMILY IS. The owner asked whether runs could be ungrouped at
               all: the multi-select button renders only once you have ticked a run that is already in a
@@ -1243,12 +1130,8 @@ function FamilyRows({
             ask={null}
             menu={onUngroup ? (
               <RowMenu label={`More actions for ${family.name}`}>
-                <MenuItem
-                  title={`Ungroup ${family.name} — the ${namesLabel(family.marks.length)} stay, the family goes`}
-                  onSelect={() => onUngroup(family)}
-                >
-                  Ungroup
-                </MenuItem>
+                {onAddNames ? <MenuItem onSelect={() => onAddNames(family)}>Add names to this family…</MenuItem> : null}
+                <MenuItem onSelect={() => onUngroup(family)}>Ungroup family…</MenuItem>
               </RowMenu>
             ) : null}
           />
@@ -1263,13 +1146,13 @@ function FamilyRows({
               onToggle={() => onToggle(m.id)}
               go={go}
               indent
-              picking={picking}
               showOwner={showOwner}
               ownerLabel={ownerLabel}
-              picked={isPicked(m.id)}
-              onPick={() => onPick(m.id)}
+              familyName={family.name}
               onRetire={onRetire}
               onRetireRun={onRetireRun}
+              onGroupWith={onGroupWith}
+              onRemoveFromFamily={onRemoveFromFamily}
               askAi={askAi}
               askMenu={askMenu}
             />
@@ -1279,52 +1162,35 @@ function FamilyRows({
   )
 }
 
-/**
- * The tags under a name: one small pill per kind of search among the row's searches, in the registry's order,
- * each with its search's full name as hover text. On a line of its own under the name, quieter than it, and
- * wrapping inside the Name cell at every width. Nothing at all for a row whose searches carry no tag.
- */
-function LevelTags({ levels }: { readonly levels: readonly SearchLevel[] }) {
-  if (!levels.length) return null
-  return (
-    <div className="level-tags">
-      {levels.map((l) => (
-        <span key={l.product} className="pill" title={l.name}>
-          {l.tag}
-        </span>
-      ))}
-    </div>
-  )
-}
-
 function MarkRow({
   mark,
   open,
   onToggle,
   go,
   indent = false,
-  picking = false,
   showOwner = false,
   ownerLabel = '',
-  picked = false,
-  onPick,
   onRetire,
   onRetireRun,
+  onGroupWith,
+  onRemoveFromFamily,
+  familyName = null,
   askAi,
   askMenu,
 }: {
   readonly mark: MarkGroup
+  /** The family this name sits in, by name, when it sits in one. */
+  readonly familyName?: string | null
+  readonly onGroupWith?: ((mark: MarkGroup) => void) | undefined
+  readonly onRemoveFromFamily?: ((mark: MarkGroup, familyName: string) => void) | undefined
   readonly open: boolean
   readonly onToggle: () => void
   readonly go: (p: string) => void
   /** True when the row sits under a family, which is the only thing that nests it. */
   readonly indent?: boolean
-  readonly picking?: boolean
   /** — ungrouped, the company moves from the section header into a column on every row. */
   readonly showOwner?: boolean
   readonly ownerLabel?: string
-  readonly picked?: boolean
-  readonly onPick?: () => void
   /** — absent ⇒ no control, so a client view cannot grow a curation act by accident. Explicitly
       `| undefined` because the project runs exactOptionalPropertyTypes. */
   readonly onRetire?: ((mark: MarkGroup) => void) | undefined
@@ -1352,25 +1218,12 @@ function MarkRow({
   return (
     <>
       <tr className={onRow ? 'row' : 'row inert'} onClick={onRow ?? undefined}>
-        <td className={indent ? 'nest-1' : undefined}>
-          {/* Named from mark.name — the SAME source the checkbox beside it uses, so the two cannot
-              drift.  changed what that name is and  changed the checkbox's wording; a name
-              composed independently here would already be a third convention. */}
-          {threaded ? <Twisty open={open} onToggle={onToggle} label={`${open ? 'Collapse' : 'Expand'} ${mark.name}`} /> : null}
+        <td className={`clr-td-twisty${indent ? ' nest-1' : ''}`}>
+          {/* Named from mark.name, the same source as the row's menu ("More actions for {name}"), so the
+              two names cannot drift apart. */}
+          {threaded ? <Twisty open={open} onToggle={onToggle} label={`${open ? 'Collapse' : 'Expand'} searches for ${mark.name}`} /> : null}
         </td>
-        {picking ? (
-          // stopPropagation, or ticking a box would also open the row underneath the cursor.
-          <td onClick={(e) => e.stopPropagation()}>
-            <input
-              type="checkbox"
-              className="pickbox"
-              checked={Boolean(picked)}
-              onChange={() => onPick?.()}
-              aria-label={`Select ${mark.name} for grouping`}
-            />
-          </td>
-        ) : null}
-        <td>
+        <td className="clr-td-name">
           <b data-anon="mark" style={{ color: 'var(--text-strong)' }}>
             {mark.name}
           </b>
@@ -1379,7 +1232,7 @@ function MarkRow({
               Name cell now carries in words —  made that cell read "VENZY +2 more". */}
           {/* Only when there IS a thread. A "1 search" badge on every single-search name is noise on
               every row, and noise on every row is how the row that needed a badge stops being seen. */}
-          {threaded ? <span className="pill" style={{ marginLeft: 8 }}>{searchesLabel(mark.reads.length)}</span> : null}
+          {threaded ? <span className="clr-meta"> {searchesLabel(mark.reads.length)}</span> : null}
           {/* IMPROVED SINCE. Outside the Risk cell on purpose — that cell reports what the report found,
               and a second value in it would be the blend this issue is removing. It renders only
               when an earlier read was WORSE than the latest, which is rare: a marker on every row is one
@@ -1396,7 +1249,8 @@ function MarkRow({
               communicate, repeated rather than fixed. Making the header read as a header is the fix.
               Grouping OFF is a separate case, and it needs the owner on every row rather than on the ones
               that happen to collide — which is the column below, not a chip. */}
-          <LevelTags levels={levelsOf(mark.reads)} />
+          {/* THE SEARCH THE ROW SPEAKS FOR, in words, under the name (board Clearances). */}
+          <span className="sub">{readLabelParts(run).head ?? ''}</span>
         </td>
         {/* — UNGROUPED, THE OWNER LIVES HERE. The information has to survive the toggle, and a
             column survives it in the grid  built rather than as a chip crowding the Name cell. */}
@@ -1405,7 +1259,7 @@ function MarkRow({
             {ownerLabel}
           </td>
         ) : null}
-        <td>
+        <td className="clr-td-status">
           <StatusCell
             state={run.state}
             step={run.step}
@@ -1416,8 +1270,10 @@ function MarkRow({
             stopRequestedAt={run.stopRequestedAt}
             count={statusCount(mark)}
           />
+          {/* THE DAY IT FINISHED, under its status, once it has (board Clearances, approved 2026-11-25). */}
+          {TERMINAL.has(run.state) && mark.date ? <span className="sub mono nowrap-date">{mark.date}</span> : null}
         </td>
-        <td>
+        <td className="clr-td-risk">
           {/* THE BANDS PRESENT, WORST FIRST — not a computed summary. The cell REPORTS what the report
               contains, so a reader can reconstruct it from the cell. One mark has one band.
               AND WHICH REPORT, WHEN IT IS NOT THE NEWEST SEARCH. While a re-read waits or runs, the bands
@@ -1425,7 +1281,9 @@ function MarkRow({
               assessment already held are told apart rather than blended. With nothing under way and no
               report — running for the first time, or stopped — an em dash says so. */}
           {report && mark.reportBands.length ? (
-            <span style={{ display: 'inline-flex', gap: 8, flexWrap: 'wrap' }}>
+            <span style={{ display: 'inline-flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+              {/* "Risk", on a phone only, where the column's heading is not drawn (board Clearances). */}
+              <span className="clr-phone-only">Risk</span>
               {mark.reportBands.map((label) => (
                 <RiskDot key={label} tone={report.bands.find((b) => b.label === label)?.tone ?? null} label={label} />
               ))}
@@ -1440,37 +1298,28 @@ function MarkRow({
             </span>
           ) : null}
         </td>
-        <td className="mono col-date" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
-          {mark.date ?? ''}
-        </td>
         <td className="col-actions">
           <RowActions
-            open={target && openReport ? { label: target.label, go: openReport } : null}
+            open={target && openReport ? {
+              label: target.label,
+              go: openReport,
+              // The button's words, then the row it belongs to: name, search and date (board Clearances).
+              name: `${target.label} for ${mark.name}, ${readLabel(target.read).replace(' · ', ', ')}`,
+            } : null}
             ask={actions.askAbout ? askAi(mark.name, actions.askAbout) : null}
             menu={onRetire || (actions.askAbout && askMenu(actions.askAbout).show) ? (
               <RowMenu label={`More actions for ${mark.name}`}>
+                {/* THE NAME'S MENU (board Clearances, approved 2026-11-25): grouping, the family it sits in,
+                    retiring every search with the count said, and the searches folded under it. */}
+                {onGroupWith && !familyName ? <MenuItem onSelect={() => onGroupWith(mark)}>Group with other names…</MenuItem> : null}
+                {onRemoveFromFamily && familyName ? <MenuItem onSelect={() => onRemoveFromFamily(mark, familyName)}>Remove from family…</MenuItem> : null}
                 {onRetire ? (
-                <>
-                {/* — RETIRE, IN THE ROW'S MENU. The owner asked for "a way to remove, hide or archive a
-                    clearance from the Clearances page"; the sidecar, its reader and its semantics were
-                    all live, and the only writer was a CLI on the pool host. */}
-                <MenuItem
-                  title={threaded
-                    ? `Retire all ${mark.reads.length} searches of ${mark.name} — the whole name comes off this list for everyone; the reports and their links stay, and "Show retired" brings it back. To retire ONE search, open the row and use that search's menu.`
-                    : `Retire ${mark.name} — it comes off this list for everyone; the reports and their links stay, and "Show retired" brings it back`}
-                  onSelect={() => onRetire(mark)}
-                >
-                  {/* — THE LABEL SAYS HOW MANY, once there is more than one. Two controls reading
-                      "Retire", one taking the whole name and one taking a single search, is the
-                      ambiguity this issue opened with ("i can only retire ALL runs under that grouped
-                      name") restated as a UI rather than removed. */}
-                  {threaded ? `Retire all ${mark.reads.length}` : 'Retire'}
-                </MenuItem>
-                </>
+                  <MenuItem onSelect={() => onRetire(mark)}>
+                    {threaded ? `Retire all ${mark.reads.length} searches…` : 'Retire this search…'}
+                  </MenuItem>
                 ) : null}
-                {/* ASK AI, THE ROW'S SECOND ENTRY (owner, 2026-09-18). It was a button in the actions
-                    column beside Open; the column keeps the board's share with Open alone in it, and this
-                    entry opens the same panel, with the same label the control has everywhere. */}
+                {threaded && !open ? <MenuItem onSelect={onToggle}>{`Show all ${mark.reads.length} searches`}</MenuItem> : null}
+                {/* ASK AI, THE ROW'S OWN ENTRY (owner, 2026-09-18), opening the same panel with the same label. */}
                 {actions.askAbout && askMenu(actions.askAbout).show ? (
                   <MenuItem onSelect={() => askMenu(actions.askAbout as Run).open()}>Ask AI</MenuItem>
                 ) : null}
@@ -1488,18 +1337,17 @@ function MarkRow({
           key={r.runId}
           read={r}
           go={go}
-          picking={picking}
           indent={indent}
           showOwner={showOwner}
           latest={r.runId === mark.latestReport?.runId}
-          sameDayAsAnother={mark.reads.some((o) => o.runId !== r.runId && o.date === r.date)}
+          sameDayAsAnother={sameDateAsAnother(mark.reads, r)}
           {...(threaded ? { onRetire: onRetireRun } : {})}
         />
       )) : null}
 
       {open && run.marks.length > 1 ? (
         <tr>
-          <td colSpan={(picking ? 7 : 6) + (showOwner ? 1 : 0)} style={{ background: 'var(--surface-sunken)' }}>
+          <td colSpan={5 + (showOwner ? 1 : 0)} style={{ background: 'var(--surface-sunken)' }}>
 
             {/* A batch's per-name answers: one read's contents, not a thread, so this one stays a
                 spanning cell — the names are not searches and do not belong in the search grid. */}
@@ -1533,7 +1381,6 @@ function MarkRow({
 function ReadRow({
   read,
   go,
-  picking,
   indent,
   showOwner = false,
   latest = false,
@@ -1542,7 +1389,6 @@ function ReadRow({
 }: {
   readonly read: Run
   readonly go: (p: string) => void
-  readonly picking: boolean
   readonly indent?: boolean
   /** — a spacer under the company column, so a search row still matches the grid when shown. */
   readonly showOwner?: boolean
@@ -1569,11 +1415,12 @@ function ReadRow({
     <tr className={openable ? 'read-row openable' : 'read-row'} {...(openable ? { onClick: open } : {})}>
       {/* The first column carries the nesting: a rule per level, so containment is visible without
           reading anything. */}
-      <td className={indent ? 'nest-2' : 'nest-1'} />
-      {picking ? <td /> : null}
-      <td>
-        <span className="mono" style={{ fontSize: 12.5, color: 'var(--text-muted)' }}>
-          {label.head && label.date ? <>{label.head} · <span className="nowrap-date">{label.date}</span></> : readLabel(read)}
+      <td className={`clr-td-twisty ${indent ? 'nest-2' : 'nest-1'}`} />
+      <td className="clr-td-name">
+        {/* THE SEARCH, THEN ITS DATE beneath it (board Clearances, approved 2026-11-25). */}
+        <b className="clr-search-name">{label.head ?? readLabel(read)}</b>
+        <span className="sub mono" style={{ fontSize: 12.5 }}>
+          {label.head && label.date ? <span className="nowrap-date">{label.date}</span> : null}
           {/* THE ORDERING KEY, SHOWN. A date alone cannot separate two searches of the same day. The time
               appears only when it is needed to tell them apart. UTC, and it says so. */}
           {sameDayAsAnother && readTime(read) ? <span style={{ marginLeft: 6 }}>{readTime(read)} UTC</span> : null}
@@ -1591,7 +1438,7 @@ function ReadRow({
       {/* — a search belongs to the same owner as its parent row, so the cell is a spacer rather than
           a repetition. It exists because the grid must still line up. */}
       {showOwner ? <td /> : null}
-      <td>
+      <td className="clr-td-status">
         {/* THE ONE PLACE the engine's own words are reachable. The parent row states the status; here,
             where the reader is looking at this specific search, a Details disclosure holds the raw value. */}
         <StatusCell
@@ -1603,27 +1450,23 @@ function ReadRow({
           detailed
         />
       </td>
-      <td>
-        {read.state === 'delivered' && read.band ? <RiskDot tone={read.tone} label={read.band} /> : <span style={{ color: 'var(--text-faint)' }}>—</span>}
+      <td className="clr-td-risk">
+        {read.state === 'delivered' && read.band ? (
+          <span style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
+            <span className="clr-phone-only">Risk</span>
+            <RiskDot tone={read.tone} label={read.band} />
+          </span>
+        ) : <span style={{ color: 'var(--text-faint)' }}>—</span>}
       </td>
       {/* A search's date is in its own label, "Product · date", so this cell stays empty rather than
           saying it twice on one line. */}
-      <td className="col-date" />
       <td className="col-actions">
         <RowActions
-          open={openable ? { label: 'Open', go: open } : null}
+          open={openable ? { label: 'Open report', go: open, name: `Open report for ${displayName(read)}, ${readLabel(read).replace(' · ', ', ')}` } : null}
           ask={null}
           menu={onRetire ? (
             <RowMenu label={`More actions for ${readLabel(read)}`}>
-              {/* — RETIRE, ON THE SEARCH. Same menu, same shape as the name row's, because this screen
-                  has row-level curation acts and they should not look like two different kinds of
-                  thing. What differs is the thing it acts on, and the confirm says which. */}
-              <MenuItem
-                title={`Retire this search — ${readLabel(read)}. Only this search comes off the list; the other searches of this name stay, the report link keeps working, and "Show retired" brings it back`}
-                onSelect={() => onRetire(read)}
-              >
-                Retire
-              </MenuItem>
+              <MenuItem onSelect={() => onRetire(read)}>Retire this search…</MenuItem>
             </RowMenu>
           ) : null}
         />
@@ -1702,4 +1545,159 @@ function AllowanceLine({ account, brand }: { readonly account: string | null; re
   const line = allowanceLine(result.value, brand)
   if (!line) return null
   return <span style={{ display: 'block', marginTop: 6, fontSize: 13 }}>{line}</span>
+}
+
+/**
+ * A QUESTION ASKED IN THE PRODUCT'S OWN DIALOG, in place of the browser's confirm box (board Clearances,
+ * approved 2026-11-25). Focus moves into it, Escape or Cancel closes it, and focus goes back to the control
+ * that asked. A refusal from the server is said inside it, and nothing has changed.
+ */
+function AskDialog({ ask, onDone, onClose }: {
+  readonly ask: Ask
+  readonly onDone: (note: string) => void
+  readonly onClose: () => void
+}) {
+  const [busy, setBusy] = useState(false)
+  const [failed, setFailed] = useState<string | null>(null)
+  const card = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    card.current?.querySelector<HTMLElement>('.clr-dialog-confirm')?.focus()
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.querySelector<HTMLElement>(`button[aria-label="${CSS.escape(ask.returnTo)}"]`)?.focus()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  const go = async () => {
+    setBusy(true)
+    setFailed(null)
+    const r = await ask.act()
+    setBusy(false)
+    if (r.kind !== 'ok') { setFailed(saveFailureText(r)); return }
+    ask.after()
+    onDone(ask.done)
+  }
+  return (
+    <div className="modal-scrim" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="clr-ask-title">
+      <div className="modal-card clr-dialog" ref={card} onClick={(e) => e.stopPropagation()}>
+        <div className="modal-head"><h2 id="clr-ask-title" className="clr-dialog-title" data-anon="mark">{ask.title}</h2></div>
+        <div className="clr-dialog-body">
+          <p data-anon="mark">{ask.body}</p>
+          {failed ? <p className="callout-accent" role="alert">{failed}</p> : null}
+        </div>
+        <div className="modal-foot">
+          <button type="button" className="btn-primary clr-dialog-confirm" disabled={busy} onClick={() => void go()}>{ask.confirm}</button>
+          <button type="button" className="btn-ghost" onClick={onClose}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * GROUP NAMES AS A FAMILY, or add names to one (board Clearances, approved 2026-11-25). Names come from one
+ * company; each selected name brings its search history. Saving files every search of each name, the same
+ * way a family has always been asserted, and a family named like an existing one is chosen from the list.
+ */
+function GroupingDialog({ marks, families, initialCompany, initialFamily, seed, companyName, onSaved, onClose }: {
+  /** Every name on the list, each with its company and family. */
+  readonly marks: readonly MarkGroup[]
+  /** Each family by its id: its name and company. */
+  readonly families: ReadonlyMap<string, { readonly name: string; readonly company: string }>
+  readonly initialCompany: string
+  /** The family being added to, by id; null to create one. */
+  readonly initialFamily: string | null
+  /** Names ticked when the dialog opens: the name whose menu asked. */
+  readonly seed: readonly string[]
+  readonly companyName: (key: string) => string
+  readonly onSaved: (note: string) => void
+  readonly onClose: () => void
+}) {
+  const companies = [...new Set(marks.map((m) => runKey(m)))]
+  const [company, setCompany] = useState(initialCompany)
+  const [target, setTarget] = useState<string>(initialFamily ?? '')
+  const [name, setName] = useState('')
+  const [chosen, setChosen] = useState<ReadonlySet<string>>(new Set(seed))
+  const [problem, setProblem] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+  const card = useRef<HTMLDivElement | null>(null)
+  const opener = useRef<Element | null>(document.activeElement)
+  const locked = initialFamily !== null || seed.length > 0
+  useEffect(() => {
+    card.current?.querySelector<HTMLElement>('select:not(:disabled), input:not(:disabled)')?.focus()
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('keydown', onKey); (opener.current as HTMLElement | null)?.focus?.() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  const here = marks.filter((m) => runKey(m) === company)
+  const familiesHere = [...families.entries()].filter(([, f]) => f.company === company)
+  const title = initialFamily ? `Add names to ${families.get(initialFamily)?.name ?? ''}` : 'Group names as a family'
+  const save = async () => {
+    const picked = here.filter((m) => chosen.has(m.id) && (!target || m.familyId !== target))
+    const familyName = target ? families.get(target)?.name ?? '' : name.trim()
+    const reason = !familyName ? 'Enter a family name.'
+      : !target && familiesHere.some(([, f]) => f.name.toLowerCase() === familyName.toLowerCase()) ? 'Choose that existing family from the Family list.'
+        : !picked.length || (!target && picked.length < 2) ? (target ? 'Select a name to add.' : 'Select two or more names for a new family.')
+          : null
+    if (reason) { setProblem(reason); return }
+    setBusy(true)
+    const r = await api.setFamily({ action: 'group', name: familyName, runIds: picked.flatMap((m) => m.reads.map((x) => x.runId)) })
+    setBusy(false)
+    if (r.kind !== 'ok') { setProblem(saveFailureText(r)); return }
+    onSaved(picked.length === 1 ? `1 name grouped under ${familyName}.` : `${picked.length} names grouped under ${familyName}.`)
+  }
+  return (
+    <div className="modal-scrim" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="clr-group-title">
+      <div className="modal-card clr-dialog" ref={card} onClick={(e) => e.stopPropagation()}>
+        <div className="modal-head"><h2 id="clr-group-title" className="clr-dialog-title" data-anon="mark">{title}</h2></div>
+        <div className="clr-dialog-body">
+          <label className="clr-field">
+            <span className="field-label">Company</span>
+            <select className="ctx-select" value={company} disabled={locked} data-anon="mark"
+              onChange={(e) => { setCompany(e.target.value); setTarget(''); setChosen(new Set()); setProblem(null) }}>
+              {companies.map((k) => <option key={k} value={k}>{companyName(k)}</option>)}
+            </select>
+          </label>
+          <label className="clr-field">
+            <span className="field-label">Family</span>
+            <select className="ctx-select" value={target} data-anon="mark" onChange={(e) => { setTarget(e.target.value); setProblem(null) }}>
+              <option value="">Create a new family</option>
+              {familiesHere.map(([id, f]) => <option key={id} value={id}>{f.name}</option>)}
+            </select>
+          </label>
+          {!target ? (
+            <label className="clr-field">
+              <span className="field-label">Family name</span>
+              <input className="ctx-input" type="text" maxLength={60} value={name} data-anon="mark"
+                onChange={(e) => { setName(e.target.value); setProblem(null) }} />
+            </label>
+          ) : null}
+          <fieldset className="clr-names">
+            <legend className="field-label">Names to group</legend>
+            {here.map((m) => {
+              const already = Boolean(target) && m.familyId === target
+              const inFamily = m.familyId ? families.get(m.familyId)?.name ?? null : null
+              return (
+                <label key={m.id} className="clr-name-choice">
+                  <input type="checkbox" className="pickbox" checked={already || chosen.has(m.id)} disabled={already}
+                    onChange={() => { setChosen((prev) => { const next = new Set(prev); if (next.has(m.id)) next.delete(m.id); else next.add(m.id); return next }); setProblem(null) }} />
+                  <span data-anon="mark">{m.name}</span>
+                  {inFamily ? <span className="clr-quiet" data-anon="mark"> · {inFamily}</span> : null}
+                </label>
+              )
+            })}
+          </fieldset>
+          <p className="clr-quiet">Each selected name brings its search history.</p>
+          {problem ? <p className="callout-accent" role="alert">{problem}</p> : null}
+        </div>
+        <div className="modal-foot">
+          <button type="button" className="btn-primary" disabled={busy} onClick={() => void save()}>Save family</button>
+          <button type="button" className="btn-ghost" onClick={onClose}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  )
 }

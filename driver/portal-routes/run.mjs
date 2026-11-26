@@ -18,8 +18,9 @@ import { quoteForJob } from "../run-quote.mjs";
 import { readJson } from "../run-record.mjs";
 import { countJobMarks, coverageDisclosure, kebabCollisions, policyFor, productAvailability, UNAVAILABLE_NOTE } from "../search-policy.mjs";
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../usage-ledger.mjs";
+import { admittedSearches, oneLeftRefusal } from "../urgent-count.mjs";   // what an order counts against its allowance, as the runner's wall counts it
 
-export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, trigger, stopRun, demo, orderRefusal, audit, upstream, readBuilt, readCanCount, readTerritories, loadProfilesImpl, usedJtis, sweepJtis, jobFor, selectorOf, refusalFor, allowanceExhaustedLine }, { method, parts, principal, body, query }) {
+export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, trigger, stopRun, demo, orderRefusal, urgentAvailable = () => false, audit, upstream, readBuilt, readCanCount, readTerritories, loadProfilesImpl, usedJtis, sweepJtis, jobFor, selectorOf, refusalFor, allowanceExhaustedLine }, { method, parts, principal, body, query }) {
   // shared plan-time gates — run at BOTH doors so a body that would 422 at plan can never be
   // submitted at run behind a token minted for a clean body (review 2026-07-18)
   const planGates = (job) => {
@@ -132,10 +133,13 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
   const resolveFor = resolveForDoor;
   const effortFrom = ({ job, profile, resolved }) => {
     if (!profile || !resolved || resolved.clarify) return null;
-    try { return quoteForJob({ job, profile, searchPolicy: resolved }); } catch { return null; }
+    // Quoted as admission will count it: an Urgent order this installation cannot run fast is a Standard one.
+    const asAdmitted = job?.urgent === true && urgentAvailable() !== true ? { ...job, urgent: false } : job;
+    try { return quoteForJob({ job: asAdmitted, profile, searchPolicy: resolved }); } catch { return null; }
   };
 
-  const quotaRefusal = async (account, organisation = null) => {
+  // `searches` is what the order counts (urgent-count.mjs admittedSearches), the number the runner's wall charges.
+  const quotaRefusal = async (account, organisation = null, searches = 1) => {
     if (seesEverything(principal) || !upstream) return null;
     let caps = null, capsRead = false;
     try {
@@ -173,8 +177,11 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
       audit({ event: "quota-precheck-blind", by: principal.email, account, basis: used.basis });
       return null;
     }
-    if (used.today + 1 <= limit) return null;
-    return { status: 429, json: { ok: false, errors: [allowanceExhaustedLine(limit, BRAND.name)] } };
+    if (used.today + searches <= limit) return null;
+    // One left and an order that counts two is not an account that has used everything: it is told so in the
+    // order screen's own words, the same the runner's wall gives (urgent-count.mjs oneLeftRefusal).
+    const oneLeft = oneLeftRefusal({ used: used.today, limit, searches });
+    return { status: 429, json: { ok: false, errors: [oneLeft ?? allowanceExhaustedLine(limit, BRAND.name)] } };
   };
 
   // ── AN INSTALL THAT CANNOT SEARCH REFUSES HERE, WHERE THE PERSON IS ─────────────────────────
@@ -206,7 +213,7 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
     if (notConfigured) return notConfigured;
     const gates = planGates(job);
     if (gates.fail) return gates.fail;
-    const overQuota = await quotaRefusal(account, job.tenant ?? null);
+    const overQuota = await quotaRefusal(account, job.tenant ?? null, admittedSearches(job, { runsHere: urgentAvailable }));
     if (overQuota) return overQuota;
     // ONE resolution, and the name, the stage, the turnaround and the effort all come off it.
     const { profile: planProfile, resolved: planResolved, scope: planScope } = resolveFor(job);
@@ -261,7 +268,7 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
     if (gates.fail) return gates.fail;
     // re-checked for the same reason the gates are: a token minted while the account still had
     // allowance must not spend it after another tab has used the last one.
-    const overQuota = await quotaRefusal(account, job.tenant ?? null);
+    const overQuota = await quotaRefusal(account, job.tenant ?? null, admittedSearches(job, { runsHere: urgentAvailable }));
     if (overQuota) return overQuota;
     sweepJtis();
     const bad = verifyConfirmation({ secret, token: body.confirmationToken, account, email: principal.email,
@@ -384,8 +391,11 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
           : `The run could not be started just now. Nothing was started, and nothing was charged — ${BRAND.name} can see what happened.`);
       return { status: 502, json: { ok: false, error, unwired } };
     }
-    audit({ event: "trigger", by: principal.email, account, selector, id: job.id, ok: Boolean(r?.ok ?? r?.queued) });
-    return { status: 200, json: { ok: true, queued: true, id: job.id, upstream: r ?? null } };
+    // THE REFERENCE THE ORDER IS FILED UNDER, as the engine door filed it: a door that does not see every account files
+    // an order under its account's own reference (mcp-server/lib/ops.mjs filedReference), not the one minted here.
+    const filed = typeof r?.id === "string" && r.id ? r.id : job.id;
+    audit({ event: "trigger", by: principal.email, account, selector, id: filed, ok: Boolean(r?.ok ?? r?.queued) });
+    return { status: 200, json: { ok: true, queued: true, id: filed, upstream: r ?? null } };
   }
 
   // ── STOPPING ───────────────────────────────────────────────────────────────────────────────

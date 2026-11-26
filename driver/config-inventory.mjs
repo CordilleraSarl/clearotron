@@ -45,7 +45,7 @@ import {
 import {
   resolveAuthMode, billingMode, billingRefusalReason, cloudName,
 } from "./engine/auth.mjs";
-import { billingRefusalWords } from "./run-requirements.mjs";   // — a refusal that quotes the billing word says it by name
+import { billingRefusalWords, RESEARCH_ENV } from "./run-requirements.mjs";   // — a refusal that quotes the billing word says it by name; the research key a search refuses without
 import { CASELAW_BRIDGES } from "./engine/mcp/gather-config.mjs";   // — the list that decides what is spawned
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -189,6 +189,16 @@ export function engineMode(inventory, { probe = null } = {}) {
  * capability each instance either has or lacks, so it is one row naming the selected provider — or
  * naming none, which is itself a missing row and the state a fresh install is in.
  */
+// ── WHICH SOURCES A SEARCH REFUSES TO RUN WITHOUT, the one answer Installation settings groups by ──────
+//
+// `needed` is true where at least one search refuses to start without the source, which is what the
+// order door's own requirements say (run-requirements.mjs): the register, which every search reads, and
+// the research key, RESEARCH_ENV, which the three clearance searches refuse without (a Knockout runs and
+// says so on its report). Everything else a search runs without and discloses: the Chinese marketplace
+// key and every case-law source. Read off the adapter's own credential name, so a research adapter that
+// is not the one the door asks for is optional by the same rule.
+const neededBySearch = (adapter) => [adapter?.credEnv, ...(adapter?.credEnvAlso ?? [])].includes(RESEARCH_ENV);
+
 export function providerInventory(env = process.env) {
   const rows = [];
 
@@ -206,6 +216,7 @@ export function providerInventory(env = process.env) {
     // With no provider selected there is no credential to be missing, and the thing to set is the
     // selector itself. `activeProvider` throws on an unknown id, so that case names the selector too.
     missing: register ? shown(missingCredentials(register, env)) : shown(["CLEAROTRON_DATABASE"]),
+    needed: true,   // every search reads a register, and the order door refuses without one
   });
 
   for (const [group, label, table] of [
@@ -224,6 +235,7 @@ export function providerInventory(env = process.env) {
         known: true,
         configured: missing.length === 0,
         missing: shown(missing),
+        needed: neededBySearch(adapter),
       });
     }
   }
@@ -233,7 +245,8 @@ export function providerInventory(env = process.env) {
   // Appended to the SAME list, so every reader of this inventory gets them with no edit: the config
   // screen renders rows generically, the flag snapshot carries whatever this returns, and the doctor
   // reads the same function. A separate list would be the hand-kept census this issue is about.
-  rows.push(...caseLawInventory(env));
+  // Every case-law source is one a search runs without: the report discloses the gap.
+  rows.push(...caseLawInventory(env).map((r) => ({ ...r, needed: false })));
   return rows;
 }
 

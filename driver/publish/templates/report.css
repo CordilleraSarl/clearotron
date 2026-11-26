@@ -7,6 +7,22 @@
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;
     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   .wrap{max-width:1120px;margin:0 auto;padding:0 26px 110px}
+  /* The column narrowed beside the conflict panel (owner, 2026-11-25): it becomes the query container its width rules'
+     twins ask (column-queries.mjs), at the width the page script sets. Screen only, so paper is never narrowed. */
+  @media screen{html.rep-narrow .wrap{container:repcol/inline-size;max-width:none;width:var(--rep-col);margin-left:var(--rep-left);margin-right:0}}
+  /* Where the window holds the full column and the conflict panel beside it (16 + 1120 + 30 + 500 + 16 px), a clearance
+     page keeps that room on the right from the start, so opening the panel moves nothing (design, 2026-11-26). */
+  @media screen and (min-width:1682px){body:has(> #cpanel-words) > .wrap{margin-left:16px;margin-right:auto}}
+  /* The conflict panel (owner, 2026-11-25): a conflict's card, opened beside the claim that cites it. The card is the page's
+     own markup, drawn at the panel's width by the width rules' twins (the panel is their query container). Never printed. */
+  .cpanel{position:absolute;z-index:20;container:repcol/inline-size;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);outline:none}
+  .cpanel .card{margin:0;border:0;box-shadow:none;background:transparent}
+  .cpanel .cardhead{padding-right:40px}
+  .cpanel .copy-fi+.ask-fi{margin-left:8px}
+  .cp-close{position:absolute;top:6px;right:6px;z-index:1;width:44px;height:44px;border:0;border-radius:8px;background:transparent;color:var(--slate);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+  .cp-close:hover{background:var(--bg2)}
+  .fa-ords a.cite-on{outline:2px solid var(--crimson);outline-offset:1px;border-radius:4px}
+  @media print{.cpanel{display:none!important}}
   .label{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--slate)}
   .mono{font-family:var(--mono)}
   a{color:var(--crimson);text-decoration:none}
@@ -173,6 +189,23 @@
   .land{padding:14px 14px 6px}
   .land svg{width:100%;height:auto;display:block}
   .land svg a{cursor:pointer}
+  /* A dot's panel (owner, 2026-11-25): a dark ring on the dot under the pointer or keyboard focus, and one small panel in
+     the chart's card that the page script fills and places. The chart's card stays a light surface in the dark theme, so
+     the panel's colours are the light ones, handed in by the renderer as custom properties. */
+  .land{position:relative}
+  .land svg a .qring{display:none}
+  .land svg a:hover .qring,.land svg a:focus-visible .qring,.land svg a.qhot .qring{display:inline}
+  .land svg a:focus-visible{outline:none}
+  .qtip{position:absolute;z-index:5;width:262px;max-width:calc(100% - 16px);box-sizing:border-box;padding:12px 14px;background:#FFFDF9;border:1px solid #D8CCB8;border-radius:10px;box-shadow:0 1px 2px rgba(37,9,2,.05),0 10px 30px rgba(37,9,2,.12);display:flex;flex-direction:column;gap:8px;color:var(--qt-ink);font-family:var(--font);text-align:left}
+  .qtip[hidden]{display:none}
+  .qtip .qt1{display:flex;align-items:center;gap:9px}
+  .qtip .qn{width:22px;height:22px;border-radius:50%;color:var(--qt-ink);font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+  .qtip .qm{font-size:15px;font-weight:700;min-width:0;overflow-wrap:anywhere}
+  .qtip .qb{margin-left:auto;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap;flex:none}
+  .qtip .qb.med{background:var(--qt-med-bg);color:var(--qt-med-tx)}
+  .qtip .qb.low{background:var(--qt-low-bg);color:var(--qt-low-tx)}
+  .qtip .qs{font-size:12.5px;color:var(--qt-sub);line-height:1.45}
+  .qtip .qs:empty{display:none}
   .keypanel{padding:16px 18px;display:flex;flex-direction:column}
   .keypanel .label{margin-bottom:6px}
   .keyhint{font-size:11.5px;color:var(--slate);margin:0 0 12px}
@@ -264,6 +297,17 @@
   .rr-lg img{display:block;width:94px;height:72px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;padding:5px;box-sizing:border-box}
   .rr-lg figcaption{font-size:10.5px;letter-spacing:.04em;color:var(--slate);margin-top:3px}
   .rr-band{max-width:none;justify-content:flex-start;gap:10px;margin:10px 0 12px}
+  /* The picture line (owner, 2026-11-25): each set in a bordered frame whose first line is its label, set as the card's
+     "Owner" label is. Frames sit side by side where the card is wide enough and stack, as wide as the wider one, where
+     it is not; on paper a frame keeps its label and a picture its caption. */
+  .pic-line{display:flex;flex-wrap:wrap;align-items:stretch;gap:14px;width:fit-content;max-width:100%;margin:12px 0 14px}
+  .pic-set{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);background:color-mix(in srgb,var(--card) 50%,var(--bg));break-inside:avoid}
+  .pic-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-height:17px}
+  .pic-lab{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);line-height:1.2}
+  .pic-set .rr-band{margin:0}
+  .pic-set .rr-lg{width:auto;min-width:94px;max-width:150px;break-inside:avoid}
+  .pic-set .rr-lg img{margin:0 auto}
+  .pic-set .rr-lg figcaption{overflow-wrap:anywhere}
   .rn>summary .rr-sm{flex:0 0 100%;box-sizing:border-box;padding-left:14px;margin:2px 0 0}
   .rr-more{align-self:center;font-size:11px;color:var(--slate)}
   .rr-sm{max-width:none;justify-content:flex-start;gap:4px;margin-left:4px}
@@ -398,6 +442,11 @@
   .rcode{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--slate);background:var(--bg2);border:1px solid var(--line);padding:2px 6px;border-radius:5px;min-width:30px;text-align:center;flex:none}
   .rname{font-weight:700;font-size:13px;flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .rsub{flex:1;min-width:0;font-size:11px}
+  /* The common-law row's name is the longest in the key, so beside its band and its count "Unregistered use" had no room
+     and ran under the count. Its header may take a second line: an item that does not fit moves down whole, the label
+     keeps its width and the count stays at the right of the last line. No words change. */
+  .rrow.rcl>summary{flex-wrap:wrap;row-gap:4px}
+  .rrow.rcl .rsub{flex:1 0 auto}
   .rcount{font-size:11px;font-weight:700;color:var(--slate);flex:none}
   .rbody{padding:2px 2px 6px 8px}
   .rgroup{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:13px;box-shadow:var(--shadow);overflow:hidden}
@@ -410,6 +459,20 @@
   .gcount{font-size:11px;font-weight:700;color:var(--slate)}
   .gbody{padding:0 12px 8px}
   .rgroup .card{margin:0 0 10px} .rgroup .card:last-child{margin-bottom:4px}
+  /* The folded list of lower-rated conflicts (owner, 2026-11-25). Its header keeps its title and marker; a control at the
+     right says "Show all {n}" folded and "Hide" open, drawn as a card's Ask AI pill with crimson words, and drops to a
+     second row at the right where the header is too narrow. Folded, the list shows the edges of two more cards under it.
+     Screen only: the control is .no-print, and the pile and the room it takes sit under @media screen. */
+  .rgroup.lowerband>summary{flex-wrap:wrap;row-gap:8px}
+  .rgroup.lowerband>summary .gname{min-width:0}
+  .lb-show{margin-left:auto;flex:none;display:inline-flex;align-items:center;font:600 12px/1 var(--font);padding:7px 11px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--crimson);white-space:nowrap}
+  .rgroup.lowerband>summary:hover .lb-show{border-color:var(--crimson);color:var(--crimson)}
+  .lb-show .lb-open,.rgroup.lowerband[open]>summary .lb-show .lb-closed{display:none}
+  .rgroup.lowerband[open]>summary .lb-show .lb-open{display:inline}
+  @media screen{
+    .rgroup.lowerband{--pile:color-mix(in srgb,var(--faint) 55%,var(--line2));--sheet:color-mix(in srgb,var(--card) 80%,var(--line2))}
+    .rgroup.lowerband:not([open]){margin-bottom:32px;box-shadow:var(--shadow),0 13px 0 -6px var(--sheet),0 13px 0 -5px var(--pile),0 26px 0 -12px var(--sheet),0 26px 0 -11px var(--pile)}
+  }
 
   /* a grouped reasoned negative. The shared ground is in the .fold-lead above the run of rows;
      each row carries only what is its own, so the line has to stay ONE line's worth of weight: the mark
@@ -542,6 +605,7 @@
   .fourans ul.fa-obstacles li{margin:0 0 4px;font-size:13px}
   @media (max-width:640px){.fourans .fa-row{flex-direction:column;gap:2px}.fourans .fa-k{flex:auto}}
   @media (max-width:640px){.rr-row{grid-template-columns:1fr;gap:0}.rr-band .rr-lg,.rr-band .rr-lg img{width:72px}.rr-band .rr-lg img{height:56px}}
+  @media (max-width:640px){.pic-line{display:grid;grid-template-columns:fit-content(100%);width:auto}.pic-set{padding:8px 6px}.pic-set .rr-band{gap:8px}.pic-set .rr-lg{min-width:72px;max-width:116px}}
 
   /* ── the coverage ledger stops being the page's smallest print ─────────────────────────────
      `details.scope` had NO screen rule at all: its summary rendered at the browser default, in the
@@ -617,6 +681,14 @@
   .panel.courtp{padding:14px 18px}.panel.courtp p{margin:0;font-size:14px;line-height:1.5}
 
   .ask-fi{margin-left:auto;font:600 12px/1 var(--font);padding:7px 10px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap}
+  /* Copy link (owner, 2026-11-25): drawn as Ask AI is, left of it, and shown only when the frame bridge marks the page as
+     inside the portal. The tick replaces the link icon once the portal says the copy landed. */
+  .copy-fi{display:none;margin-left:auto;font:600 12px/1 var(--font);padding:7px 10px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--ink);cursor:pointer;white-space:nowrap;align-items:center;gap:7px}
+  html.rep-portal .copy-fi{display:inline-flex}
+  .fi-acts{margin-left:auto;display:inline-flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px}
+  .fi-acts .ask-fi,.fi-acts .copy-fi{margin-left:0}
+  .copy-fi .ci-tick,.copy-fi.copied .ci-link{display:none}
+  .copy-fi.copied .ci-tick{display:inline}
   .tb-ask{margin-right:8px}
   .cardhead .who.mark-first{font-size:17px;font-weight:800}
   .cardhead .who .where{font-weight:500;color:var(--slate);font-size:14px}
@@ -639,6 +711,7 @@
   .crow{display:grid;grid-template-columns:200px 1fr;gap:12px;align-items:start;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
   .crow .cm-mark{font-weight:700}.crow .cwho{color:var(--slate);line-height:1.45}
   .crow .curl{color:var(--crimson);text-decoration:none;font-size:12.5px;word-break:break-all}
+  .crow .curl a{color:inherit;text-decoration:none}
   .cmore{padding:10px 0 2px;font-size:12.5px}.wb{color:var(--crimson);text-decoration:none;font-weight:600}
 
   details.searched{margin:14px 0;background:var(--card);border-radius:12px;box-shadow:var(--shadow)}

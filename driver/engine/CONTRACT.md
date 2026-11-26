@@ -45,6 +45,14 @@ ladder consumes it without knowing which engine produced it ([gateway.mjs](../ga
                                      // null = nothing was observed, never the requested alias
   providerWire: string | null,       // PROVIDER GAUGE — the program's own word for who served the turn
                                      // ("firstParty", "foundry"); null = not said, or said inconsistently
+  speed:      Speed,                 // SPEED GAUGE — what the turn asked for beside what the program
+                                     // reported serving (engine/speed.mjs): { requested: "standard"|"fast",
+                                     // standardBecause, served, basis: "reported"|"unknown", calls, state,
+                                     // disabledReason, notice }. `requested` is what was sent: a turn asked
+                                     // for fast on a model with no faster setting sends standard, and
+                                     // `standardBecause` says so ("model-not-fast"). Claude reports each
+                                     // call's `usage.speed` and its fast_mode_state; Codex reports none, so
+                                     // served is null and basis "unknown" on every turn, fast or not
   signals:    { stalled?, noProgress?, hardWall?, rateLimited?, rateLimitBasis?, resetsAt?,
                 resetsAtBasis?, usageStreamed?, noStreamEvents?, thought: bool|null },
                                      // THINKING GAUGE — see below.

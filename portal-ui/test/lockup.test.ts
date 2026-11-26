@@ -6,6 +6,8 @@
 // CAN prove is what the lockup says — the wordmark's type, the brand token rather than a hex literal,
 // and the two claims it must NOT make: the retired flag and the old brand in an accessible name.
 import { test } from 'node:test'
+import { tabTitle } from '../src/contract/tabTitle.ts'
+import { PRODUCT_NAME } from '../src/contract/api.ts'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -80,10 +82,12 @@ test('the wordmark is the installation\'s name when it set one, and the lowercas
   assert.match(logo, /export const wordmarkFor = \(brandName: string\): string => \(brandName === PRODUCT_NAME \? WORDMARK : brandName\)/,
     'a set name is shown as the deployment wrote it, and only the product\'s own name falls back to the wordmark')
   assert.match(logo, /\{wordmarkFor\(brandName\)\}/, 'the lockup does not draw the name it is given')
-  // The tab: index.html keeps the product's title, and the shell replaces it only for a set name.
+  // The tab: index.html carries the product's title, and the shell writes the same title from the name it is
+  // given, with the count of searches that ended while the tab was away at its front (tabTitle.ts).
   const html = readFileSync(fileURLToPath(new URL('../index.html', import.meta.url)), 'utf8')
   assert.match(html, /<title>Clearotron · Trademark clearance<\/title>/)
+  assert.equal(tabTitle(PRODUCT_NAME, 0), 'Clearotron · Trademark clearance', 'an installation that names nothing lost the product title')
   const shell = readFileSync(fileURLToPath(new URL('../src/shell/AppShell.tsx', import.meta.url)), 'utf8')
-  assert.match(shell, /if \(brandName !== PRODUCT_NAME\) document\.title = `\$\{brandName\} · Trademark clearance`/)
+  assert.match(shell, /document\.title = tabTitle\(brandName, endedWhileHidden\)/)
   assert.match(shell, /<Logo markOnly=\{collapsed && !mobile\} brandName=\{me\.brandName\} \/>/, 'the logo is not given the name')
 })

@@ -645,6 +645,15 @@ const EMBED_JS = `
     // dark rules key on. That control sits in the top bar embedding strips, and a sandboxed frame cannot
     // read the portal's saved choice, so this is the one route by which an embedded report turns dark.
     // Two values and nothing else; the answer says which was applied, so the shell knows it took.
+    // THE PORTAL SAYS A COPY LANDED. The card's "Copy link" asked it to (below); only a copy that landed shows the tick
+    // and says "Copied" to a screen reader, and both go after a moment.
+    if(d.command==='copied'){
+      if(copyBtn&&d.value===true&&copyLive){
+        var cb=copyBtn; cb.classList.add('copied'); copyLive.textContent=cb.getAttribute('data-copied')||'';
+        clearTimeout(copyTimer); copyTimer=setTimeout(function(){cb.classList.remove('copied');copyLive.textContent='';},1600);
+      }
+      return;
+    }
     if(d.command==='theme'){
       var th=d.value==='dark'?'dark':'light';
       document.documentElement.setAttribute('data-theme',th);
@@ -701,6 +710,38 @@ const EMBED_JS = `
   // (the one that measurably needs the delegation) working, and only ever degrades to native scrolling
   // when we can positively see there is no other window.
   var framed=false; try{framed=window.parent!==window;}catch(err){framed=true;}
+  // COPY LINK (owner, 2026-11-25). A card's "Copy link" is drawn hidden; inside the portal this marks the page so the
+  // stylesheet shows it, and a press asks the portal, which alone knows its own address and may write the clipboard, to
+  // copy the address of its report screen at this card. The card is named by its id; a card copied into the conflict
+  // panel carries its original's id as data-card-of. Un-framed nobody can answer, so the page is not marked.
+  // THE CONFLICT PANEL MOVES THE PAGE. Narrowing the column beside it reflows everything, and the pressed number has to
+  // stay at the same height on screen. The page cannot scroll the portal, so it asks: un-framed it scrolls itself. Any
+  // reflow it makes re-posts the height and the section tops.
+  document.addEventListener('rep-shift',function(e){
+    if(!framed)return;
+    e.preventDefault();
+    try{parent.postMessage({source:TAG,type:'scrollBy',dy:Math.round((e.detail&&e.detail.dy)||0)},'*');}catch(err){}
+  });
+  document.addEventListener('rep-reflow',function(){schedule();});
+  var copyBtn=null, copyLive=null, copyTimer=null;
+  if(framed){
+    try{document.documentElement.classList.add('rep-portal');}catch(err){}
+    copyLive=document.createElement('span'); copyLive.className='copy-said'; copyLive.setAttribute('role','status');
+    copyLive.style.cssText='position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap';
+    document.body.appendChild(copyLive);
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest?e.target.closest('.copy-fi'):null;
+    if(!b||!framed)return;
+    var card=b.closest('.card'); if(!card)return;
+    var id=card.id||card.getAttribute('data-card-of')||'';
+    var whole=function(v){var n=parseInt(v,10);return String(n)===String(v)&&n>=0?n:null;};
+    var koOrd=card.getAttribute('data-ko-ord'), koMark=card.getAttribute('data-ko-mark');
+    var ord=koOrd!==null?whole(koOrd):(id.charAt(0)==='c'?whole(id.slice(1)):null);
+    copyBtn=b;
+    try{parent.postMessage({source:TAG,type:'copyLink',card:id,ordinal:ord,markIndex:koMark!==null?whole(koMark):null},'*');}
+    catch(err){try{console.warn('Copy link could not reach the page: '+(err&&err.message||err));}catch(e2){}}
+  });
   function revealTarget(el){var p=el.parentElement;while(p){if(p.tagName==='DETAILS'&&!p.open)p.open=true;p=p.parentElement;}}
   document.addEventListener('click',function(e){
     var a=e.target.closest?e.target.closest('a[href^="#"]'):null;
@@ -731,7 +772,9 @@ const EMBED_JS = `
     var card=b.closest('.card');
     var whole=function(v){var n=parseInt(v,10);return String(n)===String(v)&&n>=0?n:null;};
     var koOrd=card?card.getAttribute('data-ko-ord'):null;
-    var idOrd=card&&(card.id||'').charAt(0)==='c'?card.id.slice(1):null;
+    // A card copied into the conflict panel has no id of its own; it carries its original's as data-card-of.
+    var cid=card?(card.id||card.getAttribute('data-card-of')||''):'';
+    var idOrd=cid.charAt(0)==='c'?cid.slice(1):null;
     var ord=koOrd!==null?whole(koOrd):(idOrd!==null?whole(idOrd):null);
     var koMark=card?card.getAttribute('data-ko-mark'):null;
     var mi=koMark!==null?whole(koMark):null;

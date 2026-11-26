@@ -225,6 +225,7 @@ function world(opts = {}) {
     ...("readTerritories" in opts ? { readTerritories: opts.readTerritories } : {}),
     ...("readRegisterLabel" in opts ? { readRegisterLabel: opts.readRegisterLabel } : {}),
     ...(opts.upstream ? { upstream: opts.upstream } : {}),
+    ...(opts.urgentAvailable ? { urgentAvailable: opts.urgentAvailable } : {}),
     ...(opts.composeRead ? { composeRead: opts.composeRead } : {}),
     ...(opts.readBudget ? { readBudget: opts.readBudget } : {}),
     // — the capture endpoint is retired and answers 410. A world that does not ask for it gets the
@@ -2186,6 +2187,24 @@ test("quota: a client at the day's limit gets the 429 that names the reset and t
   assert.equal(triggers.length, 0);
 });
 
+test("quota: with one search left an Urgent order is refused in the order screen's words; Standard fits; two left admit Urgent", async () => {
+  // Design, 2026-11-26: the sentence is the order screen's own, and an Urgent order is never run, or counted, as Standard.
+  const at = async (used, body) => {
+    const { up } = upstreamSpy({ runCaps: { dailyRuns: 2 } });
+    const { service } = world({ upstream: up, urgentAvailable: () => true, queueDirs: [queueWith(Array.from({ length: used }, () => ({})))] });
+    return service.route("POST", "/portal/api/run/plan", CLIENT, body, {});
+  };
+  const urgent = { ...QUOTA_BODY, urgent: true };
+  const one = await at(1, urgent);
+  assert.equal(one.status, 429);
+  assert.deepEqual(one.json.errors, ["1 search left today."]);
+  assert.equal((await at(1, QUOTA_BODY)).status, 200, "one left: Standard fits");
+  assert.equal((await at(0, urgent)).status, 200, "two left: Urgent fits");
+  const none = await at(2, urgent);
+  assert.equal(none.status, 429);
+  assert.match(String(none.json.errors?.[0]), /all 2 of this account's searches/, "none left keeps its own sentence");
+});
+
 test("quota: under the limit, the ledger the wall reads admits the run", async () => {
   const { up } = upstreamSpy({ runCaps: { dailyRuns: 2 } });
   const { service } = world({ upstream: up, queueDirs: [queueWith([{}])] });
@@ -3563,4 +3582,23 @@ test("a live run's row names the stage it is in now, a step back included; a fin
   assert.ok(done, "a failed run left the listing");
   assert.equal(done.step, "Case law & refutation", "a finished run keeps the step its terminal write set");
   assert.equal(done.stepN, 6);
+});
+
+// ── A RUNNING CARD LISTS EVERY STEP BY NAME, FROM THE RUN'S OWN LIST (approved 2026-11-25) ────────────────
+// The browser keeps no copy of any step list: the row carries the names the run wrote, in order.
+test("a live run's row carries the run's own step list; a run recorded before the field carries none", async () => {
+  const { displayStepsFor, CONCLUSIONS_STEP } = await import("../progress.mjs");
+  const { service, workspaceRoot } = world();
+  const live = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "tmp9-live", "2026-07-18-amber-x", "status.json");
+  const write = (s) => writeFileSync(live, JSON.stringify({ runId: "tmp9-live-amber-x", markName: "LIVEMARK", updatedAt: "2026-07-18T10:00:00Z", ...s }));
+  const row = async () => (await service.route("GET", "/portal/api/runs", CLIENT, {}, {})).json.runs.find((r) => r.runId === "tmp9-live-amber-x");
+  const steps = [...displayStepsFor("global-preliminary-search")];
+  write({ state: "running", steps, currentStep: { index: 5, label: CONCLUSIONS_STEP, n: 6, total: 9 }, lastStage: "narrative-refutation", stepLabel: CONCLUSIONS_STEP, stepN: 6, stepTotal: 9 });
+  const r = await row();
+  assert.deepEqual(r.steps, steps, "the row carries every step the run walks, in order");
+  assert.equal(r.step, CONCLUSIONS_STEP);
+  write({ state: "running", currentStep: { index: 1, label: "Searching registers and common law", n: 2, total: 9 }, stepN: 2, stepTotal: 9 });
+  assert.equal((await row()).steps, null, "no list on the record: the card keeps its single line");
+  write({ state: "running", steps: ["Framing the matter", 7], stepN: 1, stepTotal: 2 });
+  assert.equal((await row()).steps, null, "a list that is not all names is not a list");
 });

@@ -47,7 +47,7 @@
 // resolves it. An empty territory list is not a request to search nowhere; it is worldwide, in this
 // screen and in the engine alike. The summary quotes the SERVER's scope and never echoes this form.
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import type {
   Plan, Result, Searches, SavedSearchDetail, ProjectSummary, ProjectDetail, ProfileConfig, Usage,
   ReadCapability, Product,
@@ -57,7 +57,7 @@ import { engineNotice, setupPackage } from '../contract/engineState.ts'
 import { parseNames, parseList } from '../contract/compose.ts'
 import type { Draft as Pick, EffortInput } from '../contract/composerProduct.ts'
 import {
-  EMPTY_DRAFT, blockers, runCount, turnaround, turnaroundInWords, checksSummary, runsNote, machineryFor,
+  EMPTY_DRAFT, blockers, searchesCounted, turnaround, turnaroundInWords, turnaroundBounds, rangeInWords, checksSummary, runsNote, machineryFor,
   territoryMatches, addTerritory, removeTerritory, takeOverOwnTerritories, reachesTerritory, notAvailableLine, worldwideLine,
   inherited, composeSaved, draftFromSaved, nameBudget, missingPieces, readiness,
   chooseProduct, geographyFor, nativeLanguageControl, toggleNativeLanguage, barWhere,
@@ -79,7 +79,7 @@ import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
 import type { CreatedCompany } from '../contract/api.ts'
 import { seesEverything } from '../shell/permissions.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
-import { allowanceLine, searchesLeft } from '../contract/allowance.ts'
+import { allowanceLine, searchesLeft, overOneLeft, ONE_SEARCH_LEFT } from '../contract/allowance.ts'
 
 /**
  * What a read did, in three separable parts, because they are three different kinds of claim.
@@ -141,11 +141,13 @@ type Draft = {
   readonly deadline: string
   readonly instructions: string
   readonly brief: string
+  /** How soon: Urgent, or Standard (false). An order option, not part of the search, so a template does not carry it. */
+  readonly urgent: boolean
 }
 
 const EMPTY: Draft = {
   pick: EMPTY_DRAFT, savedSearch: '', project: '', names: '', classes: null, goods: '',
-  platforms: '', ref: '', deadline: '', instructions: '', brief: '',
+  platforms: '', ref: '', deadline: '', instructions: '', brief: '', urgent: false,
 }
 
 export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
@@ -347,6 +349,32 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // What this search will be scoped to: the override if the user set one, else what is inherited.
   const classes = draft.classes ?? own.classes
 
+  // ── THE COMPANY'S SETTINGS, FOLDED INTO ONE LINE (board approved 2026-11-25) ───────────────────────
+  //
+  // Their values come from the company and are usually right, so the card starts folded under one line
+  // that states what this search will use. "Change" opens today's card in place, and it stays open until
+  // the page is left. It starts open when there is something to put right: no classes, which is the
+  // card's one value that can fail (the "None set" line in it). Not before the company's settings have
+  // loaded, though: an empty list then means "not read yet", not "none on file".
+  const [companyOpened, setCompanyOpened] = useState(false)
+  const companyNeedsAttention = profile != null && classes.length === 0
+  useEffect(() => { if (companyNeedsAttention) setCompanyOpened(true) }, [companyNeedsAttention])
+  const companyOpen = companyOpened || companyNeedsAttention
+  const companyCardRef = useRef<HTMLDivElement>(null)
+  const focusCompanyCard = useRef(false)
+  useEffect(() => {
+    if (!companyOpen || !focusCompanyCard.current) return
+    focusCompanyCard.current = false
+    companyCardRef.current?.querySelector<HTMLElement>('select, input, button, textarea')?.focus()
+  }, [companyOpen])
+
+  // ── WHICH SEARCH SHOWS THE CHOSEN SEARCH, the other three one press away ─────────────────────────────
+  // With none chosen all four show, as before. Once opened the list stays open, and choosing another
+  // search leaves it open.
+  const [allSearchesOpened, setAllSearchesOpened] = useState(false)
+  const searchListRef = useRef<HTMLDivElement>(null)
+  const focusSearchList = useRef(false)
+
 
   // The row this draft is running, when it is running one. Looked up ONCE: the depth, the gates and the
   // "Start point" line all have to be answering about the same record, and three separate finds is
@@ -369,6 +397,19 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
   // before a product is chosen — reading `=== 'clearance'` blanked it at rest, which is the one moment
   // it is doing its whole job: telling somebody what they already carry, before they choose.
   const marketplacesApply = activePipeline !== 'knockout'
+  const allSearchesOpen = allSearchesOpened || !levels.some((l) => l.key === activeBase)
+  const shownLevels = allSearchesOpen ? levels : levels.filter((l) => l.key === activeBase)
+  useEffect(() => {
+    if (!allSearchesOpen || !focusSearchList.current) return
+    focusSearchList.current = false
+    searchListRef.current?.querySelector<HTMLElement>('.pick-row-hit:not(:disabled)')?.focus()
+  }, [allSearchesOpen])
+  // THE LINE STATES WHAT THIS SEARCH WILL USE, edits in the open card and a brief's values included: the
+  // project, the classes this search sends, and the marketplaces it sweeps, the account's own plus any
+  // named for this search.
+  const marketplaceCount = own.platforms.length + (marketplacesApply ? parseList(draft.platforms).length : 0)
+  const companyLine = `${projectLabel ?? 'No project'} · Classes ${classes.length ? classes.join(', ') : '—'} · `
+    + `${marketplaceCount} marketplace${marketplaceCount === 1 ? '' : 's'}`
   // Which geography control this product gets, and what it says at that control. Both come off the
   // OFFERING rather than being decided here, so the screen cannot offer a shape the wall refuses.
   // WHICH SEARCH THE WHERE PANEL FITS ITSELF TO. A search the reader chose — a row, a brief that asked for
@@ -392,8 +433,17 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     [levels],
   )
 
+  // HOW SOON. Urgent is offered only where it runs fast (`api.searches().urgent`); elsewhere the order is Standard,
+  // whatever the draft last held, so the footer, the review and the wire never say Urgent for a Standard search.
+  const urgentAvailable = searches?.kind === 'ok' ? searches.value.urgent.available : false
+  // ONE SEARCH LEFT (design ruling 2026-11-26): an Urgent order counts two, so with exactly one left it cannot
+  // be chosen and Standard stays available. Asked of the same count the quote charges; the server refuses the
+  // same order in the same words if the balance moves after this screen was drawn.
+  const urgentOverAllowance = overOneLeft(searchesLeft(usage ?? null), searchesCounted({ levers: { ...machineryFor(draft.pick, activeLevel), urgent: true }, names: 1, classes: 0, platforms: 0, density: null }))
+  const urgentOn = draft.urgent && urgentAvailable && !urgentOverAllowance
+
   const effort: EffortInput = {
-    levers: machinery,
+    levers: { ...machinery, urgent: urgentOn },
     names: names.length,
     classes: classes.length,
     // The account's shops PLUS any typed for this search. Without the second half, promoting the add
@@ -552,6 +602,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     // A SAVED SEARCH CARRIES ITS OWN. The toggle is behind the notice while a recipe is selected, so a
     // flag sent from there is one the user cannot see, cannot switch off, and did not choose.
     ...(!draft.savedSearch && nativeControl === 'toggle' && draft.pick.nativeLanguage ? { nativeLanguage: true } : {}),
+    // HOW SOON: only `true` travels, and only where Urgent runs fast. Standard is the absence of the field.
+    ...(urgentOn ? { urgent: true } : {}),
     ...(draft.ref.trim() ? { ref: draft.ref.trim() } : {}),
     ...(draft.deadline.trim() ? { deadline: draft.deadline.trim() } : {}),
     ...(draft.instructions.trim() ? { upfrontInstructions: draft.instructions.trim() } : {}),
@@ -1165,8 +1217,29 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
               are working. Nothing replaces it. */}
         </div>
 
+        {/* ── the company's settings: one line, and today's card behind "Change" ── */}
+        <div className="nc-company-line">
+          <div className="nc-company-line-text">
+            <div className="field-label" style={{ marginBottom: 0 }} data-anon="mark">From {ownerLabel}</div>
+            <div className="nc-company-line-value" data-anon="mark">{companyLine}</div>
+          </div>
+          <button
+            type="button"
+            className="nc-disclose"
+            aria-expanded={companyOpen}
+            aria-controls="nc-company-card"
+            onClick={() => {
+              if (companyOpen) companyCardRef.current?.querySelector<HTMLElement>('select, input, button, textarea')?.focus()
+              else { focusCompanyCard.current = true; setCompanyOpened(true) }
+            }}
+          >
+            Change
+          </button>
+        </div>
+
         {/* ── the company card: what this company already carries ── */}
-        <div className="ctx-card">
+        {companyOpen ? (
+        <div className="ctx-card" id="nc-company-card" ref={companyCardRef}>
           <div className="field-label">Project</div>
           <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
             {projects.length ? (
@@ -1326,6 +1399,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             </div>
           </div>
         </div>
+        ) : null}
 
         {/* ── WHICH SEARCH ── */}
         <div>
@@ -1375,8 +1449,8 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
             </p>
           ) : null}
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {levels.map((t) => (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }} id="nc-all-searches" ref={searchListRef}>
+            {shownLevels.map((t) => (
               <PickRow
                 key={t.key}
                 // The TEMPLATE's search is the selected row while one is applied, because that is the
@@ -1443,7 +1517,36 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
               </PickRow>
             ))}
           </div>
+          {levels.some((l) => l.key === activeBase) ? (
+            <button
+              type="button"
+              className="nc-disclose nc-all-searches"
+              aria-expanded={allSearchesOpen}
+              aria-controls="nc-all-searches"
+              onClick={() => {
+                if (allSearchesOpen) searchListRef.current?.querySelector<HTMLElement>('.pick-row-hit:not(:disabled)')?.focus()
+                else { focusSearchList.current = true; setAllSearchesOpened(true) }
+              }}
+            >
+              All four searches
+            </button>
+          ) : null}
         </div>
+
+        {/* ── HOW SOON (board Urgent clearance, approved 2026-11-25) ── Directly below Which search, once one is
+            picked: each option's figures come from the shared effort model for the search as configured. */}
+        {activeLevel ? (
+          <HowSoon
+            standardLine={`${turnaroundInWords(turnaround({ ...effort, levers: { ...machinery, urgent: false } }))} · uses ${searchesLabel(searchesCounted({ ...effort, levers: { ...machinery, urgent: false } }))}`}
+            urgentLine={urgentAvailable
+              ? `${rangeInWords(turnaroundBounds({ ...effort, levers: { ...machinery, urgent: true } }))} · uses ${searchesLabel(searchesCounted({ ...effort, levers: { ...machinery, urgent: true } }))}`
+              : "Not available with this installation's AI service. Searches run at Standard."}
+            urgentAvailable={urgentAvailable}
+            urgentOverAllowance={urgentOverAllowance}
+            urgent={urgentOn}
+            onChoose={(urgent) => edit({ urgent })}
+          />
+        ) : null}
 
         {/* THE FOUR SIDE BY SIDE. A client choosing between them is asking "am I buying the right one",
             which is a comparison, which is a table. Every cell is read off the same fetched payload the
@@ -1543,7 +1646,7 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
           and a saved one "Stage 1". Both now read the name the delivered report prints at the top. */}
       <Footer
         startedFrom={startedFrom}
-        tier={activeLevel?.name || activeLevel?.stageLabel || (draft.savedSearch ? 'Search template' : 'No search picked')}
+        tier={`${activeLevel?.name || activeLevel?.stageLabel || (draft.savedSearch ? 'Search template' : 'No search picked')}${activeLevel && urgentOn ? ' · Urgent' : ''}`}
         detail={[
           names.length ? `${names.length} name${names.length === 1 ? '' : 's'}` : 'no names yet',
           // Same correction as the Where chips: unset resolves to the account's territories, not to
@@ -1557,10 +1660,14 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
           // Checks PER NAME, said once there is a name and a search to count them for.
           names.length && activeLevel ? checksSummary(effort) : '',
         ].filter(Boolean).join(' · ')}
-        uses={runCount(effort)}
+        uses={searchesCounted(effort)}
+        // What the account has left today, beside the count, from the read the review step uses. Null when the
+        // account is not capped, and the label then stays "Uses" (board Urgent clearance).
+        left={searchesLeft(usage ?? null)}
         // NOT SET until a search is picked: the quote is keyed on the pipeline, and a figure for a
-        // search nobody has chosen is a figure for the wrong one half the time.
-        duration={activeLevel ? turnaroundInWords(plan?.effort?.turnaround || turnaround(effort)) : 'Not set'}
+        // search nobody has chosen is a figure for the wrong one half the time. An Urgent order's figure is
+        // said in full words from the ruled row, as its option says it.
+        duration={activeLevel ? (urgentOn ? rangeInWords(turnaroundBounds(effort)) : turnaroundInWords(plan?.effort?.turnaround || turnaround(effort))) : 'Not set'}
         runs={runsNote(effort)}
         ready={ready}
         busy={busy}
@@ -1608,7 +1715,9 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
 
       {plan ? (
         <ReviewDialog
-          uses={runCount(effort)}
+          // THE SERVER'S COUNT once there is a plan: the number admission charges, Urgent included.
+          uses={plan.effort?.searches ?? searchesCounted(effort)}
+          urgentTurnaround={urgentOn ? rangeInWords(turnaroundBounds(effort)) : null}
           left={searchesLeft(usage)}
           registerLabel={registerLabel}
           plan={plan}
@@ -1656,6 +1765,23 @@ function DescribeIt({ value, onChange, can, reading, error, receipt, onRead }: {
   readonly onRead: () => void
 }) {
   const tooLong = value.length > can.maxBrief
+  // AN INSTALLATION THAT CANNOT READ A BRIEF OFFERS NO BOX TO WRITE ONE IN (approved 2026-11-25). The
+  // heading, its "optional" mark and the server's own sentence stay, so a reader learns the section
+  // exists and why it is empty; typing starts at Names to clear. The screen draws only once the server's
+  // answer has loaded, so `available` false here is that answer, never a fetch still in flight.
+  if (!can.available) {
+    return (
+      <div style={{ paddingBottom: 22, borderBottom: '1px solid var(--border-hairline)' }}>
+        <div className="nc-describe-head">
+          <span className="section-title" style={{ marginBottom: 0 }}>Describe it</span>
+          <span className="nc-optional">optional</span>
+        </div>
+        <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-muted)' }}>
+          {can.note ?? 'Reading a brief is not switched on here yet — set the search up below.'}
+        </p>
+      </div>
+    )
+  }
   return (
     <div style={{ paddingBottom: 22, borderBottom: '1px solid var(--border-hairline)' }}>
       {/* THE EXAMPLE IS INSIDE THE BOX, and nothing above it restates what the box is for: the heading
@@ -1776,8 +1902,76 @@ function NameWall({
  * "Starting from" leads, because a prefilled template that is invisible is the same as no template: the
  * user cannot tell what they picked, which is the gap this line closes.
  */
+/** "1 search", "2 searches": the count as the footer and How soon say it. */
+const searchesLabel = (n: number): string => `${n} search${n === 1 ? '' : 'es'}`
+
+/**
+ * HOW SOON (board Urgent clearance, approved 2026-11-25): Standard and Urgent side by side, one always chosen,
+ * Standard by default, in Which search's chosen-card style. Where this installation cannot run Urgent fast,
+ * its option is disabled and says why, and Standard stays chosen.
+ *
+ * A radio group by keyboard as by pointer: the chosen option takes the tab stop, and an arrow key moves the
+ * choice to the other option when that one can be chosen.
+ */
+function HowSoon({ standardLine, urgentLine, urgentAvailable, urgentOverAllowance, urgent, onChoose }: {
+  readonly standardLine: string
+  readonly urgentLine: string
+  readonly urgentAvailable: boolean
+  /** Exactly one search left, and Urgent counts two: disabled, with the allowance's own sentence beside its cost. */
+  readonly urgentOverAllowance: boolean
+  readonly urgent: boolean
+  readonly onChoose: (urgent: boolean) => void
+}) {
+  const refs = useRef<(HTMLButtonElement | null)[]>([])
+  const options = [
+    { label: 'Standard', line: standardLine, note: null, chosen: !urgent, disabled: false, value: false },
+    { label: 'Urgent', line: urgentLine,
+      // The owner's words for the note (2026-11-26). Every session of an Urgent order asks for the faster setting, and a
+      // provider need not say which speed it served.
+      note: !urgentAvailable ? null : urgentOverAllowance ? ONE_SEARCH_LEFT : "Uses AI fast mode setting at increased cost.",
+      chosen: urgent, disabled: !urgentAvailable || urgentOverAllowance, value: true },
+  ] as const
+  const onKey = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key) || !urgentAvailable || urgentOverAllowance) return
+    e.preventDefault()
+    const next = !urgent
+    onChoose(next)
+    refs.current[next ? 1 : 0]?.focus()
+  }
+  return (
+    <div className="nc-how-soon">
+      <div className="nc-which-head">
+        <span className="section-title" id="nc-how-soon-title" style={{ marginBottom: 0 }}>How soon</span>
+        <span className="section-hint nc-how-soon-note">Same search, same checks, same report</span>
+      </div>
+      <div className="nc-speed-pair" role="radiogroup" aria-labelledby="nc-how-soon-title" onKeyDown={onKey}>
+        {options.map((o, i) => (
+          <button
+            key={o.label}
+            ref={(el) => { refs.current[i] = el }}
+            type="button"
+            role="radio"
+            aria-checked={o.chosen}
+            aria-disabled={o.disabled || undefined}
+            tabIndex={o.chosen ? 0 : -1}
+            className={`nc-speed${o.chosen ? ' nc-speed-on' : ''}${o.disabled ? ' nc-speed-off' : ''}`}
+            onClick={() => { if (!o.disabled) onChoose(o.value) }}
+          >
+            <span className={o.chosen ? 'radio radio-on' : 'radio'} style={{ marginTop: 2 }} aria-hidden />
+            <span className="nc-speed-text">
+              <b className="nc-speed-label">{o.label}</b>
+              <span className="nc-speed-line">{o.line}</span>
+              {o.note ? <span className="nc-speed-note">{o.note}</span> : null}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function Footer({
-  startedFrom, tier, detail, uses, duration, runs, ready, busy, demoMode, setupRoute, channel,
+  startedFrom, tier, detail, uses, left, duration, runs, ready, busy, demoMode, setupRoute, channel,
   programDisputed, onSettings, searchRefusal,
   saveOpen, saveName, saveText, saveNote, saveDone, editing, canSave, blockedBy,
   onSaveOpen, onSaveName, onSaveText, onSaveCancel, onSave, onReview, onSeeSaved,
@@ -1787,6 +1981,8 @@ function Footer({
   readonly detail: string
   /** How many of the day's searches this request spends. The allowance counts searches; no unit exists. */
   readonly uses: number
+  /** The searches the account has left today, or null when it is not capped. */
+  readonly left: number | null
   readonly duration: string
   readonly runs: string
   readonly ready: boolean
@@ -1874,7 +2070,7 @@ function Footer({
           <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-strong)' }}>
             {uses} search{uses === 1 ? '' : 'es'}
           </div>
-          <div className="footer-eyebrow">uses</div>
+          <div className="footer-eyebrow">{left == null ? 'uses' : `uses · ${left} left today`}</div>
         </div>
         <div>
           <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-strong)' }}>{duration}</div>
@@ -2188,9 +2384,11 @@ function PickRow({
  */
 function ReviewDialog({
   plan, busy, owner, project, names, goods, nativeOn, onStart, onBack, failure, onReview, uses, left,
-  registerLabel,
+  registerLabel, urgentTurnaround,
 }: {
   readonly plan: Plan
+  /** An Urgent order's turnaround in full words, as its option and the footer say it; null for Standard. */
+  readonly urgentTurnaround: string | null
   readonly busy: boolean
   /**
    * What to call the wired register in the one line this dialog shows for a territory it cannot search.
@@ -2299,9 +2497,11 @@ function ReviewDialog({
               and it is computed from the same table (effortModelParity.test.ts pins it). Spelled as a
               reader says it — "1.5 to 2.5 hours" — through the one door every quote on this screen
               passes. */}
-          {plan.effort?.turnaround || plan.turnaround
-            ? <Row label="Turnaround">{turnaroundInWords(plan.effort?.turnaround || plan.turnaround || '')}</Row>
-            : null}
+          {urgentTurnaround
+            ? <Row label="Turnaround">{urgentTurnaround}</Row>
+            : plan.effort?.turnaround || plan.turnaround
+              ? <Row label="Turnaround">{turnaroundInWords(plan.effort?.turnaround || plan.turnaround || '')}</Row>
+              : null}
           {/* USES AND LEFT TODAY, where the Effort bars and the Cost dots used to be. Ten notches of a
               number with no unit, beside five dots of a "cost" that was never a price, answered a
               question nobody had. What a reader is deciding at this moment is how many of today's

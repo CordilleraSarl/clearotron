@@ -14,6 +14,8 @@ import { recordEngineAnswered } from "../engine/health.mjs";
 import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
 import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerDoor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
+import { urgentDecision } from "../engine/speed.mjs";
+import { resolveAuthMode } from "../engine/auth.mjs";
 import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
 import { profileStoreResolution } from "../profiles.mjs";
@@ -295,10 +297,14 @@ export async function openRun({ job, opts }) {
   // Best-effort like its neighbours: a run whose record cannot be written runs on as a run with no record.
   try {
     const machine = { engine: selectEngine().name, register: REGISTER_PROVIDER ?? null };
-    const held = isResume ? readRunChoices(run.runDir) : recordRunChoices(run.runDir, machine);
+    // AN URGENT ORDER IS DECIDED HERE, ONCE (engine/speed.mjs): fast on this installation, or standard and why. A resume
+    // keeps what its start recorded, so no retry or resumed stage changes speed.
+    const urgent = !isResume && job?.urgent === true ? urgentDecision({ ordered: true, engine: machine.engine, auth: authOrNull(machine.engine) }) : null;
+    const held = isResume ? readRunChoices(run.runDir) : recordRunChoices(run.runDir, { ...machine, urgent });
     const registerDiffers = held.state === "recorded" && held.register !== machine.register;
     runLog(run.runDir, { event: "run-choices", state: held.state, written: held.written === true,
       engine: held.engine ?? null, register: held.register ?? null, machineEngine: machine.engine, machineRegister: machine.register,
+      ...(held.urgent ? { urgent: held.urgent } : {}),
       ...(registerDiffers ? { registerDiffers: true } : {}) });
     if (registerDiffers)
       note(`[run-choices] this run started on the ${held.register ?? "(none)"} register; this machine is set to ${machine.register ?? "(none)"}, and serves the run on the run's own`);
@@ -419,4 +425,9 @@ function finishTheOpening(ctx, job, run, { attachProfile, attachSearchPolicy }) 
   attachSearchPolicy(ctx, job, { write: false });
   if (order) runLog(run.runDir, { event: "opening-finished-on-resume", profile: profileHeld ? "frozen" : "resolved from the kept order",
     product: productHeld ? "frozen" : "resolved from the kept order", level: ctx.searchPolicy?.level ?? null });
+}
+
+/** The billing answer the run's engine would use, or null where the configuration refuses it: Urgent then answers no. */
+function authOrNull(engineName) {
+  try { return resolveAuthMode({ engineName }); } catch { return null; }
 }

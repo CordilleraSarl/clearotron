@@ -24,11 +24,13 @@
 // message says how many there are and how to find one: by the owner's name, with the artifact search the stage holds.
 // A first attempt has none, and its message is unchanged.
 //
-// A pure leaf: node:fs, node:path, node:crypto and shared/driver-dir.mjs only, so the research server can import it.
+// A pure leaf: node:fs, node:path, node:crypto, run-record.mjs and research-records.mjs only, so the research server can
+// import it.
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { basename, dirname, join } from "node:path";
 import { driverDir, paths, readJson } from "./run-record.mjs";
+import { researchCall } from "./research-records.mjs";   // one reading of a research call's record, for every reader
 
 export const RESEARCH_ANSWERS_FILE = "research-answers.jsonl";
 
@@ -283,6 +285,10 @@ export const sameStageSession = (a, b) => {
  * its answer where the run kept it, and `from`: "handed" or "asked". `sessionKey` is the writer's session, and every
  * session of its stage counts (`sameStageSession`). With no session, only what was handed is held. null when there is no
  * run. IMPURE.
+ *
+ * The map also says, in its `unreadable` property, how many of its stage's research calls had a record that could not be
+ * read (research-records.mjs). None of them is held: a call whose record cannot be read is not a completed one, and is
+ * never read as a search that found nothing.
  */
 export function heldResearchAnswers(runDir, sessionKey = null) {
   if (!runDir) return null;
@@ -297,12 +303,17 @@ export function heldResearchAnswers(runDir, sessionKey = null) {
   for (const r of kept) if (own(r?.session) && typeof r.task === "string" && isResearchAnswer(r.text)) put(r.task, oneLine(r.text), "asked");
   // A replayed answer is the run's own, read from the copy of its answers the replay's marker names, outside the arm.
   const replayFrom = replayAnswersFrom(runDir);
-  for (const r of rows(paths(runDir).readingLog)) {
-    if (r?.tool !== "perplexity_research" || r.ok !== true || !own(r.session) || r.args?.grid || typeof r.args?.task !== "string") continue;
-    const text = (r.args.replay && replayFrom ? savedResearchAnswer(replayFrom, r.args.task)?.text : null)
-      ?? kept.filter((x) => typeof x?.task === "string" && x.task.trim() === r.args.task.trim() && isResearchAnswer(x.text)).pop()?.text ?? null;
-    put(r.args.task, text == null ? null : oneLine(text), "asked");
+  let unreadable = 0;
+  for (const row of rows(paths(runDir).readingLog)) {
+    const call = researchCall(row);
+    if (!call || !own(call.session)) continue;
+    if (!call.known) { unreadable++; continue; }
+    if (!call.ok || call.kind !== "question") continue;
+    const text = (call.replay && replayFrom ? savedResearchAnswer(replayFrom, call.question)?.text : null)
+      ?? kept.filter((x) => typeof x?.task === "string" && x.task.trim() === call.question.trim() && isResearchAnswer(x.text)).pop()?.text ?? null;
+    put(call.question, text == null ? null : oneLine(text), "asked");
   }
+  Object.defineProperty(held, "unreadable", { value: unreadable, enumerable: false });
   return held;
 }
 

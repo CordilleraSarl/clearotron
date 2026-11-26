@@ -36,6 +36,7 @@ import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the run
 import { logTurnaroundReconciliation } from "./run-quote.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish, isCancelled, readCancel, stopsWithTheRun } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { attachFramework } from "./run-attachments.mjs";   // the one framework freeze, both products'
+import { stampKnockoutPlainLanguage } from "./knockout-plain-language.mjs";
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks, groupRecordsDoc, filingsOnce, expandFilingsOnce, sameRecord, calibrationExcerptOf, readerProviderDoc } from "./stages-knockout.mjs";
 import { workedExamplesFor } from "./framework.mjs";   // which worked examples the rating's calibration comes from
 import { familiesDefect } from "./knockout-frame-record.mjs";
@@ -603,6 +604,14 @@ function checkedFamilies(runDir, rows, plan) {
   if (defect) { runLog(runDir, { event: "knockout-families-refused", defect: defect.slice(0, 300) }); return null; }
   return families;
 }
+/**
+ * The readers that did not finish, in reader order rather than the order they settled in, sorted in place. The failure
+ * rethrown, the note and the run log's cause then name the lowest-numbered reader, so two runs of one order record the
+ * same one.
+ */
+export function inReaderOrder(failures) {   // @internal — driven by its test
+  return failures.sort((a, b) => a.c - b.c);
+}
 function orderFamilies(runDir, names, plan) {
   const groups = koChunks(names, checkedFamilies(runDir, names, plan));
   runLog(runDir, { event: "knockout-families", source: plan?.batch?.families ? "intake" : "none", groups: groups.map((g) => g.length) });
@@ -681,6 +690,7 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
           } });
         } catch (e) { readerFailures.push({ c, e }); }
       }, { stop: () => readerFailures.some((f) => rateLimited(f) || f.e instanceof RunCancelled) });
+      inReaderOrder(readerFailures);
       const hard = readerFailures.find((f) => rateLimited(f) || f.e instanceof RunCancelled);
       if (hard) throw hard.e;
       // A STOP RECORDED WHILE THE READERS RAN ends the run here as a stop: a reader it cut short is not a reading that failed.
@@ -1105,6 +1115,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
           // for reconcile-runs' exact liveness test. The stepper and the identity are separate calls now.
           ...identitySeed(),
           stepIndex: 0, stepLabel: STEPS[0], stepN: 1, stepTotal: STEPS.length,
+          // Every step this run walks, by name and in order, as the clearance seed writes its own.
+          steps: [...STEPS],
           review: null, url: null, failedStage: null, reason: null, deliveredAt: null,
           // A5/A3: a re-run of a previously-terminal knockout may reopen the state ONLY because the resume
           // guard cleared the sentinel (ctx.stateReset threads that authority); startedAt is no longer
@@ -1658,6 +1670,8 @@ export async function knockoutInner(ctx, job, opts = {}) {
           });
           sentinel(run.runDir, ".published", published);
           runLog(run.runDir, { event: "knockout-published", url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), overall, marks: merged.marks.length });
+          // The plain-language counts by rating group and field, as saved and as published (knockout-plain-language.mjs).
+          stampKnockoutPlainLanguage(run.runDir, merged);
         }
         // The knockout lane put its token total in the PUBLISHED ARTIFACT but never stamped the run itself,
         // so `status.json.tokens` was empty for every Stage-0 run however it ended (fixed 2026-07-28) — and

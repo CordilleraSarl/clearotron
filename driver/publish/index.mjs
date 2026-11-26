@@ -1368,7 +1368,7 @@ function clearanceRead(r) {
   const { parsed, fm, deliv, dates, issued, asOf, demoData, demoMd, inputsAbsent, findings, coverage, contextNotes,
     quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc,
     fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri,
-    logos, followUpKinds, runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo,
+    logos, webPictures, followUpKinds, runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo,
     droppedConditions, undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis,
     searchedJurisdictions, registerReach, registerScope, planTerritories, caseLawByOrdinal, caseLawNotice,
     enforcerSignals, officeLinks, reviewReceipts, clientGate, fetchState, searchPolicy, registerOnly,
@@ -1378,7 +1378,7 @@ function clearanceRead(r) {
   return {
     parsed, fm, deliv, dates, issued, asOf, demoData, demoMd, inputsAbsent, findings, coverage, contextNotes,
     quarantined, findingsError, coverageJudgment, markAssessment, actionsRegister, askAnswers, correctionsDoc,
-    fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, followUpKinds,
+    fourAnswers, findingsSchemaVersion, findingsKept, assessmentNotCompleted, coverageJudgmentDisplay, recordsByUri, logos, webPictures, followUpKinds,
     runProviderConf, recordOrigin, providerLabel, runOrigins, seniorRights, verdictInfo, droppedConditions,
     undispatchedProbes, withheldFamilies, setAside, framework, frameworkMethod, scopeBasis, searchedJurisdictions, registerReach, registerScope,
     planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, officeLinks, reviewReceipts, clientGate,
@@ -1457,7 +1457,7 @@ const CLEARANCE_SHAPE = {
       return built;
     });   // a REAL exception only — the report ships without the workbook, and nothing names it
   },
-  surfaces({ writeRO, writeDataFile }, reportDocument, { doc: { searchDepth, recordsByUri, logos, deliv, demoData } }) {
+  surfaces({ writeRO, writeDataFile }, reportDocument, { doc: { searchDepth, recordsByUri, logos, webPictures, deliv, demoData } }) {
     // THE report. The render receives no QC flags — the report a lawyer signs carries no
     // caveat banner (H1/H2); the receipts live on audit.xlsx. The machine QC above decides nothing
     // about this write.
@@ -1468,7 +1468,7 @@ const CLEARANCE_SHAPE = {
     // fails for want of it).
     if (searchDepth) { try { writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2)); } catch { /* additive */ } }
 
-    writeRO('report.html', renderReport(pageDocument(reportDocument), { recordsByUri, logos, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
+    writeRO('report.html', renderReport(pageDocument(reportDocument), { recordsByUri, logos, webPictures, homeHref: '../index.html', chromeHref: '../assets/chrome.css', delivery: deliv, demoData }));   // the page reads the report document, with its surface beside it
     // ONE report: report.client.html is no longer written. The knockout lane's own
     // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
     // client host serves the same report.html through the portal's readReport() (cleaning built in) — its

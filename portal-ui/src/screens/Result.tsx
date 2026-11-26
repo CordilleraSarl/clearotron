@@ -11,18 +11,19 @@
 //   • The identity above the frame comes from the RUN, never from the document. A report's own title is
 //     model-authored; the mark, the company and the band on this screen come from the API.
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Run } from '../contract/api.ts'
 import { api } from '../contract/api.ts'
-import { readsFor, hasThread, readLabel, displayName, openDocument, showsAssessment } from '../contract/reads.ts'
+import { readsFor, hasThread, readLabel, readLabelParts, displayName, openDocument, showsAssessment, searchHistory, type HistoryRow } from '../contract/reads.ts'
 import { inlineSpans } from '../contract/inlineMd.ts'
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from '../contract/summaryBlocks.ts'
 import { runProductLabel } from '../contract/home.ts'
-import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
+import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readFrameScrollBy, readCopyLink, cardAddress, cardFromSearch, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
 import type { FrameCommand, FrameSection, FrameTheme, FrameVerb } from '../contract/reportFrame.ts'
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { AskAi } from '../components/AskAi.tsx'
+import { compactRowFits } from '../components/pinnedRowFits.ts'
 import { asksOpen, findingAsked, issuedOn, withoutAskOpen } from '../contract/askAi.ts'
 import { useLoad } from '../state/useApi.ts'
 import { resultPath } from '../nav/nav.config.ts'
@@ -62,6 +63,136 @@ function usePortalTheme(): FrameTheme {
 // lands a section's headline. Shared with the reading line, so a section jumped to always counts as reached.
 const TOPBAR_PX = 56
 const LANDING_PX = 10
+// How long a report opened at a card keeps the card in place while the document's pictures and folds settle.
+const LANDING_SETTLE_MS = 4000
+/** Where the report header has two states: a desktop width. A phone keeps today's pinned header. */
+const DESKTOP = '(min-width: 900px)'
+/** The single pinned row's height before it has been drawn once, for a jump that lands before it exists. */
+const PINNED_ROW_PX = 57
+
+/**
+ * How much of the top of the viewport the pinned header covers, under the shell's topbar. On a desktop width
+ * that is the single row, which is what is pinned once the reader is past the header — and a section jump
+ * always lands past it. On a phone it is the whole header, pinned as before.
+ */
+function pinnedHeight(): number {
+  const head = document.querySelector('.report-head')
+  if (!(head instanceof HTMLElement)) return 48
+  if (window.matchMedia(DESKTOP).matches)
+    return head.classList.contains('compact') || head.classList.contains('pinned-full') ? head.offsetHeight : PINNED_ROW_PX
+  return head.offsetHeight
+}
+
+/**
+ * THE REPORT HEADER'S TWO STATES (board ReportHeader, approved 2026-11-25): in full at the top of the page,
+ * and one pinned row once the reader has scrolled past it. One header, never a second beside it.
+ *
+ * The switch must never move the report's text under the reader, so the header's slot keeps the full
+ * header's height while the header itself is pinned as the single row. A sentinel at the slot's foot says
+ * when the reader is past it; it sits in the slot, not in the header, so it does not move when the header
+ * changes state. The pinned row takes the slot's left edge and width, kept as the sidebar folds or the window
+ * resizes. A phone width keeps today's header (out of scope on the board). No transition: nothing moves.
+ */
+function usePinnedHeader(ready: boolean) {
+  const slotRef = useRef<HTMLDivElement | null>(null)
+  const sentinelRef = useRef<HTMLSpanElement | null>(null)
+  const [desktop, setDesktop] = useState(() => window.matchMedia(DESKTOP).matches)
+  const [compact, setCompact] = useState(false)
+  const [held, setHeld] = useState<number | null>(null)
+  const [box, setBox] = useState<{ readonly left: number; readonly width: number } | null>(null)
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP)
+    const on = () => setDesktop(mq.matches)
+    mq.addEventListener('change', on)
+    return () => mq.removeEventListener('change', on)
+  }, [])
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    const slot = slotRef.current
+    if (!desktop || !ready || !sentinel || !slot) { setCompact(false); setHeld(null); return }
+    const io = new IntersectionObserver(([e]) => {
+      if (!e) return
+      const past = !e.isIntersecting && e.boundingClientRect.top < TOPBAR_PX
+      if (past) { setHeld((h) => h ?? slot.offsetHeight); setCompact(true) }
+      else { setCompact(false); setHeld(null) }
+    }, { rootMargin: `-${TOPBAR_PX}px 0px 0px 0px`, threshold: 0 })
+    io.observe(sentinel)
+    const place = () => { const r = slot.getBoundingClientRect(); setBox({ left: r.left, width: r.width }) }
+    place()
+    const ro = new ResizeObserver(place)
+    ro.observe(slot)
+    window.addEventListener('resize', place)
+    return () => { io.disconnect(); ro.disconnect(); window.removeEventListener('resize', place) }
+  }, [desktop, ready])
+
+  // WHERE THE PINNED ROW CANNOT FIT, THE FULL HEADER STAYS (design, 2026-11-26). At 1,280 px with the sidebar open
+  // the row squeezed a seven-letter name, wrapped "Ask AI" and left the section links too narrow to read or
+  // select. So each time the row is drawn it is measured before it is painted, and if it does not fit, the full
+  // header is pinned instead, as a phone's is, so the name, the sections and both actions stay in reach. The width it
+  // failed at is kept: the row is tried again only once the header is wider than that, so it never flips back and
+  // forth at one width.
+  const [tooNarrow, setTooNarrow] = useState<number | null>(null)
+  const width = box?.width ?? null
+  const shown = compact && !(tooNarrow !== null && width !== null && width <= tooNarrow)
+  useLayoutEffect(() => {
+    if (!shown || width === null) return
+    const head = slotRef.current?.querySelector('.report-head.compact')
+    if (!(head instanceof HTMLElement)) return
+    if (!compactRowFits(head)) setTooNarrow(width)
+  }, [shown, width])
+  return { slotRef, sentinelRef, compact: shown, pinnedFull: compact && !shown, held, box }
+}
+
+/**
+ * THE NAME'S SEARCH HISTORY, one press away from the single pinned row (refinement picture
+ * search-history.png, approved 2026-11-25): newest first, one row per search, each choosing opens it. The
+ * rows read as the Clearances list reads them — the same rules, from `searchHistory`.
+ */
+function SearchHistory({ rows, go }: { readonly rows: readonly HistoryRow[]; readonly go: (path: string) => void }) {
+  const [open, setOpen] = useState(false)
+  const box = useRef<HTMLDivElement | null>(null)
+  const button = useRef<HTMLButtonElement | null>(null)
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: MouseEvent) => { if (box.current && !box.current.contains(e.target as Node)) setOpen(false) }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setOpen(false); button.current?.focus() } }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey) }
+  }, [open])
+  return (
+    <div className="report-history" ref={box}>
+      <button ref={button} type="button" className="report-history-btn" aria-expanded={open} aria-haspopup="true"
+        onClick={() => setOpen((o) => !o)}>
+        Search history · {rows.length}
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 3.5l3 3 3-3" /></svg>
+      </button>
+      {open ? (
+        <ul className="report-history-list" aria-label="Search history">
+          {rows.map((r) => {
+            const { head, date } = readLabelParts(r.run)
+            return (
+              <li key={r.run.runId}>
+                <button type="button" className={`report-history-row${r.current ? ' current' : ''}`}
+                  aria-current={r.current ? 'true' : undefined}
+                  onClick={() => { setOpen(false); if (!r.current) go(resultPath(r.run.runId)) }}>
+                  {r.run.tone ? <span className="dot" style={{ background: `var(--tone-${r.run.tone})`, width: 7, height: 7 }} aria-hidden="true" /> : <span className="report-history-nodot" aria-hidden="true" />}
+                  <span className="report-history-text">
+                    <span className="report-history-search">{head ?? r.label}</span>
+                    {date ? <span className="report-history-date">{date}{r.time ? ` · ${r.time}` : ''}</span> : null}
+                  </span>
+                  {r.latest ? <span className="pill report-history-tag">Latest report</span> : null}
+                  {r.live ? <span className="report-history-live">{r.live}</span> : null}
+                  {r.current ? <span className="report-history-tick" aria-hidden="true"><Icon name="check" size={14} /></span> : null}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      ) : null}
+    </div>
+  )
+}
 
 function useReportFrame() {
   const ref = useRef<HTMLIFrameElement | null>(null)
@@ -105,11 +236,23 @@ function useReportFrame() {
       const jump = readFrameScroll(e.data, mine)
       if (jump !== null) {
         if (frame) {
-          const head = document.querySelector('.report-head')
-          const chrome = TOPBAR_PX + (head instanceof HTMLElement ? head.offsetHeight : 48) + LANDING_PX
+          const chrome = TOPBAR_PX + pinnedHeight() + LANDING_PX
           const y = frame.getBoundingClientRect().top + window.scrollY + jump - chrome
           window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' })
         }
+        return
+      }
+      // The document keeps the reader's place while its column reflows: it cannot scroll the page, so it says by
+      // how much, and the page moves at once (no smoothing, or the place would drift while it animated).
+      const by = readFrameScrollBy(e.data, mine)
+      if (by !== null) { window.scrollBy({ top: by }); return }
+      // A CARD'S "COPY LINK". The page writes the address of this report screen at that card, and tells the
+      // document whether the write landed, so the card shows its tick and says "Copied" only when it did.
+      const copy = readCopyLink(e.data, mine)
+      if (copy) {
+        const answer = (ok: boolean) => frame?.contentWindow?.postMessage(frameCommand('copied', ok), '*')
+        try { navigator.clipboard.writeText(cardAddress(window.location.href, copy.card)).then(() => answer(true), () => answer(false)) }
+        catch { answer(false) }
         return
       }
       const bad = readCommandFailure(e.data, mine)
@@ -137,12 +280,43 @@ function useReportFrame() {
   // frame cannot read the choice the portal saved — so a dark portal framed a light page. Sent in on every
   // load of the document and on every change of the portal's theme; the document applies it in place,
   // so a change repaints the page without reloading it.
+  // LANDING ON A CARD. A report address that names a card (`?card=c12`, from a card's "Copy link") opens at that
+  // card: once the document has announced its sections, it is sent the same `section` command a breadcrumb sends,
+  // which opens any folded group around the card and jumps to it. Once per card named, not on every announcement.
+  //
+  // THE DOCUMENT IS STILL SETTLING WHEN IT ANNOUNCES. Pictures above the card load after the jump and push the card
+  // down the page (measured in the render check: 1,418px below where it was sent). So for a few seconds after the
+  // jump, each new height the document reports sends the jump again, and the first wheel, touch or key from the
+  // reader ends that at once: a reader who has started to scroll is never pulled back.
+  const landedOn = useRef<string | null>(null)
+  const settling = useRef<{ card: string; until: number } | null>(null)
+  useEffect(() => {
+    if (sections === null) return
+    const card = cardFromSearch(window.location.search)
+    if (card !== null && landedOn.current !== card) {
+      landedOn.current = card
+      settling.current = { card, until: Date.now() + LANDING_SETTLE_MS }
+      send('section', card)
+    }
+  }, [sections, send])
+  const reland = useCallback(() => {
+    const land = settling.current
+    if (land && Date.now() < land.until) send('section', land.card)
+  }, [send])
+  useEffect(() => { reland() }, [height, reland])
+  useEffect(() => {
+    const stop = () => { settling.current = null }
+    const opts = { passive: true } as const
+    window.addEventListener('wheel', stop, opts); window.addEventListener('touchstart', stop, opts); window.addEventListener('keydown', stop)
+    return () => { window.removeEventListener('wheel', stop); window.removeEventListener('touchstart', stop); window.removeEventListener('keydown', stop) }
+  }, [])
+
   const theme = usePortalTheme()
   useEffect(() => {
     if (hello) send('theme', theme)
   }, [theme, hello, send])
 
-  return { ref, height, send, failed, controls, sections, askedFrom, clearFailed: () => setFailed(null) }
+  return { ref, height, send, reland, failed, controls, sections, askedFrom, clearFailed: () => setFailed(null) }
 }
 
 /**
@@ -389,6 +563,14 @@ export function Result({
   // Hooks run before any early return — the loading and not-found branches below are returns, and a hook
   // after them would change call order between renders.
   const frame = useReportFrame()
+  const pin = usePinnedHeader(Boolean(run))
+  // A HEADER THAT CHANGES STATE WHILE A CARD IS LANDING changes how much of the page it covers. Where the row cannot
+  // fit, the full header is pinned once the jump has passed it, taller than the row the jump allowed for, and it
+  // covered the card (measured: card at 123px, header ending at 249px). So the landing is sent again, against the
+  // header now pinned.
+  const { reland } = frame
+  useEffect(() => { reland() }, [pin.compact, pin.pinnedFull, reland])
+  const history = useMemo(() => (run ? searchHistory(reads, run.runId) : []), [reads, run])
 
   // HOW MANY SECTIONS THE READER HAS REACHED (owner, 2026-09-19): the strip shows progress through the
   // document, following the scroll both ways. The page scrolls, not the frame, so this side measures: the
@@ -483,6 +665,29 @@ export function Result({
   const back = markSlug === null
     ? { label: 'All Clearances', href: '/portal/clearances' }
     : { label: 'All names', href: family }
+  // THE SECTION LINKS, one element for both states of the header: under the search history at the top of
+  // the page, and in the single pinned row once the reader is past it. The current section is bold, and the
+  // reading line is the bottom of whichever is pinned.
+  const sectionStrip = (
+    <nav className="report-sections" aria-label="Sections of this report">
+      {(frame.sections ?? []).map((sec, i) => {
+        // Every section reached is filled; the last one reached is the one in view.
+        return (
+          <button
+            key={sec.id}
+            type="button"
+            className="report-section"
+            data-reached={i < reached ? 'true' : undefined}
+            aria-current={i === reached - 1 ? 'true' : undefined}
+            onClick={() => frame.send('section', sec.id)}
+          >
+            <span className="report-section-dot" aria-hidden="true" />
+            {sec.label}
+          </button>
+        )
+      })}
+    </nav>
+  )
 
   return (
     <div className="screen report">
@@ -507,7 +712,15 @@ export function Result({
           screen the moment the reader started reading. `.report-head` sticks at 56px — the height of the
           shell topbar, which is itself sticky at 0 — so the two stack and Export stays reachable at any
           depth in a 6,000px document. */}
-      <div className="report-head">
+      {/* ONE HEADER, TWO STATES (board ReportHeader, approved 2026-11-25). At the top of the page it is
+          today's header, with "Search history" over the chips. Once the reader is past it, the same header
+          is one pinned row: the way back, the name, the band, the search history one press away, the
+          section links, Ask AI and Export. Its slot keeps the full header's height while it is pinned, so
+          the switch never moves the report's text. Ask AI and Export keep their place among the children in
+          both states, so a panel left open is not rebuilt when the header changes state. */}
+      <div className="report-head-slot" ref={pin.slotRef} style={(pin.compact || pin.pinnedFull) && pin.held ? { height: pin.held } : undefined}>
+      <div className={`report-head${pin.compact ? ' compact' : ''}${pin.pinnedFull ? ' pinned-full' : ''}`}
+        style={(pin.compact || pin.pinnedFull) && pin.box ? { left: pin.box.left, width: pin.box.width } : undefined}>
       {/* ONE line, not a title block.
           The report restates all of this immediately below in its own hero — mark at 58px, band on the
           gauge, scope in the chips — because it is a document that has to stand alone when exported or
@@ -515,36 +728,43 @@ export function Result({
           (shell topbar, this header, the report's own) before reaching a word of the opinion, and the
           document started below the fold. This line exists to say WHICH read is open and to carry the
           controls the frame can no longer host; the report is the thing worth the space. */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 2 }}>
+      <div className="report-head-row">
+        {/* THE WAY BACK, as an icon in the pinned row; the breadcrumb above carries it in full. */}
+        {pin.compact ? (
+          <button type="button" className="btn-ghost report-back-icon" aria-label={back.label} title={back.label} onClick={() => ctx.go(back.href)}>
+            <Icon name="chevron-left" size={14} />
+          </button>
+        ) : null}
         {/* THE MARK, not the report's headline.
             `run.title` is model-authored front matter: a real delivered run carries "AquaPlus — US
             Preliminary Trademark Clearance" there. Printing it here is what made this header restate a
             whole sentence the report says again, larger, two centimetres below. `markName` is the name
             the user typed; runs delivered before publish started carrying it fall back to the headline
             and will read verbosely until they are re-rendered. */}
-        <h1 style={{ fontSize: 19, fontWeight: 700, margin: 0, color: 'var(--text-strong)' }} data-anon="mark">
+        <h1 className="report-head-name" title={pin.compact ? heading : undefined} data-anon="mark">
           {heading}
         </h1>
-        <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>
-          <span data-anon="mark">{ctx.ownerName(runKey(run))}</span>
-          {/* NOT `data-anon` — a product name is what we sell, not what a client bought it for. The
-              screen-share blur covers the mark and the owner; blurring "Full country search" would hide
-              the one word that tells the reader which of two open reads is in front of them. */}
-          {product ? <> · {product}</> : null}
-          {!product && run.kind === 'knockout-batch' ? <> · {run.marks.length} names</> : null}
-          {/* BOTH DATES, EACH SAYING WHICH IT IS. A bare date beside a report that prints two of its own
-              — the day it searched and the day it was issued — left the reader to guess which one this
-              was. `date` is the run's own day, the one the report prints under Searched; the issue day is
-              read in the zone the report's own stamp is written in, and only a delivered read has one. */}
-          {run.date ? <> · searched <span className="mono">{run.date}</span></> : null}
-          {issued ? <> · issued <span className="mono">{issued}</span></> : null}
-        </div>
+        {pin.compact ? null : (
+          <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+            <span data-anon="mark">{ctx.ownerName(runKey(run))}</span>
+            {/* NOT `data-anon` — a product name is what we sell, not what a client bought it for. The
+                screen-share blur covers the mark and the owner; blurring "Full country search" would hide
+                the one word that tells the reader which of two open reads is in front of them. */}
+            {product ? <> · {product}</> : null}
+            {!product && run.kind === 'knockout-batch' ? <> · {run.marks.length} names</> : null}
+            {/* BOTH DATES, EACH SAYING WHICH IT IS. A bare date beside a report that prints two of its own
+                — the day it searched and the day it was issued — left the reader to guess which one this
+                was. `date` is the run's own day, the one the report prints under Searched; the issue day is
+                read in the zone the report's own stamp is written in, and only a delivered read has one. */}
+            {run.date ? <> · searched <span className="mono">{run.date}</span></> : null}
+            {issued ? <> · issued <span className="mono">{issued}</span></> : null}
+          </div>
+        )}
         <RiskDot tone={run.tone} label={run.band} />
-        <span style={{ flex: 1 }} />
-        {/* The stale note that used to sit here — "STILL GATED ON THE RUN-LEVEL DOCUMENT … this gate
-            moves to `doc` there, not here" — went with  landing, because the gate DID
-            move to `doc` and the note then contradicted the two lines under it. Removed here rather than
-            left, since this is the region being rebuilt. */}
+        {/* THE NAME'S SEARCHES, one press away once pinned: shown only where there is more than one. */}
+        {pin.compact && hasThread(reads) ? <SearchHistory rows={history} go={ctx.go} /> : null}
+        {pin.compact && (frame.sections?.length ?? 0) > 1 ? sectionStrip : null}
+        <span className="report-head-gap" />
         {/* EVERY RUN KIND, and before Export rather than instead of it: Export
             drives the framed document and can only offer what that document defines; this drives the
             reader's own assistant and needs nothing of the report. */}
@@ -574,23 +794,21 @@ export function Result({
       </div>
 
       {/* ONE HEADER, AND THE BREADCRUMB IS PART OF IT (owner, 2026-09-18).
-          Two things a reader steers with used to sit apart and neither stayed: the Reads strip was drawn
-          BELOW `.report-head`, outside the pinned box, and the report's section breadcrumb was inside the
-          frame — where nothing can pin, because the frame is sized to its content and has no scrollport
-          of its own. So the breadcrumb sat over the confidentiality line and both scrolled away at the
-          first paragraph. They are one row of the pinned header now: which read you are in, then where
-          you are inside it.
-          Drawn only when there is something to steer with — a thread of reads, or a document that
+          Two things a reader steers with used to sit apart and neither stayed: the search history was
+          drawn BELOW `.report-head`, outside the pinned box, and the report's section breadcrumb was
+          inside the frame — where nothing can pin, because the frame is sized to its content and has no
+          scrollport of its own. They are rows of the header: which search you are in, then where you are
+          inside it. In the pinned state both move into its one row.
+          Drawn only when there is something to steer with — a thread of searches, or a document that
           announced more than one section. `sectionStrip()` emits nothing under two sections, and this
           matches it: a breadcrumb with one entry is not a breadcrumb. */}
-      {hasThread(reads) || (frame.sections?.length ?? 0) > 1 ? (
+      {!pin.compact && (hasThread(reads) || (frame.sections?.length ?? 0) > 1) ? (
         <div className="report-nav">
-        {/* Only when there is genuinely a thread — a strip with one pill implies somewhere to go.
-            The 18px top margin it carried below the header is gone: it is a row of the header now, and
-            `.report-nav` owns the spacing for both halves. */}
+        {/* Only when there is genuinely a thread — a strip with one pill implies somewhere to go. */}
         {hasThread(reads) ? (
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-            <span className="eyebrow" style={{ alignSelf: 'center' }}>Reads</span>
+            {/* "Search history", in place of "Reads" (owner, 2026-11-25: "i like search history"). */}
+            <span className="eyebrow" style={{ alignSelf: 'center' }}>Search history</span>
             {reads.map((r) => {
               const active = r.runId === run.runId
               return (
@@ -619,28 +837,11 @@ export function Result({
             })}
           </div>
         ) : null}
-          {(frame.sections?.length ?? 0) > 1 ? (
-            <nav className="report-sections" aria-label="Sections of this report">
-              {(frame.sections ?? []).map((sec, i) => {
-                // Every section reached is filled; the last one reached is the one in view.
-                return (
-                  <button
-                    key={sec.id}
-                    type="button"
-                    className="report-section"
-                    data-reached={i < reached ? 'true' : undefined}
-                    aria-current={i === reached - 1 ? 'true' : undefined}
-                    onClick={() => frame.send('section', sec.id)}
-                  >
-                    <span className="report-section-dot" aria-hidden="true" />
-                    {sec.label}
-                  </button>
-                )
-              })}
-            </nav>
-          ) : null}
+          {(frame.sections?.length ?? 0) > 1 ? sectionStrip : null}
         </div>
       ) : null}
+      </div>
+      <span className="report-head-sentinel" ref={pin.sentinelRef} aria-hidden="true" />
       </div>
 
 

@@ -15,7 +15,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { readCapped } from "./util.mjs";
-import { stepForStage } from "./driver.mjs";
+import { stepForStage, DISPLAY_STEPS } from "./driver.mjs";
 import { paths } from "../../driver/run-record.mjs";
 
 export function readEvents(runDir) {
@@ -30,7 +30,15 @@ export function readEvents(runDir) {
 // the bytes, so a paraphrase fails there rather than reaching a client.
 export const CLIENT_INCOMPLETE = "Screening: incomplete — flagged for review";
 
-function phaseFor(stage) { const s = stepForStage(stage); return s ? s.label : null; }
+// THE RUN'S OWN STEP NAMES where it wrote a clearance list (status.json `steps`), so a Global preliminary's
+// sixth step reads here as it does on Home and in the run's status. The stage-to-step map is the clearance
+// stepper's, so a Knockout's own list (five or six steps) is never indexed by it, and a run recorded before
+// the field keeps the shipped list.
+function phaseFor(stage, steps) {
+  const own = Array.isArray(steps) && steps.length === DISPLAY_STEPS.length ? steps : DISPLAY_STEPS;
+  const s = stepForStage(stage, own);
+  return s ? s.label : null;
+}
 function ratObj(source, text) { return text ? { source, text } : null; }
 
 // Lazily read + cache the small run-local rationale source files (escalation reasons, the verdict head line).
@@ -82,25 +90,25 @@ function classify(e, st, rat) {
       if (sha != null) st.prevSha.set(label, sha);
       const decision = e.event === "skip" ? "stage-skipped" : seen ? "stage-recomputed" : "stage-completed";
       return {
-        ts, kind: e.event, phase: phaseFor(label), stage: label, decision,
+        ts, kind: e.event, phase: phaseFor(label, st.steps), stage: label, decision,
         trigger: e.trigger ?? null,
         ok: e.ok ?? (e.event === "skip" ? true : null), outputSha: sha, changedFromPrevious,
       };
     }
     case "failover":
-      return { ts, kind: "failover", phase: phaseFor(e.stage), stage: e.stage ?? null, decision: "model-failover", attempt: e.attempt ?? null };
+      return { ts, kind: "failover", phase: phaseFor(e.stage, st.steps), stage: e.stage ?? null, decision: "model-failover", attempt: e.attempt ?? null };
     case "attempt":   // AD-4: the per-dispatch spine (gateway runStage) — projected compactly, cause kept
-      return { ts, kind: "attempt", phase: phaseFor(e.stage), stage: e.stage ?? null,
+      return { ts, kind: "attempt", phase: phaseFor(e.stage, st.steps), stage: e.stage ?? null,
         decision: e.ok ? "attempt-succeeded" : "attempt-failed", attempt: e.attempt ?? null, fail: e.fail ?? null };
     case "skeptic-escalation":
-      return { ts, kind: "skeptic-escalation", phase: phaseFor("skeptic"), decision: "escalated-axes", escalated: e.escalated ?? [], rationale: ratObj("skeptic-flags.md", rat.escalation()) };
+      return { ts, kind: "skeptic-escalation", phase: phaseFor("skeptic", st.steps), decision: "escalated-axes", escalated: e.escalated ?? [], rationale: ratObj("skeptic-flags.md", rat.escalation()) };
     case "escalation-skipped":
       return { ts, kind: "escalation-skipped", decision: "escalation-skipped", axis: e.axis ?? null, reason: e.reason ?? null };
     case "escalation-noop":
       return { ts, kind: "escalation-noop", decision: "axis-defended-in-place", axis: e.axis ?? null };
     case "verdict":
     case "verdict-2":
-      return { ts, kind: e.event, phase: phaseFor("narrative-refutation"), decision: "verdict-emitted", verdict: e.verdict ?? null, rationale: ratObj("senior-eye-review.md", rat.verdictHead()) };
+      return { ts, kind: e.event, phase: phaseFor("narrative-refutation", st.steps), decision: "verdict-emitted", verdict: e.verdict ?? null, rationale: ratObj("senior-eye-review.md", rat.verdictHead()) };
     case "delivered-with-open-questions":
       return { ts, kind: e.event, decision: "delivered-with-open-questions", verdict: e.verdict ?? null };
     // ── — THREE WRITERS, FIVE CAUSES, AND THIS SURFACE SAID ONE WORD ──────────────────────────
@@ -149,9 +157,9 @@ function classify(e, st, rat) {
     case "provider-usage":
       return { ts, kind: "provider-usage", decision: "usage-recorded", summary: { total: e.total ?? null, search: e.search ?? null, record_fetch: e.record_fetch ?? null } };
     case "manual-rerun":
-      return { ts, kind: "manual-rerun", phase: phaseFor(e.stage), stage: e.stage ?? null, decision: "manual-rerun", snapshot: e.snapshot ?? null };
+      return { ts, kind: "manual-rerun", phase: phaseFor(e.stage, st.steps), stage: e.stage ?? null, decision: "manual-rerun", snapshot: e.snapshot ?? null };
     case "failed":
-      return { ts, kind: "failed", phase: phaseFor(e.stage), stage: e.stage ?? null, decision: "run-failed", reason: e.reason ?? null };
+      return { ts, kind: "failed", phase: phaseFor(e.stage, st.steps), stage: e.stage ?? null, decision: "run-failed", reason: e.reason ?? null };
     // AN ENGINE-INTERNAL RECORD, NEVER A DECISION. How the synthesis transport read a call — a marker decoded, rows
     // lifted, keys a call carried that the transport ignores — is a fact about the engine's own plumbing, and
     // whether each reviewer correction reached the delivered record is the reviewer's business, which never
@@ -198,12 +206,13 @@ const isNoiseEntry = (t) => t.kind === "attempt" && t.decision === "attempt-succ
 const isInternalEntry = (t) => t.internal === true;
 
 /**
- * projectTimeline(events, P, {sinceTs}) → { timeline, verdictHistory }.
+ * projectTimeline(events, P, {sinceTs, sinceSeq, steps}) → { timeline, verdictHistory }. `steps` is the run's own
+ * step list (status.json), which names each entry's phase.
  * `seq` is assigned over the FULL ordered log (stable), THEN sinceTs filters — so a poll cursor never
  * renumbers earlier entries. verdictHistory is [verdict, verdict-2?] in emission order.
  */
-export function projectTimeline(events, P, { sinceTs, sinceSeq } = {}) {
-  const st = { prevSha: new Map() };
+export function projectTimeline(events, P, { sinceTs, sinceSeq, steps = null } = {}) {
+  const st = { prevSha: new Map(), steps };
   const rat = makeRationale(P);
   const full = [];
   let seq = 0;

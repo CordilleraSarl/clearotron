@@ -175,7 +175,10 @@ test('the picker states, AT each row, what that search accepts and what it costs
   // names the product now, and every figure beside it is the SERVER'S — a tagline reading "up to 20
   // names" over an eight-name wall is what this row used to carry.
   const prose = flat(body(NEW_CLEARANCE))
-  assert.match(prose, /\{levels\.map\(\(t\) => \( <PickRow/, 'the picker is built from the fetched offering')
+  // WHICH SEARCH SHOWS THE CHOSEN ONE, the rest one press away (board approved 2026-11-25): the rows drawn
+  // are the offering, or the offering narrowed to the chosen row, and never anything else.
+  assert.match(prose, /\{shownLevels\.map\(\(t\) => \( <PickRow/, 'the picker is built from the fetched offering')
+  assert.match(prose, /const shownLevels = allSearchesOpen \? levels : levels\.filter\(/, 'the rows shown are not the offering')
   assert.match(prose, /up to \$\{t\.maxNames\} name/, 'the name count is the server’s figure')
   assert.match(prose, /\$\{t\.geography\}/, 'and so is the geography it accepts')
   assert.doesNotMatch(prose, /TEMPLATES|matchTemplate|templateDiff|badge-custom/, 'the templates are gone, not hidden')
@@ -985,7 +988,8 @@ test("a company's templates sit in their own control, never among the four searc
   assert.match(prose, /aria-label="Search templates"/, 'the template control has no accessible name')
   // THE ROWS ARE THE OFFERING AND ONLY THE OFFERING: built from `levels`, never from the templates.
   assert.equal(PRODUCT_IDS.length, 4, 'the design draws four rows — if the offering stops being four, the layout is wrong again')
-  assert.match(prose, /\{levels\.map\(\(t\) => \( <PickRow/, 'the rows are not built from the offering')
+  assert.match(prose, /\{shownLevels\.map\(\(t\) => \( <PickRow/, 'the rows are not built from the offering')
+  assert.match(prose, /const shownLevels = allSearchesOpen \? levels : levels\.filter\(/, 'the rows are not built from the offering')
   assert.doesNotMatch(prose, /savedSearches\.map\(\(r\) => \( <PickRow/, 'a template is drawn as one of the searches')
   assert.doesNotMatch(prose, /start-pill/, 'the pill row that mixed the two is back')
 

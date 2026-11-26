@@ -65,6 +65,42 @@ export function groupForCleared({ screenVerdict, status } = {}) {
 const field = (block, key) => (block.match(new RegExp(`^- ${key}:\\s*(.*)$`, "m")) || [])[1]?.trim() ?? "";
 const noteField = (notes, key) => (notes.match(new RegExp(`${key}=([^;]+)`)) || [])[1]?.trim() ?? "";
 
+// THE RUN'S OWN COMMON-LAW SEARCH RECORD, named where a web address would be. A row the assessing model backed with the
+// run's own search ledger carries that file's name in its `url`; the page names it in words rather than linking it.
+export const RUN_COMMON_LAW_RECORD = /^(?:\.\/)?(?:_driver\/)?common-law-grid(?:\.half-[a-z0-9]+)?\.json$/i;
+
+// ── A WEB NAME'S ADDRESSES, READ OUT OF WHAT THE MODEL WROTE ───────────────────────────────────────
+//
+// The `url` field is model-written. Measured on the public demos, 2026-11-25: besides one address it held two
+// addresses separated by a semicolon, whole Markdown links of the form `[label](address)` (one or several), and a
+// sentence ("See cell-level receipts below"). The page printed each value as one link, so a Markdown link became a link
+// to nowhere and a sentence became a link. Read here into the http(s) addresses it holds, in order and once each: a
+// Markdown link gives its address, a bare address gives itself, and anything else gives nothing.
+const MD_LINK_TARGET = /\[[^\]]*\]\(\s*(https?:\/\/[^\s)]+)\s*\)?/gi;
+const BARE_ADDRESS = /https?:\/\/[^\s<>"'()[\]]+/gi;
+
+/** The http(s) addresses one `url` value holds, in order and without repeats. PURE. */
+export function webAddresses(value) {
+  const text = String(value ?? "");
+  const out = [];
+  const add = (u) => { const a = u.replace(/[.,;:]+$/, ""); if (a && !out.includes(a)) out.push(a); };
+  for (const m of text.matchAll(MD_LINK_TARGET)) add(m[1]);
+  for (const m of text.replace(MD_LINK_TARGET, " ").matchAll(BARE_ADDRESS)) add(m[0]);
+  return out;
+}
+
+/**
+ * What a web name's `url` gives the page: its http(s) addresses (`links`), the run's own search record (`runRecord`), or
+ * one other reference without spaces (`ref`), printed as it stands. A sentence gives nothing: the block is a note. PURE.
+ */
+export function webNameRow(url) {
+  const value = String(url ?? "").trim();
+  if (RUN_COMMON_LAW_RECORD.test(value)) return { links: [], runRecord: true, ref: null };
+  const links = webAddresses(value);
+  if (links.length) return { links, runRecord: false, ref: null };
+  return value && /^\S+$/.test(value) ? { links: [], runRecord: false, ref: value } : null;
+}
+
 /**
  * Every near-name the run read and cleared, register and web, as facts. PURE.
  *
@@ -118,8 +154,16 @@ export function clearedNames(auditMd, recordIndex = {}) {
       // WHAT IT COSTS, stated rather than hidden: a marketplace name sighted with no URL recorded would
       // not be listed here. None exists in any demo, and the row such a block produced was already a
       // name beside an empty column. If one appears, the fix is to record where it was seen.
+      //
+      // A `url` THAT IS A SENTENCE NAMES NO PLACE, and the block is a note, not a name. Measured on the public Global
+      // preliminary demo, 2026-11-25: "No confirmed directly conflicting app or course identified." with the `url`
+      // "See cell-level receipts below" was listed as a name, counted in the header, and printed with that sentence as
+      // its link. A block counts as a name when its `url` gives at least one http(s) address, names the run's own search
+      // record (which the page names in words), or is one other reference, such as a record file, which the page prints
+      // as it stands and does not link. `links` is what the page links; `url` stays as written.
       const url = field(block, "url");
-      if (url) out.web.push({ title, url, type: field(block, "type") });
+      const row = webNameRow(url);
+      if (row) out.web.push({ title, url, ...row, type: field(block, "type") });
     }
   }
   return out;

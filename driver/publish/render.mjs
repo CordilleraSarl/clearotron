@@ -29,12 +29,13 @@ import { inputsLine } from '../framework-method.mjs';
 import { clientConditions } from '../terminal-clamp.mjs'; import { hrefAttr } from './attr.mjs';   // an href is attribute-safe and http(s), or not a link
 import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // the export menu's shell and behaviour, shared with the knockout template   // the reader's clause per condition, shared with the cover note
 import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs';
+import { webNameRow } from './search-depth.mjs';   // what a web name's `url` gives the page, read once for the page and the lint
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { REPORT_PAGE as R, RECORD_LINKS as LINK_WORDS, KNOCKOUT_PAGE } from './strings.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
-import { logoLockup, BRAND, confPosture, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
+import { logoLockup, BRAND, confPosture, PALETTE, QUADRANT_COLOURS as QC, BAND_SOFT, BAND_SOFT_TEXT } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { reportPage } from './page-shell.mjs';
 import { registerRecordView, RECORD_LABELS, registrationsCount } from './register-record.mjs';
@@ -112,6 +113,7 @@ let NEGATIVES_GROUPED = false;
 let FRAMEWORK = null;
 let FRAMEWORK_METHOD = null;   // the frozen method (framework-method.mjs), where the framework states one
 let AUDIT_HREF = null;   // the audit workbook's address, for the line a capped list ends with; null when the run has none
+let WEB_PICTURES = new Map();   // finding ordinal → its saved web pictures, in the card's order; empty without the picture step
 let LOGOS = new Map();   // registration → its saved logo ({ state, src }); empty on a run that fetched none
 const GAUGE_STOP_BY_TONE = { minimal: 1, low: 1, medium: 2, high: 3, severe: 4 };
 // Severity rank for sorting/worst-of: band index in the manifest (0 = most severe); legacy composite
@@ -1015,18 +1017,28 @@ function clearedGroupsHtml(searchDepth, auditFile) {
 
 // THE RUN'S OWN COMMON-LAW SEARCH RECORD, named in words. A row the assessing model backed with the run's own search
 // ledger carries that file's name where a web address would be, and the page printed it as a link to nowhere. Only a
-// reference positively identified as that ledger is renamed; any other source keeps its exact reference until a
-// truthful label exists for it. The run's record and the audit keep the original reference.
-const RUN_COMMON_LAW_RECORD = /^(?:\.\/)?(?:_driver\/)?common-law-grid(?:\.half-[a-z0-9]+)?\.json$/i;
+// reference positively identified as that ledger is renamed (search-depth.mjs, `runRecord`); any other source keeps its
+// exact reference until a truthful label exists for it. The run's record and the audit keep the original reference.
 const RUN_COMMON_LAW_RECORD_LABEL = R.cleared.runCommonLawRecord;
 
+// EVERY NAME THE HEADER COUNTS IS PRINTED, AND EACH LINK IS AN ADDRESS. The list used to stop at the register groups'
+// eight with no pointer to the rest, and the workbook does not carry these names' addresses, so a ninth name was
+// reachable nowhere a client reads; the list sits in a closed fold, so its length costs the page nothing until it is
+// opened. A row links each http(s) address search-depth.mjs read out of what the model wrote (`links`), and opens it in
+// a new tab as the page's other evidence links do. A block that gave no address is not a name and is not here.
+const webAddressText = (u) => String(u).replace(/^https?:\/\//, '').replace(/\/$/, '');
 function webNamesHtml(searchDepth) {
-  const web = (searchDepth && searchDepth.cleared && searchDepth.cleared.web) || [];
+  // A record written before the reader gave each row its links carries only `url`; it is read the same way here.
+  const web = ((searchDepth && searchDepth.cleared && searchDepth.cleared.web) || [])
+    .map((w) => (Array.isArray(w.links) ? w : { ...w, ...(webNameRow(w.url) ?? { links: [], runRecord: false, ref: null, note: true }) }))
+    .filter((w) => !w.note);
   if (!web.length) return '';
-  const shown = web.slice(0, NAMES_CAP);
-  const rows = shown.map((w) => `<div class="crow"><span class="cm-mark">${esc(w.title || '')}</span>${
-    w.url && RUN_COMMON_LAW_RECORD.test(String(w.url).trim()) ? `<span class="curl">${esc(RUN_COMMON_LAW_RECORD_LABEL)}</span>`
-    : w.url ? `<a class="curl" href="${escAttr(w.url)}">${esc(String(w.url).replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a>` : '<span class="cwho"></span>'}</div>`).join('');
+  const rows = web.map((w) => `<div class="crow"><span class="cm-mark">${esc(w.title || '')}</span><span class="curl">${
+    w.runRecord ? esc(RUN_COMMON_LAW_RECORD_LABEL)
+    : w.ref ? esc(w.ref)
+    : w.links.map((u) => (hrefAttr(u)
+      ? `<a href="${hrefAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(webAddressText(u))}</a>` : esc(webAddressText(u)))).join(' \u00b7 ')
+  }</span></div>`).join('');
   return `<details class="cgroup"><summary><span class="gname">${R.cleared.webAndMarketplace}</span><span class="gcount">${
     R.cleared.names(web.length.toLocaleString('en-GB'), web.length)}</span></summary><div class="gbody">${rows}</div></details>`;
 }
@@ -1426,7 +1438,13 @@ function dedupeScatter(findings) {
 // of "#1", "#2" links. The <title>, first in the <svg>, says what the drawing is; its count is the points drawn.
 const chartTitle = R.chartTitle;
 
-function quadrant(findings) {
+// A DOT SAYS WHICH CONFLICT IT IS (owner, 2026-11-25). Hovering a dot, or moving keyboard focus to it, shows a small
+// panel beside it with the fields the rights-holders list prints for that conflict: the number on the dot's own colour,
+// the mark and the band, then the owner and the country (keyFields, one definition for both). The link's name carries
+// the same fields for a screen reader. The panel is one element in the chart's card that the page script fills and
+// places on the side of the dot with fewer neighbouring dots; it never covers its own dot, the pointer can rest on it,
+// and Escape hides it. With scripts off the dot keeps its number as its tooltip, and nothing of this prints.
+function quadrant(findings, recordsByUri = new Map()) {
   const points = dedupeScatter(findings);
   const markers = points.map(({ f, cx, cy, on, r, pending }) => {
     // Band hexes, hardcoded on purpose: the quadrant panel stays a FIXED LIGHT surface in dark mode
@@ -1438,8 +1456,16 @@ function quadrant(findings) {
       ? `<circle cx="${X}" cy="${Y}" r="${r}" fill="${QC.pendingFill}" stroke="${fill}" stroke-width="2.5"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="${fill}">${esc(f.ordinal)}</text>`
       : `<circle cx="${X}" cy="${Y}" r="${r}" fill="${fill}" stroke="${PALETTE.ink}" stroke-opacity=".22" stroke-width="1"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="#fff">${esc(f.ordinal)}</text>`;
     const t = cardTarget(f.ordinal);
-    return t ? `<a href="#${t}"><title>#${t.slice(1)}</title>${inner}</a>` : inner;
+    if (!t) return inner;
+    const k = keyFields(f, recordsByUri);
+    const name = [String(f.ordinal), f.mark, k.chip, k.who, k.where].filter(Boolean).join(' \u00b7 ');
+    const ring = `<circle class="qring" cx="${X}" cy="${Y}" r="${r + 5}" fill="none" stroke="${PALETTE.ink}" stroke-width="2"/>`;
+    return `<a href="#${t}" aria-label="${escAttr(name)}" data-tip-n="${escAttr(f.ordinal)}" data-tip-mark="${escAttr(f.mark ?? '')}" data-tip-band="${escAttr(k.chip)}" data-tip-tone="${on ? 'med' : 'low'}" data-tip-fill="${fill}" data-tip-sub="${
+      escAttr([k.who, k.where].filter(Boolean).join(' \u00b7 '))}"><title>#${t.slice(1)}</title>${ring}${inner}</a>`;
   }).join('');
+  const tipColours = Object.entries({ ink: PALETTE.ink, sub: PALETTE.muted, 'med-bg': BAND_SOFT.med, 'med-tx': BAND_SOFT_TEXT.med,
+    'low-bg': BAND_SOFT.clear, 'low-tx': BAND_SOFT_TEXT.clear }).map(([k, v]) => `--qt-${k}:${v}`).join(';');
+  const tip = `<div class="qtip no-print" aria-hidden="true" hidden style="${tipColours}"><div class="qt1"><span class="qn"></span><span class="qm"></span><span class="qb"></span></div><div class="qs"></div></div>`;
   return `<div class="panel land">
       <svg viewBox="0 0 560 430" xmlns="http://www.w3.org/2000/svg" font-family="Plus Jakarta Sans, sans-serif">
         <title>${chartTitle(points.length)}</title>
@@ -1456,6 +1482,7 @@ function quadrant(findings) {
         <span><i style="background:${QC.secondary}"></i>${FRAMEWORK ? R.chart.secondaryWatch : R.chart.secondaryManageable}</span>
         <span><i style="background:${QC.pendingFill};border:2px solid ${QC.secondary};width:7px;height:7px"></i>${R.chart.pending}</span>
       </div>
+      ${tip}
     </div>`;
 }
 
@@ -1464,6 +1491,16 @@ function quadrant(findings) {
 // (owner-unknown, who === mark, collapses to the mark alone). Classes union ACROSS registrations —
 // registrations[0] alone under-reported multi-registration findings vs the card chip. The source token
 // keeps the house sentence case ('Register' / 'Common-law') and never wraps mid-word.
+// What the rights-holders list prints for one conflict, beyond its number and mark: the band chip, the holder where it is
+// not the mark itself, and the country the list groups it under. The chart's dot panel reads the same fields.
+const sameName = (a, b) => String(a || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() === String(b || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+function keyFields(f, recordsByUri = new Map()) {
+  const chip = (FRAMEWORK && f.composite == null) ? (f.band != null ? String(f.band) : '\u2014') : `C${f.composite}`;
+  const holder = recordOwner(f, recordsByUri) || f.owner?.name || f.mark;   // doc-31 step 4: bound from the record
+  const code = regionCode(f);
+  return { chip, holder, who: holder && !sameName(holder, f.mark) ? holder : '', where: code === COMMON_LAW ? R.key.commonLawGroup : (regionName(code) || code) };
+}
+
 function keyRow(f, recordsByUri) {
   const on = isOnField(f);
   const kn = on ? QC.onField : QC.secondary;   // matches this row's quadrant marker — light ramp, see quadrant()
@@ -1471,11 +1508,10 @@ function keyRow(f, recordsByUri) {
   const cls = [...new Set((f.owner?.registrations || []).flatMap((r) => Array.isArray(r.classes) ? r.classes : []))]
     .map(Number).filter((x) => !Number.isNaN(x)).sort((a, b) => a - b).join('/');
   const src = sourceChip(f.source?.source_type || '').label;
-  const who = recordOwner(f, recordsByUri) || f.owner?.name || f.mark;   // doc-31 step 4: bound from the record
-  const chip = (FRAMEWORK && f.composite == null) ? (f.band != null ? esc(f.band) : '—') : `C${f.composite}`;
-  const nrm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const { chip: chipText, who } = keyFields(f, recordsByUri);
+  const chip = esc(chipText);
   const subParts = [];
-  if (who && nrm(who) !== nrm(f.mark)) subParts.push(esc(who));
+  if (who) subParts.push(esc(who));
   if (cls) subParts.push(R.key.classes(esc(cls)));
   if (src) subParts.push(`<span style="white-space:nowrap">${esc(src)}</span>`);
   const t = cardTarget(f.ordinal);
@@ -1493,10 +1529,10 @@ function keyPanel(findings, recordsByUri = new Map()) {
   const all = groupByRegion(findings);
   const regions = all.filter(g => g.code !== COMMON_LAW);
   const clGroup = all.find(g => g.code === COMMON_LAW);
-  const detail = (g, label, sub, collapsed = false) => {
+  const detail = (g, label, sub, collapsed = false, cls = '') => {
     const kc = g.hasOnField ? 'med' : 'low';
     const rows = g.findings.map(f => keyRow(f, recordsByUri)).join('');
-    return `<details class="rrow"${!collapsed && g.hasOnField ? ' open' : ''}><summary><span class="rcode">${esc(g.code)}</span><span class="rname">${esc(label ?? g.name)}</span><span class="kc ${kc}">${g.chip}</span><span class="rsub">${sub ?? esc(cap(registrationSystem(g.code) ?? ''))}</span><span class="rcount">${g.count}</span></summary><div class="rbody">${rows}</div></details>`;
+    return `<details class="rrow${cls ? ` ${cls}` : ''}"${!collapsed && g.hasOnField ? ' open' : ''}><summary><span class="rcode">${esc(g.code)}</span><span class="rname">${esc(label ?? g.name)}</span><span class="kc ${kc}">${g.chip}</span><span class="rsub">${sub ?? esc(cap(registrationSystem(g.code) ?? ''))}</span><span class="rcount">${g.count}</span></summary><div class="rbody">${rows}</div></details>`;
   };
   // doc-55 A2 (whitespace): open ONLY the single highest-risk region — the first on-field group in
   // exposure order (groups are sorted by lowest ordinal) — and collapse every other region to its
@@ -1514,7 +1550,7 @@ function keyPanel(findings, recordsByUri = new Map()) {
   const clFirst = cardTarget((findings.find((f) => regionCode(f) === COMMON_LAW && isOnField(f)) ?? clGroup?.findings[0])?.ordinal);
   const clLink = clFirst ? `<a href="#${clFirst}">${esc(R.key.commonLawSectionLink)}</a>` : esc(R.key.commonLawSectionLink);
   const clBlock = clGroup
-    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(clLink)}</p>${detail(clGroup, R.key.commonLawGroup, `<span style="white-space:nowrap">${R.key.unregisteredUse}</span>`, true)}`
+    ? `<p class="keyhint" style="margin-top:10px">${R.key.commonLawHint(clLink)}</p>${detail(clGroup, R.key.commonLawGroup, R.key.unregisteredUse, true, 'rcl')}`
     : '';
   return `<div class="panel keypanel">
       <div class="label">${R.key.title}</div>
@@ -1971,8 +2007,22 @@ function registerRecordBlock(f, recordsByUri, numberOf) {
 // asked about, or one whose fetch failed draws nothing (owner, 2026-11-25), so a card with no saved logo draws no
 // line. A grouped negative row shows up to three small
 // logos and "+N" under its text. The image travels inside the report; nothing points at the register's image.
+// "On the web" (owner, 2026-11-25 and 2026-11-26): the pictures the pages the card says the name is used on declare for
+// themselves, saved by the picture step, each in the logo's box, captioned with its site alone and opening the page it
+// came from. Drawn only when it holds a picture; a page that gave none leaves no trace.
+function webFrame(f) {
+  const pics = WEB_PICTURES.get(String(f.ordinal)) ?? [];
+  if (!pics.length) return '';
+  const figures = pics.slice(0, 8).map((p) => {
+    const href = hrefAttr(p.page);
+    const img = `<img src="${escAttr(p.src)}" alt="${escAttr(R.pictures.webAlt(f.mark ?? '', p.site ?? '', p.fetchedOn ?? ''))}">`;
+    return `<figure class="rr-lg">${href ? `<a href="${href}" target="_blank" rel="noopener noreferrer">${img}</a>` : img}<figcaption>${esc(p.site ?? '')}</figcaption></figure>`;
+  }).join('');
+  return `<div class="pic-set"><div class="pic-head"><span class="pic-lab">${esc(R.pictures.onTheWeb)}</span></div><div class="rr-logos rr-band">${figures}</div></div>`;
+}
+
 function logoLine(f, recordsByUri, { small = false } = {}) {
-  if (!LOGOS.size) return '';
+  if (!LOGOS.size && (small || !WEB_PICTURES.size)) return '';
   const figures = shownRegistrations(f, (uri) => Boolean(recordsByUri.get(uri)))
     .map((r) => {
       const rec = recordsByUri.get(String(r.uri).toLowerCase());
@@ -1980,8 +2030,15 @@ function logoLine(f, recordsByUri, { small = false } = {}) {
       return logoFigureHtml(rec, { uri: r.uri, logo: LOGOS.get(normalizeRecordUri(r.uri)), href, caption: !small });
     })
     .filter(Boolean);
+  // THE PICTURE LINE (owner, 2026-11-25): each set of pictures in a frame of its own under its label, so a reader can
+  // tell which set is which. "Register" holds the logos the run fetched, drawn as before, then "On the web"; each is
+  // drawn only when it holds a picture. The rows under "Marks that can coexist" keep their small unframed logos.
+  if (!small) {
+    const register = figures.length ? `<div class="pic-set"><div class="pic-head"><span class="pic-lab">${esc(R.pictures.register)}</span></div><div class="rr-logos rr-band">${figures.join('')}</div></div>` : '';
+    const web = webFrame(f);
+    return register || web ? `<div class="pic-line">${register}${web}</div>` : '';
+  }
   if (!figures.length) return '';
-  if (!small) return `<div class="rr-logos rr-band">${figures.join('')}</div>`;
   return `<div class="rr-logos rr-sm">${figures.slice(0, 3).join('')}${figures.length > 3 ? `<span class="rr-more">+${figures.length - 3}</span>` : ''}</div>`;
 }
 
@@ -2121,6 +2178,12 @@ function manageableLine(f) {
 // `net` key exists but is blank. `clause` is `foldClause` with the budget arm removed and nothing else.
 const clause = (value) => String(value ?? '').trim();
 
+// COPY LINK (owner, 2026-11-25): a full card's link to itself, inside the portal only. The page cannot know the portal's
+// address, so the button asks the portal through the frame bridge, which also shows it; a report opened by itself never
+// shows it, and it never prints. The tick replaces the link icon once the portal says the copy landed.
+const COPY_ICONS = '<svg class="ci-link" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a3 3 0 004.2.3l2-2a3 3 0 00-4.2-4.2l-1 1"/><path d="M8 6a3 3 0 00-4.2-.3l-2 2a3 3 0 004.2 4.2l1-1"/></svg><svg class="ci-tick" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>';
+const copyLinkButton = (label, copied) => `<button type="button" class="copy-fi no-print" data-copied="${escAttr(copied)}">${COPY_ICONS}<span>${esc(label)}</span></button>`;
+
 function findingCard(f, card, recordsByUri = new Map()) {
   const tierCls = isOnField(f) ? 'med' : 'low';
   const who = recordOwner(f, recordsByUri) || f.owner?.name || f.mark;   // doc-31 step 4: owner bound from the record
@@ -2144,7 +2207,7 @@ function findingCard(f, card, recordsByUri = new Map()) {
           <label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${escAttr(R.card.includeInPdf(f.ordinal))}"></label>
           <span class="fnum">${esc(f.ordinal)}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}
           <span class="tier ${tierCls}">${riskChip(f)}</span>
-          <button class="ask-fi no-print">${R.card.askAi}</button>
+          <span class="fi-acts no-print">${copyLinkButton(R.card.copyLink, R.card.copied)}<button class="ask-fi no-print">${R.card.askAi}</button></span>
         </div>
         ${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
         <div class="oneline">${inline(sentenceCaseLead(one))}</div>
@@ -2166,6 +2229,17 @@ function findingCard(f, card, recordsByUri = new Map()) {
 // A single conflict below the risk folds too, under the singular, "1 more conflict rated Manageable" (owner,
 // 2026-11-19). A conflict with no band on the ladder keeps its full card, since nothing says it is below the risk. A
 // run with no framework renders every card in full, as it always has.
+//
+// ON PAPER THE HEADER COUNTS THE CARDS PRINTED UNDER IT. The export leaves out every unticked card, so with two of 28
+// ticked the paper read "28 more conflicts rated Manageable" over two cards. The header carries its own words for one
+// card and, after the number, for several, both composed here by the catalogue's function, and the export writes the
+// printed count into it; after printing the screen's words come back. No words are added.
+//
+// THE HEADER SAYS HOW MUCH IT HOLDS (owner, 2026-11-25): most of a report's conflicts can sit behind this one line, so
+// its right end carries a control, "Show all {n}" folded and "Hide" open, drawn as a card's Ask AI pill, and folded it
+// reads as a pile of cards. The control is words inside the summary, not a second button: the header stays one control
+// whose name is the title, the words are hidden from assistive technology, and the stylesheet alone swaps them on the
+// details' open state, so "Expand all" and a page with scripts off keep them right. Neither reaches paper.
 function conflictCards(onField, cardFor, recordsByUri) {
   const full = (list) => list.map((f) => findingCard(f, cardFor(f), recordsByUri)).join('\n  ');
   if (!FRAMEWORK) return full(onField);
@@ -2178,7 +2252,9 @@ function conflictCards(onField, cardFor, recordsByUri) {
   const bands = [...new Set(below.map(severityRank))].sort((a, b) => a - b).map((i) => FRAMEWORK.bands[i].label);
   const cards = below.map((f) => compactCard(f, cardFor(f), recordsByUri, { ticked: false })).join('\n      ');
   return `${full(kept)}
-  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length, bands))}</span></summary><div class="gbody">
+  <details class="rgroup lowerband"><summary><span class="gname" data-print-one="${escAttr(R.lowerBand(1, bands))}" data-print-many="${
+    escAttr(R.lowerBand(2, bands).slice((2).toLocaleString('en-GB').length))}">${esc(R.lowerBand(below.length, bands))}</span><span class="lb-show no-print" aria-hidden="true"><span class="lb-closed">${
+    esc(R.lowerBandShow(below.length))}</span><span class="lb-open">${esc(R.lowerBandHide)}</span></span></summary><div class="gbody">
       ${cards}
   </div></details>`;
 }
@@ -2423,11 +2499,14 @@ const NAV_SHEET = NAV_CSS;
 // own sheet, after the base sheet whose print rule opens every fold, which the Knockout keeps. The verdict caption is not a
 // fold the reader chose: the page opens it before printing, and its label stays off the paper.
 const CLEARANCE_PRINT = readFileSync(join(HERE, 'templates', 'clearance-print.css'), 'utf8');
+// EXPAND ALL MEANS EVERY FOLD. openAll named five kinds of fold and left six alone on the demo, the term lists and
+// translation notes inside the register records among them, so a search of the page missed them and the PDF printed
+// a header with nothing under it. It reads every fold on the page, so a kind added later cannot fall behind it.
 const REP_OVERRIDE = '.rep-stickyhead .sitenav{position:static;box-shadow:none;border-bottom:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}';
 const PAGE_JS = `var _hidden=[];
-function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});document.querySelectorAll('details.lowerband').forEach(function(d){if(!d.querySelector('.card:not(.print-hidden)')){d.classList.add('print-hidden');_hidden.push(d);}});window.print();}
+function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});document.querySelectorAll('details.lowerband').forEach(function(d){if(!d.querySelector('.card:not(.print-hidden)')){d.classList.add('print-hidden');_hidden.push(d);}});document.querySelectorAll('details.lowerband:not(.print-hidden)>summary>.gname').forEach(function(g){var n=g.closest('details').querySelectorAll('.card:not(.print-hidden)').length;if(!g.dataset.printOne||!g.dataset.printMany)return;g.dataset.screen=g.textContent;g.textContent=n===1?g.dataset.printOne:n.toLocaleString('en-GB')+g.dataset.printMany;});window.print();}
 function pickAll(v){document.querySelectorAll('input.pickbox').forEach(function(cb){cb.checked=v;});}
-function openAll(v){document.querySelectorAll('details.drill,details.method,details.scope,details.rgroup,details.rrow').forEach(function(d){d.open=v;});}
+function openAll(v){document.querySelectorAll('details').forEach(function(d){d.open=v;});}
 // doc-55 A1: a rights-holder / marker / cross-link click targets a card by #c<ordinal>. When that card sits
 // inside a collapsed <details> (a secondary region's .rgroup, a .rrow), a plain anchor jump lands wrong or
 // nowhere. Open every <details> ancestor of the target FIRST, then land on the card top — scroll-margin-top
@@ -2438,8 +2517,66 @@ function _cardHashGo(){var id=location.hash.slice(1);if(id.charAt(0)!=='c'||!/^[
 document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a[href^="#c"]'):null;if(!a)return;var id=(a.getAttribute('href')||'').slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);e.preventDefault();try{if(history.replaceState)history.replaceState(null,'','#'+id);}catch(err){}el.scrollIntoView({behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)?'auto':'smooth',block:'start'});});
 window.addEventListener('hashchange',_cardHashGo);
 window.addEventListener('load',_cardHashGo);
+(function(){var land=document.querySelector('.panel.land'),tip=land&&land.querySelector('.qtip');if(!tip)return;
+var links=[].slice.call(land.querySelectorAll('svg a[data-tip-n]')),cur=null,timer=null;
+links.forEach(function(a){var t=a.querySelector('title');if(t)a.removeChild(t);});
+function dot(a){var c=a.querySelectorAll('circle'),r=c[c.length-1].getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,r:r.width/2};}
+function keyFocus(a){try{return a.matches(':focus-visible');}catch(e){return true;}}
+function place(a){var P=land.getBoundingClientRect(),d=dot(a),w=tip.offsetWidth,h=tip.offsetHeight,g=10,m=8,x=d.x-P.left,y=d.y-P.top;
+var cx=Math.min(Math.max(x-w/2,m),P.width-w-m),cy=Math.min(Math.max(y-h/2,m),P.height-h-m);
+var spots=[{l:x-d.r-g-w,t:cy},{l:x+d.r+g,t:cy},{l:cx,t:y-d.r-g-h},{l:cx,t:y+d.r+g}];
+var inside=spots.filter(function(p){return p.l>=m&&p.l+w<=P.width-m&&p.t>=m&&p.t+h<=P.height-m;});
+var others=links.filter(function(o){return o!==a;}).map(dot);
+function covered(p){return others.filter(function(o){var ox=o.x-P.left,oy=o.y-P.top;return ox+o.r>p.l&&ox-o.r<p.l+w&&oy+o.r>p.t&&oy-o.r<p.t+h;}).length;}
+var best=inside.length?inside.sort(function(p,q){return covered(p)-covered(q);})[0]:{l:cx,t:Math.min(y+d.r+g,P.height-h-m)};
+tip.style.left=Math.round(best.l)+'px';tip.style.top=Math.round(best.t)+'px';}
+function show(a){clearTimeout(timer);if(cur&&cur!==a)cur.classList.remove('qhot');cur=a;a.classList.add('qhot');
+var n=tip.querySelector('.qn'),b=tip.querySelector('.qb');n.textContent=a.getAttribute('data-tip-n');n.style.background=a.getAttribute('data-tip-fill');
+tip.querySelector('.qm').textContent=a.getAttribute('data-tip-mark');b.textContent=a.getAttribute('data-tip-band');b.className='qb '+a.getAttribute('data-tip-tone');
+tip.querySelector('.qs').textContent=a.getAttribute('data-tip-sub')||'';tip.hidden=false;place(a);}
+function hide(){clearTimeout(timer);tip.hidden=true;if(cur)cur.classList.remove('qhot');cur=null;}
+function soon(){clearTimeout(timer);timer=setTimeout(hide,200);}
+links.forEach(function(a){
+a.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse')show(a);});
+a.addEventListener('pointerleave',function(e){if(e.pointerType==='mouse')soon();});
+a.addEventListener('focus',function(){if(keyFocus(a))show(a);});
+a.addEventListener('blur',function(){if(cur===a)hide();});});
+tip.addEventListener('pointerenter',function(){clearTimeout(timer);});
+tip.addEventListener('pointerleave',soon);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!tip.hidden){hide();e.preventDefault();}});
+window.addEventListener('beforeprint',hide);})();
+(function(){var wrap=document.querySelector('.wrap'),words=document.getElementById('cpanel-words');if(!wrap||!words)return;
+var root=document.documentElement,panel=null,opener=null,WIDE=500,NARROW=452,GW=30,GN=22,EDGE=16,MINCOL=600,FULL=parseFloat(getComputedStyle(wrap).maxWidth)||1120;
+function roomFor(){var vw=root.clientWidth;if(!root.classList.contains('rep-narrow')&&vw-wrap.getBoundingClientRect().right>=GW+WIDE+EDGE)return {mode:'wide',w:WIDE};
+var col=Math.min(vw-EDGE-GN-NARROW-EDGE,FULL);if(col<MINCOL)return null;return {mode:'narrow',col:col,w:Math.min(WIDE,vw-EDGE-col-GN-EDGE)};}
+function keepPlace(el,change){var before=el.getBoundingClientRect().top;change();var dy=Math.round(el.getBoundingClientRect().top-before);if(!dy)return;
+var ev=null;try{ev=new CustomEvent('rep-shift',{detail:{dy:dy},cancelable:true});}catch(e){}if(!ev||document.dispatchEvent(ev))window.scrollBy({top:dy,left:0,behavior:'instant'});}
+function reflowed(){try{document.dispatchEvent(new CustomEvent('rep-reflow'));}catch(e){}}
+function place(){if(!panel||!opener)return;var r=wrap.getBoundingClientRect(),blk=opener.closest('.panel')||opener.parentElement;
+panel.style.width=panel._w+'px';panel.style.left=Math.round(r.right+window.scrollX+(panel._mode==='wide'?GW:GN))+'px';
+panel.style.top=Math.round(blk.getBoundingClientRect().top+window.scrollY)+'px';}
+function fill(n){var card=document.getElementById('c'+n);if(!card)return false;var c=card.cloneNode(true);c.removeAttribute('id');c.setAttribute('data-card-of','c'+n);
+[].forEach.call(c.querySelectorAll('[id]'),function(e){e.removeAttribute('id');});[].forEach.call(c.querySelectorAll('label.pick'),function(e){e.parentNode.removeChild(e);});
+if(!c.querySelector('.copy-fi')&&words.content){var ask=c.querySelector('.ask-fi'),cp=words.content.querySelector('.copy-fi');if(ask&&cp)ask.parentNode.insertBefore(cp.cloneNode(true),ask);}
+var body=panel.querySelector('.cp-body');body.innerHTML='';body.appendChild(c);panel.setAttribute('aria-label',words.getAttribute('data-name').replace('{n}',n));return true;}
+function build(){panel=document.createElement('aside');panel.className='cpanel no-print';panel.tabIndex=-1;
+panel.innerHTML='<button type="button" class="cp-close"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg></button><div class="cp-body"></div>';
+var x=panel.querySelector('.cp-close');x.setAttribute('aria-label',words.getAttribute('data-close'));x.addEventListener('click',shut);
+panel.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.ask-fi'),of=b&&b.closest('[data-card-of]'),o=of&&document.getElementById(of.getAttribute('data-card-of')),ob=o&&o.querySelector('.ask-fi');if(!ob)return;e.stopPropagation();ob.click();},true);
+document.body.appendChild(panel);}
+function open(a,room){var n=(a.getAttribute('href')||'').slice(2);if(!document.getElementById('c'+n))return false;if(!panel)build();fill(n);
+if(opener&&opener!==a)opener.classList.remove('cite-on');opener=a;a.classList.add('cite-on');panel._mode=room.mode;panel._w=room.w;
+if(room.mode==='narrow'&&!root.classList.contains('rep-narrow'))keepPlace(a,function(){root.style.setProperty('--rep-col',room.col+'px');root.style.setProperty('--rep-left',EDGE+'px');root.classList.add('rep-narrow');});
+place();try{panel.focus({preventScroll:true});}catch(e){panel.focus();}reflowed();return true;}
+function shut(){if(!panel)return;var a=opener;panel.parentNode.removeChild(panel);panel=null;opener=null;
+if(root.classList.contains('rep-narrow'))keepPlace(a,function(){root.classList.remove('rep-narrow');root.style.removeProperty('--rep-col');root.style.removeProperty('--rep-left');});
+if(a){a.classList.remove('cite-on');try{a.focus({preventScroll:true});}catch(e){a.focus();}}reflowed();}
+document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('.fa-ords a[href^="#c"]'):null;if(!a)return;var room=roomFor();if(room&&open(a,room)){e.preventDefault();e.stopImmediatePropagation();}},true);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&panel&&!e.defaultPrevented)shut();});
+window.addEventListener('resize',function(){if(!panel)return;var room=roomFor();if(!room||room.mode!==panel._mode){shut();return;}
+panel._w=room.w;if(room.mode==='narrow')keepPlace(opener,function(){root.style.setProperty('--rep-col',room.col+'px');});place();reflowed();});})();
 window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';});document.querySelectorAll('details.sub-more').forEach(function(d){d.open=true;});document.querySelectorAll('.card').forEach(function(c){var b=c.querySelector('input.pickbox');if(b&&!b.checked)return;c.querySelectorAll('details').forEach(function(d){d.open=true;});for(var p=c.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});});
-window.addEventListener('afterprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=d.dataset.o==='1';});_hidden.forEach(function(c){c.classList.remove('print-hidden');});_hidden=[];});
+window.addEventListener('afterprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=d.dataset.o==='1';});document.querySelectorAll('.gname[data-screen]').forEach(function(g){g.textContent=g.dataset.screen;delete g.dataset.screen;});_hidden.forEach(function(c){c.classList.remove('print-hidden');});_hidden=[];});
 ${EXPORT_MENU_JS}`;
 
 // Render a parsed report + findings.json to a full self-contained HTML string.
@@ -2674,7 +2811,7 @@ const STRIP = Object.freeze([
 // document does not hold is the page's surface: its two addresses, the confidentiality posture and the demo flag, which
 // publish passes beside the document as it always has; and the two sets the document holds by reference, the saved
 // records' bodies by uri and the saved logos' images by ref, which publish resolves from the run. PURE given its inputs.
-function clearanceContextOf(doc, { recordsByUri = new Map(), logos = new Map(), homeHref, chromeHref, delivery, demoData } = {}) {
+function clearanceContextOf(doc, { recordsByUri = new Map(), logos = new Map(), webPictures = new Map(), homeHref, chromeHref, delivery, demoData } = {}) {
   const run = doc?.run ?? {}, scope = doc?.scope ?? {}, client = doc?.client ?? {}, verdict = doc?.verdict ?? {};
   const framework = doc?.framework ?? {}, prose = doc?.prose ?? {};
   const asMap = (pairs) => (Array.isArray(pairs) ? new Map(pairs) : null);
@@ -2688,7 +2825,7 @@ function clearanceContextOf(doc, { recordsByUri = new Map(), logos = new Map(), 
     enforcerSignals: client.enforcerSignals, recordOrigin: run.provider?.origin,
     recordOrigins: run.provider?.origins, recordCitation: run.provider?.citation ?? null, recordLinks: asMap(client.recordLinks?.byUri),
     providerLabel: run.provider?.label, seniorRights: client.seniorRights, findingsSchemaVersion: run.findingsVersion,
-    searchDepth: scope.searchDepth, assessmentNotCompleted: verdict.assessmentNotCompleted, logos,
+    searchDepth: scope.searchDepth, assessmentNotCompleted: verdict.assessmentNotCompleted, logos, webPictures,
     followUpKinds: followUpKindsFrom(client.followUpKinds),
   });
 }
@@ -2701,6 +2838,7 @@ function clearanceContext(parsed, findings = [], coverage = [], opts = {}) {
   FRAMEWORK_METHOD = opts.frameworkMethod ?? null;
   AUDIT_HREF = hrefAttr(opts.auditFile, { relative: true }) || null;
   LOGOS = opts.logos instanceof Map ? opts.logos : new Map();
+  WEB_PICTURES = opts.webPictures instanceof Map ? opts.webPictures : new Map();
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)
@@ -2833,7 +2971,7 @@ function clearanceContext(parsed, findings = [], coverage = [], opts = {}) {
   let findingsSections, covNum;
   if (!DISPOSITION_MODE) {
     findingsSections = `${onField.length ? `<div class="sec" id="findings"><span class="num"></span><h2>${R.findings.landscape}</h2></div>
-  <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
+  <div class="landwrap">${quadrant(sorted, recordsByUri)}${keyPanel(sorted, recordsByUri)}</div>
 
   <div class="sec" id="conflicts"><span class="num"></span><h2>${R.strip.conflicts}</h2></div>
   ${conflictCards(onField, cardFor, recordsByUri)}` : ''}
@@ -2848,7 +2986,7 @@ function clearanceContext(parsed, findings = [], coverage = [], opts = {}) {
     const num = () => String(++secNum).padStart(2, '0');
     const landscape = onField.length
       ? `<div class="sec" id="findings"><span class="num"></span><h2>${R.findings.landscape}</h2></div>
-  <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
+  <div class="landwrap">${quadrant(sorted, recordsByUri)}${keyPanel(sorted, recordsByUri)}</div>
 
   <div class="sec" id="conflicts"><span class="num"></span><h2>${R.strip.conflicts}</h2></div>
   ${conflictCards(onField, cardFor, recordsByUri)}`
@@ -3043,7 +3181,10 @@ export const CLEARANCE_PAGE = Object.freeze({
       return line;
     })()}</span>
     ${logoLockup({ mark: 16 })}`,
-  afterWrap: () => `\n<script>${PAGE_JS}</script>`,
+  // The conflict panel's words, read by the page script: its name, its close control's name, and the Copy link a compact
+  // card gains in the panel.
+  afterWrap: () => `\n<template id="cpanel-words" data-name="${escAttr(R.conflictPanel.name('{n}'))}" data-close="${escAttr(R.conflictPanel.close)}">${
+    copyLinkButton(R.card.copyLink, R.card.copied)}</template>\n<script>${PAGE_JS}</script>`,
   strip: STRIP,
 });
 

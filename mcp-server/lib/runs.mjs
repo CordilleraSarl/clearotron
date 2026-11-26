@@ -6,25 +6,13 @@
 // importing it, so the MCP stays a pure additive consumer (no edit to the shared driver file the parallel
 // skill work may also touch). Keep SKIP_DIRS in sync with progress.mjs if that walk ever changes.
 
-import { readdirSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { readdirSync } from "node:fs";
+import { basename, join } from "node:path";
 import { channelPackage } from "../../shared/permanent-install.mjs";   // — the check a reader is sent to, on this install's channel
 import { config, paths, reportIdentityFor } from "./driver.mjs";
-import { DRIVER_DIR, readJson, readJsonOrNull } from "../../driver/run-record.mjs";
-
-// Mirror of progress.mjs SKIP_DIRS — the high-churn leaf dirs that never hold a run-level status.json.
-const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments"]);
-const MAX_DEPTH = 6; // studioRoot → [archive/<YYYY-MM>/]<slug>/<date>-<codename>/status.json
-
-function findStatusFiles(root, depth, acc) {
-  if (depth < 0) return;
-  let entries;
-  try { entries = readdirSync(root, { withFileTypes: true }); } catch { return; }
-  for (const e of entries) {
-    if (e.isFile() && e.name === "status.json") acc.push(join(root, e.name));
-    else if (e.isDirectory() && !SKIP_DIRS.has(e.name)) findStatusFiles(join(root, e.name), depth - 1, acc);
-  }
-}
+import { readJson, readJsonOrNull } from "../../driver/run-record.mjs";
+import { walkRuns, queuedStep } from "../../driver/portal-runs.mjs";   // THE one walk of the runs, shared with the portal
+import { batchMarkName } from "../../driver/mark-name.mjs";
 
 /**
  * NOTHING TO READ IS NOT "NO RUNS", and the difference is what an assistant tells its user.
@@ -77,24 +65,10 @@ export function unreadableRunsReason({ workSet, workRoot, workExists, poolSet, w
 }
 
 // Every workspace-<agent>/studio/clearance-search root under the live workspace root.
-export function studioRoots() {
-  const out = [];
-  let names = [];
-  try { names = readdirSync(config.workspaceRoot); } catch { /* workspaceRoot may be absent in test envs */ }
-  for (const name of names) {
-    const agent = config.agentIdFromWorkspaceName(name);
-    if (agent == null) continue;
-    const root = config.studioRootForAgent(agent);
-    if (existsSync(root)) out.push({ agent, root });
-  }
-  return out;
-}
 
 
 // Build a Run summary from a status.json path. runDir = its parent; location from the path (archive vs live).
-function runFromStatusFile(statusFile, agent) {
-  const runDir = statusFile.slice(0, -"/status.json".length);
-  const s = readJsonOrNull(statusFile);
+function runFromStatus(runDir, s, agent) {
   if (!s || !s.slug || !s.codename) return null; // a torn/partial status.json is skipped, never thrown
   return {
     runId: s.runId ?? `${s.slug}-${s.date}-${s.codename}`,
@@ -152,25 +126,53 @@ function markMatches(run, mark) {
 }
 
 // All runs (newest-first), optionally filtered by agent / state / slug / mark.
-export function enumerateRuns({ agent, state, slug, mark } = {}) {
+//
+// `listed` asks for the run LIST, which leaves out a run retired from the portal's list (the pool's archive tags):
+// retiring a run takes it out of discovery on both faces. Every other caller resolves runs, and a retired run stays
+// readable by an already-authorised caller who names it, so links already sent keep working.
+export function enumerateRuns({ agent, state, slug, mark, listed = false } = {}) {
   const runs = [];
-  for (const { agent: a, root } of studioRoots()) {
+  const walk = walkRuns({ poolRoot: listed ? config.poolRootOrNull : null, workspaceRoot: config.workspaceRoot, archive: true, orders: false });
+  for (const { dir, agent: a, status } of walk.runs) {
     if (agent && a !== agent) continue;
-    const files = [];
-    findStatusFiles(root, MAX_DEPTH, files);
-    for (const f of files) {
-      const r = runFromStatusFile(f, a);
-      if (!r) continue;
-      if (state && r.state !== state) continue;
-      if (slug && r.slug !== slug) continue;
-      if (mark && !markMatches(r, mark)) continue;
-      runs.push(r);
-    }
+    const r = runFromStatus(dir, status, a);
+    if (!r) continue;
+    if (state && r.state !== state) continue;
+    if (slug && r.slug !== slug) continue;
+    if (mark && !markMatches(r, mark)) continue;
+    if (listed && (walk.retired.has(r.runId) || walk.retired.has(basename(dir)))) continue;
+    runs.push(r);
   }
   const seen = new Set();
   return runs
     .sort((x, y) => String(y.updatedAt ?? "").localeCompare(String(x.updatedAt ?? "")))
     .filter((r) => (seen.has(r.runId) ? false : seen.add(r.runId)));
+}
+
+/**
+ * THE ORDERS NO WORKER HAS CLAIMED YET, from the same walk the portal lists them from. A company that has just
+ * ordered a search sees it here as the portal shows it: queued, waiting to start. Each carries its owner, so the
+ * account gate drops another company's order exactly as it drops another company's run. Newest first.
+ *
+ * Read only for the run list: every run-addressed tool resolves runs, and an order is not one until it is claimed.
+ */
+export function queuedOrders({ agent, mark } = {}) {
+  const walk = walkRuns({ workspaceRoot: config.workspaceRoot, queueDirs: config.queueDirs });
+  const needle = String(mark ?? "").trim().toLowerCase();
+  const out = [];
+  for (const { lane, file, job, mtimeMs } of walk.queued) {
+    const laneAgent = config.agentIdFromQueueDir(lane) ?? config.defaultAgent;
+    if (agent && laneAgent !== agent) continue;
+    const markName = batchMarkName(job.marks, typeof job.markName === "string" && job.markName ? job.markName : undefined) ?? null;
+    const projectKey = typeof job.projectKey === "string" && job.projectKey ? job.projectKey : null;
+    if (needle && ![markName, projectKey].some((v) => String(v ?? "").toLowerCase().includes(needle))) continue;
+    const queuedAt = new Date(mtimeMs).toISOString();
+    out.push({ runId: job.id ?? file.replace(/\.json$/, ""), agent: laneAgent, account: job.profileKey ?? "generic",
+      organisation: typeof job.tenant === "string" && job.tenant ? job.tenant : null, markName, projectKey,
+      product: typeof job.product === "string" ? job.product : null, ref: job.ref ?? null, classes: job.classes ?? null,
+      queuedAt, step: queuedStep(walk.draining) });
+  }
+  return out.sort((a, b) => b.queuedAt.localeCompare(a.queuedAt));
 }
 
 // Resolve a run by full runId, else codename, else slug (newest match). Returns the Run + paths(P), or null.

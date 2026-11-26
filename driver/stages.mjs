@@ -6,8 +6,8 @@
 //
 // Tiers: the three register SWEEP axes are sonnet (Haiku 4.5 rejects `adaptive`); saturation-probe stays
 // haiku (count-only); common-law stays haiku/low. Judgment = opus. Phase-4 resourcing: the six
-// judgment/framing stages run opus at HIGH effort. (Opus fast mode — the `--settings {"fastMode":true}` knob —
-// was REMOVED 2026-06-17: it ~2.5x'd subscription usage and tripped the 5h cap; HIGH effort is retained.) The
+// judgment/framing stages run opus at HIGH effort, on the vendor's faster setting when the run was ordered Urgent
+// (engine/speed.mjs decides it from the tier declared here; every other tier stays at standard speed). The
 // two SAFETY stages are declared honestly + at HIGH effort —
 // Step-2.6 skeptic = sonnet (was the alias gemini-flash, which mapped to sonnet anyway), Touchpoint-3
 // narrative-refutation = opus (was deepseek-v4-pro, which mapped to opus anyway). Heavy stages carry a

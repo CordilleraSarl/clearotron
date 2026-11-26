@@ -16,7 +16,7 @@
 // Exit codes (machine-consumable; one JSON result object on stdout, human notes on stderr):
 //   0 queued (or --dry-run and the job classifies "run")
 //   2 validation refused it (classify "clarify"/"reject" — errors listed; fix the request, don't force it)
-//   3 id collision (a job with this id is already queued/processing — re-delivery no-op, mirror start_run)
+//   3 id collision (a job with this id already exists, in any state — a re-delivery or a retry resolves to that order)
 //   1 anything else (bad flags, unreadable --job file, fs errors)
 //
 // The CLI serializes proper JSON, so prose fields (brief, goods, instructions…) ride INLINE — the
@@ -24,7 +24,8 @@
 // assembleJob treats a self-contained job identically (the overlay loop is a no-op).
 
 import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
-import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, readdirSync } from "node:fs";
+import { receiptIn, RECEIPT_STATES } from "./order-receipt.mjs";   // an id in ANY state is the same order, not a new one
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
@@ -339,6 +340,17 @@ async function main(argv) {
   // re-uses its id); refusing here mirrors start_run and keeps a double-submit from racing the claim.
   if (existsSync(dest) || existsSync(join(qdir, `${job.id}.processing`)))
     fail(`a job with id "${job.id}" is already queued/processing in ${qdir}`, 3);
+  // AN ID IN ANY STATE IS THAT ORDER, not room for a second one. The check above saw only a waiting or claimed job, so
+  // the same submission retried after it was refused, parked or finished wrote a second order under the same reference.
+  // Same exit, and the answer carries what became of the first.
+  let names = [];
+  try { names = readdirSync(qdir); } catch { /* a queue directory that will not list cannot hold the id either */ }
+  const existing = receiptIn(qdir, job.id, names);
+  if (existing) {
+    process.stdout.write(JSON.stringify({ ok: false, id: job.id, existing: { state: existing.state, stateText: RECEIPT_STATES[existing.state],
+      reason: existing.reason ?? null, runId: existing.runId ?? null } }, null, 2) + "\n");
+    fail(`a job with id "${job.id}" already exists in ${qdir}: ${RECEIPT_STATES[existing.state]}`, 3);
+  }
   const tmp = `${dest}.tmp`;
   writeFileSync(tmp, JSON.stringify(job, null, 2) + "\n");
   renameSync(tmp, dest); // atomic publish — the runner claims *.json, never a half-written file

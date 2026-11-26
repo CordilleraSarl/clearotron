@@ -874,7 +874,7 @@ const PROBE = Object.freeze({
   jurisdictions: ["US"], platforms: ["probe-platform"], goods: "probe goods",
   upfrontInstructions: "probe instructions", brief: "probe brief", rawRequest: "probe raw",
   deliverableSpec: "probe spec", commercialFlexibility: "probe flex", priorUse: "probe use",
-  campaignShape: "probe shape", deadline: "2026-12-31", nativeLanguage: true, caseLaw: true,
+  campaignShape: "probe shape", deadline: "2026-12-31", nativeLanguage: true, caseLaw: true, urgent: true,
   searchLevel: "probe-level",
   // POSITIVE-ONLY booleans: `=== true` in the builder, so nothing looser may be probed with
   customerUnknown: true, dupOverride: true, clientPrincipal: true, demoRun: true,
