@@ -520,6 +520,13 @@ for (const theme of ['light', 'dark']) {
     ok(rowsBare.SerpAPI?.state === 'Not set up' && /\bopen\b/.test(rowsBare.SerpAPI?.dot ?? ''), `SerpAPI stays neutral (saw ${JSON.stringify(rowsBare.SerpAPI)})`)
     ok(bare.leaks.length === 0, `no variable name, credential path or README reference anywhere on the page (saw ${JSON.stringify(bare.leaks)})`)
     await capture(`installation-settings-nothing-set-${theme}`)
+    // AT PHONE WIDTH the command lines and their Copy stay inside the page.
+    await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 900, deviceScaleFactor: 1, mobile: true })
+    await sleep(250)
+    const sideways = (await evalIn('document.documentElement.scrollWidth - document.documentElement.clientWidth')) ?? null
+    ok(sideways === 0, `Installation settings at 390 px does not scroll sideways (${sideways}px)`)
+    await cmd('Emulation.clearDeviceMetricsOverride', {})
+    await capture(`installation-settings-nothing-set-${theme}-390`, 390)
   }
   state.nothingSet = false
 
