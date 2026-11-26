@@ -90,6 +90,18 @@ export function webAddresses(value) {
 }
 
 /**
+ * What a web name's `url` gives the page: its http(s) addresses (`links`), the run's own search record (`runRecord`), or
+ * one other reference without spaces (`ref`), printed as it stands. A sentence gives nothing: the block is a note. PURE.
+ */
+export function webNameRow(url) {
+  const value = String(url ?? "").trim();
+  if (RUN_COMMON_LAW_RECORD.test(value)) return { links: [], runRecord: true, ref: null };
+  const links = webAddresses(value);
+  if (links.length) return { links, runRecord: false, ref: null };
+  return value && /^\S+$/.test(value) ? { links: [], runRecord: false, ref: value } : null;
+}
+
+/**
  * Every near-name the run read and cleared, register and web, as facts. PURE.
  *
  * The register rows carry no sentence: mark, owner, country, class, status, group and the record URI.
@@ -143,15 +155,15 @@ export function clearedNames(auditMd, recordIndex = {}) {
       // not be listed here. None exists in any demo, and the row such a block produced was already a
       // name beside an empty column. If one appears, the fix is to record where it was seen.
       //
-      // A `url` THAT HOLDS NO ADDRESS NAMES NO PLACE, and the block is a note, not a name. Measured on the public
-      // Global preliminary demo, 2026-11-25: "No confirmed directly conflicting app or course identified." with the
-      // `url` "See cell-level receipts below" was listed as a name, counted in the header, and printed with that
-      // sentence as its link. A block counts as a name when its `url` gives at least one http(s) address, or names the
-      // run's own search record, which the page names in words. `links` is what the page links; `url` stays as written.
+      // A `url` THAT IS A SENTENCE NAMES NO PLACE, and the block is a note, not a name. Measured on the public Global
+      // preliminary demo, 2026-11-25: "No confirmed directly conflicting app or course identified." with the `url`
+      // "See cell-level receipts below" was listed as a name, counted in the header, and printed with that sentence as
+      // its link. A block counts as a name when its `url` gives at least one http(s) address, names the run's own search
+      // record (which the page names in words), or is one other reference, such as a record file, which the page prints
+      // as it stands and does not link. `links` is what the page links; `url` stays as written.
       const url = field(block, "url");
-      const runRecord = RUN_COMMON_LAW_RECORD.test(url);
-      const links = runRecord ? [] : webAddresses(url);
-      if (runRecord || links.length) out.web.push({ title, url, links, runRecord, type: field(block, "type") });
+      const row = webNameRow(url);
+      if (row) out.web.push({ title, url, ...row, type: field(block, "type") });
     }
   }
   return out;

@@ -40,13 +40,15 @@ test("the run's own ledger, whole or a half, reads as the run's own common-law s
 
 test("a web address is still a link to it", () => {
   const row = rowOf(pageWith([{ title: "Quillmere candles", url: "https://example.test/quillmere" }]), "Quillmere candles");
-  assert.equal(row, `<a class="curl" href="https://example.test/quillmere">example.test/quillmere</a>`);
+  // In a cell of its own, opening in a new tab as the page's other evidence links do (2026-11-26).
+  assert.equal(row, `<span class="curl"><a href="https://example.test/quillmere" target="_blank" rel="noopener noreferrer">example.test/quillmere</a></span>`);
 });
 
 test("any other source keeps its exact reference until a truthful label exists", () => {
   for (const url of ["common-law-findings.half-b.md", "grid-spec.half-b.json", "records/jp-1.json"]) {
     const row = rowOf(pageWith([{ title: "Quillmere other", url }]), "Quillmere other");
-    assert.ok(row.includes(`>${url}</a>`), `${url} was relabelled: ${row}`);
+    // As it stands, and not a link: a reference that is not an address leads nowhere a reader can open (2026-11-26).
+    assert.equal(row, `<span class="curl">${url}</span>`, `${url} was relabelled or linked: ${row}`);
     assert.doesNotMatch(row, /own common-law search record/);
   }
 });
