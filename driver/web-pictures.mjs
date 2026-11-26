@@ -209,10 +209,12 @@ export async function fetchBytes(rawUrl, { signal, maxBytes = 5 * 1024 * 1024, a
  * cannot be shrunk, or is still being shrunk at the limit, gains `notStored` with the reason and keeps no bytes.
  *
  * @param {string[]} pages
- * @param {{seconds?: number, concurrency?: number, fetcher?: typeof fetchBytes, now?: () => number, compareFrontPages?: boolean, shrink?: boolean, makeShrinker?: typeof pictureShrinker}} [opts]
+ * `signal` ends the step early, as its limit would; `onRows` is handed the live rows as soon as they exist.
+ *
+ * @param {{seconds?: number, concurrency?: number, fetcher?: typeof fetchBytes, now?: () => number, compareFrontPages?: boolean, shrink?: boolean, makeShrinker?: typeof pictureShrinker, signal?: AbortSignal|null, onRows?: ((rows: object[]) => void)|null}} [opts]
  */
 export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SECONDS, concurrency = PICTURE_CONCURRENCY, fetcher = fetchBytes, now = () => performance.now(),
-  compareFrontPages = true, shrink = true, makeShrinker = pictureShrinker } = {}) {
+  compareFrontPages = true, shrink = true, makeShrinker = pictureShrinker, signal = null, onRows = null } = {}) {
   const list = [...new Set((Array.isArray(pages) ? pages : []).map(String))];
   // Each inner page's site front page is asked right after it, in the same pool and on the same clock, for the rule of
   // a site's general card (frontPageRule); a front page a card cites is not asked twice.
@@ -224,7 +226,9 @@ export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SEC
   }
   const rows = order.map(({ page, forComparison }) => ({ page, site: siteOf(page), ...(forComparison ? { forComparison: true } : {}),
     state: "not-tried", picture: null, contentType: null, bytes: 0, sha256: null, ms: null, data: null }));
+  onRows?.(rows);   // the live rows, for a caller that takes what has finished before the step does (startPictureStep)
   const abort = new AbortController();
+  if (signal?.aborted) abort.abort(); else signal?.addEventListener("abort", () => abort.abort(), { once: true });
   const t0 = now();
   let timer = null;
   if (Number.isFinite(seconds)) timer = setTimeout(() => abort.abort(), seconds * 1000);
@@ -354,6 +358,78 @@ export function frontPageRule(rows) {
   return rows;
 }
 
+// ── BESIDE THE REPORT, NEVER IN ITS WAY ─────────────────────────────────────────────────────────────────────────────
+//
+// The step can start while the report is still being written, from the cards as they stand then, and run beside it
+// (startPictureStep). At publication the report takes only the pictures already fetched and shrunk whose page is still
+// on a final card, and goes on at once (freezePictures): it waits for no request and no worker. What arrives later is
+// dropped, and a delivered report is never published again to add one. The step keeps everything in memory until then,
+// so a resume in a new process finds no step and records that it ran none.
+
+/**
+ * Start the picture step beside other work, from the cards as they stand now (`cards`: each card's pages). Returns at
+ * once with a handle whose `rows` fill in as pages and pictures finish; `stop()` ends the step; `done` resolves when it
+ * has ended, and never rejects. Nothing is written until freezePictures.
+ */
+export function startPictureStep({ cards, seconds = CLEARANCE_PICTURE_SECONDS, concurrency = PICTURE_CONCURRENCY, compareFrontPages = true, now = () => performance.now(), ...seams }) {
+  const stopper = new AbortController();
+  const handle = { rows: [], startedAt: new Date().toISOString(), t0: now(), seconds, concurrency, compareFrontPages, endedMs: null, result: null,
+    stop: () => stopper.abort() };
+  const pages = [...new Set([...(cards ?? new Map()).values()].flat())];
+  handle.done = fetchPagePictures(pages, { seconds, concurrency, compareFrontPages, now, signal: stopper.signal, onRows: (rows) => { handle.rows = rows; }, ...seams })
+    .then((result) => { handle.result = result; handle.endedMs = Math.round(now() - handle.t0); }, () => { handle.endedMs = Math.round(now() - handle.t0); });
+  return handle;
+}
+
+/**
+ * At publication: stop the step and save, from what it has finished, each picture whose page is on a final card
+ * (`finalCards`, from the findings as published). A picture counts only when it has arrived and been shrunk, and is
+ * not a site's general card or awaiting its comparison; one whose page left the cards is dropped as stale, and a final
+ * card's page the step never asked about shows nothing. Waits for nothing. Writes the record once: when the run already
+ * has one, that record stands and nothing is written. With no step in this process, the record says so and holds no
+ * picture. Returns `{ record, counts, written }`.
+ */
+export function freezePictures(runDir, handle, finalCards, { now = () => performance.now() } = {}) {
+  const t0 = now();
+  try {
+    const existing = JSON.parse(readFileSync(driverDir(runDir, PICTURES_FILE), "utf8"));
+    return { record: existing, counts: existing.counts ?? null, written: false };
+  } catch { /* no record yet: this is the publication that takes the pictures */ }
+  const cards = finalCards ?? new Map();
+  const finalPages = new Set([...cards.values()].flat());
+  if (!handle) {
+    const record = writePictureRecord(runDir, { cards, result: { rows: [], ms: null, aborted: false }, seconds: null, concurrency: null,
+      extra: { notRun: "the picture step did not run in this process", counts: { eligibleCards: cards.size, cardsWithPicture: 0 } } });
+    return { record, counts: record.counts, written: true };
+  }
+  const endedBefore = handle.endedMs !== null;
+  handle.stop();
+  const atMs = Math.round(now() - handle.t0);
+  // A copy of each row as it stands: what finishes after this line changes nothing here.
+  const snap = handle.rows.map((r) => ({ ...r }));
+  if (handle.compareFrontPages) frontPageRule(snap);
+  let stale = 0, unfinished = 0;
+  for (const r of snap) {
+    if (r.forComparison) { r.data = null; continue; }
+    if (!finalPages.has(r.page)) { if (r.state === "fetched") stale++; r.stale = true; r.data = null; continue; }
+    if (r.state === "fetched" && !r.stored && !r.notStored) { r.notStored = "not shrunk by publication"; r.data = null; unfinished++; }
+    if (r.state === "not-arrived") unfinished++;
+    if (r.general || r.comparison) r.data = null;
+  }
+  const asked = new Set(snap.map((r) => r.page));
+  const never = [...finalPages].filter((p) => !asked.has(p));
+  for (const page of never) snap.push({ page, site: siteOf(page), state: "not-tried", addedAfterStart: true, picture: null, contentType: null, bytes: 0, sha256: null, ms: null, data: null });
+  const record = writePictureRecord(runDir, { cards, result: { rows: snap, ms: atMs, aborted: !endedBefore, ...(Number.isFinite(handle.result?.shrinkMs) ? { shrinkMs: handle.result.shrinkMs } : {}) },
+    seconds: handle.seconds, concurrency: handle.concurrency, extra: { startedAt: handle.startedAt } });
+  const drawn = webPicturesForReport(runDir);
+  const counts = { eligibleCards: cards.size, cardsWithPicture: drawn.size, picturesTaken: [...drawn.values()].reduce((a, l) => a + l.length, 0),
+    stalePictures: stale, unfinishedAtPublication: unfinished, finalPagesNeverAsked: never.length, stepEndedBeforePublication: endedBefore,
+    stepMsAtPublication: atMs, freezeMs: Math.round(now() - t0) };
+  record.counts = counts;
+  writeFileSync(driverDir(runDir, PICTURES_FILE), JSON.stringify(record, null, 2) + "\n");
+  return { record, counts, written: true };
+}
+
 // ── THE RECORD, AND WHAT THE REPORT DRAWS FROM IT ───────────────────────────────────────────────────────────────────
 //
 // The run's picture record (PICTURES_FILE) says what happened to every page, beside the logo step's record, and the
@@ -369,7 +445,7 @@ const EXT = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", "imag
  * @param {string} runDir
  * @param {{ cards: Map<number, string[]>, result: { rows: object[], ms: number, aborted: boolean }, seconds: number, concurrency: number, takenAt?: string, general?: Set<string> }} step
  */
-export function writePictureRecord(runDir, { cards, result, seconds, concurrency, takenAt = new Date().toISOString(), general = new Set() }) {
+export function writePictureRecord(runDir, { cards, result, seconds, concurrency, takenAt = new Date().toISOString(), general = new Set(), extra = {} }) {
   const dir = ensureDriverDir(runDir, PICTURES_DIR);
   const byPage = new Map();
   for (const [ordinal, pages] of cards) for (const p of pages) byPage.set(p, [...(byPage.get(p) ?? []), ordinal]);
@@ -385,7 +461,7 @@ export function writePictureRecord(runDir, { cards, result, seconds, concurrency
     return out;
   });
   const record = { schema: 1, takenAt, seconds, concurrency, ms: result.ms, aborted: result.aborted, ...(Number.isFinite(result.shrinkMs) ? { shrinkMs: result.shrinkMs } : {}),
-    cards: Object.fromEntries([...cards].map(([ordinal, pages]) => [String(ordinal), pages])), rows };
+    ...extra, cards: Object.fromEntries([...cards].map(([ordinal, pages]) => [String(ordinal), pages])), rows };
   writeFileSync(driverDir(runDir, PICTURES_FILE), JSON.stringify(record, null, 2) + "\n");
   return record;
 }

@@ -225,6 +225,7 @@ function world(opts = {}) {
     ...("readTerritories" in opts ? { readTerritories: opts.readTerritories } : {}),
     ...("readRegisterLabel" in opts ? { readRegisterLabel: opts.readRegisterLabel } : {}),
     ...(opts.upstream ? { upstream: opts.upstream } : {}),
+    ...(opts.urgentAvailable ? { urgentAvailable: opts.urgentAvailable } : {}),
     ...(opts.composeRead ? { composeRead: opts.composeRead } : {}),
     ...(opts.readBudget ? { readBudget: opts.readBudget } : {}),
     // — the capture endpoint is retired and answers 410. A world that does not ask for it gets the
@@ -2184,6 +2185,24 @@ test("quota: a client at the day's limit gets the 429 that names the reset and t
   assert.match(String(r.json.errors?.[0]), /all 2 of this account's searches/);
   assert.match(String(r.json.errors?.[0]), /midnight UTC/, "a hard stop with no reset time is the worst version of a cap");
   assert.equal(triggers.length, 0);
+});
+
+test("quota: with one search left an Urgent order is refused in the order screen's words; Standard fits; two left admit Urgent", async () => {
+  // Design, 2026-11-26: the sentence is the order screen's own, and an Urgent order is never run, or counted, as Standard.
+  const at = async (used, body) => {
+    const { up } = upstreamSpy({ runCaps: { dailyRuns: 2 } });
+    const { service } = world({ upstream: up, urgentAvailable: () => true, queueDirs: [queueWith(Array.from({ length: used }, () => ({})))] });
+    return service.route("POST", "/portal/api/run/plan", CLIENT, body, {});
+  };
+  const urgent = { ...QUOTA_BODY, urgent: true };
+  const one = await at(1, urgent);
+  assert.equal(one.status, 429);
+  assert.deepEqual(one.json.errors, ["1 search left today."]);
+  assert.equal((await at(1, QUOTA_BODY)).status, 200, "one left: Standard fits");
+  assert.equal((await at(0, urgent)).status, 200, "two left: Urgent fits");
+  const none = await at(2, urgent);
+  assert.equal(none.status, 429);
+  assert.match(String(none.json.errors?.[0]), /all 2 of this account's searches/, "none left keeps its own sentence");
 });
 
 test("quota: under the limit, the ledger the wall reads admits the run", async () => {

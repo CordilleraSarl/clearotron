@@ -30,7 +30,7 @@ import { crossBuildResumeRefusal } from "./one-build-per-run.mjs";   // a run is
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
 import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES, withFoldedGoods } from "./queue-markers.mjs";
 import { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS, ledgerSearches } from "./usage-ledger.mjs";
-import { admittedSearches } from "./urgent-count.mjs";   // what an order counts against its allowance, decided at claim   // ONE ledger-path calculation, shared with the portal pre-check
+import { admittedSearches, oneLeftRefusal } from "./urgent-count.mjs";   // what an order counts against its allowance, decided at claim   // ONE ledger-path calculation, shared with the portal pre-check
 import { orderTimeRefusal, START_ENV_FILE_FLAG } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
 import { runTables } from "./order-tables.mjs";   // the tables the portal's order door reads too, so the two cannot disagree
 import { howItRuns } from "./how-it-runs.mjs";   // how this runner runs, for the remedy its refusal names
@@ -320,6 +320,9 @@ export function checkRunCaps({ account, caps, queueDirs, inHandTagged = true, no
       }
     }
     if (today + searches > caps.dailyRuns) {
+      // One left and an order that counts two: refused in the order screen's words, never run as Standard.
+      const oneLeft = oneLeftRefusal({ used: today, limit: caps.dailyRuns, searches });
+      if (oneLeft) return oneLeft;
       return `daily allowance: ${lane} has started ${today} search(es) today (runCaps.dailyRuns=${caps.dailyRuns}) — the allowance resets at midnight UTC, or ask your ${BRAND.name} contact to run this one for you`;
     }
   }

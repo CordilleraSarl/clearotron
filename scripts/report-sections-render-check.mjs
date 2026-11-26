@@ -334,7 +334,7 @@ for (const theme of ['light', 'dark']) {
 // At 1,280 px with the sidebar open the row must keep the seven-letter name whole, "Ask AI" on one line and every
 // section link readable, or the full header is pinned instead, every part of it in reach. 1,600 px is the control:
 // there the row pins as before.
-for (const [width, mustPin] of [[1280, false], [1600, true]]) {
+for (const [width, mustPin] of [[1280, false], [1332, false], [1600, true]]) {
   for (const theme of ['light', 'dark']) {
     const at = `${width} ${theme} sidebar open`
     await cmd('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: false })
@@ -373,6 +373,22 @@ for (const [width, mustPin] of [[1280, false], [1600, true]]) {
 // page by exactly that distance.
 const inFrame = (expression) => new Promise((r) => { const i = ++id; pending.set(i, r); ws.send(JSON.stringify({ id: i, sessionId: frameSession, method: 'Runtime.evaluate',
   params: { expression, awaitPromise: true, returnByValue: true, userGesture: true } })) }).then((a) => a.result?.result?.value ?? null)
+/** Open `url` and check it lands the page with `card` just under the pinned header (and, if `fullHeader`, that the header pinned is the full one). */
+async function landsUnderHeader(at, url, card, picture, fullHeader = false) {
+  await cmd('Page.navigate', { url })
+  await until(`document.querySelectorAll('nav.report-sections .report-section').length === ${SECTIONS.length}`)
+  await wait(1500)
+  const landed = await value(`(() => { const f = document.querySelector('iframe'); const h = document.querySelector('.report-head');
+    return { frameTop: f.getBoundingClientRect().top, headBottom: h.getBoundingClientRect().bottom, scrollY: window.scrollY, full: h.classList.contains('pinned-full') } })()`)
+  const cardTop = await inFrame(`Math.round(document.getElementById(${JSON.stringify(card)}).getBoundingClientRect().top + window.scrollY)`)
+  const onScreen = landed && cardTop !== null ? Math.round(landed.frameTop + cardTop) : null
+  if (onScreen === null) fail.push(`${at}: the landing could not be measured`)
+  else if (fullHeader && !landed.full) fail.push(`${at}: the full header is not the one pinned here, so this landing tests nothing (${JSON.stringify(landed)})`)
+  else if (landed.scrollY < 100 || onScreen < landed.headBottom - 2 || onScreen > landed.headBottom + 120)
+    fail.push(`${at}: the card's address left the card at ${onScreen}px, with the header ending at ${Math.round(landed.headBottom)}px (scrolled ${Math.round(landed.scrollY)})`)
+  else ok.push(`${at}: the card's address opens the report at ${card}, ${onScreen - Math.round(landed.headBottom)}px under the header`)
+  await shot(picture)
+}
 {
   const at = '1440 light card link'
   await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false })
@@ -398,18 +414,7 @@ const inFrame = (expression) => new Promise((r) => { const i = ++id; pending.set
     await shot('card-link-copied.png')
 
     // LANDING: the copied address opens the report at that card, below the pinned header.
-    await cmd('Page.navigate', { url: expected })
-    await until(`document.querySelectorAll('nav.report-sections .report-section').length === ${SECTIONS.length}`)
-    await wait(1500)
-    const landed = await value(`(() => { const f = document.querySelector('iframe'); const h = document.querySelector('.report-head');
-      return { frameTop: f.getBoundingClientRect().top, headBottom: h.getBoundingClientRect().bottom, scrollY: window.scrollY } })()`)
-    const cardTop = await inFrame(`Math.round(document.getElementById(${JSON.stringify(card)}).getBoundingClientRect().top + window.scrollY)`)
-    const onScreen = landed && cardTop !== null ? Math.round(landed.frameTop + cardTop) : null
-    if (onScreen === null) fail.push(`${at}: the landing could not be measured`)
-    else if (landed.scrollY < 100 || onScreen < landed.headBottom - 2 || onScreen > landed.headBottom + 120)
-      fail.push(`${at}: the card's address left the card at ${onScreen}px, with the header ending at ${Math.round(landed.headBottom)}px (scrolled ${Math.round(landed.scrollY)})`)
-    else ok.push(`${at}: the card's address opens the report at ${card}, ${onScreen - Math.round(landed.headBottom)}px under the header`)
-    await shot('card-link-landed.png')
+    await landsUnderHeader(at, expected, card, 'card-link-landed.png')
 
     // SCROLL-BY: the frame asks the page to move by a distance, and the page moves by exactly that.
     const before = await value('window.scrollY')
@@ -418,6 +423,11 @@ const inFrame = (expression) => new Promise((r) => { const i = ++id; pending.set
     const after = await value('window.scrollY')
     if (after - before !== 150) fail.push(`${at}: a scroll-by of 150 moved the page by ${after - before}`)
     else ok.push(`${at}: a scroll-by of 150 from the frame moves the page by 150`)
+
+    // LANDING UNDER THE FULL HEADER. At 1,280 px with the sidebar open the row cannot fit, so the full header is pinned
+    // once the jump has passed it, taller than the row the jump allowed for: the card must land under that header.
+    await cmd('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false })
+    await landsUnderHeader('1280 light card link, full header pinned', expected, card, 'card-link-landed-full-header.png', true)
   }
 }
 
