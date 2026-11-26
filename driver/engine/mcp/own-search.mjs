@@ -16,7 +16,8 @@
 // as recorded; where this run's searches are its own and a grid was not prepared, the research server refuses rather
 // than send the grid elsewhere, so a run keeps one search service.
 //
-// SWITCHED ON PER RUN, for verification on saved inputs: `_driver/research-search.json` holding { "service": "own" }.
+// SWITCHED ON PER RUN by the run's own record: `research: "own"` in `_driver/run-choices.json`, which the run's door writes
+// from the installation's web-research setting (web-research.mjs, engine/run-choices.mjs).
 // Absent, nothing here runs, and the installed choice and the order path are as they were.
 //
 // The reading of each program's records began as an experiment on saved clearances by another developer of this
@@ -27,7 +28,7 @@ import { dirname, join } from "node:path";
 import { dictatedCells, connotationQueriesOf, reconcileGridLedger, findUnrecordedConnotationQueries, captureGridFromResponse } from "../../../providers/perplexity/src/core.js";
 import { gridProvenancePath } from "./grid-provenance.mjs";
 
-export { OWN_SEARCH_SETTING_FILE, ownSearchOn } from "./own-search-setting.mjs";
+export { RUN_RECORD_FILE, ownSearchOn } from "./own-search-setting.mjs";
 
 const words = (q) => String(q ?? "").trim().replace(/\s+/g, " ");
 const unquote = (q) => words(String(q ?? "").replace(/"/g, " ")).toLowerCase();

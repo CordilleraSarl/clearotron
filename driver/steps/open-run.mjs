@@ -15,6 +15,7 @@ import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
 import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerDoor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { urgentDecision } from "../engine/speed.mjs";
+import { installWebResearch, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
 import { resolveAuthMode } from "../engine/auth.mjs";
 import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
@@ -62,6 +63,16 @@ export async function openRun({ job, opts }) {
   const unserved = unservedChoice(recorded, { engineRegistered: recorded.state === "recorded" && Boolean(engineNamed(recorded.engine)) });
   if (unserved) throw park({ ...unserved, ...(unserved.kind === "engine" ? { detail: `registered: ${registeredEngines().join(", ")}` } : {}) });
   const engineEnv = recorded.state === "recorded" ? { ...process.env, CLEAROTRON_AI: recorded.engine } : process.env;
+  // THE WEB-RESEARCH SERVICE THIS RUN SEARCHES WITH (web-research.mjs). A resumed run keeps the one it recorded, and one
+  // recorded before the service was ran on Perplexity, as did a resumed run with no record at all, which predates the
+  // record; a new run takes the installation's setting. A setting that
+  // names no service refuses every run, as an unknown billing word does: it is a configuration fault, not a missing
+  // search service, so the Knockout's rule of running without one does not cover it.
+  const machineResearch = installWebResearch(process.env);
+  const runResearch = recorded.state === "recorded" ? recorded.research ?? WEB_RESEARCH_BEFORE_THE_SETTING
+    : resuming ? WEB_RESEARCH_BEFORE_THE_SETTING : machineResearch.service;
+  if (!runResearch)
+    throw new Error(`${WEB_RESEARCH_SETTING}=${machineResearch.invalid} names no web-research service — one of: own (the AI program's own web search) or perplexity; refusing rather than guess which one searches`);
   // A recorded engine whose program or sign-in this machine lacks parks the run too; a run with no record meets the
   // doors as before. Only a refusal is caught: a door that passes, or fails open on weather, runs on unchanged.
   const parksIfRecorded = (kind) => (e) => { throw recorded.state === "recorded" ? park({ kind, recorded: recorded.engine, detail: e?.message ?? e }) : e; };
@@ -140,7 +151,15 @@ export async function openRun({ job, opts }) {
   // call — the shape named "degrades every mark per-call and the batch dies all-failed only AFTER
   // the paid frame turn" when it removed the knockout's refusal for the same reason in the other
   // direction. ADR-0003 carries the ruling for both lanes.
-  if (!opts.recordFetcher) preflightResearchCredential(jobPolicy);
+  // A RESUMED RUN WHOSE SERVICE THIS RUNNER CANNOT SERVE PARKS, by name, with its work kept: it never finishes on another
+  // service. Any other run meets the door as before.
+  if (!opts.recordFetcher) {
+    try { preflightResearchCredential(jobPolicy, engineEnv, { service: runResearch }); }
+    catch (e) {
+      if (recorded.state !== "recorded") throw e;
+      throw park({ kind: "research", recorded: runResearch, machine: machineResearch.service ?? null, detail: e?.message ?? e });
+    }
+  }
   // — and the engine can COMPLETE A TURN, not merely be a file on disk. built the probe and
   // wired it to `npm run setup`; a box that passed setup on Monday and signed out on Tuesday still gets
   // caught at stage one, ninety minutes and a run directory later, wearing the shape of a model fault.
@@ -300,16 +319,22 @@ export async function openRun({ job, opts }) {
     // AN URGENT ORDER IS DECIDED HERE, ONCE (engine/speed.mjs): fast on this installation, or standard and why. A resume
     // keeps what its start recorded, so no retry or resumed stage changes speed.
     const urgent = !isResume && job?.urgent === true ? urgentDecision({ ordered: true, engine: machine.engine, auth: authOrNull(machine.engine) }) : null;
-    const held = isResume ? readRunChoices(run.runDir) : recordRunChoices(run.runDir, { ...machine, urgent });
+    const held = isResume ? readRunChoices(run.runDir) : recordRunChoices(run.runDir, { ...machine, urgent, research: runResearch });
     const registerDiffers = held.state === "recorded" && held.register !== machine.register;
     runLog(run.runDir, { event: "run-choices", state: held.state, written: held.written === true,
       engine: held.engine ?? null, register: held.register ?? null, machineEngine: machine.engine, machineRegister: machine.register,
       ...(held.urgent ? { urgent: held.urgent } : {}),
+      research: held.research ?? null, machineResearch: machineResearch.service ?? null, researchChosen: machineResearch.chosen,
       ...(registerDiffers ? { registerDiffers: true } : {}) });
     if (registerDiffers)
       note(`[run-choices] this run started on the ${held.register ?? "(none)"} register; this machine is set to ${machine.register ?? "(none)"}, and serves the run on the run's own`);
   } catch (e) {
     try { runLog(run.runDir, { event: "run-choices", state: "not-written", detail: String(e?.message ?? e).slice(0, 300) }); } catch { /* best-effort */ }
+    // EXCEPT FOR THE AI PROGRAM'S OWN SEARCH, which the research server and the sweep read from this record alone: a run
+    // without it would search with Perplexity instead, or refuse its grid after the register stages were paid. Nothing has
+    // been spent yet, so it stops here and says why.
+    if (!isResume && runResearch === "own")
+      throw new Error(`the run's record of its web-research service could not be written, so its own web search cannot be used: ${String(e?.message ?? e).slice(0, 300)}`);
   }
   // — WHICH ENGINE THIS RUN LOADED, beside the doctrine store whose commit sits one line up. Those
   // two `head`s are different repositories, which is the whole reason this event names its key

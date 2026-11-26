@@ -24,6 +24,7 @@ import { adapter as euipoAdapter } from "../providers/euipo/src/adapter.js";
 import { adapter as usptoLocalAdapter } from "../providers/uspto-local/src/adapter.js";
 import { adapter as freeTierAdapter } from "../providers/free-tier/src/adapter.js";
 import { readJson } from "./run-record.mjs";
+import { installWebResearch, webResearchCapability, WEB_RESEARCH_SETTING } from "./web-research.mjs";   // which service runs the web research, and whether it can here
 import { program as anthropicAgentProgram } from "./engine/anthropic-agent-program.mjs";   // each engine's program row, kept beside its adapter
 import { program as openaiAgentProgram } from "./engine/openai-agent-program.mjs";
 
@@ -1230,12 +1231,30 @@ export function preflightCredentials(env = process.env) {
  * knockout exemption from the same lookup), and passing the row keeps this file from importing the
  * product registry.
  *
+ * THE SERVICE IT CHECKS is the run's (`service`: a resumed run keeps the one it recorded, engine/run-choices.mjs), or
+ * the installation's setting when none is handed in (web-research.mjs). Under the AI program's own search no key is
+ * owed: the door checks that this installation's engine and route carry a web search, and places no search to do so.
+ * A setting that names no service is refused by name, never read as either service.
+ *
  * @returns `{ checked: false }` when the product carries no common-law grid — a statement that the door
  *          did not apply, never a pass. An absence is a finding, so it is said rather than implied.
  */
-export function preflightResearchCredential(policy, env = process.env) {
+export function preflightResearchCredential(policy, env = process.env, { service = null } = {}) {
   if (policy?.components?.commonLawGrid !== true)
     return { checked: false, component: "commonLawGrid", credEnv: null, missing: [] };
+  const install = service ? { service } : installWebResearch(env);
+  if (!install.service)
+    throw new Error(`[preflight] ${WEB_RESEARCH_SETTING}=${install.invalid} names no web-research service on product "${policy.product}" `
+      + `— one of: own (the AI program's own web search) or perplexity; refusing rather than guess which one searches`);
+  if (install.service === "own") {
+    const can = webResearchCapability({ service: "own", env });
+    if (!can.ok)
+      throw new Error(`[preflight] the AI program's own web search cannot run here for the common-law / marketplace sweep `
+        + `on product "${policy.product}": ${can.why}. Set ${WEB_RESEARCH_SETTING}=perplexity with a Perplexity key, `
+        + "or run on an engine and billing route that carries its own web search (a Knockout search runs without it and "
+        + "discloses the half it skipped instead)");
+    return { checked: true, component: "commonLawGrid", service: "own", credEnv: null, missing: [] };
+  }
   const research = RESEARCH_PROVIDERS.perplexity;
   const missing = missingCredentials(research, env);
   if (missing.length) {
@@ -1246,7 +1265,7 @@ export function preflightResearchCredential(policy, env = process.env) {
       + "systemd EnvironmentFile and reload before running (a Knockout search needs no research "
       + "credential — it discloses the half it skipped instead)");
   }
-  return { checked: true, component: "commonLawGrid", credEnv: research.credEnv, missing: [] };
+  return { checked: true, component: "commonLawGrid", service: "perplexity", credEnv: research.credEnv, missing: [] };
 }
 
 // ── The engine binary exists and can be executed — checked the same way, at the same door ────────────

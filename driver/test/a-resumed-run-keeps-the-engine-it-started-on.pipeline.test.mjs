@@ -60,7 +60,7 @@ async function startedAndFailed() {
 test("a cold start records the run's engine and register, once", async () => {
   const { runDir } = await startedAndFailed();
   const rec = recordOf(runDir);
-  assert.deepEqual(Object.keys(rec).sort(), ["engine", "register", "schema"], "the record holds the two names and nothing else");
+  assert.deepEqual(Object.keys(rec).sort(), ["engine", "register", "research", "schema"], "the record holds the two names and the web-research service, nothing else");
   assert.equal(rec.engine, "anthropic-agent");
   const rows = choicesRows(runDir);
   assert.equal(rows.length, 1);

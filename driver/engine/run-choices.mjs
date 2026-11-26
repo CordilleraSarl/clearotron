@@ -22,6 +22,7 @@
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { ENGINE_BINARIES, PROVIDERS, REGISTER_PROVIDER, activeProvider } from "../driver.config.mjs";
+import { WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
 
 export const RUN_CHOICES_FILE = "run-choices.json";
 
@@ -31,11 +32,14 @@ const nameOf = (v) => (v == null ? null : String(v).trim().toLowerCase() || null
  * Write the run's engine and register, once. A record already on disk is never rewritten: the call answers
  * with what is there and `written: false`, so a cold start that is retried keeps its first choice.
  * `register` is null when the machine has none set; that is recorded as it was, not guessed.
+ * `research` is the web-research service the run's door admitted (web-research.mjs); null records none.
  */
-export function recordRunChoices(runDir, { engine, register, urgent = null }) {
+export function recordRunChoices(runDir, { engine, register, urgent = null, research = null }) {
   const held = readRunChoices(runDir);
   if (held.state !== "none") return { written: false, ...held };
-  const e = nameOf(engine), r = nameOf(register);
+  const e = nameOf(engine), r = nameOf(register), w = nameOf(research);
+  if (w !== null && !WEB_RESEARCH_SERVICES.includes(w))
+    throw new Error(`run-choices: "${w}" is not a web-research service (${WEB_RESEARCH_SERVICES.join(", ")})`);
   if (!e || !Object.hasOwn(ENGINE_BINARIES, e))
     throw new Error(`run-choices: "${e}" is not an engine this driver ships (${Object.keys(ENGINE_BINARIES).join(", ")})`);
   if (r !== null && !Object.hasOwn(PROVIDERS, r))
@@ -43,9 +47,9 @@ export function recordRunChoices(runDir, { engine, register, urgent = null }) {
   const u = urgentOf(urgent);
   ensureDriverDir(runDir);
   const p = driverDir(runDir, RUN_CHOICES_FILE);
-  writeFileSync(`${p}.tmp`, JSON.stringify({ schema: 1, engine: e, register: r, ...(u ? { urgent: u } : {}) }, null, 2) + "\n");
+  writeFileSync(`${p}.tmp`, JSON.stringify({ schema: 1, engine: e, register: r, ...(u ? { urgent: u } : {}), ...(w ? { research: w } : {}) }, null, 2) + "\n");
   renameSync(`${p}.tmp`, p);
-  return { written: true, state: "recorded", engine: e, register: r, ...(u ? { urgent: u } : {}) };
+  return { written: true, state: "recorded", engine: e, register: r, ...(u ? { urgent: u } : {}), ...(w ? { research: w } : {}) };
 }
 
 /**
@@ -67,8 +71,19 @@ export function urgentForRun(runDir) {
 }
 
 /**
- * What the run recorded: `{ state: "recorded", engine, register, urgent? }`, `{ state: "none" }` for a run that has no
- * record, or `{ state: "unreadable", detail }` for one whose record does not read back as the two names.
+ * The web-research service a run keeps: the one it recorded, Perplexity for a run recorded before the service was
+ * (WEB_RESEARCH_BEFORE_THE_SETTING: it ran there), and null for a run with no readable record, which the caller
+ * meets with the installation's setting as before. PURE but for the read.
+ */
+export function researchForRun(runDir) {
+  const rec = readRunChoices(runDir);
+  return rec.state === "recorded" ? rec.research ?? WEB_RESEARCH_BEFORE_THE_SETTING : null;
+}
+
+/**
+ * What the run recorded: `{ state: "recorded", engine, register, urgent?, research? }`, `{ state: "none" }` for a run
+ * that has no record, or `{ state: "unreadable", detail }` for one whose record does not read back as the two names.
+ * A research value that names no service is unreadable: it is never read as either service.
  */
 export function readRunChoices(runDir) {
   if (!runDir) return { state: "none" };
@@ -81,7 +96,9 @@ export function readRunChoices(runDir) {
   if (!engine) return { state: "unreadable", detail: "names no engine" };
   if (o?.register != null && typeof o.register !== "string") return { state: "unreadable", detail: "its register is not a name" };
   const urgent = urgentOf(o?.urgent);
-  return { state: "recorded", engine, register, ...(urgent ? { urgent } : {}) };
+  const research = o?.research == null ? null : nameOf(o.research);
+  if (o?.research != null && !WEB_RESEARCH_SERVICES.includes(research)) return { state: "unreadable", detail: "its web-research service is not one this driver knows" };
+  return { state: "recorded", engine, register, ...(urgent ? { urgent } : {}), ...(research ? { research } : {}) };
 }
 
 /**
@@ -96,14 +113,16 @@ export function readRunChoices(runDir) {
  *   register        this runner cannot serve the run's register: a credential or a capability it needs is missing here;
  *   engine          this driver has no adapter for the run's engine;
  *   engine-program  the run's engine program is not installed here;
- *   engine-sign-in  the run's engine refused a turn for a configuration fault (signed out, no key).
+ *   engine-sign-in  the run's engine refused a turn for a configuration fault (signed out, no key);
+ *   research        this runner cannot serve the run's web-research service (web-research.mjs, webResearchCapability).
  */
-export const RUN_CHOICE_KINDS = Object.freeze(["register", "engine", "engine-program", "engine-sign-in"]);
+export const RUN_CHOICE_KINDS = Object.freeze(["register", "engine", "engine-program", "engine-sign-in", "research"]);
 export class RunChoiceUnavailable extends Error {
   constructor({ kind, recorded, machine = null, detail = null, run = null }) {
     if (!RUN_CHOICE_KINDS.includes(kind)) throw new Error(`RunChoiceUnavailable: unknown kind "${kind}"`);
-    const what = kind === "register" ? `the ${recorded} register` : `the ${recorded} engine`;
-    const why = kind === "register" ? "this runner cannot serve it"
+    const what = kind === "register" ? `the ${recorded} register`
+      : kind === "research" ? `the ${recorded} web research` : `the ${recorded} engine`;
+    const why = kind === "register" || kind === "research" ? "this runner cannot serve it"
       : kind === "engine" ? "this driver has no adapter for it"
       : kind === "engine-program" ? "its program is not installed here"
       : "it cannot take a turn here";
@@ -113,7 +132,7 @@ export class RunChoiceUnavailable extends Error {
     this.run = run;
     // For the park's own record, as the rate-limit park writes its two lines: what it waits for, and what ends the wait.
     this.waitingOn = `${what}, which this run started on (${why})`;
-    this.resolvedBy = kind === "register"
+    this.resolvedBy = kind === "register" || kind === "research"
       ? `${what}'s credentials and capabilities set for this runner, on this build; the run resumes where it stopped`
       : `${what} made available to this runner (installed and signed in), on this build; the run resumes where it stopped`;
   }

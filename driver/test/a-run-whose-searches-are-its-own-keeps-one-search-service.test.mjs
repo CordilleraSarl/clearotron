@@ -51,7 +51,7 @@ function aRun({ own = true, prepared = true } = {}) {
   const root = mkdtempSync(join(tmpdir(), "own-search-server-"));
   const runDir = join(root, "studio", "clearance-search", "run-under-test");
   mkdirSync(driverDir(runDir), { recursive: true });
-  if (own) writeFileSync(driverDir(runDir, "research-search.json"), JSON.stringify({ service: "own" }));
+  if (own) writeFileSync(driverDir(runDir, "run-choices.json"), JSON.stringify({ schema: 1, engine: "anthropic-agent", register: null, research: "own" }));
   const ledgerPath = join(runDir, "common-law-grid.json");
   const specPath = driverDir(runDir, "grid-spec.json");
   writeFileSync(specPath, JSON.stringify({ terms: ["QZORVAK"], platforms: ["web", "shop.example.com"], output_path: ledgerPath }, null, 2) + "\n");

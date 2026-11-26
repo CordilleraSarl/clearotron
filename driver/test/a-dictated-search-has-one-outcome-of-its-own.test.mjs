@@ -218,7 +218,7 @@ test("the records are kept with the run, and a replay answers from them without 
 });
 
 // ── ONE GRID PREPARED BEFORE ITS STAGE: the ledger where the spec says, served as recorded, and nothing asked twice.
-const { prepareOwnSearchGrid, gridRecorded, dictatedSearches, ownSearchOn, OWN_SEARCH_SETTING_FILE } = await import("../engine/mcp/own-search.mjs");
+const { prepareOwnSearchGrid, gridRecorded, dictatedSearches, ownSearchOn, RUN_RECORD_FILE } = await import("../engine/mcp/own-search.mjs");
 const { reconcileGridLedger } = await import("../../providers/perplexity/src/core.js");
 const { mkdirSync: mkdir, readFileSync: readF, existsSync: exists } = await import("node:fs");
 
@@ -253,15 +253,22 @@ test("a grid's ledger is prepared where its spec says, its checks read it as rec
   assert.equal(calls, before, "a prepared grid is not searched again");
 });
 
-test("the run's own searches are switched on per run, and only by the setting's own word", () => {
+test("the run's own searches are switched on per run, by the run's own record and nothing else", async () => {
+  const { RUN_CHOICES_FILE } = await import("../engine/run-choices.mjs");
+  assert.equal(RUN_RECORD_FILE, RUN_CHOICES_FILE, "the leaf reads the file the run's record writes");
   const runDir = mkdtempSync(join(tmpdir(), "own-search-setting-"));
-  assert.equal(ownSearchOn(runDir), false);
+  assert.equal(ownSearchOn(runDir), false, "a run with no record is not switched on");
   mkdir(join(runDir, "_driver"), { recursive: true });
-  writeFileSync(join(runDir, "_driver", OWN_SEARCH_SETTING_FILE), JSON.stringify({ service: "perplexity" }));
+  const record = (o) => writeFileSync(join(runDir, "_driver", RUN_RECORD_FILE), JSON.stringify({ schema: 1, engine: "anthropic-agent", register: null, ...o }));
+  record({});
+  assert.equal(ownSearchOn(runDir), false, "a record with no service is a run that predates it, which ran on Perplexity");
+  record({ research: "perplexity" });
   assert.equal(ownSearchOn(runDir), false);
-  writeFileSync(join(runDir, "_driver", OWN_SEARCH_SETTING_FILE), JSON.stringify({ service: "own" }));
+  record({ research: "own" });
   assert.equal(ownSearchOn(runDir), true);
-  assert.equal(ownSearchOn(join(runDir, "_experiments", "arm-1")), true, "a stage experiment reads its run's setting");
+  assert.equal(ownSearchOn(join(runDir, "_experiments", "arm-1")), true, "a stage experiment reads its run's record");
+  writeFileSync(join(runDir, "_driver", "research-search.json"), JSON.stringify({ service: "perplexity" }));
+  assert.equal(ownSearchOn(runDir), true, "the retired per-run file switches nothing");
 });
 
 // ── THE GRID'S OWN FLOORS, AND A POOLED SEARCH RECOVERED ON ITS OWN.
