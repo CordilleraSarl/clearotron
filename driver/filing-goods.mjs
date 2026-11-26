@@ -30,6 +30,14 @@ import { DEFAULT_LEDGER_PATH } from "./provider-usage.mjs";
 export const FILING_RECORDS_DIR = "register-filings";
 /** The longest statement the short view carries whole. */
 export const GOODS_VIEW_CHARS = 1200;
+/**
+ * THE KNOCKOUT ASSESSMENT'S PREVIEW IS 300 CHARACTERS A STATEMENT (design, 2026-11-22 and 2026-11-26). The assessment reads
+ * the run's register filings whole on every rating group; on a saved 401-filing list the view came to 126 parts of an
+ * answer at 1,200 and to 57 at 300 (measured 2026-11-18). This length is for that preview alone. A decision that turns on
+ * the goods reads the relevant wording whole: a cut statement's whole record stays one read away, and a statement whose
+ * whole cannot be kept beside it is not cut at all.
+ */
+export const KNOCKOUT_PREVIEW_CHARS = 300;
 
 /**
  * Statements as the short view carries them: one line each, its classes first ("9, 35: computer software"), and whether any
@@ -85,10 +93,13 @@ export function withFilingGoods(doc, runDir, { runPrefix = null, callLog = DEFAU
     const fromBody = body ? recordGoods(body, { english: untaggedIsEnglish(key) }) : [];
     const statements = fromBody.length ? fromBody : (Array.isArray(rec?.goods) ? rec.goods : []);
     const evidence = recordGoodsEvidence({ record_id: rec?.recordId }, { goods: { of: () => statements, held: () => fromBody.length > 0 }, held, fetches });
-    const view = shortGoodsView(statements, limit);
+    let view = shortGoodsView(statements, limit);
     const fullRecord = !rec?.recordId ? null
       : body ? keep(rec.recordId, recordAsServed(`${JSON.stringify(body, null, 2)}\n`).text)
       : view.shortened ? keep(rec.recordId, `${JSON.stringify({ recordId: rec.recordId, goods: statements }, null, 2)}\n`) : null;
+    // NEVER A CUT WITHOUT THE WHOLE BESIDE IT. Where no whole record could be kept (no id to name it by, or a write that
+    // failed), a cut would hide wording the run holds, so the view carries every statement whole instead.
+    if (view.shortened && !fullRecord) view = shortGoodsView(statements, Infinity);
     return { ...rec, goods: view.goods, goodsState: evidence.state, goodsFrom: goodsFromLabel(evidence), goodsShortened: view.shortened, fullRecord };
   };
   return { ...doc, marks: marks.map((m) => (Array.isArray(m?.records) ? { ...m, records: m.records.map(carried) } : m)) };

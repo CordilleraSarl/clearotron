@@ -624,11 +624,14 @@ function listClassesInScope(runDir, qid) {
   } catch { return null; }
 }
 
-/** All the wording held for one filing: its whole held record where one was written, else the statements its view carries. */
+/**
+ * All the wording held for one filing: its whole held record where one was written, else the statements its view carries,
+ * with whether that view is cut, so a whole record that cannot be read is never answered as all the wording held.
+ */
 function heldWording(record, runDir) {
   try { if (record.fullRecord) return { full_record: readJson(join(String(runDir ?? ""), record.fullRecord)) }; }
   catch { /* the view below is what is left to read */ }
-  return { goods: record.goods };
+  return { goods: record.goods, goods_shortened: record.goodsShortened === true };
 }
 
 /**

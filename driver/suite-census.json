@@ -1395,6 +1395,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-preview-is-short-and-the-whole-wording-is-one-read-away.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-publishes-once.test.mjs": {
           "tests": 2,
           "asserts": 16,
