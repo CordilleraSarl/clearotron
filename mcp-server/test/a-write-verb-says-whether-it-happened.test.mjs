@@ -128,11 +128,15 @@ async function exercise(client, verb) {
   };
   switch (verb) {
     case "start_run": {
-      const queued = await call(job(`SHAPE${randomUUID().slice(0, 6).toUpperCase()}`));
+      const sent = { ...job(`SHAPE${randomUUID().slice(0, 6).toUpperCase()}`), id: `shape-${randomUUID().slice(0, 8)}` };
+      const queued = await call(sent);
       assert.equal(queued.outcome, "queued", JSON.stringify(queued));
       assert.ok(existsSync(queued.queuePath), "the job it says it queued is in the queue");
+      // The same order sent again is that order: answered with it, and nothing written.
+      const again = await call(sent);
+      assert.deepEqual([again.outcome, again.id, again.state], ["already-filed", queued.id, "waiting"], JSON.stringify(again));
       await refused({ forwarder: "requester" });
-      return ["queued", "refused"];
+      return ["queued", "already-filed", "refused"];
     }
     case "stop_run": {
       const queued = (await client.callTool({ name: "start_run", arguments: job(`STOP${randomUUID().slice(0, 6).toUpperCase()}`) })).structuredContent;
@@ -212,7 +216,7 @@ test("every write verb a door offers declares its result, and answers in that sh
   }
   // EVERY SUCCESS FORM WAS SEEN, not only the refusals: each outcome below came back through the SDK client's check.
   const all = new Set(Object.values(outcomes).flat());
-  for (const o of ["queued", "dequeued", "written", "acknowledged", "already-gone", "already-sent", "refused"])
+  for (const o of ["queued", "already-filed", "dequeued", "written", "acknowledged", "already-gone", "already-sent", "refused"])
     assert.ok(all.has(o), `no verb answered "${o}" — ${JSON.stringify(outcomes)}`);
   assert.ok(outcomes["client HTTP door (account key)"].includes("queued (what-if)"), "the account's what-if queued");
   // POSITIVE EVIDENCE OF COVERAGE: the ops doors offer all six, an account key the three it may use, a report link none.
@@ -237,6 +241,9 @@ test("a result that leaves out its outcome, or a refusal with no reason, does no
   const good = { outcome: "queued", ok: true, id: "x", agent: "a", queue: "q", queued: true, warnings: [], queuePath: "p", queueWatched: "ok", note: "n" };
   assert.equal(start(good).valid, true, "the shape start_run declares accepts its own answer");
   assert.equal(start({ ...good, surprise: 1 }).valid, false, "and refuses a field it does not declare");
+  const filed = { outcome: "already-filed", ok: true, id: "x", existing: true, state: "refused", terminal: true, runId: null, reason: "r", updatedAt: null };
+  assert.equal(start(filed).valid, true, "the order a retry meets is an answer start_run declares");
+  assert.equal(start({ ...filed, state: "lost" }).valid, false, "in one of the states an order can be in");
 });
 
 test("the declared shapes carry no sentence an assistant would read, and no key a client caches across tools", () => {

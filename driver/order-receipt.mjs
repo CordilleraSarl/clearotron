@@ -23,7 +23,8 @@
 // that would not open is not "no such order"). An order that belongs to another account answers `not-found`, exactly
 // as one that does not exist: neither its existence nor its reason is anybody else's to learn.
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
-import { join, basename, dirname } from "node:path";
+import { createHash } from "node:crypto";
+import { join, basename, dirname, resolve } from "node:path";
 import { deriveSlug } from "./phase0.mjs";
 import { stopReason } from "../shared/stop-reason.mjs";   // a cancelled order says it was stopped, never a blank reason
 
@@ -33,6 +34,49 @@ import { stopReason } from "../shared/stop-reason.mjs";   // a cancelled order s
  */
 export const ORDER_REF_MAX = 128;
 export const ORDER_REF_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${ORDER_REF_MAX - 1}}$`);
+
+// ── AN ACCOUNT'S REFERENCE IS ITS OWN ─────────────────────────────────────────────────────────────────────────────────
+// A caller that does not see every account files its order under the reference it chose plus a fixed mark of its account
+// (and of the organisation, for Generic), so two accounts' references never meet. start_run files that way; the lookup
+// resolves a reference the same way, so a caller finds its order by the reference it chose or by the one it was given.
+
+/** The fixed mark of an account's references: its account, and its organisation for Generic. */
+export const ACCOUNT_MARK_LEN = 12;
+export function accountMark({ profileKey, tenant } = {}) {
+  const account = profileKey ?? "generic";
+  const organisation = account === "generic" ? (tenant ?? "") : "";
+  return createHash("sha256").update(`${account}\u0000${organisation}`).digest("hex").slice(0, ACCOUNT_MARK_LEN);
+}
+
+/** The id rule's own sentence, for a reference that is not one; `max` is lower where an account's mark must fit. */
+export const orderRefRefusal = (id, max = ORDER_REF_MAX) => `id ${JSON.stringify(id)}: Use an ID of 1–${max} characters. Start with an ASCII letter or digit. `
+  + `The remaining characters may also include a dot, underscore, @ or hyphen.${id.length > max ? ` This one has ${id.length} characters.` : ""}`;
+
+/**
+ * The reference an order is filed under: as sent for a caller that sees every account, else carrying its account's
+ * mark. A reference that already ends in that mark is that reference. Throws the id rule's sentence when the mark
+ * would not fit. Moved here from the connector, unchanged, so every door files and finds by one rule.
+ */
+export function filedReference(asked, job, { everyAccount = false } = {}) {
+  if (everyAccount) return asked;
+  const mark = `@${accountMark(job ?? {})}`;
+  if (asked.endsWith(mark)) return asked;
+  const max = ORDER_REF_MAX - mark.length;
+  if (asked.length > max) throw new Error(orderRefRefusal(asked, max));
+  return `${asked}${mark}`;
+}
+
+/** The references `ref` names in one queue directory's listing as filed with an account's mark: `<ref>@<mark>`. */
+const MARKED = new RegExp(`^@([0-9a-f]{${ACCOUNT_MARK_LEN}})\\.`);
+function filedUnder(ref, names) {
+  const out = new Set();
+  for (const n of names) {
+    if (!n.startsWith(`${ref}@`)) continue;
+    const m = MARKED.exec(n.slice(ref.length));
+    if (m) out.add(`${ref}@${m[1]}`);
+  }
+  return [...out];
+}
 
 /** The states an order can be in, in the words the receipt uses. */
 export const RECEIPT_STATES = Object.freeze({
@@ -51,9 +95,17 @@ const TERMINAL = new Set(["refused", "failed", "delivered", "cancelled"]);
  * May this caller see this order? The scope `checkRunCaps` counts a lane by: the job's account, and for Generic the
  * organisation it was filed under. A job that names no account (an email order before its claim) is visible only to
  * a caller who sees everything. PURE.
+ *
+ *   { everything: true }          every order
+ *   { account, organisation }     one account's orders, and one organisation's for Generic (the portal names one)
+ *   { sees(account, organisation) }  the caller's own visibility rule, for a caller that may hold several accounts
  */
 export function orderInScope(job, scope) {
   if (scope?.everything === true) return true;
+  if (typeof scope?.sees === "function") {
+    const account = job?.profileKey ?? null;
+    return account != null && scope.sees(account, account === "generic" ? (job.tenant ?? null) : null) === true;
+  }
   const account = scope?.account ?? null;
   if (!account || !job || (job.profileKey ?? null) !== account) return false;
   return account !== "generic" || (job.tenant ?? null) === (scope?.organisation ?? null);
@@ -142,43 +194,98 @@ export function receiptIn(qdir, ref, names) {
   return { ...base, state: "waiting", reason: null, runId: null };
 }
 
+/** Every queue directory's listing, each read once; a directory that would not open is counted, not skipped silently. */
+function listQueues(queueDirs) {
+  const dirs = [...new Set((Array.isArray(queueDirs) ? queueDirs : []).filter((d) => typeof d === "string" && d).map((d) => resolve(d)))];
+  const listings = [];
+  let unreadable = 0;
+  for (const qdir of dirs) {
+    try { listings.push({ qdir, names: readdirSync(qdir) }); }
+    catch (e) { if (e?.code !== "ENOENT") unreadable++; }
+  }
+  return { listings, unreadable };
+}
+
+/** Every order held under any of `refs`, in any of the listings, whoever's it is. */
+function heldUnder(listings, refs) {
+  const hits = [];
+  for (const ref of refs) for (const { qdir, names } of listings) {
+    const r = receiptIn(qdir, ref, names);
+    if (r) hits.push(r);
+  }
+  return hits;
+}
+
+/** The receipt as every door gives it, from one order's markers. */
+function receiptOf(r) {
+  return {
+    reference: r.reference, state: r.state, stateText: RECEIPT_STATES[r.state], terminal: TERMINAL.has(r.state),
+    reason: r.reason ?? null, runId: r.runId ?? null, ...(r.kind ? { kind: r.kind } : {}),
+    account: r.job?.profileKey ?? null, ...(r.job?.profileKey === "generic" ? { organisation: r.job?.tenant ?? null } : {}),
+    updatedAt: r.updatedAt,
+  };
+}
+
 /**
- * The receipt for `reference`, as `scope` may see it.
+ * The receipt for `reference`, as `scope` may see it (the forms `orderInScope` takes).
  *
- *   scope   { account, organisation } for a company's caller, or { everything: true } for one who sees every order.
+ * WHICH ORDERS A REFERENCE NAMES. A caller who sees everything names exactly the reference it gives: an operator files
+ * as sent. Any other caller names the order filed under that reference with its account's mark (`<reference>@<mark>`,
+ * as `filedReference` files it), and the order filed under the reference as given: the reference start_run handed back,
+ * or an order filed before references carried a mark. Every one of those is held to the caller's own visibility, so an
+ * order another account holds is never among them.
  *
  * Returns one of:
  *   { found: true,  receipt: { reference, state, stateText, terminal, reason, runId, account, organisation, updatedAt } }
  *   { found: false, basis: "not-found" }                  no order by that reference that this caller may see
  *   { found: false, basis: "invalid-reference" }          not a reference any door issues
  *   { found: false, basis: "could-not-look", unreadable } a queue directory would not open: not an answer
- *   { found: false, basis: "ambiguous" }                  two queue directories hold it; neither is picked
+ *   { found: false, basis: "ambiguous" }                  this caller may see two orders by it; neither is picked
  */
 export function orderReceipt({ queueDirs, reference, scope } = {}) {
-  const ref = String(reference ?? "");
-  if (!ORDER_REF_RE.test(ref) || ref.includes("..")) return { found: false, basis: "invalid-reference" };
-  const dirs = (Array.isArray(queueDirs) ? queueDirs : []).filter((d) => typeof d === "string" && d);
-  const hits = [];
-  let unreadable = 0;
-  for (const qdir of dirs) {
-    let names;
-    try { names = readdirSync(qdir); }
-    catch (e) { if (e?.code !== "ENOENT") unreadable++; continue; }
-    const r = receiptIn(qdir, ref, names);
-    if (r) hits.push(r);
-  }
-  const visible = hits.filter((r) => orderInScope(r.job, scope));
+  const asked = String(reference ?? "");
+  if (!ORDER_REF_RE.test(asked) || asked.includes("..")) return { found: false, basis: "invalid-reference" };
+  const { listings, unreadable } = listQueues(queueDirs);
+  const refs = scope?.everything === true ? [asked]
+    : [...new Set([...listings.flatMap(({ names }) => filedUnder(asked, names)), asked])];
+  const visible = heldUnder(listings, refs).filter((r) => orderInScope(r.job, scope));
   if (visible.length > 1) return { found: false, basis: "ambiguous" };
-  if (visible.length === 1) {
-    const r = visible[0];
-    return { found: true, receipt: {
-      reference: r.reference, state: r.state, stateText: RECEIPT_STATES[r.state], terminal: TERMINAL.has(r.state),
-      reason: r.reason ?? null, runId: r.runId ?? null, ...(r.kind ? { kind: r.kind } : {}),
-      account: r.job?.profileKey ?? null, ...(r.job?.profileKey === "generic" ? { organisation: r.job?.tenant ?? null } : {}),
-      updatedAt: r.updatedAt,
-    } };
-  }
+  if (visible.length === 1) return { found: true, receipt: receiptOf(visible[0]) };
   // Not found by this caller. A directory that would not open makes that a floor, not an answer.
   if (unreadable) return { found: false, basis: "could-not-look", unreadable };
   return { found: false, basis: "not-found" };
+}
+
+/** Whether two jobs are one account's: the same account, and the same organisation for Generic. */
+function sameAccount(a, b) {
+  const account = (j) => j?.profileKey ?? "generic";
+  if (account(a) !== account(b)) return false;
+  return account(a) !== "generic" || (a?.tenant ?? null) === (b?.tenant ?? null);
+}
+
+/**
+ * What a new order meets before it is filed: an order already held under the reference it will be filed under, or under
+ * the reference as sent (an order filed before references carried a mark). Asked before anything is counted or written,
+ * so a retry is recognised as one. `scope` is the caller's visibility, in the forms `orderInScope` takes.
+ *
+ * Returns null when neither reference holds an order, or one of:
+ *   { held: "mine",   receipt }            this caller's own order for the same account: the retry is that order
+ *   { held: "other",  reference, state }   an order this caller may see, for another account: it is not this order
+ *   { held: "hidden", reference }          the filed reference is taken by an order this caller may not see; nothing
+ *                                          of it may be told, and it may not be written over
+ * Under the reference as sent, an order this caller may not see is no order at all: the new one is filed beside it.
+ */
+export function orderAlreadyFiled({ queueDirs, filed, asked, job, scope } = {}) {
+  const { listings } = listQueues(queueDirs);
+  for (const ref of asked && asked !== filed ? [filed, asked] : [filed]) {
+    for (const r of heldUnder(listings, [ref])) {
+      if (!orderInScope(r.job, scope)) {
+        if (ref === filed) return { held: "hidden", reference: ref };
+        continue;
+      }
+      if (sameAccount(r.job, job)) return { held: "mine", receipt: receiptOf(r) };
+      return { held: "other", reference: ref, state: r.state };
+    }
+  }
+  return null;
 }

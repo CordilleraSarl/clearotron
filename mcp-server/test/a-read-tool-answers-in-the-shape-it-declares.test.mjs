@@ -132,7 +132,10 @@ const RUNLESS = { server_info: [{}], list_runs: [{}, { state: "queued" }], list_
   // The two pre-order tools: an order that would run, an Urgent one, a batch, one country, and one that cannot run as stated.
   plan_run: [ORDER, { ...ORDER, urgent: true }, { ...ORDER, markName: undefined, marks: [{ name: "ORDERED" }, { name: "ORDERLY" }], product: "knockout-search" },
     { ...ORDER, product: "full-country-search", jurisdictions: ["CH"] }, { ...ORDER, deliveryRoute: "portal" }],
-  describe_options: [{}, { profileKey: "demo-brand-owner" }] };
+  describe_options: [{}, { profileKey: "demo-brand-owner" }],
+  // What became of an order: one nobody holds, and a reference no door issues. A found order's answer is checked in
+  // a-reference-names-an-order-only-to-its-own-account.test.mjs, on every kind of session.
+  order_status: [{ id: "NO-SUCH-ORDER" }, { id: "../escape" }] };
 const PER_RUN = {
   read_artifact: (runId) => [{ runId, name: "report" }, { runId, name: "status" }, { runId, name: "report", frontMatterOnly: true }],
   trace: (runId) => [{ runId, target: "synthesis" }, { runId, target: "report" }],
@@ -188,7 +191,7 @@ for (const demo of [false, true]) {
       }
       for (const name of ["list_runs", "get_run", "server_info", "decision_timeline", "get_provider_usage", "get_coverage", "search", "run_changes",
         "search_runs", "list_outbox_events", "get_telemetry", "read_artifact", "trace", "list_profiles", "get_delivery_packet",
-        "brief", "list_findings", "get_finding", "list_evidence", "list_searches", "get_search_coverage", "plan_run", "describe_options",
+        "brief", "list_findings", "get_finding", "list_evidence", "list_searches", "get_search_coverage", "plan_run", "describe_options", "order_status",
         // An install serving its demo withholds the what-if tools (a-demo-names-no-tool-it-withholds.test.mjs).
         ...(demo ? [] : ["what_if_plan", "what_if_result"])])
         assert.ok(total.has(name), `${name} was never offered with a declared shape on any door`);
