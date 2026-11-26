@@ -326,7 +326,9 @@ objection · registrability · the client's own enforceability — each `{read, 
 tokens lawyer-authored with their basis, never a computed score. Emit what the run's material grounds;
 **omit what it cannot** (the narrative carries the honest prose instead — an omitted answer is honest,
 a faked token is a defect). The answers decompose the same judgment the verdict states — they must
-agree with the findings and bands they cite, and they never mint a second risk statement.
+agree with the findings and bands they cite, and they never mint a second risk statement. When there are no rated
+findings, consider each of the four questions using the search coverage and the assessment of the mark. Give each
+answer the evidence supports and state its basis.
 
 ## Grounding — a register finding cites its record (#8)
 

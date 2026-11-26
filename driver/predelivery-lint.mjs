@@ -1840,7 +1840,7 @@ export function contentModelChecks({ findings, fourAnswers, expected }) {
   // answers may legitimately be omitted where the run cannot ground them).
   const anyAnswer = fourAnswers && typeof fourAnswers === "object"
     && Object.values(fourAnswers).some((a) => a && typeof a.read === "string" && a.read.trim());
-  const c3 = check("four-answers-present", "content-model", "report", Boolean(anyAnswer),
+  const c3 = check(FOUR_ANSWERS_CHECK, "content-model", "report", Boolean(anyAnswer),
     anyAnswer ? "" : "four_answers is missing from findings.json — the report ships without its four-answers panel (emit the answers the run can ground; omit only what cannot be grounded)");
   if (!c3.pass) c3.structural = true;
   out.push(c3);
@@ -2497,6 +2497,16 @@ export function goodsHeldWholeGroupedDetail(shown, citing, uri, goods) {
  * finding cites the record (`citing`), both in the writer's numbering. One finding's line where they are the same
  * member, both named where they differ, and null where either is not established: a member is never guessed. PURE.
  */
+/** The check that the four answers are there: any one grounded answer satisfies it, an omitted one is honest. */
+export const FOUR_ANSWERS_CHECK = "four-answers-present";
+/**
+ * WHAT THE WRITER IS TOLD WHEN ITS RECORD HAS NO FOUR ANSWERS, in design's approved words (design's decision of
+ * 2026-11-26). It rides a writer repair the run already owes for another fault, and only then: a run with no
+ * other writer repair keeps the check's flag for the reviewer and delivers. The check stays marked structural, so it
+ * never starts a repair of its own.
+ */
+export const FOUR_ANSWERS_REPAIR_LINE = "The four answers are missing. Review the search coverage, the assessment of the mark, and any findings. Add each answer you can support and state its basis.";
+
 export function goodsRepairLine({ shown, citing, uri, goods, state }) {
   if (!Number.isInteger(shown) || !Number.isInteger(citing)) return null;
   return shown === citing ? goodsHeldWholeDetail(shown, uri, goods, state) : goodsHeldWholeGroupedDetail(shown, citing, uri, goods);

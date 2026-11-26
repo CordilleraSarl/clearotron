@@ -200,7 +200,7 @@ export const NOT_COUNTED_EVENTS = {
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
     "doctrine-write", "document-coverage-rendered", "document-growth-trip", "doubt-selection", "doubts", "draft-carry",
     "economics", "engine-build", "envelope-closed", "envelope-decision", "envelope-decision-early",
-    "escalation-skipped", "experiment", "experiment-refused", "goods-held-whole-handed", "logos", 
+    "escalation-skipped", "experiment", "experiment-refused", "four-answers-handed", "goods-held-whole-handed", "logos", 
     "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
     "framework", "goods-evidence", "grid-ledger-saved", "grid-spec", "grid-split", "hit-list-minted",

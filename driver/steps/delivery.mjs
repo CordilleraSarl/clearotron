@@ -24,7 +24,7 @@ import { nextRefutationSeq, readAcceptedReviewSince } from "../narrative-refutat
 import { clearPartNotCompleted, readPartNotCompleted } from "../parts-not-completed.mjs";
 import { rankedRecords, rankingFromJson, rankingNow, recordsReRanked } from "../placement-decisions.mjs";
 import { parsePlacementsJson } from "../placement-model.mjs";
-import { OVERVIEW_CITATION_ID, flagLines, goodsRepairLine, runLint } from "../predelivery-lint.mjs";
+import { FOUR_ANSWERS_CHECK, FOUR_ANSWERS_REPAIR_LINE, OVERVIEW_CITATION_ID, flagLines, goodsRepairLine, runLint } from "../predelivery-lint.mjs";
 import { signoffPatch, writeRunStatus } from "../progress.mjs";
 import { emailConditionsOfReport } from "../publish/email-conditions.mjs";
 import { findDeadlineUrgencyMiss, findOrphanVerificationFlags, findProbativeGradingViolations, findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findStatusHonestyViolation, findUncrossCheckedDemotions, findUnresolvedDisagreements } from "../reasoning-tripwires.mjs";
@@ -473,6 +473,14 @@ export async function runDelivery({ P, applyCoverageFloor, applyRatedUnderFrontM
         return { ...f, detail };
       };
       const narrativeFixable = [...modelFixable(bySurface("narrative")).map(inWritersNumbering).filter(Boolean), ...sentenceFixable, ...recordFixable];
+      // MISSING FOUR ANSWERS RIDE A WRITER REPAIR ALREADY OWED, and only one (design, 2026-11-26). The check is structural,
+      // so it never starts a repair; where the writer is repaired for another fault, the block is asked for in the same
+      // turn, and with no other writer repair the run keeps the reviewer's flag and delivers.
+      const missingAnswers = narrativeFixable.length ? lint.failures.find((f) => f.id === FOUR_ANSWERS_CHECK) : null;
+      if (missingAnswers) {
+        narrativeFixable.push({ ...missingAnswers, detail: FOUR_ANSWERS_REPAIR_LINE });
+        runLog(run.runDir, { event: "four-answers-handed", otherFaults: narrativeFixable.length - 1 });
+      }
       if (goodsUnhanded.length) runLog(run.runDir, { event: "goods-held-whole-not-handed", unhanded: goodsUnhanded });
       if (narrativeFixable.length && synthesisKey) repairBaseKept = snapshotRepairBase(run.runDir);
       // A writer fault with no writer session to repair it is not repaired, and the run says so.
