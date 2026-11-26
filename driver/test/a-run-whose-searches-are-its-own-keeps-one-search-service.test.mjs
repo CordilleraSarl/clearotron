@@ -70,6 +70,25 @@ test("a grid the driver prepared is served as recorded, with no research credent
   assert.ok(!log(runDir).some((r) => /not set/.test(String(r.error ?? ""))), "never refused for want of a key");
 });
 
+test("serving a prepared grid leaves the record its own search wrote beside it", async () => {
+  const { runDir, specPath, ledgerPath } = aRun();
+  const sidecar = ledgerPath.replace(/\.json$/, ".provenance.json");
+  const record = JSON.stringify({ provider: "codex", surface: "the AI program's own web search, in research-only sessions", ran: true, searches: 2 }, null, 2) + "\n";
+  writeFileSync(sidecar, record);
+  const text = await callTool({ task: "", grid_spec_path: specPath }, { CLEAROTRON_BAND_RUN_DIR: runDir, PERPLEXITY_API_KEY: "placeholder-not-a-key" });
+  assert.match(text, /^Grid ALREADY RECORDED for this spec/, text.slice(0, 300));
+  assert.equal(readFileSync(sidecar, "utf8"), record, "the research service rewrote a grid it never searched as its own");
+});
+
+test("on a run without the setting, a recorded grid is still stamped as the research service's", async () => {
+  const { runDir, specPath, ledgerPath } = aRun({ own: false });
+  const text = await callTool({ task: "", grid_spec_path: specPath }, { CLEAROTRON_BAND_RUN_DIR: runDir, PERPLEXITY_API_KEY: "placeholder-not-a-key" });
+  assert.match(text, /^Grid ALREADY RECORDED for this spec/, text.slice(0, 300));
+  const stamp = JSON.parse(readFileSync(ledgerPath.replace(/\.json$/, ".provenance.json"), "utf8"));
+  assert.equal(stamp.provider, "perplexity");
+  assert.equal(stamp.ran, false);
+});
+
 test("a grid it did not prepare is refused, and nothing is sent elsewhere, even with a key", async () => {
   const { runDir, specPath, ledgerPath } = aRun({ prepared: false });
   const text = await callTool({ task: "", grid_spec_path: specPath }, { CLEAROTRON_BAND_RUN_DIR: runDir, PERPLEXITY_API_KEY: "placeholder-not-a-key" });
