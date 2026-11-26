@@ -625,11 +625,13 @@ function listClassesInScope(runDir, qid) {
 }
 
 /**
- * All the wording held for one filing: its whole held record where one was written, else the statements its view carries,
- * with whether that view is cut, so a whole record that cannot be read is never answered as all the wording held.
+ * All the wording held for one filing: its whole held record where one was written, beside the statements its view carries
+ * wherever they come from elsewhere than that record (a search answer beside an official record that lists no goods); else
+ * the view, with whether it is cut, so a whole record that cannot be read is never answered as all the wording held.
  */
 function heldWording(record, runDir) {
-  try { if (record.fullRecord) return { full_record: readJson(join(String(runDir ?? ""), record.fullRecord)) }; }
+  const fromElsewhere = !String(record.goodsFrom ?? "").startsWith("official record");
+  try { if (record.fullRecord) return { full_record: readJson(join(String(runDir ?? ""), record.fullRecord)), ...(fromElsewhere ? { goods: record.goods } : {}) }; }
   catch { /* the view below is what is left to read */ }
   return { goods: record.goods, goods_shortened: record.goodsShortened === true };
 }

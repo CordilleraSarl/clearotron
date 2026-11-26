@@ -94,13 +94,19 @@ export function withFilingGoods(doc, runDir, { runPrefix = null, callLog = DEFAU
     const statements = fromBody.length ? fromBody : (Array.isArray(rec?.goods) ? rec.goods : []);
     const evidence = recordGoodsEvidence({ record_id: rec?.recordId }, { goods: { of: () => statements, held: () => fromBody.length > 0 }, held, fetches });
     let view = shortGoodsView(statements, limit);
+    const from = goodsFromLabel(evidence);
+    // The official record is kept on its own terms. Wording the run holds from elsewhere (a search answer) is kept whole in a
+    // file of its own, with its source, wherever no official record is held.
     const fullRecord = !rec?.recordId ? null
       : body ? keep(rec.recordId, recordAsServed(`${JSON.stringify(body, null, 2)}\n`).text)
-      : view.shortened ? keep(rec.recordId, `${JSON.stringify({ recordId: rec.recordId, goods: statements }, null, 2)}\n`) : null;
-    // NEVER A CUT WITHOUT THE WHOLE BESIDE IT. Where no whole record could be kept (no id to name it by, or a write that
-    // failed), a cut would hide wording the run holds, so the view carries every statement whole instead.
-    if (view.shortened && !fullRecord) view = shortGoodsView(statements, Infinity);
-    return { ...rec, goods: view.goods, goodsState: evidence.state, goodsFrom: goodsFromLabel(evidence), goodsShortened: view.shortened, fullRecord };
+      : view.shortened ? keep(rec.recordId, `${JSON.stringify({ recordId: rec.recordId, goodsFrom: from, goods: statements }, null, 2)}\n`) : null;
+    // NEVER A CUT WITHOUT THE WHOLE OF THAT WORDING BESIDE IT. A cut is kept only where the whole record named beside the
+    // row holds the very statements the view was cut from. Where no whole record could be kept (no id to name it by, or a
+    // write that failed), or where the official record held is one whose goods are not the ones shown (it lists none, and
+    // the search answer's wording supplied the view), the view carries every statement whole instead.
+    const wholeHoldsThem = Boolean(fullRecord) && (!body || fromBody.length > 0);
+    if (view.shortened && !wholeHoldsThem) view = shortGoodsView(statements, Infinity);
+    return { ...rec, goods: view.goods, goodsState: evidence.state, goodsFrom: from, goodsShortened: view.shortened, fullRecord };
   };
   return { ...doc, marks: marks.map((m) => (Array.isArray(m?.records) ? { ...m, records: m.records.map(carried) } : m)) };
 }

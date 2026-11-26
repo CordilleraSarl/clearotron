@@ -13,7 +13,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { withFilingGoods, KNOCKOUT_PREVIEW_CHARS, GOODS_VIEW_CHARS, FILING_RECORDS_DIR } from "../filing-goods.mjs";
-import { withHeldGoods } from "../knockout-register-read.mjs";
+import { withHeldGoods, knockoutListView } from "../knockout-register-read.mjs";
+import { citedEvidence } from "../ko-review-evidence.mjs";
 
 const TEMP = [];
 const tempRun = () => { const d = mkdtempSync(join(tmpdir(), "ko-preview-")); TEMP.push(d); mkdirSync(driverDir(d), { recursive: true }); return d; };
@@ -84,4 +85,48 @@ test("a held record that cannot be read leaves the row the wording its search ro
   const whole = JSON.parse(readFull(run, rec));
   assert.equal(whole.recordId, CARRIED, "the kept wording is another filing's");
   assert.ok(JSON.stringify(whole.goods).includes("INVENTEDROWTERM"), "the wording the run had is not kept whole");
+});
+
+// AN OFFICIAL RECORD THAT LISTS NO GOODS, BESIDE A SEARCH ANSWER THAT DOES (design review, 2026-11-26). The search answer's
+// wording supplies the preview, and the official record held for the same filing holds none of it: a cut would leave the
+// decisive words in neither the row nor the record it names. Each lookup a later step makes must find them, and say where
+// they came from, for a filing carried and a filing set aside, with nothing fetched.
+test("where the official record lists no goods, the search answer's wording stays whole with its source, and every lookup finds the decisive term", () => {
+  const run = tempRun();
+  const texts = { [CARRIED]: decisive("INVENTEDRETAINEDTERM"), [ASIDE]: decisive("INVENTEDSETASIDETERM") };
+  assert.ok(texts[CARRIED].length > KNOCKOUT_PREVIEW_CHARS && texts[CARRIED].indexOf("INVENTEDRETAINEDTERM") > KNOCKOUT_PREVIEW_CHARS, "premise");
+  // The official records: readable, the right filings, and no goods listed.
+  writeFileSync(driverDir(run, "register-record-bodies.jsonl"), [CARRIED, ASIDE].map((target) => JSON.stringify({ ts: "2026-11-26T00:00:00.000Z",
+    provider: "clarivate", target, body: { uri: target, markVerbalElementText: "BRAMBLECOVE", status: "Registered", goodsServices: [] } })).join("\n") + "\n");
+  const row = (id) => ({ recordId: id, mark: "BRAMBLECOVE", owner: "Invented Owner", goods: [{ classes: [9], language: "en", text: texts[id] }] });
+  const doc = withHeldGoods({ schema: 1, marks: [{ name: "BRAMBLECOVE", records: [row(CARRIED)], setAsideRecords: [row(ASIDE)] }] }, run,
+    { limit: KNOCKOUT_PREVIEW_CHARS });
+  const byId = Object.fromEntries([...doc.marks[0].records, ...doc.marks[0].setAsideRecords].map((r) => [r.recordId, r]));
+  for (const [id, term] of [[CARRIED, "INVENTEDRETAINEDTERM"], [ASIDE, "INVENTEDSETASIDETERM"]]) {
+    const r = byId[id];
+    // The assessment's row: the whole wording, its source, and the official record on its own terms beside it.
+    assert.ok(r.goods.join(" ").includes(term), `${id}: the decisive term is not in the row the assessment reads`);
+    assert.equal(r.goodsShortened, false, `${id}: the row was cut with the rest of its wording in no record`);
+    assert.match(r.goodsFrom, /^search answer/, `${id}: the wording does not say it came from the search answer`);
+    assert.equal(JSON.parse(readFull(run, r)).uri, id, `${id}: the official record named beside the row is another filing's`);
+  }
+  // The review's evidence, as a correction reads it, for a finding citing both filings.
+  writeFileSync(driverDir(run, "register-records.json"), JSON.stringify(doc));
+  const lines = citedEvidence({ marks: [{ name: "BRAMBLECOVE", findings: [{ ordinal: 1, evidence: [CARRIED, ASIDE] }] }] }, run, null).sources;
+  for (const [id, term, how] of [[CARRIED, "INVENTEDRETAINEDTERM", "carried"], [ASIDE, "INVENTEDSETASIDETERM", "set aside"]]) {
+    const line = lines.find((l) => l.startsWith(`- ${id} `)) ?? "";
+    assert.ok(line.includes(term) && line.includes(how), `${id}: the review's evidence misses the term or how the filing was read: ${line.slice(0, 200)}`);
+  }
+  // read_register_list by record_id, as the register reading step asks it, for each filing.
+  mkdirSync(join(run, "register-units"), { recursive: true });
+  const bandRow = (id) => ({ record_id: id, mark_text: "BRAMBLECOVE", owner_name: "Invented Owner", status: "Registered", classes: [9], office: "eu",
+    goodsServices: [{ classes: [9], language: "en", description: texts[id] }] });
+  writeFileSync(join(run, "register-units", "brambles-band.json"), JSON.stringify([{ qid: "q-invented", state: "enumerated", total_hits: 2, count: 2,
+    records: [bandRow(CARRIED), bandRow(ASIDE)] }]));
+  for (const [id, term] of [[CARRIED, "INVENTEDRETAINEDTERM"], [ASIDE, "INVENTEDSETASIDETERM"]]) {
+    const answer = knockoutListView(run, { qid: "q-invented", record_id: id });
+    assert.ok(JSON.stringify(answer.goods ?? []).includes(term), `${id}: read_register_list by record_id misses the term: ${JSON.stringify(answer).slice(0, 300)}`);
+    assert.match(answer.goods_from ?? "", /^search answer/, `${id}: the answer does not say where the wording came from`);
+    assert.equal(answer.full_record?.uri, id, `${id}: the official record is not answered on its own terms`);
+  }
 });
