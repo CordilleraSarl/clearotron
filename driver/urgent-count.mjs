@@ -33,3 +33,22 @@ export function admittedSearches(job, { runsHere = urgentRunsHere } = {}) {
   const urgent = job?.urgent === true && runsHere() === true;
   return searchesCounted({ levers: { urgent }, names: 1 });
 }
+
+/**
+ * THE SENTENCE AN ORDER MEETS WHERE IT COUNTS MORE THAN THE ONE SEARCH LEFT TODAY (design, 2026-11-26): the order
+ * screen's own words for one search left (portal-ui/src/contract/allowance.ts `allowanceLine`), given by every door
+ * that refuses such an order — the connector's preview, the portal's pre-check and the runner's wall.
+ */
+export const ONE_SEARCH_LEFT = "1 search left today.";
+
+/**
+ * ONE SEARCH LEFT, AND AN ORDER THAT COUNTS TWO: refused in the screen's words, never run, and never counted, as
+ * Standard. Only that case: an account with none left keeps its own refusal, an order that fits is admitted, and an
+ * Urgent order on an installation that cannot run it fast already counts one (`admittedSearches`), so it fits.
+ *
+ * @param {{ used: number, limit: number, searches: number }} at today's count, the daily limit, and the order's count
+ * @returns {string|null} the sentence, or null where this rule does not refuse
+ */
+export function oneLeftRefusal({ used, limit, searches }) {
+  return Number.isInteger(limit) && Number.isFinite(used) && limit - used === 1 && searches > 1 ? ONE_SEARCH_LEFT : null;
+}

@@ -32,6 +32,7 @@ import { productRow, baseTurnaroundFor } from "../../driver/product-rows.mjs";
 import { resolveRequest } from "../../driver/resolve-request.mjs";
 import { readFlagSnapshot, builtFor, registerCanCountFor, registerTerritoriesFor } from "../../driver/flag-snapshot.mjs";
 import { gateResolvedRequest } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
+import { oneLeftRefusal } from "../../driver/urgent-count.mjs";   // one search left and an Urgent order: the wall's own words
 import { quoteForJob } from "../../driver/run-quote.mjs";
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";
 import { orderUrgency, urgentHere, URGENT_UNAVAILABLE } from "./urgent.mjs";   // the How soon option, as this installation can run it
@@ -330,6 +331,10 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
   // The daily allowance, reported for every principal and BLOCKING only for a client account (the one
   // kind the wall actually caps). Advice, not a gate — see allowanceFor.
   const allowance = allowanceFor(profile, { scope, now });
+  // ONE SEARCH LEFT, AND AN URGENT ORDER THAT COUNTS TWO: the wall refuses it in the order screen's words, so the
+  // preview blocks it in the same words (driver/urgent-count.mjs). Standard still fits, and How soon says so.
+  const oneLeftBlocker = allowance?.capped && allowance.complete && !allowance.exhausted
+    ? oneLeftRefusal({ used: allowance.today, limit: allowance.dailyRunsEffective, searches: effort?.searches ?? 1 }) : null;
   const quotaBlocker = allowance?.exhausted
     ? `this account has used all ${allowance.dailyRunsEffective} of today's client-started searches — start_run would be refused at admission. The allowance resets at midnight UTC; your ${BRAND.name} contact can run this one today.`
     : null;
@@ -361,7 +366,7 @@ export function planRun(args = {}, { scope, now = Date.now() } = {}) {
   // the fold against what it RESOLVES TO, and when the two are the same product they are the same
   // sentence. Read aloud to a requester, "this request names 2 countries" twice is a defect; deduping
   // where they are joined keeps every source honest and says it once.
-  const blocking = [...new Set([...(rosterRefusal ? [rosterRefusal] : []), ...(v.classify === "reject" || !v.ok ? v.errors : []), ...gates.errors, ...(unavailable ? [unavailable] : []), ...(quotaBlocker ? [quotaBlocker] : []), ...(routeBlocker ? [routeBlocker] : []), ...(demoBlocker ? [demoBlocker] : [])])];
+  const blocking = [...new Set([...(rosterRefusal ? [rosterRefusal] : []), ...(v.classify === "reject" || !v.ok ? v.errors : []), ...gates.errors, ...(unavailable ? [unavailable] : []), ...(quotaBlocker ? [quotaBlocker] : []), ...(oneLeftBlocker ? [oneLeftBlocker] : []), ...(routeBlocker ? [routeBlocker] : []), ...(demoBlocker ? [demoBlocker] : [])])];
 
   // ONE lookup, and the fields below come off it — the same shape portal-service's plan door was fixed
   // into. productRow computes a turnaround on every call; asking twice for one answer is how two answers
