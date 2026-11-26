@@ -1955,7 +1955,7 @@
         },
         "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
           "tests": 4,
-          "asserts": 21,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -8691,6 +8691,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-recall-gate-is-judged-again-when-the-repeated-placement-pass-answers-a-floor.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-recheck-reads-the-document-passages-its-flags-name.test.mjs": {
           "tests": 2,
           "asserts": 9,
@@ -9131,7 +9137,7 @@
         },
         "the-snapshot-reads-register-answers-of-a-real-runs-shape.test.mjs": {
           "tests": 5,
-          "asserts": 17,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -9734,6 +9740,12 @@
     "mcp-server": {
       "ext": "mjs",
       "perFile": {
+        "a-client-of-the-new-protocol-falls-back-at-every-door.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-company-created-after-the-door-starts-is-listed.test.mjs": {
           "tests": 6,
           "asserts": 16,

@@ -212,6 +212,9 @@ export const NOT_COUNTED_EVENTS = {
     // The intake's families as the schedule read them, and each rating group's own file of filings: RECORDS of how the run was
     // split. A grouping the schedule refuses rates every name alone, which is the order still rated, not a step repeated.
     "knockout-families", "knockout-families-refused", "knockout-group-records",
+    // A grid the run's own AI program searched, prepared before the stage that reads it: a RECORD of that preparation.
+    // A grid it could not prepare is refused by the research server, and that stage's failure is what counts.
+    "own-search-grid",
     // The run's own span against the ten-minute target, written at delivery because that is the first
     // point at which the run's span is known. Same class as the sweep's line below: a RECORD, never a
     // failure. `overBar: null` on it means the span could not be measured, which is a gap in the record
