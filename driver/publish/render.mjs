@@ -2172,6 +2172,12 @@ function findingCard(f, card, recordsByUri = new Map()) {
 // A single conflict below the risk folds too, under the singular, "1 more conflict rated Manageable" (owner,
 // 2026-11-19). A conflict with no band on the ladder keeps its full card, since nothing says it is below the risk. A
 // run with no framework renders every card in full, as it always has.
+//
+// THE HEADER SAYS HOW MUCH IT HOLDS (owner, 2026-11-25): most of a report's conflicts can sit behind this one line, so
+// its right end carries a control, "Show all {n}" folded and "Hide" open, drawn as a card's Ask AI pill, and folded it
+// reads as a pile of cards. The control is words inside the summary, not a second button: the header stays one control
+// whose name is the title, the words are hidden from assistive technology, and the stylesheet alone swaps them on the
+// details' open state, so "Expand all" and a page with scripts off keep them right. Neither reaches paper.
 function conflictCards(onField, cardFor, recordsByUri) {
   const full = (list) => list.map((f) => findingCard(f, cardFor(f), recordsByUri)).join('\n  ');
   if (!FRAMEWORK) return full(onField);
@@ -2184,7 +2190,8 @@ function conflictCards(onField, cardFor, recordsByUri) {
   const bands = [...new Set(below.map(severityRank))].sort((a, b) => a - b).map((i) => FRAMEWORK.bands[i].label);
   const cards = below.map((f) => compactCard(f, cardFor(f), recordsByUri, { ticked: false })).join('\n      ');
   return `${full(kept)}
-  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length, bands))}</span></summary><div class="gbody">
+  <details class="rgroup lowerband"><summary><span class="gname">${esc(R.lowerBand(below.length, bands))}</span><span class="lb-show no-print" aria-hidden="true"><span class="lb-closed">${
+    esc(R.lowerBandShow(below.length))}</span><span class="lb-open">${esc(R.lowerBandHide)}</span></span></summary><div class="gbody">
       ${cards}
   </div></details>`;
 }

@@ -648,6 +648,10 @@ export const REPORT_PAGE = Object.freeze({
   // The closed heading over the conflicts below the risk (2026-11-18; the singular form 2026-11-19): their count, and
   // each band below the risk by the framework's own word, joined by "or". One conflict reads in the singular.
   lowerBand: (count, bands) => `${count.toLocaleString('en-GB')} more conflict${count === 1 ? '' : 's'} rated ${bands.join(' or ')}`,
+  // The folded list's control, on screen only (owner, 2026-11-25): "Show all {n}" while folded, "Show" where the list holds
+  // one conflict, and "Hide" while open. {n} is the number the title opens with.
+  lowerBandShow: (count) => (count === 1 ? 'Show' : `Show all ${count.toLocaleString('en-GB')}`),
+  lowerBandHide: 'Hide',
   // The chart of conflicts: its axes, its zone and its legend.
   chart: Object.freeze({
     goodsAxis: 'Goods / services proximity →',

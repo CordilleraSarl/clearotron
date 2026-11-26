@@ -410,6 +410,20 @@
   .gcount{font-size:11px;font-weight:700;color:var(--slate)}
   .gbody{padding:0 12px 8px}
   .rgroup .card{margin:0 0 10px} .rgroup .card:last-child{margin-bottom:4px}
+  /* The folded list of lower-rated conflicts (owner, 2026-11-25). Its header keeps its title and marker; a control at the
+     right says "Show all {n}" folded and "Hide" open, drawn as a card's Ask AI pill with crimson words, and drops to a
+     second row at the right where the header is too narrow. Folded, the list shows the edges of two more cards under it.
+     Screen only: the control is .no-print, and the pile and the room it takes sit under @media screen. */
+  .rgroup.lowerband>summary{flex-wrap:wrap;row-gap:8px}
+  .rgroup.lowerband>summary .gname{min-width:0}
+  .lb-show{margin-left:auto;flex:none;display:inline-flex;align-items:center;font:600 12px/1 var(--font);padding:7px 11px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--crimson);white-space:nowrap}
+  .rgroup.lowerband>summary:hover .lb-show{border-color:var(--crimson);color:var(--crimson)}
+  .lb-show .lb-open,.rgroup.lowerband[open]>summary .lb-show .lb-closed{display:none}
+  .rgroup.lowerband[open]>summary .lb-show .lb-open{display:inline}
+  @media screen{
+    .rgroup.lowerband{--pile:color-mix(in srgb,var(--faint) 55%,var(--line2));--sheet:color-mix(in srgb,var(--card) 80%,var(--line2))}
+    .rgroup.lowerband:not([open]){margin-bottom:32px;box-shadow:var(--shadow),0 13px 0 -6px var(--sheet),0 13px 0 -5px var(--pile),0 26px 0 -12px var(--sheet),0 26px 0 -11px var(--pile)}
+  }
 
   /* a grouped reasoned negative. The shared ground is in the .fold-lead above the run of rows;
      each row carries only what is its own, so the line has to stay ONE line's worth of weight: the mark
