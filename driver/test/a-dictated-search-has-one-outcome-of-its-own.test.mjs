@@ -120,9 +120,11 @@ test("one retry, in smaller batches, for searches not sent, pooled or refused; w
   const { outcomes, records } = await runDictatedSearches("codex", items, session);
   assert.deepEqual(outcomes.map((o) => o.outcome), ["found", "found", "found", "found", "found", "too-long"]);
   assert.ok(!calls.flat().some((q) => q.length > MAX_QUERY_CHARS), "the over-long words were never sent");
-  assert.equal(calls.length, 2, "one first batch, one retry batch");
-  assert.ok(calls[1].length <= RETRY_BATCH);
-  assert.deepEqual(calls[1].sort(), ["qzorv", "qzorva", "what does qzorvak mean"], "only the unanswered are asked again");
+  assert.equal(calls.length, 4, "the first batch; each pooled search on its own; the unsent one in a small batch");
+  assert.deepEqual(calls.slice(1, 3), [["qzorv"], ["what does qzorvak mean"]], "each pooled search recovered alone");
+  assert.deepEqual(calls[3], ["qzorva"]);
+  assert.ok(calls.slice(1).every((c) => c.length <= RETRY_BATCH));
+  assert.deepEqual(calls.slice(1).flat().sort(), ["qzorv", "qzorva", "what does qzorvak mean"], "only the unanswered are asked again");
   assert.ok(records.some((r) => r.attempt === 2 && r.query === "qzorva" && r.outcome === "found"));
   assert.ok(records.some((r) => r.attempt === 1 && r.query === "qzorv" && r.outcome === "pooled"), "the first attempt's outcome is kept in the records");
   const sentRecords = records.filter((r) => r.outcome !== "too-long");
@@ -260,4 +262,39 @@ test("the run's own searches are switched on per run, and only by the setting's 
   writeFileSync(join(runDir, "_driver", OWN_SEARCH_SETTING_FILE), JSON.stringify({ service: "own" }));
   assert.equal(ownSearchOn(runDir), true);
   assert.equal(ownSearchOn(join(runDir, "_experiments", "arm-1")), true, "a stage experiment reads its run's setting");
+});
+
+// ── THE GRID'S OWN FLOORS, AND A POOLED SEARCH RECOVERED ON ITS OWN.
+test("a session whose searches all fail writes no ledger: the grid's floors judge it before it is written", async () => {
+  const runDir = mkdtempSync(join(tmpdir(), "own-search-floor-"));
+  mkdir(join(runDir, "_driver"), { recursive: true });
+  const specPath = join(runDir, "_driver", "grid-spec.json");
+  const spec = { terms: ["QZORVAK", "QZORVA"], platforms: ["web", "shop.example.com"], output_path: join(runDir, "common-law-grid.json") };
+  writeFileSync(specPath, JSON.stringify(spec));
+  const refusing = { search: "codex", engine: "openai-agent", session: async () => ({ events: [], answered: true, seconds: 1, usage: null, model: "gpt-6-luna", speed: "standard" }) };
+  const r = await prepareOwnSearchGrid(runDir, specPath, { sessions: refusing });
+  assert.equal(r.prepared, false);
+  assert.match(r.why, /below the grid's checks: grid catastrophically incomplete — only 0\/4 cells/);
+  assert.deepEqual(r.outcomes, { refused: 4 });
+  assert.equal(exists(spec.output_path), false, "no ledger of gaps is written, so the grid is never served as searched");
+  assert.equal(gridRecorded(spec), false);
+  assert.equal(savedSearchRecords(runDir).length, 8, "each search's two attempts are still kept as evidence");
+});
+
+test("a pooled search is recovered on its own, so each query gets its own list and no link is copied into both", async () => {
+  const items = [{ term: "A", platform: "web", query: "qzorvak uk", site: null }, { term: "B", platform: "web", query: "qzorva uk", site: null }];
+  const asked = [];
+  const session = async (batch) => {
+    asked.push(batch.map((d) => d.query));
+    const events = batch.length > 1
+      ? [codexSearch(batch.map((d) => d.query), Array.from({ length: 29 }, (_, i) => ({ title: "t", url: `https://pages.example.com/${i}` })))]
+      : [codexSearch([batch[0].query], [{ title: "t", url: `https://pages.example.com/only-${batch[0].query.replace(/\s/g, "-")}` }])];
+    return { events, answered: true, seconds: 1, usage: null, model: "gpt-6-luna", speed: "standard" };
+  };
+  const { outcomes, records } = await runDictatedSearches("codex", items, session);
+  assert.deepEqual(asked, [["qzorvak uk", "qzorva uk"], ["qzorvak uk"], ["qzorva uk"]], "the pooled pair, then each on its own");
+  assert.deepEqual(outcomes.map((o) => o.outcome), ["found", "found"]);
+  assert.deepEqual(outcomes.map((o) => o.results.map((x) => x.url)),
+    [["https://pages.example.com/only-qzorvak-uk"], ["https://pages.example.com/only-qzorva-uk"]], "each its own list, none of the 29 pooled links");
+  assert.deepEqual(records.filter((r) => r.attempt === 1).map((r) => r.outcome), ["pooled", "pooled"], "the first attempt is kept as pooled, never as not sent");
 });

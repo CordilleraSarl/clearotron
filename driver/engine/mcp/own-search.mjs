@@ -24,7 +24,7 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
 import { dirname, join } from "node:path";
-import { dictatedCells, connotationQueriesOf, reconcileGridLedger, findUnrecordedConnotationQueries } from "../../../providers/perplexity/src/core.js";
+import { dictatedCells, connotationQueriesOf, reconcileGridLedger, findUnrecordedConnotationQueries, captureGridFromResponse } from "../../../providers/perplexity/src/core.js";
 import { gridProvenancePath } from "./grid-provenance.mjs";
 
 export { OWN_SEARCH_SETTING_FILE, ownSearchOn } from "./own-search-setting.mjs";
@@ -139,8 +139,9 @@ export function batchPrompt(search, items) {
 //
 // A batch is up to BATCH searches, never two with the same words and site, whose records could not be told apart. A
 // search's words longer than MAX_QUERY_CHARS are not sent: one 8,403-character query held Claude for 23 minutes and
-// Codex past 30 (measured 2026-11-26), where the grid's other service refused it at once. Searches not sent, pooled or
-// refused are asked once more, in batches of RETRY_BATCH; whatever is still unanswered after that keeps its outcome.
+// Codex past 30 (measured 2026-11-26), where the grid's other service refused it at once. Searches not sent or refused
+// are asked once more, in batches of RETRY_BATCH, and a pooled search once more on its own; whatever is still unanswered
+// after that keeps its outcome.
 export const BATCH = 20;
 export const RETRY_BATCH = 5;
 export const MAX_QUERY_CHARS = 500;
@@ -187,8 +188,13 @@ export async function runDictatedSearches(search, items, session, { batch = BATC
     records.push({ attempt: 1, service: search, model: null, speed: null, query: d.query, site: d.site ?? null, sent: null, outcome: "too-long", links: [], session: null, sessionSeconds: null, sessionUsage: null, batchSize: 0 });
   }
   await ask(items.filter((d) => !tooLong.includes(d)), batch, 1);
-  const again = items.filter((d) => RETRIED_OUTCOMES.includes(outcomes.get(itemKey(d))?.outcome));
-  if (again.length) await ask(again, retryBatch, 2);
+  // A POOLED SEARCH IS RECOVERED ON ITS OWN: one search to a session, which leaves the program nothing to pool it with, so
+  // each query gets its own list and no link is copied into a query it was not found for. The pooled receipt's links are
+  // assigned to neither query. Searches not sent or refused are asked again in small batches.
+  const again = (outcome) => items.filter((d) => outcomes.get(itemKey(d))?.outcome === outcome);
+  const pooled = again("pooled"), unsent = [...again("not-sent"), ...again("refused")];
+  if (pooled.length) await ask(pooled, 1, 2);
+  if (unsent.length) await ask(unsent, retryBatch, 2);
   return { outcomes: items.map((d) => outcomes.get(itemKey(d))), records };
 }
 
@@ -327,12 +333,19 @@ export async function prepareOwnSearchGrid(runDir, specPath, { sessions } = {}) 
   const items = dictatedSearches(spec);
   const { outcomes, records } = await runDictatedSearches(sessions.search, items, sessions.session);
   const ledger = ledgerFromOutcomes(items, outcomes, { keep: spec.results_per_cell ?? 8 });
-  mkdirSync(dirname(spec.output_path), { recursive: true });
-  writeFileSync(`${spec.output_path}.tmp`, JSON.stringify(ledger, null, 2) + "\n");
-  renameSync(`${spec.output_path}.tmp`, spec.output_path);
   keepSearchRecords(runDir, records);
   const counts = {};
   for (const o of outcomes) counts[o.outcome] = (counts[o.outcome] ?? 0) + 1;
+  // THE GRID'S OWN CHECKS, BEFORE IT IS WRITTEN. The ledger goes through the capture the research service's grid goes
+  // through, as one program result, so the same reconciliation and coverage floors judge it. Under a floor (the
+  // program's search down, every search refused, a cap) no ledger is written: the research server then refuses the
+  // grid, and the stage fails as it would on the other service, rather than shipping a grid of gaps as searched.
+  const cap = captureGridFromResponse({ output: [{ type: "sandbox_results", code: `own search (${sessions.search})`,
+    results: [{ stdout: JSON.stringify(ledger), stderr: "", exit_code: 0, status: "completed" }] }] }, spec);
+  if (!cap.ok) return { prepared: false, why: `below the grid's checks: ${String(cap.error ?? "").slice(0, 200)}`, searches: items.length, outcomes: counts };
+  mkdirSync(dirname(spec.output_path), { recursive: true });
+  writeFileSync(`${spec.output_path}.tmp`, String(cap.ledgerJson).endsWith("\n") ? cap.ledgerJson : `${cap.ledgerJson}\n`);
+  renameSync(`${spec.output_path}.tmp`, spec.output_path);
   try {
     writeFileSync(gridProvenancePath(spec.output_path), JSON.stringify({
       _what: "which service served this grid, written beside it because the ledger itself is the checks' input.",
@@ -340,6 +353,7 @@ export async function prepareOwnSearchGrid(runDir, specPath, { sessions } = {}) 
       models: [...new Set(records.map((r) => r.model).filter(Boolean))], ran: true, searches: items.length, outcomes: counts,
     }, null, 2) + "\n");
   } catch { /* the ledger is on disk; a sidecar fault never undoes it */ }
-  return { prepared: true, searches: items.length, cells: ledger.cells.length, gaps: ledger.gaps.length, outcomes: counts };
+  const written = JSON.parse(cap.ledgerJson);
+  return { prepared: true, searches: items.length, cells: written.cells?.length ?? 0, gaps: written.gaps?.length ?? 0, outcomes: counts };
 }
 
