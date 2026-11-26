@@ -156,8 +156,9 @@ function requestBytes(url, { lookup, signal, maxBytes, accept, timeoutMs }) {
       const enc = String(res.headers["content-encoding"] ?? "").trim().toLowerCase();
       const stream = DECODERS[enc] ? res.pipe(DECODERS[enc]()) : res;
       const chunks = []; let bytes = 0, done = false;
-      const finish = () => { if (!done) { done = true; resolve({ status: res.statusCode, contentType: String(res.headers["content-type"] ?? ""), bytes: Buffer.concat(chunks) }); } };
-      stream.on("data", (c) => { if (done) return; chunks.push(c); bytes += c.length; if (bytes >= maxBytes) { finish(); req.destroy(); } });
+      let truncated = false;
+      const finish = () => { if (!done) { done = true; resolve({ status: res.statusCode, contentType: String(res.headers["content-type"] ?? ""), bytes: Buffer.concat(chunks), truncated }); } };
+      stream.on("data", (c) => { if (done) return; chunks.push(c); bytes += c.length; if (bytes >= maxBytes) { truncated = true; finish(); req.destroy(); } });
       stream.on("end", finish);
       stream.on("error", (e) => { if (!done) { done = true; reject(e); } });
     });
@@ -186,7 +187,7 @@ export async function fetchBytes(rawUrl, { signal, maxBytes = 5 * 1024 * 1024, a
     let r;
     try { r = await requestBytes(url, { lookup: connectLookup, signal, maxBytes, accept, timeoutMs }); }
     catch (e) { if (e?.refused) return { refused: e.message }; throw e; }
-    if (!r.location) return { ok: r.status >= 200 && r.status < 300, status: r.status, url: url.href, contentType: r.contentType, bytes: r.bytes };
+    if (!r.location) return { ok: r.status >= 200 && r.status < 300, status: r.status, url: url.href, contentType: r.contentType, bytes: r.bytes, truncated: r.truncated };
     if (hop >= 5) return { refused: "more than 5 redirects" };
     try { url = new URL(r.location, url); } catch { return { refused: "redirected to something that is not a URL" }; }
   }
@@ -198,8 +199,8 @@ export async function fetchBytes(rawUrl, { signal, maxBytes = 5 * 1024 * 1024, a
  * A row per page, in the order given: `{ page, site, state, picture, contentType, bytes, sha256, ms, data }`, where
  * `state` is `fetched` (the picture counts), `none` (the page declares no picture), `not-a-picture` (what came back is
  * not one of the four image types), `refused` (the check refused an address, or the page or its picture answered with
- * an error), `failed` (the network failed), `not-arrived` (still open at the limit) or `not-tried` (not yet requested at
- * the limit). `ms` counts from the step's first request to the picture's arrival. `data` is the picture's bytes, for the
+ * an error), `too-large` (the picture ran past the download cap of 5 MB, so only its start arrived), `failed` (the network
+ * failed), `not-arrived` (still open at the limit) or `not-tried` (not yet requested at the limit). `ms` counts from the step's first request to the picture's arrival. `data` is the picture's bytes, for the
  * caller to save; nothing else holds them.
  *
  * SHRUNK ON THE SAME CLOCK. Each picture is brought down to its box (picture-thumbnail.mjs) as it arrives, in a worker
@@ -259,6 +260,8 @@ export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SEC
         pic = await fetcher(at, { signal: abort.signal, maxBytes: 5 * 1024 * 1024, accept: "image/png,image/jpeg,image/gif,image/webp,image/*;q=0.8" });
         if (pic.refused || !pic.ok) { row.state = "refused"; return; }
       } else row.picture = page.url;
+      // A picture cut off at the download cap is not a picture: its tail is missing, and no decoder can read it whole.
+      if (pic.truncated) { row.state = "too-large"; return; }
       const type = imageTypeOf(pic.bytes);
       if (!type) { row.state = "not-a-picture"; return; }
       if (abort.signal.aborted) return;   // arrived after the limit: not kept

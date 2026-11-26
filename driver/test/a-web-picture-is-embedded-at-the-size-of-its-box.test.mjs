@@ -162,3 +162,14 @@ test("on a Knockout, a picture repeated on different pages of one site is its ge
     "https://istravel.example/a": false, "https://jorvane.example/x": true, "https://jorvane.example/y": true,
   }, "the generic preview rule dropped the wrong pages");
 });
+
+test("a picture cut off at the download cap is recorded as too large and is not decoded", async () => {
+  const cut = async (url) => {
+    const u = new URL(url);
+    if (u.pathname.endsWith(".png")) return { ok: true, status: 200, url: u.href, contentType: "image/png", bytes: pngOf(40, 30).subarray(0, 60), truncated: true };
+    return { ok: true, status: 200, url: u.href, contentType: "text/html", bytes: Buffer.from('<meta property="og:image" content="/big.png">') };
+  };
+  const { rows } = await fetchPagePictures(["https://kellavore.example/poster"], { seconds: 5, fetcher: cut, compareFrontPages: false });
+  assert.equal(rows[0].state, "too-large");
+  assert.equal(rows[0].data, null, "a cut-off picture kept its bytes");
+});
