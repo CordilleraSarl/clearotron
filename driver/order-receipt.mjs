@@ -25,6 +25,7 @@
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import { join, basename, dirname } from "node:path";
 import { deriveSlug } from "./phase0.mjs";
+import { stopReason } from "../shared/stop-reason.mjs";   // a cancelled order says it was stopped, never a blank reason
 
 /**
  * The reference an order is known by: its queue file's name. The connector's start_run admits exactly these ids, so a
@@ -105,12 +106,14 @@ export function receiptIn(qdir, ref, names) {
   if (terminal) {
     const result = readJsonSafe(at(`${terminal}.result`));
     const reason = reasonFrom(readTextSafe(at(`${terminal}.reason`)));
+    // A CANCELLED ORDER SAYS IT WAS STOPPED: the stop's own recorded reason, or, where none was written (an order taken
+    // off the queue before it started), the shared stop sentence with nothing invented (shared/stop-reason.mjs).
+    if (terminal === "cancelled") return { ...base, state: "cancelled", reason: result?.reason ?? stopReason(), runId: runIdFromDir(result?.runDir) };
     // A DUPLICATE'S RECORDED REASON NAMES THE EARLIER ORDER it matched (its message id), and that order may be another
     // account's: the matter signature does not include the account. Only its first line, which says what happened,
     // is the receipt's. Pointing to the earlier order is for a later increment, which can ask whether this caller may see it.
     if (terminal === "duplicate") return { ...base, state: "refused", reason: reason ? reason.split("\n")[0] : null, runId: null, kind: "duplicate" };
     if (terminal === "done") return { ...base, state: "delivered", reason: null, runId: runIdFromDir(result?.runDir) };
-    if (terminal === "cancelled") return { ...base, state: "cancelled", reason: result?.reason ?? null, runId: runIdFromDir(result?.runDir) };
     // `.failed`: refused at the claim (a reason, no result), refused at dispatch (a pre-run result), or a run that
     // stopped. A run directory still holding a park sentinel is a run that will come back, not a failure.
     const runDir = result?.runDir ?? null;
