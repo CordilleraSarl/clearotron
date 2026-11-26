@@ -11,7 +11,7 @@
 //   • The identity above the frame comes from the RUN, never from the document. A report's own title is
 //     model-authored; the mark, the company and the band on this screen come from the API.
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Run } from '../contract/api.ts'
 import { api } from '../contract/api.ts'
 import { readsFor, hasThread, readLabel, readLabelParts, displayName, openDocument, showsAssessment, searchHistory, type HistoryRow } from '../contract/reads.ts'
@@ -23,6 +23,7 @@ import type { FrameCommand, FrameSection, FrameTheme, FrameVerb } from '../contr
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
 import { AskAi } from '../components/AskAi.tsx'
+import { compactRowFits } from '../components/pinnedRowFits.ts'
 import { asksOpen, findingAsked, issuedOn, withoutAskOpen } from '../contract/askAi.ts'
 import { useLoad } from '../state/useApi.ts'
 import { resultPath } from '../nav/nav.config.ts'
@@ -77,7 +78,8 @@ const PINNED_ROW_PX = 57
 function pinnedHeight(): number {
   const head = document.querySelector('.report-head')
   if (!(head instanceof HTMLElement)) return 48
-  if (window.matchMedia(DESKTOP).matches) return head.classList.contains('compact') ? head.offsetHeight : PINNED_ROW_PX
+  if (window.matchMedia(DESKTOP).matches)
+    return head.classList.contains('compact') || head.classList.contains('pinned-full') ? head.offsetHeight : PINNED_ROW_PX
   return head.offsetHeight
 }
 
@@ -122,7 +124,23 @@ function usePinnedHeader(ready: boolean) {
     window.addEventListener('resize', place)
     return () => { io.disconnect(); ro.disconnect(); window.removeEventListener('resize', place) }
   }, [desktop, ready])
-  return { slotRef, sentinelRef, compact, held, box }
+
+  // WHERE THE PINNED ROW CANNOT FIT, THE FULL HEADER STAYS (design, 2026-11-26). At 1,280 px with the sidebar open
+  // the row squeezed a seven-letter name, wrapped "Ask AI" and left the section links too narrow to read or
+  // select. So each time the row is drawn it is measured before it is painted, and if it does not fit, the full
+  // header is pinned instead, as a phone's is, so the name, the sections and both actions stay in reach. The width it
+  // failed at is kept: the row is tried again only once the header is wider than that, so it never flips back and
+  // forth at one width.
+  const [tooNarrow, setTooNarrow] = useState<number | null>(null)
+  const width = box?.width ?? null
+  const shown = compact && !(tooNarrow !== null && width !== null && width <= tooNarrow)
+  useLayoutEffect(() => {
+    if (!shown || width === null) return
+    const head = slotRef.current?.querySelector('.report-head.compact')
+    if (!(head instanceof HTMLElement)) return
+    if (!compactRowFits(head)) setTooNarrow(width)
+  }, [shown, width])
+  return { slotRef, sentinelRef, compact: shown, pinnedFull: compact && !shown, held, box }
 }
 
 /**
@@ -693,9 +711,9 @@ export function Result({
           section links, Ask AI and Export. Its slot keeps the full header's height while it is pinned, so
           the switch never moves the report's text. Ask AI and Export keep their place among the children in
           both states, so a panel left open is not rebuilt when the header changes state. */}
-      <div className="report-head-slot" ref={pin.slotRef} style={pin.compact && pin.held ? { height: pin.held } : undefined}>
-      <div className={`report-head${pin.compact ? ' compact' : ''}`}
-        style={pin.compact && pin.box ? { left: pin.box.left, width: pin.box.width } : undefined}>
+      <div className="report-head-slot" ref={pin.slotRef} style={(pin.compact || pin.pinnedFull) && pin.held ? { height: pin.held } : undefined}>
+      <div className={`report-head${pin.compact ? ' compact' : ''}${pin.pinnedFull ? ' pinned-full' : ''}`}
+        style={(pin.compact || pin.pinnedFull) && pin.box ? { left: pin.box.left, width: pin.box.width } : undefined}>
       {/* ONE line, not a title block.
           The report restates all of this immediately below in its own hero — mark at 58px, band on the
           gauge, scope in the chips — because it is a document that has to stand alone when exported or

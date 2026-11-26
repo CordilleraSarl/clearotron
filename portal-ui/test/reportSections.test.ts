@@ -69,7 +69,7 @@ const RESULT = readFileSync(new URL('../src/screens/Result.tsx', import.meta.url
 
 test('the search history and the breadcrumb are both inside the pinned header', () => {
   // ONE HEADER, TWO STATES (board ReportHeader, approved 2026-11-25): its class carries the pinned state.
-  const head = RESULT.indexOf('<div className={`report-head${pin.compact ? \' compact\' : \'\'}`}')
+  const head = RESULT.indexOf('<div className={`report-head${pin.compact ? \' compact\' : \'\'}${pin.pinnedFull ? \' pinned-full\' : \'\'}`}')
   const nav = RESULT.indexOf('<div className="report-nav">')
   const frame = RESULT.indexOf('<ReportFrame')
   assert.ok(head >= 0 && nav >= 0 && frame >= 0)

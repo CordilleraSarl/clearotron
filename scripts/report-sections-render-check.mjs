@@ -330,6 +330,42 @@ for (const theme of ['light', 'dark']) {
   else ok.push(`${at}: a phone keeps today's pinned header`)
 }
 
+// ── THE PINNED ROW AT A LAPTOP WIDTH, SIDEBAR OPEN (design, 2026-11-26) ───────────────────────────────────────
+// At 1,280 px with the sidebar open the row must keep the seven-letter name whole, "Ask AI" on one line and every
+// section link readable, or the full header is pinned instead, every part of it in reach. 1,600 px is the control:
+// there the row pins as before.
+for (const [width, mustPin] of [[1280, false], [1600, true]]) {
+  for (const theme of ['light', 'dark']) {
+    const at = `${width} ${theme} sidebar open`
+    await cmd('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: false })
+    await cmd('Page.navigate', { url: `${origin}/portal/` })
+    await value(`(() => { try { localStorage.setItem('cordillera-theme', '${theme}') } catch (e) {} return 1 })()`)
+    await cmd('Page.navigate', { url: `${origin}/portal/result/${RUN_ID}` })
+    if (!(await until(`document.querySelectorAll('nav.report-sections .report-section').length === ${SECTIONS.length} && Boolean(document.querySelector('.sidebar, nav[aria-label]'))`))) {
+      fail.push(`${at}: the report never drew its header`); continue
+    }
+    await wait(600)
+    await value('(window.scrollTo(0, 3000), 1)')
+    await wait(800)
+    const row = await value(`(() => { const h = document.querySelector('.report-head'); const compact = h.classList.contains('compact'), full = h.classList.contains('pinned-full');
+      const q = (s) => h.querySelector(s); const name = q('.report-head-name'), strip = q('.report-sections'), ask = q('.ask-ai-btn'), r = q('.report-head-row');
+      const everyStrip = [...document.querySelectorAll('.report-head .report-sections, .report-nav .report-sections')].every((s) => s.scrollWidth <= s.clientWidth + 1);
+      return { compact, full, everyStrip, pinned: Math.round(h.getBoundingClientRect().top), name: name.textContent.trim(), nameCut: name.scrollWidth > name.clientWidth + 1,
+        stripCut: strip ? strip.scrollWidth > strip.clientWidth + 1 : null, askLines: ask ? Math.round(ask.getBoundingClientRect().height) : null,
+        rowSpill: r.scrollWidth > r.clientWidth + 1, sidebar: Math.round((document.querySelector('.report-head-slot') || h).getBoundingClientRect().left) } })()`)
+    if (!row) { fail.push(`${at}: the header could not be measured`); continue }
+    if (row.compact) {
+      if (row.nameCut || row.stripCut || row.rowSpill || (row.askLines ?? 0) > 40)
+        fail.push(`${at}: the pinned row does not fit: ${JSON.stringify(row)}`)
+      else ok.push(`${at}: the pinned row keeps "${row.name}" whole, Ask AI on one line and every section link (header starts at ${row.sidebar}px)`)
+    } else if (mustPin) fail.push(`${at}: the row no longer pins at a width it fitted before: ${JSON.stringify(row)}`)
+    else if (!row.full || row.pinned !== 56 || row.nameCut || !row.everyStrip)
+      fail.push(`${at}: the row does not fit, and the full header is not pinned whole in its place: ${JSON.stringify(row)}`)
+    else ok.push(`${at}: the row cannot hold the name, Ask AI and the sections here, so the full header is pinned under the top bar, "${row.name}" whole and every section link in reach`)
+    await shot(`header-${width}-sidebar-${theme}.png`)
+  }
+}
+
 // ── A CARD'S ADDRESS, AND THE PAGE SCROLLING FOR THE FRAME ────────────────────────────────────────────────────
 // The document cannot write the clipboard, know the portal's address or scroll the page, so it asks the page. A
 // card's "Copy link" must put this report screen's address with the card named on the clipboard and see its tick;
