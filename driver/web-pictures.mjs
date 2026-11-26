@@ -43,7 +43,6 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { checkedLookup, isPublicAddress } from "./engine/mcp/public-fetch.mjs";
 import { imageTypeOf } from "./mark-logos.mjs";
-import { thumbnailOf } from "./picture-thumbnail.mjs";
 import { DRIVER_DIR, driverDir, ensureDriverDir } from "./run-record.mjs";
 
 export const CLEARANCE_PICTURE_SECONDS = 20;   // owner, 2026-11-26: at most 20 seconds a clearance report
@@ -280,14 +279,21 @@ export function frontPageRule(rows) {
  * Bring each picture the report will draw down to its box (picture-thumbnail.mjs), after the step and outside its limit:
  * decoding holds the process, and the limit's timer could not fire during it. A picture that is not drawn (a general
  * card, an unfinished comparison, a comparison's front page) is not decoded. Each shrunk row keeps what the site served
- * (`contentType`, `bytes`, `sha256`) and gains what is stored (`stored: { contentType, bytes, width, height, kept }`);
- * one that cannot be shrunk gains `notStored`, with the reason, and is not shown. Returns how long it took. MUTATES.
+ * (`contentType`, `bytes`, `sha256`, and the `width` and `height` its header declares), the time its own shrinking took
+ * (`shrinkMs`), and what is stored (`stored: { contentType, bytes, width, height, kept }`);
+ * one that cannot be shrunk gains `notStored`, with the reason, and is not shown. Resolves how long it took. MUTATES.
  */
-export function shrinkPictures(result, { now = () => performance.now() } = {}) {
+export async function shrinkPictures(result, { now = () => performance.now() } = {}) {
+  // Loaded here, not at the top: every publish reads this module for the record, and only the step decodes.
+  const { thumbnailOf, declaredSize } = await import("./picture-thumbnail.mjs");
   const t0 = now();
   for (const row of result?.rows ?? []) {
     if (row.state !== "fetched" || !row.data || row.general || row.comparison || row.forComparison) continue;
+    const one = now();
+    const served = declaredSize(row.data, row.contentType);
+    if (served) { row.width = served.width; row.height = served.height; }   // as the site served it, from its header
     const t = thumbnailOf(row.data);
+    row.shrinkMs = Math.round(now() - one);
     if (t.refused) { row.notStored = t.refused; row.data = null; continue; }
     row.stored = { contentType: t.contentType, bytes: t.bytes.length, width: t.width, height: t.height, kept: t.kept };
     row.data = t.bytes;
