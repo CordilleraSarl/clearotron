@@ -121,7 +121,7 @@ export function previewPictureOf(html, baseUrl) {
 const REDIRECTS = new Set([301, 302, 303, 307, 308]);
 const DECODERS = { gzip: () => zlib.createGunzip(), "x-gzip": () => zlib.createGunzip(), deflate: () => zlib.createInflate(), br: () => zlib.createBrotliDecompress() };
 
-function requestBytes(url, { lookup, signal, maxBytes, accept }) {
+function requestBytes(url, { lookup, signal, maxBytes, accept, timeoutMs }) {
   return new Promise((resolve, reject) => {
     const lib = url.protocol === "https:" ? https : http;
     const req = lib.request(url, { method: "GET", lookup, agent: false, signal,
@@ -136,17 +136,21 @@ function requestBytes(url, { lookup, signal, maxBytes, accept }) {
       stream.on("end", finish);
       stream.on("error", (e) => { if (!done) { done = true; reject(e); } });
     });
+    // The whole request, as the engine's fetch bounds it: a page that drips a byte a second never trips an idle timer.
+    const deadline = setTimeout(() => req.destroy(new Error(`no answer within ${Math.round(timeoutMs / 1000)}s`)), timeoutMs);
+    req.on("close", () => clearTimeout(deadline));
     req.on("error", reject);
     req.end();
   });
 }
 
 /**
- * GET an http(s) address as bytes, following at most 5 redirects, every hop through the public-address check. Resolves
+ * GET an http(s) address as bytes, following at most 5 redirects, every hop through the public-address check and each
+ * request bounded at `timeoutMs`, the engine's fetch's own 30 seconds. Resolves
  * `{ ok, status, url, contentType, bytes }` for an answer or `{ refused }`; rejects on a network failure or an abort.
  * `lookup` and `allow` are seams for tests only.
  */
-export async function fetchBytes(rawUrl, { signal, maxBytes = 5 * 1024 * 1024, accept = "*/*", lookup, allow = isPublicAddress } = {}) {
+export async function fetchBytes(rawUrl, { signal, maxBytes = 5 * 1024 * 1024, accept = "*/*", timeoutMs = 30000, lookup, allow = isPublicAddress } = {}) {
   let url;
   try { url = new URL(String(rawUrl)); } catch { return { refused: "not a URL" }; }
   const connectLookup = checkedLookup({ ...(lookup ? { lookup } : {}), allow });
@@ -155,7 +159,7 @@ export async function fetchBytes(rawUrl, { signal, maxBytes = 5 * 1024 * 1024, a
     const host = url.hostname.replace(/^\[|\]$/g, "");
     if (isIP(host)) { const v = allow(host); if (!v.ok) return { refused: `a ${v.kind} address` }; }
     let r;
-    try { r = await requestBytes(url, { lookup: connectLookup, signal, maxBytes, accept }); }
+    try { r = await requestBytes(url, { lookup: connectLookup, signal, maxBytes, accept, timeoutMs }); }
     catch (e) { if (e?.refused) return { refused: e.message }; throw e; }
     if (!r.location) return { ok: r.status >= 200 && r.status < 300, status: r.status, url: url.href, contentType: r.contentType, bytes: r.bytes };
     if (hop >= 5) return { refused: "more than 5 redirects" };

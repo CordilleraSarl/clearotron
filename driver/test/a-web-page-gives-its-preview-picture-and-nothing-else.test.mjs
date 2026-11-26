@@ -140,3 +140,9 @@ test("a card draws On the web after Register, captioned with the site and openin
     assert.doesNotMatch(none, /class="pic-line"|pic-lab">On the web/, "a card with no pictures drew a frame");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+test("a request that does not answer within its own limit fails, so no page holds the step open without the report's limit", async () => {
+  const slow = (u, o) => fetchBytes(u, { ...o, timeoutMs: 300, allow: () => ({ ok: true }) });
+  const { rows } = await fetchPagePictures([`${base}/slow-one`], { seconds: Infinity, fetcher: slow });
+  assert.equal(rows[0].state, "failed", "a request past its own limit was not given up");
+});
