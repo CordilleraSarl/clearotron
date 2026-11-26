@@ -19,11 +19,15 @@ import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LI
 import { REPORT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the typefaces travel inside the report; it fetches nothing to draw its text
 import { escapeAttr as escHtml } from '../../shared/html-escape.mjs';
 
+import { withColumnQueries } from './column-queries.mjs';
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 
 // Brand :root tokens are sourced from shared/brand.mjs (REPORT_ROOT) and prepended to the report stylesheet, so
 // report.css carries only rules — the palette lives in ONE place across surfaces.
-export const REPORT_BASE = REPORT_ROOT + '\n' + readFileSync(join(HERE, 'templates', 'report.css'), 'utf8');
+// Each width rule carries its column twin (column-queries.mjs), which matches nothing until a column opts in: the
+// conflict panel, and the report's column narrowed beside it.
+export const REPORT_BASE = REPORT_ROOT + '\n' + withColumnQueries(readFileSync(join(HERE, 'templates', 'report.css'), 'utf8'));
 // Print always renders light: re-assert the REPORT_ROOT light tokens under [data-theme=dark] inside @media
 // print (a dark-toggled report must never print on near-black — ink/banding + legal-document convention).
 const PRINT_LIGHT = '\n@media print{' + REPORT_ROOT.replace(':root{', ':root[data-theme="dark"]{color-scheme:light;') + '}';

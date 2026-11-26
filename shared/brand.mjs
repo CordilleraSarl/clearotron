@@ -614,6 +614,8 @@ const REPORT_DARK_RULES = [
   // The web and marketplace names' addresses: report.css's .crow .curl out-ranks the bare link rule above, and kept
   // the light crimson on the dark ground (about 1.8:1, measured 2026-11-26).
   ['.crow .curl', `color:${D.crimsonText}`],
+  // The citation that opened the conflict panel is outlined in the accent, which is a fill in the dark theme.
+  ['.fa-ords a.cite-on', `outline-color:${D.crimsonText}`],
   ['.rgroup.lowerband>summary:hover .lb-show', `border-color:${D.crimsonText}`],
   ['.tbbtn:hover,.util:hover,.tb-back:hover,.theme-toggle.tt-page:hover', `color:${D.crimsonText};border-color:${D.crimsonText}`],
   ['.rep-stickyhead', 'background:rgba(15,14,12,.82)'],

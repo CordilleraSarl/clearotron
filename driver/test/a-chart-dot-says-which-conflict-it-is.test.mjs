@@ -69,6 +69,6 @@ test("the page script shows the panel on the pointer and on keyboard focus, keep
   assert.match(js, /pointerenter',function\(e\)\{if\(e\.pointerType==='mouse'\)show\(a\);/, "a touch would open the panel instead of following the link");
   assert.match(js, /addEventListener\('focus',function\(\)\{if\(keyFocus\(a\)\)show\(a\);/);
   assert.match(js, /tip\.addEventListener\('pointerenter',function\(\)\{clearTimeout\(timer\);\}\)/, "the panel closes as the pointer crosses onto it");
-  assert.match(js, /e\.key==='Escape'&&!tip\.hidden\)hide\(\)/, "Escape does not hide the panel");
+  assert.match(js, /e\.key==='Escape'&&!tip\.hidden\)\{hide\(\);e\.preventDefault\(\);\}/, "Escape does not hide the panel, or lets the conflict panel shut on the same press");
   assert.doesNotMatch(js, /\.focus\(\)|\.blur\(\)/, "the script moves focus, so Escape would not leave it on the dot");
 });
