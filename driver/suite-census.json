@@ -9165,6 +9165,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-web-picture-step-asks-only-the-fetcher-it-is-handed.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "the-web-worker-is-given-no-call-count-and-no-price.test.mjs": {
           "tests": 2,
           "asserts": 4,
