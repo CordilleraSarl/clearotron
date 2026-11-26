@@ -230,6 +230,12 @@ engine check's record, never from the `.pending` markers:
 | Refused at dispatch (the checks before a run starts, the engine's sign-in) | yes | yes |
 | A run stopped before delivering | yes | yes |
 | The engine check failed | | yes |
+| A finished report's send is stuck: the courier's wakes delivered nothing, and the outbox set its marker aside (`quarantine/STUCK-ALERTS.jsonl`) | no | yes |
+
+The route carries failures only. A finished report reaches its submitter through the courier, as before, and the
+receipt shows it ready. A send that is merely still owed raises nothing; only the outbox's own record of a stuck
+send does. That alert settles nothing: the report stays owed to its submitter, and the courier's delivery settles it,
+with no second search.
 
 A cancelled order and a parked one are owed nothing. An audience is owed nothing from before the
 route began to serve it: naming a route does not send the install's history, and an audience moved
@@ -238,14 +244,15 @@ in `<outbox>/deliveries/route-since.json`, and an audience the route stops servi
 
 **The request.** One `POST` per notice, `Content-Type: application/json`, header `Idempotency-Key:
 <deliveryId>`. The body carries `deliveryId`, `kind` (`order-refused`, `run-stopped`,
-`engine-check-failed`), `audience`, `recipient` and `at`, and then:
+`engine-check-failed`, `delivery-stuck`), `audience`, `recipient` and `at`, and then:
 
 - for the person who placed the order, `order`: the receipt as `order_status` gives it to a company
   (`reference`, `state`, `terminal`, `runId`, and `reason` only for an order refused before it ran),
   with `recipient` naming the company, its organisation for Generic, and the `forwarder`,
   `forwarderEmail` and `msgId` the order carried;
 - for the operator, `fault`: the kind, the order or run it concerns, the stage and recorded reason
-  where there are ones, and `nextAction`, a code (`check-engine`, `read-the-run`).
+  where there are ones, and `nextAction`, a code (`check-engine`, `read-the-run`, and for a stuck send
+  `release-the-delivery`, with the outbox's own recovery step in `recover`).
 
 Neither carries a sentence for the recipient: the words are the receiver's to choose. Nothing sent for
 one company names another company or its orders.
@@ -260,6 +267,18 @@ the event, the audience and the recipient, so restarts and retries keep it. Its 
 ambiguous when its request went out and no answer came back, or when the worker stopped between sending
 it and recording the answer. An ambiguous notice is sent again only where `CLEAROTRON_NOTICE_DEDUPE=1`;
 otherwise it waits for the operator to settle it with the receiver.
+
+**Settling an uncertain notice.** The operator checks the receiver for the notice's delivery id, then says what it
+found:
+
+    node driver/notice-delivery.mjs list               # every notice not confirmed: its id, state and next action
+    node driver/notice-delivery.mjs received <id>      # the receiver holds it: that notice alone is confirmed
+    node driver/notice-delivery.mjs absent <id>        # it does not: that notice alone is sent again, under the same id
+
+Where the answer stays unknown, nothing is given and the notice stays ambiguous. Each answer prints JSON; a refusal
+exits 4 with its reason code (`no-such-notice`, `not-reconcilable:<state>`). `list` gives each notice
+`retriesByItself`, true for one the worker sends again by itself, and `nextAction: settle-with-receiver` for one
+that waits on the operator.
 
 **Settling the send.** When the person who placed a stopped run is told, the run's owed send is settled
 exactly as `mark_sent` settles it: `.sent` is written with `via: "notice-route"` and the delivery id as

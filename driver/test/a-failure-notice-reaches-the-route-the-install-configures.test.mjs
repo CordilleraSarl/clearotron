@@ -89,7 +89,8 @@ const deliveries = (box) => {
   try { return readdirSync(dir).filter((n) => /^[0-9a-f]{24}\.json$/.test(n)).map((n) => JSON.parse(readFileSync(join(dir, n), "utf8"))); }
   catch { return []; }
 };
-const routeEnv = (url, audiences, extra = {}) => ({ CLEAROTRON_NOTICE_URL: url, CLEAROTRON_NOTICE_AUDIENCES: audiences, ...extra });
+// Every setting named every time, so one test's setting never carries into the next through the pinned environment.
+const routeEnv = (url, audiences, extra = {}) => ({ CLEAROTRON_NOTICE_URL: url, CLEAROTRON_NOTICE_AUDIENCES: audiences, CLEAROTRON_NOTICE_DEDUPE: "", ...extra });
 
 test("the worker tells each company's submitter, and the operator, through the configured route, and nothing twice", async () => {
   const box = install();
@@ -334,4 +335,102 @@ test("a route that is not on this machine, or serves no audience, sends nothing"
   assert.equal(noticeRoute({ CLEAROTRON_NOTICE_URL: "http://127.0.0.1:8080/in", CLEAROTRON_NOTICE_AUDIENCES: "everyone" }).problem, "audience-unknown");
   const ok = noticeRoute({ CLEAROTRON_NOTICE_URL: "http://[::1]:8080/in", CLEAROTRON_NOTICE_AUDIENCES: "operator, submitter", CLEAROTRON_NOTICE_DEDUPE: "1" });
   assert.deepEqual([ok.ok, ok.audiences, ok.dedupe], [true, ["submitter", "operator"], true]);
+});
+
+// ── A FINISHED REPORT WHOSE SEND FAILED (design, 2026-11-26: the route carries failures only) ──────────────────────
+
+/** The courier's wake, as the outbox's own breaker judges it: an ok turn that left the markers where they were. */
+function courierWakeThatDeliversNothing(box) {
+  const r = spawnSync(process.execPath, [join(HERE, "..", "outbox-backoff.mjs"), "settle", "localagent", "0"],
+    { input: JSON.stringify({ status: "ok", result: {} }), env: { ...process.env, ...box.env, CLEAROTRON_OUTBOX_NOPROGRESS_MAX: "2" }, encoding: "utf8" });
+  return r.stdout.trim();
+}
+
+test("a finished report the courier cannot send: the operator is alerted once, the report stays owed, and the courier's delivery settles it with no second search", async () => {
+  const box = install();
+  const rx = await receiver();
+  const env = routeEnv(rx.url, "submitter,operator");
+  try {
+    submit(box, "stuck-b-delivers", "zephyr", { demoRun: true });
+    await drain(box, env);
+    const result = JSON.parse(readFileSync(join(box.qdir, "stuck-b-delivers.done.result"), "utf8"));
+    const status = () => JSON.parse(readFileSync(join(result.runDir, "status.json"), "utf8"));
+    assert.equal(status().sendPending, true, "guard: the report is owed its send");
+    assert.equal(rx.records.length, 0, "a finished report is the courier's to deliver: the route sends nothing for it");
+    // The courier wakes and delivers nothing, twice: the breaker sets the marker aside and records it.
+    const wakes = [courierWakeThatDeliversNothing(box), courierWakeThatDeliversNothing(box)];
+    assert.match(wakes.at(-1), /^quarantine/, `guard: the breaker did not set the marker aside: ${JSON.stringify(wakes)}`);
+    await drain(box, env);
+    const alerts = rx.records.filter((r) => r.notice.kind === "delivery-stuck");
+    assert.deepEqual(alerts.map((a) => [a.notice.audience, a.notice.fault.runId, a.notice.fault.nextAction]),
+      [["operator", status().runId, "release-the-delivery"]], JSON.stringify(rx.records.map((r) => r.notice)));
+    assert.equal(rx.records.length, 1, "nothing for the submitter");
+    assert.equal(status().sendPending, true, "the operator's alert settled the report's send");
+    assert.equal(existsSync(join(result.runDir, ".sent")), false);
+    await drain(box, env);
+    assert.equal(rx.records.length, 1, "the operator was alerted twice");
+    // Recovery, as the breaker's record says: the marker goes back, and the courier delivers and settles it.
+    const runs = () => readdirSync(dirname(result.runDir)).length;
+    const before = runs();
+    const marker = JSON.parse(readFileSync(join(box.outbox, "quarantine", "STUCK-ALERTS.jsonl"), "utf8").trim().split("\n")[0]).marker;
+    writeFileSync(join(box.outbox, marker), readFileSync(join(box.outbox, "quarantine", marker)));
+    rmSync(join(box.outbox, "quarantine", marker));
+    const { settleSend } = await import("../send-settle.mjs");
+    const s = status();
+    settleSend({ run: { runId: s.runId, runDir: result.runDir, slug: s.slug, codename: s.codename }, evidence: { messageId: "<courier-delivered@example>" }, via: "mcp/mark_sent" });
+    await drain(box, env);
+    assert.equal(status().sendPending, false, "the courier's delivery did not settle the report");
+    assert.equal(JSON.parse(readFileSync(join(result.runDir, ".sent"), "utf8")).via, "mcp/mark_sent");
+    assert.equal(runs(), before, "a second search ran");
+    assert.equal(rx.records.length, 1, "the delivered report raised another alert");
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
+  }
+});
+
+// ── THE OPERATOR SETTLES AN UNCERTAIN NOTICE BY ITS DELIVERY ID ──────────────────────────────────────────────────────
+
+const operatorSays = (box, ...args) => {
+  const r = spawnSync(process.execPath, [join(HERE, "..", "notice-delivery.mjs"), ...args], { env: { ...process.env, ...box.env }, encoding: "utf8" });
+  let out = null; try { out = JSON.parse(r.stdout); } catch { /* reported below */ }
+  return { code: r.status, out, stderr: r.stderr };
+};
+
+test("an uncertain notice the receiver cannot drop is the operator's: listed with its id, then received, absent, or left as it is", async () => {
+  const box = install();
+  const rx = await receiver();
+  const env = routeEnv(rx.url, "submitter");
+  try {
+    const { markRouteSeen } = await pass(box, env, { skip: true });
+    markRouteSeen({ env: process.env, now: Date.now() - 60_000 });
+    for (const id of ["settle-received", "settle-absent", "settle-unknown"]) refusedOrder(box, id, "demo-brand-owner");
+    // Each is sent, and the process stops after the receiver's answer, three times: three uncertain notices.
+    for (let i = 0; i < 3; i++) assert.equal(await passThatStops(box, env), 9);
+    await pass(box, env);
+    const byRef = Object.fromEntries(rx.records.map((r) => [r.notice.order.reference, r.key]));
+    assert.equal(Object.keys(byRef).length, 3, "guard: the receiver holds the three notices");
+    const listed = operatorSays(box, "list");
+    assert.equal(listed.code, 0, listed.stderr);
+    for (const ref of Object.keys(byRef)) {
+      const n = listed.out.find((x) => x.id === byRef[ref]);
+      assert.deepEqual([n?.state, n?.nextAction, n?.retriesByItself], ["ambiguous", "settle-with-receiver", false], ref);
+    }
+    // Received: that notice alone is confirmed, and nothing is sent.
+    assert.deepEqual(operatorSays(box, "received", byRef["settle-received"]).out, { ok: true, id: byRef["settle-received"], state: "confirmed" });
+    // Absent: that notice alone is sent again, under the same id.
+    assert.deepEqual(operatorSays(box, "absent", byRef["settle-absent"]).out, { ok: true, id: byRef["settle-absent"], state: "failed" });
+    await pass(box, env);
+    assert.deepEqual(rx.records.slice(3).map((r) => r.key), [byRef["settle-absent"]], "not that notice alone, or not under its id");
+    // Unknown: no answer is given, and it stays uncertain.
+    const after = Object.fromEntries(deliveries(box).map((d) => [d.id, d.state]));
+    assert.deepEqual([after[byRef["settle-received"]], after[byRef["settle-absent"]], after[byRef["settle-unknown"]]], ["confirmed", "confirmed", "ambiguous"]);
+    // An answer for a confirmed notice, or for no notice, is refused by its reason.
+    assert.deepEqual([operatorSays(box, "received", byRef["settle-received"]).code, operatorSays(box, "received", byRef["settle-received"]).out.reason], [4, "not-reconcilable:confirmed"]);
+    assert.equal(operatorSays(box, "absent", "0".repeat(24)).out.reason, "no-such-notice");
+    assert.equal(operatorSays(box, "unknown", byRef["settle-unknown"]).code, 2, "an unknown answer is not a command");
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
+  }
 });

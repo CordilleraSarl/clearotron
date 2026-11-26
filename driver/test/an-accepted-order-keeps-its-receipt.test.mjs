@@ -131,7 +131,10 @@ test("a refused order is dated by its refusal, not by when it was placed", () =>
   const placed = new Date(Date.now() - 3_600_000), refused = new Date(Date.now() - 60_000);
   utimesSync(join(qdir, "x.failed"), placed, placed);
   utimesSync(join(qdir, "x.failed.reason"), refused, refused);
-  assert.equal(stateOf(qdir).updatedAt, refused.toISOString());
+  // A file's time is kept to the filesystem's own resolution, so the reading is held to the second.
+  const at = Date.parse(stateOf(qdir).updatedAt);
+  assert.ok(Math.abs(at - refused.getTime()) < 1000, `dated ${stateOf(qdir).updatedAt}, not by its refusal`);
+  assert.ok(at - placed.getTime() > 3_000_000, "dated by when it was placed");
 });
 
 test("claiming is not passing: a claimed order is being checked until its run is dispatched", () => {

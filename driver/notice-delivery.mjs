@@ -12,6 +12,11 @@
 //   an order refused at dispatch      the person who placed it, and the operator (the pre-start checks, the sign-in)
 //   a run that stopped                the person who placed it, and the operator
 //   the engine check failing          the operator
+//   a finished report's send stuck    the operator alone (design, 2026-11-26): the report is the courier's to deliver,
+//                                     and the outbox's no-progress breaker setting its marker aside is the confirmed
+//                                     failure (quarantine/STUCK-ALERTS.jsonl). Elapsed time alone raises nothing. The
+//                                     alert settles nothing: the report stays owed to its submitter, and the courier's
+//                                     own delivery settles it, without a second search
 //
 // A cancelled order was stopped on request, and a parked one resumes by itself: neither is owed a notice. An audience
 // is owed nothing from before the route began to serve it, so naming a route does not send the install's history, and
@@ -47,11 +52,14 @@ import { receiptIn } from "./order-receipt.mjs";
 import { NOTICE_AUDIENCES, noticeRoute, postNotice } from "./notice-route.mjs";
 import { engineCheckDir } from "./engine/health.mjs";
 import { sendSettled, settleSend } from "./send-settle.mjs";
+import { runDirFor } from "./outbox-backoff.mjs";   // the run a stuck marker names, live or archived
 import { note } from "./log.mjs";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 export const NOTICE_STATES = Object.freeze(["pending", "attempted", "confirmed", "failed", "ambiguous"]);
 /** What the operator does next, as a code: the words are the owner's. */
-export const NEXT_ACTIONS = Object.freeze({ "check-engine": "check-engine", "read-the-run": "read-the-run", "settle-with-receiver": "settle-with-receiver" });
+export const NEXT_ACTIONS = Object.freeze({ "check-engine": "check-engine", "read-the-run": "read-the-run",
+  "settle-with-receiver": "settle-with-receiver", "release-the-delivery": "release-the-delivery" });
 
 const deliveriesDir = () => join(config.outboxDir, "deliveries");
 const recordPath = (id) => join(deliveriesDir(), `${id}.json`);
@@ -147,6 +155,16 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
       }
     }
   }
+  // A finished report's send the courier could not make: one alert per marker the no-progress breaker set aside, while
+  // the run it names is still owed. A run settled since (the courier delivered it) is owed no alert.
+  for (const rec of stuckDeliveries()) {
+    const runId = String(rec.marker ?? "").replace(/(\.failed)?\.pending$/, "");
+    const runDir = runId ? runDirFor(runId) : null;
+    if (runDir && sendSettled(runDir)) continue;
+    owed.push({ eventKey: `stuck\u0000${rec.marker}\u0000${rec.ts}`, kind: "delivery-stuck", audience: "operator", recipient: OPERATOR, at: rec.ts,
+      body: { fault: { kind: "delivery-stuck", runId: runId || null, marker: rec.marker ?? null, packet: rec.kind ?? null, strikes: rec.strikes ?? null,
+        recover: rec.recover ?? null, nextAction: NEXT_ACTIONS["release-the-delivery"] } } });
+  }
   // The engine check: one notice per failing episode, the alert the check itself raised.
   let checks = [];
   try { checks = readdirSync(checkDir).filter((n) => n.endsWith(".check.json")); } catch { /* no check yet */ }
@@ -162,6 +180,13 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
 }
 
 // ── the record ──────────────────────────────────────────────────────────────────────────────────────────────────
+
+/** The stuck deliveries the outbox's no-progress breaker has recorded, oldest first. */
+function stuckDeliveries() {
+  let text = "";
+  try { text = readFileSync(join(config.outboxDir, "quarantine", "STUCK-ALERTS.jsonl"), "utf8"); } catch { return []; }
+  return text.split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter((r) => r?.marker && r?.ts);
+}
 
 /**
  * From when each audience is owed notices by this install's route: the moment the route began to serve it. An
@@ -240,7 +265,7 @@ export async function deliverNotices({ env = process.env, now = () => Date.now()
       let rec = readJsonSafe(path);
       if (!rec) {
         rec = { id: n.id, kind: n.kind, audience: n.audience, recipient: n.recipient, eventAt: n.at, state: "pending",
-          attempts: [], createdAt: new Date(now()).toISOString(), updatedAt: new Date(now()).toISOString() };
+          ...(n.settle ? { settle: n.settle } : {}), attempts: [], createdAt: new Date(now()).toISOString(), updatedAt: new Date(now()).toISOString() };
         writeAtomic(path, rec);
       }
       if (rec.state === "confirmed") { settleIfOwed(n, rec); continue; }
@@ -275,7 +300,9 @@ export async function deliverNotices({ env = process.env, now = () => Date.now()
 
 /** A confirmed notice to the person who placed a stopped run settles the run's owed send, once. */
 function settleIfOwed(n, rec) {
-  if (!n.settle?.runDir || sendSettled(n.settle.runDir)) return;
+  const settle = n?.settle ?? rec?.settle;
+  if (!settle?.runDir || sendSettled(settle.runDir)) return;
+  n = { ...n, settle };
   try {
     const status = readJsonSafe(join(n.settle.runDir, "status.json")) ?? {};
     settleSend({ run: { runId: n.settle.runId ?? status.runId, runDir: n.settle.runDir, slug: status.slug ?? null, codename: status.codename ?? null },
@@ -286,10 +313,62 @@ function settleIfOwed(n, rec) {
 /**
  * What the operator sees: every notice not yet confirmed, with its next action. Newest first.
  */
-export function undeliveredNotices() {
+export function undeliveredNotices({ env = process.env } = {}) {
+  const dedupe = noticeRoute(env).dedupe === true;   // a receiver that drops repeats is sent an uncertain notice again
+  const uncertain = (r) => (r.state === "ambiguous" || r.state === "attempted") && !dedupe;
   return noticeRecords().filter((r) => r.state !== "confirmed")
     .map((r) => ({ id: r.id, kind: r.kind, audience: r.audience, state: r.state, attempts: r.attempts.length,
       lastDetail: r.attempts.at(-1)?.detail ?? null, nextAttemptAt: r.nextAttemptAt ?? null, updatedAt: r.updatedAt ?? null,
-      nextAction: r.state === "ambiguous" ? NEXT_ACTIONS["settle-with-receiver"] : null }))
+      // An uncertain delivery needs the operator; a failed one is sent again by itself.
+      retriesByItself: !uncertain(r),
+      nextAction: uncertain(r) ? NEXT_ACTIONS["settle-with-receiver"] : null }))
     .sort((a, b) => String(b.updatedAt ?? "").localeCompare(String(a.updatedAt ?? "")));
+}
+
+/**
+ * The operator's answer for one notice, by its delivery id, after checking the receiver (design, 2026-11-26). A
+ * supported action, so nobody edits a record by hand:
+ *   "received"  the receiver holds it: this notice alone is confirmed, and a stopped run it told its submitter of is
+ *               settled, as a 2xx would have settled it
+ *   "absent"    the receiver does not hold it: this notice alone is sent again, under the same id, on the next pass
+ * An answer that stays unknown is not given, and the notice keeps its state. Only a notice that was sent and is not
+ * confirmed takes an answer. Returns { ok: true, id, state } or { ok: false, reason }, a code.
+ */
+export function reconcileNotice(id, answer, { now = Date.now() } = {}) {
+  if (!/^[0-9a-f]{24}$/.test(String(id ?? ""))) return { ok: false, reason: "not-a-delivery-id" };
+  if (answer !== "received" && answer !== "absent") return { ok: false, reason: "answer-is-received-or-absent" };
+  const release = takeLock();
+  if (!release) return { ok: false, reason: "a-pass-is-running" };
+  try {
+    const path = recordPath(id);
+    const rec = readJsonSafe(path);
+    if (!rec) return { ok: false, reason: "no-such-notice" };
+    if (!["ambiguous", "attempted", "failed"].includes(rec.state)) return { ok: false, reason: `not-reconcilable:${rec.state}` };
+    const at = new Date(now).toISOString();
+    const attempts = [...rec.attempts, { at, outcome: answer === "received" ? "confirmed" : "absent", by: "operator" }];
+    if (answer === "received") {
+      const next = { ...rec, state: "confirmed", updatedAt: at, nextAttemptAt: null, attempts };
+      writeAtomic(path, next);
+      settleIfOwed(null, next);
+      return { ok: true, id, state: "confirmed" };
+    }
+    writeAtomic(path, { ...rec, state: "failed", updatedAt: at, nextAttemptAt: at, attempts });
+    return { ok: true, id, state: "failed" };
+  } finally { release(); }
+}
+
+// THE OPERATOR'S COMMAND LINE. `list` prints every notice not confirmed; `received <id>` and `absent <id>` give the
+// receiver's answer for one. Every answer is JSON, and a refusal exits 4 with its reason code.
+if (isEntrypoint(import.meta.url)) {
+  const [verb, id] = process.argv.slice(2);
+  const out = (v) => process.stdout.write(JSON.stringify(v, null, 2) + "\n");
+  if (verb === "list" && !id) out(undeliveredNotices());
+  else if ((verb === "received" || verb === "absent") && id) {
+    const r = reconcileNotice(id, verb);
+    out(r);
+    if (!r.ok) process.exitCode = 4;
+  } else {
+    process.stderr.write("usage: node driver/notice-delivery.mjs list | received <delivery id> | absent <delivery id>\n");
+    process.exitCode = 2;
+  }
 }
