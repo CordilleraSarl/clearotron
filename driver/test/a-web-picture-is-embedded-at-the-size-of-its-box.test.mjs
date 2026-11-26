@@ -80,7 +80,8 @@ test("the record keeps what the site served, stores the shrunk picture, and a PN
     assert.ok(Number.isFinite(result.shrinkMs), "the time the shrinking took is not kept");
     const rec = writePictureRecord(run, { cards: new Map([[1, ["https://ostrevin.example/shop"]]]), result, seconds: 20, concurrency: 6, takenAt: "2026-11-26T10:00:00.000Z" });
     const row = rec.rows[0];
-    assert.deepEqual([row.contentType, row.bytes, row.sha256], ["image/png", served.length, sha], "what the site served is not kept as evidence");
+    assert.deepEqual([row.contentType, row.bytes, row.sha256, row.width, row.height], ["image/png", served.length, sha, 1200, 630], "what the site served is not kept as evidence");
+    assert.ok(Number.isFinite(row.shrinkMs), "a picture's own shrinking time is not kept");
     assert.equal(row.stored.contentType, "image/jpeg");
     assert.equal(readFileSync(join(run, row.file)).length, row.stored.bytes);
     assert.equal(rec.shrinkMs, result.shrinkMs);
