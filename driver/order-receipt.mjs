@@ -23,6 +23,7 @@
 // that would not open is not "no such order"). An order that belongs to another account answers `not-found`, exactly
 // as one that does not exist: neither its existence nor its reason is anybody else's to learn.
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, basename, dirname } from "node:path";
 import { deriveSlug } from "./phase0.mjs";
 import { stopReason } from "../shared/stop-reason.mjs";   // a cancelled order says it was stopped, never a blank reason
@@ -33,6 +34,32 @@ import { stopReason } from "../shared/stop-reason.mjs";   // a cancelled order s
  */
 export const ORDER_REF_MAX = 128;
 export const ORDER_REF_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${ORDER_REF_MAX - 1}}$`);
+
+// ── AN ACCOUNT'S REFERENCE IS ITS OWN ─────────────────────────────────────────────────────────────────────────────────
+// A caller that does not see every account files its order under the reference it chose plus a fixed mark of its account
+// (and of the organisation, for Generic), so two accounts' references never meet. start_run files that way; the lookup
+// resolves a reference the same way, so a caller finds its order by the reference it chose or by the one it was given.
+
+/** The fixed mark of an account's references: its account, and its organisation for Generic. */
+export const ACCOUNT_MARK_LEN = 12;
+export function accountMark({ profileKey, tenant } = {}) {
+  const account = profileKey ?? "generic";
+  const organisation = account === "generic" ? (tenant ?? "") : "";
+  return createHash("sha256").update(`${account}\u0000${organisation}`).digest("hex").slice(0, ACCOUNT_MARK_LEN);
+}
+
+/**
+ * The references `ref` may name for this caller, most specific first. A caller who sees everything names exactly what it
+ * gives. Any other names its own account's filing of it (the reference plus its mark), then the bare reference, which an
+ * order filed before references carried a mark still uses and which the scope check below still guards.
+ */
+export function referenceCandidates(ref, scope) {
+  if (scope?.everything === true) return [ref];
+  const mark = `@${accountMark({ profileKey: scope?.account ?? null, tenant: scope?.organisation ?? null })}`;
+  if (ref.endsWith(mark)) return [ref];
+  const filed = `${ref}${mark}`;
+  return filed.length <= ORDER_REF_MAX ? [filed, ref] : [ref];
+}
 
 /** The states an order can be in, in the words the receipt uses. */
 export const RECEIPT_STATES = Object.freeze({
@@ -155,8 +182,19 @@ export function receiptIn(qdir, ref, names) {
  *   { found: false, basis: "ambiguous" }                  two queue directories hold it; neither is picked
  */
 export function orderReceipt({ queueDirs, reference, scope } = {}) {
-  const ref = String(reference ?? "");
-  if (!ORDER_REF_RE.test(ref) || ref.includes("..")) return { found: false, basis: "invalid-reference" };
+  const asked = String(reference ?? "");
+  if (!ORDER_REF_RE.test(asked) || asked.includes("..")) return { found: false, basis: "invalid-reference" };
+  let couldNotLook = null;
+  for (const ref of referenceCandidates(asked, scope)) {
+    const r = receiptFor({ queueDirs, ref, scope });
+    if (r.found || r.basis === "ambiguous") return r;
+    if (r.basis === "could-not-look") couldNotLook = r;
+  }
+  return couldNotLook ?? { found: false, basis: "not-found" };
+}
+
+/** One reference, as `scope` may see it: the answer `orderReceipt` gives for that reference alone. */
+function receiptFor({ queueDirs, ref, scope }) {
   const dirs = (Array.isArray(queueDirs) ? queueDirs : []).filter((d) => typeof d === "string" && d);
   const hits = [];
   let unreadable = 0;
