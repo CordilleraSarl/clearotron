@@ -42,6 +42,16 @@ export const ALLOWANCE_SPEAKS_AT = 5
  * Null is a could-not-look and is kept distinct from zero all the way to the screen: an uncapped account
  * and an unreadable usage file are different facts, and only one of them should stop anybody.
  */
+/**
+ * THE ONE-LEFT SENTENCE (design ruling 2026-11-26): an order that counts two searches with exactly one left is
+ * refused in these words, at the screen and at every server door alike. They are the allowance line's own
+ * opening for one search left, so a reader meets one sentence however they ordered.
+ */
+export const ONE_SEARCH_LEFT = '1 search left today.'
+
+/** Whether an order that counts `searches` is over the allowance with exactly one search left (the ruling above). */
+export const overOneLeft = (left: number | null, searches: number): boolean => left === 1 && searches > 1
+
 export function searchesLeft(usage: Usage | null): number | null {
   if (!usage || !usage.capped || usage.dailyRuns == null) return null
   return Math.max(0, usage.dailyRuns - usage.today)

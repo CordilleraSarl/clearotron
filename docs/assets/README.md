@@ -8,9 +8,9 @@ written down here rather than left in a commit message.
 |---|---|---|
 | `clearotron-banner-light.svg` | The README masthead, light scheme | Hand-made brand source |
 | `clearotron-banner-dark.svg` | The same masthead for `prefers-color-scheme: dark` | Hand-made brand source |
-| `portal-clearance-report.jpg` | A finished clearance report — verdict, risk band, the four answers | Portal screenshot |
-| `portal-conflict-landscape.jpg` | Findings placed by mark similarity against goods proximity, with rights-holders by jurisdiction | Portal screenshot |
-| `portal-new-clearance.png` | The intake screen — classes, marketplaces, search depth | Portal screenshot |
+| `portal-clearance-report.jpg` | A finished clearance report — verdict, risk band, the four answers | Clearotron 0.8.0, taken on its line before the first beta: `node scripts/readme-pictures.mjs` |
+| `portal-conflict-landscape.jpg` | Findings placed by mark similarity against goods proximity, with rights-holders by jurisdiction | Clearotron 0.8.0, taken on its line before the first beta: `node scripts/readme-pictures.mjs` |
+| `portal-new-clearance.png` | The intake screen — classes, marketplaces, search depth | Clearotron 0.8.0, taken on its line before the first beta: `node scripts/readme-pictures.mjs` |
 
 ## Two things worth knowing before changing anything here
 
@@ -22,6 +22,22 @@ quietly showing a hole.
 **A picture the README embeds must be one that travels with the documentation.** Embedding one that does
 not produces a page whose image cannot load — a defect that shipped here once already, and one the test
 above now asserts against directly rather than leaving to review.
+
+## Retaking the three portal pictures
+
+`portal-new-clearance.png`, `portal-clearance-report.jpg` and `portal-conflict-landscape.jpg` show the
+portal, so they go stale whenever it changes. One command retakes all three from this checkout's own demo:
+
+```sh
+npm run build:ui
+node scripts/readme-pictures.mjs
+```
+
+It starts the demo in a throwaway home, signs in, and captures New clearance, the demo's Global
+preliminary search report, and that report's conflict landscape. The captures are in the light theme at
+1,332 × 778 CSS pixels and device scale 1.5. It writes over the three files here and prints the line for
+the table above. Only the committed demo is on screen. Run it whenever a change alters one of those
+screens or regenerates `demo/`, look at each picture before committing it, and never edit one by hand.
 
 ## Adding one
 
