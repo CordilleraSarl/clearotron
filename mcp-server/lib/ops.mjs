@@ -15,6 +15,9 @@ import { config } from "./driver.mjs";
 import { validateJob } from "../../driver/enqueue-schema.mjs";
 import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
 import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";
+import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";   // the ledger the wall counts
+import { resolveEffectiveProfile } from "../../driver/profiles.mjs";
+import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";   // one search left and an Urgent order
 import { orderUrgency } from "./urgent.mjs";   // whether this installation can run an Urgent order, as the run asks it   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
@@ -262,6 +265,23 @@ export function resolveScopedProfileKey(args, scope, verb) {
 
 // start_run — enqueue a clearotron job the runner will drain. Returns the queue id + slug; the runId/codename is
 // assigned by the runner on claim, so the caller polls list_runs(slug) / run_changes for it.
+/**
+ * The one-left sentence for a session the daily allowance binds, or null. The same count the preview reads (plan.mjs
+ * allowanceFor) and the same rule the wall applies (urgent-count.mjs). A ledger or profile that cannot be read refuses
+ * nothing: the wall still holds. Generic is answered as the preview answers it, by the wall alone.
+ */
+function oneLeftAtStart(job, scope) {
+  if (scope?.kind !== "account" || scope?.everything === true) return null;
+  try {
+    const profile = resolveEffectiveProfile(job).profile;
+    if (!profile?.key || profile.key === "generic") return null;
+    const limit = Number.isInteger(profile.runCaps?.dailyRuns) ? profile.runCaps.dailyRuns : DEFAULT_CLIENT_DAILY_RUNS;
+    const used = accountUsage({ queueDirs: config.queueDirs, account: profile.key });
+    if (!used?.complete) return null;
+    return oneLeftRefusal({ used: used.today, limit, searches: admittedSearches(job) });
+  } catch { return null; }
+}
+
 export function startRun(args = {}, { scope } = {}) {
   const agent = args.agent ? String(args.agent) : "";
   args = resolveScopedProfileKey(args, scope, "start_run");
@@ -302,6 +322,16 @@ export function startRun(args = {}, { scope } = {}) {
   // refused and never held. The job is written as Standard, so the run and its count agree with the reply.
   const urgency = orderUrgency(job);
   job = urgency.job;
+  // ONE SEARCH LEFT AND AN ORDER THAT COUNTS TWO (design, 2026-11-26): refused here in the order screen's words, as the
+  // portal's start and the runner's wall refuse it, rather than queued for the wall to refuse at claim, where this
+  // caller never sees it. Never written as Standard instead.
+  const oneLeft = oneLeftAtStart(job, scope);
+  if (oneLeft) {
+    const e = new Error(`start_run: job rejected — ${oneLeft}`);
+    e.errors = [oneLeft];
+    e.classify = "clarify";
+    throw e;
+  }
 
   mkdirSync(qdir, { recursive: true });
   const tmp = join(qdir, `${id}.json.tmp`);
