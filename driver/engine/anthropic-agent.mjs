@@ -338,14 +338,14 @@ export const OWN_SEARCH_TOOLS = Object.freeze(["WebSearch"]);
 /** The program's tools that write a file. A result that comes back an error is a write that failed. */
 const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
-export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
+export function buildClaudeArgs({ message, model, thinking, speed = "standard", resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
   const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
   const m = claudeModel(model); if (m) args.push("--model", m);
   args.push("--effort", effortFor(thinking));
-  // FAST MODE REMOVED (2026-06-17): the Opus `--settings {"fastMode":true}` knob ~2.5×'d subscription-billed
-  // usage and tripped the Claude 5-hour session cap mid-run (overage org-disabled → hard 429 → every stage
-  // nonzero_exit_1). Reverted everywhere; HIGH effort is retained on the verdict/safety stages.
+  // THE SPEED is a setting, not a flag: `fastMode` in the one `--settings` value below (stageSettings), the vendor's
+  // unattended form (https://code.claude.com/docs/en/fast-mode, "Toggle fast mode": `claude -p --settings
+  // '{"fastMode": true}'`, v2.1.205 or later). Only a judgment-tier turn of an Urgent run asks for it (engine/speed.mjs).
   // Stages WRITE their output file; acceptEdits auto-approves Write/Edit in non-interactive -p (Read is
   // always allowed). Gather tools (E3) ride --allowedTools so they never prompt either.
   args.push("--permission-mode", "acceptEdits");
@@ -399,7 +399,7 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   const granted = rd.grant ? runDir : null;
   if (granted) args.push("--add-dir", granted);
   const boundary = writeBoundarySettings({ skillsRoots: grantRoots, profilesDir, runDir: granted });
-  args.push("--settings", stageSettings(boundary));
+  args.push("--settings", stageSettings(boundary, { fast: speed === "fast" }));
   return { args, input, grantNote: rd.note };
 }
 
@@ -416,9 +416,13 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
  */
 export const READ_FENCE = Object.freeze({ blockReadsOutsideWorkingDirectories: true });
 
-/** The one `--settings` value a turn carries: the read fence, and the write boundary's hook when there is one. */
-export function stageSettings(boundary) {
-  return JSON.stringify({ permissions: { ...READ_FENCE }, ...(boundary ? JSON.parse(boundary) : {}) });
+/**
+ * The one `--settings` value a turn carries: the read fence, the write boundary's hook when there is one, and the faster
+ * speed when the turn asks for it. One value, because the program reads one `--settings`: a second would replace the
+ * first, and the boundary with it.
+ */
+export function stageSettings(boundary, { fast = false } = {}) {
+  return JSON.stringify({ permissions: { ...READ_FENCE }, ...(boundary ? JSON.parse(boundary) : {}), ...(fast ? { fastMode: true } : {}) });
 }
 
 /**
@@ -495,9 +499,9 @@ export const anthropicAgentEngine = {
   writeBoundary: "enforced",
   // The id a turn's rows record as asked for: the tier through Claude's catalog, `opus` → `anthropic/claude-opus`.
   resolveModelId(model) { return resolveModel(model); },
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, speed = "standard", timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
-    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
+    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, speed, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);
@@ -521,7 +525,7 @@ export const anthropicAgentEngine = {
     const pollMs = Math.max(50, Math.min(1000, Math.floor(Math.min(STALL, NOPROG) / 2)));  // tight enough for fast tests, ≤1s in prod
     return await new Promise((resolve) => {
       // The turn's state, which every phase below reads and writes (the phases follow the adapter).
-      const st = { resolve, resumeRef, cwd, runDir, progressFiles, streamFile, args, input, t0, STALL, NOPROG, MIN_RATE, WARMUP, hardMs, pollMs };
+      const st = { resolve, resumeRef, cwd, runDir, progressFiles, streamFile, args, input, t0, STALL, NOPROG, MIN_RATE, WARMUP, hardMs, pollMs, speed };
       st.settle = (code) => settle(st, code);   // declared before any phase, as the hoisted function it was
       if (!spawnTurn(st)) return;
       streamState(st);
@@ -597,6 +601,12 @@ function streamState(st) {
   // and no open message is a call of its own, as it always was.
   st.perMessage = new Map();
   st.openMessage = null; st.anonMessages = 0;
+  // SPEED GAUGE: the speed each API call reports it was served at (`usage.speed`), by message, as the usage above is.
+  // Read from the program's own output, never from what the turn asked for (engine/speed.mjs).
+  st.speedByMessage = new Map();
+  st.noteSpeed = (key, u) => { if (typeof u?.speed === "string" && u.speed) st.speedByMessage.set(key, u.speed); };
+  st.fastInit = null;                     // init's fast_mode_state and fast_mode_disabled_reason: the session's start
+  st.fastNotice = null;                   // the program's own notice about fast mode (out of usage credits), first one
   st.foldUsage = (key, u) => {
     if (!u) return;
     const was = st.perMessage.get(key);
@@ -845,6 +855,14 @@ function lineParser(st) {
     else if (ev.type === "system" && ev.subtype === "init") {
       // MODEL GAUGE — the session's configured model, the earliest wire statement of what will run.
       if (typeof ev.model === "string" && ev.model && !isCliLabel(ev.model)) st.wireModelInit ??= ev.model;
+      st.fastInit ??= { state: ev.fast_mode_state ?? null, reason: ev.fast_mode_disabled_reason ?? null };
+    }
+    // THE PROGRAM'S NOTICE ABOUT FAST MODE. Out of usage credits, it retries each fast request at standard speed and says so
+    // "on the message stream as a `system` message with subtype `notification`" (the vendor's fast-mode page, "Handle rate
+    // limits"). The first such notice is kept, bounded, as the row's reason.
+    else if (ev.type === "system" && ev.subtype === "notification") {
+      const text = [ev.text, ev.message, ev.notification, ev.title].find((x) => typeof x === "string" && x) ?? "";
+      if (!st.fastNotice && /fast/i.test(text)) st.fastNotice = text.slice(0, 300);
     }
     else if (ev.type === "assistant") {
       // MODEL GAUGE — the model that served THIS API call. Authoritative over init (see above).
@@ -897,7 +915,9 @@ function lineParser(st) {
       st.syncOpenAsk();
       // This block's usage, folded into its own call: the largest reading wins, so a block's early count
       // never replaces the delta's running total, and a second block of the same call adds nothing twice.
-      st.foldUsage(ev.message?.id ?? st.openMessage ?? `__assistant_${++st.anonMessages}`, mapUsage(ev.message?.usage));
+      const usageKey = ev.message?.id ?? st.openMessage ?? `__assistant_${++st.anonMessages}`;
+      st.foldUsage(usageKey, mapUsage(ev.message?.usage));
+      st.noteSpeed(usageKey, ev.message?.usage);
       if (!st.firstCall && ev.message?.usage) st.firstCall = mapUsage(ev.message.usage);
       st.progress();
     }
@@ -937,9 +957,10 @@ function lineParser(st) {
       if (t === "message_start") {
         st.openMessage = ev.event.message?.id ?? `__start_${++st.anonMessages}`;
         st.foldUsage(st.openMessage, mapUsage(ev.event.message?.usage));
+        st.noteSpeed(st.openMessage, ev.event.message?.usage);
         st.progress();
       }
-      else if (t === "message_delta") { st.foldUsage(st.openMessage ?? "__delta_without_start", mapUsage(ev.event?.usage)); st.progress(); }
+      else if (t === "message_delta") { st.foldUsage(st.openMessage ?? "__delta_without_start", mapUsage(ev.event?.usage)); st.noteSpeed(st.openMessage ?? "__delta_without_start", ev.event?.usage); st.progress(); }
       else if (t === "content_block_delta" || t === "content_block_start") st.progress();
       // THINKING GAUGE (partials): the earliest tells. Any one is sufficient; belt-and-braces so a
       // display-mode or CLI-version change cannot silently blind the gauge.
@@ -1250,6 +1271,8 @@ function wireStreams(st) {
       // Never the requested alias, and never init's answer for a turn only the CLI answered — see the
       // declaration above.
       modelWire: st.wireModelAssistant ?? (st.answeredItself ? null : st.wireModelInit),
+      // SPEED GAUGE: what the turn asked for beside what the program reported serving (speedOfClaudeTurn).
+      speed: speedOfClaudeTurn({ requested: st.speed, result: st.resultEvent, init: st.fastInit, calls: st.speedByMessage, notice: st.fastNotice }),
       // PROVIDER GAUGE: the program's own word for who served the turn, read from the result's per-model
       // usage ("firstParty" on Anthropic's own API and "foundry" on Azure Foundry, measured 2026-09-14),
       // or null when the stream never said or its models disagree. Recorded, never inferred from config.
@@ -1281,6 +1304,30 @@ function wireStreams(st) {
     });
   }
 
+
+/**
+ * One turn's speed record: what it asked for and what the program reported serving. PURE.
+ *
+ * `served` is the result's `usage.speed`, the program's word for the turn; where the result says nothing, the calls'
+ * own words decide it (`mixed` when they disagree), and null where none spoke. `calls` counts the turn's API calls by
+ * the speed each reported, so a run can say how many of its judgment-tier calls ran fast. `state` and `disabledReason`
+ * are the program's `fast_mode_state` and `fast_mode_disabled_reason` (measured on 2.1.295 and 2.1.326: `on`; `off` with
+ * `sdk_opt_in_required` when the turn did not ask), and `notice` its own words when it ran a fast request at standard
+ * speed for want of usage credits. Nothing here is inferred from what the turn asked for.
+ */
+export function speedOfClaudeTurn({ requested = "standard", result = null, init = null, calls = new Map(), notice = null } = {}) {
+  const count = { fast: 0, standard: 0, unknown: 0 };
+  for (const v of calls.values()) count[v === "fast" ? "fast" : v === "standard" ? "standard" : "unknown"]++;
+  const reported = typeof result?.usage?.speed === "string" && result.usage.speed ? result.usage.speed : null;
+  const fromCalls = count.fast && count.standard ? "mixed" : count.fast ? "fast" : count.standard ? "standard" : null;
+  const served = reported ?? fromCalls;
+  return {
+    requested, served, basis: served ? "reported" : "unknown", calls: count,
+    state: result?.fast_mode_state ?? init?.state ?? null,
+    disabledReason: result?.fast_mode_disabled_reason ?? init?.reason ?? null,
+    notice: notice ?? null,
+  };
+}
 
 function errResult(t0, e, resumeRef) {
   return {
