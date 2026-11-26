@@ -820,8 +820,8 @@
           "todos": 0
         },
         "a-dictated-search-has-one-outcome-of-its-own.test.mjs": {
-          "tests": 11,
-          "asserts": 69,
+          "tests": 13,
+          "asserts": 81,
           "skips": 0,
           "todos": 0
         },
