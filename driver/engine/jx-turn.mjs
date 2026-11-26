@@ -176,10 +176,14 @@ export async function makeJxTurnRunner({
   const cloud = auth.cloud ?? null;   // which cloud account bills, under the cloud mode; null otherwise
   return {
     vendor, authMode, cloud, engine: id,
-    async turn({ prompt }) {
+    // `extra` is what one caller's turn adds to the door's own arguments: the own web search's research-only session
+    // names its one built-in tool, keeps the program's search and its event stream (engine/mcp/own-search.mjs). It
+    // cannot change the engine, the billing mode, the model or the speed this door resolved.
+    async turn({ prompt, extra = {} }) {
       let tuple;
+      const { builtinTools, allowedTools, webSearch, streamFile } = extra ?? {};
       // Its reply is its result, so it carries no output rule (engine/common.mjs, outputRule).
-      try { tuple = await runTurn({ message: prompt, model, thinking, speed, timeoutSec, stallSec, output: { kind: "reply" } }); }
+      try { tuple = await runTurn({ message: prompt, model, thinking, speed, timeoutSec, stallSec, output: { kind: "reply" }, builtinTools, allowedTools, webSearch, streamFile }); }
       catch (e) {
         return { ok: false, cause: `the engine turn threw: ${String(e?.message ?? e).slice(0, 200)}`,
           model: null, vendor, authMode, cloud, engine: id, usage: { input: 0, output: 0 }, truncationObservable: false };

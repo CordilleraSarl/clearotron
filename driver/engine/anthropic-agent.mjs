@@ -339,7 +339,7 @@ export const OWN_SEARCH_TOOLS = Object.freeze(["WebSearch"]);
 /** The program's tools that write a file. A result that comes back an error is a write that failed. */
 const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
-export function buildClaudeArgs({ message, model, thinking, speed = "standard", footing = null, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
+export function buildClaudeArgs({ message, model, thinking, speed = "standard", footing = null, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, webSearch = false }) {
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
   const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
   const m = claudeModel(model); if (m) args.push("--model", m);
@@ -368,7 +368,10 @@ export function buildClaudeArgs({ message, model, thinking, speed = "standard", 
   // through Bash on a login with no rule allowing it. A bare name here "removes the matching tools from
   // Claude's context" (the vendor's CLI reference, `--disallowedTools`), on every call, the resumed one
   // included, so the model is never offered them. See COMMAND_TOOLS for the three names.
-  args.push("--disallowedTools", [...COMMAND_TOOLS, ...OWN_SEARCH_TOOLS].join(" "));
+  // A RESEARCH-ONLY SESSION (`webSearch`) is the one turn that keeps the program's own web search: it is handed nothing
+  // but its dictated searches, and its tool records are read back search by search (engine/mcp/own-search.mjs). Every
+  // stage removes it.
+  args.push("--disallowedTools", [...COMMAND_TOOLS, ...(webSearch === true ? [] : OWN_SEARCH_TOOLS)].join(" "));
   const cap = maxBudgetUsd ?? (process.env.CLEAROTRON_MAX_BUDGET_USD ? Number(process.env.CLEAROTRON_MAX_BUDGET_USD) : null);
   if (cap != null && Number.isFinite(cap)) args.push("--max-budget-usd", String(cap));
   // FILE ACCESS: claude's Read/Write/Edit tools are confined to cwd + --add-dir roots even under
@@ -511,9 +514,9 @@ export const anthropicAgentEngine = {
   writeBoundary: "enforced",
   // The id a turn's rows record as asked for: the tier through Claude's catalog, `opus` → `anthropic/claude-opus`.
   resolveModelId(model) { return resolveModel(model); },
-  async runTurn({ message, model, thinking, speed = "standard", footing = null, timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, speed = "standard", footing = null, timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null, webSearch = false } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
-    const { args, input, grantNote, speed: sent } = buildClaudeArgs({ message, model, thinking, speed, footing, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
+    const { args, input, grantNote, speed: sent } = buildClaudeArgs({ message, model, thinking, speed, footing, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch, webSearch });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);

@@ -202,6 +202,12 @@ export const TOOL_SCOPES = {
   get_coverage: {}, search: {},
   run_changes: {}, diff_artifact: {},
   list_runs: { crossRun: true, accountSafe: true, present: "scrub" }, search_runs: { crossRun: true },
+  // order_status answers what became of ONE order, by its reference, within the session's own visibility: the receipt
+  // (driver/order-receipt.mjs) is held to the grant before anything is read out, so an order this session may not see
+  // answers exactly as no order at all. crossRun: a run-scoped report link has no order to ask about. `passthrough`:
+  // the answer is built field by field (lib/ops.mjs orderStatus), and a client's leaves out the account and every
+  // reason but a refusal's.
+  order_status: { crossRun: true, accountSafe: true, present: "passthrough" },
   // list_profiles enumerates the firm's customer roster (not run-bound). Mark crossRun so it is allowed to
   // ops (intake) + internal (CF-authed staff) but DENIED to a run-scoped user token (an external
   // report viewer must not enumerate the client list).

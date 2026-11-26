@@ -1034,7 +1034,7 @@ export const openaiAgentEngine = {
   // `thread/resume failed: no rollout found for thread id ... (code -32600)`, exit 1 — with the control
   // (same id, same binary, its own home) resuming cleanly. So every warm-patch retry and every
   // form-repair sub-turn on the codex arm has been failing.
-  async runTurn({ message, model, thinking, speed = "standard", timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, output = FILE_OUTPUT, stallSec, stageHome: providedHome, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, speed = "standard", timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, output = FILE_OUTPUT, stallSec, stageHome: providedHome, streamFile = null, webSearch = false } = {}) {
     if (!message) throw new Error("openai-agent.runTurn: message is required");
     const t0 = Date.now();
     let codexHome;
@@ -1082,7 +1082,7 @@ export const openaiAgentEngine = {
         : { runDir, workDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
       writeFileSync(join(codexHome, "config.toml"),
         renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: codexDeveloperInstructions({ output }), toolTimeoutSec: timeoutSec, fence,
-          withheldFromCommands: codexCommandWithheld() }));
+          withheldFromCommands: codexCommandWithheld(), webSearch }));
 
       const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
       const { args, speed: sent } = buildCodexArgs({ model, thinking, speed, resumeRef, runDir });

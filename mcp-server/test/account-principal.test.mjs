@@ -108,8 +108,11 @@ test("the account tool set is the client layer + evidence + the AUDIT CHAIN + ow
   // AND THE SAME RULING'S SECOND HALF adds what-if: `what_if_plan`, `what_if_run`, `what_if_result`.
   // Over the client connector what_if_run ENQUEUES — it never spawns the engine, which is what keeps the
   // remote surfaces' "NEVER shells" property a fact about the code rather than a convention.
+  //
+  // order_status joins with start_run: a client who placed an order can ask what became of it. It reads one order by
+  // its reference, held to the session's own grant before anything is read out (driver/order-receipt.mjs).
   assert.deepEqual(allowed, ["brief", "decision_timeline", "describe_options", "get_finding", "get_run",
-    "get_search_coverage", "list_evidence", "list_findings", "list_runs", "list_searches", "plan_run",
+    "get_search_coverage", "list_evidence", "list_findings", "list_runs", "list_searches", "order_status", "plan_run",
     "read_artifact", "server_info", "start_run", "stop_run", "trace",
     "what_if_plan", "what_if_result", "what_if_run"].sort());
 });

@@ -819,6 +819,12 @@
           "skips": 6,
           "todos": 0
         },
+        "a-dictated-search-has-one-outcome-of-its-own.test.mjs": {
+          "tests": 13,
+          "asserts": 81,
+          "skips": 0,
+          "todos": 0
+        },
         "a-directory-over-four-files-has-a-front-door.test.mjs": {
           "tests": 4,
           "asserts": 14,
@@ -2661,6 +2667,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-run-whose-searches-are-its-own-keeps-one-search-service.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-run-with-nothing-chosen-says-what-doctor-says.test.mjs": {
           "tests": 4,
           "asserts": 11,
@@ -2748,6 +2760,12 @@
         "a-search-not-carried-out-says-why-in-plain-words.test.mjs": {
           "tests": 5,
           "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-search-session-runs-through-each-engine-and-keeps-its-records.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -3576,6 +3594,12 @@
         "an-older-reports-statement-counts-only-what-the-client-reads.test.mjs": {
           "tests": 1,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-order-is-found-where-it-was-placed.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -5764,8 +5788,8 @@
           "todos": 0
         },
         "no-stage-is-offered-the-engines-own-web-search.test.mjs": {
-          "tests": 4,
-          "asserts": 10,
+          "tests": 5,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -9710,6 +9734,12 @@
     "mcp-server": {
       "ext": "mjs",
       "perFile": {
+        "a-client-of-the-new-protocol-falls-back-at-every-door.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-company-created-after-the-door-starts-is-listed.test.mjs": {
           "tests": 6,
           "asserts": 16,
@@ -9777,8 +9807,8 @@
           "todos": 0
         },
         "a-reference-names-an-order-only-to-its-own-account.test.mjs": {
-          "tests": 6,
-          "asserts": 28,
+          "tests": 10,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
@@ -9820,7 +9850,7 @@
         },
         "a-write-verb-says-whether-it-happened.test.mjs": {
           "tests": 3,
-          "asserts": 28,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -9860,9 +9890,15 @@
           "skips": 0,
           "todos": 0
         },
+        "an-order-status-reads-the-workspace-it-is-given.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 1,
+          "todos": 0
+        },
         "an-urgent-order-runs-at-the-speed-this-installation-can.test.mjs": {
-          "tests": 8,
-          "asserts": 35,
+          "tests": 9,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },

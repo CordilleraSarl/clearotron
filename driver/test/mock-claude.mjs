@@ -216,6 +216,24 @@ if (argv.includes("--include-hook-events") && !bare) {
 
 send({ type: "system", subtype: "init", cwd: process.cwd(), session_id: session, model: wireModel, permissionMode: "acceptEdits", apiKeySource: keySource, tools: offeredTools, mcp_servers: [], agents, claude_code_version: "2.1.293", ...fastFields });
 
+// — MOCK_CLAUDE_WEB_SEARCH=<json>: the program's own web search, in a research-only session (engine/mcp/own-search.mjs).
+// A list of { query, allowed_domains?, urls?, searchCount?, text?, isError? }: each is a WebSearch call and its result,
+// in the program's stream-json shapes (`tool_use`, then a `user` event carrying `tool_use_result`), then a reply.
+if (process.env.MOCK_CLAUDE_WEB_SEARCH) {
+  const searches = JSON.parse(process.env.MOCK_CLAUDE_WEB_SEARCH);
+  searches.forEach((w, i) => {
+    const id = `toolu_ws_${i}`;
+    const input = { query: w.query, ...(w.allowed_domains ? { allowed_domains: w.allowed_domains } : {}) };
+    send({ type: "assistant", message: { role: "assistant", content: [{ type: "tool_use", id, name: "WebSearch", input }] }, session_id: session });
+    const urls = w.urls ?? [];
+    send({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: id, is_error: w.isError === true, content: w.text ?? "results" }] },
+      tool_use_result: { query: w.query, searchCount: w.searchCount ?? 1, results: urls.length ? [{ tool_use_id: id, content: urls.map((url) => ({ title: "t", url })) }] : [] }, session_id: session });
+  });
+  send({ type: "result", subtype: "success", is_error: false, duration_ms: 5, num_turns: 1, result: "done", stop_reason: "end_turn", session_id: session,
+    total_cost_usd: 0.001, usage: { input_tokens: 30, output_tokens: 4, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 }, ...fastFields });
+  process.exit(0);
+}
+
 // — MOCK_CLAUDE_STRAY_RELATIVE=<name>: write <name> RELATIVE to process.cwd. This is the model
 // inventing a filename instead of using the absolute path it was given, which is exactly how four
 // deliverable-shaped documents ended up in a shared tmpdir outside every run. Where the byte lands is the
