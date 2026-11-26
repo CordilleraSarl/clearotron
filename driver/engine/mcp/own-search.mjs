@@ -86,7 +86,7 @@ export function searchesFromEvents(search, events = []) {
 //     error: that is "capped".
 //   - Codex once refused a whole batch outright, and ran the same batch on a retry: a session that sent no search at
 //     all and still answered is "refused".
-export const SEARCH_OUTCOMES = Object.freeze(["found", "empty", "no-results-reported", "not-sent", "pooled", "wrong-site", "capped", "refused", "failed"]);
+export const SEARCH_OUTCOMES = Object.freeze(["found", "empty", "no-results-reported", "not-sent", "pooled", "wrong-site", "capped", "refused", "failed", "too-long"]);
 /** The outcomes worth one retry, in a smaller batch: the search was never answered, and asking again may answer it. */
 export const RETRIED_OUTCOMES = Object.freeze(["not-sent", "pooled", "refused"]);
 
@@ -292,3 +292,78 @@ export async function ownSearchAnswer(setting, { task, fetch = false, runDir = n
   const sources = [...new Set(String(text ?? "").match(/https?:\/\/[^\s)\]>"']+/g) ?? [])];
   return text && text.trim() ? { text: text.trim(), sources } : { text: null, why: r.code === 0 ? "the program gave no answer" : `the program exited ${r.code}` };
 }
+
+// ── THE DICTATED SEARCHES, IN BATCHES, WITH ONE RETRY ───────────────────────────────────────────────────────────────
+//
+// A batch is up to BATCH searches, never two with the same words and site, whose records could not be told apart. A
+// search's words longer than MAX_QUERY_CHARS are not sent: one 8,403-character query held Claude for 23 minutes and
+// Codex past 30 (measured 2026-11-26), where the grid's other service refused it at once. Searches not sent, pooled or
+// refused are asked once more, in batches of RETRY_BATCH; whatever is still unanswered after that keeps its outcome.
+export const BATCH = 20;
+export const RETRY_BATCH = 5;
+export const MAX_QUERY_CHARS = 500;
+
+/** The items in batches of at most `size`, no two in one batch with the same words and site. PURE. */
+export function batchesOf(items, size) {
+  const batches = [];
+  let rest = items;
+  while (rest.length) {
+    const seen = new Set(), take = [], left = [];
+    for (const d of rest) { const k = itemKey(d); (seen.has(k) || take.length >= size ? left : (seen.add(k), take)).push(d); }
+    batches.push(take); rest = left;
+  }
+  return batches;
+}
+
+/**
+ * Run the dictated searches through `session`, one call per batch, and one retry for what was not answered. `session`
+ * is `async (items) => ({ events, answered, seconds, usage, model, speed })`, one research-only session of the run's
+ * own AI program. Returns `{ outcomes, records }`: the last outcome of each item, in the items' order, and one record per
+ * search per attempt, for the run's file of search records. Nothing here writes.
+ */
+export async function runDictatedSearches(search, items, session, { batch = BATCH, retryBatch = RETRY_BATCH } = {}) {
+  const outcomes = new Map(), records = [];
+  const ask = async (list, size, attempt) => {
+    for (const b of batchesOf(list, size)) {
+      const r = await session(b);
+      for (const o of searchOutcomes(search, b, r.events ?? [], { answered: Boolean(r.answered) })) {
+        const key = itemKey(o);
+        outcomes.set(key, o);
+        records.push({ attempt, service: search, model: r.model ?? null, speed: r.speed ?? null, query: o.query, site: o.site,
+          sent: sent(search, o), outcome: o.outcome, links: o.results.map(({ url, title, offSite }) => ({ url, title, offSite })),
+          seconds: r.seconds ?? null, usage: r.usage ?? null, batchSize: b.length });
+      }
+    }
+  };
+  const tooLong = items.filter((d) => String(d.query ?? "").length > MAX_QUERY_CHARS);
+  for (const d of tooLong) {
+    outcomes.set(itemKey(d), { query: d.query, site: d.site ?? null, outcome: "too-long", results: [] });
+    records.push({ attempt: 1, service: search, model: null, speed: null, query: d.query, site: d.site ?? null, sent: null, outcome: "too-long", links: [], seconds: 0, usage: null, batchSize: 0 });
+  }
+  await ask(items.filter((d) => !tooLong.includes(d)), batch, 1);
+  const again = items.filter((d) => RETRIED_OUTCOMES.includes(outcomes.get(itemKey(d))?.outcome));
+  if (again.length) await ask(again, retryBatch, 2);
+  return { outcomes: items.map((d) => outcomes.get(itemKey(d))), records };
+}
+
+/**
+ * The grid program's printed ledger from the searches' outcomes, so the same reconciliation, coverage floors and
+ * receipts judge it: a cell or meaning query whose search was answered is a cell (or a receipt) with its on-site
+ * results, at most `keep`; every other outcome is a gap row naming it, never a cell that found nothing. A confirmed empty
+ * search is the one exception: it is a cell that ran and found nothing. PURE.
+ */
+export function ledgerFromOutcomes(items, outcomes, { keep = 8 } = {}) {
+  const ledger = { cells: [], extras: { pr_risk: [] }, gaps: [] };
+  items.forEach((d, i) => {
+    const o = outcomes[i];
+    const answered = o && (o.outcome === "found" || o.outcome === "empty");
+    const results = answered ? o.results.filter((r) => !r.offSite).slice(0, keep).map(({ title, url }) => ({ title, url })) : [];
+    if (d.meaning) {
+      if (answered) ledger.extras.pr_risk.push({ query: d.query, results });
+      else ledger.gaps.push(`${d.query} | connotation | own search: ${o?.outcome ?? "not-sent"}`);
+    } else if (answered) ledger.cells.push({ term: d.term, platform: d.platform, status: results.length ? "hit" : "no_hit", candidates: results });
+    else ledger.gaps.push(`${d.term} | ${d.platform} | own search: ${o?.outcome ?? "not-sent"}`);
+  });
+  return ledger;
+}
+

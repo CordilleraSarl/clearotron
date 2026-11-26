@@ -82,9 +82,68 @@ test("a session that sent no search at all and still answered refused the batch;
 });
 
 test("the outcomes are a closed list, and only the unanswered kinds are retried", () => {
-  assert.deepEqual([...SEARCH_OUTCOMES].sort(), ["capped", "empty", "failed", "found", "no-results-reported", "not-sent", "pooled", "refused", "wrong-site"]);
+  assert.deepEqual([...SEARCH_OUTCOMES].sort(), ["capped", "empty", "failed", "found", "no-results-reported", "not-sent", "pooled", "refused", "too-long", "wrong-site"]);
   assert.deepEqual([...RETRIED_OUTCOMES].sort(), ["not-sent", "pooled", "refused"]);
   for (const o of RETRIED_OUTCOMES) assert.ok(SEARCH_OUTCOMES.includes(o));
   assert.equal(onSite("https://shop.etsy.com/x", "etsy.com"), true, "a subdomain is the site");
   assert.equal(onSite("https://notetsy.com/x", "etsy.com"), false, "a name that only ends the same is not");
+});
+
+// ── THE RUNNER: batches, one retry, words too long never sent, and the ledger the grid's checks read.
+const { runDictatedSearches, ledgerFromOutcomes, MAX_QUERY_CHARS, RETRY_BATCH } = await import("../engine/mcp/own-search.mjs");
+
+test("one retry, in smaller batches, for searches not sent, pooled or refused; words too long are never sent", async () => {
+  const items = [
+    { term: "QZORVAK", platform: "etsy.com", query: "qzorvak", site: "etsy.com" },
+    { term: "QZORVAK", platform: "amazon.com", query: "qzorvak", site: "amazon.com" },
+    { term: "QZORVA", platform: "web", query: "qzorva", site: null },
+    { term: "QZORV", platform: "web", query: "qzorv", site: null },
+    { meaning: true, query: "what does qzorvak mean", site: null },
+    { term: "LONG", platform: "web", query: "x".repeat(MAX_QUERY_CHARS + 1), site: null },
+  ];
+  const calls = [];
+  const session = async (batch) => {
+    calls.push(batch.map((d) => d.query));
+    const attempt = calls.length;
+    const events = [];
+    for (const d of batch) {
+      const q = d.site ? `${d.query} site:${d.site}` : d.query;
+      if (attempt === 1 && d.query === "qzorva") continue;                       // not sent the first time
+      if (attempt === 1 && (d.query === "qzorv" || d.meaning)) continue;          // pooled below instead
+      events.push(codexSearch([q], [{ title: "t", url: d.site ? `https://${d.site}/i` : "https://example.test/i" }]));
+    }
+    if (attempt === 1) events.push(codexSearch(["qzorv", "what does qzorvak mean"], [{ title: "t", url: "https://example.test/p" }]));
+    return { events, answered: true, seconds: 1, usage: { input_tokens: 10 }, model: "gpt-6-luna", speed: "standard" };
+  };
+  const { outcomes, records } = await runDictatedSearches("codex", items, session);
+  assert.deepEqual(outcomes.map((o) => o.outcome), ["found", "found", "found", "found", "found", "too-long"]);
+  assert.ok(!calls.flat().some((q) => q.length > MAX_QUERY_CHARS), "the over-long words were never sent");
+  assert.equal(calls.length, 2, "one first batch, one retry batch");
+  assert.ok(calls[1].length <= RETRY_BATCH);
+  assert.deepEqual(calls[1].sort(), ["qzorv", "qzorva", "what does qzorvak mean"], "only the unanswered are asked again");
+  assert.ok(records.some((r) => r.attempt === 2 && r.query === "qzorva" && r.outcome === "found"));
+  assert.ok(records.some((r) => r.attempt === 1 && r.query === "qzorv" && r.outcome === "pooled"), "the first attempt's outcome is kept in the records");
+  assert.ok(records.every((r) => r.service === "codex" && "usage" in r && "seconds" in r));
+});
+
+test("the ledger: answered searches are cells and receipts with their on-site results; every other outcome is a gap", () => {
+  const items = [
+    { term: "A", platform: "etsy.com", query: "a", site: "etsy.com" },
+    { term: "B", platform: "web", query: "b", site: null },
+    { term: "C", platform: "web", query: "c", site: null },
+    { meaning: true, query: "m", site: null },
+  ];
+  const outcomes = [
+    { outcome: "found", results: [{ title: "on", url: "https://etsy.com/1", offSite: false }, { title: "off", url: "https://x.test/2", offSite: true }] },
+    { outcome: "empty", results: [] },
+    { outcome: "no-results-reported", results: [] },
+    { outcome: "pooled", results: [] },
+  ];
+  const ledger = ledgerFromOutcomes(items, outcomes);
+  assert.deepEqual(ledger.cells, [
+    { term: "A", platform: "etsy.com", status: "hit", candidates: [{ title: "on", url: "https://etsy.com/1" }] },
+    { term: "B", platform: "web", status: "no_hit", candidates: [] },
+  ]);
+  assert.deepEqual(ledger.gaps, ["C | web | own search: no-results-reported", "m | connotation | own search: pooled"]);
+  assert.deepEqual(ledger.extras.pr_risk, []);
 });
