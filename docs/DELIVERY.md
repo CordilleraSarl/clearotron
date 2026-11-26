@@ -231,8 +231,10 @@ engine check's record, never from the `.pending` markers:
 | A run stopped before delivering | yes | yes |
 | The engine check failed | | yes |
 
-A cancelled order and a parked one are owed nothing. Nothing that happened before the route was first
-configured is owed, so naming a route does not send the install's history.
+A cancelled order and a parked one are owed nothing. An audience is owed nothing from before the
+route began to serve it: naming a route does not send the install's history, and an audience moved
+from a courier to the route is not told again what the courier told it. The time is kept per audience
+in `<outbox>/deliveries/route-since.json`, and an audience the route stops serving loses it.
 
 **The request.** One `POST` per notice, `Content-Type: application/json`, header `Idempotency-Key:
 <deliveryId>`. The body carries `deliveryId`, `kind` (`order-refused`, `run-stopped`,

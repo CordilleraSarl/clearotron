@@ -9,7 +9,7 @@
 // it), and a receiver on loopback that records what it is sent and to whom. No model, no paid lookup, no real notice.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, chmodSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, chmodSync, rmSync, utimesSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -178,10 +178,12 @@ test("with no route configured, the worker sends nothing and records nothing", a
 
 // ── THE RECEIVER'S SIDE OF IT: unreachable, and the stop between its answer and the record ──────────────────────────
 
-/** An order refused at the claim, as the runner leaves it, for one company. */
-function refusedOrder(box, id, profileKey) {
-  writeFileSync(join(box.qdir, `${id}.failed`), JSON.stringify({ id, profileKey, markName: "PROBE", forwarder: `${profileKey}-desk`, forwarderEmail: `desk@${profileKey}.example` }));
-  writeFileSync(join(box.qdir, `${id}.failed.reason`), "The order was refused at the claim.\nnotify: sent\n");
+/** An order refused at the claim, as the runner leaves it, for one company; `at` dates its files. */
+function refusedOrder(box, id, profileKey, { at = null, ...job } = {}) {
+  const files = [join(box.qdir, `${id}.failed`), join(box.qdir, `${id}.failed.reason`)];
+  writeFileSync(files[0], JSON.stringify({ id, profileKey, markName: "PROBE", forwarder: `${profileKey}-desk`, forwarderEmail: `desk@${profileKey}.example`, ...job }));
+  writeFileSync(files[1], "The order was refused at the claim.\nnotify: sent\n");
+  if (at != null) for (const f of files) utimesSync(f, new Date(at), new Date(at));
 }
 
 async function pass(box, env, opts = {}) {
@@ -272,6 +274,52 @@ test("a receiver that takes the request and never answers leaves the notice ambi
     const { out } = await pass(box, routeEnv(rx.url, "submitter"), { post: (url, body, o) => postNotice(url, body, { ...o, timeoutMs: 300 }) });
     assert.equal(out.sent, 1);
     assert.equal(deliveries(box)[0].state, "ambiguous");
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
+  }
+});
+
+test("an audience moved from the courier to the route is told nothing the courier already told it", async () => {
+  const box = install();
+  const rx = await receiver();
+  const t = Date.now();
+  try {
+    const { markRouteSeen } = await pass(box, routeEnv(rx.url, "operator"), { skip: true });
+    markRouteSeen({ env: process.env, now: t - 120_000 });                 // the route serves the operator; a courier, submitters
+    refusedOrder(box, "handover-before", "demo-brand-owner", { at: t - 60_000 });
+    await pass(box, routeEnv(rx.url, "operator"));
+    assert.equal(rx.records.length, 0, "a refusal at the claim is the submitter's, and the courier holds them");
+    // The install drops its courier: the route now serves submitters too, from this moment.
+    pinEnv(process.env, "CLEAROTRON_NOTICE_AUDIENCES", "submitter,operator");
+    markRouteSeen({ env: process.env, now: t - 30_000 });
+    refusedOrder(box, "handover-after", "demo-brand-owner", { at: t });
+    await pass(box, routeEnv(rx.url, "submitter,operator"));
+    assert.deepEqual(rx.records.map((r) => r.notice.order?.reference), ["handover-after"],
+      "the refusal the courier held is not sent again; the one after the switch is");
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
+  }
+});
+
+test("two Generic organisations: each submitter gets its own notice, naming nothing of the other", async () => {
+  const box = install();
+  const rx = await receiver();
+  try {
+    const { markRouteSeen } = await pass(box, routeEnv(rx.url, "submitter"), { skip: true });
+    markRouteSeen({ env: process.env, now: Date.now() - 60_000 });
+    // The same desk, ordering for two organisations' Generic: two recipients, not one.
+    for (const [id, tenant] of [["generic-x", "orgx"], ["generic-y", "orgy"]])
+      refusedOrder(box, id, "generic", { tenant, forwarder: "shared-desk", forwarderEmail: "desk@shared.example" });
+    await pass(box, routeEnv(rx.url, "submitter"));
+    const got = rx.records.map((r) => [r.notice.order.reference, r.notice.recipient.organisation]).sort();
+    assert.deepEqual(got, [["generic-x", "orgx"], ["generic-y", "orgy"]]);
+    assert.equal(new Set(rx.records.map((r) => r.key)).size, 2, "two delivery ids");
+    for (const r of rx.records) {
+      const other = r.notice.recipient.organisation === "orgx" ? ["orgy", "generic-y"] : ["orgx", "generic-x"];
+      for (const word of other) assert.doesNotMatch(JSON.stringify(r.notice), new RegExp(word));
+    }
   } finally {
     await rx.close();
     rmSync(box.root, { recursive: true, force: true });

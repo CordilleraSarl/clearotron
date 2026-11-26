@@ -13,8 +13,9 @@
 //   a run that stopped                the person who placed it, and the operator
 //   the engine check failing          the operator
 //
-// A cancelled order was stopped on request, and a parked one resumes by itself: neither is owed a notice. Nothing is
-// owed for what happened before the route was configured, so naming a route does not send the install's history.
+// A cancelled order was stopped on request, and a parked one resumes by itself: neither is owed a notice. An audience
+// is owed nothing from before the route began to serve it, so naming a route does not send the install's history, and
+// an audience handed over from a courier is not told again what the courier told it.
 //
 // WHAT EACH AUDIENCE IS SENT. Fields, never sentences: the words a recipient reads are the owner's, and none are
 // approved yet. The person who placed an order is sent the receipt as `order_status` gives it to a company (no
@@ -38,12 +39,12 @@
 //   failed      not reached, or refused by the receiver: sent again after a wait; the search is never repeated
 //   ambiguous   the request went out and no answer came back, or a process stopped mid-send. Sent again only where
 //               the receiver drops repeats (CLEAROTRON_NOTICE_DEDUPE=1); otherwise left for the operator to settle
-import { mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync, openSync, closeSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync, openSync, closeSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { createHash } from "node:crypto";
 import { config } from "./driver.config.mjs";
 import { receiptIn } from "./order-receipt.mjs";
-import { noticeRoute, postNotice } from "./notice-route.mjs";
+import { NOTICE_AUDIENCES, noticeRoute, postNotice } from "./notice-route.mjs";
 import { engineCheckDir } from "./engine/health.mjs";
 import { sendSettled, settleSend } from "./send-settle.mjs";
 import { note } from "./log.mjs";
@@ -95,19 +96,35 @@ const clientView = (r) => ({
 const TERMINAL_MARKER = /^(.+)\.(failed|duplicate)$/;
 const atMs = (iso) => { const t = Date.parse(iso ?? ""); return Number.isFinite(t) ? t : null; };
 
+/** The latest time any of an order's terminal files was written, read without opening them. */
+function lastWritten(qdir, ref) {
+  let latest = 0;
+  for (const s of ["failed", "failed.reason", "failed.result", "duplicate", "duplicate.reason"]) {
+    try { latest = Math.max(latest, statSync(join(qdir, `${ref}.${s}`)).mtimeMs); } catch { /* not this one */ }
+  }
+  return latest;
+}
+
 /**
- * Every notice owed since `sinceMs`, read from the queue's receipts and the engine check's record. PURE over the
- * files it reads. Each: { eventKey, kind, audience, recipient, body, at, settle? }.
+ * Every notice owed, read from the queue's receipts and the engine check's record. PURE over the files it reads.
+ * `since` holds, per audience, the time from which it is owed notices (null: not served). An order written before
+ * every audience's time is passed over unread, so a pass costs what is new, not the install's whole history.
+ * Each: { id, eventKey, kind, audience, recipient, body, at, settle? }.
  */
-export function owedNotices({ queueDirs = config.queueDirs, sinceMs = 0, checkDir = engineCheckDir() } = {}) {
+export function owedNotices({ queueDirs = config.queueDirs, since = { submitter: 0, operator: 0 }, checkDir = engineCheckDir() } = {}) {
   const owed = [];
+  const served = NOTICE_AUDIENCES.filter((a) => Number.isFinite(since?.[a]));
+  if (!served.length) return owed;
+  const earliest = Math.min(...served.map((a) => since[a]));
+  const owedTo = (audience, at) => served.includes(audience) && (atMs(at) ?? 0) >= since[audience];
   for (const qdir of [...new Set((queueDirs ?? []).filter(Boolean).map((d) => resolve(d)))]) {
     let names;
     try { names = readdirSync(qdir); } catch { continue; }
     const refs = new Set(names.map((n) => TERMINAL_MARKER.exec(n)?.[1]).filter(Boolean));
     for (const ref of refs) {
+      if (lastWritten(qdir, ref) < earliest) continue;
       const r = receiptIn(qdir, ref, names);
-      if (!r || (atMs(r.updatedAt) ?? 0) < sinceMs) continue;
+      if (!r) continue;
       const submitter = submitterOf(r.job);
       const fault = { reference: r.reference, runId: r.runId ?? null, account: submitter.account, organisation: submitter.organisation };
       if (r.state === "refused") {
@@ -135,31 +152,40 @@ export function owedNotices({ queueDirs = config.queueDirs, sinceMs = 0, checkDi
   try { checks = readdirSync(checkDir).filter((n) => n.endsWith(".check.json")); } catch { /* no check yet */ }
   for (const name of checks) {
     const rec = readJsonSafe(join(checkDir, name));
-    if (!rec || rec.ok !== false || rec.lane !== "configuration" || !rec.alertedAt || (atMs(rec.alertedAt) ?? 0) < sinceMs) continue;
+    if (!rec || rec.ok !== false || rec.lane !== "configuration" || !rec.alertedAt) continue;
     const engine = name.replace(/\.check\.json$/, "");
     owed.push({ eventKey: `engine\u0000${engine}\u0000${rec.alertedAt}`, kind: "engine-check-failed", audience: "operator", recipient: OPERATOR, at: rec.alertedAt,
       body: { fault: { kind: "engine-check-failed", engine, mode: rec.mode ?? null, basis: rec.basis ?? null, headline: rec.headline ?? null, fix: rec.fix ?? null, nextAction: NEXT_ACTIONS["check-engine"] } } });
   }
-  return owed.map((n) => ({ ...n, id: deliveryId(n.eventKey, n.audience, n.audience === "operator" ? "operator" : submitterKey(n.recipient)) }));
+  return owed.filter((n) => owedTo(n.audience, n.at))
+    .map((n) => ({ ...n, id: deliveryId(n.eventKey, n.audience, n.audience === "operator" ? "operator" : submitterKey(n.recipient)) }));
 }
 
 // ── the record ──────────────────────────────────────────────────────────────────────────────────────────────────
 
-/** When this install's route was first seen configured: nothing earlier is owed. Written once. */
-export function routeSince(now = Date.now()) {
-  const held = readJsonSafe(sincePath());
-  if (Number.isFinite(atMs(held?.since))) return atMs(held.since);
-  writeAtomic(sincePath(), { since: new Date(now).toISOString() });
-  return now;
+/**
+ * From when each audience is owed notices by this install's route: the moment the route began to serve it. An
+ * audience the route stops serving loses its time, and gets a new one when it is served again, so nothing that
+ * happened while a courier held it, or while no route did, is sent to it later. Returns { submitter, operator } in
+ * epoch ms, null where not served. Writes only when something changed, and nothing on an install that never had a route.
+ */
+export function servedSince(served, now = Date.now()) {
+  const held = readJsonSafe(sincePath())?.audiences ?? null;
+  const next = Object.fromEntries(NOTICE_AUDIENCES.map((a) => [a,
+    served.includes(a) ? (Number.isFinite(atMs(held?.[a])) ? held[a] : new Date(now).toISOString()) : null]));
+  const changed = NOTICE_AUDIENCES.some((a) => (held?.[a] ?? null) !== next[a]);
+  if (changed && (held || served.length)) writeAtomic(sincePath(), { audiences: next });
+  return Object.fromEntries(NOTICE_AUDIENCES.map((a) => [a, atMs(next[a])]));
 }
 
 /**
- * Mark the moment this install's route is first seen, before the worker drains anything: a failure in the drain that
- * follows is owed its notice. Never throws; nothing on an install with no usable route.
+ * Record which audiences the route serves as the worker starts, before it drains anything: a failure in the drain that
+ * follows is owed its notice, and an audience no longer served is owed nothing from before it is served again. Runs
+ * whether or not a route is configured. Never throws.
  */
 export function markRouteSeen({ env = process.env, now = Date.now() } = {}) {
-  try { const route = noticeRoute(env); if (route.configured && route.ok) routeSince(now); }
-  catch (e) { note(`[notices] could not record when the route was first seen: ${e?.message ?? e}`); }
+  try { const route = noticeRoute(env); servedSince(route.configured && route.ok ? route.audiences : [], now); }
+  catch (e) { note(`[notices] could not record which audiences the route serves: ${e?.message ?? e}`); }
 }
 
 /** Every notice record on this install. */
@@ -208,9 +234,8 @@ export async function deliverNotices({ env = process.env, now = () => Date.now()
   if (!release) return { route, sent: 0, confirmed: 0, skipped: "another-pass" };
   let sent = 0, confirmed = 0;
   try {
-    const sinceMs = routeSince(now());
-    for (const n of owedNotices({ queueDirs, sinceMs })) {
-      if (!route.audiences.includes(n.audience)) continue;   // another audience stays with the courier, untouched
+    // An audience the route does not serve has no time, so its notices stay with the courier, untouched.
+    for (const n of owedNotices({ queueDirs, since: servedSince(route.audiences, now()) })) {
       const path = recordPath(n.id);
       let rec = readJsonSafe(path);
       if (!rec) {
