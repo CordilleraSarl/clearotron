@@ -999,8 +999,8 @@ export function worthAskingAgain(status, bytes) {
 
 /**
  * Why an image request failed, as the register said it: its status and, where the body is Signa's JSON error, the
- * error's `type` and `detail` and whether it called itself retryable. Measured on 2026-11-25: two EU logo images answered
- * 503 and the run kept only "HTTP 503", so nothing said which backend failed or whether asking again would help. PURE.
+ * error's `type` and `detail` and whether it called itself retryable, where a bare "HTTP 503" says neither which part of
+ * the register failed nor whether asking again could help. PURE.
  */
 export function imageFailureCause(status, bytes) {
   let body = null;
