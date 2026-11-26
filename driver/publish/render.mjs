@@ -34,7 +34,7 @@ import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mj
 import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { REPORT_PAGE as R, RECORD_LINKS as LINK_WORDS, KNOCKOUT_PAGE } from './strings.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
-import { logoLockup, BRAND, confPosture, PALETTE, QUADRANT_COLOURS as QC } from '../../shared/brand.mjs';
+import { logoLockup, BRAND, confPosture, PALETTE, QUADRANT_COLOURS as QC, BAND_SOFT, BAND_SOFT_TEXT } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
 import { reportPage } from './page-shell.mjs';
 import { registerRecordView, RECORD_LABELS, registrationsCount } from './register-record.mjs';
@@ -1432,7 +1432,13 @@ function dedupeScatter(findings) {
 // of "#1", "#2" links. The <title>, first in the <svg>, says what the drawing is; its count is the points drawn.
 const chartTitle = R.chartTitle;
 
-function quadrant(findings) {
+// A DOT SAYS WHICH CONFLICT IT IS (owner, 2026-11-25). Hovering a dot, or moving keyboard focus to it, shows a small
+// panel beside it with the fields the rights-holders list prints for that conflict: the number on the dot's own colour,
+// the mark and the band, then the owner and the country (keyFields, one definition for both). The link's name carries
+// the same fields for a screen reader. The panel is one element in the chart's card that the page script fills and
+// places on the side of the dot with fewer neighbouring dots; it never covers its own dot, the pointer can rest on it,
+// and Escape hides it. With scripts off the dot keeps its number as its tooltip, and nothing of this prints.
+function quadrant(findings, recordsByUri = new Map()) {
   const points = dedupeScatter(findings);
   const markers = points.map(({ f, cx, cy, on, r, pending }) => {
     // Band hexes, hardcoded on purpose: the quadrant panel stays a FIXED LIGHT surface in dark mode
@@ -1444,8 +1450,16 @@ function quadrant(findings) {
       ? `<circle cx="${X}" cy="${Y}" r="${r}" fill="${QC.pendingFill}" stroke="${fill}" stroke-width="2.5"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="${fill}">${esc(f.ordinal)}</text>`
       : `<circle cx="${X}" cy="${Y}" r="${r}" fill="${fill}" stroke="${PALETTE.ink}" stroke-opacity=".22" stroke-width="1"/><text x="${X}" y="${Y}" text-anchor="middle" dominant-baseline="central" font-size="${fs}" font-weight="900" fill="#fff">${esc(f.ordinal)}</text>`;
     const t = cardTarget(f.ordinal);
-    return t ? `<a href="#${t}"><title>#${t.slice(1)}</title>${inner}</a>` : inner;
+    if (!t) return inner;
+    const k = keyFields(f, recordsByUri);
+    const name = [String(f.ordinal), f.mark, k.chip, k.who, k.where].filter(Boolean).join(' \u00b7 ');
+    const ring = `<circle class="qring" cx="${X}" cy="${Y}" r="${r + 5}" fill="none" stroke="${PALETTE.ink}" stroke-width="2"/>`;
+    return `<a href="#${t}" aria-label="${escAttr(name)}" data-tip-n="${escAttr(f.ordinal)}" data-tip-mark="${escAttr(f.mark ?? '')}" data-tip-band="${escAttr(k.chip)}" data-tip-tone="${on ? 'med' : 'low'}" data-tip-fill="${fill}" data-tip-sub="${
+      escAttr([k.who, k.where].filter(Boolean).join(' \u00b7 '))}"><title>#${t.slice(1)}</title>${ring}${inner}</a>`;
   }).join('');
+  const tipColours = Object.entries({ ink: PALETTE.ink, sub: PALETTE.muted, 'med-bg': BAND_SOFT.med, 'med-tx': BAND_SOFT_TEXT.med,
+    'low-bg': BAND_SOFT.clear, 'low-tx': BAND_SOFT_TEXT.clear }).map(([k, v]) => `--qt-${k}:${v}`).join(';');
+  const tip = `<div class="qtip no-print" aria-hidden="true" hidden style="${tipColours}"><div class="qt1"><span class="qn"></span><span class="qm"></span><span class="qb"></span></div><div class="qs"></div></div>`;
   return `<div class="panel land">
       <svg viewBox="0 0 560 430" xmlns="http://www.w3.org/2000/svg" font-family="Plus Jakarta Sans, sans-serif">
         <title>${chartTitle(points.length)}</title>
@@ -1462,6 +1476,7 @@ function quadrant(findings) {
         <span><i style="background:${QC.secondary}"></i>${FRAMEWORK ? R.chart.secondaryWatch : R.chart.secondaryManageable}</span>
         <span><i style="background:${QC.pendingFill};border:2px solid ${QC.secondary};width:7px;height:7px"></i>${R.chart.pending}</span>
       </div>
+      ${tip}
     </div>`;
 }
 
@@ -1470,6 +1485,16 @@ function quadrant(findings) {
 // (owner-unknown, who === mark, collapses to the mark alone). Classes union ACROSS registrations —
 // registrations[0] alone under-reported multi-registration findings vs the card chip. The source token
 // keeps the house sentence case ('Register' / 'Common-law') and never wraps mid-word.
+// What the rights-holders list prints for one conflict, beyond its number and mark: the band chip, the holder where it is
+// not the mark itself, and the country the list groups it under. The chart's dot panel reads the same fields.
+const sameName = (a, b) => String(a || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() === String(b || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+function keyFields(f, recordsByUri = new Map()) {
+  const chip = (FRAMEWORK && f.composite == null) ? (f.band != null ? String(f.band) : '\u2014') : `C${f.composite}`;
+  const holder = recordOwner(f, recordsByUri) || f.owner?.name || f.mark;   // doc-31 step 4: bound from the record
+  const code = regionCode(f);
+  return { chip, holder, who: holder && !sameName(holder, f.mark) ? holder : '', where: code === COMMON_LAW ? R.key.commonLawGroup : (regionName(code) || code) };
+}
+
 function keyRow(f, recordsByUri) {
   const on = isOnField(f);
   const kn = on ? QC.onField : QC.secondary;   // matches this row's quadrant marker — light ramp, see quadrant()
@@ -1477,11 +1502,10 @@ function keyRow(f, recordsByUri) {
   const cls = [...new Set((f.owner?.registrations || []).flatMap((r) => Array.isArray(r.classes) ? r.classes : []))]
     .map(Number).filter((x) => !Number.isNaN(x)).sort((a, b) => a - b).join('/');
   const src = sourceChip(f.source?.source_type || '').label;
-  const who = recordOwner(f, recordsByUri) || f.owner?.name || f.mark;   // doc-31 step 4: bound from the record
-  const chip = (FRAMEWORK && f.composite == null) ? (f.band != null ? esc(f.band) : '—') : `C${f.composite}`;
-  const nrm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const { chip: chipText, who } = keyFields(f, recordsByUri);
+  const chip = esc(chipText);
   const subParts = [];
-  if (who && nrm(who) !== nrm(f.mark)) subParts.push(esc(who));
+  if (who) subParts.push(esc(who));
   if (cls) subParts.push(R.key.classes(esc(cls)));
   if (src) subParts.push(`<span style="white-space:nowrap">${esc(src)}</span>`);
   const t = cardTarget(f.ordinal);
@@ -2460,6 +2484,34 @@ function _cardHashGo(){var id=location.hash.slice(1);if(id.charAt(0)!=='c'||!/^[
 document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a[href^="#c"]'):null;if(!a)return;var id=(a.getAttribute('href')||'').slice(1);if(id.charAt(0)!=='c'||!/^[0-9]+$/.test(id.slice(1)))return;var el=document.getElementById(id);if(!el)return;_cardReveal(el);e.preventDefault();try{if(history.replaceState)history.replaceState(null,'','#'+id);}catch(err){}el.scrollIntoView({behavior:(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)?'auto':'smooth',block:'start'});});
 window.addEventListener('hashchange',_cardHashGo);
 window.addEventListener('load',_cardHashGo);
+(function(){var land=document.querySelector('.panel.land'),tip=land&&land.querySelector('.qtip');if(!tip)return;
+var links=[].slice.call(land.querySelectorAll('svg a[data-tip-n]')),cur=null,timer=null;
+links.forEach(function(a){var t=a.querySelector('title');if(t)a.removeChild(t);});
+function dot(a){var c=a.querySelectorAll('circle'),r=c[c.length-1].getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,r:r.width/2};}
+function keyFocus(a){try{return a.matches(':focus-visible');}catch(e){return true;}}
+function place(a){var P=land.getBoundingClientRect(),d=dot(a),w=tip.offsetWidth,h=tip.offsetHeight,g=10,m=8,x=d.x-P.left,y=d.y-P.top;
+var cx=Math.min(Math.max(x-w/2,m),P.width-w-m),cy=Math.min(Math.max(y-h/2,m),P.height-h-m);
+var spots=[{l:x-d.r-g-w,t:cy},{l:x+d.r+g,t:cy},{l:cx,t:y-d.r-g-h},{l:cx,t:y+d.r+g}];
+var inside=spots.filter(function(p){return p.l>=m&&p.l+w<=P.width-m&&p.t>=m&&p.t+h<=P.height-m;});
+var others=links.filter(function(o){return o!==a;}).map(dot);
+function covered(p){return others.filter(function(o){var ox=o.x-P.left,oy=o.y-P.top;return ox+o.r>p.l&&ox-o.r<p.l+w&&oy+o.r>p.t&&oy-o.r<p.t+h;}).length;}
+var best=inside.length?inside.sort(function(p,q){return covered(p)-covered(q);})[0]:{l:cx,t:Math.min(y+d.r+g,P.height-h-m)};
+tip.style.left=Math.round(best.l)+'px';tip.style.top=Math.round(best.t)+'px';}
+function show(a){clearTimeout(timer);if(cur&&cur!==a)cur.classList.remove('qhot');cur=a;a.classList.add('qhot');
+var n=tip.querySelector('.qn'),b=tip.querySelector('.qb');n.textContent=a.getAttribute('data-tip-n');n.style.background=a.getAttribute('data-tip-fill');
+tip.querySelector('.qm').textContent=a.getAttribute('data-tip-mark');b.textContent=a.getAttribute('data-tip-band');b.className='qb '+a.getAttribute('data-tip-tone');
+tip.querySelector('.qs').textContent=a.getAttribute('data-tip-sub')||'';tip.hidden=false;place(a);}
+function hide(){clearTimeout(timer);tip.hidden=true;if(cur)cur.classList.remove('qhot');cur=null;}
+function soon(){clearTimeout(timer);timer=setTimeout(hide,200);}
+links.forEach(function(a){
+a.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse')show(a);});
+a.addEventListener('pointerleave',function(e){if(e.pointerType==='mouse')soon();});
+a.addEventListener('focus',function(){if(keyFocus(a))show(a);});
+a.addEventListener('blur',function(){if(cur===a)hide();});});
+tip.addEventListener('pointerenter',function(){clearTimeout(timer);});
+tip.addEventListener('pointerleave',soon);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!tip.hidden)hide();});
+window.addEventListener('beforeprint',hide);})();
 window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.dataset.o=d.open?'1':'';});document.querySelectorAll('details.sub-more').forEach(function(d){d.open=true;});document.querySelectorAll('.card').forEach(function(c){var b=c.querySelector('input.pickbox');if(b&&!b.checked)return;c.querySelectorAll('details').forEach(function(d){d.open=true;});for(var p=c.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});});
 window.addEventListener('afterprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=d.dataset.o==='1';});document.querySelectorAll('.gname[data-screen]').forEach(function(g){g.textContent=g.dataset.screen;delete g.dataset.screen;});_hidden.forEach(function(c){c.classList.remove('print-hidden');});_hidden=[];});
 ${EXPORT_MENU_JS}`;
@@ -2855,7 +2907,7 @@ function clearanceContext(parsed, findings = [], coverage = [], opts = {}) {
   let findingsSections, covNum;
   if (!DISPOSITION_MODE) {
     findingsSections = `${onField.length ? `<div class="sec" id="findings"><span class="num"></span><h2>${R.findings.landscape}</h2></div>
-  <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
+  <div class="landwrap">${quadrant(sorted, recordsByUri)}${keyPanel(sorted, recordsByUri)}</div>
 
   <div class="sec" id="conflicts"><span class="num"></span><h2>${R.strip.conflicts}</h2></div>
   ${conflictCards(onField, cardFor, recordsByUri)}` : ''}
@@ -2870,7 +2922,7 @@ function clearanceContext(parsed, findings = [], coverage = [], opts = {}) {
     const num = () => String(++secNum).padStart(2, '0');
     const landscape = onField.length
       ? `<div class="sec" id="findings"><span class="num"></span><h2>${R.findings.landscape}</h2></div>
-  <div class="landwrap">${quadrant(sorted)}${keyPanel(sorted, recordsByUri)}</div>
+  <div class="landwrap">${quadrant(sorted, recordsByUri)}${keyPanel(sorted, recordsByUri)}</div>
 
   <div class="sec" id="conflicts"><span class="num"></span><h2>${R.strip.conflicts}</h2></div>
   ${conflictCards(onField, cardFor, recordsByUri)}`

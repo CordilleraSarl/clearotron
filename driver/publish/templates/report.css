@@ -173,6 +173,23 @@
   .land{padding:14px 14px 6px}
   .land svg{width:100%;height:auto;display:block}
   .land svg a{cursor:pointer}
+  /* A dot's panel (owner, 2026-11-25): a dark ring on the dot under the pointer or keyboard focus, and one small panel in
+     the chart's card that the page script fills and places. The chart's card stays a light surface in the dark theme, so
+     the panel's colours are the light ones, handed in by the renderer as custom properties. */
+  .land{position:relative}
+  .land svg a .qring{display:none}
+  .land svg a:hover .qring,.land svg a:focus-visible .qring,.land svg a.qhot .qring{display:inline}
+  .land svg a:focus-visible{outline:none}
+  .qtip{position:absolute;z-index:5;width:262px;max-width:calc(100% - 16px);box-sizing:border-box;padding:12px 14px;background:#FFFDF9;border:1px solid #D8CCB8;border-radius:10px;box-shadow:0 1px 2px rgba(37,9,2,.05),0 10px 30px rgba(37,9,2,.12);display:flex;flex-direction:column;gap:8px;color:var(--qt-ink);font-family:var(--font);text-align:left}
+  .qtip[hidden]{display:none}
+  .qtip .qt1{display:flex;align-items:center;gap:9px}
+  .qtip .qn{width:22px;height:22px;border-radius:50%;color:var(--qt-ink);font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+  .qtip .qm{font-size:15px;font-weight:700;min-width:0;overflow-wrap:anywhere}
+  .qtip .qb{margin-left:auto;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap;flex:none}
+  .qtip .qb.med{background:var(--qt-med-bg);color:var(--qt-med-tx)}
+  .qtip .qb.low{background:var(--qt-low-bg);color:var(--qt-low-tx)}
+  .qtip .qs{font-size:12.5px;color:var(--qt-sub);line-height:1.45}
+  .qtip .qs:empty{display:none}
   .keypanel{padding:16px 18px;display:flex;flex-direction:column}
   .keypanel .label{margin-bottom:6px}
   .keyhint{font-size:11.5px;color:var(--slate);margin:0 0 12px}

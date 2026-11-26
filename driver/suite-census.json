@@ -231,6 +231,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-chart-dot-says-which-conflict-it-is.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-check-does-not-read-another-accounts-processes.test.mjs": {
           "tests": 6,
           "asserts": 15,

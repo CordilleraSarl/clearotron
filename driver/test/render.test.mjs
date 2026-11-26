@@ -1580,7 +1580,8 @@ test("wp50: the C/L group renders AFTER the region list, labelled and cross-link
   assert.match(html, /\(<a href="#c2">[^<]*<\/a>\)/, "cross-link to the common-law card, which the page draws");
   assert.match(html, /id="c2"/);
   const usIdx = html.indexOf('<span class="rcode">US</span>');
-  const clIdx = html.indexOf('Common-law / marketplace');
+  // The C/L row itself: the chart's dots now name a common-law conflict's group too, above the key.
+  const clIdx = html.indexOf('<span class="rcode">C/L</span>');
   assert.ok(usIdx > 0 && clIdx > usIdx, "C/L block sits after the region list");
   // no-CL run: no C/L block at all
   const none = renderHtml(parsedOf(REPORT), [findings[0]], COVERAGE, {});
