@@ -3177,6 +3177,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-web-picture-is-embedded-at-the-size-of-its-box.test.mjs": {
+          "tests": 7,
+          "asserts": 34,
+          "skips": 0,
+          "todos": 0
+        },
         "a-what-if-claims-only-what-the-manifest-shows.test.mjs": {
           "tests": 4,
           "asserts": 14,
