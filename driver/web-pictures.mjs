@@ -209,12 +209,14 @@ export async function fetchBytes(rawUrl, { signal, maxBytes = 5 * 1024 * 1024, a
  * cannot be shrunk, or is still being shrunk at the limit, gains `notStored` with the reason and keeps no bytes.
  *
  * @param {string[]} pages
- * `signal` ends the step early, as its limit would; `onRows` is handed the live rows as soon as they exist.
+ * `compareFrontPages` asks each inner page's front page and applies frontPageRule (a clearance); `repeatedOnSite` applies
+ * repeatedPreviewRule to the pages collected, with no extra fetch (a Knockout). `signal` ends the step early, as its
+ * limit would; `onRows` is handed the live rows as soon as they exist.
  *
- * @param {{seconds?: number, concurrency?: number, fetcher?: typeof fetchBytes, now?: () => number, compareFrontPages?: boolean, shrink?: boolean, makeShrinker?: typeof pictureShrinker, signal?: AbortSignal|null, onRows?: ((rows: object[]) => void)|null}} [opts]
+ * @param {{seconds?: number, concurrency?: number, fetcher?: typeof fetchBytes, now?: () => number, compareFrontPages?: boolean, repeatedOnSite?: boolean, shrink?: boolean, makeShrinker?: typeof pictureShrinker, signal?: AbortSignal|null, onRows?: ((rows: object[]) => void)|null}} [opts]
  */
 export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SECONDS, concurrency = PICTURE_CONCURRENCY, fetcher = fetchBytes, now = () => performance.now(),
-  compareFrontPages = true, shrink = true, makeShrinker = pictureShrinker, signal = null, onRows = null } = {}) {
+  compareFrontPages = true, repeatedOnSite = false, shrink = true, makeShrinker = pictureShrinker, signal = null, onRows = null } = {}) {
   const list = [...new Set((Array.isArray(pages) ? pages : []).map(String))];
   // Each inner page's site front page is asked right after it, in the same pool and on the same clock, for the rule of
   // a site's general card (frontPageRule); a front page a card cites is not asked twice.
@@ -272,6 +274,7 @@ export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SEC
     await Promise.all(shrinking);
   } finally { if (timer) clearTimeout(timer); shrinker?.close(); }
   if (compareFrontPages) frontPageRule(rows);
+  if (repeatedOnSite) repeatedPreviewRule(rows);
   const shrinkMs = rows.reduce((a, r) => a + (Number.isFinite(r.shrinkMs) ? r.shrinkMs : 0), 0);
   return { rows, ms: Math.round(now() - t0), aborted: abort.signal.aborted, ...(shrinker ? { shrinkMs } : {}) };
 }
@@ -358,6 +361,27 @@ export function frontPageRule(rows) {
   return rows;
 }
 
+/**
+ * A SITE'S REPEATED PREVIEW, for a Knockout (2026-11-26), which fetches no front page to compare with: among the pages
+ * already collected, a picture whose bytes, before any resizing, repeat on two or more different pages of one site is
+ * that site's generic preview, and is dropped (`general: true`) on each of them, except on a cited front page, where it
+ * is the use evidence. One page cited by several cards is one page, so a repeated citation alone drops nothing.
+ * MUTATES the rows.
+ */
+export function repeatedPreviewRule(rows) {
+  const bySiteAndBytes = new Map();
+  for (const r of rows) {
+    if (r.forComparison || r.state !== "fetched" || !r.sha256) continue;
+    const key = `${r.site} ${r.sha256}`;
+    bySiteAndBytes.set(key, [...(bySiteAndBytes.get(key) ?? []), r]);
+  }
+  for (const list of bySiteAndBytes.values()) {
+    if (new Set(list.map((r) => r.page)).size < 2) continue;
+    for (const r of list) if (!isFrontPage(r.page)) r.general = true;
+  }
+  return rows;
+}
+
 // ── BESIDE THE REPORT, NEVER IN ITS WAY ─────────────────────────────────────────────────────────────────────────────
 //
 // The step can start while the report is still being written, from the cards as they stand then, and run beside it
@@ -371,12 +395,12 @@ export function frontPageRule(rows) {
  * once with a handle whose `rows` fill in as pages and pictures finish; `stop()` ends the step; `done` resolves when it
  * has ended, and never rejects. Nothing is written until freezePictures.
  */
-export function startPictureStep({ cards, seconds = CLEARANCE_PICTURE_SECONDS, concurrency = PICTURE_CONCURRENCY, compareFrontPages = true, now = () => performance.now(), ...seams }) {
+export function startPictureStep({ cards, seconds = CLEARANCE_PICTURE_SECONDS, concurrency = PICTURE_CONCURRENCY, compareFrontPages = true, repeatedOnSite = false, now = () => performance.now(), ...seams }) {
   const stopper = new AbortController();
-  const handle = { rows: [], startedAt: new Date().toISOString(), t0: now(), seconds, concurrency, compareFrontPages, endedMs: null, result: null,
+  const handle = { rows: [], startedAt: new Date().toISOString(), t0: now(), seconds, concurrency, compareFrontPages, repeatedOnSite, endedMs: null, result: null,
     stop: () => stopper.abort() };
   const pages = [...new Set([...(cards ?? new Map()).values()].flat())];
-  handle.done = fetchPagePictures(pages, { seconds, concurrency, compareFrontPages, now, signal: stopper.signal, onRows: (rows) => { handle.rows = rows; }, ...seams })
+  handle.done = fetchPagePictures(pages, { seconds, concurrency, compareFrontPages, repeatedOnSite, now, signal: stopper.signal, onRows: (rows) => { handle.rows = rows; }, ...seams })
     .then((result) => { handle.result = result; handle.endedMs = Math.round(now() - handle.t0); }, () => { handle.endedMs = Math.round(now() - handle.t0); });
   return handle;
 }
@@ -408,6 +432,7 @@ export function freezePictures(runDir, handle, finalCards, { now = () => perform
   // A copy of each row as it stands: what finishes after this line changes nothing here.
   const snap = handle.rows.map((r) => ({ ...r }));
   if (handle.compareFrontPages) frontPageRule(snap);
+  if (handle.repeatedOnSite) repeatedPreviewRule(snap);
   let stale = 0, unfinished = 0;
   for (const r of snap) {
     if (r.forComparison) { r.data = null; continue; }
