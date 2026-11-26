@@ -9748,7 +9748,7 @@
         },
         "a-read-tool-answers-in-the-shape-it-declares.test.mjs": {
           "tests": 2,
-          "asserts": 10,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },

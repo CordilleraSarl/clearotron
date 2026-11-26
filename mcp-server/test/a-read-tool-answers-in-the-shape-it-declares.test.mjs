@@ -45,7 +45,7 @@ const { makeHttpHandler } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
 const { mintToken } = await import("../../shared/scope.mjs");
-const { WRITE_VERBS, outputSchemaFor } = await import("../lib/result-shapes.mjs");
+const { WRITE_VERBS, DOCUMENT_READERS, outputSchemaFor } = await import("../lib/result-shapes.mjs");
 const { config } = await import("../lib/driver.mjs");
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -156,6 +156,11 @@ async function sweep(label, client, runIds) {
         .catch((e) => assert.fail(`${label}: ${t.name} ${JSON.stringify(args)} — ${e.message}`));
       if (r.isError) continue;   // a refusal is not a result; the verbs' refusals have their own test
       assert.ok(r.structuredContent, `${label}: ${t.name} answered with no structured result`);
+      // THE TEXT AND THE STRUCTURED ANSWER ARE ONE ANSWER: a list rides under `items`, a report reader adds `document`.
+      const text = JSON.parse(r.content[0].text);
+      const { document: _doc, ...rest } = r.structuredContent;
+      assert.deepEqual(Array.isArray(text) ? { items: text } : text, DOCUMENT_READERS.includes(t.name) ? rest : r.structuredContent,
+        `${label}: ${t.name} ${JSON.stringify(args)} — the structured answer is not the text's answer`);
       checked.set(t.name, (checked.get(t.name) ?? 0) + 1);
     }
   }
