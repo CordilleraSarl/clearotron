@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "runId": "fixture-clearance-talvorene-2026-11-26-report-pages",
+  "slug": "fixture-clearance-talvorene",
+  "codename": "report-pages",
+  "date": "2026-11-26",
+  "ref": "FIXTURE-clearance-the-read",
+  "markName": "TALVORENE",
+  "state": "delivered",
+  "engineCommit": "0000000000000000000000000000000000000000",
+  "startedAt": "2026-11-26T09:00:00.000Z",
+  "updatedAt": "2026-11-26T09:05:00.000Z",
+  "deliveredAt": "2026-11-26T09:05:00.000Z",
+  "endedAt": "2026-11-26T09:05:00.000Z",
+  "tier": "Moderate",
+  "statement": "Moderate"
+}

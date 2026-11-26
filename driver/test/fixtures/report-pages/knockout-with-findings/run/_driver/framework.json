@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "framework_key": "fixture-triage",
+  "title": "Fixture triage ladder",
+  "source_deck": "Invented for the report-page guard; five rating tiers",
+  "entity_label": "the client",
+  "bands": [
+    { "label": "Very High", "tone": "severe" },
+    { "label": "High", "tone": "high" },
+    { "label": "Medium", "tone": "medium" },
+    { "label": "Manageable", "tone": "low" },
+    { "label": "Low", "tone": "minimal" }
+  ],
+  "structure": { "kind": "bands", "display_note": "Knockout triage bands." }
+}

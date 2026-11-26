@@ -16,7 +16,8 @@ The other four files serve those two:
 - `no-network.mjs` is preloaded into every scenario process and refuses any connection that leaves the machine.
 - `workbook-entries.mjs` reads a workbook's entries so that only its two generation timestamps are set aside.
 
-One test does use `publish-compare.mjs`: `render-frozen.test.mjs` compares each demo run's report page with the record
-its `pages` command stores in `driver/test/fixtures/demo-report-pages.json`.
+One test does use `publish-compare.mjs`: `render-frozen.test.mjs` compares the report page of each demo run, and of each
+saved run under `driver/test/fixtures/report-pages/`, with the record its `pages` command stores in
+`driver/test/fixtures/demo-report-pages.json`.
 
 Usage is at the top of each tool.
