@@ -221,6 +221,22 @@ test("(teal-gantry regression) reconcile LEAVES a delivery-blocking stale stamp 
   rmSync(d2, { recursive: true, force: true });
 });
 
+test("reconcileStamps: a label whose inputs it cannot compute keeps the record its stage wrote", () => {
+  // A Knockout stage's label is not in the clearance's table of stage inputs, so the reconcile computes nothing for it.
+  // Writing that empty fingerprint over the stamp made the next pass read "no record of its inputs" and run it again.
+  const d = runDir();
+  const order = write(join(d, "knockout-order.json"), "an invented order");
+  writeStamp(d, "knockout-intake", [order]);
+  const before = readStamp(d, "knockout-intake");
+  assert.ok(before.inputs.length, "the stage wrote a record of what it read");
+  assert.equal(reconcileStamps(d, () => []), 0, "an empty fingerprint replaced a recorded one");
+  assert.deepEqual(readStamp(d, "knockout-intake"), before, "the record changed");
+  // A stage that recorded no inputs and still computes none is left as it was too.
+  writeStamp(d, "matter-frame", []);
+  assert.equal(reconcileStamps(d, () => []), 0);
+  rmSync(d, { recursive: true, force: true });
+});
+
 test("reconcileStamps: a success-pass exclude is empty/null → reconciles everything, exactly as before", () => {
   const d = runDir();
   const a = write(join(d, "a.md"), "A");

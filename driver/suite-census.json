@@ -885,6 +885,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failed-knockout-pass-keeps-what-its-stages-read.test.mjs": {
+          "tests": 1,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-failed-repair-rolls-back.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -7246,8 +7252,8 @@
           "todos": 0
         },
         "stage-freshness.test.mjs": {
-          "tests": 27,
-          "asserts": 83,
+          "tests": 28,
+          "asserts": 87,
           "skips": 0,
           "todos": 0
         },
