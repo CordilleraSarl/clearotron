@@ -79,6 +79,7 @@ import { authorize, visibleTools, USER_ARTIFACTS, ACCOUNT_ARTIFACTS, accountMayR
 // this file already loads, so there is nothing here for a lazy import to save.
 import { accountRun, accountTrace, accountTimeline, accountFinding, accountFindingList,
   accountWhatIfPlan, accountWhatIfQueued, accountWhatIfResult, CLIENT_FAILURE_NOTE as clientFailureNote } from "./lib/audit-view.mjs";
+import { outputSchemaFor, structuredResult, structuredRefusal } from "./lib/result-shapes.mjs";   // each tool's declared result (mcp-server/result-shapes.json)
 import { scrubMarkdown, scrubBody, scrubFrontMatter, scrubCards } from "./lib/scrub.mjs";
 import { evidenceRecords, searchLog, coverageStatement, registrationGoods, deliveredRegistration } from "./lib/evidence.mjs";
 // The knockout lane's projections. Every audit tool below branches on `isKnockoutRun` because the
@@ -906,10 +907,25 @@ export function withAnnotations(def) {
   return { ...def, annotations: { readOnlyHint: readOnlyFor(def.name) } };
 }
 
+/** The tool's declared result for this session's audience (lib/result-shapes.mjs); a tool that declares none is listed as before. */
+export function withOutputSchema(def, kind) {
+  const outputSchema = outputSchemaFor(def.name, { client: CLIENT_KINDS.has(kind) });
+  return outputSchema ? { ...def, outputSchema } : def;
+}
+
+/**
+ * A refused call: the same text as ever, and for a write verb the refusal's own sentence in a named field as well, so a
+ * caller can tell a refusal from a verb that ran without parsing the sentence.
+ */
+function refusal(name, text, reason) {
+  const structured = structuredRefusal(name, reason);
+  return { isError: true, content: [{ type: "text", text }], ...(structured ? { structuredContent: structured } : {}) };
+}
+
 export function attachHandlers(server, { scope = { kind: "ops", runId: null }, local = true } = {}) {
   const demo = demoServing();
   const allow = visibleTools({ kind: scope.kind, local, demo });
-  const toolDefs = TOOL_DEFS.filter((d) => allow(d.name)).map((d) => withAnnotations(demo ? inDemo(describeForAudience(d, scope.kind), scope.kind) : describeForAudience(d, scope.kind)));
+  const toolDefs = TOOL_DEFS.filter((d) => allow(d.name)).map((d) => withOutputSchema(withAnnotations(demo ? inDemo(describeForAudience(d, scope.kind), scope.kind) : describeForAudience(d, scope.kind)), scope.kind));
   server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: toolDefs }));
 
   // Prompts are guidance, like the pack: offered to the two client audiences, empty for everyone else.
@@ -931,7 +947,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     // (run-pinned) args to dispatch. The single chokepoint every tool call flows through.
     let authedArgs;
     try { authedArgs = authorize(scope, name, args); }
-    catch (e) { log(`authz deny ${name} [${scope.kind}]: ${e.message}`); return { isError: true, content: [{ type: "text", text: `FORBIDDEN (${name}): ${e.message}` }] }; }
+    catch (e) { log(`authz deny ${name} [${scope.kind}]: ${e.message}`); return refusal(name, `FORBIDDEN (${name}): ${e.message}`, e.message); }
     // THE LISTING IS THE WALL. A tool this session's audience is not shown is one it cannot call: this
     // used to filter only the listing, and a hidden tool called by name ran anyway once authorize()
     // passed it. That is how an ops token reached what_if_run over HTTP, where the listing hides it and
@@ -951,7 +967,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
         if (run) assertAccountAccess(scope, runAccountKey(run), `run "${authedArgs.runId}"`, runOrganisation(run));
       } catch (e) {
         log(`account deny ${name} [${scope.sub ?? scope.kind}]: ${e.message}`);
-        return { isError: true, content: [{ type: "text", text: `FORBIDDEN (${name}): ${e.message}` }] };
+        return refusal(name, `FORBIDDEN (${name}): ${e.message}`, e.message);
       }
     }
     try {
@@ -961,10 +977,12 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
       if (Array.isArray(scope?.accounts)) result = filterByAccounts(scope, name, result);
       // CLIENT VIEW: a client principal gets the client cut of artifact text ( R1).
       result = presentForPrincipal(scope, name, result);
-      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      // THE TEXT IS TODAY'S, BYTE FOR BYTE; the structured result rides beside it for a tool that declares one.
+      const structured = structuredResult(name, result);
+      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }], ...(structured ? { structuredContent: structured } : {}) };
     } catch (e) {
       log(`tool ${name} error: ${e.message}`);
-      return { isError: true, content: [{ type: "text", text: `ERROR (${name}): ${e.message}` }] };
+      return refusal(name, `ERROR (${name}): ${e.message}`, e.message);
     }
   });
 

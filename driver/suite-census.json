@@ -9680,6 +9680,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-write-verb-says-whether-it-happened.test.mjs": {
+          "tests": 3,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
         "account-audit-chain.test.mjs": {
           "tests": 12,
           "asserts": 52,

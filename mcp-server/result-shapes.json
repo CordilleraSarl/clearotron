@@ -1,0 +1,592 @@
+{
+  "start_run": {
+    "all": {
+      "type": "object",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok",
+            "id",
+            "agent",
+            "queue",
+            "queued",
+            "warnings",
+            "queuePath",
+            "queueWatched",
+            "note"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "queued"
+            },
+            "ok": {
+              "const": true
+            },
+            "id": {
+              "type": "string"
+            },
+            "agent": {
+              "type": "string"
+            },
+            "queue": {
+              "type": "string"
+            },
+            "queued": {
+              "const": true
+            },
+            "classify": {},
+            "warnings": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "queuePath": {
+              "type": "string"
+            },
+            "queueWatched": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "refused"
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "stop_run": {
+    "all": {
+      "type": "object",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok",
+            "action",
+            "id",
+            "note"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "dequeued"
+            },
+            "ok": {
+              "const": true
+            },
+            "action": {
+              "const": "dequeued"
+            },
+            "id": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok",
+            "action",
+            "id",
+            "note"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "already-claimed"
+            },
+            "ok": {
+              "const": false
+            },
+            "action": {
+              "const": "already-claimed"
+            },
+            "id": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok",
+            "action",
+            "runId",
+            "state",
+            "note"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "noop"
+            },
+            "ok": {
+              "const": false
+            },
+            "action": {
+              "const": "noop"
+            },
+            "runId": {
+              "type": "string"
+            },
+            "state": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok",
+            "action",
+            "runId",
+            "state",
+            "statusWritten",
+            "note"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "cancelled"
+            },
+            "ok": {
+              "const": true
+            },
+            "action": {
+              "const": "cancelled"
+            },
+            "runId": {
+              "type": "string"
+            },
+            "state": {
+              "const": "cancelled"
+            },
+            "statusWritten": {
+              "type": "boolean"
+            },
+            "immediate": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok",
+            "action",
+            "runId",
+            "requestedAt",
+            "note"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "already-stopping"
+            },
+            "ok": {
+              "const": true
+            },
+            "action": {
+              "const": "already-stopping"
+            },
+            "runId": {
+              "type": "string"
+            },
+            "requestedAt": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "immediate": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok",
+            "action",
+            "runId",
+            "requestedAt",
+            "note"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "cancel-requested"
+            },
+            "ok": {
+              "const": true
+            },
+            "action": {
+              "const": "cancel-requested"
+            },
+            "runId": {
+              "type": "string"
+            },
+            "requestedAt": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "immediate": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "refused"
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "feed_context": {
+    "all": {
+      "type": "object",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok",
+            "runId",
+            "wrote",
+            "note"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "written"
+            },
+            "ok": {
+              "const": true
+            },
+            "runId": {
+              "type": "string"
+            },
+            "wrote": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "refused"
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "mark_sent": {
+    "all": {
+      "type": "object",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok",
+            "runId",
+            "alreadySent",
+            "note"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "enum": [
+                "marked-sent",
+                "already-sent"
+              ]
+            },
+            "ok": {
+              "const": true
+            },
+            "runId": {
+              "type": "string"
+            },
+            "alreadySent": {
+              "type": "boolean"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "refused"
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "ack_event": {
+    "all": {
+      "type": "object",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok",
+            "file",
+            "alreadyGone"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "enum": [
+                "acknowledged",
+                "already-gone"
+              ]
+            },
+            "ok": {
+              "const": true
+            },
+            "file": {
+              "type": "string"
+            },
+            "alreadyGone": {
+              "type": "boolean"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "refused"
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "what_if_run": {
+    "staff": {
+      "type": "object",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok"
+          ],
+          "properties": {
+            "outcome": {
+              "const": "completed"
+            },
+            "ok": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "ok"
+          ],
+          "properties": {
+            "outcome": {
+              "const": "failed"
+            },
+            "ok": {
+              "const": false
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "refused"
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "client": {
+      "type": "object",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "queued",
+            "runId",
+            "experimentId",
+            "queuedAt",
+            "next"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "queued"
+            },
+            "queued": {
+              "const": true
+            },
+            "runId": {
+              "type": "string"
+            },
+            "experimentId": {
+              "type": "string"
+            },
+            "stage": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "axis": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "queuedAt": {
+              "type": "string"
+            },
+            "next": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "outcome",
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "refused"
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
