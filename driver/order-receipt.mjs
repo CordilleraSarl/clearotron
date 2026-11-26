@@ -174,8 +174,10 @@ export function receiptIn(qdir, ref, names) {
     }
     const beforeStart = !result || result.failedStage === "pre-run" || !runDir;
     const why = reason ?? result?.reason ?? (result?.failedStage ? `stopped at ${result.failedStage}` : null);
+    // WHERE IT WAS REFUSED, for whoever must act: at the claim (the allowance, the order's own content, a demo account)
+    // the person who placed it can, and at dispatch (the pre-start checks, the engine's sign-in) only the operator can.
     return beforeStart
-      ? { ...base, state: "refused", reason: why, runId: null }
+      ? { ...base, state: "refused", reason: why, runId: null, kind: result ? "pre-run" : "claim" }
       : { ...base, state: "failed", reason: why, runId: runIdFromDir(runDir) };
   }
   if (live === "postponed") {
