@@ -330,10 +330,11 @@ for (const theme of ['light', 'dark']) {
   else ok.push(`${at}: a phone keeps today's pinned header`)
 }
 
-// ── A CARD'S ADDRESS ────────────────────────────────────────────────────────────────────────────────────────
+// ── A CARD'S ADDRESS, AND THE PAGE SCROLLING FOR THE FRAME ────────────────────────────────────────────────────
 // The document cannot write the clipboard, know the portal's address or scroll the page, so it asks the page. A
-// card's "Copy link" must put this report screen's address with the card named on the clipboard and see its tick,
-// and that address must open the report at the card, under the header.
+// card's "Copy link" must put this report screen's address with the card named on the clipboard and see its tick;
+// that address must open the report at the card, under the header; and a scroll-by from the frame must move the
+// page by exactly that distance.
 const inFrame = (expression) => new Promise((r) => { const i = ++id; pending.set(i, r); ws.send(JSON.stringify({ id: i, sessionId: frameSession, method: 'Runtime.evaluate',
   params: { expression, awaitPromise: true, returnByValue: true, userGesture: true } })) }).then((a) => a.result?.result?.value ?? null)
 {
@@ -374,6 +375,13 @@ const inFrame = (expression) => new Promise((r) => { const i = ++id; pending.set
     else ok.push(`${at}: the card's address opens the report at ${card}, ${onScreen - Math.round(landed.headBottom)}px under the header`)
     await shot('card-link-landed.png')
 
+    // SCROLL-BY: the frame asks the page to move by a distance, and the page moves by exactly that.
+    const before = await value('window.scrollY')
+    await inFrame(`(parent.postMessage({ source: 'cordillera-report', type: 'scrollBy', dy: 150 }, '*'), 1)`)
+    await wait(400)
+    const after = await value('window.scrollY')
+    if (after - before !== 150) fail.push(`${at}: a scroll-by of 150 moved the page by ${after - before}`)
+    else ok.push(`${at}: a scroll-by of 150 from the frame moves the page by 150`)
   }
 }
 

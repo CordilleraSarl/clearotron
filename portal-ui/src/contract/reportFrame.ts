@@ -195,6 +195,21 @@ export function readFrameScroll(data: unknown, sameSource: boolean): number | nu
 }
 
 /**
+ * THE DOCUMENT ASKS THE PAGE TO SCROLL BY AN AMOUNT, to keep a reader's place while its own column reflows (a
+ * panel opening beside the cards narrows them). The frame is sized to its content and cannot scroll the portal,
+ * so it posts the distance and the PAGE moves by it. Same trust model as the jump above; the distance is clamped
+ * to the frame's own size, so a document cannot throw the page further than it is tall.
+ */
+export function readFrameScrollBy(data: unknown, sameSource: boolean): number | null {
+  if (!sameSource) return null
+  if (typeof data !== 'object' || data === null) return null
+  const msg = data as { source?: unknown; type?: unknown; dy?: unknown }
+  if (msg.source !== FRAME_TAG || msg.type !== 'scrollBy') return null
+  if (typeof msg.dy !== 'number' || !Number.isFinite(msg.dy)) return null
+  return Math.min(Math.max(msg.dy, -MAX_FRAME), MAX_FRAME)
+}
+
+/**
  * A CARD'S OWN ID, as the page gives it: `c<n>` on a clearance, `k<name>-<n>` on a Knockout. Anything else is not
  * a card this page draws, and is refused rather than written into an address.
  */

@@ -18,7 +18,7 @@ import { readsFor, hasThread, readLabel, readLabelParts, displayName, openDocume
 import { inlineSpans } from '../contract/inlineMd.ts'
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from '../contract/summaryBlocks.ts'
 import { runProductLabel } from '../contract/home.ts'
-import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readCopyLink, cardAddress, cardFromSearch, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
+import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readFrameScrollBy, readCopyLink, cardAddress, cardFromSearch, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
 import type { FrameCommand, FrameSection, FrameTheme, FrameVerb } from '../contract/reportFrame.ts'
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
@@ -224,6 +224,10 @@ function useReportFrame() {
         }
         return
       }
+      // The document keeps the reader's place while its column reflows: it cannot scroll the page, so it says by
+      // how much, and the page moves at once (no smoothing, or the place would drift while it animated).
+      const by = readFrameScrollBy(e.data, mine)
+      if (by !== null) { window.scrollBy({ top: by }); return }
       // A CARD'S "COPY LINK". The page writes the address of this report screen at that card, and tells the
       // document whether the write landed, so the card shows its tick and says "Copied" only when it did.
       const copy = readCopyLink(e.data, mine)

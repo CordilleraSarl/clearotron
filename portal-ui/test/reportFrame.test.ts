@@ -20,7 +20,7 @@ import {
   readFrameHeight,
   readFrameScroll,
   readAskAi,
-  readCopyLink, cardAddress, cardFromSearch,
+  readFrameScrollBy, readCopyLink, cardAddress, cardFromSearch,
 } from '../src/contract/reportFrame.ts'
 
 const height = (h: unknown) => ({ source: FRAME_TAG, type: 'height', height: h })
@@ -142,6 +142,14 @@ test('A FINDING\'S ASK AI crosses the frame with its number, and a card with no 
   assert.equal(readAskAi(ask({ ordinal: 3 }), false), null, 'from anywhere but the report being shown, ignored')
   assert.equal(readAskAi({ source: 'other', type: 'askAi', ordinal: 3 }, true), null)
   assert.equal(readAskAi('askAi', true), null)
+})
+
+test('a scroll-by from the frame moves the page by its distance, clamped, and nothing else does', () => {
+  assert.equal(readFrameScrollBy({ source: FRAME_TAG, type: 'scrollBy', dy: -120 }, true), -120)
+  assert.equal(readFrameScrollBy({ source: FRAME_TAG, type: 'scrollBy', dy: 9e9 }, true), MAX_FRAME)
+  assert.equal(readFrameScrollBy({ source: FRAME_TAG, type: 'scrollBy', dy: '40' }, true), null, 'a string is refused, not coerced')
+  assert.equal(readFrameScrollBy({ source: FRAME_TAG, type: 'scrollBy', dy: 40 }, false), null, 'another window is ignored')
+  assert.equal(readFrameScrollBy({ source: 'other', type: 'scrollBy', dy: 40 }, true), null)
 })
 
 test("a card's Copy link names a card the page draws, and the address carries the run and the card only", () => {
