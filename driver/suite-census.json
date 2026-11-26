@@ -952,9 +952,9 @@
           "todos": 0
         },
         "a-failure-notice-reaches-the-route-the-install-configures.test.mjs": {
-          "tests": 9,
-          "asserts": 53,
-          "skips": 5,
+          "tests": 11,
+          "asserts": 76,
+          "skips": 6,
           "todos": 0
         },
         "a-family-withheld-by-judgment-is-not-read-as-awaiting.test.mjs": {
@@ -3407,7 +3407,7 @@
         },
         "an-accepted-order-keeps-its-receipt.test.mjs": {
           "tests": 7,
-          "asserts": 44,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
