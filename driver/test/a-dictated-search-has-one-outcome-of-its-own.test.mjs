@@ -147,3 +147,45 @@ test("the ledger: answered searches are cells and receipts with their on-site re
   assert.deepEqual(ledger.gaps, ["C | web | own search: no-results-reported", "m | connotation | own search: pooled"]);
   assert.deepEqual(ledger.extras.pr_risk, []);
 });
+
+// ── ONE SESSION, THROUGH THE NATIVE-LANGUAGE TURNS' OWN DOOR: the run's engine, the program's search and nothing else.
+const { makeOwnSearchSessions, readSessionStream } = await import("../engine/mcp/own-search.mjs");
+const { makeJxTurnRunner } = await import("../engine/jx-turn.mjs");
+const { mkdtempSync, writeFileSync } = await import("node:fs");
+const { tmpdir } = await import("node:os");
+const { join } = await import("node:path");
+const { gzipSync } = await import("node:zlib");
+
+test("a session goes through the jx door with the program's search alone, and its searches are read back from its own stream", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "own-search-session-"));
+  const seen = [];
+  const runTurn = async (args) => {
+    seen.push(args);
+    // The adapter keeps the stream gzipped once the session closes; the reader takes either.
+    writeFileSync(`${args.streamFile}.gz`, gzipSync(claudeSearch({ query: "qzorvak candles", allowed_domains: ["etsy.com"] },
+      { urls: ["https://etsy.com/listing/1"] }).map((e) => JSON.stringify(e)).join("\n") + "\n"));
+    return { code: 0, killed: false, signals: {}, usage: { input: 5, output: 7, cacheRead: 0, cacheWrite: 0, total: 12 },
+      json: { status: "ok", stopReason: "end_turn", result: { payloads: [{ text: "done" }] } }, modelWire: "claude-haiku-4-5-20251001", speed: { asked: "standard" } };
+  };
+  const env = { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "subscription" };
+  const sessions = await makeOwnSearchSessions({ sessionDir: dir, makeRunner: (o) => makeJxTurnRunner({ ...o, env, runTurn }) });
+  assert.equal(sessions.error, undefined, sessions.error);
+  assert.equal(sessions.search, "claude");
+  const r = await sessions.session([ITEMS[0]]);
+  const args = seen[0];
+  assert.equal(args.webSearch, true);
+  assert.deepEqual(args.builtinTools, ["WebSearch"], "the program's search is the session's only built-in tool");
+  assert.equal(args.allowedTools, "WebSearch");
+  assert.equal(args.mcpConfig, undefined, "no tool server");
+  assert.equal(args.model, "haiku", "the cheap tier");
+  assert.match(args.message, /qzorvak candles/);
+  assert.doesNotMatch(args.message, /"qzorvak candles"/, "the words are listed bare, never as a quoted string");
+  assert.equal(r.answered, true);
+  assert.equal(searchOutcomes("claude", [ITEMS[0]], r.events, { answered: r.answered })[0].outcome, "found");
+  assert.deepEqual(readSessionStream(join(dir, "none.jsonl")), [], "a stream that was never kept reads as no events");
+});
+
+test("a run whose engine cannot be resolved gets no session, and says why", async () => {
+  const sessions = await makeOwnSearchSessions({ sessionDir: tmpdir(), makeRunner: (o) => makeJxTurnRunner({ ...o, env: {} }) });
+  assert.match(String(sessions.error), /\S/);
+});

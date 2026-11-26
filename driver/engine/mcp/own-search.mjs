@@ -15,6 +15,7 @@
 import { spawn } from "node:child_process";
 import { appendFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
+import { gunzipSync } from "node:zlib";
 import { join } from "node:path";
 
 /** The run's own-search setting, or null where the run sends its research to Perplexity. */
@@ -365,5 +366,49 @@ export function ledgerFromOutcomes(items, outcomes, { keep = 8 } = {}) {
     else ledger.gaps.push(`${d.term} | ${d.platform} | own search: ${o?.outcome ?? "not-sent"}`);
   });
   return ledger;
+}
+
+// ── ONE RESEARCH-ONLY SESSION, THROUGH THE RUN'S OWN ENGINE ─────────────────────────────────────────────────────────
+//
+// A session is a turn of the run's own AI program through the door the native-language turns use (engine/jx-turn.mjs):
+// the run's one engine, its one billing mode, and its speed, so an Urgent order asks for the faster setting where the
+// model has one and records why where it has not. It runs on the cheap tier: trying the deepest models against the
+// cheapest changed what a search returned no more than running the same model again did (measured 2026-11-26). It is
+// handed nothing but its dictated searches and the program's own web search, and its event stream is kept, so each
+// search's own record is read back from it. Nothing here starts a turn until a session is called.
+export const SESSION_TIER = "haiku";
+export const SESSION_TIMEOUT_SEC = 600;
+const SEARCH_OF_ENGINE = Object.freeze({ "anthropic-agent": "claude", "openai-agent": "codex" });
+
+/** The events of a kept session stream, plain or gzipped once its session closed. IMPURE (reads). */
+export function readSessionStream(file) {
+  let text = "";
+  try { text = readFileSync(file, "utf8"); }
+  catch { try { text = gunzipSync(readFileSync(`${file}.gz`)).toString("utf8"); } catch { return []; } }
+  return text.split("\n").filter((l) => l.trim()).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+}
+
+/**
+ * A maker of research-only sessions for `runDir`, or `{ error }` where the run's engine cannot run one. `session(items)`
+ * runs one batch and returns what `runDictatedSearches` reads. `makeRunner` is the native-language turns' door.
+ */
+export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSION_TIER, timeoutSec = SESSION_TIMEOUT_SEC, makeRunner = null } = {}) {
+  const make = makeRunner ?? (await import("../jx-turn.mjs")).makeJxTurnRunner;
+  const runner = await make({ runDir, model, thinking: "low", lane: "the own web search", timeoutSec });
+  if (runner?.error) return { error: runner.error };
+  const search = SEARCH_OF_ENGINE[runner.engine];
+  if (!search) return { error: `the ${runner.engine} engine has no web search of its own that this reads` };
+  let n = 0;
+  return {
+    search, engine: runner.engine,
+    async session(items) {
+      const streamFile = join(sessionDir, `${new Date().toISOString().replace(/[:.]/g, "-")}-${process.pid}-${++n}.jsonl`);
+      const extra = search === "claude" ? { builtinTools: ["WebSearch"], allowedTools: "WebSearch", webSearch: true, streamFile } : { webSearch: true, streamFile };
+      const t0 = Date.now();
+      const r = await runner.turn({ prompt: batchPrompt(search, items), extra });
+      return { events: readSessionStream(streamFile), answered: Boolean(r?.ok && String(r.text ?? "").trim()), seconds: (Date.now() - t0) / 1000,
+        usage: r?.usage ?? null, model: r?.model ?? null, speed: r?.speed ?? null, cause: r?.ok ? null : r?.cause ?? null };
+    },
+  };
 }
 
