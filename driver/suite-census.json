@@ -1396,8 +1396,8 @@
           "todos": 0
         },
         "a-knockout-preview-is-short-and-the-whole-wording-is-one-read-away.test.mjs": {
-          "tests": 5,
-          "asserts": 28,
+          "tests": 6,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },

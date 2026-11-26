@@ -15,6 +15,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 import { withFilingGoods, KNOCKOUT_PREVIEW_CHARS, GOODS_VIEW_CHARS, FILING_RECORDS_DIR } from "../filing-goods.mjs";
 import { withHeldGoods, knockoutListView } from "../knockout-register-read.mjs";
 import { citedEvidence } from "../ko-review-evidence.mjs";
+import { goodsFromLabel } from "../goods-evidence.mjs";
 
 const TEMP = [];
 const tempRun = () => { const d = mkdtempSync(join(tmpdir(), "ko-preview-")); TEMP.push(d); mkdirSync(driverDir(d), { recursive: true }); return d; };
@@ -129,4 +130,14 @@ test("where the official record lists no goods, the search answer's wording stay
     assert.match(answer.goods_from ?? "", /^search answer/, `${id}: the answer does not say where the wording came from`);
     assert.equal(answer.full_record?.uri, id, `${id}: the official record is not answered on its own terms`);
   }
+});
+
+// read_register_list tells wording held in the official record from wording held elsewhere by its source label's
+// "official record" prefix. Every label the shipped reader gives an official record's wording carries it, and no other does.
+test("every source label for an official record's wording starts \"official record\", and no other source's does", () => {
+  const states = ["complete", "cut", "unknown", "absent"];
+  for (const state of states) assert.match(goodsFromLabel({ source: "record-body", state }), /^official record/, `record body, ${state}`);
+  for (const state of ["complete", "cut", "unknown"]) assert.doesNotMatch(goodsFromLabel({ source: "search-row", state }), /^official record/, `search row, ${state}`);
+  assert.doesNotMatch(goodsFromLabel({ source: "register-page", question: "q" }) ?? "", /^official record/, "register page");
+  assert.doesNotMatch(goodsFromLabel({ source: null, state: "unavailable" }) ?? "", /^official record/, "nothing held");
 });
