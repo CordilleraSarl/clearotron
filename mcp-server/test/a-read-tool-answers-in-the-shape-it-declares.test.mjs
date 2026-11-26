@@ -22,6 +22,10 @@ const ROOT = mkdtempSync(join(tmpdir(), "read-tool-shape-"));
 const POOL = join(ROOT, "pool");
 mkdirSync(POOL, { recursive: true });
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
+// Every call through a door writes an audit line, and the default log is shared by every test file a suite runs
+// under one home: pinned here, before the audit module reads it at import, so this file's calls never land inside
+// another file's count of lines (http-handler.test.mjs counts exactly two).
+process.env.TRADEMARK_MCP_AUDIT_LOG = join(ROOT, "audit.jsonl");
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", POOL);
 pinEnv(process.env, "CLEAROTRON_QUEUE_DIR", join(ROOT, "intake-queue"));
 process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "read-tool-shape-test-secret";
