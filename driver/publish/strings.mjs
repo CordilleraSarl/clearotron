@@ -404,6 +404,9 @@ export const KNOCKOUT_PAGE = Object.freeze({
   finding: Object.freeze({
     unnamed: 'Unnamed finding',
     askAi: '\u2726 Ask AI about this finding',
+    // Inside the portal only (owner, 2026-11-25): a link to this card, and the word a screen reader hears once it is copied.
+    copyLink: 'Copy link',
+    copied: 'Copied',
     fullDetail: 'Full detail',
     sources: 'Sources: ',
   }),
@@ -690,6 +693,9 @@ export const REPORT_PAGE = Object.freeze({
     theRead: 'The read',
     includeInPdf: (n) => `Include conflict ${n} in the PDF`,
     askAi: '\u2726 Ask AI about this finding',
+    // Inside the portal only (owner, 2026-11-25): a link to this card, and the word a screen reader hears once it is copied.
+    copyLink: 'Copy link',
+    copied: 'Copied',
   }),
   // The mark itself: what the mark is, before any conflict.
   markItself: Object.freeze({

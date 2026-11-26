@@ -98,6 +98,11 @@ const isHttpUrl = (u) => /^https?:\/\//i.test(String(u ?? '').trim());
 // The sandbox already permits it: allow-popups allow-popups-to-escape-sandbox have been on that frame
 // since the Result screen's first commit (3654a76), so the popup is not what was missing. `rel` stays
 // beside it — noopener severs window.opener, noreferrer withholds the run's URL from the evidence host.
+// COPY LINK, as on a clearance card (owner, 2026-11-25): inside the portal only, shown by the frame bridge, never printed.
+const COPY_ICONS = '<svg class="ci-link" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a3 3 0 004.2.3l2-2a3 3 0 00-4.2-4.2l-1 1"/><path d="M8 6a3 3 0 00-4.2-.3l-2 2a3 3 0 004.2 4.2l1-1"/></svg><svg class="ci-tick" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>';
+const copyLinkButton = () => `<button type="button" class="copy-fi no-print" data-copied="${escAttr(K.finding.copied)}">${COPY_ICONS}<span>${esc(K.finding.copyLink)}</span></button>`;
+// A card's own address on the page: a Knockout numbers its findings again for each name, so the name's position leads.
+const koCardId = (markIndex, ordinal) => `k${Number(markIndex)}-${Number(ordinal)}`;
 const linkOrText = (u) => (isHttpUrl(u) ? `<a href="${escAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(u)}</a>` : esc(u));
 // The audit workbook's link, attribute-safe: the portal's route where the publisher hands one in, else the workbook's
 // own file name beside the page, else none.
@@ -720,14 +725,14 @@ function findingBlock(v, framework, markIndex, method = null, cite = {}) {
   // manifest and can be any ladder a customer configures. Mapping one onto the other would be a second
   // table to keep in step — the same inline var the band chip already uses is the honest join.
   const stop = bandStop(framework, v.band);
-  return `<div class="card ko-find" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
+  return `<div class="card ko-find" id="${koCardId(markIndex, v.ordinal)}" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
         <div class="top">
           <div class="rail" style="background:var(${stop})"></div>
           <div class="body">
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(v.name ?? K.finding.unnamed)}</h3>${
     v.band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(v.band, method, v.inputs)}</span>` : ''}${sourceChips(v)}
-              <button class="ask-fi no-print">${K.finding.askAi}</button>
+              <span class="fi-acts no-print">${copyLinkButton()}<button class="ask-fi no-print">${K.finding.askAi}</button></span>
             </div>
             ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}
             ${v.lead ? `<p class="ko-findnet">${inlineMd(v.lead)}</p>` : ''}
@@ -1231,14 +1236,14 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
   const meta = [r.owner ? esc(r.owner) : K.filingCard.proprietorNotStated, r.territory ? esc(r.territory) : null]
     .filter(Boolean).join(' · ');
   const receipt = officeRecordCell(r, isHttpUrl(r.url) ? linkOrText(r.url) : esc(r.recordId ?? K.filingCard.noRecordAddress));
-  return `<div class="card ko-find" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
+  return `<div class="card ko-find" id="${koCardId(markIndex, v.ordinal)}" data-ko-mark="${Number(markIndex)}" data-ko-ord="${Number(v.ordinal)}">
         <div class="top">
           <div class="rail" style="background:var(${stop ?? '--faint'})"></div>
           <div class="body">
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><h3 class="who">${esc(r.mark ?? K.filingCard.unnamed)}</h3>${
     band ? `<span class="ko-findband" style="background:var(${stop});color:var(${stop}-on)">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">${K.chips.register}</span>
-              <button class="ask-fi no-print">${K.finding.askAi}</button>
+              <span class="fi-acts no-print">${copyLinkButton()}<button class="ask-fi no-print">${K.finding.askAi}</button></span>
             </div>
             <p class="ko-findmeta">${meta}</p>
             <p class="ko-findnet">${esc(v.statement)}</p>

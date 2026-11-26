@@ -2151,6 +2151,12 @@ function manageableLine(f) {
 // `net` key exists but is blank. `clause` is `foldClause` with the budget arm removed and nothing else.
 const clause = (value) => String(value ?? '').trim();
 
+// COPY LINK (owner, 2026-11-25): a full card's link to itself, inside the portal only. The page cannot know the portal's
+// address, so the button asks the portal through the frame bridge, which also shows it; a report opened by itself never
+// shows it, and it never prints. The tick replaces the link icon once the portal says the copy landed.
+const COPY_ICONS = '<svg class="ci-link" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a3 3 0 004.2.3l2-2a3 3 0 00-4.2-4.2l-1 1"/><path d="M8 6a3 3 0 00-4.2-.3l-2 2a3 3 0 004.2 4.2l1-1"/></svg><svg class="ci-tick" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>';
+const copyLinkButton = (label, copied) => `<button type="button" class="copy-fi no-print" data-copied="${escAttr(copied)}">${COPY_ICONS}<span>${esc(label)}</span></button>`;
+
 function findingCard(f, card, recordsByUri = new Map()) {
   const tierCls = isOnField(f) ? 'med' : 'low';
   const who = recordOwner(f, recordsByUri) || f.owner?.name || f.mark;   // doc-31 step 4: owner bound from the record
@@ -2174,7 +2180,7 @@ function findingCard(f, card, recordsByUri = new Map()) {
           <label class="pick no-print"><input type="checkbox" class="pickbox" checked aria-label="${escAttr(R.card.includeInPdf(f.ordinal))}"></label>
           <span class="fnum">${esc(f.ordinal)}</span>${cardTitleParts(f, who).title}${evidenceChips(f)}
           <span class="tier ${tierCls}">${riskChip(f)}</span>
-          <button class="ask-fi no-print">${R.card.askAi}</button>
+          <span class="fi-acts no-print">${copyLinkButton(R.card.copyLink, R.card.copied)}<button class="ask-fi no-print">${R.card.askAi}</button></span>
         </div>
         ${cardTitleParts(f, who).ownerLine}${logoLine(f, recordsByUri)}
         <div class="oneline">${inline(sentenceCaseLead(one))}</div>
