@@ -10070,6 +10070,12 @@
           "skips": 1,
           "todos": 0
         },
+        "the-portal-and-the-connector-read-one-list-of-runs.test.mjs": {
+          "tests": 3,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "the-portal-boot-check-is-not-logged-as-a-rejection.test.mjs": {
           "tests": 2,
           "asserts": 6,
