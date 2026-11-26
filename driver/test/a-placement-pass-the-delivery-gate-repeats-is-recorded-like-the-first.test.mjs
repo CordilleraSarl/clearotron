@@ -105,25 +105,30 @@ test("a skipped pass decides nothing: the earlier pass's grounds stand and no st
   assert.deepEqual(JSON.parse(readFileSync(ctx.paths.floorDuty, "utf8")).pass, { ok: true, skipped: true });
 });
 
-test("the delivery gate's repeat of placement goes through the one helper, as the main path does", () => {
+// WHAT STAYS A SOURCE PIN, AND WHY. What the repeat does is held by runs: the repair arm and the main path recording
+// their pass through `recordPlacementPass` (a-decision-the-repeated-placement-pass-changes-is-the-one-delivered, a-floor-
+// the-repeated-placement-pass-answers-is-withdrawn-and-the-result-recomputed, a-late-record-no-placement-pass-could-assess-
+// is-delivered-and-stated), the floor clamped again on the repeat's account (a-floor-the-repeated-placement-pass-…), and
+// the recall gate judged again after it (the-recall-gate-is-judged-again-when-the-repeated-placement-pass-answers-a-floor).
+// Three things no run can tell apart remain here:
+//   - the repair FORCES its re-dispatch: the delivery gate lists placement stale only when its inputs moved, and the
+//     stage's own freshness check then reruns it with or without `force`;
+//   - the label is saved when the repeat moves a clause: nothing reads it between the repeat and the reassembly;
+//   - the terminal checks and the repair share one clamp, which is how the code is built, not what a run shows.
+test("the delivery gate's repeat of placement is forced, saves the label it moves, and shares the terminal checks' clamp", () => {
   const src = driverSource("pipeline.mjs");
   const map = src.slice(onlyAt(src, "const UPSTREAM_STALE_REPAIR = {"), onlyAt(src, "export const DELIVERY_TAIL_LABEL_RE"));
-  assert.match(map, /"placement-inquiry": async \(ctx\) => recordPlacementPass\(ctx, await stage\("placement-inquiry", ctx, \{ force: true, trigger: "stale-repair" \}\), "stale-repair"\)/);
-  const start = onlyAt(src, "const placementPass = await asPartNotCompleted(\"assessment\", () => stage(\"placement-inquiry\", ctx));");
-  const end = onlyAt(src, "await asPartNotCompleted(\"assessment\", async () => must(placementPass, \"placement-inquiry\"));");
-  assert.ok(start >= 0 && end > start, "guard: the main path's placement call is not where this test reads it");
-  const main = src.slice(start, end);
-  assert.match(main, /recordPlacementPass\(ctx, placementPass\);/, "the main path records its pass through the same helper");
-  // After a repeated placement pass the gate applies the floor again, through the one clamp the terminal checks use.
+  assert.match(map, /"placement-inquiry": async \(ctx\) => [^\n]*stage\("placement-inquiry", ctx, \{ force: true, trigger: "stale-repair" \}\)/,
+    "the repair arm's re-dispatch of placement is not forced");
   const arm = src.slice(onlyAt(src, "} else if (UPSTREAM_STALE_REPAIR[s2.label]) {"), onlyAt(src, "} else if (s2.label.startsWith(\"report-card:\")) {"));
-  // Read inside the repeated pass's own block, closed at its brace: a lazy match over the whole arm reached the same
-  // clamp in the late-records branch below and passed with this block's line gone.
+  // Read inside the repeated pass's own block, closed at its brace: a lazy match over the whole arm reached a line in the
+  // late-records branch below and passed with this block's line gone.
   const opens = onlyAt(arm, 'if (s2.label === "placement-inquiry") {') + 'if (s2.label === "placement-inquiry") '.length;
   let depth = 0, closes = opens;
   for (; closes < arm.length; closes++) { if (arm[closes] === "{") depth++; else if (arm[closes] === "}" && --depth === 0) break; }
   const repeat = arm.slice(opens, closes + 1);
   assert.ok(repeat.length > 100 && repeat.length < 2000, `guard: the repeated pass's block was not isolated (${repeat.length} chars)`);
-  assert.match(repeat, /clampOnTheFloorDuty\(\{ again: true \}\);[\s\S]*clampOnTheWritersDuty\(\{ again: true \}\);[\s\S]*saveTheLabel\(/,
-    "the repeated pass's floor account, and the recall gate's floor exclusion, are not judged again and the label saved before the report is rebuilt from them");
+  assert.match(repeat, /saveTheLabel\("after the repeated placement pass"\)/, "the label the repeated pass's checks move is not saved");
   assert.match(src, /const clampOnTheFloorDuty = \(\{ again = false \} = \{\}\) => \{\n\s+\/\/ THE PREDICATE IS `floorDutyBlock`/, "the terminal checks and the repair share one clamp");
 });
+
