@@ -89,7 +89,13 @@ async function connect(transport) {
   clients.push(client);
   return client;
 }
-const httpClient = (url, token) => connect(new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers: { "x-trademark-token": token } } }));
+const KINDS = new WeakMap();
+const scopeKindOf = (client) => KINDS.get(client) ?? "ops";
+const httpClient = async (url, token, kind = "ops") => {
+  const c = await connect(new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers: { "x-trademark-token": token } } }));
+  KINDS.set(c, kind);
+  return c;
+};
 const stdioClient = () => connect(new StdioClientTransport({ command: process.execPath, args: [SERVER], env: { ...process.env }, stderr: "ignore" }));
 
 const OPS = () => mintToken({ scope: "ops", sub: "ops@firm.example", ttlSec: 3600 });
@@ -150,12 +156,27 @@ async function exercise(client, verb) {
       return ["acknowledged", "already-gone", "refused"];
     }
     case "mark_sent": {
+      // A run with a delivery packet waiting: the first door to mark it settles it, every later call finds it settled.
+      if (!existsSync(driverDir(fixture.runDir, "delivery.json"))) writeFileSync(driverDir(fixture.runDir, "delivery.json"), JSON.stringify({ runId: RUN_ID }));
+      const first = await call({ runId: RUN_ID, messageId: "<shape-test@mail>" });
+      assert.ok(["marked-sent", "already-sent"].includes(first.outcome), JSON.stringify(first));
+      const again = await call({ runId: RUN_ID, messageId: "<shape-test@mail>" });
+      assert.equal(again.outcome, "already-sent", JSON.stringify(again));
       await refused({ runId: "no-such-run" });
-      return ["refused"];
+      return [first.outcome, "already-sent", "refused"];
     }
     case "what_if_run": {
-      // Refused before anything starts: a token for no run. A real confirmation would start the engine on ops.
+      // Refused before anything starts: a token for no run. A real confirmation would start the engine on ops,
+      // so only a session that queues what-ifs (an account) is given one; it queues and starts nothing.
       await refused({ runId: RUN_ID, confirmationToken: "not-a-token" });
+      const offered = (await client.listTools()).tools.find((t) => t.name === "what_if_plan");
+      const plan = offered ? (await client.callTool({ name: "what_if_plan", arguments: { runId: RUN_ID, stage: "report-overview" } })) : null;
+      const token = plan && !plan.isError ? JSON.parse(plan.content[0].text).confirmationToken : null;
+      if (token && scopeKindOf(client) === "account") {
+        const queued = await call({ runId: RUN_ID, confirmationToken: token });
+        assert.equal(queued.outcome, "queued", JSON.stringify(queued));
+        return ["refused", "queued (what-if)"];
+      }
       return ["refused"];
     }
     default: throw new Error(`no exercise for ${verb}`);
@@ -168,22 +189,28 @@ async function sweep(label, client) {
   for (const t of offered) assert.ok(t.outputSchema, `${label}: ${t.name} is offered with no declared result`);
   const seen = [];
   for (const t of offered) seen.push([t.name, await exercise(client, t.name)]);
-  return { offered: offered.map((t) => t.name).sort(), checked: seen.map(([n]) => n).sort() };
+  return { offered: offered.map((t) => t.name).sort(), checked: seen.map(([n]) => n).sort(), answered: seen.flatMap(([, o]) => o) };
 }
 
 test("every write verb a door offers declares its result, and answers in that shape", async () => {
   const doors = {
     "stdio door (ops)": await stdioClient().catch((e) => { throw new Error(`stdio connect: ${e?.message || String(e)}`); }),
     "ops HTTP door (ops key)": await httpClient(opsUrl, OPS()),
-    "client HTTP door (account key)": await httpClient(clientUrl, ACME()),
-    "client HTTP door (report link)": await httpClient(clientUrl, USER()),
+    "client HTTP door (account key)": await httpClient(clientUrl, ACME(), "account"),
+    "client HTTP door (report link)": await httpClient(clientUrl, USER(), "user"),
   };
-  const seen = {};
+  const seen = {}, outcomes = {};
   for (const [label, client] of Object.entries(doors)) {
-    const { offered, checked } = await sweep(label, client).catch((e) => { throw new Error(`${label}: ${e?.message || String(e)}`, { cause: e }); });
+    const { offered, checked, answered } = await sweep(label, client).catch((e) => { throw new Error(`${label}: ${e?.message || String(e)}`, { cause: e }); });
     assert.deepEqual(checked, offered, `${label}: every verb offered was checked`);
     seen[label] = offered;
+    outcomes[label] = answered;
   }
+  // EVERY SUCCESS FORM WAS SEEN, not only the refusals: each outcome below came back through the SDK client's check.
+  const all = new Set(Object.values(outcomes).flat());
+  for (const o of ["queued", "dequeued", "written", "acknowledged", "already-gone", "already-sent", "refused"])
+    assert.ok(all.has(o), `no verb answered "${o}" — ${JSON.stringify(outcomes)}`);
+  assert.ok(outcomes["client HTTP door (account key)"].includes("queued (what-if)"), "the account's what-if queued");
   // POSITIVE EVIDENCE OF COVERAGE: the ops doors offer all six, an account key the three it may use, a report link none.
   assert.deepEqual(seen["stdio door (ops)"], [...WRITE_VERBS].sort());
   assert.ok(seen["client HTTP door (account key)"].includes("start_run"), JSON.stringify(seen));
