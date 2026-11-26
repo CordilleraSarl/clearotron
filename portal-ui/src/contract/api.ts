@@ -19,6 +19,7 @@
 //     to be read by a human ("the request changed after confirmation — review the plan again and
 //     re-confirm"). Paraphrasing them in the UI is how a precise instruction becomes a vague one.
 
+import { decodeReceipt, type OrderReceipt } from './orderReceipt.ts'
 import type { Tone, Band } from './tone.ts'
 import { asTone } from './tone.ts'
 import type { BriefRead } from './composeRead.ts'
@@ -2138,6 +2139,13 @@ export const api = {
    * Can lose a race with the runner: a 409 with `action: 'already-claimed'` means it started between
    * the click and the request. That is a race, not an error — re-read the list and it is a running run.
    */
+  /**
+   * What became of an accepted order, by the reference Start returned, for one company (contract/orderReceipt.ts).
+   * Another company's order and an order nobody holds are both `notFound`.
+   */
+  orderReceipt: (reference: string, account: string): Promise<Result<OrderReceipt | null>> =>
+    call(`/portal/api/orders/${encodeURIComponent(reference)}${accountQuery(account)}`, decodeReceipt),
+
   cancelQueued: (id: string, account: string): Promise<Result<{ readonly action: string | null }>> =>
     call(`/portal/api/queue/${encodeURIComponent(id)}/cancel${accountQuery(account)}`, (b) => ({ action: asString(b['action']) }), {
       method: 'POST',

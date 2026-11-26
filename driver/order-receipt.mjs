@@ -11,7 +11,8 @@
 //   <id>.processing                claimed, its pre-start checks under way
 //   <id>.processing.meta           written at dispatch, AFTER those checks passed: the run's identity is minted
 //   <id>.postponed (+ .meta)       parked, by a provider cap or our own recovery backoff; it resumes by itself
-//   <id>.failed + .failed.reason   refused at the claim, before any run existed (failAtIntake)
+//   <id>.failed + .failed.reason   refused at the claim, before any run existed (failAtIntake); `.failed.kind` says
+//                                  which check refused it (REFUSAL_KINDS), and an order refused before it was written is `other`
 //   <id>.duplicate + .reason       refused as the same matter as an earlier order (parkDuplicate)
 //   <id>.{done,failed,cancelled}.result   the run's own outcome, with its run directory
 //
@@ -33,6 +34,13 @@ import { stopReason } from "../shared/stop-reason.mjs";   // a cancelled order s
  * reference outside this set names no order, and is refused before it reaches a path. Mirrors start_run's validator.
  */
 export const ORDER_REF_MAX = 128;
+
+/**
+ * WHICH CHECK REFUSED AN ORDER BEFORE ANY RUN, as the runner records it beside the reason. The reason is the operator's
+ * text; the kind is what a door may tell the person who placed the order. `duplicate` is the same-matter park.
+ */
+export const REFUSAL_KINDS = Object.freeze(["run-cap", "details", "policy", "setup", "duplicate", "other"]);
+const refusalKind = (text) => { const k = String(text ?? "").trim(); return REFUSAL_KINDS.includes(k) ? k : "other"; };
 export const ORDER_REF_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${ORDER_REF_MAX - 1}}$`);
 
 // ── AN ACCOUNT'S REFERENCE IS ITS OWN ─────────────────────────────────────────────────────────────────────────────────
@@ -164,7 +172,7 @@ export function receiptIn(qdir, ref, names) {
     // A DUPLICATE'S RECORDED REASON NAMES THE EARLIER ORDER it matched (its message id), and that order may be another
     // account's: the matter signature does not include the account. Only its first line, which says what happened,
     // is the receipt's. Pointing to the earlier order is for a later increment, which can ask whether this caller may see it.
-    if (terminal === "duplicate") return { ...base, state: "refused", reason: reason ? reason.split("\n")[0] : null, runId: null, kind: "duplicate" };
+    if (terminal === "duplicate") return { ...base, state: "refused", reason: reason ? reason.split("\n")[0] : null, runId: null, kind: "duplicate", reasonKind: "duplicate" };
     if (terminal === "done") return { ...base, state: "delivered", reason: null, runId: runIdFromDir(result?.runDir) };
     // `.failed`: refused at the claim (a reason, no result), refused at dispatch (a pre-run result), or a run that
     // stopped. A run directory still holding a park sentinel is a run that will come back, not a failure.
@@ -175,7 +183,7 @@ export function receiptIn(qdir, ref, names) {
     const beforeStart = !result || result.failedStage === "pre-run" || !runDir;
     const why = reason ?? result?.reason ?? (result?.failedStage ? `stopped at ${result.failedStage}` : null);
     return beforeStart
-      ? { ...base, state: "refused", reason: why, runId: null }
+      ? { ...base, state: "refused", reason: why, runId: null, reasonKind: refusalKind(readTextSafe(at("failed.kind"))) }
       : { ...base, state: "failed", reason: why, runId: runIdFromDir(runDir) };
   }
   if (live === "postponed") {
@@ -220,7 +228,7 @@ function heldUnder(listings, refs) {
 function receiptOf(r) {
   return {
     reference: r.reference, state: r.state, stateText: RECEIPT_STATES[r.state], terminal: TERMINAL.has(r.state),
-    reason: r.reason ?? null, runId: r.runId ?? null, ...(r.kind ? { kind: r.kind } : {}),
+    reason: r.reason ?? null, runId: r.runId ?? null, ...(r.kind ? { kind: r.kind } : {}), ...(r.reasonKind ? { reasonKind: r.reasonKind } : {}),
     account: r.job?.profileKey ?? null, ...(r.job?.profileKey === "generic" ? { organisation: r.job?.tenant ?? null } : {}),
     updatedAt: r.updatedAt,
   };

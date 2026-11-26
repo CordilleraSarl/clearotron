@@ -14,8 +14,8 @@ export async function queueRoutes({ poolRoot, workspaceRoot, queueDirs, stopRun,
   // person's own visibility: every order for someone who sees everything, else the named account's (and organisation's,
   // for Generic). Whatever this person may not see answers exactly as no order at all: 404, nothing else. A queue that
   // would not open (503) and two of this person's own orders under one reference (409) say nothing of anyone else's. The
-  // reason a run stopped is an operator's diagnostic and is given to someone who sees everything; a refusal before any
-  // run is the requester's own answer and is given to them.
+  // reason as written is an operator's diagnostic, and only someone who sees everything is given it. A refusal before
+  // any run gives the requester its kind (order-receipt.mjs REFUSAL_KINDS), which the screen says in plain words.
   if (parts[1] === "api" && parts[2] === "orders" && parts[3] && !parts[4] && method === "GET") {
     const everything = seesEverything(principal);
     let scope = { everything: true };
@@ -32,7 +32,7 @@ export async function queueRoutes({ poolRoot, workspaceRoot, queueDirs, stopRun,
     }
     const r = answer.receipt;
     return { status: 200, json: { reference: r.reference, state: r.state, terminal: r.terminal, runId: r.runId,
-      reason: r.state === "refused" || everything ? r.reason : null, updatedAt: r.updatedAt,
+      reason: everything ? r.reason : null, reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null, updatedAt: r.updatedAt,
       ...(everything ? { account: r.account, ...(r.organisation !== undefined ? { organisation: r.organisation } : {}) } : {}) } };
   }
 
