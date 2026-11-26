@@ -5097,6 +5097,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-register-provider-is-named-once.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "every-repair-hint-row-is-reachable.test.mjs": {
           "tests": 3,
           "asserts": 5,
