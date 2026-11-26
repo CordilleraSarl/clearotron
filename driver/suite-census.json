@@ -9734,6 +9734,12 @@
     "mcp-server": {
       "ext": "mjs",
       "perFile": {
+        "a-client-of-the-new-protocol-falls-back-at-every-door.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-company-created-after-the-door-starts-is-listed.test.mjs": {
           "tests": 6,
           "asserts": 16,
