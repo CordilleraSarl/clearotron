@@ -273,7 +273,9 @@ async function research(params) {
       if (Number(part) > 1) return judgeBlock(cands, part, grid_spec_path, obligationsReserve(spec, ledgerJson)).trimStart();
       let owed = "";
       try { owed = tellObligations(spec, ledgerJson); } catch { /* best-effort — see tellObligations */ }
-      writeGridProvenance(spec, { ran: false, present: already.present, requested: already.requested, model: modelOverride });
+      // A grid this run's own program searched keeps the record its search wrote beside it: this service bought
+      // nothing for it, and a record naming this service would say a search ran somewhere it never did.
+      if (!ownSearch) writeGridProvenance(spec, { ran: false, present: already.present, requested: already.requested, model: modelOverride });
       return `Grid ALREADY RECORDED for this spec (${already.present}/${already.requested} cells present) at ${spec.output_path} — every dictated cell is accounted and every dictated meaning query carries a receipt, so it was NOT run again. The sweep is a fact of this run, not of this attempt.\n` +
         `Do NOT write the grid ledger yourself — it is already saved. ${LEDGER_HOLDS_EVERY_CELL}` +
         judgeBlock(cands, 1, grid_spec_path, owed ? owed.length + 2 : 0) +
