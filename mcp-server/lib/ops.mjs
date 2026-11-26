@@ -17,7 +17,8 @@ import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-produ
 import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";   // the ledger the wall counts
 import { resolveEffectiveProfile } from "../../driver/profiles.mjs";
-import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";   // one search left and an Urgent order
+import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";
+import { receiptIn, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // an id in any state is that order, not a new one   // one search left and an Urgent order
 import { orderUrgency } from "./urgent.mjs";   // whether this installation can run an Urgent order, as the run asks it   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
@@ -291,6 +292,16 @@ export function startRun(args = {}, { scope } = {}) {
   try { job = buildJob(args, { scope }); }
   catch (e) { throw new Error(`start_run: ${e.message}`); }
   const { id } = job;
+  // AN ID IN ANY STATE IS THAT ORDER, asked before anything else so a retry is recognised as one: before validation, and
+  // before the allowance is counted again for an order already counted. The check before the write below saw only a
+  // waiting or claimed job, so a retry after a refusal, a park or a delivery wrote a second order under the same id.
+  {
+    let names = [];
+    try { names = readdirSync(qdir); } catch { /* no queue directory yet holds no order */ }
+    const existing = receiptIn(qdir, id, names);
+    if (existing && ["waiting", "checking", "running"].includes(existing.state)) throw new Error(`start_run: a job with id "${id}" is already queued/processing`);
+    if (existing) throw new Error(`start_run: a job with id "${id}" already exists: ${RECEIPT_STATES[existing.state]}`);
+  }
 
   const v = validateJob(job);
   if (v.classify === "reject" || !v.ok) {
