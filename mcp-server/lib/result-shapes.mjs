@@ -42,13 +42,20 @@ const OUTCOMES = {
 };
 export const WRITE_VERBS = Object.freeze(Object.keys(OUTCOMES));
 
+// THE TOOLS THAT ANSWER FROM A RUN'S REPORT DOCUMENT, where it has one. Each answer names the version it was read from
+// (`report-document/clearance-1`), or null where the call read the run's own files instead.
+export const DOCUMENT_READERS = Object.freeze(["brief", "list_findings", "get_finding", "list_evidence", "list_searches", "get_search_coverage"]);
+
 /**
  * The structured result a call returns beside its text, or null for a tool that declares no shape. A verb's result
- * gains its `outcome`; a list goes out under `items`, because the protocol's structured result is an object.
+ * gains its `outcome`; a report reader's gains `document`; a list goes out under `items`, because the protocol's
+ * structured result is an object. `documents` is what the call noted it read (lib/document-reads.mjs).
  */
-export function structuredResult(name, result) {
+export function structuredResult(name, result, { documents = [] } = {}) {
   if (!SHAPES[name]) return null;
   if (OUTCOMES[name]) return { outcome: OUTCOMES[name](result), ...result };
+  if (DOCUMENT_READERS.includes(name) && result && typeof result === "object" && !Array.isArray(result))
+    return { ...result, document: documents[0] ?? null };
   return Array.isArray(result) ? { items: result } : result;
 }
 
