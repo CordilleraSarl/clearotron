@@ -10,6 +10,9 @@
   /* The column narrowed beside the conflict panel (owner, 2026-11-25): it becomes the query container its width rules'
      twins ask (column-queries.mjs), at the width the page script sets. Screen only, so paper is never narrowed. */
   @media screen{html.rep-narrow .wrap{container:repcol/inline-size;max-width:none;width:var(--rep-col);margin-left:var(--rep-left);margin-right:0}}
+  /* Where the window holds the full column and the conflict panel beside it (16 + 1120 + 30 + 500 + 16 px), a clearance
+     page keeps that room on the right from the start, so opening the panel moves nothing (design, 2026-11-26). */
+  @media screen and (min-width:1682px){body:has(> #cpanel-words) > .wrap{margin-left:16px;margin-right:auto}}
   /* The conflict panel (owner, 2026-11-25): a conflict's card, opened beside the claim that cites it. The card is the page's
      own markup, drawn at the panel's width by the width rules' twins (the panel is their query container). Never printed. */
   .cpanel{position:absolute;z-index:20;container:repcol/inline-size;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);outline:none}
