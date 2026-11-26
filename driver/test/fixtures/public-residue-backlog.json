@@ -11,7 +11,7 @@
     "machine-trailer",
     "in-a-string"
   ],
-  "total": 804,
+  "total": 803,
   "files": {
     "driver/contract-dictation-registry.mjs": [
       0,
@@ -1358,18 +1358,6 @@
       6
     ],
     "driver/test/failure-packet.test.mjs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1
-    ],
-    "driver/test/family-ungroup-discoverable.test.mjs": [
       0,
       0,
       0,

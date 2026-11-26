@@ -115,18 +115,22 @@ test('fixed layout means a cell must WRAP rather than overflow its column', () =
 test('an openable search has ONE named, focusable control: its Open button', () => {
   const readRow = CLEARANCES.slice(CLEARANCES.indexOf('function ReadRow'))
   assert.match(readRow, /const openable = hasReport\(read\)/, 'openability is the shared rule, which counts a batch\'s per-name reports')
-  assert.match(readRow, /open=\{openable \? \{ label: 'Open', go: open \} : null\}/, 'the search row offers Open exactly when it has a report')
+  assert.match(readRow, /open=\{openable \? \{ label: 'Open report', go: open, name: `Open report for /, 'the search row offers Open report exactly when it has a report')
   // One tab stop per search. A focusable row wrapping a focusable button is two targets for one action,
   // which is the thing the old arm refused in the other direction.
   assert.doesNotMatch(readRow, /role: 'link' as const/, 'the row is not a link any more — the button is')
   assert.doesNotMatch(readRow, /tabIndex: 0/, 'and the row takes no focus of its own')
-  // Named by its own words: no aria-label on the button, so what a screen reader announces is what the
-  // eye reads.
+  // Labelled by the words it shows; the spoken name below begins with those same words.
   const actions = CLEARANCES.slice(CLEARANCES.indexOf('function RowActions'), CLEARANCES.indexOf('function FamilyRows'))
   const button = actions.slice(actions.indexOf('className="row-open"') - 60, actions.indexOf('</button>'))
   assert.match(button, /<button\s+type="button"\s+className="row-open"/, 'Open is a real <button>')
   assert.match(button, /\{open\.label\}/, 'labelled by the words it shows')
-  assert.doesNotMatch(button, /aria-label/, 'and never renamed for assistive technology alone')
+  // THE SPOKEN NAME BEGINS WITH THE WORDS SHOWN, and adds which report (board Clearances, approved
+  // 2026-11-25: "Open report for {name}, {search}, {date}"). A name that dropped the visible words would be a
+  // control renamed for assistive technology alone.
+  assert.match(button, /aria-label=\{open\.name\}/, 'the button takes the row\'s approved spoken name')
+  assert.match(CLEARANCES, /name: `Open report for \$\{displayName\(read\)\}/, 'a search row\'s spoken name starts with its words')
+  assert.match(CLEARANCES, /name: `\$\{target\.label\} for \$\{mark\.name\}, /, 'a name row\'s spoken name starts with its words, Open report or Open latest report')
 })
 
 test('a read with NO report gets no affordance at all — a dead target is worse than no target', () => {
@@ -156,7 +160,8 @@ test('the company heading is a SECTION HEADER, not the smallest type on the page
   assert.match(CLEARANCES, /className="owner-count"/)
   assert.doesNotMatch(CLEARANCES.slice(CLEARANCES.indexOf('tr className="group-head"'), CLEARANCES.indexOf('</tr>', CLEARANCES.indexOf('tr className="group-head"'))),
     /eyebrow/, 'the heading no longer borrows the smallest type on the page')
-  assert.match(BASE, /tr\.group-head \.owner-name \{[^}]*font-size: 14px/)
+  // The board's company heading (Clearances, approved 2026-11-25): a heading's size, over its names.
+  assert.match(BASE, /tr\.group-head \.owner-name \{[^}]*font-size: 19px/)
   assert.match(BASE, /tr\.group-head \.owner-name \{[^}]*font-weight: 600/)
   assert.match(BASE, /tr\.group-head \.owner-name \{[^}]*color: var\(--text-strong\)/)
   assert.match(BASE, /tr\.group-head \.owner-name \{[^}]*text-transform: none/, 'sentence case, not letterspaced caps')
@@ -173,8 +178,8 @@ test('the heading is a filled band, and nesting is DRAWN in the first cell only'
   // The rules are background images, so the row's own background must be set as a COLOUR: the shorthand
   // would reset the image and erase the rule on exactly the rows that need it.
   assert.doesNotMatch(BASE, /tr\.read-row > td \{\s*background:/, 'a read row\'s shorthand background would erase its rules')
-  assert.match(CLEARANCES, /<td className=\{indent \? 'nest-2' : 'nest-1'\} \/>/, 'a search row draws one rule per level above it')
-  assert.match(CLEARANCES, /<td className=\{indent \? 'nest-1' : undefined\}>/, 'a name inside a group draws one')
+  assert.match(CLEARANCES, /<td className=\{`clr-td-twisty \$\{indent \? 'nest-2' : 'nest-1'\}`\} \/>/, 'a search row draws one rule per level above it')
+  assert.match(CLEARANCES, /<td className=\{`clr-td-twisty\$\{indent \? ' nest-1' : ''\}`\}>/, 'a name inside a group draws one')
 })
 
 test('GROUP · N and the company chip are GONE — removal, not restyling', () => {
@@ -189,43 +194,35 @@ test('GROUP · N and the company chip are GONE — removal, not restyling', () =
 
 // ──: selection — one vocabulary, in the palette, moving nothing ─────────────────────────────────
 
-test('PICK is gone and NOT renamed — a checkbox column does not need a header', () => {
-  // The issue rejects renaming it: a better word would keep a header that earns nothing. The column is
-  // named for screen readers instead, on the header cell and on every checkbox.
-  assert.doesNotMatch(CLEARANCES, /<span className="eyebrow">Pick<\/span>/)
-  assert.doesNotMatch(CLEARANCES, />Pick</)
-  assert.match(CLEARANCES, /<th aria-label="Select for grouping" \/>/)
-  assert.match(CLEARANCES, /aria-label=\{`Select \$\{mark\.name\} for grouping`\}/)
+test('names are grouped in a dialog, not by a checkbox column (board Clearances, approved 2026-11-25)', () => {
+  // The checkbox column and its selection bar are gone: "Group names" opens a dialog that picks the names,
+  // so the list has no column a reader has to learn the meaning of.
+  assert.doesNotMatch(CLEARANCES, /aria-label="Select for grouping"/)
+  assert.doesNotMatch(CLEARANCES, /for grouping`\}/)
+  assert.match(CLEARANCES, /<Icon name="layers" size=\{15\} \/>Group names/, 'the header carries "Group names"')
+  assert.match(CLEARANCES, /<legend className="field-label">Names to group<\/legend>/, 'the dialog picks the names')
 })
 
 test('ONE WORD for the feature — family, everywhere, with no second term in the flow', () => {
-  // Anchored on the wrapper's class PREFIX: the table's wrapper carries a second class now, and an anchor
-  // that found nothing made this slice run to the end of the file.
-  const start = CLEARANCES.indexOf('className="selection-bar"')
-  const end = CLEARANCES.indexOf('<div className="table-wrap')
-  assert.ok(start > 0 && end > start, 'premise: the selection bar sits before the table')
-  const bar = CLEARANCES.slice(start, end)
-  assert.match(bar, /names' : 'name'\} selected|\{picked\.size === 1 \? 'name' : 'names'\} selected/)
-  assert.match(bar, /Group as a family/)
-  assert.match(bar, /Remove from family/)
-  // Over the RENDERED strings, not the source: the comment above the bar quotes the retired word to
-  // explain why it is retired, and an assertion that fails on its own explanation is a bad assertion.
-  // Comments stripped first: the one above the bar quotes the retired word to explain why it is
-  // retired, and an assertion that fails on its own explanation is a bad assertion.
-  const code = bar.replace(/\{\/\*[\s\S]*?\*\/\}/g, '')
+  // The dialog, its button and the menus all say family (board Clearances, approved 2026-11-25).
+  const dialog = CLEARANCES.slice(CLEARANCES.indexOf('function GroupingDialog'))
+  assert.ok(dialog.length > 500, 'premise: the grouping dialog is where this arm thinks it is')
+  assert.match(dialog, /'Group names as a family'/)
+  assert.match(dialog, />Save family</)
+  assert.match(CLEARANCES, />Remove from family…</)
+  assert.match(CLEARANCES, />Ungroup family…</)
+  assert.match(CLEARANCES, />Add names to this family…</)
+  const code = dialog.replace(/\/\/.*$/gm, '').replace(/\{\/\*[\s\S]*?\*\/\}/g, '')
   assert.doesNotMatch(code, /\bpick\b/i, 'the pick vocabulary does not survive into the action')
-  assert.match(code, /Group as a family/, 'and family does')
 })
 
-test('the bar OVERLAYS — ticking a box must not move the table under the cursor', () => {
-  // It was a `.notice` in normal flow above the table header, so selecting a row pushed the entire
-  // table down. The issue also rejects reserving space with a permanent empty band, which is the other
-  // way to stop the jump and leaves a hole on every visit.
-  assert.match(CLEARANCES, /className="selection-bar"/)
-  assert.ok(CLEARANCES.indexOf('<div className="table-wrap') > 0, 'premise: the table wrapper is where this arm thinks it is')
-  assert.doesNotMatch(CLEARANCES.slice(0, CLEARANCES.indexOf('<div className="table-wrap')), /className="notice" style=\{\{ display: 'flex'/)
-  assert.match(BASE, /\.selection-bar \{[^}]*position: fixed/)
-  assert.match(BASE, /\.selection-bar \{[^}]*bottom: 20px/)
+test('a change asks OVER the list — nothing it opens moves the table under the cursor', () => {
+  // Every change to the shared list asks in a dialog drawn over the page (board Clearances, approved
+  // 2026-11-25): opening one moves nothing in the list, and the line that says what was done sits above it.
+  assert.match(CLEARANCES, /<div className="modal-scrim" onClick=\{onClose\} role="dialog" aria-modal="true" aria-labelledby="clr-ask-title">/)
+  assert.match(CLEARANCES, /<div className="modal-scrim" onClick=\{onClose\} role="dialog" aria-modal="true" aria-labelledby="clr-group-title">/)
+  assert.match(BASE, /\.modal-scrim \{[^}]*position: fixed/)
+  assert.doesNotMatch(CLEARANCES, /window\.(confirm|prompt|alert)\(/, 'the browser\'s own boxes are gone from the list')
 })
 
 test('it is NOT .notice — that is the persistent treatment, used by this screen\'s own error state', () => {
@@ -264,10 +261,10 @@ test('the name identifies the ROW it controls, and comes from the row\'s own nam
   // The issue: copy the naming pattern that is CURRENT when you build, not today's string. changed
   // what a row is called and removed "grouping" from the checkbox wording, so a name composed
   // inside the disclosure would already be a third convention drifting from the other two.
-  assert.match(CLEARANCES, /label=\{`\$\{open \? 'Collapse' : 'Expand'\} \$\{mark\.name\}`\}/)
+  // A name's twisty opens its searches, and says so (board Clearances, approved 2026-11-25).
+  assert.match(CLEARANCES, /label=\{`\$\{open \? 'Collapse' : 'Expand'\} searches for \$\{mark\.name\}`\}/)
   assert.match(CLEARANCES, /label=\{`\$\{open \? 'Collapse' : 'Expand'\} \$\{family\.name\}`\}/)
   // Same source as the checkbox beside it, so the two cannot drift apart.
-  assert.match(CLEARANCES, /aria-label=\{`Select \$\{mark\.name\} for grouping`\}/)
 })
 
 test('pressing the button toggles ONCE — the row handler must not fire as well', () => {
@@ -286,16 +283,16 @@ test('the button looks like the span it replaced, and adds one thing — a focus
 
 // ──: grouping is a toggle, and the owner survives it ───────────────────────────────────────────
 
-test('grouping is ON by default and the toggle state is visible without opening a menu', () => {
-  // Grouped-by-default is right for the common case, a person working one client's book. The toggle is
-  // for the case grouping actively obstructs — reading risk across a whole portfolio.
+test('grouping is ON by default, and turning it off is visible without opening a menu', () => {
+  // Grouped-by-default is right for the common case, a person working one client's book. The toggle sits
+  // in Filters (board Clearances, approved 2026-11-25); its OFF state is said as a chip under the bar,
+  // "Companies combined", so a reader sees why the companies are mixed without opening anything.
   assert.match(CLEARANCES, /const \[groupByOwner, setGroupByOwner\] = useState<boolean>\(readGroupPref\)/)
   assert.match(CLEARANCES, /return localStorage\.getItem\(GROUP_PREF_KEY\) !== 'off'/, 'absent means ON')
   assert.match(CLEARANCES, /return true\s*\n\s*\}\s*\n\}/, 'and a store that throws still means ON')
-  // In the toolbar, not behind a menu: a toggle whose state you have to go looking for explains nothing
-  // about why the sort looked wrong.
-  assert.match(CLEARANCES, /className="group-toggle"/)
+  assert.match(CLEARANCES, /className="group-toggle clr-filter-check"/)
   assert.match(CLEARANCES, /Group by company/)
+  assert.match(CLEARANCES, /groupable && !groupByOwner \? \[\{ key: 'combined', label: 'Companies combined'/, 'the off state is a chip')
   assert.match(BASE, /\.group-toggle \{/)
 })
 
@@ -304,7 +301,7 @@ test('the toggle only appears when it can do something', () => {
   // cannot change anything is the dead-option problem in a new place.
   assert.match(CLEARANCES, /const groupable = ownerFilter === null && ownersHeld > 1/)
   assert.match(CLEARANCES, /const grouped = groupable && groupByOwner/)
-  assert.match(CLEARANCES, /\{groupable \? \(\s*\n\s*<label className="group-toggle">/)
+  assert.match(CLEARANCES, /\{groupable \? \(\s*\n\s*<label className="group-toggle clr-filter-check">/)
 })
 
 test('UNGROUPED, the company survives as a column — the issue rejects dropping it', () => {

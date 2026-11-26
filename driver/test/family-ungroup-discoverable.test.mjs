@@ -41,7 +41,7 @@ test("arm 1 — the family header offers Ungroup, where the family visibly is", 
   const t = live("portal-ui/src/screens/Clearances.tsx");
   assert.match(t, /onUngroup\?\s*:/, "the header row takes an ungroup handler");
   assert.match(t, /onUngroup\(family\)/, "…and calls it with the family the row is about");
-  assert.match(t, />\s*Ungroup\s*</, "…under a label a user can find without guessing");
+  assert.match(t, />\s*Ungroup family…\s*</, "…under a label a user can find without guessing");
   // It hangs off the FamilyRows header, not the multi-select bar: the point is that it is visible
   // BEFORE anything is ticked.
   // Anchored on the FamilyRows body, not on `{family.name}` — that string also appears in the grouping
@@ -55,10 +55,9 @@ test("arm 1 — the family header offers Ungroup, where the family visibly is", 
   assert.ok(membersAt > headerAt, "premise: the member rows render after the header");
   assert.ok(controlAt > headerAt && controlAt < membersAt,
     `the control must sit on the family HEADER row (component at ${headerAt}, control at ${controlAt}, members at ${membersAt})`);
-  // …and it is NOT inside the picking bar, which is the thing that made it undiscoverable.
-  const pickBarAt = t.indexOf("Group as a family");
-  assert.ok(controlAt > pickBarAt + 2000 || controlAt < pickBarAt,
-    "the new control is in the multi-select bar again — that is the surface nobody could find");
+  // …and there is no multi-select bar for it to hide in: grouping is a dialog now (board Clearances,
+  // approved 2026-11-25), and the family's own menu is where a family is undone.
+  assert.ok(!/className="selection-bar"/.test(t), "the multi-select bar is back — that is the surface nobody could find");
 });
 
 test("arm 2 — it calls the SAME audited capability, over every run in the family", () => {
@@ -75,18 +74,19 @@ test("arm 3 — one click cannot dissolve a grouping somebody made deliberately"
   const at = t.indexOf("const ungroupFamily");
   assert.ok(at > 0, "the handler exists");
   const body = t.slice(at, at + 900);
-  assert.match(body, /window\.confirm\(/,
-    "the multi-select route makes you tick the members first; from the header it is one click, so it asks");
-  assert.match(body, /only the family goes/,
-    "and the confirm says what is NOT lost — the names stay, which is the thing a user fears");
+  // It asks in the product's own dialog (board Clearances, approved 2026-11-25), naming where the names go.
+  assert.match(body, /setAsk\(\{/,
+    "from the family's menu it is one press, so it asks");
+  assert.match(body, /and their searches will appear directly under/,
+    "and the question says what is NOT lost — the names and their searches stay, which is the thing a user fears");
 });
 
-test("arm 4 — the enforcement is untouched: the old button still gates on the selection", () => {
+test("arm 4 — a name leaves its family on its own, and asks first", () => {
   const t = live("portal-ui/src/screens/Clearances.tsx");
-  assert.match(t, /\[\.\.\.picked\]\.some\(\(id\) =>[\s\S]{0,200}?\?\.familyId\) \?/,
-    "THE PRINCIPLE STANDS: a control that cannot act is still not on screen. #612 added an invitation, "
-    + "it did not delete the guard");
-  assert.match(t, />\s*Remove from family\s*</, "…and the per-name route is still there");
+  // THE PRINCIPLE STANDS: a control that cannot act is not on screen. "Remove from family…" is offered only
+  // on a name that sits in a family (board Clearances, approved 2026-11-25).
+  assert.match(t, /\{onRemoveFromFamily && familyName \? <MenuItem/, "the per-name route shows only where it can act");
+  assert.match(t, />\s*Remove from family…\s*</, "…and the per-name route is still there");
 });
 
 test("arm 5 — the SERVED BUNDLE carries it; portal-ui/dist is what the browser gets", (ctx) => {
@@ -102,6 +102,6 @@ test("arm 5 — the SERVED BUNDLE carries it; portal-ui/dist is what the browser
   const bundles = readdirSync(dir).filter((f) => f.endsWith(".js"));
   assert.ok(bundles.length, "there is a built bundle at all");
   const anyHas = (needle) => bundles.some((b) => readFileSync(join(dir, b), "utf8").includes(needle));
-  assert.ok(anyHas("only the family goes"), "the served bundle does not carry the confirm — dist was not rebuilt");
-  assert.ok(anyHas("Ungroup"), "…nor the control itself");
+  assert.ok(anyHas("and their searches will appear directly under"), "the served bundle does not carry the question — dist was not rebuilt");
+  assert.ok(anyHas("Ungroup family"), "…nor the control itself");
 });
