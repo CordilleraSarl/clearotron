@@ -29,6 +29,7 @@ import { inputsLine } from '../framework-method.mjs';
 import { clientConditions } from '../terminal-clamp.mjs'; import { hrefAttr } from './attr.mjs';   // an href is attribute-safe and http(s), or not a link
 import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // the export menu's shell and behaviour, shared with the knockout template   // the reader's clause per condition, shared with the cover note
 import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs';
+import { webNameRow } from './search-depth.mjs';   // what a web name's `url` gives the page, read once for the page and the lint
 import { parseFindingsJson, bindRecommendation, sentenceCaseLead, CLIENT_TIER_BY_COMPOSITE, bandOf, compareBlockingPower, inDispositionMode, reasonedNegativeGroups } from '../findings-model.mjs';
 import { REC, inPriorityWindow, ownerDisplayName } from '../registry-fidelity.mjs';
 import { registrationSystem } from '../jurisdiction-systems.mjs';
@@ -1026,11 +1027,15 @@ const RUN_COMMON_LAW_RECORD_LABEL = R.cleared.runCommonLawRecord;
 // a new tab as the page's other evidence links do. A block that gave no address is not a name and is not here.
 const webAddressText = (u) => String(u).replace(/^https?:\/\//, '').replace(/\/$/, '');
 function webNamesHtml(searchDepth) {
-  const web = (searchDepth && searchDepth.cleared && searchDepth.cleared.web) || [];
+  // A record written before the reader gave each row its links carries only `url`; it is read the same way here.
+  const web = ((searchDepth && searchDepth.cleared && searchDepth.cleared.web) || [])
+    .map((w) => (Array.isArray(w.links) ? w : { ...w, ...(webNameRow(w.url) ?? { links: [], runRecord: false, ref: null, note: true }) }))
+    .filter((w) => !w.note);
   if (!web.length) return '';
   const rows = web.map((w) => `<div class="crow"><span class="cm-mark">${esc(w.title || '')}</span><span class="curl">${
     w.runRecord ? esc(RUN_COMMON_LAW_RECORD_LABEL)
-    : (Array.isArray(w.links) ? w.links : []).map((u) => (hrefAttr(u)
+    : w.ref ? esc(w.ref)
+    : w.links.map((u) => (hrefAttr(u)
       ? `<a href="${hrefAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(webAddressText(u))}</a>` : esc(webAddressText(u)))).join(' \u00b7 ')
   }</span></div>`).join('');
   return `<details class="cgroup"><summary><span class="gname">${R.cleared.webAndMarketplace}</span><span class="gcount">${

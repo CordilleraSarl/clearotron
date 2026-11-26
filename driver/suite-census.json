@@ -5063,7 +5063,7 @@
         },
         "every-web-name-the-list-counts-is-printed-with-its-address.test.mjs": {
           "tests": 5,
-          "asserts": 27,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
