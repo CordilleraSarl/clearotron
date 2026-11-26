@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { installWebResearch, webResearchCapability, OWN_SEARCH_STILL_PERPLEXITY, WEB_RESEARCH_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
+import { installWebResearch, researchDoor, webResearchCapability, OWN_SEARCH_STILL_PERPLEXITY, WEB_RESEARCH_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
 import { preflightResearchCredential } from "../driver.config.mjs";
 import { policyFor } from "../search-policy.mjs";
 import { readRunChoices, recordRunChoices, researchForRun, RunChoiceUnavailable } from "../engine/run-choices.mjs";
@@ -73,18 +73,27 @@ test("a part own search does not run yet keeps needing the Perplexity key, and t
 test("the door checks the run's service, and the service handed in wins over the setting", () => {
   const p = policyFor("full-country-search");
   const KEY = { PERPLEXITY_API_KEY: "k" };
-  assert.equal(preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own", ...KEY }).service, "own");
-  assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }), /still sends its follow-up questions to Perplexity/);
-  assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own", ...KEY, CLEAROTRON_AI: "openai-agent" }, { engine: "probe-retired" }), /probe-retired engine has no web search/,
+  assert.equal(researchDoor(p, { [WEB_RESEARCH_SETTING]: "own", ...KEY }).service, "own");
+  assert.throws(() => researchDoor(p, { [WEB_RESEARCH_SETTING]: "own" }), /still sends its follow-up questions to Perplexity/);
+  assert.throws(() => researchDoor(p, { [WEB_RESEARCH_SETTING]: "own", ...KEY, CLEAROTRON_AI: "openai-agent" }, { engine: "probe-retired" }), /probe-retired engine has no web search/,
     "the door judges the engine the run uses, not the one the environment names");
-  assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }, { service: "perplexity" }), /missing PERPLEXITY_API_KEY/,
+  assert.throws(() => researchDoor(p, { [WEB_RESEARCH_SETTING]: "own" }, { service: "perplexity" }), /missing PERPLEXITY_API_KEY/,
     "a run recorded on Perplexity is checked there, whatever the installation now says");
-  assert.equal(preflightResearchCredential(p, { PERPLEXITY_API_KEY: "k" }, { service: "own" }).service, "own");
-  assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own", CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_BEDROCK: "1" }),
+  assert.equal(researchDoor(p, { PERPLEXITY_API_KEY: "k" }, { service: "own" }).service, "own");
+  assert.throws(() => researchDoor(p, { [WEB_RESEARCH_SETTING]: "own", CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_BEDROCK: "1" }),
     /own web search cannot run here .*Amazon Bedrock/);
-  assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "google" }), /names no web-research service/);
-  assert.equal(preflightResearchCredential(policyFor("knockout-search"), { [WEB_RESEARCH_SETTING]: "own", CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_BEDROCK: "1" }).checked, false,
+  assert.throws(() => researchDoor(p, { [WEB_RESEARCH_SETTING]: "google" }), /names no web-research service/);
+  assert.equal(researchDoor(policyFor("knockout-search"), { [WEB_RESEARCH_SETTING]: "own", CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_BEDROCK: "1" }).checked, false,
     "a Knockout is never refused at this door");
+});
+
+test("the configuration's door never reads the setting: it checks the service it is handed, Perplexity when none is", () => {
+  const p = policyFor("full-country-search");
+  assert.throws(() => preflightResearchCredential(p, { [WEB_RESEARCH_SETTING]: "own" }), /missing PERPLEXITY_API_KEY/);
+  assert.throws(() => preflightResearchCredential(p, {}, { service: "own" }), /nothing checked whether this installation can run it/,
+    "own search with no capability check is never let through");
+  assert.equal(preflightResearchCredential(p, {}, { service: "own", own: { ok: true } }).service, "own");
+  assert.throws(() => preflightResearchCredential(p, {}, { service: "google" }), /not a web-research service/);
 });
 
 test("the run's record holds its service, reads it back, and a run recorded before the service keeps Perplexity", () => {

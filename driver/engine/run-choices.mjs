@@ -22,7 +22,7 @@
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { ENGINE_BINARIES, PROVIDERS, REGISTER_PROVIDER, activeProvider } from "../driver.config.mjs";
-import { WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
+import { WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES } from "../web-research-names.mjs";
 
 export const RUN_CHOICES_FILE = "run-choices.json";
 

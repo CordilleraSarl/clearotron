@@ -8,14 +8,14 @@
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { orderSnapshot, readAcceptedOrder, retainAcceptedOrder } from "../accepted-order.mjs";
 import { recordSpan } from "../attributed-span.mjs";
-import { config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, preflightResearchCredential, REGISTER_PROVIDER } from "../driver.config.mjs";
+import { config, preflightCredentials, preflightEngineBinary, preflightFreeSpace, REGISTER_PROVIDER } from "../driver.config.mjs";
 import { engineProvenance } from "../engine-build.mjs";
 import { recordEngineAnswered } from "../engine/health.mjs";
 import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
 import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerDoor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { urgentDecision } from "../engine/speed.mjs";
-import { installWebResearch, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
+import { installWebResearch, researchDoor, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
 import { resolveAuthMode } from "../engine/auth.mjs";
 import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
@@ -154,7 +154,7 @@ export async function openRun({ job, opts }) {
   // A RESUMED RUN WHOSE SERVICE THIS RUNNER CANNOT SERVE PARKS, by name, with its work kept: it never finishes on another
   // service. Any other run meets the door as before.
   if (!opts.recordFetcher) {
-    try { preflightResearchCredential(jobPolicy, engineEnv, { service: runResearch, engine: recorded.state === "recorded" ? recorded.engine : selectEngine().name }); }
+    try { researchDoor(jobPolicy, engineEnv, { service: runResearch, engine: recorded.state === "recorded" ? recorded.engine : selectEngine().name }); }
     catch (e) {
       if (recorded.state !== "recorded") throw e;
       throw park({ kind: "research", recorded: runResearch, machine: machineResearch.service ?? null, detail: e?.message ?? e });

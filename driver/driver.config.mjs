@@ -24,7 +24,7 @@ import { adapter as euipoAdapter } from "../providers/euipo/src/adapter.js";
 import { adapter as usptoLocalAdapter } from "../providers/uspto-local/src/adapter.js";
 import { adapter as freeTierAdapter } from "../providers/free-tier/src/adapter.js";
 import { readJson } from "./run-record.mjs";
-import { installWebResearch, webResearchCapability, WEB_RESEARCH_SETTING } from "./web-research.mjs";   // which service runs the web research, and whether it can here
+import { WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";   // the services' names only: no tool server is handed the setting itself
 import { program as anthropicAgentProgram } from "./engine/anthropic-agent-program.mjs";   // each engine's program row, kept beside its adapter
 import { program as openaiAgentProgram } from "./engine/openai-agent-program.mjs";
 
@@ -1231,23 +1231,21 @@ export function preflightCredentials(env = process.env) {
  * knockout exemption from the same lookup), and passing the row keeps this file from importing the
  * product registry.
  *
- * THE SERVICE IT CHECKS is the run's (`service`: a resumed run keeps the one it recorded, engine/run-choices.mjs), or
- * the installation's setting when none is handed in (web-research.mjs). Under the AI program's own search no key is
- * owed: the door checks that this installation's engine and route carry a web search, and places no search to do so.
- * A setting that names no service is refused by name, never read as either service.
+ * THE SERVICE IT CHECKS is the one handed in (`service`, Perplexity when none is): the run door resolves it from the
+ * run's record or the installation's setting (web-research.mjs, researchDoor), which this file does not read, since
+ * every tool server imports it. Under the AI program's own search no key is owed, and `own` is what
+ * webResearchCapability found: that this installation's engine and route carry a web search. No search is placed.
  *
  * @returns `{ checked: false }` when the product carries no common-law grid — a statement that the door
  *          did not apply, never a pass. An absence is a finding, so it is said rather than implied.
  */
-export function preflightResearchCredential(policy, env = process.env, { service = null, engine = null } = {}) {
+export function preflightResearchCredential(policy, env = process.env, { service = "perplexity", own = null } = {}) {
   if (policy?.components?.commonLawGrid !== true)
     return { checked: false, component: "commonLawGrid", credEnv: null, missing: [] };
-  const install = service ? { service } : installWebResearch(env);
-  if (!install.service)
-    throw new Error(`[preflight] ${WEB_RESEARCH_SETTING}=${install.invalid} names no web-research service on product "${policy.product}" `
-      + `— one of: own (the AI program's own web search) or perplexity; refusing rather than guess which one searches`);
-  if (install.service === "own") {
-    const can = webResearchCapability({ service: "own", engine, env });
+  if (!WEB_RESEARCH_SERVICES.includes(service))
+    throw new Error(`[preflight] "${service}" is not a web-research service (${WEB_RESEARCH_SERVICES.join(", ")})`);
+  if (service === "own") {
+    const can = own ?? { ok: false, why: "nothing checked whether this installation can run it" };
     if (!can.ok)
       throw new Error(`[preflight] the AI program's own web search cannot run here for the common-law / marketplace sweep `
         + `on product "${policy.product}": ${can.why}. Set ${WEB_RESEARCH_SETTING}=perplexity with a Perplexity key, `

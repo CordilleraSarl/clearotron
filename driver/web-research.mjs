@@ -21,22 +21,16 @@
 // A RUN KEEPS THE SERVICE IT STARTED ON (engine/run-choices.mjs). A run recorded before the setting existed ran on
 // Perplexity and resumes there.
 //
-// A LEAF: it reads the environment and the billing rules (engine/auth.mjs), nothing else, so setup, doctor and every
-// tool server can ask it without importing the engines.
+// IT IS NEVER A TOOL SERVER'S IMPORT: it reads the setting and the billing rules (engine/auth.mjs), which no tool server is
+// handed. The names alone live in web-research-names.mjs, for the modules tool servers do import.
 import { resolveAuthMode } from "./engine/auth.mjs";
 
-export const WEB_RESEARCH_SETTING = "CLEAROTRON_WEB_RESEARCH";
-export const WEB_RESEARCH_SERVICES = Object.freeze(["own", "perplexity"]);
-/** The service of an installation that names none, and of a run recorded before the setting existed. */
-export const WEB_RESEARCH_BEFORE_THE_SETTING = "perplexity";
-export const PERPLEXITY_KEY = "PERPLEXITY_API_KEY";
+import { OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";
+import { preflightResearchCredential } from "./driver.config.mjs";
+export { OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING };
 
 const ENGINE_SEARCH = Object.freeze({ "anthropic-agent": "Claude", "openai-agent": "Codex" });
 
-// THE PARTS OF A CLEARANCE'S WEB RESEARCH THAT OWN SEARCH DOES NOT RUN YET, each still sent to Perplexity. While one is
-// listed, own search needs the Perplexity key for it, and says so: a part with no service would be a question the writer
-// is refused, which a report reads as "no result". Each part leaves the list when own search runs it.
-export const OWN_SEARCH_STILL_PERPLEXITY = Object.freeze(["follow-up questions"]);
 const DEFAULT_ENGINE = "anthropic-agent";
 
 /**
@@ -84,4 +78,18 @@ export function webResearchCapability({ service, engine = null, env = process.en
     return { ok: false, service, missing: [PERPLEXITY_KEY], search: ENGINE_SEARCH[name], billing: auth.mode,
       why: `${PERPLEXITY_KEY} is not set, and own search still sends its ${OWN_SEARCH_STILL_PERPLEXITY.join(" and ")} to Perplexity` };
   return { ok: true, service, missing: [], why: null, search: ENGINE_SEARCH[name], billing: auth.mode, stillPerplexity: [...OWN_SEARCH_STILL_PERPLEXITY] };
+}
+
+/**
+ * THE RUN DOOR FOR WEB RESEARCH: the run's service (`service`, a resumed run's recorded one) or the installation's,
+ * checked on the engine the run uses. Throws, as the configuration's door does, before anything is spent. A setting
+ * that names no service is refused by name, never read as either service. IMPURE only through `env`.
+ */
+export function researchDoor(policy, env = process.env, { service = null, engine = null } = {}) {
+  const install = service ? { service } : installWebResearch(env);
+  if (!install.service)
+    throw new Error(`[preflight] ${WEB_RESEARCH_SETTING}=${install.invalid} names no web-research service on product "${policy?.product}" `
+      + `— one of: own (the AI program's own web search) or perplexity; refusing rather than guess which one searches`);
+  return preflightResearchCredential(policy, env, { service: install.service,
+    own: install.service === "own" ? webResearchCapability({ service: "own", engine, env }) : null });
 }
