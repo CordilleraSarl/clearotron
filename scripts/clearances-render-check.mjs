@@ -104,6 +104,10 @@ let longTitle = false
 // ladders print. The stub rows above prove behaviour; they are too few and too short to prove the layout,
 // and a layout that fitted them regressed on the real list at 1440px while this file stayed green.
 let fullList = false
+// A READER WITHOUT CURATION RIGHTS, and A LIST LONGER THAN ONE PAGE: the last two cases the issue's own
+// verification names.
+let readerMode = false
+let pagedList = false
 let rosterMode = 'ok'
 let withGeneric = false
 // INVENTED, EVERY ONE, and coined rather than borrowed. This list first held names taken from runs, one of
@@ -120,6 +124,12 @@ const FULL_RUNS = () => FULL_MARKS.map((m, i) => run({
   issuedAt: `2026-09-${String(18 - (i % 17)).padStart(2, '0')}T09:00:00Z`, band: FULL_BANDS[i % FULL_BANDS.length][0],
   tone: FULL_BANDS[i % FULL_BANDS.length][1], product: ['global-preliminary-search', 'multi-country-focus-search', 'full-country-search'][i % 3],
 }))
+// SEVENTY-FIVE NAMES across two companies, every company more than half a page: whichever company sorts
+// first, the second one runs across the break between page one and page two.
+const PAGED_RUNS = () => ['', ' II', ' III'].flatMap((suffix, k) => FULL_MARKS.map((m, i) => run({
+  runId: `paged-${k}-${i}`, account: (k * FULL_MARKS.length + i) % 2 ? KEY2 : KEY, markName: `${m}${suffix}`, title: `${m}${suffix}`,
+  date: '2026-09-10', issuedAt: '2026-09-10T09:00:00Z', band: 'Manageable', tone: 'low', product: 'global-preliminary-search',
+})))
 
 // THE ROW STATES the list has to tell apart, each built the way the service sends it:
 //   • a finished name with one search                          ASTERION
@@ -164,6 +174,13 @@ const RUNS = () => [
   // Running, and never finished before.
   run({ runId: 'tide-1', account: KEY2, markName: 'TIDEGLASS', title: 'TIDEGLASS', date: '2026-09-16', issuedAt: '2026-09-16T09:00:00Z', state: 'running', band: null, tone: null, report: null, step: 'Register sweeps', stepN: 4, stepTotal: 9 }),
 ]
+// THE RETIRED TAB'S LIST: one finished search and one failed one, which restores back to Failed. And the
+// writes the dialogs send, recorded so a pass can say what was asked of the server.
+const RETIRED = () => [
+  run({ runId: 'tmpr-retired-1', markName: 'HALCYON', title: 'HALCYON', date: '2026-07-30', band: 'Manageable', product: 'knockout-search' }),
+  run({ runId: 'tmpr-retired-2', markName: 'GLASSWING', title: 'GLASSWING', date: '2026-07-29', state: 'failed', band: null, tone: null, report: null, reason: 'The register did not answer in time.', product: 'global-preliminary-search' }),
+]
+const writes = []
 const FAMILIES = { of: { 'aq-plus-1': FAMILY_ID, 'aq-plus-2': FAMILY_ID, 'aq-plus-3': FAMILY_ID, 'aq-max-1': FAMILY_ID }, names: { [FAMILY_ID]: FAMILY_NAME } }
 
 // What /usage answers. Plenty for the measured passes, so the allowance line stays off them; the
@@ -197,16 +214,23 @@ const server = createServer((req, res) => {
   const p = new URL(req.url, 'http://localhost').pathname
   // In the roster passes the install carries its organisation's Generic, as a real one does: that is the one
   // company left when the roster fails, and what a failed roster used to narrow every screen to.
-  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: true }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null, brand: 'Northwind Group',
+  if (p === '/portal/api/me') return json(res, { email: 'manager@example-firm.com', permissions: { run: true, manage: !readerMode }, access: [{ kind: 'everything' }], accounts: '*', accountNames: {}, allowance: null, brand: 'Northwind Group',
     ...(withGeneric ? { genericOrgs: ['northwind'], organisations: [{ key: 'northwind', name: 'Northwind Group' }] } : {}) })
   // THE ROSTER, as the server answers it in three shapes: whole, with a company file it could not read, and
   // failed. The last two used to draw exactly like the first with fewer companies.
   if (p === '/portal/admin/roster' && rosterMode === 'fail') { res.writeHead(500, { 'content-type': 'application/json' }); return res.end('{"error":"store unreadable"}') }
   if (p === '/portal/admin/roster' && rosterMode === 'unreadable') return json(res, { customers: [{ key: KEY, name: NAME }], unreadable: [{ key: 'petcary', reason: 'frameworkPath must be a path of the form …' }] })
   if (p === '/portal/admin/roster') return json(res, { customers: [{ key: KEY, name: NAME }, { key: KEY2, name: NAME2 }] })
+  if ((p === '/portal/admin/families' || p === '/portal/admin/retired') && req.method === 'POST') {
+    let body = ''
+    req.on('data', (c) => { body += c })
+    req.on('end', () => { writes.push({ path: p, body: (() => { try { return JSON.parse(body) } catch { return body } })() }); json(res, { ok: true }) })
+    return
+  }
+  if (p === '/portal/admin/retired') return json(res, { runs: RETIRED() })
   if (p === '/portal/admin/families') return json(res, FAMILIES)
   if (p === '/portal/api/usage') return json(res, usageNow)
-  if (p === '/portal/api/runs') return json(res, { runs: fullList ? FULL_RUNS() : RUNS() })
+  if (p === '/portal/api/runs') return json(res, { runs: pagedList ? PAGED_RUNS() : fullList ? FULL_RUNS() : RUNS() })
   if (p === '/portal/api/searches') return json(res, { account: KEY, products: PRODUCTS, recipes: [], read: { available: false, maxBrief: 0, note: null } })
   // A CONNECTED READER, so Ask AI draws on the rows that carry it and opens its question panel. The one
   // request the whole table makes for it is counted by revisit-render-check.
@@ -258,8 +282,10 @@ const MEASURE = `(async () => {
   // A PREFIX, not the whole text: the sort button carries its arrow and a screen-reader phrase, so the
   // header's text is "Updated↓, sorted descending" and an exact match found no column at all — which
   // made every date assertion below a pass over nothing.
-  const updatedIdx = headText.findIndex(t => /^UPDATED/i.test(t));
-  const dateCells = [...table.querySelectorAll('tbody tr.row')].map(tr => tr.children[updatedIdx]).filter(Boolean);
+  // THE DATE SITS UNDER A FINISHED NAME'S STATUS now (board Clearances, approved 2026-11-25), so its lines
+  // are read there; there is no Updated column. Kept as an index of -1 so the rows' cell count still matches.
+  const updatedIdx = -1;
+  const dateCells = [...table.querySelectorAll('tbody tr.row')].map(tr => tr.querySelector('.clr-td-status .nowrap-date')).filter(Boolean);
   // THE TEXT'S OWN LINES, not the cell's height: a row is as tall as its tallest cell, and with a status
   // line beneath or two buttons stacked in the actions column a one-line date sits in a three-line cell.
   // A Range over the cell's contents reports one client rect per rendered line of the text itself.
@@ -283,8 +309,9 @@ const MEASURE = `(async () => {
     const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.4;
     // THE TAGS UNDER THE NAME: what they read, what they say on hover, and where they sit. They belong on a
     // line of their own below the name and inside the Name cell, wrapping there rather than widening it.
-    const tagLine = td.querySelector('.level-tags');
-    const tags = tagLine ? [...tagLine.querySelectorAll('.pill')].map(p => ({ text: (p.textContent || '').trim(), title: p.getAttribute('title') || '' })) : [];
+    // THE SEARCH THE ROW SPEAKS FOR, in words under the name (board Clearances), where tags used to sit.
+    const tagLine = td.querySelector(':scope > .sub');
+    const tags = tagLine && (tagLine.textContent || '').trim() ? [{ text: (tagLine.textContent || '').trim(), title: '' }] : [];
     const nb = b.getBoundingClientRect(), tb = tagLine ? tagLine.getBoundingClientRect() : null, cb = td.getBoundingClientRect();
     return {
       text: (b.textContent || '').trim(), lines: Math.max(1, Math.round(nb.height / lh)),
@@ -312,16 +339,14 @@ const MEASURE = `(async () => {
   // The label's own text, less the time a same-day pair adds after it. The date sits in a span of its own
   // so it never breaks at a hyphen, which is why this reads the whole label rather than its first node.
   const readLabels = [...document.querySelectorAll('tr.read-row')]
-    .map(tr => tr.querySelector('td span.mono'))
-    .filter(Boolean)
-    .map(el => (el.textContent || '').replace(/\\s+/g, ' ').replace(/ \\d{2}:\\d{2} UTC$/, '').trim())
+    .map(tr => { const b = tr.querySelector('b.clr-search-name'); const d = tr.querySelector('.clr-td-name .sub .nowrap-date'); return b ? (b.textContent || '').trim() + (d ? ' · ' + (d.textContent || '').trim() : '') : '' })
     .filter(Boolean);
 
   // ── the rows, as a reader meets them ──────────────────────────────────────────────────────────────
   const txt = (el) => (el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '');
   const statusIdx = headText.findIndex(t => /^STATUS/i.test(t));
   const riskIdx = headText.findIndex(t => /^RISK/i.test(t));
-  const actionsIdx = head.findIndex(h => h.getAttribute('aria-label') === 'Actions');
+  const actionsIdx = head.findIndex(h => h.classList.contains('col-actions-head'));
   // The two neutral inks, resolved by the page itself rather than typed here.
   const ink = (v) => { const e = document.createElement('span'); e.style.color = 'var(' + v + ')'; document.body.appendChild(e); const c = getComputedStyle(e).color; e.remove(); return c; };
   const neutral = [ink('--text-muted'), ink('--text-faint')];
@@ -333,17 +358,19 @@ const MEASURE = `(async () => {
     const dot = cells[statusIdx] ? cells[statusIdx].querySelector('.dot') : null;
     const dcs = dot ? getComputedStyle(dot) : null;
     const b = nameCell ? nameCell.querySelector('b') : null;
-    const label = nameCell ? nameCell.querySelector('span.mono') : null;
+    const date = nameCell ? nameCell.querySelector('.sub .nowrap-date') : null;
+    const isSearch = tr.classList.contains('read-row');
     return {
-      kind: tr.classList.contains('read-row') ? 'search' : (nameCell && nameCell.querySelector('.row-kind') ? 'group' : 'name'),
-      name: b ? txt(b) : txt(label).replace(/ \\d{2}:\\d{2} UTC$/, ''),
+      kind: isSearch ? 'search' : (nameCell && nameCell.querySelector('.clr-family-icon') ? 'group' : 'name'),
+      name: isSearch ? txt(b) + (date ? ' · ' + txt(date) : '') : txt(b),
       nameCell: txt(nameCell),
       cells: cells.length,
       twisty: Boolean(tr.querySelector('button.twisty')),
       status: txt(cells[statusIdx]),
       dot: dot ? { cls: dot.className, ink: dcs.backgroundColor !== 'rgba(0, 0, 0, 0)' ? dcs.backgroundColor : dcs.borderTopColor } : null,
-      risk: txt(cells[riskIdx]),
-      updated: txt(cells[updatedIdx]),
+      // AS SHOWN: the phone's "Risk" is in the cell but not drawn at a desktop width.
+      risk: cells[riskIdx] ? (cells[riskIdx].innerText || '').replace(/\\s+/g, ' ').trim() : '',
+      updated: txt(tr.querySelector('.clr-td-status .nowrap-date')),
       open: open ? { text: txt(open), aria: open.getAttribute('aria-label'), left: Math.round(open.getBoundingClientRect().left), width: Math.round(open.getBoundingClientRect().width), clipped: open.scrollWidth > open.clientWidth + 1 } : null,
       menu: Boolean(actions && actions.querySelector('button.row-menu-btn')),
       ask: (() => { const b = actions ? actions.querySelector('.ask-ai button.ask-ai-btn') : null; return b ? { text: txt(b), aria: b.getAttribute('aria-label'), left: Math.round(b.getBoundingClientRect().left) } : null; })(),
@@ -355,7 +382,7 @@ const MEASURE = `(async () => {
   const listed = body.filter(tr => tr.matches('tr.row, tr.read-row')).map(rowInfo);
   // THE COUNTS, as printed: the total over the table and each company heading, with the names that are
   // actually under each heading counted off the rows — a top-level name is one, a group is its members.
-  const namesTotal = [...document.querySelectorAll('.controls span.mono')].map(txt).find(t => /^\\d+ names?$/.test(t)) || null;
+  const namesTotal = txt(document.querySelector('.clr-title-count')) || null;
   const headings = [];
   for (const tr of body) {
     if (tr.matches('tr.group-head')) { headings.push({ name: txt(tr.querySelector('.owner-name')), printed: txt(tr.querySelector('.owner-count')), band: getComputedStyle(tr.querySelector('td')).backgroundColor, counted: 0 }); continue; }
@@ -509,6 +536,70 @@ const MENUS = `(async () => {
   return { plus, group, search, groupClick, inertClick: { stayed: location.pathname === before, found: Boolean(tide) } };
 })()`
 const menus = await value(MENUS)
+await reload()
+
+// ── THE BOARD'S DIALOGS AND THE RETIRED TAB (Clearances, approved 2026-11-25) ─────────────────────────────
+// Each change asks in the product's own dialog, names what it affects, and gives focus back to the control
+// that asked when it closes. Driven as a reader drives them; Escape and Cancel change nothing.
+const BOARD = `(async () => {
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+  const txt = (el) => (el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '');
+  const out = {};
+  for (let i = 0; i < 3; i++) { for (const b of document.querySelectorAll('table.data button.twisty[aria-expanded="false"]')) { b.click(); await sleep(60); } await sleep(200); }
+  const menuOf = async (label) => { const b = document.querySelector('button[aria-label="' + label + '"]'); if (!b) return null; b.click(); await sleep(150); return [...document.querySelectorAll('[role="menuitem"]')]; };
+  const dialog = () => document.querySelector('.modal-scrim[role="dialog"]');
+  const esc = async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await sleep(150); };
+  // Retire all of a name's searches.
+  const items = await menuOf('More actions for AQUAPLUS');
+  const retireAll = items && items.find(i => /^Retire all 3 searches…$/.test(txt(i)));
+  if (!retireAll) return { fatal: 'AQUAPLUS has no "Retire all 3 searches…"' };
+  retireAll.click(); await sleep(200);
+  out.retireAll = { title: txt(dialog()?.querySelector('h2')), body: txt(dialog()?.querySelector('.clr-dialog-body p')), confirm: txt(dialog()?.querySelector('.clr-dialog-confirm')), focusIn: Boolean(document.activeElement && document.activeElement.closest('.modal-scrim')) };
+  await esc();
+  out.retireAll.closed = !dialog();
+  out.retireAll.focusBack = document.activeElement?.getAttribute('aria-label') || null;
+  // Ungroup a family.
+  const fItems = await menuOf('More actions for Aqua line');
+  const ungroup = fItems && fItems.find(i => txt(i) === 'Ungroup family…');
+  if (!ungroup) return { ...out, fatal: 'the family has no "Ungroup family…"' };
+  ungroup.click(); await sleep(200);
+  out.ungroup = { title: txt(dialog()?.querySelector('h2')), body: txt(dialog()?.querySelector('.clr-dialog-body p')), confirm: txt(dialog()?.querySelector('.clr-dialog-confirm')) };
+  [...dialog().querySelectorAll('button')].find(b => txt(b) === 'Cancel')?.click(); await sleep(150);
+  out.ungroup.closed = !dialog();
+  // Group names: each refusal in its words, then nothing saved.
+  const groupBtn = [...document.querySelectorAll('button')].find(b => txt(b) === 'Group names');
+  if (!groupBtn) return { ...out, fatal: 'no "Group names" on the page' };
+  groupBtn.click(); await sleep(200);
+  const d = dialog();
+  const save = () => [...d.querySelectorAll('button')].find(b => txt(b) === 'Save family');
+  const problem = () => txt(d.querySelector('[role="alert"]'));
+  const nameBox = () => [...d.querySelectorAll('label.clr-field')].find(l => /Family name/.test(l.textContent || ''))?.querySelector('input');
+  const setName = (v) => { const el = nameBox(); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })); };
+  out.group = { title: txt(d.querySelector('h2')), legend: txt(d.querySelector('legend')), hint: txt(d.querySelector('.clr-dialog-body > p.clr-quiet')), problems: [] };
+  save().click(); await sleep(120); out.group.problems.push(problem());
+  // The family's own company, where a family of that name already exists.
+  const companySelect = [...d.querySelectorAll('label.clr-field')].find(l => /Company/.test(l.textContent || ''))?.querySelector('select');
+  if (companySelect) { Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(companySelect, '${KEY}'); companySelect.dispatchEvent(new Event('change', { bubbles: true })); await sleep(120); }
+  setName('${FAMILY_NAME}'); await sleep(80); save().click(); await sleep(120); out.group.problems.push(problem());
+  setName('Spring launch'); await sleep(80);
+  const boxes = [...d.querySelectorAll('.clr-names input[type=checkbox]')];
+  out.group.names = boxes.length;
+  if (boxes[0]) { boxes[0].click(); await sleep(80); }
+  save().click(); await sleep(120); out.group.problems.push(problem());
+  await esc();
+  out.group.closed = !dialog();
+  // The Retired tab: individual searches, each with Restore; a failed one goes back to Failed.
+  const tab = [...document.querySelectorAll('.clr-tab')].find(t => /^Retired/.test(txt(t)));
+  out.retiredTab = txt(tab);
+  tab?.click(); await sleep(300);
+  out.retiredRows = [...document.querySelectorAll('table.data tbody tr.row')].map(tr => txt(tr.querySelector('b')));
+  const restore = [...document.querySelectorAll('table.data tbody tr.row')].find(tr => /GLASSWING/.test(tr.textContent || ''))?.querySelector('button');
+  restore?.click(); await sleep(400);
+  out.restoreNote = txt(document.querySelector('.clr-note'));
+  return out;
+})()`
+const board = await value(BOARD)
+await reload()
 
 // ASK AI FROM A NAME, driven: the panel names the report, the second question is chosen, and the link the
 // assistant opens carries that question typed in. window.open is caught rather than followed.
@@ -517,6 +608,8 @@ const ASK = `(async () => {
   const txt = (el) => (el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '');
   const opened = [];
   window.open = (u) => { opened.push(String(u)); return null; };
+  // The family opened first, as a reader would, so the names inside it are on screen.
+  for (let i = 0; i < 3; i++) { for (const b of document.querySelectorAll('table.data button.twisty[aria-expanded="false"]')) { b.click(); await sleep(60); } await sleep(200); }
   const rowOf = (name) => [...document.querySelectorAll('table.data tbody tr.row')].find(tr => txt(tr.querySelector('b')) === name);
   // FROM THE ROW'S MENU, which is where the control lives now: open the menu, press its Ask AI entry.
   const drive = async (name) => {
@@ -560,22 +653,26 @@ await reload()
 // Medium and its later preliminary Manageable: under All the row shows Manageable, under KO it must show
 // Medium, and it must never show the preliminary's risk beside a KO filter.
 const LEVEL = `(async () => {
-  const group = document.querySelector('[role="group"][aria-label="Filter by search"]');
-  if (!group) return { fatal: 'no "Filter by search" group on the page' };
+  // THE SEARCH TYPE IS CHOSEN IN FILTERS now (board Clearances, approved 2026-11-25), opened as a reader opens it.
+  const filtersBtn = document.querySelector('button.clr-filters-btn');
+  if (!filtersBtn) return { fatal: 'no Filters control on the page' };
+  if (filtersBtn.getAttribute('aria-expanded') !== 'true') { filtersBtn.click(); await new Promise(r => setTimeout(r, 250)); }
+  const select = [...document.querySelectorAll('#clr-filters label.clr-filter')].find(l => /Search type/.test(l.textContent || ''))?.querySelector('select');
+  if (!select) return { fatal: 'no "Search type" choice in Filters' };
   const heads = [...document.querySelectorAll('table.data thead th')].map(th => (th.textContent || '').trim());
   const riskIdx = heads.findIndex(h => /^RISK/i.test(h));
-  const rowsNow = () => [...document.querySelectorAll('table.data tbody tr.row')].map(tr => {
+  const rowsNow = () => [...document.querySelectorAll('table.data tbody tr.row')].filter(tr => !tr.querySelector('.clr-family-icon')).map(tr => {
     const b = tr.querySelector('b');
+    const line = tr.querySelector('.clr-td-name > .sub');
     return {
       name: b ? (b.textContent || '').trim() : '',
-      tags: [...tr.querySelectorAll('.level-tags .pill')].map(p => (p.textContent || '').trim()),
+      tags: line && (line.textContent || '').trim() ? [(line.textContent || '').trim()] : [],
       risk: riskIdx >= 0 && tr.children[riskIdx] ? (tr.children[riskIdx].textContent || '').trim() : null,
+      open: tr.querySelector('button.row-open')?.getAttribute('aria-label') || null,
     };
   });
-  const empty = () => /No clearances match this view/.test(document.querySelector('table.data tbody')?.textContent || '');
-  const buttons = () => [...group.querySelectorAll('button')].map(x => ({ text: (x.textContent || '').trim(), title: x.getAttribute('title') || '', pressed: x.getAttribute('aria-pressed') === 'true' }));
-  // Every group opened after each press, so the names inside one are on screen to be read: AQUAMAX sits in a
-  // group, and a check that read only the group's own row would pass whatever the filter did to it.
+  const empty = () => /No names match this view/.test(document.querySelector('table.data tbody')?.textContent || '');
+  const buttons = () => [...select.options].map(o => ({ text: (o.textContent || '').trim(), title: o.value, pressed: o.selected }));
   const openAll = async () => {
     for (let pass = 0; pass < 3; pass++) {
       const shut = [...document.querySelectorAll('table.data button.twisty[aria-expanded="false"]')];
@@ -584,20 +681,19 @@ const LEVEL = `(async () => {
       await new Promise(r => setTimeout(r, 250));
     }
   };
-  const press = async (label) => {
-    const btn = [...group.querySelectorAll('button')].find(x => (x.textContent || '').trim() === label);
-    if (!btn) return false;
-    btn.click();
+  const press = async (value) => {
+    Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(select, value);
+    select.dispatchEvent(new Event('change', { bubbles: true }));
     await new Promise(r => setTimeout(r, 300));
     await openAll();
-    return true;
+    return select.value === value;
   };
   const before = buttons();
-  const pressedKo = await press('KO');
-  const ko = { rows: rowsNow(), empty: empty(), buttons: buttons() };
-  const pressedFull = await press('Full');
+  const pressedKo = await press('knockout-search');
+  const ko = { rows: rowsNow(), empty: empty(), buttons: buttons(), chips: [...document.querySelectorAll('.clr-chip')].map(c => (c.textContent || '').replace(/\\s+/g, ' ').trim()) };
+  const pressedFull = await press('full-country-search');
   const full = { rows: rowsNow(), empty: empty() };
-  const pressedAll = await press('All');
+  const pressedAll = await press('all');
   const all = { rows: rowsNow(), empty: empty(), buttons: buttons() };
   return { riskIdx, before, pressed: pressedKo && pressedFull && pressedAll, ko, full, all };
 })()`
@@ -621,8 +717,11 @@ const TOGGLE = `(async () => {
     for (const b of shut) { b.click(); await new Promise(r2 => setTimeout(r2, 60)); }
     await new Promise(r => setTimeout(r, 250));
   }
+  // Group by company sits in Filters now (board Clearances, approved 2026-11-25): opened first.
+  const fb = document.querySelector('button.clr-filters-btn');
+  if (fb && fb.getAttribute('aria-expanded') !== 'true') { fb.click(); await new Promise(r => setTimeout(r, 250)); }
   const box = [...document.querySelectorAll('label.group-toggle input[type=checkbox]')][0];
-  if (!box) return { fatal: 'no grouping toggle on the page — is there more than one company in view?' };
+  if (!box) return { fatal: 'no grouping toggle in Filters — is there more than one company in view?' };
   const before = {
     checked: box.checked,
     headers: [...document.querySelectorAll('tr.group-head')].length,
@@ -649,7 +748,7 @@ const toggle = await value(TOGGLE)
 // Put grouping back before the drift probe. The toggle PERSISTS (localStorage,), so leaving it off
 // would have the next pass render a different number of columns and report that as column drift — which
 // is what it did the first time this ran.
-await value(`(async () => { const b = document.querySelector('label.group-toggle input'); if (b && !b.checked) { b.click(); await new Promise(r => setTimeout(r, 300)); } return true })()`)
+await value(`(async () => { const fb = document.querySelector('button.clr-filters-btn'); if (fb && fb.getAttribute('aria-expanded') !== 'true') { fb.click(); await new Promise(r => setTimeout(r, 250)); } const b = document.querySelector('label.group-toggle input'); if (b && !b.checked) { b.click(); await new Promise(r => setTimeout(r, 300)); } return true })()`)
 
 // The drift probe: the SAME page with one run title made much longer. its own acceptance test —
 // "lengthen a run title in the fixture data and nothing except that title moves".
@@ -702,11 +801,28 @@ const FULL = `(() => {
       }
     }
   }
+  // NOR DOES A WORD IN THE NAME OR STATUS CELL: on a phone card those share a line with the risk and the
+  // report button, and a squeezed cell drew "Finished" as "Finishe" over "d".
+  const cellMidWord = [];
+  for (const td of table.querySelectorAll('td.clr-td-name, td.clr-td-status')) {
+    const walk = document.createTreeWalker(td, NodeFilter.SHOW_TEXT);
+    const r = document.createRange();
+    for (let node = walk.nextNode(); node; node = walk.nextNode()) {
+      let at = 0;
+      for (const w of (node.textContent || '').split(/(\\s+)/)) {
+        if (w && !/^\\s+$/.test(w)) {
+          r.setStart(node, at); r.setEnd(node, at + w.length);
+          if ([...r.getClientRects()].filter(x => x.width > 0).length > 1) cellMidWord.push(w);
+        }
+        at += w.length;
+      }
+    }
+  }
   const cut = [...table.querySelectorAll('button.row-menu-btn')].filter(b => b.getBoundingClientRect().right > Math.min(w.right, document.documentElement.clientWidth) + 1).length;
   return { rows: rows.length, docOverflowsX: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     scrollW: document.documentElement.scrollWidth, clientW: document.documentElement.clientWidth,
     tableOverflows: table.getBoundingClientRect().width > w.width + 1, tableW: Math.round(table.getBoundingClientRect().width), wrapW: Math.round(w.width),
-    menusCut: cut, riskOverDate: collide, riskMidWord: [...new Set(midWord)],
+    menusCut: cut, riskOverDate: collide, riskMidWord: [...new Set(midWord)], cellMidWord: [...new Set(cellMidWord)],
     riskCell: (() => { const td = rows[0] && rows[0].children[ri]; if (!td) return null; const cs = getComputedStyle(td);
       return Math.round(td.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)); })() };
 })()`
@@ -717,31 +833,47 @@ for (const width of [WIDE, 700]) {
   await reload()
   full[width] = await value(FULL)
 }
-// — AT PHONE WIDTH, THE BAR IS ON SCREEN. The table scrolls inside its box there, and on a long list the
-// box's own bar is several screens down; the pinned bar sits at the bottom of the screen instead, and it is
-// the table's bar, not a picture of one — moving it moves the table.
+// — AT PHONE WIDTH, EACH ROW IS A CARD (board Clearances, phone, approved 2026-11-25): the name, its status,
+// its risk ("Risk {band}"), its report button and its menu are all in reach without scrolling sideways.
 await cmd('Emulation.setDeviceMetricsOverride', { width: 400, height: 800, deviceScaleFactor: 1, mobile: true })
 await reload()
-const phone = await value(`(async () => {
+const PHONE = `(async () => {
+  for (let i = 0; i < 3; i++) { for (const b of document.querySelectorAll('table.data button.twisty[aria-expanded="false"]')) { b.click(); await new Promise(r => setTimeout(r, 60)); } await new Promise(r => setTimeout(r, 200)); }
   window.scrollTo(0, 0); await new Promise(r => setTimeout(r, 200));
-  const wrap = document.querySelector('.names-wrap'); const bar = document.querySelector('.pinned-bar');
-  const thumb = bar && bar.querySelector('.pinned-thumb'); const track = bar && bar.querySelector('.pinned-track');
-  if (!wrap || !bar || !thumb) return { bar: !!bar, wrap: !!wrap, thumb: !!thumb };
-  const b = bar.getBoundingClientRect(), t0 = thumb.getBoundingClientRect();
-  const out = { bar: true, onScreen: b.bottom <= innerHeight + 1 && b.top >= innerHeight - 40, barH: Math.round(b.height),
-    thumbW: Math.round(t0.width), thumbH: Math.round(t0.height), thumbInk: getComputedStyle(thumb).backgroundColor,
-    tableScrolls: wrap.scrollWidth > wrap.clientWidth + 1, nativeBarH: wrap.offsetHeight - wrap.clientHeight,
-    wrapBelowFold: wrap.getBoundingClientRect().bottom > innerHeight };
-  // The table moved by a finger: the thumb follows.
-  wrap.scrollLeft = 200; await new Promise(r => setTimeout(r, 200));
-  out.thumbFollowed = Math.round(thumb.getBoundingClientRect().left - t0.left);
-  // A press at the track's right end: the table follows.
-  const tr = track.getBoundingClientRect();
-  track.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: tr.right - 2, clientY: tr.top + 4, pointerId: 1 }));
-  await new Promise(r => setTimeout(r, 200));
-  out.tableAtEnd = Math.round(wrap.scrollWidth - wrap.clientWidth - wrap.scrollLeft);
+  const W = document.documentElement.clientWidth;
+  const inside = (el) => { if (!el) return true; const r = el.getBoundingClientRect(); return r.width === 0 || (r.left >= -1 && r.right <= W + 1); };
+  const rows = [...document.querySelectorAll('table.data tbody tr.row, table.data tbody tr.read-row')];
+  const out = { rows: rows.length, sideways: document.documentElement.scrollWidth - W, out: [], riskWords: [], midWord: [] };
+  // No word in a name or status cell drawn on two lines (the batch row drew "Finished" as "Finishe" over "d").
+  for (const td of document.querySelectorAll('table.data td.clr-td-name, table.data td.clr-td-status')) {
+    const walk = document.createTreeWalker(td, NodeFilter.SHOW_TEXT);
+    const r = document.createRange();
+    for (let node = walk.nextNode(); node; node = walk.nextNode()) {
+      let at = 0;
+      for (const w of (node.textContent || '').split(/(\\s+)/)) {
+        if (w && !/^\\s+$/.test(w)) {
+          r.setStart(node, at); r.setEnd(node, at + w.length);
+          if ([...r.getClientRects()].filter(x => x.width > 0).length > 1) out.midWord.push(w);
+        }
+        at += w.length;
+      }
+    }
+  }
+  for (const tr of rows) {
+    const parts = { name: tr.querySelector('.clr-td-name'), status: tr.querySelector('.clr-td-status'), risk: tr.querySelector('.clr-td-risk'),
+      open: tr.querySelector('button.row-open'), menu: tr.querySelector('button.row-menu-btn') };
+    for (const [k, el] of Object.entries(parts)) if (!inside(el)) out.out.push((tr.querySelector('b')?.textContent || '?') + ':' + k);
+    const risk = parts.risk ? parts.risk.innerText.replace(/\\s+/g, ' ').trim() : '';
+    if (risk && risk !== '—') out.riskWords.push(risk);
+  }
   return out;
-})()`)
+})()`
+const phone = await value(PHONE)
+// The stub rows at the same width: a batch of two names, a family, a name with its searches open.
+fullList = false
+await reload()
+const phoneStub = await value(PHONE)
+fullList = true
 await cmd('Emulation.clearDeviceMetricsOverride', {})
 fullList = false
 // The same reading on the stub rows, which carry the shapes the full list does not — a group, a name
@@ -779,6 +911,49 @@ rosterMode = 'ok'
 await reload()
 const rosterWhole = await value(ROSTER_NOTICE)
 withGeneric = false
+
+// — A READER WITHOUT CURATION RIGHTS. No "Group names", and no menu item that changes the shared list;
+// Ask AI stays wherever a row carries it.
+const READER = `(async () => {
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+  const txt = (el) => (el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '');
+  for (let i = 0; i < 3; i++) { for (const b of document.querySelectorAll('table.data button.twisty[aria-expanded="false"]')) { b.click(); await sleep(60); } await sleep(200); }
+  const groupNames = [...document.querySelectorAll('button')].some(b => txt(b) === 'Group names');
+  const items = [];
+  for (const b of [...document.querySelectorAll('table.data button[aria-label^="More actions for "]')]) {
+    b.click(); await sleep(120);
+    items.push(...[...document.querySelectorAll('[role="menuitem"]')].map(txt));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await sleep(80);
+  }
+  return { groupNames, items, rows: document.querySelectorAll('table.data tbody tr.row').length };
+})()`
+readerMode = true
+await reload()
+const reader = await value(READER)
+readerMode = false
+
+// — A LIST LONGER THAN ONE PAGE. The company running across the break is named again at the top of page
+// two, so its first rows there do not sit under no company at all.
+const PAGED = `(async () => {
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+  const txt = (el) => (el ? (el.textContent || '').replace(/\\s+/g, ' ').trim() : '');
+  const pager = document.querySelector('nav.pager[aria-label="Pages of clearances"]');
+  if (!pager) return { fatal: 'no pager on a list of seventy-five names' };
+  const bodyRows = () => [...document.querySelectorAll('table.data tbody tr')];
+  const heads = () => bodyRows().filter(tr => tr.classList.contains('group-head')).map(tr => txt(tr.querySelector('.owner-name')));
+  const one = { heads: heads(), names: bodyRows().filter(tr => tr.classList.contains('row')).length, range: txt(pager.querySelector('.mono')) };
+  const next = [...pager.querySelectorAll('button')].find(b => /Next/.test(txt(b)));
+  next?.click(); await sleep(300);
+  const first = bodyRows()[0];
+  const two = { heads: heads(), firstIsHead: Boolean(first && first.classList.contains('group-head')), names: bodyRows().filter(tr => tr.classList.contains('row')).length,
+    range: txt(document.querySelector('nav.pager .mono')) };
+  return { one, two };
+})()`
+pagedList = true
+await reload()
+const paged = await value(PAGED)
+pagedList = false
+await reload()
 
 if (shotAt) {
   const shot = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
@@ -826,6 +1001,25 @@ if (shotDir) {
     await value(EXPAND([FAMILY_NAME, 'AQUAPLUS']))
     await both(`clearances-rows-${width}`, width)
   }
+  // The board's other frames, one state each, at both widths: Filters open, a name's menu, the retire and
+  // grouping dialogs, and the Retired tab.
+  const STATE = {
+    filters: `(async () => { document.querySelector('button.clr-filters-btn')?.click(); await new Promise(r => setTimeout(r, 250)); return true })()`,
+    menu: `(async () => { document.querySelector('button[aria-label="More actions for AQUAPLUS"]')?.click(); await new Promise(r => setTimeout(r, 250)); return true })()`,
+    retire: `(async () => { document.querySelector('button[aria-label="More actions for AQUAPLUS"]')?.click(); await new Promise(r => setTimeout(r, 200));
+      [...document.querySelectorAll('[role="menuitem"]')].find(i => /^Retire all/.test(i.textContent || ''))?.click(); await new Promise(r => setTimeout(r, 250)); return true })()`,
+    grouping: `(async () => { [...document.querySelectorAll('button')].find(b => (b.textContent || '').trim() === 'Group names')?.click(); await new Promise(r => setTimeout(r, 250)); return true })()`,
+    retired: `(async () => { [...document.querySelectorAll('.clr-tab')].find(t => /^Retired/.test((t.textContent || '').trim()))?.click(); await new Promise(r => setTimeout(r, 400)); return true })()`,
+  }
+  for (const width of [WIDE, WIDTH]) {
+    for (const [state, script] of Object.entries(STATE)) {
+      await cmd('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: width < 700 })
+      await reload()
+      await value(EXPAND([FAMILY_NAME, 'AQUAPLUS']))
+      await value(script)
+      await capture(`clearances-${state}-${width}-light.png`, width)
+    }
+  }
   for (const [name, usage] of [['plenty', { today: 8 }], ['few', { today: 17 }], ['none', { today: 20 }]]) {
     usageNow = { ...usageNow, ...usage }
     await cmd('Emulation.setDeviceMetricsOverride', { width: WIDE, height: 1000, deviceScaleFactor: 1, mobile: false })
@@ -858,16 +1052,18 @@ if (!short || short.fatal) {
 }
 
 console.log(`measured at ${WIDTH}px — ${short.openedRows} rows opened, ${short.readRows} read rows`)
-console.log(`phone-width bar: ${JSON.stringify(phone)}`)
-ok(phone && phone.bar && phone.tableScrolls && phone.wrapBelowFold && phone.onScreen,
-  `at 400px the list's sideways bar is not on screen at the top of a long list — ${JSON.stringify(phone)}`)
-ok(phone && phone.nativeBarH === 0, `at 400px the table's own bar is drawn beside the pinned one — ${JSON.stringify(phone)}`)
-ok(phone && phone.barH >= 9 && phone.thumbH >= 8 && phone.thumbW >= 24, `at 400px the pinned bar is not drawn at a size a reader can see — ${JSON.stringify(phone)}`)
-ok(phone && phone.thumbFollowed > 0, `at 400px the thumb does not follow the table — ${JSON.stringify(phone)}`)
-ok(phone && phone.tableAtEnd <= 1, `at 400px pressing the end of the track does not move the table to its end — ${JSON.stringify(phone)}`)
+console.log(`phone-width cards: ${JSON.stringify(phone)}`)
+ok(phone && phone.rows > 0, `at 400px no row was read — ${JSON.stringify(phone)}`)
+ok(phone && phone.sideways <= 1, `at 400px the page scrolls sideways by ${phone?.sideways}px`)
+ok(phone && phone.out.length === 0, `at 400px part of a row is off the screen: ${JSON.stringify(phone?.out)}`)
+ok(phone && phone.midWord.length === 0, `at 400px a word in a name or status breaks inside itself: ${JSON.stringify(phone?.midWord)}`)
+ok(phoneStub && phoneStub.rows > 0 && phoneStub.out.length === 0 && phoneStub.sideways <= 1, `at 400px a stub row is off the screen: ${JSON.stringify(phoneStub)}`)
+ok(phoneStub && phoneStub.midWord.length === 0, `at 400px a word in a stub row's name or status breaks inside itself: ${JSON.stringify(phoneStub?.midWord)}`)
+ok(phone && phone.riskWords.length > 0 && phone.riskWords.every((w) => w.startsWith('Risk ')), `at 400px a risk does not read "Risk {band}": ${JSON.stringify(phone?.riskWords)}`)
 for (const [width, f] of Object.entries(stubs)) {
   ok(f && f.riskOverDate.length === 0, `stub rows at ${width}px: text runs into the next cell on ${JSON.stringify(f?.riskOverDate)}`)
   ok(f && f.riskMidWord.length === 0, `stub rows at ${width}px: a risk word breaks inside itself — ${JSON.stringify(f?.riskMidWord)}`)
+  ok(f && f.cellMidWord.length === 0, `stub rows at ${width}px: a word in a name or status breaks inside itself — ${JSON.stringify(f?.cellMidWord)}`)
 }
 ok(rosterPartial?.text?.some((t) => /petcary This company’s framework could not be read\. This needs an administrator to look at it\./.test(t)),
   `a company file the roster could not read is not named on the page — ${JSON.stringify(rosterPartial)}`)
@@ -887,6 +1083,7 @@ for (const [width, f] of Object.entries(full)) {
   ok(f && f.menusCut === 0, `full list at ${width}px: ${f?.menusCut} row menu(s) cut off at the edge`)
   ok(f && f.riskOverDate.length === 0, `full list at ${width}px: the risk word runs into the date on ${JSON.stringify(f?.riskOverDate)}`)
   ok(f && f.riskMidWord.length === 0, `full list at ${width}px: a risk word breaks inside itself — ${JSON.stringify(f?.riskMidWord)} in a ${f?.riskCell}px cell`)
+  ok(f && f.cellMidWord.length === 0, `full list at ${width}px: a word in a name or status breaks inside itself — ${JSON.stringify(f?.cellMidWord)}`)
 }
 // Printed on every run, not only on failure: `overflow: 21px` is the number that told us the table
 // was resolving wider than its wrapper, and it is the first thing to look at when this check goes red.
@@ -901,14 +1098,17 @@ console.log(`column share: ${Object.entries(short.share).map(([k, v]) => `${k} $
 // them there is how a check reports a screen as broken and a design as impossible in the same breath.
 const NARROW = 560
 const narrow = WIDTH <= NARROW
+// BELOW 700px EACH ROW IS A CARD (board Clearances, phone, approved 2026-11-25): there is no grid to line
+// up, so the grid's assertions are asked at table widths only, and the card probe answers for the phone.
+const CARDS = WIDTH < 700
 
 // — the grid is declared, and the reads are in it.
-ok(short.tableLayout === (narrow ? 'auto' : 'fixed'),
+if (!CARDS) ok(short.tableLayout === (narrow ? 'auto' : 'fixed'),
   narrow
     ? `at ${WIDTH}px the table is still fixed-layout — its columns are slivers, not something a reader can scroll`
     : `the table is not fixed-layout (got ${short.tableLayout}) — its columns are still decided by their content`)
 ok(short.readRows > 0, 'no expanded read rows were found — the rows did not open, or a read is still a spanning panel')
-for (const [i, r] of short.reads.entries()) {
+for (const [i, r] of (CARDS ? [] : short.reads).entries()) {
   ok(r.cols === short.headText.length,
     `read row ${i} has ${r.cols} cells against ${short.headText.length} columns — it is not in the parent grid`)
   // Every value shares a left edge with the column it belongs to. The twisty cell is skipped: it carries
@@ -975,36 +1175,38 @@ for (const n of short.nameLines ?? []) {
   if (/\+\d+ more$/.test(n.text) || n.text.length > 34) continue
   ok(n.lines === 1, `the Name cell wraps at ${WIDTH}px for a single mark of ordinary length: ${JSON.stringify(n.text)} took ${n.lines} lines`)
 }
-// — THE TAGS UNDER EACH NAME. One per kind of search behind the name, each kind once, always in the order
-// KO, Prelim, Multi, Full, with the search's full name on hover. The fixture's own searches decide what each
-// name must read: VENZY has a knockout and a preliminary, AQUAPLUS adds a queued multi-country search, and
-// AQUAMAX has one full country search. On a line of their own under the name, inside the Name cell.
+// — THE SEARCH UNDER EACH NAME, in words (board Clearances, approved 2026-11-25): the search the row speaks
+// for, on a line of its own under the name and inside the Name cell. The fixture's own searches decide it.
 const TAGS_EXPECTED = {
-  VENZY: [['KO', 'Knockout search'], ['Prelim', 'Global preliminary search']],
-  AQUAPLUS: [['KO', 'Knockout search'], ['Prelim', 'Global preliminary search'], ['Multi', 'Multi-country focus search']],
-  AQUAMAX: [['Full', 'Full country search']],
+  VENZY: [[PRODUCT_NAME['global-preliminary-search'], '']],
+  AQUAPLUS: [[PRODUCT_NAME['multi-country-focus-search'], '']],
+  AQUAMAX: [[PRODUCT_NAME['full-country-search'], '']],
 }
 for (const [name, want] of Object.entries(TAGS_EXPECTED)) {
   const row = (short.nameLines ?? []).find((n) => n.text === name)
-  ok(row, `the name ${name} is not on the list at ${WIDTH}px, so its tags could not be read`)
+  ok(row, `the name ${name} is not on the list at ${WIDTH}px, so its search line could not be read`)
   if (!row) continue
   ok(JSON.stringify(row.tags.map((g) => [g.text, g.title])) === JSON.stringify(want),
-    `${name} carries the tags ${JSON.stringify(row.tags)} at ${WIDTH}px, not ${JSON.stringify(want)}`)
-  ok(row.tagsBelowName === true, `${name}'s tags share the name's line at ${WIDTH}px rather than sitting under it`)
-  ok(row.tagsInsideCell === true, `${name}'s tags run out of the Name cell at ${WIDTH}px`)
+    `${name} reads the search ${JSON.stringify(row.tags)} at ${WIDTH}px, not ${JSON.stringify(want)}`)
+  ok(row.tagsBelowName === true, `${name}'s search line shares the name's line at ${WIDTH}px rather than sitting under it`)
+  ok(row.tagsInsideCell === true, `${name}'s search line runs out of the Name cell at ${WIDTH}px`)
 }
 ok(levels && !levels.fatal, `the level filter could not be driven: ${levels?.fatal ?? 'no answer from the page'}`)
 if (levels && !levels.fatal) {
-  ok(JSON.stringify(levels.before.map((x) => [x.text, x.title])) === JSON.stringify([['All', ''], ['KO', 'Knockout search'], ['Prelim', 'Global preliminary search'], ['Multi', 'Multi-country focus search'], ['Full', 'Full country search']]),
-    `the level filter reads ${JSON.stringify(levels.before)}, not All, KO, Prelim, Multi, Full with each search's full name on hover`)
+  ok(JSON.stringify(levels.before.map((x) => x.text)) === JSON.stringify(['All search types', 'Knockout search', 'Global preliminary search', 'Multi-country focus search', 'Full country search']),
+    `the search type choice reads ${JSON.stringify(levels.before)}, not All search types and the four searches by name`)
   ok(levels.before[0]?.pressed === true && levels.before.filter((x) => x.pressed).length === 1, `on arrival the level filter does not have All alone pressed: ${JSON.stringify(levels.before)}`)
   ok(levels.pressed && levels.riskIdx >= 0, `the level filter's buttons or the Risk column could not be found (risk column ${levels.riskIdx})`)
   const byName = (rows, n) => rows.find((r) => r.name === n)
   // Under KO: only knockouts are left, VENZY speaks for its knockout, and the full search's name is gone.
-  ok(levels.ko.buttons.filter((x) => x.pressed).map((x) => x.text).join() === 'KO', `under KO the pressed buttons are ${JSON.stringify(levels.ko.buttons)}`)
-  ok(levels.ko.rows.every((r) => !r.tags.length || r.tags.join() === 'KO'), `under KO a row carries another kind's tag: ${JSON.stringify(levels.ko.rows)}`)
+  ok(levels.ko.buttons.filter((x) => x.pressed).map((x) => x.text).join() === 'Knockout search', `under KO the chosen search type is ${JSON.stringify(levels.ko.buttons)}`)
+  ok(levels.ko.chips.includes('Knockout search ×'), `under KO the narrowing is not said as a chip: ${JSON.stringify(levels.ko.chips)}`)
+  ok(levels.ko.rows.every((r) => !r.tags.length || r.tags.join() === 'Knockout search'), `under KO a row speaks for another kind of search: ${JSON.stringify(levels.ko.rows)}`)
   ok(/Medium/.test(byName(levels.ko.rows, 'VENZY')?.risk ?? '') && !/Manageable/.test(byName(levels.ko.rows, 'VENZY')?.risk ?? ''),
     `under KO VENZY shows ${JSON.stringify(byName(levels.ko.rows, 'VENZY'))}, not its knockout's Medium`)
+  // The button beside that risk opens the same knockout, not the name's later search.
+  ok((byName(levels.ko.rows, 'VENZY')?.open ?? '').includes(PRODUCT_NAME['knockout-search']),
+    `under KO VENZY's report button is ${JSON.stringify(byName(levels.ko.rows, 'VENZY')?.open)}, not its knockout's`)
   ok(!byName(levels.ko.rows, 'AQUAMAX'), 'under KO a name with no knockout is still on the list')
   ok(!levels.ko.empty, 'under KO the list is empty, though the fixture holds knockouts')
   // Under Full: the one full country search, and nothing that has none.
@@ -1013,8 +1215,9 @@ if (levels && !levels.fatal) {
   ok(/Manageable/.test(byName(levels.all.rows, 'VENZY')?.risk ?? ''), `back under All VENZY shows ${JSON.stringify(byName(levels.all.rows, 'VENZY'))}, not its latest search's Manageable`)
   ok(levels.all.buttons[0]?.pressed === true, 'pressing All does not press it')
 }
-ok(short.overflowsX === narrow,
-  narrow
+// A card list fits its wrapper by construction, and nothing in it scrolls sideways (the card probe reads that).
+ok(CARDS ? short.overflowsX === false : short.overflowsX === narrow,
+  narrow && !CARDS
     ? `at ${WIDTH}px the table fits its wrapper — it collapsed into slivers instead of staying legible and being scrolled`
     : `the table overflows its wrapper at ${WIDTH}px by ${short.overflowBy}px — table ${short.tableWidth}px, min-width ${short.tableMinWidth}, columns ${JSON.stringify(short.share)}`)
 ok(short.docOverflowsX === false, `the page itself scrolls horizontally at ${WIDTH}px`)
@@ -1025,9 +1228,9 @@ ok(short.docOverflowsX === false, `the page itself scrolls horizontally at ${WID
 // names; where the screen composes a string from data (a product name, a date), the expectation is
 // composed from the same data rather than typed.
 const STOPPED_LINE = 'No report will be produced. Completed work stays readable through Ask AI.'
-const GROUP_LINE = 'Highest risk across the latest report for each name.'
-ok(short.updatedIdx >= 0, `no Updated column was found in the header (${short.headText.join(' · ')}) — every date assertion would be a pass over nothing`)
-ok(short.dateLines.length > 0, 'no date cells were measured')
+// The family's line (board Clearances, approved 2026-11-25): its highest band and what is in progress.
+const GROUP_LINE = 'Highest risk across latest reports · Medium · 1 search in progress'
+ok(short.dateLines.length > 0, 'no finished name carries its date under its status — every date assertion would be a pass over nothing')
 const L = short.listed ?? []
 const named = (name, kind) => L.find((r) => r.name === name && r.kind === kind)
 const plus = named('AQUAPLUS', 'name')
@@ -1049,7 +1252,7 @@ ok(Boolean(queuedSearch && latestSearch && olderSearch), `the three searches und
 // Columns: every row carries exactly the header's cells, so nothing lands under the wrong column.
 // The sort button's text carries its arrow and a screen-reader phrase; the column's name is what precedes them.
 const headNames = short.headText.filter(Boolean).map((t) => t.replace(/[↑↓]?,\s*(not sorted|sorted ascending|sorted descending)$/, '').trim())
-ok(JSON.stringify(headNames) === JSON.stringify(['Name', 'Status', 'Risk', 'Updated']), `the named columns are ${JSON.stringify(headNames)}`)
+ok(JSON.stringify(headNames) === JSON.stringify(['Name and searches', 'Status', 'Risk', 'Report and actions']), `the named columns are ${JSON.stringify(headNames)}`)
 for (const r of L) ok(r.cells === short.headText.length, `${r.kind} row "${r.name}" has ${r.cells} cells against ${short.headText.length} columns`)
 
 // The expand control only where a name has earlier searches, and on a group.
@@ -1060,29 +1263,34 @@ if (plus && group && aster && coral && tide && max) {
   // A name with a search waiting: status, ring, the latest report's band with its date, today's date.
   ok(plus.status === 'Queued · 1 search', `AQUAPLUS reads "${plus.status}", not "Queued · 1 search"`)
   ok(/\bqueued\b/.test(plus.dot?.cls ?? ''), `AQUAPLUS's status dot is not the queued ring: ${plus.dot?.cls}`)
-  ok(plus.risk.startsWith('Medium') && plus.risk.endsWith('latest report · 2026-09-02'), `AQUAPLUS's risk cell reads "${plus.risk}"`)
-  ok(plus.updated === '2026-09-16', `AQUAPLUS's Updated reads "${plus.updated}" — a name whose newest search is queued shows the day it was queued`)
-  ok(plus.nameCell.includes('3 searches') && plus.nameCell.includes('was Severe'), `AQUAPLUS's name cell reads "${plus.nameCell}"`)
+  ok(plus.risk.replace(/^Risk /, '').startsWith('Medium') && plus.risk.endsWith('Latest report · 2026-09-02'), `AQUAPLUS's risk cell reads "${plus.risk}"`)
+  // A name still in progress carries no date under its status: the board draws "In progress" and its step.
+  ok(plus.updated === '', `AQUAPLUS shows a date "${plus.updated}" under a status still in progress`)
+  ok(max?.updated === '2026-08-28', `AQUAMAX's date under its status reads "${max?.updated}"`)
+  ok(plus.nameCell.includes('3 searches') && plus.nameCell.includes('was Severe') && plus.nameCell.includes(PRODUCT_NAME['multi-country-focus-search']), `AQUAPLUS's name cell reads "${plus.nameCell}"`)
   ok(plus.open?.text === 'Open latest report', `AQUAPLUS's button reads "${plus.open?.text}"`)
 
   // The searches under it.
   if (queuedSearch && latestSearch && olderSearch) {
     ok(queuedSearch.status === 'Queued' && queuedSearch.risk === '—' && !queuedSearch.open && queuedSearch.menu,
       `the queued search reads status "${queuedSearch.status}", risk "${queuedSearch.risk}", open ${JSON.stringify(queuedSearch.open)}, menu ${queuedSearch.menu}`)
-    ok(latestSearch.nameCell.includes('Latest report') && latestSearch.open?.text === 'Open', `the newest finished search reads "${latestSearch.nameCell}" with ${JSON.stringify(latestSearch.open)}`)
-    ok(!olderSearch.nameCell.includes('Latest report') && olderSearch.open?.text === 'Open', `the older search reads "${olderSearch.nameCell}"`)
+    ok(latestSearch.nameCell.includes('Latest report') && latestSearch.open?.text === 'Open report', `the newest finished search reads "${latestSearch.nameCell}" with ${JSON.stringify(latestSearch.open)}`)
+    ok(!olderSearch.nameCell.includes('Latest report') && olderSearch.open?.text === 'Open report', `the older search reads "${olderSearch.nameCell}"`)
     ok(queuedSearch.rules === 2, `a search under a grouped name draws ${queuedSearch.rules} rule(s), not two`)
   }
 
   // The group: its members' waiting search, the line under its name, the band itself.
-  ok(group.status === '1 search queued' && /\bqueued\b/.test(group.dot?.cls ?? ''), `the group reads "${group.status}" (${group.dot?.cls})`)
-  ok(group.nameCell.includes(`Group ·`) && group.nameCell.includes('2 names') && group.nameCell.endsWith(GROUP_LINE), `the group's name cell reads "${group.nameCell}"`)
-  ok(group.risk === 'Medium', `the group's risk reads "${group.risk}" — AQUAPLUS's latest report is Medium and AQUAMAX is Manageable, so the highest is Medium`)
+  // THE FAMILY'S LINE SAYS IT ALL (board Clearances, approved 2026-11-25): its Status and Risk cells are empty,
+  // and the line under its name carries the highest band and the search in progress. AQUAPLUS's latest report
+  // is Medium and AQUAMAX is Manageable, so the highest is Medium.
+  ok(group.status === '' && group.risk === '', `the family repeats its line in its cells: status "${group.status}", risk "${group.risk}"`)
+  ok(group.nameCell.includes('· 2 names') && group.nameCell.endsWith(GROUP_LINE), `the family's name cell reads "${group.nameCell}"`)
   ok(!group.open, 'the group carries an Open — a group is several names with no single report')
   ok(max.rules === 1, `a name inside a group draws ${max.rules} rule(s), not one`)
 
   // Stopped, running, finished.
-  ok(coral.status === `Stopped${STOPPED_LINE}` || coral.status === `Stopped ${STOPPED_LINE}`, `CORAL FREEZE reads "${coral.status}"`)
+  // Stopped, with the day it stopped under its status, as every ended name carries (board Clearances).
+  ok(coral.status === `Stopped${STOPPED_LINE}2026-09-16` || coral.status === `Stopped ${STOPPED_LINE} 2026-09-16`, `CORAL FREEZE reads "${coral.status}"`)
   ok(coral.risk === '—' && !coral.open, `CORAL FREEZE reads risk "${coral.risk}" with ${JSON.stringify(coral.open)}`)
   ok(tide.status.startsWith('Running') && tide.status.includes('Register sweeps'), `TIDEGLASS reads "${tide.status}"`)
   // THE STEP, AND NOT A COUNT OF STEPS. The approved design draws the step alone. The count was the part
@@ -1101,7 +1309,8 @@ if (plus && group && aster && coral && tide && max) {
       `TIDEGLASS's status line carries a step count: "${tide.status}" — the design draws the step alone`)
   }
   ok(tide.risk === '—' && !tide.open && tide.inert, `TIDEGLASS reads risk "${tide.risk}", open ${JSON.stringify(tide.open)}, inert ${tide.inert}`)
-  ok(aster.status === 'Finished' && aster.open?.text === 'Open', `ASTERION reads "${aster.status}" with ${JSON.stringify(aster.open)}`)
+  ok(aster.status === 'Finished2026-08-03' || aster.status === 'Finished 2026-08-03', `ASTERION reads "${aster.status}"`)
+  ok(aster.open?.text === 'Open report', `ASTERION's button reads ${JSON.stringify(aster.open)}`)
 }
 
 // ASK AI IS THE ROW MENU'S SECOND ENTRY (owner, 2026-09-18), and no longer a button in the actions column,
@@ -1138,17 +1347,19 @@ const openColumn = (m, width) => {
   const widths = [...new Set(opens.map((r) => r.open.width))]
   ok(Math.max(...lefts) - Math.min(...lefts) <= 1, `at ${width}px the Open buttons start at ${lefts.join(', ')} — not one column`)
   ok(Math.max(...widths) - Math.min(...widths) <= 1, `at ${width}px the Open buttons are ${widths.join(', ')}px wide — not one width`)
-  ok(opens.every((r) => r.open.aria === null), 'an Open button carries an aria-label, so its accessible name is not its visible label')
+  // THE SPOKEN NAME BEGINS WITH THE WORDS SHOWN and names the report (approved 2026-11-25).
+  ok(opens.every((r) => typeof r.open.aria === 'string' && r.open.aria.startsWith(r.open.text + ' for ')), `an Open button's spoken name does not begin with its words: ${JSON.stringify(opens.map((r) => [r.open.text, r.open.aria]))}`)
   ok(opens.every((r) => !r.open.clipped), `at ${width}px an Open label is cut off: ${opens.filter((r) => r.open.clipped).map((r) => r.open.text).join(', ')}`)
   console.log(`Open column at ${width}px: x ${lefts.join('/')}, width ${widths.join('/')}px, ${opens.length} buttons`)
 }
-openColumn(short, WIDTH)
+if (!CARDS) openColumn(short, WIDTH)
 openColumn(wide, WIDE)
 // THE BOARD'S SHARES AT THE WIDE DESKTOP (owner, 2026-09-18: match the board), read off the drawn header:
 // Status 16, Risk 12, Updated 10 and the actions 25, measured in the browser to a point either way.
 {
   const pct = Object.values(wide.share)
-  const board = [4, 3, 30, 16, 12, 10, 25]
+  // No checkbox column and no Updated column (board Clearances, approved 2026-11-25): the name takes them.
+  const board = [4, 43, 16, 12, 25]
   ok(pct.length === board.length && pct.every((v, i) => Math.abs(v - board[i]) <= 1),
     `at ${WIDE}px the columns are ${JSON.stringify(wide.share)}, not the board's ${board.join(' · ')}`)
 }
@@ -1167,16 +1378,57 @@ for (const r of L.filter((x) => x.dot)) {
   ok(short.neutral.includes(r.dot.ink), `the status dot on "${r.name}" is ${r.dot.ink}, not one of the neutral inks ${short.neutral.join(' / ')}`)
 }
 
+// THE BOARD'S DIALOGS AND THE RETIRED TAB (Clearances, approved 2026-11-25).
+if (!board || board.fatal) fail.push(`the board's dialogs: ${board?.fatal ?? 'no result'}`)
+else {
+  console.log(`board dialogs: ${JSON.stringify(board)}`)
+  ok(board.retireAll.title === 'Retire all 3 searches?' && board.retireAll.confirm === 'Retire 3 searches'
+    && board.retireAll.body === '3 searches under AQUAPLUS will move to Retired for everyone. Existing report links keep working. You can restore each search there. A search in progress will continue.',
+    `retiring all of AQUAPLUS asks ${JSON.stringify(board.retireAll)}`)
+  ok(board.retireAll.focusIn && board.retireAll.closed && board.retireAll.focusBack === 'More actions for AQUAPLUS',
+    `the retire dialog does not take focus, close on Escape, and give focus back to its menu: ${JSON.stringify(board.retireAll)}`)
+  ok(board.ungroup.title === `Ungroup ${FAMILY_NAME}?` && board.ungroup.confirm === 'Ungroup family' && board.ungroup.closed
+    && board.ungroup.body === `Its 2 names and their searches will appear directly under ${NAME}.`,
+    `ungrouping the family asks ${JSON.stringify(board.ungroup)}`)
+  ok(board.group.title === 'Group names as a family' && board.group.legend === 'Names to group' && board.group.hint === 'Each selected name brings its search history.',
+    `the grouping dialog reads ${JSON.stringify(board.group)}`)
+  ok(JSON.stringify(board.group.problems) === JSON.stringify(['Enter a family name.', 'Choose that existing family from the Family list.', 'Select two or more names for a new family.']),
+    `the grouping dialog's refusals read ${JSON.stringify(board.group.problems)}`)
+  ok(board.group.closed && !writes.some((w) => w.path === '/portal/admin/families'), `a refused or dismissed grouping wrote to the server: ${JSON.stringify(writes)}`)
+  ok(board.retiredTab === 'Retired2' || board.retiredTab === 'Retired 2', `the Retired tab reads "${board.retiredTab}"`)
+  ok(JSON.stringify(board.retiredRows) === JSON.stringify(['HALCYON', 'GLASSWING']), `the Retired tab lists ${JSON.stringify(board.retiredRows)}`)
+  ok(board.restoreNote === `Restored ${PRODUCT_NAME['global-preliminary-search']} for GLASSWING to Failed.`, `restoring a failed search says "${board.restoreNote}"`)
+  ok(writes.some((w) => w.path === '/portal/admin/retired' && w.body?.action === 'restore' && JSON.stringify(w.body.runIds) === '["tmpr-retired-2"]'), `Restore sent ${JSON.stringify(writes)}`)
+}
+
 // The menu holds retire and ungroup, opens, closes on Escape, and goes nowhere.
 if (!menus || menus.fatal) {
   fail.push(`the row menus: ${menus?.fatal ?? 'no result'}`)
 } else {
   // Retire first, Ask AI beside it as the second entry (owner, 2026-09-18).
-  ok(JSON.stringify(menus.plus?.items) === JSON.stringify(['Retire all 3', 'Ask AI']) && menus.plus.expanded === 'true' && menus.plus.closed, `AQUAPLUS's menu: ${JSON.stringify(menus.plus)}`)
-  ok(JSON.stringify(menus.group?.items) === JSON.stringify(['Ungroup']) && menus.group.closed, `the group's menu: ${JSON.stringify(menus.group)}`)
-  ok(JSON.stringify(menus.search?.items) === JSON.stringify(['Retire']) && menus.search.closed, `a search row's menu: ${JSON.stringify(menus.search)}`)
+  // The board's menus (Clearances, approved 2026-11-25). AQUAPLUS sits in a family and its searches are
+  // open when the menu is read, so it offers no "Show all" and no "Group with other names…".
+  ok(JSON.stringify(menus.plus?.items) === JSON.stringify(['Remove from family…', 'Retire all 3 searches…', 'Ask AI']) && menus.plus.expanded === 'true' && menus.plus.closed, `AQUAPLUS's menu: ${JSON.stringify(menus.plus)}`)
+  ok(JSON.stringify(menus.group?.items) === JSON.stringify(['Add names to this family…', 'Ungroup family…']) && menus.group.closed, `the family's menu: ${JSON.stringify(menus.group)}`)
+  ok(JSON.stringify(menus.search?.items) === JSON.stringify(['Retire this search…']) && menus.search.closed, `a search row's menu: ${JSON.stringify(menus.search)}`)
   ok(menus.groupClick.stayed && menus.groupClick.toggled, `a click on the group row: ${JSON.stringify(menus.groupClick)} — it must fold or unfold and go nowhere`)
   ok(menus.inertClick.found && menus.inertClick.stayed, `a click on a running name with no report went somewhere: ${JSON.stringify(menus.inertClick)}`)
+}
+// A READER WITHOUT CURATION RIGHTS (the Clearances board's verification, 2026-11-25).
+if (!reader) fail.push('the reader pass returned nothing')
+else {
+  ok(!reader.groupNames, 'a reader without curation rights is offered "Group names"')
+  ok(reader.items.every((t) => !/Retire|Group|Remove|Ungroup|Add names|Restore/.test(t)), `a reader without curation rights meets ${JSON.stringify(reader.items)} in the row menus`)
+  ok(reader.items.includes('Ask AI'), `a reader without curation rights has no Ask AI in any row menu: ${JSON.stringify(reader.items)}`)
+  ok(reader.rows >= 6, `a reader without curation rights sees ${reader.rows} rows`)
+}
+// A LIST LONGER THAN ONE PAGE.
+if (!paged || paged.fatal) fail.push(`the paged list: ${paged?.fatal ?? 'no result'}`)
+else {
+  ok(paged.one.names === 50 && paged.two.names === 25, `the pages hold ${paged.one.names} and ${paged.two.names} names, not 50 and 25`)
+  ok(paged.two.firstIsHead && paged.two.heads[0] === paged.one.heads[paged.one.heads.length - 1],
+    `page two does not open with the company that ran across the break: page one ${JSON.stringify(paged.one.heads)}, page two ${JSON.stringify(paged.two.heads)}`)
+  ok(/^1–50 of 75$/.test(paged.one.range) && /^51–75 of 75$/.test(paged.two.range), `the pager reads "${paged.one.range}" then "${paged.two.range}"`)
 }
 ok(rowOpens?.path === '/portal/result/tmpd-other', `a click on a name with one search went to ${rowOpens?.path ?? rowOpens?.fatal} — it opens that search's report`)
 

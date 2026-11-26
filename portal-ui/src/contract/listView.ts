@@ -95,7 +95,8 @@ export type Column = { readonly key: 'twisty' | 'pick' | 'name' | 'company' | 's
 export const BOARD_SHARES_FROM = 960
 
 export function clearancesColumns(
-  mode: { readonly pick: boolean; readonly owner: boolean },
+  /** `updated` false: the date sits under the status, and the Updated column is not drawn (board Clearances, 2026-11-25). */
+  mode: { readonly pick: boolean; readonly owner: boolean; readonly updated?: boolean },
   width: { readonly wide: boolean } = { wide: false },
 ): readonly Column[] {
   // THE BOARD'S SHARES WHERE THEY HOLD (owner, 2026-09-18: match the board). The approved Clearances board
@@ -106,7 +107,9 @@ export function clearancesColumns(
     if (mode.pick) wide.push({ key: 'pick', share: 3 })
     wide.push({ key: 'name', share: 0 })
     if (mode.owner) wide.push({ key: 'company', share: 11 })
-    wide.push({ key: 'status', share: 16 }, { key: 'risk', share: 12 }, { key: 'updated', share: 10 }, { key: 'actions', share: 25 })
+    wide.push({ key: 'status', share: 16 }, { key: 'risk', share: 12 })
+    if (mode.updated !== false) wide.push({ key: 'updated', share: 10 })
+    wide.push({ key: 'actions', share: 25 })
     const left = 100 - wide.reduce((n, c) => n + c.share, 0)
     return wide.map((c) => (c.key === 'name' ? { key: 'name', share: left } : c))
   }
@@ -125,7 +128,7 @@ export function clearancesColumns(
     // "Manageable" and its dot, which never wrap.
     { key: 'risk', share: mode.owner ? 14 : 15 },
     // A ten-character date in a monospace face, on one line.
-    { key: 'updated', share: 14 },
+    ...(mode.updated !== false ? [{ key: 'updated' as const, share: 14 }] : []),
     // "Open latest report", Ask AI beside it when there is room, and — for someone who may curate — the
     // "···" menu.
     { key: 'actions', share: mode.pick ? 21 : 20 },

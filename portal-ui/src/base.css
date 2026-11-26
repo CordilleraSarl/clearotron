@@ -775,7 +775,7 @@ table.data tr.group-head td {
 }
 
 table.data tr.group-head .owner-name {
-  font-size: 14px;
+  font-size: 19px;
   font-weight: 600;
   color: var(--text-strong);
   letter-spacing: 0;
@@ -981,6 +981,7 @@ table.data td.nest-2 {
 }
 /* The bordered Open. One width, whatever its label says: the track decides, not the text. */
 button.row-open {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   width: 100%;
   padding: 5px 8px;
   border: 1px solid var(--border-strong);
@@ -3657,3 +3658,89 @@ ol.steps > li::before {
   color: var(--text-faint);
   font-size: 12px;
 }
+
+/* ── CLEARANCES (board Clearances, approved 2026-11-25) ─────────────────────────────────────────────────
+   The title counts its names and carries "Group names"; under it, Find a name and Filters, the narrowing
+   in force as chips, the status tabs, then the list. A company is a full-width band with its count; a
+   family and a name are indented within it. */
+.clr-title-count { margin-left: 10px; font-size: 13px; font-weight: 500; color: var(--text-muted); letter-spacing: 0; }
+.btn-ghost.clr-group-btn { display: inline-flex; align-items: center; gap: 8px; border-color: var(--border-strong); }
+.clr-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.clr-find {
+  display: inline-flex; align-items: center; gap: 8px; flex: 0 1 220px; min-width: 0;
+  padding: 0 12px; height: 38px; border: 1px solid var(--border-hairline); border-radius: 8px; background: var(--surface-raised);
+  color: var(--text-muted);
+}
+.clr-find input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--text-strong); outline: none; }
+.btn-ghost.clr-filters-btn { display: inline-flex; align-items: center; gap: 8px; height: 38px; border-color: var(--border-strong); }
+.clr-filters-count {
+  display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
+  background: var(--accent); color: var(--text-on-accent); font-size: 11px; font-weight: 700;
+}
+.clr-filters {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; margin-top: 10px; padding: 14px;
+  border: 1px solid var(--border-hairline); border-radius: 10px; background: var(--surface-raised);
+}
+.clr-filter { display: flex; flex-direction: column; gap: 6px; min-width: 180px; }
+.clr-filter-check { padding-bottom: 8px; }
+.clr-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chip.clr-chip { cursor: pointer; font: inherit; font-size: 12.5px; }
+.clr-tabs { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 14px 0 6px; border-bottom: 1px solid var(--border-hairline); }
+.clr-tab {
+  padding: 6px 0 8px; border: 0; border-bottom: 2px solid transparent; background: transparent; margin-bottom: -1px;
+  font: inherit; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer;
+}
+.clr-tab[aria-pressed='true'] { color: var(--text-accent); border-bottom-color: var(--accent); }
+.clr-tab-count { margin-left: 5px; font-weight: 500; }
+.clr-note { margin: 8px 0 0; font-size: 13px; color: var(--text-body); }
+.clr-meta { font-size: 12.5px; font-weight: 500; color: var(--text-muted); }
+.clr-family-icon { display: inline-flex; vertical-align: -2px; margin-right: 6px; color: var(--text-muted); }
+.col-actions-head { text-align: right; }
+.clr-search-name { display: block; font-size: 13.5px; font-weight: 700; color: var(--text-strong); }
+
+/* The dialogs that replace the browser's own confirm and prompt boxes. */
+.modal-card.clr-dialog { max-width: 460px; }
+.clr-dialog-title { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-strong); }
+.clr-dialog-body { padding: 14px 24px 4px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--text-body); }
+.clr-dialog-body p { margin: 0; }
+.clr-field { display: flex; flex-direction: column; gap: 6px; }
+.clr-names { margin: 0; padding: 10px 12px; border: 1px solid var(--border-hairline); border-radius: 8px; display: flex; flex-direction: column; gap: 6px; }
+.clr-name-choice { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.clr-quiet { color: var(--text-muted); font-size: 12.5px; }
+
+/* THE LIST ON A PHONE (board Clearances, phone, approved 2026-11-25): each row is a card, so the name, its
+   status, its risk, its report button and its menu are all in reach without scrolling sideways. The name and
+   its risk share the top line; the status, the report button and the menu share the bottom one. */
+.clr-phone-only { display: none; }
+@media (max-width: 699px) {
+  .clr-phone-only { display: inline; color: var(--text-muted); font-weight: 500; }
+  .names-wrap { overflow-x: visible; }
+  /* The 860px floor below 560px was for a table a reader drags sideways; cards need none. */
+  .names-wrap table.data.fixed { display: block; table-layout: auto; min-width: 0; width: 100%; }
+  .names-wrap table.data.fixed colgroup,
+  .names-wrap table.data.fixed thead { display: none; }
+  .names-wrap table.data.fixed tbody { display: block; }
+  .names-wrap table.data.fixed tr {
+    /* The right column holds at most 55% of the card, so a risk with two bands wraps between them instead
+       of squeezing the name and the status until a word breaks inside itself. */
+    display: grid; grid-template-columns: 22px minmax(0, 1fr) fit-content(55%);
+    grid-template-areas: "tw name risk" "tw status actions";
+    align-items: center; column-gap: 8px; row-gap: 6px; padding: 10px 8px;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+  .names-wrap table.data.fixed tr.group-head { display: block; padding: 0; }
+  .names-wrap table.data.fixed td { display: block; padding: 0; border: 0; min-width: 0; }
+  .names-wrap table.data.fixed td.clr-td-twisty { grid-area: tw; align-self: start; }
+  .names-wrap table.data.fixed td.clr-td-name { grid-area: name; }
+  .names-wrap table.data.fixed td.clr-td-risk { grid-area: risk; text-align: right; align-self: start; }
+  .names-wrap table.data.fixed td.clr-td-status { grid-area: status; min-width: 76px; }
+  .names-wrap table.data.fixed td.col-actions { grid-area: actions; }
+  .names-wrap table.data.fixed td.clr-td-status:empty,
+  .names-wrap table.data.fixed td.clr-td-risk:empty { display: none; }
+  .names-wrap table.data.fixed td.col-actions .row-actions-box,
+  .names-wrap table.data.fixed td.col-actions .row-actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+  .names-wrap table.data.fixed td.col-actions button.row-open { width: auto; white-space: nowrap; padding: 8px 12px; }
+  .names-wrap table.data.fixed tr.read-row { background: var(--surface-sunken); }
+  .names-wrap table.data.fixed tr.read-row > td { background-color: transparent; }
+}
+
