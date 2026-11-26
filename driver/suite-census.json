@@ -9628,8 +9628,8 @@
           "todos": 0
         },
         "web-research-is-one-setting-read-in-one-place.test.mjs": {
-          "tests": 6,
-          "asserts": 28,
+          "tests": 7,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
