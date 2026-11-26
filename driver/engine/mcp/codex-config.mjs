@@ -161,7 +161,7 @@ export function webFetchRequested(allowedTools) {
 // stays the backstop. Absent/0/negative ⇒ emit nothing and leave codex's default alone, so this is inert
 // for any caller that does not thread a budget.
 export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = [...CRED_ENV_FORWARD, ...TOOL_SERVER_SETTINGS], toolTimeoutSec, fence = null, withheldFromCommands = [],
-  platform = process.platform, bandAnswerChars = codexBandAnswerChars(), toolAnswerBytes = codexToolAnswerBytes() } = {}) {
+  platform = process.platform, bandAnswerChars = codexBandAnswerChars(), toolAnswerBytes = codexToolAnswerBytes(), webSearch = false } = {}) {
   const servers = parseClaudeMcpServers(mcpConfig);
   const enabled = enabledToolsByServer(allowedTools);
   const toolTimeout = Number(toolTimeoutSec) > 0 ? Math.floor(Number(toolTimeoutSec)) : undefined;
@@ -176,7 +176,9 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
   // on, it fired in some runs and not others and brought web addresses into the placement notes that no
   // recorded search returned (observed in testing, 2026-10). The Claude engine removes its own the same way
   // (OWN_SEARCH_TOOLS, anthropic-agent.mjs). The case-law step's page fetcher is a tool server, not this.
-  lines.push(`web_search = "disabled"`, "");
+  // A RESEARCH-ONLY SESSION (`webSearch`) is the one that keeps it, "live", and is handed nothing but its dictated searches,
+  // whose tool records are read back search by search (engine/mcp/own-search.mjs).
+  lines.push(`web_search = ${webSearch === true ? '"live"' : '"disabled"'}`, "");
   lines.push(...featuresToml(withheldFromCommands));
   lines.push(...commandEnvToml(withheldFromCommands));
 
