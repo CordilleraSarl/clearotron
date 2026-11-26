@@ -391,8 +391,11 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
           : `The run could not be started just now. Nothing was started, and nothing was charged — ${BRAND.name} can see what happened.`);
       return { status: 502, json: { ok: false, error, unwired } };
     }
-    audit({ event: "trigger", by: principal.email, account, selector, id: job.id, ok: Boolean(r?.ok ?? r?.queued) });
-    return { status: 200, json: { ok: true, queued: true, id: job.id, upstream: r ?? null } };
+    // THE REFERENCE THE ORDER IS FILED UNDER, as the engine door filed it: a door that does not see every account files
+    // an order under its account's own reference (mcp-server/lib/ops.mjs filedReference), not the one minted here.
+    const filed = typeof r?.id === "string" && r.id ? r.id : job.id;
+    audit({ event: "trigger", by: principal.email, account, selector, id: filed, ok: Boolean(r?.ok ?? r?.queued) });
+    return { status: 200, json: { ok: true, queued: true, id: filed, upstream: r ?? null } };
   }
 
   // ── STOPPING ───────────────────────────────────────────────────────────────────────────────
