@@ -1,5 +1,53 @@
 # clearotron-driver
 
+## 0.8.0-beta.0
+
+### Minor Changes
+
+- New: In the portal, each full conflict card of a clearance or Knockout report has a "Copy link" control beside "Ask AI about this finding", which copies an address that opens the report at that card.
+- New: On a clearance report's conflict cards, the registered logos sit in a frame labelled "Register", so a reader can tell where those pictures come from.
+- New: On a clearance report's conflict chart, pointing at a dot or moving keyboard focus to it shows that conflict's mark, rating, owner and country beside it, and a screen reader hears the same.
+- Fixed: On Claude, a step stopped at its time limit while still working now resumes where it was. Before, Claude refused to resume it, and the step's retry was used up on that refusal.
+- New: On a wide or laptop screen, pressing a conflict number in a clearance report's verdict opens that conflict's card in a panel beside the text, so the reader keeps their place; on a laptop the report's column narrows to make room.
+- Fixed: Two companies, or two organisations under Generic, that order the same mark and classes on the same day each get their search. Only the same account's repeat order is held as a duplicate, and its notice names only that account's earlier order.
+- New: On a Knockout report, each register filing's card shows that filing's registered logo in a frame labelled "Register", where the run fetched one.
+- Fixed: A Knockout resumed after a failed attempt now carries on from the step that failed. It used to run every step again from the reading of the order, which could frame the order differently the second time.
+- Fixed: On an installation that uses Signa, a logo image the register could not serve for a moment is asked for once more, so fewer cards lose a logo to a brief outage.
+- New: An order marked Urgent is quoted at 30 minutes to 1 hour for a clearance and 3 to 6 minutes for a Knockout, and counts as two searches against the account's daily and monthly allowance. Where the installation's AI service has no faster setting, the order runs at Standard and counts as one search. With one search left today, an Urgent order is refused with "1 search left today." rather than run at Standard.
+- New: The Clearances list shows each company, family, name and search on its own row, on a desktop and on a phone. A name with one report has an "Open report" button, a name with several opens its latest report, and each earlier search opens its own report.
+  
+  New: Find a name, then narrow the list under Filters by company, search type, sort order and company grouping. Each filter in force shows as a chip that removes it.
+  
+  New: "Group names" makes a family from names in one company, and a family's menu adds names or ungroups it. Retiring a search, or every search of a name, asks first and says what moves. The Retired tab lists each retired search with Restore, and a failed search restores to Failed.
+- For operators: an order retried with the id of one that was already refused, parked or finished is no longer queued a second time. `enqueue` exits 3, as it already did for an order still waiting, and prints what became of the first order: its state, the reason it was refused, and its run id. The connector's `start_run` refuses the retry and says the same.
+- Fixed: "Expand all" and "Collapse all" reach every fold of a clearance or Knockout report, the register records' term lists included; the key's common-law row no longer runs its label under its count; and a PDF's folded-list header counts only the cards it prints.
+- New: A running search's card on Home now lists every step by name, ticking those done and marking the one in progress, in place of a row of unlabelled bars.
+  
+  New: A Global preliminary or Multi-country focus search now names its sixth step "Checking the conclusions" on Home, in the Clearances list and in its status, since neither search reads case law.
+- New: Installation settings now groups its sources under Needed and Optional, so a source a search can run without no longer reads as a fault, and the common-law row says a Knockout search can still run while its key is missing.
+  
+  New: A row on Installation settings that the setup wizard fixes now shows its command, with a Copy button, beside the Setup guide.
+- New: New clearance folds the company's settings into one line with a "Change" button, and Which search shows the chosen search with the other three behind "All four searches"; every control is still there.
+  
+  New: On an installation that cannot read a brief, New clearance no longer offers a box to write one in, so typing starts at Names to clear.
+- New: New clearance has a How soon choice below Which search. Standard is chosen by default, and Urgent runs the same search on the AI fast mode setting, at increased cost, and uses 2 searches. Each option shows its turnaround and how many searches it uses, and the footer and the review show the chosen one. Where the installation's AI service has no faster setting, Urgent is shown but cannot be chosen, and says why. With one search left today, Urgent cannot be chosen either, and says "1 search left today." beside its cost.
+  
+  New: The footer's Uses figure says how many searches the account has left today.
+- Fixed: The README's three pictures of the portal show today's screens, taken from the demo: New clearance, a finished report, and its conflict landscape.
+- New: Once a reader scrolls past a report's header, it becomes one pinned row with the section links, Ask AI, Export and a "Search history" button listing the name's other searches. Where the window is too narrow for that row, the whole header stays pinned instead.
+  
+  New: The label over a report's other searches now reads "Search history", and the list tells apart two reports of one day by their time, marks the latest report and shows a search still running.
+- Fixed: On an installation that uses Signa, a Knockout report's listed filings open their register record, read from the search the run already holds, so the report asks the register nothing more.
+- New: When a search finishes or stops while the portal's tab is out of view, the tab's title leads with a count, such as "(1)", until the tab is looked at again.
+- New: In a clearance report, the folded list of lower-rated conflicts has a "Show all" control with its count at the right of its header, and looks like a pile of cards while folded, so it is harder to miss.
+- Fixed: A clearance report's list of web and marketplace names prints every name its count includes, links each one only to a web address, opening in a new tab, and no longer lists a search note as a name.
+- Fixed: In the dark theme, the addresses in a clearance report's list of web and marketplace names are drawn in the page's link colour instead of dark red on the dark background.
+
+### Patch Changes
+
+- Fixed: On an install that names its workspaces with its own prefix, the portal's run list now shows the searches in progress there. It used to show none of them, while the connector listed them.
+- Fixed: The portal's list of retired searches shows retired searches only. It used to show every search still waiting to start as well.
+
 ## 0.7.0
 
 ### Minor Changes
