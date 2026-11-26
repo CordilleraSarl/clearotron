@@ -3574,8 +3574,8 @@
           "todos": 0
         },
         "an-order-is-found-where-it-was-placed.test.mjs": {
-          "tests": 2,
-          "asserts": 16,
+          "tests": 3,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -9867,8 +9867,8 @@
           "todos": 0
         },
         "an-urgent-order-runs-at-the-speed-this-installation-can.test.mjs": {
-          "tests": 8,
-          "asserts": 35,
+          "tests": 9,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
