@@ -21,7 +21,7 @@ process.env.CLEAROTRON_MCP_URL ||= "https://mcp.test/mcp";
 import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { runLint, pageNameLines, PAGE_WEB_NAMES_SHOWN } from "../predelivery-lint.mjs";
+import { runLint, pageNameLines } from "../predelivery-lint.mjs";
 import { parseReport } from "../publish/parse.mjs";
 import { renderHtml } from "../publish/render.mjs";
 import { emailConditionsOfReport } from "../publish/email-conditions.mjs";
@@ -76,15 +76,17 @@ test("a clean coverage row, which the page does not draw, introduces nothing", (
   assert.deepEqual(on(l, EMAIL)?.orphans, ["Tarnwick Labs"]);
 });
 
-test("a name the page lists introduces the party; one past the list's display cap does not", () => {
+test("a name the page lists introduces the party, the ninth included; a note the page does not list does not", () => {
   const listed = lint({ auditMd: auditWith(["Tarnwick Labs grip set"]) });
   assert.equal(on(listed, REPORT)?.pass, true);
   assert.equal(on(listed, EMAIL)?.pass, true);
+  // The page used to stop at eight names and the lint copied the cap; it now prints every name, so the ninth introduces.
   const fillers = ["Bramblecote", "Corriveau", "Dunmarrow", "Elsworthy", "Fenchurch", "Glenquay", "Harrowgate", "Inchbury"];
-  const pastCap = lint({ auditMd: auditWith([...fillers.map((f) => `${f} pads`), "Tarnwick Labs grip set"]) });
-  assert.equal(pageNameLines({ webNames: [...fillers, "Tarnwick Labs"].map((title) => ({ title })) }).length, fillers.length,
-    "premise: the page shows exactly as many names as the fillers, so the ninth is not drawn");
-  assert.deepEqual(on(pastCap, REPORT)?.orphans, ["Tarnwick Labs"]);
+  const ninth = lint({ auditMd: auditWith([...fillers.map((f) => `${f} pads`), "Tarnwick Labs grip set"]) });
+  assert.equal(on(ninth, REPORT)?.pass, true, "the ninth name is on the page, so it introduces its party");
+  // A block whose url is a sentence names no place, so the page does not list it and it introduces nobody.
+  const note = lint({ auditMd: "## Tarnwick Labs grip set\n- source_layer: common-law\n- url: See cell-level receipts below\n- type: marketplace\n" });
+  assert.deepEqual(on(note, REPORT)?.orphans, ["Tarnwick Labs"], "a note the page does not list introduced a party");
 });
 
 // A follow-up row the page hides because another open row restates its directive. The party is named only after the
@@ -116,7 +118,8 @@ test("the lint's lines are the page's: every drawn row and listed name is on the
     { area: "Follow-up / corvantis storefront", state: "open", note: "corvantis storefront \u2014 not completed this run \u2014 Hidwellan named" },
     { area: "Follow-up / ostrelmoor kiosk", state: "open", note: "ostrelmoor kiosk \u2014 not completed this run \u2014 Drawnbury named" },
   ];
-  const names = Array.from({ length: PAGE_WEB_NAMES_SHOWN + 2 }, (_, i) => ({ title: `Brisandor${i} kit`, url: `https://shop.example/${i}` }));
+  // Ten names, more than the eight the page used to stop at: the page now lists every one, and so does the lint.
+  const names = Array.from({ length: 10 }, (_, i) => ({ title: `Brisandor${i} kit`, url: `https://shop.example/${i}`, links: [`https://shop.example/${i}`] }));
   const html = renderHtml(parsed, [], coverage, { runId: "pagelines", searchDepth: { cleared: { register: [], web: names, groups: {} }, counts: {} } });
   const lines = pageNameLines({ coverage, webNames: names }).join("\n");
   for (let i = 0; i < states.length; i++) {
@@ -126,7 +129,7 @@ test("the lint's lines are the page's: every drawn row and listed name is on the
     assert.equal(html.includes(`Brisandor${i}`), lines.includes(`Brisandor${i}`), `name ${i + 1}: the page and the lint disagree on whether it is listed`);
   }
   assert.ok(lines.includes("Quorrel0") && !lines.includes("Quorrel4"), "premise: an open row is drawn and a clean one is not");
-  assert.ok(lines.includes("Brisandor0") && !lines.includes(`Brisandor${PAGE_WEB_NAMES_SHOWN}`), "premise: the cap cuts the list");
+  assert.ok(lines.includes("Brisandor0") && lines.includes("Brisandor9"), "premise: every listed name is on the page, the tenth included");
   for (const word of ["Hidwellan", "Drawnbury"]) {
     assert.equal(html.includes(word), lines.includes(word), `the follow-up row naming ${word}: the page and the lint disagree on whether it is shown`);
   }

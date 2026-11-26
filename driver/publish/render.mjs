@@ -1015,18 +1015,24 @@ function clearedGroupsHtml(searchDepth, auditFile) {
 
 // THE RUN'S OWN COMMON-LAW SEARCH RECORD, named in words. A row the assessing model backed with the run's own search
 // ledger carries that file's name where a web address would be, and the page printed it as a link to nowhere. Only a
-// reference positively identified as that ledger is renamed; any other source keeps its exact reference until a
-// truthful label exists for it. The run's record and the audit keep the original reference.
-const RUN_COMMON_LAW_RECORD = /^(?:\.\/)?(?:_driver\/)?common-law-grid(?:\.half-[a-z0-9]+)?\.json$/i;
+// reference positively identified as that ledger is renamed (search-depth.mjs, `runRecord`); any other source keeps its
+// exact reference until a truthful label exists for it. The run's record and the audit keep the original reference.
 const RUN_COMMON_LAW_RECORD_LABEL = R.cleared.runCommonLawRecord;
 
+// EVERY NAME THE HEADER COUNTS IS PRINTED, AND EACH LINK IS AN ADDRESS. The list used to stop at the register groups'
+// eight with no pointer to the rest, and the workbook does not carry these names' addresses, so a ninth name was
+// reachable nowhere a client reads; the list sits in a closed fold, so its length costs the page nothing until it is
+// opened. A row links each http(s) address search-depth.mjs read out of what the model wrote (`links`), and opens it in
+// a new tab as the page's other evidence links do. A block that gave no address is not a name and is not here.
+const webAddressText = (u) => String(u).replace(/^https?:\/\//, '').replace(/\/$/, '');
 function webNamesHtml(searchDepth) {
   const web = (searchDepth && searchDepth.cleared && searchDepth.cleared.web) || [];
   if (!web.length) return '';
-  const shown = web.slice(0, NAMES_CAP);
-  const rows = shown.map((w) => `<div class="crow"><span class="cm-mark">${esc(w.title || '')}</span>${
-    w.url && RUN_COMMON_LAW_RECORD.test(String(w.url).trim()) ? `<span class="curl">${esc(RUN_COMMON_LAW_RECORD_LABEL)}</span>`
-    : w.url ? `<a class="curl" href="${escAttr(w.url)}">${esc(String(w.url).replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a>` : '<span class="cwho"></span>'}</div>`).join('');
+  const rows = web.map((w) => `<div class="crow"><span class="cm-mark">${esc(w.title || '')}</span><span class="curl">${
+    w.runRecord ? esc(RUN_COMMON_LAW_RECORD_LABEL)
+    : (Array.isArray(w.links) ? w.links : []).map((u) => (hrefAttr(u)
+      ? `<a href="${hrefAttr(u)}" target="_blank" rel="noopener noreferrer">${esc(webAddressText(u))}</a>` : esc(webAddressText(u)))).join(' \u00b7 ')
+  }</span></div>`).join('');
   return `<details class="cgroup"><summary><span class="gname">${R.cleared.webAndMarketplace}</span><span class="gcount">${
     R.cleared.names(web.length.toLocaleString('en-GB'), web.length)}</span></summary><div class="gbody">${rows}</div></details>`;
 }

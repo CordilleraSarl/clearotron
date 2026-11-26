@@ -5043,6 +5043,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-web-name-the-list-counts-is-printed-with-its-address.test.mjs": {
+          "tests": 4,
+          "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
         "every-workbook-label-is-in-the-catalogue.test.mjs": {
           "tests": 1,
           "asserts": 5,
