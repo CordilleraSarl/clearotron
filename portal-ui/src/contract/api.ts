@@ -1373,6 +1373,12 @@ export type Searches = {
    * not send it, and the same fail-open direction the product list takes.
    */
   readonly maxMarkName: number | null
+  /**
+   * Whether an Urgent order runs on the AI service's faster setting on this installation. Absent ⇒ not
+   * available: New clearance then offers Standard and says why Urgent is not offered, which is the safe
+   * direction, since an Urgent order counts two searches.
+   */
+  readonly urgent: { readonly available: boolean }
   readonly read: ReadCapability
   /**
    * Which territories the register wired to THIS deployment can actually search, as composer
@@ -2198,6 +2204,7 @@ export const api = {
           nativeLanguage: r['nativeLanguage'] === true,
         }
       }),
+      urgent: { available: typeof b['urgent'] === 'object' && b['urgent'] !== null && (b['urgent'] as Record<string, unknown>)['available'] === true },
       read: decodeReadCapability(b['read']),
     })),
 

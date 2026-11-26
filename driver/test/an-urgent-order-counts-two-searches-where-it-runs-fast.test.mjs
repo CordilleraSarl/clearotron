@@ -98,6 +98,56 @@ test("the runner checks the cap against the order's count and records that count
   assert.match(src, /checkRunCaps\(\{[^}]*searches \}\)/s, "the cap is checked against it");
   assert.match(src, /recordMatter\(qdir, \{[^\n]*searches,/, "and the row records it");
   const portal = driverSource("portal-service.mjs");
-  assert.equal((portal.match(/quotaRefusal\(account, job\.tenant \?\? null, admittedSearches\(job\)\)/g) ?? []).length, 2,
+  assert.equal((portal.match(/quotaRefusal\(account, job\.tenant \?\? null, admittedSearches\(job, \{ runsHere: urgentAvailable \}\)\)/g) ?? []).length, 2,
     "the portal's review and start pre-checks ask with the same count");
+});
+
+// ── THE PORTAL DOOR ─────────────────────────────────────────────────────────────────────────────────
+// New clearance sends `urgent: true` only where Urgent runs fast. The door carries it to the stored job, quotes
+// it as admission counts it, says whether Urgent is available, and will not start an Urgent order on a review
+// that was confirmed at Standard.
+const { makePortalService } = await import("../portal-service.mjs");
+const GRANTS = { tenants: { celta: { accounts: ["generic"], users: {} } },
+  people: { "staff@example-firm.com": { run: true, manage: true, everything: true } } };
+const STAFF = { email: "staff@example-firm.com" };
+const ORDER = { account: "generic", markName: "PROBEMARK", classes: [9], product: "global-preliminary-search", geography: { mode: "worldwide" } };
+function portal(urgentAvailable) {
+  const sent = [];
+  const svc = makePortalService({ secret: "s".repeat(32), grants: GRANTS, audit: () => {}, urgentAvailable,
+    trigger: async (job) => { sent.push(job); return { ok: true, id: job.id }; } });
+  return { svc, sent };
+}
+
+test("the portal carries an Urgent order to the stored job and quotes it at two searches where it runs fast", async () => {
+  const { svc, sent } = portal(() => true);
+  const searches = await svc.route("GET", "/portal/api/searches", STAFF, {}, { account: "generic" });
+  assert.deepEqual(searches.json.urgent, { available: true });
+  const plan = await svc.route("POST", "/portal/api/run/plan", STAFF, { ...ORDER, urgent: true });
+  assert.equal(plan.status, 200, JSON.stringify(plan.json));
+  assert.equal(plan.json.effort?.searches, 2, "the review shows the count admission charges");
+  const run = await svc.route("POST", "/portal/api/run", STAFF, { ...ORDER, urgent: true, confirmationToken: plan.json.confirmationToken });
+  assert.equal(run.status, 200, JSON.stringify(run.json));
+  assert.equal(sent.at(-1)?.urgent, true, "the stored job carries the order");
+});
+
+test("where Urgent cannot run fast the portal says so and quotes an Urgent body as Standard", async () => {
+  const { svc } = portal(() => false);
+  const searches = await svc.route("GET", "/portal/api/searches", STAFF, {}, { account: "generic" });
+  assert.deepEqual(searches.json.urgent, { available: false });
+  const plan = await svc.route("POST", "/portal/api/run/plan", STAFF, { ...ORDER, urgent: true });
+  assert.equal(plan.json.effort?.searches, 1);
+});
+
+test("a review confirmed at Standard cannot start an Urgent order", async () => {
+  const { svc, sent } = portal(() => true);
+  const plan = await svc.route("POST", "/portal/api/run/plan", STAFF, ORDER);
+  assert.equal(plan.status, 200);
+  const run = await svc.route("POST", "/portal/api/run", STAFF, { ...ORDER, urgent: true, confirmationToken: plan.json.confirmationToken });
+  assert.notEqual(run.status, 200, "the token was minted for a different order");
+  assert.equal(sent.length, 0);
+  // And a value other than `true` is not an Urgent order at this door.
+  const plan2 = await svc.route("POST", "/portal/api/run/plan", STAFF, { ...ORDER, urgent: "yes" });
+  const run2 = await svc.route("POST", "/portal/api/run", STAFF, { ...ORDER, urgent: "yes", confirmationToken: plan2.json.confirmationToken });
+  assert.equal(run2.status, 200);
+  assert.equal(sent.at(-1)?.urgent, undefined);
 });

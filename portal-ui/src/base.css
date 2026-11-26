@@ -3756,3 +3756,22 @@ ol.steps > li::before {
   .table-wrap table.data.clr-retired-table td.col-actions { grid-area: actions; }
 }
 
+
+/* HOW SOON (board Urgent clearance, approved 2026-11-25): two options side by side in Which search's
+   chosen-card style, stacked on a phone. */
+.nc-how-soon .nc-how-soon-note { margin: 0; }
+.nc-speed-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+/* The look of a Which search row (.pick-row), under its own name so nothing that counts the searches counts these. */
+.nc-speed {
+  display: flex; align-items: flex-start; gap: 10px; text-align: left; font: inherit; color: inherit; cursor: pointer;
+  padding: 13px 15px; border-radius: 10px; border: 1px solid var(--border-hairline); background: var(--surface-raised);
+}
+.nc-speed:hover { border-color: var(--accent-ink); }
+.nc-speed-on { border-color: var(--accent); background: var(--accent-wash); }
+.nc-speed-off { background: var(--surface-sunken); border-style: dashed; cursor: default; }
+.nc-speed-off:hover { border-color: var(--border-hairline); }
+.nc-speed-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.nc-speed-label { color: var(--text-strong); font-size: 14px; }
+.nc-speed-line { color: var(--text-body); font-size: 13px; }
+.nc-speed-note { color: var(--text-muted); font-size: 12.5px; line-height: 1.45; }
+@media (max-width: 560px) { .nc-speed-pair { grid-template-columns: 1fr; } }

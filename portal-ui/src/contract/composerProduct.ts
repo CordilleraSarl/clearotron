@@ -1152,6 +1152,20 @@ export function turnaround(i: EffortInput): string {
  */
 export const turnaroundInWords = (quote: string): string => quote.replace(/(\d)\s*[–-]\s*(\d)/g, '$1 to $2')
 
+/**
+ * A ruled range in full words, as New clearance's How soon section says an Urgent order's turnaround
+ * (board Urgent clearance, approved 2026-11-25): "30 minutes to 1 hour" for a clearance, "3 to 6 minutes"
+ * for a Knockout. Read from the bounds, not from the quote's string, so the minutes are never "0.5 hours".
+ * The Standard figures keep the shipped `turnaroundInWords` spelling.
+ */
+export function rangeInWords({ lowHours, highHours }: { readonly lowHours: number; readonly highHours: number }): string {
+  const minutes = (h: number): number => Math.round(h * 60)
+  const hours = (h: number): string => `${fmtHours(h)} ${h === 1 ? 'hour' : 'hours'}`
+  if (highHours < 1) return `${minutes(lowHours)} to ${minutes(highHours)} minutes`
+  if (lowHours < 1) return `${minutes(lowHours)} minutes to ${hours(highHours)}`
+  return `${fmtHours(lowHours)} to ${hours(highHours)}`
+}
+
 /** What the footer says a search costs per name. A knockout is one broad sweep, not a grid. */
 export function checksSummary(i: EffortInput): string {
   if (i.levers.pipeline === 'knockout')
