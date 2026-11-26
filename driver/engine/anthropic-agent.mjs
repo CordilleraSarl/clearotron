@@ -607,6 +607,7 @@ function streamState(st) {
   st.noteSpeed = (key, u) => { if (typeof u?.speed === "string" && u.speed) st.speedByMessage.set(key, u.speed); };
   st.fastInit = null;                     // init's fast_mode_state and fast_mode_disabled_reason: the session's start
   st.fastNotice = null;                   // the program's own notice about fast mode (out of usage credits), first one
+  st.sessionInit = null;                  // the session's id as init states it: what a turn killed before its result resumes
   st.foldUsage = (key, u) => {
     if (!u) return;
     const was = st.perMessage.get(key);
@@ -856,6 +857,11 @@ function lineParser(st) {
       // MODEL GAUGE — the session's configured model, the earliest wire statement of what will run.
       if (typeof ev.model === "string" && ev.model && !isCliLabel(ev.model)) st.wireModelInit ??= ev.model;
       st.fastInit ??= { state: ev.fast_mode_state ?? null, reason: ev.fast_mode_disabled_reason ?? null };
+      // THE SESSION'S ID, as the program states it when the session opens. The result event repeats it at the end, but a
+      // turn stopped at its time limit never sends one, and the warm resume of a turn stopped while working needs the id
+      // of the session to resume: handed the stage's own key instead, the program refuses it ("requires a valid session
+      // ID"), and the retry is spent on the refusal (measured in testing, 2026-11-26).
+      if (typeof ev.session_id === "string" && ev.session_id) st.sessionInit ??= ev.session_id;
     }
     // THE PROGRAM'S NOTICE ABOUT FAST MODE. Out of usage credits, it retries each fast request at standard speed and says so
     // "on the message stream as a `system` message with subtype `notification`" (the vendor's fast-mode page, "Handle rate
@@ -1277,7 +1283,7 @@ function wireStreams(st) {
       // usage ("firstParty" on Anthropic's own API and "foundry" on Azure Foundry, measured 2026-09-14),
       // or null when the stream never said or its models disagree. Recorded, never inferred from config.
       providerWire: providerOf(st.resultEvent),
-      sessionRef: st.resultEvent?.session_id ?? st.resumeRef ?? null,
+      sessionRef: st.resultEvent?.session_id ?? st.sessionInit ?? st.resumeRef ?? null,
       // The raw result event's total_cost_usd is a provider-side field and stays in the provider's
       // own stream; the tuple carries no currency (tokens-only directive 2026-07-11) — `usage` is
       // the telemetry.

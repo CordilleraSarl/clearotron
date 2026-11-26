@@ -309,6 +309,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-claude-turn-stopped-before-its-result-keeps-its-session-id.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-clean-install-offers-generic-alone.test.mjs": {
           "tests": 9,
           "asserts": 16,
