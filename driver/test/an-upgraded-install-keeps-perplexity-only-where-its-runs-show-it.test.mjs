@@ -54,11 +54,11 @@ test("research Perplexity completed is evidence; a replay, a failure, a skip and
     [{}, false, "an order refused before it ran, which searched nothing"],
   ];
   for (const [files, perplexity, what] of cases)
-    assert.deepEqual(researchOnRecord(aRun(root, files)), { perplexity, other: false }, what);
-  assert.equal(researchOnRecord(aRun(root, { choices: { research: "own" } })).other, true, "a run recorded on its own AI program's search");
-  assert.equal(researchOnRecord(aRun(root, { choices: { research: null } })).other, true, "a run recorded with no service chosen");
-  assert.equal(researchOnRecord(aRun(root, { ownRecords: true })).other, true, "a run holding its own search's records");
-  assert.equal(researchOnRecord(aRun(root, { choices: { research: "perplexity" }, readingLog: [asked()] })).other, false);
+    assert.equal(researchOnRecord(aRun(root, files)), perplexity ? "perplexity" : null, what);
+  assert.equal(researchOnRecord(aRun(root, { choices: { research: "own" } })), "other", "a run recorded on its own AI program's search");
+  assert.equal(researchOnRecord(aRun(root, { choices: { research: null } })), "other", "a run recorded with no service chosen");
+  assert.equal(researchOnRecord(aRun(root, { ownRecords: true, readingLog: [asked()] })), "other", "a run holding its own search's records");
+  assert.equal(researchOnRecord(aRun(root, { choices: { research: "perplexity" }, readingLog: [asked()] })), "perplexity");
 });
 
 test("an installation whose runs show Perplexity research, and nothing else, is given the setting once", () => {

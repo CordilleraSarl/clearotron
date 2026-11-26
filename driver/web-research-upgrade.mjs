@@ -35,20 +35,20 @@ const rows = (file) => {
 };
 
 /**
- * What one run's records say about the service its web research ran on: `{ perplexity, other }`, each a boolean.
- * `perplexity` is research Perplexity completed; `other` is research on, or a record of, anything else. IMPURE (reads).
+ * What one run's records say about the service its web research ran on: "other" for research on, or a record of,
+ * anything but Perplexity; "perplexity" for research Perplexity completed and nothing else; null for no research on
+ * record. IMPURE (reads).
  */
 export function researchOnRecord(runDir) {
   const rec = readRunChoices(runDir);
-  const other = (rec.state === "recorded" && Object.hasOwn(rec, "research") && rec.research !== "perplexity")
-    || existsSync(driverDir(runDir, SEARCH_RECORDS_FILE));
+  if ((rec.state === "recorded" && Object.hasOwn(rec, "research") && rec.research !== "perplexity")
+    || existsSync(driverDir(runDir, SEARCH_RECORDS_FILE))) return "other";
   const P = paths(runDir);
-  const asked = rows(P.readingLog).some((row) => {
+  const ran = rows(P.readingLog).some((row) => {
     const call = researchCall(row);
     return call?.known === true && call.ok === true && call.replay === false && call.service === "perplexity";
-  });
-  const swept = rows(P.knockoutSweep).some((row) => row?.ok === true && row?.executor === "perplexity");
-  return { perplexity: asked || swept, other };
+  }) || rows(P.knockoutSweep).some((row) => row?.ok === true && row?.executor === "perplexity");
+  return ran ? "perplexity" : null;
 }
 
 /**
@@ -61,9 +61,9 @@ export function webResearchToAdd(env, runDirs) {
   if (String(env?.[WEB_RESEARCH_SETTING] ?? "").trim() !== "") return { add: null, why: "chosen" };
   let runs = 0;
   for (const dir of runDirs) {
-    const { perplexity, other } = researchOnRecord(dir);
-    if (other) return { add: null, why: "mixed" };
-    if (perplexity) runs++;
+    const on = researchOnRecord(dir);
+    if (on === "other") return { add: null, why: "mixed" };
+    if (on === "perplexity") runs++;
   }
   return runs ? { add: { [WEB_RESEARCH_SETTING]: "perplexity" }, runs } : { add: null, why: "none" };
 }
