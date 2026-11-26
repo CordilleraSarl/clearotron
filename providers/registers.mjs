@@ -14,8 +14,9 @@
 // then the free tier, which is what the refusal for an unset register prints, so a reader is shown the order setup
 // offers.
 //
-// NOT A VOCABULARY THE MODEL IS HANDED. A stage is never told a provider's name; this module is read by the driver,
-// the register server and the planner, and never by a module that judges a stage's output (driver/record-origins.mjs).
+// NOT A VOCABULARY THE MODEL IS HANDED. A stage is never told a provider's name. The module that judges a stage's
+// output never imports this one directly: it reaches the adapter map only through driver/record-origins.mjs, a lookup
+// that exports one function, so no provider list joins the vocabularies a stage must be taught.
 import { adapter as corsearchAdapter } from "./corsearch/src/adapter.js";
 import { adapter as clarivateAdapter } from "./clarivate/src/adapter.js";
 import { adapter as signaAdapter } from "./signa/src/adapter.js";
