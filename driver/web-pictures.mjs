@@ -29,8 +29,8 @@
 // Bytes are kept as bytes: the engine's text fetch decodes every answer as UTF-8, which would corrupt a picture.
 //
 // A SITE'S GENERAL CARD is not the name in use: an inner page whose picture is its site front page's is dropped
-// (frontPageRule). WHAT IS EMBEDDED is each picture brought down to its box on this machine (shrinkPictures), never the
-// bytes as served, which grew measured reports more than tenfold.
+// (frontPageRule). WHAT IS EMBEDDED is each picture brought down to its box on this machine, as it arrives and inside the
+// same limit (pictureShrinker), never the bytes as served, which grew measured reports more than tenfold.
 //
 // RECORDING ONLY, and it never throws: a page that refuses, times out or offers no picture is recorded, and the card shows
 // nothing for it. A refusal is never worked around.
@@ -39,11 +39,12 @@ import https from "node:https";
 import zlib from "node:zlib";
 import { createHash } from "node:crypto";
 import { isIP } from "node:net";
+import { availableParallelism } from "node:os";
+import { Worker } from "node:worker_threads";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { checkedLookup, isPublicAddress } from "./engine/mcp/public-fetch.mjs";
 import { imageTypeOf } from "./mark-logos.mjs";
-import { thumbnailOf } from "./picture-thumbnail.mjs";
 import { DRIVER_DIR, driverDir, ensureDriverDir } from "./run-record.mjs";
 
 export const CLEARANCE_PICTURE_SECONDS = 20;   // owner, 2026-11-26: at most 20 seconds a clearance report
@@ -201,10 +202,17 @@ export async function fetchBytes(rawUrl, { signal, maxBytes = 5 * 1024 * 1024, a
  * the limit). `ms` counts from the step's first request to the picture's arrival. `data` is the picture's bytes, for the
  * caller to save; nothing else holds them.
  *
+ * SHRUNK ON THE SAME CLOCK. Each picture is brought down to its box (picture-thumbnail.mjs) as it arrives, in a worker
+ * beside the fetches, and the limit ends both. A shrunk row keeps what the site served (`contentType`, `bytes`, `sha256`,
+ * and the `width` and `height` its header declares) and gains what is stored (`stored: { contentType, bytes, width,
+ * height, kept }`), with the milliseconds its shrinking took (`shrinkMs`); `data` is then the stored picture. One that
+ * cannot be shrunk, or is still being shrunk at the limit, gains `notStored` with the reason and keeps no bytes.
+ *
  * @param {string[]} pages
- * @param {{seconds?: number, concurrency?: number, fetcher?: typeof fetchBytes, now?: () => number}} [opts]
+ * @param {{seconds?: number, concurrency?: number, fetcher?: typeof fetchBytes, now?: () => number, compareFrontPages?: boolean, shrink?: boolean, makeShrinker?: typeof pictureShrinker}} [opts]
  */
-export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SECONDS, concurrency = PICTURE_CONCURRENCY, fetcher = fetchBytes, now = () => performance.now(), compareFrontPages = true } = {}) {
+export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SECONDS, concurrency = PICTURE_CONCURRENCY, fetcher = fetchBytes, now = () => performance.now(),
+  compareFrontPages = true, shrink = true, makeShrinker = pictureShrinker } = {}) {
   const list = [...new Set((Array.isArray(pages) ? pages : []).map(String))];
   // Each inner page's site front page is asked right after it, in the same pool and on the same clock, for the rule of
   // a site's general card (frontPageRule); a front page a card cites is not asked twice.
@@ -220,6 +228,17 @@ export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SEC
   const t0 = now();
   let timer = null;
   if (Number.isFinite(seconds)) timer = setTimeout(() => abort.abort(), seconds * 1000);
+  const shrinker = shrink && rows.length ? makeShrinker({ size: SHRINK_WORKERS }) : null;
+  abort.signal.addEventListener("abort", () => shrinker?.close(), { once: true });
+  const shrinking = [];
+  const shrinkRow = async (row) => {
+    const m = await shrinker.shrink(row.data);
+    if (m.served) { row.width = m.served.width; row.height = m.served.height; }   // as the site served it, from its header
+    if (Number.isFinite(m.ms)) row.shrinkMs = m.ms;
+    if (m.unfinished || m.refused) { row.notStored = m.unfinished ? "not shrunk within the limit" : m.refused; row.data = null; return; }
+    row.stored = { contentType: m.contentType, bytes: m.bytes.byteLength, width: m.width, height: m.height, kept: m.kept };
+    row.data = Buffer.from(m.bytes.buffer, m.bytes.byteOffset, m.bytes.byteLength);
+  };
   let next = 0;
   const one = async (row) => {
     row.state = "not-arrived";
@@ -238,15 +257,74 @@ export async function fetchPagePictures(pages, { seconds = CLEARANCE_PICTURE_SEC
       if (!type) { row.state = "not-a-picture"; return; }
       if (abort.signal.aborted) return;   // arrived after the limit: not kept
       Object.assign(row, { state: "fetched", contentType: type.type, bytes: pic.bytes.length, sha256: createHash("sha256").update(pic.bytes).digest("hex"), ms: Math.round(now() - t0), data: pic.bytes });
+      if (shrinker && !row.forComparison) shrinking.push(shrinkRow(row));
     } catch {
       if (!abort.signal.aborted) row.state = "failed";
     }
   };
   const worker = async () => { while (next < rows.length && !abort.signal.aborted) await one(rows[next++]); };
-  try { await Promise.all(Array.from({ length: Math.max(1, Math.min(concurrency, rows.length)) }, worker)); }
-  finally { if (timer) clearTimeout(timer); }
+  try {
+    await Promise.all(Array.from({ length: Math.max(1, Math.min(concurrency, rows.length)) }, worker));
+    await Promise.all(shrinking);
+  } finally { if (timer) clearTimeout(timer); shrinker?.close(); }
   if (compareFrontPages) frontPageRule(rows);
-  return { rows, ms: Math.round(now() - t0), aborted: abort.signal.aborted };
+  const shrinkMs = rows.reduce((a, r) => a + (Number.isFinite(r.shrinkMs) ? r.shrinkMs : 0), 0);
+  return { rows, ms: Math.round(now() - t0), aborted: abort.signal.aborted, ...(shrinker ? { shrinkMs } : {}) };
+}
+
+// Workers that shrink pictures side by side with the fetches: two, or one on a machine with two cores or fewer.
+const SHRINK_WORKERS = Math.max(1, Math.min(2, (availableParallelism?.() ?? 2) - 1));
+
+/**
+ * A small pool of workers that bring pictures down to their box (picture-shrink-worker.mjs), started with the step so
+ * that their start-up overlaps the first fetches. `shrink(bytes)` resolves the worker's answer; `close()` stops every worker and resolves what is still
+ * queued or in hand as `{ unfinished: true }`. The bytes are copied before they are handed over, so the row keeps its own.
+ */
+export function pictureShrinker({ size = SHRINK_WORKERS } = {}) {
+  const idle = [], queue = [], inHand = new Map();
+  let started = 0, closed = false, nextId = 0, failures = 0, broken = null;
+  const all = new Set();
+  const pump = () => {
+    while (!closed && queue.length && (idle.length || started < size)) {
+      if (!idle.length) start();
+      const w = idle.pop(), task = queue.shift();
+      inHand.set(task.id, { ...task, worker: w });
+      w.postMessage({ id: task.id, bytes: task.bytes }, [task.bytes.buffer]);
+    }
+  };
+  const start = () => {
+    started++;
+    // The parent's flags, less one that only an inline script may carry and that a worker file refuses.
+    const w = new Worker(new URL("./picture-shrink-worker.mjs", import.meta.url), { execArgv: process.execArgv.filter((a) => !a.startsWith("--input-type")) });
+    all.add(w); idle.push(w);
+    w.on("message", (m) => { const t = inHand.get(m.id); inHand.delete(m.id); if (!closed) idle.push(w); t?.resolve(m); pump(); });
+    // A worker that fails is gone: it leaves the idle list, and what it held is refused with the reason. A pool whose
+    // workers keep failing (one that cannot even load) stops starting them and refuses the rest at once.
+    w.on("error", (e) => {
+      const why = `it could not be shrunk: ${String(e?.message ?? e).slice(0, 80)}`;
+      all.delete(w);
+      const at = idle.indexOf(w); if (at >= 0) idle.splice(at, 1);
+      for (const [id, t] of inHand) if (t.worker === w) { inHand.delete(id); t.resolve({ refused: why }); }
+      started--;
+      if (++failures > size) { broken = why; for (const t of queue) t.resolve({ refused: why }); queue.length = 0; return; }
+      pump();
+    });
+  };
+  for (let i = 0; i < size; i++) start();
+  return {
+    shrink(bytes) {
+      if (closed) return Promise.resolve({ unfinished: true });
+      if (broken) return Promise.resolve({ refused: broken });
+      return new Promise((resolve) => { queue.push({ id: nextId++, bytes: new Uint8Array(bytes), resolve }); pump(); });
+    },
+    close() {
+      if (closed) return;
+      closed = true;
+      for (const w of all) w.terminate().catch(() => {});
+      for (const t of [...inHand.values(), ...queue]) t.resolve({ unfinished: true });
+      inHand.clear(); queue.length = 0;
+    },
+  };
 }
 
 /** A site's front page: its scheme and host, path `/`. Null for anything that is not a URL. PURE. */
@@ -274,26 +352,6 @@ export function frontPageRule(rows) {
   }
   for (const row of rows) if (row.forComparison) row.data = null;
   return rows;
-}
-
-/**
- * Bring each picture the report will draw down to its box (picture-thumbnail.mjs), after the step and outside its limit:
- * decoding holds the process, and the limit's timer could not fire during it. A picture that is not drawn (a general
- * card, an unfinished comparison, a comparison's front page) is not decoded. Each shrunk row keeps what the site served
- * (`contentType`, `bytes`, `sha256`) and gains what is stored (`stored: { contentType, bytes, width, height, kept }`);
- * one that cannot be shrunk gains `notStored`, with the reason, and is not shown. Returns how long it took. MUTATES.
- */
-export function shrinkPictures(result, { now = () => performance.now() } = {}) {
-  const t0 = now();
-  for (const row of result?.rows ?? []) {
-    if (row.state !== "fetched" || !row.data || row.general || row.comparison || row.forComparison) continue;
-    const t = thumbnailOf(row.data);
-    if (t.refused) { row.notStored = t.refused; row.data = null; continue; }
-    row.stored = { contentType: t.contentType, bytes: t.bytes.length, width: t.width, height: t.height, kept: t.kept };
-    row.data = t.bytes;
-  }
-  result.shrinkMs = Math.round(now() - t0);
-  return result.shrinkMs;
 }
 
 // ── THE RECORD, AND WHAT THE REPORT DRAWS FROM IT ───────────────────────────────────────────────────────────────────

@@ -21,6 +21,10 @@ import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins E
 
 const ROOT = mkdtempSync(join(tmpdir(), "write-verb-shape-ws-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
+// Every call through a door writes an audit line, and the default log is shared by every test file a suite runs
+// under one home: pinned here, before the audit module reads it at import, so this file's calls never land inside
+// another file's count of lines (http-handler.test.mjs counts exactly two).
+process.env.TRADEMARK_MCP_AUDIT_LOG = join(ROOT, "audit.jsonl");
 process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "write-verb-shape-test-secret";
 const GRANTS_DIR = mkdtempSync(join(tmpdir(), "write-verb-shape-grants-"));
 writeFileSync(join(GRANTS_DIR, "grants.json"), JSON.stringify({

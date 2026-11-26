@@ -56,8 +56,17 @@
  *     is 1 for every job any door will admit, so the removed term was 1 on every quote that has ever
  *     been stored. No version-3 quote in any run record holds a number this table would not reproduce.
  *     The bump is the shape rule being followed, not a figure being corrected.
+ * 6 — an Urgent order (ruling 2026-11-25): the same search on the AI service's faster setting. It counts
+ *     as two searches against an allowance and quotes its own ruled turnaround row. No weight moved and
+ *     the work units are untouched, because the work is the same; the count and the quote moved.
  */
-export const UNITS_VERSION = 5;
+export const UNITS_VERSION = 6;
+
+/**
+ * HOW MANY SEARCHES AN URGENT ORDER COUNTS AS (ruling 2026-11-25). One constant, read by the quote and by
+ * admission alike, so "uses 2" is the number shown and the number charged.
+ */
+export const URGENT_SEARCHES = 2;
 
 // The grid-cell budgets, restated from profiles.mjs (SAFE_GRID_CELLS / DENSE_GRID_CELLS) rather than
 // imported: this module is the SERVER half of a twin whose other half is a browser bundle, and it is kept
@@ -86,6 +95,8 @@ export const DENSE_GRID_CELLS = 16;
  *                   offering has one toggle and the engine routes it from the territories in scope.
  *   registerCounts  register filing counts per name. The knockout's, and only there.
  *   territories     the resolved scope. Length 1 is the deep-dive increment.
+ *   urgent          the order runs on the AI service's faster setting. Not machinery: the same search,
+ *                   the same work. It moves only the count and the turnaround row.
  */
 const leversOf = (l) => ({
   pipeline: l?.pipeline === "knockout" ? "knockout" : "clearance",
@@ -93,6 +104,7 @@ const leversOf = (l) => ({
   nativeLanguage: Boolean(l?.nativeLanguage),
   registerCounts: Boolean(l?.registerCounts),
   territories: Array.isArray(l?.territories) ? l.territories : [],
+  urgent: l?.urgent === true,
 });
 
 /** Which pipeline these levers describe. There is no third answer: "no-search" went with the levers that
@@ -143,6 +155,13 @@ export const gridCalls = (i) => Math.ceil(variantCount(i.levers) / batchSize(i.p
 /** Searches: a knockout carries the whole batch in ONE; a clearance is one name per search. */
 export const runCount = (i) =>
   deriveMode(i.levers) === "knockout" ? 1 : Math.max(1, Number(i.names) || 0);
+
+/**
+ * WHAT THE ORDER COUNTS AGAINST AN ALLOWANCE: its searches, twice over when Urgent. Kept apart from
+ * `runCount` on purpose: `runCount` scales the WORK (`effortRaw` multiplies by it), and an Urgent search
+ * is the same work run faster, so folding Urgent into it would double the units and the bar.
+ */
+export const searchesCounted = (i) => runCount(i) * (leversOf(i.levers).urgent ? URGENT_SEARCHES : 1);
 
 /**
  * The weights. PLACEHOLDERS — the register share is the one that moved (2026-07-21): registers carry a
@@ -256,10 +275,15 @@ export const TURNAROUND_QUOTE = Object.freeze({
   // delivered when the ruling was made: 4-6 minutes, against 45 quoted. So 5-10 is closer to the measured
   // wall than 15 was, and a range that spans it says something a single figure cannot.
   knockout: Object.freeze({ lowHours: 5 / 60, highHours: 10 / 60 }),
+  // — URGENT, ONE RULED ROW PER PIPELINE (ruling 2026-11-25): 0.5 to 1 hour for a clearance, 3 to 6
+  // minutes for a Knockout. A row of its own, looked up like the two above: not a factor applied to them.
+  clearanceUrgent: Object.freeze({ lowHours: 0.5, highHours: 1 }),
+  knockoutUrgent: Object.freeze({ lowHours: 3 / 60, highHours: 6 / 60 }),
 });
 
 /** Which row of the table a job's levers select. The ONLY place that choice is made. */
-export const quoteBoundsFor = (l) => TURNAROUND_QUOTE[deriveMode(l) === "knockout" ? "knockout" : "clearance"];
+export const quoteBoundsFor = (l) =>
+  TURNAROUND_QUOTE[`${deriveMode(l) === "knockout" ? "knockout" : "clearance"}${leversOf(l).urgent ? "Urgent" : ""}`];
 
 /**
  * The bounds for THIS job. The ruled range, and NOTHING is done to it.
@@ -315,6 +339,9 @@ export function turnaround(i) {
     const lo = Math.round(lowHours * 60), hi = Math.round(highHours * 60);
     return lo === hi ? `~${hi} min` : `${lo}–${hi} min`;
   }
+  // A range that starts under an hour and ends at one or more says each bound in its own unit: the Urgent
+  // clearance row reads "30 min–1 hour", never "0.5–1 hours".
+  if (lowHours < 1) return `${Math.round(lowHours * 60)} min–${fmtHours(highHours)} ${highHours === 1 ? "hour" : "hours"}`;
   if (lowHours === highHours) return `~${fmtHours(highHours)} ${highHours === 1 ? "hour" : "hours"}`;
   return `${fmtHours(lowHours)}–${fmtHours(highHours)} hours`;
 }
@@ -331,7 +358,7 @@ export function turnaround(i) {
  * `components` is the search-policy block (registerProbe / jxLanes / commonLawGrid) — the engine's own
  * statement of what the run will do, not a second opinion about it.
  */
-export function leversFromResolved({ pipeline, components, caseLaw = false, territories = [] } = {}) {
+export function leversFromResolved({ pipeline, components, caseLaw = false, territories = [], urgent = false } = {}) {
   const c = components ?? {};
   const knockout = pipeline === "knockout";
   return {
@@ -340,6 +367,7 @@ export function leversFromResolved({ pipeline, components, caseLaw = false, terr
     nativeLanguage: Boolean(c.jxLanes),
     registerCounts: knockout && Boolean(c.registerProbe),
     territories: Array.isArray(territories) ? territories : [],
+    urgent: urgent === true,
   };
 }
 
@@ -356,10 +384,12 @@ export function quoteEffort(input) {
   return {
     unitsVersion: UNITS_VERSION,
     pipeline: deriveMode(i.levers),
+    urgent: i.levers.urgent,
     raw: Number(effortRaw(i).toFixed(4)),
     units: effortUnits(i),
     costBand: costBand(i),
-    searches: runCount(i),
+    // What the order counts against an allowance, Urgent included: the number admission charges.
+    searches: searchesCounted(i),
     checksPerName: checksPerName(i.platforms),
     gridCalls: deriveMode(i.levers) === "knockout" ? 0 : gridCalls(i),
     turnaroundHours: turnaroundHours(i),
