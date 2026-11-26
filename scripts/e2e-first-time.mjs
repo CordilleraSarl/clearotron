@@ -238,7 +238,7 @@ export const NOT_COUNTED_EVENTS = {
     "register-presence-skipped", "register-xcheck", "register-xcheck-decided", "run-integrity",
     "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean", "screen-gate-evidence",
     "seam-reapplied", "search-policy", "searched-jurisdictions", "senior-rights", "skip",
-    "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
+    "speed-rollup", "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
     "turnaround-reconciliation", "uncovered-market-rows", "unit-band-seeded-empty", "verdict", "verdict-conditions-followed", "verdict-conditions-recorded", "verdict-floors-pass", "verdict-frontmatter",
     "verdict-recomputed-steps-withdrawn", "whatif-settled-on-archive", "write-up-forms",
   ],
