@@ -127,7 +127,12 @@ const http = (url, token) => connect(new StreamableHTTPClientTransport(new URL(u
 const stdio = (env = {}) => connect(new StdioClientTransport({ command: process.execPath, args: [SERVER], env: { ...process.env, ...env }, stderr: "ignore" }));
 
 /** The calls each read tool is asked, per run where it takes one. */
-const RUNLESS = { server_info: [{}], list_runs: [{}, { state: "queued" }], list_profiles: [{}], search_runs: [{ query: "mark" }], list_outbox_events: [{}] };
+const ORDER = { markName: "ORDERED", forwarder: "requester", classes: [9], profileKey: "demo-brand-owner" };
+const RUNLESS = { server_info: [{}], list_runs: [{}, { state: "queued" }], list_profiles: [{}], search_runs: [{ query: "mark" }], list_outbox_events: [{}],
+  // The two pre-order tools: an order that would run, an Urgent one, a batch, one country, and one that cannot run as stated.
+  plan_run: [ORDER, { ...ORDER, urgent: true }, { ...ORDER, markName: undefined, marks: [{ name: "ORDERED" }, { name: "ORDERLY" }], product: "knockout-search" },
+    { ...ORDER, product: "full-country-search", jurisdictions: ["CH"] }, { ...ORDER, deliveryRoute: "portal" }],
+  describe_options: [{}, { profileKey: "demo-brand-owner" }] };
 const PER_RUN = {
   read_artifact: (runId) => [{ runId, name: "report" }, { runId, name: "status" }, { runId, name: "report", frontMatterOnly: true }],
   trace: (runId) => [{ runId, target: "synthesis" }, { runId, target: "report" }],
@@ -178,7 +183,7 @@ for (const demo of [false, true]) {
       }
       for (const name of ["list_runs", "get_run", "server_info", "decision_timeline", "get_provider_usage", "get_coverage", "search", "run_changes",
         "search_runs", "list_outbox_events", "get_telemetry", "read_artifact", "trace", "list_profiles", "get_delivery_packet",
-        "brief", "list_findings", "get_finding", "list_evidence", "list_searches", "get_search_coverage",
+        "brief", "list_findings", "get_finding", "list_evidence", "list_searches", "get_search_coverage", "plan_run", "describe_options",
         // An install serving its demo withholds the what-if tools (a-demo-names-no-tool-it-withholds.test.mjs).
         ...(demo ? [] : ["what_if_plan", "what_if_result"])])
         assert.ok(total.has(name), `${name} was never offered with a declared shape on any door`);
@@ -195,4 +200,15 @@ test("a closed shape refuses a field the code never builds; an open one passes a
   assert.equal(v(outputSchemaFor("server_info"))({ ...identity, extra: 1 }).valid, false, "a closed shape refuses an undeclared field");
   assert.equal(v(outputSchemaFor("trace"))({ runId: "r", target: "t", anythingTheLogHolds: { x: 1 } }).valid, true, "an open shape passes it");
   assert.equal(v(outputSchemaFor("trace"))({ target: "t" }).valid, false, "an open shape still requires its identifying keys");
+  // How soon is closed throughout: an option that does not say its count does not pass.
+  const plan = v(outputSchemaFor("plan_run"));
+  const howSoon = { chosen: "standard", urgentAvailable: true, standard: { turnaround: "t", turnaroundLowHours: 1.5, turnaroundHighHours: 2.5, searches: 1, withinAllowance: null }, urgent: null };
+  const answer = { ok: true, wouldRun: true, _note: "n", blockers: [], warnings: [], caveat: "c", effort: null, howSoon,
+    search: { name: null, product: null, pipeline: null, components: null, savedSearch: null, turnaround: null, maxNames: null, caseLaw: false, nativeLanguage: null, chosenBy: "x", registerReach: null },
+    subject: { marks: [], markCount: 0, classes: [], classesFrom: "x", goods: null },
+    scope: { jurisdictions: [], jurisdictionsFrom: "x", bindingLayers: [], platforms: [], platformsAdded: [], platformsFrom: "", gridCellsPerVariant: null },
+    account: { profileKey: null, name: null, projectKey: null, framework: "f", caps: null, usage: null, usageComplete: null, dailyRunsEffective: null, remainingToday: null, allowanceApplies: null, origins: null } };
+  assert.equal(plan(answer).valid, true);
+  const { searches: _s, ...uncounted } = howSoon.standard;
+  assert.equal(plan({ ...answer, howSoon: { ...howSoon, standard: uncounted } }).valid, false, "an option with no count is refused");
 });

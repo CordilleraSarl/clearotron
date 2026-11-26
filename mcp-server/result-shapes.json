@@ -2470,5 +2470,509 @@
         }
       }
     }
+  },
+  "plan_run": {
+    "all": {
+      "type": "object",
+      "required": [
+        "ok",
+        "wouldRun",
+        "_note",
+        "blockers",
+        "warnings",
+        "caveat",
+        "search",
+        "subject",
+        "scope",
+        "effort",
+        "howSoon",
+        "account"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "wouldRun": {
+          "type": "boolean"
+        },
+        "_note": {
+          "type": "string"
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "caveat": {
+          "type": "string"
+        },
+        "search": {
+          "type": "object",
+          "required": [
+            "name",
+            "product",
+            "pipeline",
+            "components",
+            "savedSearch",
+            "turnaround",
+            "maxNames",
+            "caseLaw",
+            "nativeLanguage",
+            "chosenBy",
+            "registerReach"
+          ],
+          "properties": {
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "product": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "pipeline": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "components": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "savedSearch": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "turnaround": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "maxNames": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "caseLaw": {
+              "type": "boolean"
+            },
+            "nativeLanguage": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "chosenBy": {
+              "type": "string"
+            },
+            "registerReach": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
+          }
+        },
+        "subject": {
+          "type": "object",
+          "required": [
+            "marks",
+            "markCount",
+            "classes",
+            "classesFrom",
+            "goods"
+          ],
+          "properties": {
+            "marks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "markCount": {
+              "type": "number"
+            },
+            "classes": {
+              "type": "array"
+            },
+            "classesFrom": {
+              "type": "string"
+            },
+            "goods": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "scope": {
+          "type": "object",
+          "required": [
+            "jurisdictions",
+            "jurisdictionsFrom",
+            "bindingLayers",
+            "platforms",
+            "platformsAdded",
+            "platformsFrom",
+            "gridCellsPerVariant"
+          ],
+          "properties": {
+            "jurisdictions": {
+              "type": "array"
+            },
+            "jurisdictionsFrom": {
+              "type": "string"
+            },
+            "bindingLayers": {
+              "type": "array"
+            },
+            "platforms": {
+              "type": "array"
+            },
+            "platformsAdded": {
+              "type": "array"
+            },
+            "platformsFrom": {
+              "type": "string"
+            },
+            "gridCellsPerVariant": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          }
+        },
+        "effort": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "howSoon": {
+          "type": "object",
+          "required": [
+            "chosen",
+            "urgentAvailable",
+            "standard",
+            "urgent"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "chosen": {
+              "enum": [
+                "standard",
+                "urgent"
+              ]
+            },
+            "urgentAvailable": {
+              "type": "boolean"
+            },
+            "urgentNote": {
+              "type": "string"
+            },
+            "standard": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "turnaround",
+                "turnaroundLowHours",
+                "turnaroundHighHours",
+                "searches",
+                "withinAllowance"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "turnaround": {
+                  "type": "string"
+                },
+                "turnaroundLowHours": {
+                  "type": "number"
+                },
+                "turnaroundHighHours": {
+                  "type": "number"
+                },
+                "searches": {
+                  "type": "number"
+                },
+                "withinAllowance": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "urgent": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "turnaround",
+                "turnaroundLowHours",
+                "turnaroundHighHours",
+                "searches",
+                "withinAllowance"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "turnaround": {
+                  "type": "string"
+                },
+                "turnaroundLowHours": {
+                  "type": "number"
+                },
+                "turnaroundHighHours": {
+                  "type": "number"
+                },
+                "searches": {
+                  "type": "number"
+                },
+                "withinAllowance": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "account": {
+          "type": "object",
+          "required": [
+            "profileKey",
+            "name",
+            "projectKey",
+            "framework",
+            "caps",
+            "usage",
+            "usageComplete",
+            "dailyRunsEffective",
+            "remainingToday",
+            "allowanceApplies",
+            "origins"
+          ],
+          "properties": {
+            "profileKey": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "projectKey": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "framework": {
+              "type": "string"
+            },
+            "caps": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "usage": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "usageComplete": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "dailyRunsEffective": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "remainingToday": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "allowanceApplies": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "origins": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "describe_options": {
+    "all": {
+      "type": "object",
+      "required": [
+        "_note",
+        "products",
+        "scopeRules",
+        "urgent",
+        "account"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "_note": {
+          "type": "string"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "name",
+              "available"
+            ],
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "available": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "registerTerritories": {
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "scopeRules": {
+          "type": "object"
+        },
+        "urgent": {
+          "type": "object",
+          "required": [
+            "available"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "available": {
+              "type": "boolean"
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "account": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "profileKey"
+          ],
+          "properties": {
+            "profileKey": {
+              "type": "string"
+            },
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "projects": {
+              "type": "array"
+            },
+            "defaults": {
+              "type": "object"
+            },
+            "savedSearches": {
+              "type": "array"
+            },
+            "savedSearchesNote": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "allowance": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
+          }
+        },
+        "accountsGranted": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "profileKey",
+              "name"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "profileKey": {
+                "type": "string"
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "accountNote": {
+          "type": "string"
+        }
+      }
+    }
   }
 }
