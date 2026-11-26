@@ -15,12 +15,7 @@ import { fixtureRecordsDir } from "../../register-fixture-marker.mjs";
 import { ledgerPath, runRecordLogPath } from "../../../providers/_shared/ledger-path.mjs";
 import { CORRECTION_POSITIONS_ENV } from "./correction-positions.mjs";   // the positions a correction hands its save
 import { REGISTER_TOOLS } from "../../../providers/_shared/register-tools.mjs";
-import { REGISTER_GRANT as CORSEARCH_GRANT } from "../../../providers/corsearch/src/register-grant.mjs";
-import { REGISTER_GRANT as CLARIVATE_GRANT } from "../../../providers/clarivate/src/register-grant.mjs";
-import { REGISTER_GRANT as SIGNA_GRANT } from "../../../providers/signa/src/register-grant.mjs";
-import { REGISTER_GRANT as EUIPO_GRANT } from "../../../providers/euipo/src/register-grant.mjs";
-import { REGISTER_GRANT as USPTOLOCAL_GRANT } from "../../../providers/uspto-local/src/register-grant.mjs";
-import { REGISTER_GRANT as FREETIER_GRANT } from "../../../providers/free-tier/src/register-grant.mjs";
+import { byRegister } from "../../../providers/registers.mjs";   // every register provider, named once
 import { STAGE_DECLARATIONS, declaredStageOf } from "../../stage-declarations.mjs";   // each stage's grant, by name
 
 const MCP_DIR = dirname(fileURLToPath(import.meta.url));
@@ -38,15 +33,9 @@ const BRIDGE = process.env.CLEAROTRON_OAUTH_BRIDGE || join(MCP_DIR, "..", "..", 
 // requires a provider by design. Reading this table directly lets it take the UNION for "what
 // names exist" and the INTERSECTION for "what every provider grants", without re-introducing the
 // default deleted.
-// Each provider's grant, with the reason for every tool it withholds, lives in its own folder (providers/<name>/src/register-grant.mjs).
-export const REGISTER_SERVERS = {
-  corsearch: CORSEARCH_GRANT,
-  clarivate: CLARIVATE_GRANT,
-  signa: SIGNA_GRANT,
-  euipo: EUIPO_GRANT,
-  "uspto-local": USPTOLOCAL_GRANT,
-  "free-tier": FREETIER_GRANT,
-};
+// Each provider's grant, with the reason for every tool it withholds, lives in its own folder (providers/<name>/src/register-grant.mjs),
+// and the providers are listed once, in providers/registers.mjs.
+export const REGISTER_SERVERS = byRegister("grant");
 
 // ── RECORDING: THE ONE REGISTRY THE GRANT DERIVES FROM ─────────────────────────────────────────────
 //
