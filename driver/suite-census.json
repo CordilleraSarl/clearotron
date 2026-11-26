@@ -2475,6 +2475,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-research-record-is-read-one-way-by-every-reader.test.mjs": {
+          "tests": 5,
+          "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
         "a-resume-settles-the-product-its-first-pass-did-not.test.mjs": {
           "tests": 6,
           "asserts": 29,
