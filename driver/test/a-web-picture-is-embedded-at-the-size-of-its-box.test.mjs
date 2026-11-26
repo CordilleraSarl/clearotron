@@ -147,3 +147,29 @@ test("a cited front page keeps its picture as use evidence, and a comparison unf
   assert.equal(slow.rows[0].state, "fetched");
   assert.equal(slow.rows[0].comparison, "unfinished", "a picture whose comparison had not finished at the limit was kept");
 });
+
+test("on a Knockout, a picture repeated on different pages of one site is its generic preview, except on a cited front page; one page cited twice is not", async () => {
+  const generic = pngOf(20, 10), own = pngOf(10, 20), other = pngOf(16, 16);
+  const pictures = { "https://harrowmere.example/a.png": generic, "https://harrowmere.example/b.png": generic, "https://harrowmere.example/front.png": generic,
+    "https://harrowmere.example/c.png": own, "https://istravel.example/a.png": generic, "https://jorvane.example/x.png": other, "https://jorvane.example/y.png": other };
+  const pages = ["https://harrowmere.example/a", "https://harrowmere.example/b", "https://harrowmere.example/", "https://harrowmere.example/c",
+    "https://istravel.example/a", "https://jorvane.example/x", "https://jorvane.example/y", "https://harrowmere.example/c"];
+  const { rows } = await fetchPagePictures(pages, { seconds: 5, fetcher: fakeWeb(pictures), compareFrontPages: false, repeatedOnSite: true, shrink: false });
+  const dropped = Object.fromEntries(rows.map((r) => [r.page, Boolean(r.general)]));
+  assert.equal(rows.length, 7, "a page cited twice was fetched twice, or a front page was fetched to compare");
+  assert.deepEqual(dropped, {
+    "https://harrowmere.example/a": true, "https://harrowmere.example/b": true, "https://harrowmere.example/": false, "https://harrowmere.example/c": false,
+    "https://istravel.example/a": false, "https://jorvane.example/x": true, "https://jorvane.example/y": true,
+  }, "the generic preview rule dropped the wrong pages");
+});
+
+test("a picture cut off at the download cap is recorded as too large and is not decoded", async () => {
+  const cut = async (url) => {
+    const u = new URL(url);
+    if (u.pathname.endsWith(".png")) return { ok: true, status: 200, url: u.href, contentType: "image/png", bytes: pngOf(40, 30).subarray(0, 60), truncated: true };
+    return { ok: true, status: 200, url: u.href, contentType: "text/html", bytes: Buffer.from('<meta property="og:image" content="/big.png">') };
+  };
+  const { rows } = await fetchPagePictures(["https://kellavore.example/poster"], { seconds: 5, fetcher: cut, compareFrontPages: false });
+  assert.equal(rows[0].state, "too-large");
+  assert.equal(rows[0].data, null, "a cut-off picture kept its bytes");
+});
