@@ -807,7 +807,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
           a tidier shape that hides it. The way back from a one-way hide lives on the same page. */}
       {filter === 'retired' ? (
         <div className="table-wrap" style={{ marginTop: 6 }}>
-          <table className="data">
+          <table className="data clr-retired-table">
             <thead>
               <tr>
                 <th>Name and searches</th>
@@ -823,17 +823,17 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
               ) : null}
               {retiredShown.map((run) => (
                 <tr key={run.runId} className="row">
-                  <td>
+                  <td className="clr-td-name">
                     <b data-anon="mark" style={{ color: 'var(--text-strong)' }}>{displayName(run)}</b>
                     <div className="sub" style={{ color: 'var(--text-muted)', fontSize: 12.5 }}>
                       {readLabel(run)}
                       {groupable && !grouped ? <> · <span data-anon="mark">{ctx.ownerName(runKey(run))}</span></> : null}
                     </div>
                   </td>
-                  <td>
+                  <td className="clr-td-status">
                     <StatusCell state={run.state} step={null} reason={run.state === 'failed' ? run.reason : null} failedStage={run.state === 'failed' ? run.failedStage : null} />
                   </td>
-                  <td style={{ textAlign: 'right' }}>
+                  <td className="col-actions" style={{ textAlign: 'right' }}>
                     <button type="button" className="btn-ghost clr-open" onClick={() => void restoreRun(run)}>Restore</button>
                   </td>
                 </tr>
