@@ -393,15 +393,21 @@ async function intakeNotify(agentId, base, job, v, reasonKind = "other") {
   const what = v?.classify === "clarify"
     ? `needs clarification before it can run: ${v.errors.join("; ")}`
     : `was rejected at intake: ${(v?.errors ?? ["unparseable job file"]).join("; ")}`;
-  const text = `⚠️ Clearotron request "${mark}" ${what}. Nothing has been searched or delivered. ` +
-    `Job parked as ${base}.failed in the ${agentId} queue.`;
+  // A CLIENT'S ORDER IS TOLD IN THE CLIENT'S WORDS, as preRunFailNotify tells it (design, 2026-11-27). The check's own
+  // words name the installation's setup and the queue, which are staff's: the client's notice carries the shipped
+  // not-started sentence, `reasonKind` says which check refused it, and `errors` is empty. The words stay in `.reason`.
+  const client = job?.clientPrincipal === true;
+  const text = client
+    ? clientNotStartedText(job, mark)
+    : `⚠️ Clearotron request "${mark}" ${what}. Nothing has been searched or delivered. ` +
+      `Job parked as ${base}.failed in the ${agentId} queue.`;
   const p = writeOutboxPacket(`intake-${base}.failed`, {
     kind: "intake-rejected", classify: v?.classify ?? "reject", reasonKind, base, agent: agentId,
     ...noticeAccount(job),
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
-    errors: v?.errors ?? ["unparseable job file"], text,
+    errors: client ? [] : (v?.errors ?? ["unparseable job file"]), text,
   });
   return p ? `packet ${p}` : "packet-failed";
 }

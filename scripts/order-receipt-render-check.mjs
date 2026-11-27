@@ -13,8 +13,8 @@
 //   refused       "Order did not start", the reference on its own line, and each kind's sentence
 //   unchecked     a look that failed after one that answered: the last state stays, with the retry line
 //   missing       a reference this reader may not see reads as an address nobody serves
-// And Clearances: an order being checked and one refused before any run are rows of their own, and the refused one's row
-// opens its receipt.
+// And Clearances: an order being checked and one refused before any run are rows of their own, placed among the names by
+// their time, and the refused one's row opens its receipt.
 // With --shots, each state is also captured at 1280 px in both themes, for a reader to compare with the design.
 //
 // MUST NOT run as a user with a virtual-memory ulimit (`ulimit -v`) — Chrome dumps core under one.
@@ -44,6 +44,12 @@ const ORDERS = [
   { reference: REF, state: 'refused', reasonKind: 'run-cap', account: 'coastline', markName: 'PREVENA', updatedAt: '2026-11-27T09:14:00Z' },
   { reference: 'ORDER-8@0123456789ab', state: 'checking', reasonKind: null, account: 'coastline', markName: 'TALLOWMERE', updatedAt: '2026-11-27T09:20:00Z' },
 ]
+// A report delivered between the two orders' times: the list puts it between them.
+const BETWEEN = { account: 'coastline', kind: 'clearance', state: 'delivered', band: 'Manageable', tone: 'low',
+  bands: [{ label: 'Severe', tone: 'severe' }, { label: 'Manageable', tone: 'low' }], marks: [], reportSchema: 2, held: false, report: 'report.html',
+  step: null, stepN: null, stepTotal: null, reason: null, failedStage: null, pausedKind: null, resetsAt: null, startedAt: null, queuePos: null,
+  projectKey: null, projectName: null, markName: 'HARBOURLIGHT', title: 'HARBOURLIGHT', date: '2026-11-27', issuedAt: '2026-11-27T09:17:00Z',
+  product: 'global-preliminary-search', productName: null, runId: 'between-1' }
 const receipt = (b) => ({ status: 200, body: { reference: REF, terminal: false, runId: null, reason: null, reasonKind: null, updatedAt: '2026-11-27T09:14:00Z', ...b } })
 
 const server = createServer((req, res) => {
@@ -51,7 +57,7 @@ const server = createServer((req, res) => {
   const path = url.pathname
   const json = (status, body) => { res.writeHead(status, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)) }
   if (path === '/portal/api/me') return json(200, ME)
-  if (path === '/portal/api/runs') return json(200, { account: '*', runs: [], orders: ORDERS })
+  if (path === '/portal/api/runs') return json(200, { account: '*', runs: [BETWEEN], orders: ORDERS })
   if (path.startsWith('/portal/api/orders/')) {
     const a = answers[Math.min(looks, answers.length - 1)]
     looks++
@@ -150,6 +156,7 @@ for (const [kind, sentence] of Object.entries(KINDS)) {
 t = await open([receipt({ state: 'waiting' }), { status: 503, body: { error: 'could_not_look' } }], /couldn’t check/, 12000)
 expect('unchecked', t, /Clearance queued/, /We couldn’t check this order just now\. We’ll try again\./)
 never('unchecked', t, /did not start|That page does not exist/)
+never('unchecked', t, /\b\d{1,2}:\d{2}\b/)   // no bare clock: a time with nothing saying what it is the time of
 await capture('unchecked')
 
 t = await open([{ status: 404, body: { error: 'not_found' } }], /That page does not exist/)
@@ -164,7 +171,10 @@ await cdp('Page.navigate', { url: `${origin}/portal/clearances` })
   const t0 = Date.now()
   while (Date.now() - t0 < 8000 && !/TALLOWMERE/.test(await text())) await sleep(200)
   t = await text()
-  expect('clearances', t, /PREVENA/, /TALLOWMERE/, /Order did not start/, /Waiting to start/, /2 names/)
+  expect('clearances', t, /PREVENA/, /TALLOWMERE/, /HARBOURLIGHT/, /Order did not start/, /Waiting to start/, /3 names/)
+  // Newest first, each by its own time: checked at 09:20, delivered at 09:17, refused at 09:14.
+  const at = ['TALLOWMERE', 'HARBOURLIGHT', 'PREVENA'].map((n) => t.indexOf(n))
+  if (!(at[0] < at[1] && at[1] < at[2])) failures.push(`clearances: rows out of time order (${at.join(', ')})`)
   await capture('clearances')
   await cdp('Runtime.evaluate', { expression: `[...document.querySelectorAll('tr.read-row')].find((r) => /PREVENA/.test(r.innerText))?.click(); 'ok'` })
   const t1 = Date.now()

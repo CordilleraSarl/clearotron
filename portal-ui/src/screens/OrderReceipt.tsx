@@ -20,13 +20,6 @@ import { PageHeader } from '../components/PageHeader.tsx'
 import type { ShellContext } from '../shell/AppShell.tsx'
 import { seesEverything } from '../shell/permissions.ts'
 
-/** "14:20" from a stamp, 24-hour, as everywhere in the portal; null when the stamp is unreadable. */
-function clockOf(iso: string | null): string | null {
-  if (!iso) return null
-  const t = new Date(iso)
-  return Number.isNaN(t.getTime()) ? null : t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })
-}
-
 /** The sentence a refusal of each kind gets. `other` has none of its own: the help line is the whole answer. */
 function refusalSentence(kind: RefusalKind): string | null {
   switch (kind) {
@@ -42,13 +35,9 @@ function refusalSentence(kind: RefusalKind): string | null {
 /** Whether a refusal of this kind also tells the person who can help: a diagnosis that is staff's, or none at all. */
 const needsHelpLine = (kind: RefusalKind): boolean => kind === 'setup' || kind === 'other'
 
-/**
- * Follow one order until it has a run or has ended, looking again while it waits and after any look that fails.
- * Returns the view and the time the server last confirmed it.
- */
-function useReceipt(reference: string, account: string): { view: ReceiptView; confirmedAt: string | null } {
+/** Follow one order until it has a run or has ended, looking again while it waits and after any look that fails. */
+function useReceipt(reference: string, account: string): ReceiptView {
   const [view, setView] = useState<ReceiptView>(FIRST_VIEW)
-  const [confirmedAt, setConfirmedAt] = useState<string | null>(null)
   const viewRef = useRef<ReceiptView>(FIRST_VIEW)
   useEffect(() => {
     let live = true
@@ -59,13 +48,12 @@ function useReceipt(reference: string, account: string): { view: ReceiptView; co
       const next = nextView(viewRef.current, r)
       viewRef.current = next
       setView(next)
-      if (!next.unchecked) setConfirmedAt(new Date().toISOString())
       if (keepsLooking(next)) timer = setTimeout(() => { void look() }, lookAfterMs(next))
     }
     void look()
     return () => { live = false; if (timer) clearTimeout(timer) }
   }, [reference, account])
-  return { view, confirmedAt }
+  return view
 }
 
 /**
@@ -83,14 +71,14 @@ export function OrderReceiptPanel({ reference, account, name, duration, go, onAn
   /** Start another clearance, offered only where the panel opens from Start. */
   readonly onAnother?: () => void
 }) {
-  const { view, confirmedAt } = useReceipt(reference, account)
+  const view = useReceipt(reference, account)
 
   // ONLY PROMISE A RETRY WHILE THE SCREEN RETRIES. Every unchecked view keeps looking (keepsLooking), so the line and
-  // the next look always arrive together.
+  // the next look always arrive together. The view beside it is the last one a look confirmed. No time is shown: a
+  // bare clock says nothing of what it is the time of (design, 2026-11-27).
   const unchecked = view.unchecked ? (
     <p style={{ margin: '10px 0 0', color: 'var(--text-muted)' }} role="status">
       We couldn’t check this order just now. We’ll try again.
-      {clockOf(confirmedAt) ? <> <span>{clockOf(confirmedAt)}</span></> : null}
     </p>
   ) : null
 

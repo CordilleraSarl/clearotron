@@ -80,8 +80,10 @@ test('the address that reopens a receipt reads back to the same reference and co
 })
 
 test('the runs list carries only the orders a row is drawn for: being checked, or refused before any run', () => {
-  assert.deepEqual(decodePreRunOrder({ reference: 'R@1', state: 'refused', reasonKind: 'policy', account: 'generic', organisation: 'orgx', markName: 'M', updatedAt: 'x' }),
-    { reference: 'R@1', state: 'refused', reasonKind: 'policy', account: 'generic', organisation: 'orgx', markName: 'M', updatedAt: 'x' })
+  assert.deepEqual(decodePreRunOrder({ reference: 'R@1', state: 'refused', reasonKind: 'policy', account: 'generic', organisation: 'orgx', markName: 'M',
+    marks: ['M', 'N', 7], product: 'global-preliminary-search', updatedAt: 'x' }),
+    { reference: 'R@1', state: 'refused', reasonKind: 'policy', account: 'generic', organisation: 'orgx', markName: 'M', marks: ['M', 'N'],
+      product: 'global-preliminary-search', updatedAt: 'x' })
   assert.equal(decodePreRunOrder({ reference: 'R@1', state: 'checking', reasonKind: 'policy', account: 'a' })?.reasonKind, null, 'a kind only on a refusal')
   assert.equal(decodePreRunOrder({ reference: 'R@1', state: 'refused', account: 'a' })?.reasonKind, 'other')
   for (const odd of [null, {}, { reference: 'R@1', state: 'waiting', account: 'a' }, { reference: 'R@1', state: 'refused' }])

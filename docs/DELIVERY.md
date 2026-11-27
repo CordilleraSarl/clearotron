@@ -106,11 +106,16 @@ field, never "this was not a refusal".
 
 ### `intake-rejected` — `intake-<base>.failed.pending`
 
-`{ ts, kind: "intake-rejected", classify: "clarify"|"reject", base, agent, account, organisation,
+`{ ts, kind: "intake-rejected", classify: "clarify"|"reject", reasonKind, base, agent, account, organisation,
 jobId, msgId, forwarder, forwarderEmail, markName, errors[], text }` — `classify: "clarify"` means the fix
 is a question back to the requester (see [INTAKE.md](INTAKE.md)); `"reject"` means the job was
-malformed. `text` is ready to send ("… Nothing has been searched or delivered. Job parked as
+malformed. `reasonKind` names the check that refused it: `run-cap`, `details`, `policy`, `setup`,
+`duplicate` or `other`. `text` is ready to send ("… Nothing has been searched or delivered. Job parked as
 <base>.failed …").
+
+An order a client placed is told in the client's words instead: `text` is the shipped not-started sentence
+that `pre-run-failed` also uses, and `errors` is empty. The check's own words stay in the queue's
+`<base>.failed.reason`, which an operator reads.
 
 ### `duplicate-skipped` — `intake-<base>.duplicate.pending`
 

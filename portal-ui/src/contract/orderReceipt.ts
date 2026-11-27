@@ -129,6 +129,10 @@ export type PreRunOrder = {
   readonly account: string
   readonly organisation: string | null
   readonly markName: string | null
+  /** Every name the order carries, for the name search: a batch is found by any of them. */
+  readonly marks: readonly string[]
+  /** The search ordered, for the level filter. */
+  readonly product: string | null
   readonly updatedAt: string | null
 }
 
@@ -142,5 +146,7 @@ export function decodePreRunOrder(v: unknown): PreRunOrder | null {
   if (!reference || !account || !state) return null
   const kind = KINDS.find((k) => k === b['reasonKind']) ?? (state === 'refused' ? 'other' : null)
   return { reference, state, reasonKind: state === 'refused' ? kind : null, account, organisation: str(b['organisation']),
-    markName: str(b['markName']), updatedAt: str(b['updatedAt']) }
+    markName: str(b['markName']),
+    marks: Array.isArray(b['marks']) ? b['marks'].filter((m): m is string => typeof m === 'string' && m.length > 0) : [],
+    product: str(b['product']), updatedAt: str(b['updatedAt']) }
 }
