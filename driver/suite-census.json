@@ -8290,8 +8290,8 @@
           "todos": 0
         },
         "the-install-can-keep-itself-current.test.mjs": {
-          "tests": 8,
-          "asserts": 35,
+          "tests": 9,
+          "asserts": 41,
           "skips": 1,
           "todos": 0
         },
