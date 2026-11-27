@@ -106,12 +106,22 @@ export function clientNotStartedText(job, mark) {
   return userFailureNotice({ product: job?.product ?? null, mark, refused: true }).text;
 }
 
+// The notice for an order the dedup gate parked: the approved words and this order's reference, nothing about the match.
+export function duplicateNoticeText(base) {
+  return `This order was flagged as a duplicate. Order reference: ${base}`;
+}
+
 // ── A PROVIDER'S USAGE CAP, IN THE OWNER'S PRE-COMMITTED WORDS ───────────────────────────────────────────
 //
 // Only a cap wait on record produces it: capWait is null when the history carries no cap park (capWaitFrom), and a
 // packet written before the field existed carries none, so neither can claim a cap that never was.
 export function capSentence(capWait, terminalKind) {
-  if (!capWait || terminalKind !== "weather-exhausted" || !Number.isFinite(capWait.waitedMin) || !Number.isFinite(capWait.parks)) return null;
+  return terminalKind === "weather-exhausted" ? capWords(capWait) : null;
+}
+// The words alone, for a cap wait already established as the reason the run stopped: a packet's `capWait` field is
+// written only then (buildFailurePacket), so a door composing from that field needs no kind to gate it again.
+function capWords(capWait) {
+  if (!capWait || !Number.isFinite(capWait.waitedMin) || !Number.isFinite(capWait.parks)) return null;
   return `A provider's usage cap was still in force after ${humanWait(capWait.waitedMin)} of waiting across ${capWait.parks} attempt${capWait.parks === 1 ? "" : "s"} — a subscription outcome, not a finding about the run or the mark. Nothing in the run itself failed a check.${capWait.statedResets ? " The provider stated its own reset time and the run waited for it." : ""} Re-trigger once the cap has reset.`;
 }
 
@@ -121,12 +131,12 @@ export function capSentence(capWait, terminalKind) {
 // in the email and the messaging line: the stopped or not-started sentence the owner's failed-run ruling approved, then
 // one recovery action. That action is the administrator sentence, or, when the run waited out a provider's usage cap
 // and stopped for it, the owner's cap sentence, which ends in its own. PURE: every door composes it from fields.
-export function userFailureNotice({ product = null, mark, refused = false, capWait = null, terminalKind = null }) {
+export function userFailureNotice({ product = null, mark, refused = false, cap = null }) {
   const ordered = reportIdentityFor(product).identity;
   const orderedIs = ordered ? `The ${ordered}` : "The search";
   const orderedFor = ordered ? `${ordered} — ${mark}` : mark;
   const what = refused ? "was not started, and nothing was delivered" : "stopped before it finished, and nothing was delivered";
-  const action = (refused ? null : capSentence(capWait, terminalKind)) ?? CLIENT_ACTION;
+  const action = (refused ? null : capWords(cap)) ?? CLIENT_ACTION;
   return {
     subject: `${orderedFor} — search ${refused ? "not started" : "stopped"}, nothing delivered`,
     emailBodyHtml: `<p>${escapeText(orderedIs)} for <b>${escapeText(mark)}</b> ${what}.</p><p>${escapeText(action)}</p>`,
@@ -134,18 +144,22 @@ export function userFailureNotice({ product = null, mark, refused = false, capWa
   };
 }
 
-// What a door may hand on from a failure packet: the routing a courier sends by, and the notice composed again from the
-// packet's fields. Never the stored text, so a packet written by an earlier version, whose email quoted the stage and
-// the reason, is told in the same words as a new one; and never a field a door does not name here.
+// What may leave the engine from a failure packet: the routing a courier sends by, what the notice is composed from, and
+// the notice composed again from those fields. Never the stored text, so a packet written by an earlier version, whose
+// email quoted the stage and the reason, is told in the same words as a new one; and never a field not named here. The
+// outbox file is written in this shape, and every door hands a packet on in it, so composing it twice gives it unchanged.
+// `capWait` is the cap wait the run stopped for, and only that: buildFailurePacket writes the field only when the cap is
+// on record and the run ended on it, and a packet written before the field existed carries none.
 const PACKET_ROUTING = ["kind", "file", "runId", "agent", "failed", "refused", "forwarder", "forwarderEmail", "msgId",
   "conversationId", "whatsappTo", "whatsappChannel", "whatsappCcOperator", "markName", "failureId"];
 export function userFailurePacket(p) {
   if (!p || typeof p !== "object") return p;
   const out = {};
   for (const k of PACKET_ROUTING) if (k in p) out[k] = p[k];
-  const n = userFailureNotice({ product: p.product ?? null, mark: p.noticeMark ?? p.markName ?? "the matter",
-    refused: p.refused === true, capWait: p.capWait ?? null, terminalKind: p.terminalKind ?? null });
-  return { ...out, subject: n.subject, emailBodyHtml: n.emailBodyHtml, whatsappText: n.text, text: n.text };
+  const product = p.product ?? null, noticeMark = p.noticeMark ?? p.markName ?? "the matter";
+  const cap = capWords(p.capWait) ? p.capWait : null;
+  const n = userFailureNotice({ product, mark: noticeMark, refused: p.refused === true, cap });
+  return { ...out, product, noticeMark, capWait: cap, subject: n.subject, emailBodyHtml: n.emailBodyHtml, whatsappText: n.text, text: n.text };
 }
 
 // (enforcement check E11 in the family) — `reasonDetail` and `reasonQuantity` are PACKET FIELDS.
@@ -257,7 +271,8 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
   // the messaging line are the notice a person reads, and they carry the same sentences for every run: never a stage,
   // a kind, a path, an exception or the reason as the driver reported it. Those stay in `diagnostic`, which is the
   // run's own record in `_driver/failure.json`; every door that hands a packet on recomposes it (userFailurePacket).
-  const notice = userFailureNotice({ product: job.product ?? null, mark, refused, capWait, terminalKind });
+  const cap = capLine ? capWait : null;
+  const notice = userFailureNotice({ product: job.product ?? null, mark, refused, cap });
   return {
     // `failed: true` and `kind: "run-failed"` (added by both callers) are UNCHANGED on a refusal, and
     // deliberately: they are the packet's ROUTING — "this run delivered nothing, send the no-delivery
@@ -277,7 +292,7 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
     whatsappText: notice.text,
     // What a door needs to compose the notice again, from fields rather than stored text: what was ordered, the name
     // or names it was for, and the cap wait that alone may produce the cap sentence.
-    product: job.product ?? null, noticeMark: mark, capWait: capLine ? capWait : null,
+    product: job.product ?? null, noticeMark: mark, capWait: cap,
     // THE RUN'S OWN RECORD of how it stopped, kept for whoever diagnoses it in the run directory: the stage, the kind's
     // sentence, the reason as the driver reported it, the payload and the repairs already attempted. No door hands it on.
     diagnostic: {

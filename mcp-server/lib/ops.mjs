@@ -26,6 +26,7 @@ import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one m
 import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver/engine/child-record.mjs";   //
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
 import { userFailurePacket } from "../../driver/run-outcome.mjs";   // a failure packet leaves only as its notice and routing
+import { userOutboxPacket } from "../../driver/outbox-notices.mjs";   // so does every outbox packet
 import { stopReason } from "../../shared/stop-reason.mjs";   //
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { driverDir, paths, readJson } from "../../driver/run-record.mjs";   // — one definition of where `_driver/` is
@@ -611,10 +612,10 @@ export function listOutboxEvents() {
     try { return { file, ...JSON.parse(raw) }; }
     catch { return { file, kind: "delivered", runId: file.replace(/\.pending$/, ""), agent: raw.trim() || null }; }
   }).filter(Boolean)
-    // A stopped run's packet is handed on as the notice a person reads and the routing a courier sends by, composed
-    // again from its fields, whoever reads the outbox and whichever version wrote it (design, 2026-11-27). Its stage,
-    // reason and repairs stay in the file and in the run's own record.
-    .map((ev) => (ev.kind === "run-failed" ? userFailurePacket(ev) : withoutSetupHint(ev)));
+    // Every packet is handed on as the notice a person reads and the routing a courier sends by, whoever reads the
+    // outbox and whichever version wrote the file (design, 2026-11-27): the shape it is written in (outbox-notices.mjs),
+    // so a file an earlier version wrote, and the worker has not yet rewritten, is told in the same words as a new one.
+    .map(userOutboxPacket);
   return { ok: true, count: events.length, events };
 }
 

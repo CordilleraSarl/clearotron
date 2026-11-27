@@ -37,6 +37,11 @@ backstop (the markers are edge-triggers, **not** the source of truth — see Wri
 | **late-bind-ack** | `<runId>.bindack.pending` | JSON packet | `customer-late-bind-ack` event in `_driver/run.jsonl` |
 | **engine-check-failed** | `engine-check-<engine>.failed.pending` | JSON packet for the operator: no run, no requester | `<CLEAROTRON_WORK_DIR>/engine-check/<engine>.check.json` |
 
+An outbox packet holds the notice a person reads and the routing it is sent by, and nothing else. The stage, the reason
+as the engine reported it and the check's own words stay in the record in the last column. A packet an earlier version
+wrote is rewritten in this shape, under its own name, when the worker starts and before it delivers anything: its
+routing and its failure's id are kept, so it is neither lost nor sent twice.
+
 `runId` is `<slug>-<date>-<codename>` — the SAME id `status.json`, the pool and every status surface
 carry. **There is one canonical form, and every minting site writes it.** Packets and outbox markers
 were once minted dateless as `<slug>-<codename>` while the outbox rescan re-dropped markers under the
@@ -55,8 +60,8 @@ both forms as defence.
 | `msgId` | string | thread with `In-Reply-To:` on the email |
 | `subject` | string | on a clearance, `<the product's own name> — <mark>` (`deliverySubject`, e.g. `Global preliminary search — NOVAPULSE`; the mark falls back to `ref`, then `matter`). On a knockout, `Knockout trademark review — <ref> (N marks)` |
 | `emailBodyHtml` | string | the FULL email body, one self-contained inline-HTML fragment — send **verbatim**, do not re-encode; report + audit links are already inside |
-| `whatsappTo` | string \| null | the chat recipient: **the person who requested the run**, when a number is held for them. `null` when none is — see `whatsappToReason` |
-| `whatsappToReason` | string \| null | why `whatsappTo` is null. Present only when it is. The packet states the gap rather than quietly routing the notice somewhere else |
+| `whatsappTo` | string \| null | the chat recipient: **the person who requested the run**, when a number is held for them. `null` when none is |
+| `whatsappToReason` | string \| null | why `whatsappTo` is null, in the run's own `delivery.json` only. Present only when it is. It names the setting that holds chat numbers, so no outbox packet and no MCP door carries it; for a notice filed before a run, the worker's log does |
 | `whatsappCcOperator` | string \| null | the operator's own copy of the same notice, from the agent roster. `null` when the deployment has switched it off. Independent of `whatsappTo`: either, both or neither may be present |
 | `whatsappText` | string | ready-to-send completion line (includes every report URL) |
 | `url` | string \| null | the run's published report URL — **null for a multi-name knockout**, which has no single report. See below |
@@ -91,20 +96,21 @@ layer sends.
 
 ### `run-failed` — `_driver/failure.json` + `<runId>.failed.pending`
 
-`list_outbox_events` and `get_delivery_packet` hand it on as `{ kind: "run-failed", file, runId, agent, failed,
-refused, forwarder, forwarderEmail, msgId, conversationId, whatsappTo, whatsappChannel, whatsappCcOperator, markName,
-failureId, subject, emailBodyHtml, whatsappText, text }`. `text` and `whatsappText` are the same ready-to-send notice,
+The outbox file holds, and `list_outbox_events` and `get_delivery_packet` hand on, `{ kind: "run-failed", file, runId,
+agent, failed, refused, forwarder, forwarderEmail, msgId, conversationId, whatsappTo, whatsappChannel,
+whatsappCcOperator, markName, failureId, product, noticeMark, capWait, subject, emailBodyHtml, whatsappText, text }`
+(`file` on the MCP answer only, `ts` in the file only). `product`, `noticeMark` and `capWait` are what the notice is
+composed from: what was ordered, the name or names it was for, and the cap wait the run stopped for, or null. `text` and `whatsappText` are the same ready-to-send notice,
 and `emailBodyHtml` carries it as HTML: "The <what was ordered> for <mark> stopped before it finished, and nothing was
 delivered." followed by one recovery action. That action is "Please tell whoever administers this installation.", or,
 when the run waited out a provider's usage cap and stopped for it, the cap sentence, which ends "Re-trigger once the cap
 has reset." Every person is told the same words, whoever placed the order. Written from the pipeline's failure path; a
 rate-limit **postpone is not a failure** (the run parks resumable and no failure event fires).
 
-The files themselves keep the run's own record for whoever diagnoses it: `failedStage`, `reason`, `reasonVerbatim`,
+`_driver/failure.json` keeps the run's own record for whoever diagnoses it: `failedStage`, `reason`, `reasonVerbatim`,
 `terminalKind`, `repairs`, the payload fields and `diagnostic`, the copy that names the stage and quotes the reason.
-Neither door hands any of it on: each composes the notice again from the packet's fields, so a packet an earlier
-version wrote is told in the same words. Nor do they hand on `whatsappToReason`, which names the setting that holds
-chat numbers.
+Neither the outbox file nor a door carries any of it: each composes the notice again from the packet's fields, so a
+packet an earlier version wrote is told in the same words.
 
 `refused: true` means this run was **declined by the product**, not broken by the engine —
 `terminalKind: "designed-refusal"`, raised when a preflight finds that this deployment cannot serve
@@ -203,8 +209,8 @@ The filesystem loop below remains equivalent for integrators that do have data-p
 2. **Send**: for `delivered`, email `emailBodyHtml` verbatim to the requester behind
    `forwarder`/`forwarderEmail`, `Subject:` = `subject`, `In-Reply-To:` = `msgId`; optionally
    chat `whatsappText` to `whatsappTo` and, separately, to `whatsappCcOperator` when present. A null
-   `whatsappTo` with a `whatsappToReason` means nobody is reachable for that requester — surface it, do
-   not redirect the notice to the operator instead. For every other kind, `text` is ready to route as-is,
+   `whatsappTo` means no chat number is held for that requester: send the email, and do not redirect the
+   notice to the operator instead. For every other kind, `text` is ready to route as-is,
    except `engine-check-failed`, which stays pending for the operator (step 5 of the pure-MCP loop above).
 3. **Write back**: create a `.sent` marker in the (archived) run dir after a successful send —
    the idempotency guard that prevents double-sends if markers fire twice. Then clear the
