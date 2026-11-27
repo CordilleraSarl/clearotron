@@ -324,6 +324,20 @@ export function answerOf(search, { events = [], text = "" } = {}) {
 
 
 /**
+ * The program's own words for why a session failed, from its events, or null: Codex's failed turn or error event, its
+ * message unwrapped where it carries the provider's error as JSON; Claude's result marked as an error. PURE.
+ */
+export function programRefusal(events = []) {
+  const unwrap = (m) => { const t = String(m ?? "").trim(); try { const o = JSON.parse(t); return String(o?.error?.message ?? o?.message ?? t); } catch { return t; } };
+  for (const e of [...events].reverse()) {
+    if (e?.type === "turn.failed" && e.error?.message) return unwrap(e.error.message).slice(0, 300);
+    if (e?.type === "error" && e.message) return unwrap(e.message).slice(0, 300);
+    if (e?.type === "result" && e.is_error === true && typeof e.result === "string" && e.result.trim()) return e.result.trim().slice(0, 300);
+  }
+  return null;
+}
+
+/**
  * A QUESTION EXECUTOR THROUGH THE RUN'S OWN AI PROGRAM, in the shape the Knockout lane asks its owner lookups in
  * (owner-use-check.mjs, runOwnerChecks): `async (task) -> { ok, text, sources, service, model, speed, tookMs }` or
  * `{ ok: false, cause, service }`. Its sessions are made once per run, on the tier `tier` names, when the first question
@@ -346,9 +360,13 @@ export function ownSearchQuestioner(runDir, { tier, timeoutSec = SESSION_TIMEOUT
       searches: a.searches, pages: a.pages, sources: a.sources, seconds: r.seconds ?? null, usage: r.usage ?? null };
     try { ensureDriverDir(runDir, RECORDS_DIR); appendFileSync(questionRecordsPath(runDir), JSON.stringify({ ts: new Date().toISOString(), ...record }) + "\n"); }
     catch { /* best-effort: a record that cannot be written never fails a lookup */ }
-    if (!a.answered)
+    if (!a.answered) {
+      // THE PROGRAM'S OWN REASON, where it gave one: a model its account does not carry reads as that, not as a turn that
+      // "did not complete cleanly".
+      const said = r.cause ? programRefusal(r.events) : null;
       return { ok: false, service, model: r.model ?? null, tookMs: Date.now() - started,
-        cause: r.cause ? `own search: ${String(r.cause).slice(0, 160)}` : a.searches ? "own search: the session ran its searches and gave no answer" : "own search: the session answered without searching" };
+        cause: r.cause ? `own search: ${String(said ? `${r.cause}: ${said}` : r.cause).slice(0, 300)}` : a.searches ? "own search: the session ran its searches and gave no answer" : "own search: the session answered without searching" };
+    }
     return { ok: true, text: r.text, sources: a.sources, service, model: r.model ?? null, speed: r.speed ?? null, tookMs: Date.now() - started };
   };
 }

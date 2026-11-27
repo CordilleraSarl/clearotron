@@ -15,7 +15,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";
-import { ownSearchKnockoutGrid, ownSearchQuestioner, savedSearchRecords, questionRecordsPath, QUESTION_TIERS } from "../engine/mcp/own-search.mjs";
+import { ownSearchKnockoutGrid, ownSearchQuestioner, programRefusal, savedSearchRecords, questionRecordsPath, QUESTION_TIERS } from "../engine/mcp/own-search.mjs";
 import { resolveSweepExecutor } from "../pipeline-knockout.mjs";
 import { runOwnerChecks } from "../owner-use-check.mjs";
 import { rollupTokens } from "../tokens.mjs";
@@ -185,5 +185,21 @@ test("own search's records are no stage's: the token rollup reads none of them a
     const t = rollupTokens(runDir);
     assert.equal(t.total.attempts, 0, "a search or question record was counted as a stage attempt");
     assert.deepEqual(Object.keys(t.byStage), []);
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
+});
+
+test("a question the program refused carries the program's own reason, never only that the turn failed", async () => {
+  const runDir = aRun("own");
+  try {
+    const refusal = JSON.stringify({ type: "error", status: 400, error: { type: "invalid_request_error", message: "The 'invented-model' model is not supported when using Codex with a ChatGPT account." } });
+    const events = [{ type: "error", message: refusal }, { type: "turn.failed", error: { message: refusal } }];
+    assert.equal(programRefusal(events), "The 'invented-model' model is not supported when using Codex with a ChatGPT account.");
+    assert.equal(programRefusal([{ type: "result", is_error: true, result: "Credit balance is too low" }]), "Credit balance is too low");
+    assert.equal(programRefusal([{ type: "item.completed", item: { type: "web_search" } }]), null);
+    const exec = ownSearchQuestioner(runDir, { tier: QUESTION_TIERS["full-country-search"],
+      makeSessions: async () => ({ search: "codex", question: async () => ({ text: "", cause: "the engine turn did not complete cleanly (code 1, status error)", events }) }) });
+    const r = await exec("q");
+    assert.equal(r.ok, false);
+    assert.equal(r.cause, "own search: the engine turn did not complete cleanly (code 1, status error): The 'invented-model' model is not supported when using Codex with a ChatGPT account.");
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
