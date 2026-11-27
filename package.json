@@ -96,6 +96,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.31.0",
+    "@modelcontextprotocol/server": "2.4.0",
     "buffers": "file:vendor/buffers",
     "exceljs": "^4.4.0",
     "jose": "^6.2.3",

@@ -32,12 +32,12 @@ import { doorPostureVerdict } from "./door-posture.mjs";   // — say when this 
 import { keyDoorRefusal, openKeyDoor, KEY_SOCKET_MODE } from "./key-socket.mjs";
 import { demoPostureLine, bundledRosterLine, rosterCountLine } from "../driver/demo-posture.mjs";   // — the two mis-aimed warnings answer from one place
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { makeServer, NS } from "./server.mjs";
 import { makeAccessVerifier } from "./lib/cf-access.mjs";
 import { RateLimiter } from "./lib/ratelimit.mjs";
 import { makeHttpHandler } from "./lib/http-handler.mjs";
+import { mcpServe } from "./lib/mcp-serve.mjs";   // one request, answered on its own, in either revision of the protocol
 import { listenOrDie, resolvePort } from "../shared/listen.mjs";   // — a taken port is a sentence, not a stack
 import { loadGrants } from "../shared/scope.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -118,47 +118,14 @@ const AUTH_HEADER = (process.env.TRADEMARK_MCP_AUTH_HEADER || "cf-access-jwt-ass
 const ALLOWED_DOMAINS = (process.env.MCP_ALLOWED_EMAIL_DOMAINS || "").split(",").map((s) => s.trim()).filter(Boolean);
 const ALLOWED_EMAILS = (process.env.MCP_ALLOWED_EMAILS || "").split(",").map((s) => s.trim()).filter(Boolean);
 const ALLOWED_HOSTS = (process.env.TRADEMARK_MCP_ALLOWED_HOSTS || "").split(",").map((s) => s.trim()).filter(Boolean);
-const SESSION_TTL_MS = Number(process.env.TRADEMARK_MCP_SESSION_TTL_MS || 30 * 60 * 1000);
-const SESSION_MAX = Number(process.env.TRADEMARK_MCP_SESSION_MAX || 500);
 const RATE_PER_MIN = Number(process.env.TRADEMARK_MCP_RATE_PER_MIN || 120);
 // Literal loopback addresses only — "localhost" can resolve elsewhere on a hostile resolver.
 const LOOPBACK = new Set(["127.0.0.1", "::1"]);
 
-// Create a per-session MCP transport (read-only server), registered into `sessions`. The Streamable-HTTP
-// transport is imported lazily here (it pulls @hono/node-server/undici) so nothing else has to.
-// `owner` = the authed email that created the session; stored on the entry so the handler can refuse a
-// different identity attaching to it (session owner-binding).
-// ── DNS-REBINDING PROTECTION BELONGS TO THE NETWORK DOOR, AND ONLY TO IT ────────────────────────────
-//
-// `networkDoor` is false for the key socket. Both doors share this factory, and the allowed-hosts list
-// it arms is read from the TCP door's own environment — so a socket caller was being held to a Host
-// header naming the TCP door's address, on a transport that has no host, no port and no DNS.
-//
-// key-socket.mjs already states in terms that this refusal does not apply to it: "the allowed-hosts
-// refusal arms DNS-rebinding protection, which is an attack on a browser resolving a HOSTNAME. A socket
-// has no hostname and no DNS." That was true of the door it builds and false of the sessions that door
-// creates, because the exclusion lived in a comment beside one handler while the protection lived in
-// the factory both handlers call. Measured on a real key over a real socket: the call succeeds ONLY if
-// the caller sends a Host naming the TCP listener, which is a requirement nothing documents and no
-// integrator would guess.
-//
-// The network door is UNCHANGED — it passes nothing and keeps the default — so this narrows one
-// transport rather than relaxing a protection.
-async function createSession(sessions, scope = { kind: "internal", runId: null }, owner = null,
-                             { networkDoor = true } = {}) {
-  const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-  // HTTP is never the trusted-local surface: local:false (so what-if is never exposed remotely, even to ops).
-  const server = makeServer({ scope, local: false });
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
-    enableDnsRebindingProtection: networkDoor && ALLOWED_HOSTS.length > 0,
-    allowedHosts: networkDoor && ALLOWED_HOSTS.length ? ALLOWED_HOSTS : undefined,
-    onsessioninitialized: (id) => sessions.set(id, { server, transport, lastSeen: Date.now(), email: owner, sub: scope?.sub ?? null, kind: scope?.kind ?? null }),
-  });
-  transport.onclose = () => { if (transport.sessionId) sessions.delete(transport.sessionId); };
-  await server.connect(transport);
-  return transport;
-}
+// ONE SERVER PER REQUEST, FROM THAT REQUEST'S SCOPE (2026-11-27): the protocol's newer revision has no sessions, and
+// the older one is served statelessly (lib/mcp-serve.mjs). HTTP is never the trusted-local surface: local:false, so
+// what-if is never exposed remotely, even to ops.
+const serve = mcpServe((scope) => makeServer({ scope: scope ?? { kind: "internal", runId: null }, local: false }));
 
 // ---- bootstrap (only when executed directly) ---------------------------------------------------
 const isMain = isEntrypoint(import.meta.url);
@@ -304,21 +271,17 @@ if (isMain) {
   }
 
   const limiter = new RateLimiter({ perMinute: RATE_PER_MIN });
-  // A separate, lower per-principal bucket for ops-token sessions (keyed by sub) — the write verbs.
+  // A separate, lower per-principal bucket for ops-token requests (keyed by sub) — the write verbs.
   const opsLimiter = new RateLimiter({ perMinute: Number(process.env.TRADEMARK_MCP_OPS_RATE_PER_MIN || 30) });
-  const sessions = new Map();
-  const sweep = setInterval(() => {
-    const now = Date.now();
-    for (const [id, e] of sessions) if (now - e.lastSeen > SESSION_TTL_MS) { try { e.transport.close(); } catch { /* ignore */ } sessions.delete(id); }
-  }, 60_000);
-  sweep.unref();
 
   // firmDomains = the SAME domain list the identity gate enforces. It is the POSITIVE proof of firm staff:
   // a tokenless caller reaches `internal` (read-all) only when their verified email domain is on this list —
   // not merely because the auth proxy let them in. Keeps staff read-all working while denying it to any
   // non-firm identity a mis-scoped edge might admit. Tenants gated purely by MCP_ALLOWED_EMAILS leave this
   // list empty, so tokenless internal read-all stays off for them (fail-closed) unless they set the domain list.
-  const handler = makeHttpHandler({ verify, limiter, opsLimiter, sessions, createSession, ns: NS, sessionMax: SESSION_MAX,
+  // DNS-REBINDING PROTECTION BELONGS TO THE NETWORK DOOR, AND ONLY TO IT: the list is this door's own Host values, and
+  // the key socket below, which has no hostname and no DNS, passes none (key-socket.mjs).
+  const handler = makeHttpHandler({ verify, limiter, opsLimiter, serve, allowedHosts: ALLOWED_HOSTS, ns: NS,
     // The network door tells a caller who sends a key WHERE the key door is, when this deployment has
     // one. Refusing without saying that is what sent the last operator to the proxy's configuration.
     keyDoorPath: KEY_SOCKET || null,
@@ -347,19 +310,14 @@ if (isMain) {
   // a port, so it cannot reach a socket — which is the whole reason the discriminator is the transport
   // rather than the peer address. See key-socket.mjs for why a loopback check is not a control here.
   //
-  // A SEPARATE SESSION MAP, deliberately. The handler already refuses a session whose owner is not the
-  // caller, so sharing one map would probably be safe — but "probably safe" across an authentication
-  // boundary is the kind of reasoning this repository keeps paying for, and two maps cost one allocation.
-  // A session minted behind the key door is not addressable from the tunnel-facing one at all.
+  // NOTHING IS SHARED BETWEEN THE TWO DOORS BUT THE SERVER FACTORY: each request is scoped from its own key on the door
+  // it arrived at, and no session exists on either to be addressed from the other.
   if (KEY_SOCKET) {
     const refusal = keyDoorRefusal({ authDisabled: AUTH_DISABLED, accessFile: envFrom(process.env, "CLEAROTRON_ACCESS_FILE"), authMode: AUTH_MODE });
     if (refusal) { log(`FATAL: ${refusal}`); process.exit(1); }
     const keyHandler = makeHttpHandler({
       verify: null, tokenOnly: true, devMode: false,
-      limiter, opsLimiter, sessions: new Map(), ns: NS, sessionMax: SESSION_MAX,
-      // The socket's sessions are not network sessions — see createSession. Passed here rather than
-      // read inside it, so the factory keeps one rule and the caller names which door it is.
-      createSession: (sessions, scope, owner) => createSession(sessions, scope, owner, { networkDoor: false }),
+      limiter, opsLimiter, serve, ns: NS,   // no allowedHosts: a socket has no hostname, so DNS rebinding is no attack on it
       authHeader: AUTH_HEADER, firmDomains: ALLOWED_DOMAINS, log,
       // THE THIRD DOOR, and it has to name itself. It is not the staff surface and it is not the network
       // client surface; a key presented here arrives over a local socket. Until this was passed, every

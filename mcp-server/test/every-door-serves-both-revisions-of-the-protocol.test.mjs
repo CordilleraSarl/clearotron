@@ -1,24 +1,22 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// A CLIENT OF THE NEW PROTOCOL FALLS BACK AT EVERY DOOR.
+// EVERY DOOR SERVES BOTH REVISIONS OF THE PROTOCOL.
 //
-// The protocol's 2026-07-28 revision removes the opening handshake and the session our doors are built on. A client
-// that speaks both revisions asks the new way first, with `server/discover`, and falls back to the old handshake when
-// the answer is not a new-revision one. Every door here speaks only the old revision, so that fallback is what lets
-// such a client reach this product today. This file holds each door to it, through the protocol's own v2 client in
-// its probing mode, against the door run as its own process:
-//   - the staff door and the client door (HTTP). A keyed probe is refused with 400 and a body whose `error` is a
-//     sentence, not a JSON-RPC error object. The client reads that as "not the new revision" and falls back. A 401 or
-//     403 there would be fatal to the client rather than a fallback, so each probe carries a valid key. That order,
-//     the key accepted and then the 400, is the contract this file pins;
-//   - the local door (stdio) and a gather server the engine's stages reach (stdio, the shared `serve`). Each answers
-//     a probe sent before the handshake with -32601, method not found. The client also falls back on a probe that
-//     times out or closes, so each arm asserts that answer directly, as well as the connection it leads to.
-// In every arm the client ends on the old revision, and lists the same tools a client of the old revision lists.
-//
-// WHAT THIS DOES NOT PROVE: that any one assistant falls back. This is the protocol's reference client; an assistant
-// that asks only the new way, and never falls back, would still not connect.
+// The protocol's 2026-07-28 revision removes the opening handshake and protocol sessions, and carries authorization on
+// every request. Each door now answers both revisions from one stateless handler (lib/mcp-serve.mjs), scoping each
+// request from its own key (lib/http-handler.mjs), and the local door decides the revision from the opening message
+// (`serveStdio`). This file holds each door, run as its own process, to that:
+//   - the staff door and the client door (HTTP). A client of the new revision (the protocol's v2 client, negotiating
+//     both) ends on the new revision without ever sending `initialize`, and lists the tools a client of the old
+//     revision lists. The old client (SDK v1) is served too, and is handed no session id. Two keys of different reach,
+//     sent over one connection, are each answered with their own tool list: there is no session for the second to
+//     inherit from the first;
+//   - the local door (stdio): the new client ends on the new revision, the old one on the old, and both list the same
+//     tools;
+//   - a gather server the engine's stages reach (stdio, the shared `serve`): still the older revision only, and a
+//     client that asks the new way falls back to it. Its move follows in this branch.
+// WHAT THIS DOES NOT PROVE: that any one assistant connects. These are the protocol's reference clients.
 // Every name is invented.
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
@@ -113,11 +111,24 @@ function recordingFetch(seen) {
   };
 }
 
-/** The tool names a client of the old revision lists at this door: what the fallback must reach. */
+/** The tool names a client of the old revision lists at this door, and the session id it was handed, if any. */
 async function oldToolNames(transport) {
   const client = new OldClient({ name: "old-revision-client", version: "1" });
   await client.connect(transport);
   try { return (await client.listTools()).tools.map((t) => t.name).sort(); } finally { await client.close(); }
+}
+
+/** tools/list sent on its own, in the new revision, with one key: what that key alone may list. */
+async function toolsForKey(url, key) {
+  const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json", accept: "application/json, text/event-stream",
+    "mcp-protocol-version": "2026-07-28", "mcp-method": "tools/list", "x-trademark-token": key },
+  body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list", params: { _meta: { "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+    "io.modelcontextprotocol/clientInfo": { name: "one-request", version: "1" }, "io.modelcontextprotocol/clientCapabilities": {} } } }) });
+  assert.equal(res.headers.get("mcp-session-id"), null, "the door handed out a session id");
+  const text = await res.text();
+  const json = JSON.parse(text.startsWith("{") ? text : (text.split("\n").find((l) => l.startsWith("data:")) ?? "data: {}").slice(5));
+  assert.ok(json.result?.tools, `tools/list with one key was not answered with tools: ${text.slice(0, 300)}`);
+  return json.result.tools.map((t) => t.name).sort();
 }
 
 async function newClientAt(transport) {
@@ -126,24 +137,26 @@ async function newClientAt(transport) {
   return client;
 }
 
-async function assertHttpDoorFallsBack(url, key) {
+async function assertHttpDoorServesBoth(url, key, otherKey) {
   const headers = { "x-trademark-token": key };
-  const want = await oldToolNames(new OldHttpTransport(new URL(url), { requestInit: { headers } }));
+  const old = new OldHttpTransport(new URL(url), { requestInit: { headers } });
+  const want = await oldToolNames(old);
   assert.ok(want.length > 0, "a client of the old revision listed no tools here");
+  assert.equal(old.sessionId, undefined, "a client of the old revision was handed a session id");
   const seen = [];
   const client = await newClientAt(new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers }, fetch: recordingFetch(seen) }));
   try {
-    assert.equal(client.getProtocolEra(), "legacy", "the client did not end on the old revision");
+    assert.equal(client.getProtocolEra(), "modern", "a client of the new revision did not end on it");
     const got = (await client.listTools()).tools.map((t) => t.name).sort();
-    assert.deepEqual(got, want, "the fallback reached a different tool list from the old revision's");
+    assert.deepEqual(got, want, "the new revision lists different tools from the old one's");
   } finally { await client.close(); }
   const posts = seen.filter((r) => r.verb === "POST");
-  assert.equal(posts[0]?.method, "server/discover", `the client did not ask the new way first: ${JSON.stringify(posts)}`);
-  assert.equal(posts[0].status, 400, `the probe was answered ${posts[0].status}; only a 400 lets the client fall back`);
-  assert.equal(typeof posts[0].error, "string", "the probe's refusal is no longer a sentence; a JSON-RPC error object there can end the client's connection");
-  assert.equal(posts[1]?.method, "initialize", `after the refusal the client did not fall back to the handshake: ${JSON.stringify(posts)}`);
-  assert.equal(posts[1].status, 200);
-  assert.ok(posts.some((r) => r.method === "tools/list" && r.status === 200), "the tools were never listed over the fallback");
+  assert.ok(!posts.some((r) => r.method === "initialize"), `a client of the new revision was made to send the old handshake: ${JSON.stringify(posts)}`);
+  assert.ok(posts.every((r) => r.status === 200), `a request in the new revision was refused: ${JSON.stringify(posts)}`);
+  // ONE CONNECTION, TWO KEYS, TWO ANSWERS: each request is scoped from its own key.
+  const mine = await toolsForKey(url, key), theirs = await toolsForKey(url, otherKey);
+  assert.deepEqual(mine, want, "one key alone lists what that key's client lists");
+  assert.notDeepEqual(theirs, mine, "a second key on the same connection was answered with the first key's reach");
 }
 
 /** What a stdio server answers to a probe sent before any handshake. */
@@ -167,6 +180,17 @@ async function answerToProbe(file, env) {
   });
 }
 
+async function assertStdioServerServesBoth(file, env) {
+  const params = { command: process.execPath, args: [file], env: childEnv(env), stderr: "ignore" };
+  const want = await oldToolNames(new OldStdioTransport(params));
+  assert.ok(want.length > 0, "a client of the old revision listed no tools here");
+  const client = await newClientAt(new StdioClientTransport(params));
+  try {
+    assert.equal(client.getProtocolEra(), "modern", "a client of the new revision did not end on it");
+    assert.deepEqual((await client.listTools()).tools.map((t) => t.name).sort(), want);
+  } finally { await client.close(); }
+}
+
 async function assertStdioServerFallsBack(file, env) {
   const answer = await answerToProbe(file, env);
   assert.equal(answer.id, 1);
@@ -181,25 +205,27 @@ async function assertStdioServerFallsBack(file, env) {
   } finally { await client.close(); }
 }
 
-test("the staff door: a keyed probe is refused with a 400 sentence, and the client falls back and lists the tools", async () => {
+test("the staff door serves the new revision and the old one, without sessions, each request in its own key's scope", async () => {
   const port = await startDoorOnAFreePort(STAFF_DOOR, (port) => ({
     TRADEMARK_MCP_AUTH_MODE: "token", TRADEMARK_MCP_AUTH_DISABLED: "", TRADEMARK_MCP_DEV: "",
     TRADEMARK_MCP_HTTP_HOST: "127.0.0.1", TRADEMARK_MCP_HTTP_PORT: String(port), TRADEMARK_MCP_ALLOWED_HOSTS: `127.0.0.1:${port}`,
   }));
-  await assertHttpDoorFallsBack(`http://127.0.0.1:${port}/mcp`, mintToken({ scope: "ops", sub: "fallback-test", ttlSec: 600 }));
+  await assertHttpDoorServesBoth(`http://127.0.0.1:${port}/mcp`, mintToken({ scope: "ops", sub: "fallback-test", ttlSec: 600 }),
+    mintToken({ scope: "user", runId: "tmpx-velloquin-2026-11-27-slate-heron", ttlSec: 600 }));
 });
 
-test("the client door: a company's keyed probe is refused with a 400 sentence, and the client falls back and lists the tools", async () => {
+test("the client door serves the new revision and the old one, without sessions, each request in its own key's scope", async () => {
   const port = await startDoorOnAFreePort(CLIENT_DOOR, (port) => ({
     CLIENT_MCP_TOKEN_ONLY: "1", CLIENT_MCP_ACCOUNT_ACCESS: "1", CLIENT_MCP_AUTH_DISABLED: "", CLIENT_MCP_DEV: "",
     CLIENT_MCP_HTTP_HOST: "127.0.0.1", CLIENT_MCP_HTTP_PORT: String(port), CLIENT_MCP_ALLOWED_HOSTS: `127.0.0.1:${port}`,
   }));
-  await assertHttpDoorFallsBack(`http://127.0.0.1:${port}/mcp`,
-    mintToken({ scope: "account", sub: "lawyer@acme.example", accounts: ["acme"], ttlSec: 600 }));
+  await assertHttpDoorServesBoth(`http://127.0.0.1:${port}/mcp`,
+    mintToken({ scope: "account", sub: "lawyer@acme.example", accounts: ["acme"], ttlSec: 600 }),
+    mintToken({ scope: "user", runId: "tmpx-velloquin-2026-11-27-slate-heron", ttlSec: 600 }));
 });
 
-test("the local door: a probe before the handshake is method-not-found, and the client falls back and lists the tools", async () => {
-  await assertStdioServerFallsBack(LOCAL_DOOR, {});
+test("the local door serves the new revision and the old one", async () => {
+  await assertStdioServerServesBoth(LOCAL_DOOR, {});
 });
 
 test("a gather server: a probe before the handshake is method-not-found, and the client falls back and lists the tools", async () => {
