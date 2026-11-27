@@ -1136,7 +1136,7 @@ export const STAGES = {
       reads(["skills/matter-frame/SKILL.md"]),
       `Build the strategic matter frame for this trademark search request${productName(searchPolicy?.level) ? `: a ${productName(searchPolicy.level)}` : ""}.`,   // the product the run resolved, never "preliminary" for every clearance (design, 2026-11-24)
       `Request: ${JSON.stringify(job.marks ?? job.markName ?? job.name)}; classes ${JSON.stringify(job.classes ?? "")}.`,
-      job.goods ? `Goods/services (verbatim): ${job.goods}` : "",
+      job.goods ? `Goods/services (verbatim): ${job.goods}` : (statedSlot(P, "goods") ? `Goods/services (verbatim, as stated in the request): ${statedSlot(P, "goods")}` : ""),
       // Round 2 Change 1a — the instructed territories are the AUTHORITATIVE scope; matter-frame derives scope
       // from them (+ rights effective in them), never widening on "the sector is global". See SKILL "Scope jurisdictions".
       job.jurisdictions ? `Instructed territories (AUTHORITATIVE scope — do NOT widen to "major markets"): ${Array.isArray(job.jurisdictions) ? job.jurisdictions.join(", ") : job.jurisdictions}` : "",
@@ -1154,7 +1154,7 @@ export const STAGES = {
         && !(Array.isArray(job.marks) && job.marks.some((m) => Array.isArray(m?.classes) && m.classes.length))
         ? `Customer-default classes (the request names none — apply these): ${profile.defaultClasses.join(", ")}.` : "",
       ...defaultJurisdictionsLine(job, profile),   // — fills an ABSENT scope, never widens a stated one; vocabulary-checked (helper above STAGES)
-      job.priorUse ? `Stated prior/intended use: ${job.priorUse}` : "",
+      !job.goods && statedSlot(P, "use") ? `Stated prior/intended use: ${statedSlot(P, "use")}` : job.priorUse ? `Stated prior/intended use: ${job.priorUse}` : "",
       // P2-C (Round-2 §8a) — campaign-shape FACTS ride the job like priorUse (verbatim sidecar prose, never
       // structured). Stated ⇒ the frame carries them as fact; absent ⇒ the frame may only INFER a campaign
       // shape with an explicit inference label (see the skill's Product description rules). Context, never
@@ -4693,3 +4693,4 @@ export const USE_CHECK_ANSWERS_HELD = "Apply the existing triggers for actual-us
 // next try continues from them. Exclusions already go through record_declination in batches; record_synthesis takes
 // a part of the findings before the whole document exists.
 export const WRITER_RECORDS_AS_IT_GOES = "Record completed findings (`record_synthesis`) and exclusions (`record_declination`) as you complete them, individually or in small groups; do not wait for the whole report. On a resumed attempt, continue from this run's accepted work and complete what remains. Revise accepted work only for identified contrary evidence, a reasoning error, or an applicable change in the instructions. Finish the overall conclusions against the complete set before declaring the assessment complete.";
+import { statedSlot } from "./stated-facts.mjs";   // last, so no line citation into this file moves
