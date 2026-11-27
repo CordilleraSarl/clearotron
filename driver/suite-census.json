@@ -2495,7 +2495,7 @@
         },
         "a-research-answer-is-kept-in-the-run-for-a-later-attempt-of-its-stage.test.mjs": {
           "tests": 3,
-          "asserts": 6,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -2692,8 +2692,8 @@
           "todos": 0
         },
         "a-run-whose-searches-are-its-own-keeps-one-search-service.test.mjs": {
-          "tests": 6,
-          "asserts": 13,
+          "tests": 7,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -2952,6 +2952,12 @@
         "a-stage-program-starts-with-a-listed-environment.test.mjs": {
           "tests": 12,
           "asserts": 62,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stage-question-on-own-search-is-answered-by-the-driver-or-not-at-all.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
