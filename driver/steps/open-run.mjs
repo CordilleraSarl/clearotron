@@ -15,7 +15,7 @@ import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
 import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerDoor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { urgentDecision } from "../engine/speed.mjs";
-import { installWebResearch, ownSearchLevelRefusal, refuseUnchosenResearch, researchDoor, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
+import { freezeQuestionRoute, installWebResearch, ownSearchRoute, questionRoute, refuseUnchosenResearch, researchDoor, researchFallback, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
 import { readCodexCatalog } from "../engine/codex-catalog.mjs";   // the models a Codex sign-in offers, read with no model call
 import { serveOwnQuestions } from "../own-search-questions.mjs";   // a run on its own search has its stages' questions answered here
 import { resolveAuthMode } from "../engine/auth.mjs";
@@ -414,16 +414,29 @@ export async function openRun({ job, opts }) {
   // A RUN WITH NO WEB-RESEARCH SERVICE, NOW THAT ITS PRODUCT IS KNOWN: a clearance is refused before its first stage, as
   // the research door refuses one its order names; a Knockout, its profile's default included, runs its register half.
   if (runResearch == null && !opts.recordFetcher) refuseUnchosenResearch(ctx.searchPolicy);
-  // A RUN ON ITS OWN SEARCH WHOSE ENGINE DOES NOT OFFER THE MODEL ITS PRODUCT'S QUESTIONS ARE RULED FOR stops here,
-  // before its first stage, rather than paying for its register stages and failing at its first question. A resumed one
-  // parks by name with its work kept. Read from the sign-in's own catalog, with no model call (engine/codex-catalog.mjs).
+  // A RUN ON ITS OWN SEARCH TAKES THE QUESTION ROUTE RESOLVED HERE, ONCE (web-research.mjs, ownSearchRoute): its own AI
+  // program, or Perplexity for Full country where the sign-in lacks the model and the installer configured the
+  // fallback, or a stop before the first stage. The route is frozen beside the run, so every question and every resume
+  // takes the one it started on; the sign-in's catalog is read once, here, with no model call. A resumed run that cannot
+  // take its route parks by name with its work kept.
   if (runResearch === "own" && !opts.recordFetcher) {
     const runEngine = recorded.state === "recorded" ? recorded.engine : selectEngine().name;
-    const stop = runEngine === "openai-agent" ? ownSearchLevelRefusal({ policy: ctx.searchPolicy, engine: runEngine, catalog: readCodexCatalog({ env: engineEnv }) }) : null;
-    if (stop) {
-      if (recorded.state === "recorded") throw park({ kind: "research", recorded: "own", machine: machineResearch.service ?? null, detail: stop.why });
-      throw new Error(stop.why);
+    const parkOrThrow = (why) => { throw recorded.state === "recorded" ? park({ kind: "research", recorded: "own", machine: machineResearch.service ?? null, detail: why }) : new Error(why); };
+    let frozen = questionRoute(run.runDir);
+    if (!frozen) {
+      const route = runEngine === "openai-agent"
+        ? ownSearchRoute({ policy: ctx.searchPolicy, engine: runEngine, catalog: readCodexCatalog({ env: engineEnv }), env: engineEnv })
+        : { route: "own" };
+      if (route.stop) {
+        try { runLog(run.runDir, { event: "web-research-route", stop: route.stop, model: route.model ?? null }); } catch { /* best-effort */ }
+        parkOrThrow(route.why);
+      }
+      frozen = freezeQuestionRoute(run.runDir, route);
+      try { runLog(run.runDir, { event: "web-research-route", route: frozen, model: route.model ?? null }); } catch { /* best-effort */ }
+      if (frozen === "perplexity") note(`[web-research] ${route.disclosure}`);
     }
+    if (frozen === "perplexity" && !researchFallback(engineEnv).keyed)
+      parkOrThrow("[preflight] this run's deepest research questions are routed to Perplexity, and PERPLEXITY_API_KEY is not set");
   }
   // acceptance 5 — recorded on EVERY run, ungraded included: "which ladder applied" must be a
   // read, never an inference from which product the job asked for.

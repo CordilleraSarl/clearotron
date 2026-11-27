@@ -189,6 +189,9 @@ test("a value that NARROWS the product never refuses a start — a Knockout box 
   const choice = unchosen.narrowing.find((r) => r.name === "CLEAROTRON_WEB_RESEARCH");
   assert.ok(choice, "the operator is not told no web-research service is chosen");
   assert.match(choice.why, /Knockout/);
+  // THE FALLBACK IS OPTIONAL: never reported missing, and carried where it is set.
+  assert.equal(runRequirements(knockoutOnly, T).some((r) => r.name === "CLEAROTRON_WEB_RESEARCH_FALLBACK"), false, "an unset fallback is reported as missing");
+  assert.ok(runRequiredNames({ ...SUPERVISOR, CLEAROTRON_WEB_RESEARCH_FALLBACK: "perplexity" }, T).includes("CLEAROTRON_WEB_RESEARCH_FALLBACK"), "a set fallback does not travel");
 });
 
 test("the billing row names only the ways the configured engine can be paid for, and never refuses a start", () => {

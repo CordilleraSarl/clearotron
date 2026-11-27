@@ -33,3 +33,15 @@ export function recordedEngine(runDir) {
   const e = String(runRecord(runDir)?.engine ?? "").trim().toLowerCase();
   return e || null;
 }
+
+// THE ROUTE A RUN'S QUESTIONS TAKE, frozen once when the run opens (web-research.mjs, freezeQuestionRoute): "own", or
+// "perplexity" where the installer configured the fallback for questions the sign-in's catalog lacks the model for.
+export const QUESTION_ROUTE_FILE = "web-research-route.json";
+
+/** The run's frozen question route, or null where none was frozen. A stage experiment's shadow folder reads its run's. IMPURE (reads). */
+export function questionRoute(runDir) {
+  if (!runDir) return null;
+  const p = [runDir, String(runDir).split("/_experiments/")[0]].map((d) => driverDir(d, QUESTION_ROUTE_FILE)).find((f) => existsSync(f));
+  if (!p) return null;
+  try { const r = JSON.parse(readFileSync(p, "utf8"))?.route; return r === "own" || r === "perplexity" ? r : null; } catch { return null; }
+}

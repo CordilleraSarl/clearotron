@@ -82,7 +82,7 @@
 // decides for itself which names are its own and a runner that decides separately are two opinions
 // about one list, and they drift in the direction where the second asks for less.
 
-import { WEB_RESEARCH_SETTING } from "./web-research-names.mjs";   // — who runs the web research, carried beside its key
+import { WEB_RESEARCH_FALLBACK_SETTING, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";   // — who runs the web research, carried beside its key
 import { BILLING_MODES, CLOUD_SWITCH, CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK, billingMode, cloudsSwitchedOn, resolveAuthMode } from "./engine/auth.mjs";   // — the billing row asks the one resolver which ways an engine can be paid for, and the cloud rows read its own lists
 
 /** The pool a report is written into. Named once; the supervisor already writes it. */
@@ -308,6 +308,10 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
   // WHO RUNS THE WEB RESEARCH, NARROWING FOR THE SAME REASON AS THE KEY: without it the three clearance searches refuse at
   // the research door, and a Knockout search still runs. Carried like the key, so the services' file holds the choice.
   push(WEB_RESEARCH_SETTING, false, "Web research service: own or perplexity. Required for clearances. Knockout can run a register-only search.");
+  // THE FALLBACK IS OPTIONAL, so its row is made only where it is set: carried to the services' file like the key, and
+  // never reported missing on an install that does not use it (the cloud settings' rule above).
+  if (val(env, WEB_RESEARCH_FALLBACK_SETTING))
+    push(WEB_RESEARCH_FALLBACK_SETTING, false, "Perplexity for Full country's deepest questions where the Codex sign-in lacks their model: perplexity, with PERPLEXITY_API_KEY.");
   push(RESEARCH_ENV, false, "the three clearance searches carry the common-law grid and refuse at preflight without it; a Knockout search still runs and discloses the half it skipped");
 
   return out;

@@ -147,20 +147,32 @@ test("a run whose service this runner cannot serve parks under its own kind", ()
   assert.match(new RunChoiceUnavailable({ kind: "research", recorded: "perplexity", run: null }).message, /started on the perplexity web research/);
 });
 
-test("on own search, a Codex sign-in whose catalog lacks the model a product's questions are ruled for stops that product before anything is spent", async () => {
-  const { ownSearchLevelRefusal } = await import("../web-research.mjs");
+test("on own search, each product's questions take the route its sign-in's catalog allows, and Full country stops before spending otherwise", async () => {
+  const { ownSearchRoute, ROUTE_WORDS } = await import("../web-research.mjs");
   const { catalogFrom, readCodexCatalog } = await import("../engine/codex-catalog.mjs");
   // The catalog's shape as `codex debug models` renders it (measured 2026-11-27), model ids only.
   const catalog = catalogFrom(JSON.stringify({ models: [{ slug: "gpt-6.1-terra" }, { slug: "gpt-6.1-sol" }, { slug: "gpt-6-luna" }] }));
   assert.deepEqual([...catalog], ["gpt-6.1-terra", "gpt-6.1-sol", "gpt-6-luna"]);
-  const full = ownSearchLevelRefusal({ policy: policyFor("full-country-search"), engine: "openai-agent", catalog });
-  assert.equal(full.model, "gpt-6.2-sol");
-  assert.match(full.why, /^\[preflight\] This search's research questions need gpt-6\.2-sol, which this Codex sign-in does not offer\./);
-  for (const product of ["knockout-search", "global-preliminary-search", "multi-country-focus-search"])
-    assert.equal(ownSearchLevelRefusal({ policy: policyFor(product), engine: "openai-agent", catalog }), null, `${product}: its model is offered`);
-  assert.equal(ownSearchLevelRefusal({ policy: policyFor("full-country-search"), engine: "anthropic-agent", catalog }), null, "Claude's catalog is not read here");
-  assert.equal(ownSearchLevelRefusal({ policy: policyFor("full-country-search"), engine: "openai-agent", catalog: null }), null,
-    "a catalog that could not be read stops nothing: not known is not 'offers nothing'");
+  const full = policyFor("full-country-search"), codex = "openai-agent";
+  const FALLBACK = { CLEAROTRON_WEB_RESEARCH_FALLBACK: "perplexity", PERPLEXITY_API_KEY: "k" };
+  assert.deepEqual(ownSearchRoute({ policy: full, engine: codex, catalog, env: {} }),
+    { stop: "missing", model: "gpt-6.2-sol", detail: "CLEAROTRON_WEB_RESEARCH_FALLBACK=perplexity, with PERPLEXITY_API_KEY",
+      why: `[preflight] ${ROUTE_WORDS.fullCountryMissing} (CLEAROTRON_WEB_RESEARCH_FALLBACK=perplexity, with PERPLEXITY_API_KEY)` });
+  assert.equal(ROUTE_WORDS.fullCountryMissing, "This Codex sign-in lacks the model needed for Full country. Configure the Perplexity fallback or choose a supported AI setup.");
+  assert.deepEqual(ownSearchRoute({ policy: full, engine: codex, catalog, env: FALLBACK }),
+    { route: "perplexity", model: "gpt-6.2-sol", disclosure: "Perplexity will handle any questions that need the deepest research level." });
+  assert.equal(ownSearchRoute({ policy: full, engine: codex, catalog, env: { CLEAROTRON_WEB_RESEARCH_FALLBACK: "perplexity" } }).stop, "missing", "a fallback with no key is no fallback");
+  assert.deepEqual(ownSearchRoute({ policy: full, engine: codex, catalog: null, env: FALLBACK }),
+    { stop: "unknown", model: "gpt-6.2-sol", detail: null, why: "[preflight] Clearotron could not check whether this Codex sign-in supports Full country. Check the sign-in and try again." },
+    "a catalog that cannot be read is not known: never proof the model is missing, nor authority to buy the fallback");
+  assert.deepEqual(ownSearchRoute({ policy: { level: "full-country-search" }, engine: codex, catalog: new Set(["gpt-6.2-sol"]), env: {} }), { route: "own" }, "the run's frozen policy names its product `level`");
+  for (const product of ["knockout-search", "global-preliminary-search", "multi-country-focus-search"]) {
+    assert.deepEqual(ownSearchRoute({ policy: policyFor(product), engine: codex, catalog, env: {} }), { route: "own" }, `${product}: its model is offered`);
+    assert.deepEqual(ownSearchRoute({ policy: policyFor(product), engine: codex, catalog: null, env: {} }), { route: "own" }, `${product}: not known runs, and fails with the program's reason if it must`);
+  }
+  assert.match(ownSearchRoute({ policy: policyFor("multi-country-focus-search"), engine: codex, catalog: new Set(["gpt-6-luna"]), env: FALLBACK }).why,
+    /need gpt-6\.1-sol, which this Codex sign-in does not offer/, "the fallback is Full country's alone");
+  assert.deepEqual(ownSearchRoute({ policy: full, engine: "anthropic-agent", catalog: null, env: {} }), { route: "own" }, "Claude's catalog is not read here");
   for (const text of ["not json", JSON.stringify({ models: [] }), JSON.stringify({ other: 1 })]) assert.equal(catalogFrom(text), null, text);
   // The program is asked for its catalog, with no model call, and a failed or refused render reads as not known.
   const asked = [];
@@ -169,4 +181,24 @@ test("on own search, a Codex sign-in whose catalog lacks the model a product's q
   assert.deepEqual(asked, [["debug", "models"]]);
   assert.equal(readCodexCatalog({ env: { CLEAROTRON_CODEX_PATH: "/usr/local/bin/codex" }, run: () => ({ status: 1, stdout: "" }) }), null);
   assert.equal(readCodexCatalog({ env: { CLEAROTRON_CODEX_PATH: "/usr/local/bin/codex" }, run: () => { throw new Error("ENOENT"); } }), null);
+});
+
+test("a run's question route is frozen once, kept on resume, and the report credits Perplexity only where every fallback question was answered", async () => {
+  const { freezeQuestionRoute, questionRoute, fallbackReport } = await import("../web-research.mjs");
+  const runDir = mkdtempSync(join(tmpdir(), "web-research-route-"));
+  try {
+    assert.equal(questionRoute(runDir), null);
+    assert.equal(freezeQuestionRoute(runDir, { route: "perplexity", model: "gpt-6.2-sol", disclosure: "d" }), "perplexity");
+    assert.equal(freezeQuestionRoute(runDir, { route: "own" }), "perplexity", "a frozen route is never rewritten");
+    assert.equal(questionRoute(join(runDir, "_experiments", "arm")), "perplexity", "an experiment's arm reads its run's route");
+    const log = (rows) => writeFileSync(driverDir(runDir, "reading-log.jsonl"), rows.map((r) => JSON.stringify(r)).join("\n") + "\n");
+    const q = (over) => ({ tool: "perplexity_research", args: { task: "q" }, ...over });
+    assert.deepEqual(fallbackReport(runDir), { line: null, answered: 0, failed: 0 }, "no call log: nothing attributed");
+    log([q({ ok: true }), q({ ok: true, fallback: true }), q({ ok: true, fallback: true, args: { task: "", grid: true } })]);
+    assert.deepEqual(fallbackReport(runDir), { line: "Perplexity answered the deepest research questions.", answered: 1, failed: 0 });
+    log([q({ ok: true, fallback: true }), q({ ok: false, fallback: true })]);
+    assert.deepEqual(fallbackReport(runDir), { line: null, answered: 1, failed: 1 }, "some failed: the actual outcome is reported, not the sentence");
+    log([q({ ok: true })]);
+    assert.deepEqual(fallbackReport(runDir), { line: null, answered: 0, failed: 0 }, "none asked: no work is attributed to the fallback");
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
