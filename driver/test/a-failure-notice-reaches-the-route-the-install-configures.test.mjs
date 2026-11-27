@@ -561,7 +561,7 @@ test("a late acknowledgement for one failure leaves the next failure owed, which
   }
 });
 
-test("a failure whose notice was left uncertain is not sent again once the run stops again: only the new failure's notice goes, and only its receipt settles", async () => {
+test("a failure whose notice was left uncertain is not sent again once the run stops again, even released by the operator: only the new failure's notice goes, and only its receipt settles", async () => {
   const box = install();
   const rx = await receiver({ dedupe: true });
   rx.state.mode = "silent";
@@ -572,12 +572,18 @@ test("a failure whose notice was left uncertain is not sent again once the run s
     assert.equal(a.state, "ambiguous", "guard: failure A's notice was not left uncertain");
     const result = JSON.parse(readFileSync(join(box.qdir, "uncertain-a-then-b.failed.result"), "utf8"));
     const failureB = await stopsAgain(result.runDir, result.runId);
+    // The operator, asked about A, says the receiver does not hold it: A is released to be sent again under its own id.
+    const env = routeEnv(rx.url, "submitter", { CLEAROTRON_NOTICE_DEDUPE: "1" });
+    await pass(box, env, { skip: true });
+    const { reconcileNotice } = await import("../notice-delivery.mjs");
+    assert.equal(reconcileNotice(a.id, "absent").ok, true);
+    const released = deliveries(box).find((d) => d.id === a.id);
     rx.state.mode = "receipt";
-    const { out } = await pass(box, routeEnv(rx.url, "submitter", { CLEAROTRON_NOTICE_DEDUPE: "1" }), { now: () => Date.now() + 5 * 60_000 });
+    const { out } = await pass(box, env, { now: () => Date.now() + 5 * 60_000 });
     assert.deepEqual([out.sent, rx.records.length], [1, 1], "A's uncertain notice was sent again");
     const b = deliveries(box).find((d) => d.id !== a.id);
     assert.deepEqual([b.settle.failureId, rx.records[0].key], [failureB, b.id]);
-    assert.equal(deliveries(box).find((d) => d.id === a.id).state, "ambiguous", "A's record is the operator's, as it was");
+    assert.deepEqual(deliveries(box).find((d) => d.id === a.id), released, "A was sent again after failure B");
     assert.equal(sentOf(result.runDir)?.messageId, `downstream-${b.id}`);
   } finally {
     await rx.close();
