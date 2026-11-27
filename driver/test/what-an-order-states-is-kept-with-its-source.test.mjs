@@ -7,11 +7,12 @@
 // names throughout.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, copyFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { statedFactsOf, requestFormFacts, writeStatedFacts, slotsFilledFrom } from "../stated-facts.mjs";
 import { STAGES } from "../stages.mjs";
+import { sandboxManifest } from "../stage-context.mjs";
 import { acceptMatterFrame, recordMatterFrame } from "../matter-frame-record.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { paths } from "../run-record.mjs";
@@ -81,6 +82,23 @@ test("an order whose own fields carry its goods reads exactly what it always rea
     assert.equal(frameMessage(withRecord, KEPT).replaceAll(withRecord, "<run>"), frameMessage(without, KEPT).replaceAll(without, "<run>"));
     assert.equal(readFileSync(recordMatterFrame(withRecord, PARAMS).written, "utf8"), acceptMatterFrame(PARAMS, { instructedScope: SCOPE }).content);
   } finally { rmSync(withRecord, { recursive: true, force: true }); rmSync(without, { recursive: true, force: true }); }
+});
+
+test("an experiment arm on the frame stage carries the record, so a replay of a goods-less order is filled as the run was", () => {
+  const d = runDir(LOST), shadow = mkdtempSync(join(tmpdir(), "stated-facts-arm-"));
+  try {
+    const manifest = sandboxManifest("matter-frame", paths(d));
+    assert.ok(manifest.some((e) => e.path === paths(d).statedFacts), "the frame stage's sandbox does not declare the record");
+    // Seeded as an --experiment arm seeds its sandbox: every manifest file the run holds, at the same place.
+    for (const e of manifest) {
+      if (e.dir || !existsSync(e.path) || !e.path.startsWith(d)) continue;
+      const to = join(shadow, e.path.slice(d.length + 1));
+      mkdirSync(dirname(to), { recursive: true });
+      copyFileSync(e.path, to);
+    }
+    assert.equal(frameMessage(shadow, LOST).replaceAll(shadow, "<run>"), frameMessage(d, LOST).replaceAll(d, "<run>"));
+    assert.match(frameMessage(shadow, LOST), /as stated in the request/);
+  } finally { rmSync(d, { recursive: true, force: true }); rmSync(shadow, { recursive: true, force: true }); }
 });
 
 test("a goods-less order whose request states nothing more is not touched either", () => {
