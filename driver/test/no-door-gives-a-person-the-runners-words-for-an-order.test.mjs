@@ -25,9 +25,9 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const CLI = join(HERE, "..", "enqueue.mjs");
 
 // What the runner may write in a refusal's record. A door that passes any of it on fails here.
-const RECORDED = "/home/invented/work/workspace-intake-agent/studio/queue/ORDER.failed: re-submit with --dup-override; "
+const RECORDED = "/srv/invented/work/workspace-intake-agent/studio/queue/ORDER.failed: re-submit with --dup-override; "
   + "receiver said ETIMEDOUT; runCaps.dailyRuns must be at most 2";
-const INTERNAL = /\/home\/invented|workspace-intake-agent|studio\/queue|--dup-override|dupOverride|ETIMEDOUT|runCaps|dailyRuns|notify:/;
+const INTERNAL = /\/srv\/invented|workspace-intake-agent|studio\/queue|--dup-override|dupOverride|ETIMEDOUT|runCaps|dailyRuns|notify:/;
 
 const ORIGINS = {
   "from-portal": { clientPrincipal: true, forwarder: "portal", forwarderEmail: "orders@alpha.example" },

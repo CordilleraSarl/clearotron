@@ -30,9 +30,9 @@ const { InMemoryTransport } = await import("@modelcontextprotocol/sdk/inMemory.j
 const COMPANY = { kind: "account", sub: "orders@alpha.example", permissions: { run: true, manage: false }, accounts: ["demo-brand-owner"] };
 const EVERYTHING = null;   // the ops door: sees every account
 
-const RECORDED = "/home/invented/work/workspace-intake-agent/studio/queue/ORDER.failed: re-submit with --dup-override; "
+const RECORDED = "/srv/invented/work/workspace-intake-agent/studio/queue/ORDER.failed: re-submit with --dup-override; "
   + "receiver said ETIMEDOUT; runCaps.dailyRuns must be at most 2";
-const INTERNAL = /\/home\/invented|workspace-intake-agent|studio\/queue|--dup-override|dupOverride|ETIMEDOUT|runCaps|dailyRuns|notify:/;
+const INTERNAL = /\/srv\/invented|workspace-intake-agent|studio\/queue|--dup-override|dupOverride|ETIMEDOUT|runCaps|dailyRuns|notify:/;
 
 async function call(scope, name, args) {
   const [a, b] = InMemoryTransport.createLinkedPair();

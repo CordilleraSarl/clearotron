@@ -9886,7 +9886,7 @@
         },
         "a-retried-start-is-the-order-it-retried.test.mjs": {
           "tests": 1,
-          "asserts": 8,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
