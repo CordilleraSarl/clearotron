@@ -7,7 +7,8 @@
 // `tools/list` "must be exactly the eleven `account` tools". The door listed twenty to an account key, the twenty
 // marked `accountSafe` in TOOL_SCOPES (measured at the door in testing, 2026-11-27). A deployer following the check
 // would read a correct door as one that "resolved a wider principal than `account`". Both counts had been wrong since
-// 2026-09-04, and the table beside them left out `server_info`.
+// 2026-09-04, as had the copies of the count in mcp-server/CONNECT.md and mcp-server/remote/README.md, and the table
+// beside them left out `server_info`.
 //
 // So the guide is read against TOOL_SCOPES: the table names every account tool and no other tool, and both counts are
 // the table's own.
@@ -44,4 +45,17 @@ test("both of the guide's counts are the number of tools an account key reaches"
   const check = GUIDE.match(/`tools\/list` must be exactly the ([a-z-]+) `account` tools/);
   assert.ok(check, "the API-key door's check no longer says how many tools tools/list must list");
   assert.equal(check[1], word, "the API-key door's check counts a different number of tools");
+});
+
+test("the two pages that point a reader to the guide give the same count", () => {
+  // Both carried their own copy of the count, and both were stale with the guide.
+  const word = WORDS[ACCOUNT.length];
+  for (const [page, said] of [
+    ["../../mcp-server/CONNECT.md", /A signed-in client reaches ([a-z-]+) tools/],
+    ["../../mcp-server/remote/README.md", /\n([a-z-]+) account tools, why the rest are withheld/],
+  ]) {
+    const m = readFileSync(new URL(page, import.meta.url), "utf8").match(said);
+    assert.ok(m, `${page} no longer says how many tools an account reaches`);
+    assert.equal(m[1], word, `${page} counts a different number of tools`);
+  }
 });
