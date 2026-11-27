@@ -3406,7 +3406,7 @@ async function sayProvenProviders({ effective }) {
   }
 }
 
-async function sayFileLocations({ effective }) {
+async function sayFileLocations({ effective, serviceValue }) {
   say("\n  Where files are stored");
   // Each entry is a FUNCTION, called only on the branch that prints it, so a getter is read at access
   // time and never captured as a constant here. The reader of this command is deciding what to
@@ -3435,6 +3435,13 @@ async function sayFileLocations({ effective }) {
     if (!existsSync(e.v)) warn(`${e.name}=${e.v} (${e.from}) does not exist yet`);
     else ok(`${e.name}=${e.v} (${e.from})`);
   }
+  // Where failure notices go: the route the worker itself reads, in the words approved for doctor.
+  const { noticeRoute, noticeRouteLine } = await import(pathToFileURL(join(REPO, "driver", "notice-route.mjs")).href);
+  const read = serviceValue ?? effective;
+  const route = noticeRoute(Object.fromEntries(["CLEAROTRON_NOTICE_URL", "CLEAROTRON_NOTICE_AUDIENCES", "CLEAROTRON_NOTICE_DEDUPE"]
+    .map((k) => [k, read(k)?.v]).filter(([, v]) => v != null)));
+  const line = noticeRouteLine(route);
+  ({ ok, info, warn })[line.level](line.text);
 }
 
 async function sayBackgroundUnits({ hosted }) {
