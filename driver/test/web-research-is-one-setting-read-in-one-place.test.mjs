@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { installWebResearch, refuseUnchosenResearch, researchDoor, webResearchCapability, OWN_SEARCH_STILL_PERPLEXITY, WEB_RESEARCH_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
+import { installWebResearch, notChosenRefusal, refuseUnchosenResearch, researchDoor, webResearchCapability, OWN_SEARCH_STILL_PERPLEXITY, WEB_RESEARCH_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
 import { preflightResearchCredential } from "../driver.config.mjs";
 import { policyFor } from "../search-policy.mjs";
 import { readRunChoices, recordRunChoices, researchForRun, researchNotChosen, RunChoiceUnavailable } from "../engine/run-choices.mjs";
@@ -94,6 +94,8 @@ test("an installation that names no service is refused a clearance by name, with
       { message: "[preflight] Choose a web research service before starting this clearance. Run npx clearotron install." }, `${product}: a key present chose nothing`);
     assert.throws(() => researchDoor(policyFor(product), KEY, { service: null }), /Choose a web research service/, "a run recorded with none is refused too");
   }
+  assert.equal(notChosenRefusal(), "[preflight] Choose a web research service before starting this clearance. Run npx clearotron install.");
+  assert.doesNotMatch(notChosenRefusal(), /PERPLEXITY_API_KEY/, "a key is not the choice, so the refusal never sends the reader to one");
   assert.equal(researchDoor(null, KEY).deferred, true, "an order whose product its profile settles is asked again once it is known");
   assert.throws(() => refuseUnchosenResearch(policyFor("full-country-search")), /Choose a web research service/, "a clearance its profile settled is refused");
   assert.equal(refuseUnchosenResearch(policyFor("knockout-search")), undefined, "a Knockout its profile settled runs its register half");
