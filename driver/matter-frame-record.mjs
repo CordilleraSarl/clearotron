@@ -46,6 +46,7 @@ import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { paths, readJson } from "./run-record.mjs";
+import { renderStatedFacts } from "./stated-facts.mjs";
 
 export const MATTER_CONTEXT_FILE = "matter-context.md";
 const SCHEMA_VERSION = 1;
@@ -118,6 +119,7 @@ export function renderInstructedScope(scope) {
 export function renderMatterFrame(model) {
   const out = [`# Matter frame`, ""];
   out.push(...renderInstructedScope(model.instructed_scope));
+  out.push(...renderStatedFacts(model.stated_facts));   // no lines at all when the order states none
 
   out.push("## The matter", "", model.prose_body, "");
 
@@ -330,7 +332,7 @@ export function mergeMatterFrameCall(stored, received) {
   };
 }
 
-export function acceptMatterFrame(params, { instructedScope = null } = {}) {
+export function acceptMatterFrame(params, { instructedScope = null, statedFacts = null } = {}) {
   const prose_body = str(params?.prose_body);
   // The floors the old validator applied to the whole hand-written file now apply to the field that
   // actually carries the judgment. Same numbers, aimed at the thing they were always about.
@@ -492,6 +494,7 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
   const model = {
     schema_version: SCHEMA_VERSION,
     instructed_scope: instructedScope ?? null,
+    ...(statedFacts ? { stated_facts: statedFacts } : {}),
     prose_body,
     scope_basis,
     scope_jurisdictions: list(params?.scope_jurisdictions),
@@ -511,6 +514,12 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
 export function readInstructedScope(runDir) {
   try { return readJson(paths(String(runDir ?? "")).instructedScope); }
   catch { return null; }   // legacy/replay run with no receipt — the section renders `none given`
+}
+
+/** What the order states, with its sources, as intake recorded it; null when it states none. IMPURE. */
+export function readStatedFacts(runDir) {
+  try { return readJson(paths(String(runDir ?? "")).statedFacts); }
+  catch { return null; }
 }
 
 /**
@@ -547,7 +556,7 @@ export function recordMatterFrame(runDir, received, { now = () => new Date().toI
     return { written: null, refused: undeclared, captured: closeCapture({ ok: false, refused: undeclared }), capture_failed: captureFailed };
   }
   const call = mergeMatterFrameCall(lastAcceptedMatterFrame(runDir), received);
-  const verdict = acceptMatterFrame(call, { instructedScope: readInstructedScope(runDir) });
+  const verdict = acceptMatterFrame(call, { instructedScope: readInstructedScope(runDir), statedFacts: readStatedFacts(runDir) });
   if (!verdict.ok) {
     return { written: null, refused: verdict.reason, captured: closeCapture({ ok: false, refused: verdict.reason }), capture_failed: captureFailed };
   }
