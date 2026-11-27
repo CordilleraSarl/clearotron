@@ -2585,8 +2585,9 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
     // none, every customer silently resolved to the bundled demo roster, and no operator running this
     // command by hand would have seen it. The authority for what a RUN used is that run's own
     // `profile-store` line, not this one.
-    // Where the store's setting is in a settings file that could not be read, which store this resolves is not known.
-    if (!unjudged("CLEAROTRON_CUSTOMERS_DIR")) try {
+    // With no units, where the store's setting is in a settings file that could not be read, which store this resolves
+    // is not known. With units, the services' answer comes from their own file and still stands.
+    if (hosted || !unjudged("CLEAROTRON_CUSTOMERS_DIR")) try {
       const mod = await import(`../driver/profiles.mjs?doctor=${Date.now()}`);
       const r = mod.profileStoreResolution();
       // The bundled roster's folder is part of the product, not a place to act on, so it is named, not shown.
@@ -2839,7 +2840,7 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
   // whether or not the env file names it. So "off" is only ever true of a hosted box. This read the env
   // file alone, and on a local install started before `start` wrote the store there, it told a portal
   // that was listing saved searches that they were off.
-  if ((!hosted || serviceKnown) && !unjudged("CLEAROTRON_RECIPES_DIR")) {
+  if (hosted ? serviceKnown : !unjudged("CLEAROTRON_RECIPES_DIR")) {
     // Layered as effectiveForService layers it — this command's environment over the services' file — so
     // the repository root is read from the same place the store directory is.
     let storeEnv = { ...(serviceFileEnv ?? {}), ...process.env };
@@ -2894,8 +2895,9 @@ async function sayCustomInstructions({ hosted, unitEnv, serviceKnown, effectiveF
   //
   // REPORTS, NEVER JUDGES: nothing here sets `problem()`. Drift is information for the reader, not a
   // fault in their install, and a doctor that called their own overrides broken would be wrong.
-  // Whether this install overrides any instructions is not known while the file that would name the folder is unread.
-  if (unjudged("CLEAROTRON_INSTRUCTIONS_DIR")) return;
+  // With no units, whether this install overrides any instructions is not known while the file that would name the
+  // folder is unread. With units, the services' folder is read from their own file, below.
+  if (!hosted && unjudged("CLEAROTRON_INSTRUCTIONS_DIR")) return;
   say("\n  Custom instructions");
   // WITH NO UNITS, THE FOLDER IS THE ONE `clearotron start` HANDS THE SERVICES: this command's environment over the
   // settings file. This process does not load that file, so reading its own resolution reported a folder named there as

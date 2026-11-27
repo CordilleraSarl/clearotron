@@ -11,8 +11,8 @@
 //     it is reported absent, and a setting this command's own environment carries is still read.
 //   - A custom-instructions folder that cannot be read reads as a failed check that names the setting, whether the
 //     environment or the settings file names it.
-//   - A service that does not answer is a failed check that names the address, and the address is shown without a
-//     user, a password or a query: never the connection's own error, and never a credential.
+//   - A service that does not answer is named by its address, never by the connection's own error, and an address is
+//     shown without a user, a password or a query.
 //
 // THE CONTROLS: the same home with the file readable is ticked and says nothing about an unread file; the setting the
 // environment carries is reported from the environment. A mode-000 file is readable by root and the mode means nothing
@@ -25,7 +25,7 @@ import { chmodSync, mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync }
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { handRunEnv } from "./drive-env.mjs";
 import { shownAddress } from "../../shared/shown-address.mjs";
 import { triggerLaneVerdict, HOSTED } from "../../shared/trigger-lane.mjs";
@@ -114,6 +114,27 @@ test("the control: the same settings file, readable, is ticked and nothing is sa
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
+test("with units, an unreadable settings file of this command's own leaves the services' answers standing", { skip: MODES_MEAN_NOTHING }, async () => {
+  // The units read their own file (`%h/.env`), never this command's, so only this command's own lines are affected.
+  const { BACKGROUND_UNITS } = await import(pathToFileURL(fileURLToPath(new URL("../../bin/start.mjs", import.meta.url))).href);
+  const { home, base, envFile } = setUpHome();
+  const unitDir = join(home, ".config", "systemd", "user");
+  mkdirSync(unitDir, { recursive: true });
+  for (const u of BACKGROUND_UNITS) writeFileSync(join(unitDir, u), "[Service]\nEnvironmentFile=%h/.env\nExecStart=/bin/true\n");
+  const store = join(base, "config", "profiles");
+  const folder = join(home, "services-instructions");
+  mkdirSync(folder);
+  writeFileSync(join(home, ".env"), `CLEAROTRON_CUSTOMERS_DIR=${store}\nCLEAROTRON_INSTRUCTIONS_DIR=${folder}\nCLEAROTRON_AI=anthropic-agent\n`);
+  try {
+    chmodSync(envFile, 0);
+    const { out } = doctor(home);
+    assert.ok(flat(out).includes(`✗ ${UNREAD}`), `this command's unreadable file is not named:\n${out}`);
+    assert.ok(out.includes(`✓ the services resolve profiles from ${store}`), `the services' store went with this command's file:\n${out}`);
+    assert.ok(out.includes(`the services read custom instructions this process does not: ${folder}`),
+      `the services' instructions folder went with this command's file:\n${out}`);
+  } finally { chmodSync(envFile, 0o600); rmSync(home, { recursive: true, force: true }); }
+});
+
 for (const where of ["the settings file", "the environment"]) {
   test(`an unreadable custom-instructions folder named in ${where} is a failed check that names the setting`, { skip: MODES_MEAN_NOTHING }, () => {
     const { home } = setUpHome({ fileLines: where === "the settings file" ? ["CLEAROTRON_INSTRUCTIONS_DIR=<home>/instructions"] : [] });
@@ -140,20 +161,39 @@ async function closedPort() {
   return port;
 }
 
-test("a service that does not answer is a failed check that names its address without a credential or the error", async () => {
+test("a service that does not answer is named by its address, without the connection's error", async () => {
+  // A PLAIN ADDRESS ON A PORT NOTHING LISTENS ON, so the probe reaches the port and is refused there. (An address that
+  // carries a user and password is refused by fetch before it connects, so it cannot exercise this; see the next arm.)
   const port = await closedPort();
   const { home } = setUpHome();
   try {
     const { out, code } = doctor(home, {
+      PORTAL_MCP_URL: `http://127.0.0.1:${port}`,
+      PORTAL_OPS_TOKEN: "an-ops-token-for-this-test",
+      CLEAROTRON_CLIENT_MCP_URL: `https://127.0.0.1:${port}/mcp`,
+    });
+    assert.equal(code, 1, `a client door that does not answer exited ${code}:\n${out}`);
+    // The engine door's refused connection is the boot-time observation, said as that, with its address.
+    assert.ok(out.includes(`· http://127.0.0.1:${port} is configured and nothing answered there when this was checked.`),
+      `the engine door's refused connection does not name its address:\n${out}`);
+    assert.ok(out.includes(`✗ https://127.0.0.1:${port}/mcp is configured and DOES NOT ANSWER.`),
+      `the client door's failure does not name its address:\n${out}`);
+    assert.ok(!out.includes("an-ops-token-for-this-test"), `the ops token reached doctor's output:\n${out}`);
+    assert.doesNotMatch(out, RAW, `the machine's own words reached doctor's output:\n${out}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("an address that carries a user, a password or a query is shown without them", async () => {
+  const port = await closedPort();
+  const { home } = setUpHome();
+  try {
+    const { out } = doctor(home, {
       PORTAL_MCP_URL: `http://door-user:door-pass@127.0.0.1:${port}?token=door-secret`,
       PORTAL_OPS_TOKEN: "an-ops-token-for-this-test",
       CLEAROTRON_CLIENT_MCP_URL: `https://client-user:client-pass@127.0.0.1:${port}/mcp?key=client-secret`,
     });
-    assert.equal(code, 1, `a door that does not answer exited ${code}:\n${out}`);
-    assert.ok(out.includes(`✗ http://127.0.0.1:${port} is configured and the engine door DOES NOT ANSWER.`),
-      `the engine door's failure does not name its address:\n${out}`);
-    assert.ok(out.includes(`✗ https://127.0.0.1:${port}/mcp is configured and DOES NOT ANSWER.`),
-      `the client door's failure does not name its address:\n${out}`);
+    assert.ok(out.includes(`http://127.0.0.1:${port} is configured`), `the engine door's address is not shown at all:\n${out}`);
+    assert.ok(out.includes(`https://127.0.0.1:${port}/mcp is configured`), `the client door's address is not shown at all:\n${out}`);
     for (const secret of ["door-user", "door-pass", "door-secret", "client-user", "client-pass", "client-secret", "an-ops-token-for-this-test"])
       assert.ok(!out.includes(secret), `a credential reached doctor's output (${secret}):\n${out}`);
     assert.doesNotMatch(out, RAW, `the machine's own words reached doctor's output:\n${out}`);
