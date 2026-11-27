@@ -312,5 +312,7 @@ test("tracker 97 the licence record ships in the package, which it never has bef
     + "README of its own accord and this file only if asked");
   assert.ok(existsSync(join(ROOT, "THIRD-PARTY-NOTICES.md")), "the licence notices are not in the tree at all");
   const entries = read("THIRD-PARTY-NOTICES.md").split("\n").filter((l) => /^## /.test(l)).length;
-  assert.ok(entries > 150, `the licence notices list only ${entries} packages; the tree bundles far more`);
+  // 120 packages measured on 2026-11-27, after the protocol SDK's first major version left the tree; the floor
+  // sits below it so an ordinary removal does not red this.
+  assert.ok(entries > 100, `the licence notices list only ${entries} packages; the tree bundles far more`);
 });
