@@ -1828,8 +1828,8 @@
           "todos": 0
         },
         "a-notice-filed-before-a-run-names-the-company-its-order-named.test.mjs": {
-          "tests": 4,
-          "asserts": 15,
+          "tests": 5,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -10294,6 +10294,12 @@
         "anOrderIsFollowedFromStartToItsRunOrRefusal.test.ts": {
           "tests": 7,
           "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "anOrderWithNoRunSitsAmongTheNamesWhereItsTimePutsIt.test.ts": {
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
