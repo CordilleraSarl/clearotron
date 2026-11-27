@@ -61,6 +61,10 @@ function scenarios() {
     for (const [p, patch] of Object.entries(PRODUCTS)) out.push({ id: `${p}.${engine}`, engine, job: { ...JOB, ...patch } });
     out.push({ id: `knockout.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true });
     out.push({ id: `knockout-real-shaped.${engine}`, engine, job: { ...JOB, ...REAL_SHAPED_KNOCKOUT }, knockout: true, realShaped: true });
+    // A clearance whose register band holds a hundred filings of a real run's shape: a crowd of one name's filings,
+    // most dead or outside the order's classes, long goods text, some in another script (snapshot/real-shaped.mjs).
+    out.push({ id: `clearance-real-shaped.${engine}`, engine, job: { ...JOB, ...PRODUCTS["full-country"] }, env: { MOCK_BAND_REAL_SHAPED: "100" },
+      reaches: (r) => r.terminal?.ok === true });
     const full = { ...JOB, ...PRODUCTS["full-country"] };
     out.push({ id: `correction.${engine}`, engine, job: full, env: { MOCK_VERDICT: "BLOCKING", MOCK_VERDICT_DEFECTS: "- the summary says the phonetic axis ran; the receipt shows it never did" }, reaches: moreThanOne("synthesis") });
     out.push({ id: `knockout-correction.${engine}`, engine, job: { ...JOB, ...KNOCKOUT }, knockout: true, env: { MOCK_KO_MATERIAL: KO_DEFECT }, reaches: (r) => r.stages?.some((x) => x.stage.startsWith("knockout-correct")) });
@@ -296,7 +300,9 @@ async function main(argv) {
 }
 
 /** Scenarios this tool does not drive yet, printed on every comparison so that their absence is read. */
-export const SCENARIO_GAPS = ["real-shaped data in a clearance: its register band is the mock's few invented rows (the Knockout's lists are real-shaped: knockout-real-shaped)"];
+/** The scenarios a recording drives, by id. */
+export const scenarioIds = () => scenarios().map((s) => s.id);
+export const SCENARIO_GAPS = [];   // none: a clearance's band is real-shaped in clearance-real-shaped, a Knockout's lists in knockout-real-shaped
 
 // Neutral area labels. Which session or person holds an area is kept outside the repository.
 // The Knockout lane, the queue worker and the driver's configuration are the pipeline; the register search, the

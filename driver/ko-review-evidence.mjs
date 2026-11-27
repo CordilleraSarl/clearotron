@@ -39,12 +39,17 @@ function classesAsked(plan, name) {
   return c.length ? new Set(c) : null;
 }
 
-/** A filing's goods in the classes `scope` holds, from its whole held record where one is held, else the view the run kept. */
+/**
+ * A filing's goods in the classes `scope` holds, from its whole held record where one is held: the official record's goods,
+ * or the whole wording of a search answer kept with its source; else the view the run kept.
+ */
 function filingGoods(record, runDir, scope) {
   const whole = record?.fullRecord ? readJson(join(runDir, record.fullRecord)) : null;
   const rows = Array.isArray(whole?.goodsServices) && whole.goodsServices.length
     ? whole.goodsServices.map((g) => ({ classes: list(g?.classes).map(Number), text: one(g?.description ?? g?.translation) }))
-    : list(record?.goods).map((t) => ({ classes: [Number(String(t).split(":")[0])], text: one(String(t).replace(/^\s*\d+\s*:\s*/, "")) }));
+    : Array.isArray(whole?.goods) && whole.goods.length
+      ? whole.goods.map((g) => ({ classes: list(g?.classes).map(Number), text: one(g?.text ?? g?.description) }))
+      : list(record?.goods).map((t) => ({ classes: [Number(String(t).split(":")[0])], text: one(String(t).replace(/^\s*\d+\s*:\s*/, "")) }));
   const kept = rows.filter((g) => g.text && (!scope || g.classes.some((c) => scope.has(c))));
   const text = kept.map((g) => `${g.classes.join(",")}: ${g.text}`).join(" / ");
   return text.length > EVIDENCE_GOODS_CHARS ? `${text.slice(0, EVIDENCE_GOODS_CHARS)}… (cut; whole wording by record_id)` : text;

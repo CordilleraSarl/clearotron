@@ -50,6 +50,7 @@ import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor }
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
 import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, questionPlanPath,
   readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, addedClassQuestions, formsOfName, formQid, countRowsOf, foldFormCounts, unfoldFormCounts, withCitedFilings, withHeldGoods } from "./knockout-register-read.mjs";
+import { KNOCKOUT_PREVIEW_CHARS } from "./filing-goods.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
@@ -720,7 +721,8 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
     reading = settledKnockoutReading(run.runDir);
   }
   try {
-    const doc = withHeldGoods(build(reading), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}` });
+    // The filings the assessment reads whole on every group carry the shorter preview (filing-goods.mjs KNOCKOUT_PREVIEW_CHARS).
+    const doc = withHeldGoods(build(reading), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}`, limit: KNOCKOUT_PREVIEW_CHARS });
     atomicWrite(K.registerRecords, JSON.stringify(doc, null, 2) + "\n");
     writeRecordImages(run.runDir, images);
     appendQuestionReceipts(K.countLedger, doc, { provider: register });

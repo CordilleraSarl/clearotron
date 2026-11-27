@@ -242,7 +242,16 @@ if (process.env.MOCK_BARRIER_FILE && /matter-context\.md/.test(msg)) {
 }
 
 // ── Forced stage failure (parity with mock-claude MOCK_FAIL_STAGE): stderr + exit 1, no turn.completed. ──
-if (process.env.MOCK_FAIL_STAGE && process.env.MOCK_FAIL_STAGE.split("&&").every((part) => msg.includes(part))) {
+// MOCK_FAIL_STAGE_ONCE=<file>: the forced failure fires on the first matching turn only, and the file records that it
+// has. A stage that fails once and then passes: a pass that a later repeat recovers.
+const failOnceSpent = () => {
+  const f = process.env.MOCK_FAIL_STAGE_ONCE;
+  if (!f) return false;
+  if (existsSync(f)) return true;
+  writeFileSync(f, "spent\n");
+  return false;
+};
+if (process.env.MOCK_FAIL_STAGE && process.env.MOCK_FAIL_STAGE.split("&&").every((part) => msg.includes(part)) && !failOnceSpent()) {
   beforeForcedFailure(argv, msg);
   process.stderr.write("mock forced failure\n");
   process.exit(1);

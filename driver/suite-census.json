@@ -1401,6 +1401,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-preview-is-short-and-the-whole-wording-is-one-read-away.test.mjs": {
+          "tests": 6,
+          "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-publishes-once.test.mjs": {
           "tests": 2,
           "asserts": 16,
@@ -1961,7 +1967,7 @@
         },
         "a-placement-pass-the-delivery-gate-repeats-is-recorded-like-the-first.test.mjs": {
           "tests": 4,
-          "asserts": 21,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -2611,6 +2617,12 @@
           "tests": 5,
           "asserts": 22,
           "skips": 0,
+          "todos": 0
+        },
+        "a-run-proves-its-engine-footing-before-it-spends.test.mjs": {
+          "tests": 13,
+          "asserts": 45,
+          "skips": 1,
           "todos": 0
         },
         "a-run-reads-nothing-another-run-left-in-the-temp-folder.test.mjs": {
@@ -8709,6 +8721,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-recall-gate-is-judged-again-when-the-repeated-placement-pass-answers-a-floor.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-recheck-reads-the-document-passages-its-flags-name.test.mjs": {
           "tests": 2,
           "asserts": 9,
@@ -9149,7 +9167,7 @@
         },
         "the-snapshot-reads-register-answers-of-a-real-runs-shape.test.mjs": {
           "tests": 5,
-          "asserts": 17,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
