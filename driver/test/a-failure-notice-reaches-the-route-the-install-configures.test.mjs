@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, chmodSync, rmSync, utimesSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn, spawnSync } from "node:child_process";
 import { createServer } from "node:http";
 import { pinEnv } from "../../shared/env-aliases.mjs";
@@ -86,6 +86,8 @@ function drain(box, env = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [RUNNER], { env: { ...process.env, ...box.env, ...env }, stdio: ["ignore", "pipe", "pipe"] });
     let out = "";
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
     child.stdout.on("data", (c) => { out += c; });
     child.stderr.on("data", (c) => { out += c; });
     const timer = setTimeout(() => child.kill("SIGKILL"), 180_000);
@@ -263,7 +265,7 @@ test("an unreachable receiver leaves the notice failed and owed; the next pass a
 /** A pass in a process of its own that stops dead between the receiver's answer and the record being written. */
 function passThatStops(box, env) {
   const script = `
-    const { deliverNotices } = await import(${JSON.stringify(join(HERE, "..", "notice-delivery.mjs"))});
+    const { deliverNotices } = await import(${JSON.stringify(pathToFileURL(join(HERE, "..", "notice-delivery.mjs")).href)});
     await deliverNotices({ afterAccepted: () => process.exit(9) });
     process.exit(0);`;
   return new Promise((resolve) => {
