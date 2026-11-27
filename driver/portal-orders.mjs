@@ -67,7 +67,7 @@ const STATES = new Set(["checking", "refused"]);
  * here, and each order is one row at any moment. Each is held to the reader's visibility: `scopes` (one
  * `{ account, organisation }` per company being listed) or `everything`. Newest first.
  *
- * BOUNDED BY THE ORDERS THAT CAN BE ROWS (tracker issue 1525's review, 2026-11-27). Clearances calls this on every
+ * BOUNDED BY THE ORDERS THAT CAN BE ROWS (review, 2026-11-27). Clearances calls this on every
  * open, synchronously, so its cost is paid by everyone on the portal process. Each queue listing is indexed by
  * reference in one pass, and an order whose names already settle it (delivered, cancelled, waiting, parked) is passed
  * over without opening a file: only an order a worker may be checking, or one that stopped, is read. Measured before

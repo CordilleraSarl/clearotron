@@ -160,7 +160,7 @@ function markerState({ has, claimed }) {
  * Each wanted reference's own marker names in one queue listing, found in ONE pass over it. A name belongs to a
  * reference when it is `<ref>.json` or starts `<ref>.`, as markersFor reads it; a reference may itself hold dots, so
  * every prefix that ends before a dot is tried. A lookup of many references then costs one pass over the listing,
- * not one pass per reference (tracker issue 1525's review, 2026-11-27).
+ * not one pass per reference (review, 2026-11-27).
  */
 export function markersByReference(names, refs) {
   const wanted = refs instanceof Set ? refs : new Set(refs);
