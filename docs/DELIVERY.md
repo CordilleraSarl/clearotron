@@ -237,6 +237,11 @@ receipt shows it ready. A send that is merely still owed raises nothing; only th
 send does. That alert settles nothing: the report stays owed to its submitter, and the courier's delivery settles it,
 with no second search.
 
+Each time a run stops is its own notice, named by the `failureId` its failure packet carries: a run that is
+resumed and stops again owes a new notice under a new delivery id, and the earlier one is not sent again. A
+run that recovered and owes its report no longer stands stopped, so nobody is told it stopped, although its
+order still reads failed in the queue.
+
 A cancelled order and a parked one are owed nothing. An audience is owed nothing from before the
 route began to serve it: naming a route does not send the install's history, and an audience moved
 from a courier to the route is not told again what the courier told it. The time is kept per audience
@@ -285,10 +290,12 @@ that waits on the operator.
 **Settling the send.** A stopped run's owed send is settled only by a downstream send receipt for the person
 who placed it. The settle is made exactly as `mark_sent` makes it: `.sent` is written with `via: "notice-route"`
 and the receipt's `messageId`, `sendPending` is cleared, and the run's markers are removed. A bare `2xx` settles
-nothing, and neither does the delivery id, which is minted before the send. The settle is bound to the failure the
-notice was about. Where the run has since recovered and owes its report, or its failure packet is a later one, the
-run stays owed. Otherwise it is settled by the courier's `mark_sent`, or an operator's attestation of the send. A
-run already settled is not sent at all.
+nothing, and neither does the delivery id, which is minted before the send. The settle is bound to the failure and
+the person the notice was about, as recorded when the notice was first seen, and the failure is read again as the
+settle is written. Where the run has since recovered and owes its report, or has stopped again, or its failure
+packet carries no `failureId` (one written before packets carried it), the run stays owed. Otherwise it is
+settled by the courier's `mark_sent`, or an operator's attestation of the send. A run already settled is not sent
+at all.
 
 ## Legacy notes
 

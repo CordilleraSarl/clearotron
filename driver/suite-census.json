@@ -952,8 +952,8 @@
           "todos": 0
         },
         "a-failure-notice-reaches-the-route-the-install-configures.test.mjs": {
-          "tests": 13,
-          "asserts": 86,
+          "tests": 17,
+          "asserts": 112,
           "skips": 6,
           "todos": 0
         },

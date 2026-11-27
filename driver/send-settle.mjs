@@ -6,7 +6,8 @@
 // differed would leave a run owed by one and told by the other, and a courier added later would tell the person again.
 //
 // It records a receipt and checks nothing about it: whether the caller holds evidence of the send is the caller's
-// question (mark_sent refuses without one), and `via` says which sender wrote it.
+// question (mark_sent refuses without one), and `via` says which sender wrote it. A caller whose receipt is for one
+// failure names it (`expect`), and the settle is written only while that failure is the one owed.
 import { existsSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { config } from "./driver.config.mjs";
@@ -78,10 +79,19 @@ export function clearSendMarkers({ run, askedId = null, packetPath }) {
  * Settle a run's owed send: write `.sent`, clear `sendPending`, remove the markers. Returns `{ alreadySent,
  * statusFlipped }`; a run already settled is left as it is, with its markers cleared again. Throws when nothing is
  * owed. `evidence` is `{ messageId, attestation }`, recorded as given.
+ *
+ * `expect` is for a caller whose receipt is for one failure: `{ settled: "failure", failureId }`. Unless that failure
+ * is still the one the run owes, read here as the settle is written, nothing is written and the answer is
+ * `{ refused: "packet-changed" }`: a run that stopped again since, or recovered, stays owed.
  */
-export function settleSend({ run, askedId = null, evidence = {}, via }) {
+export function settleSend({ run, askedId = null, evidence = {}, via, expect = null }) {
   const owed = owedPacket(run.runDir);
   if (!owed) throw new Error(`run "${run.runId}" has no delivery or failure packet — nothing was pending a send`);
+  if (expect) {
+    const packet = (() => { try { return readJson(owed.path); } catch { return null; } })();
+    if (owed.settled !== expect.settled || !expect.failureId || packet?.failureId !== expect.failureId)
+      return { alreadySent: false, statusFlipped: null, refused: "packet-changed" };
+  }
   const sentPath = join(run.runDir, ".sent");
   if (existsSync(sentPath)) {
     clearSendMarkers({ run, askedId, packetPath: owed.path });

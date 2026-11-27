@@ -26,18 +26,24 @@ chmodSync(CLAUDE, 0o755);
 /**
  * A receiver on loopback: records each notice it takes, with the id it was sent under. `mode` is "accept" (a bare
  * 2xx), "receipt" (a 2xx that says it sent the notice on, with the downstream message's id) or "silent".
+ * `beforeAnswer(notice)`, when set, runs once before the next answer: what happens to the run while a notice is with
+ * the receiver, so its answer arrives late.
  */
 async function receiver({ dedupe = false } = {}) {
   const records = [], seen = new Set();
-  const state = { mode: "accept" };
+  const state = { mode: "accept", beforeAnswer: null };
   const server = createServer((req, res) => {
     let body = "";
     req.on("data", (c) => { body += c; });
-    req.on("end", () => {
+    req.on("end", async () => {
       if (state.mode === "silent") return;   // takes the request and never answers
       const key = req.headers["idempotency-key"];
-      if (!(dedupe && seen.has(key))) records.push({ key, notice: JSON.parse(body) });
+      const notice = JSON.parse(body);
+      if (!(dedupe && seen.has(key))) records.push({ key, notice });
       seen.add(key);
+      const meanwhile = state.beforeAnswer;
+      state.beforeAnswer = null;
+      if (meanwhile) await meanwhile(notice);
       res.writeHead(200, { "content-type": "application/json" });
       res.end(state.mode === "receipt" ? JSON.stringify({ sent: { messageId: `downstream-${key}` } }) : "{}");
     });
@@ -92,6 +98,35 @@ const deliveries = (box) => {
   try { return readdirSync(dir).filter((n) => /^[0-9a-f]{24}\.json$/.test(n)).map((n) => JSON.parse(readFileSync(join(dir, n), "utf8"))); }
   catch { return []; }
 };
+/** The run stops again after a resume, as the runner records it: a new failure packet, and the earlier send's receipt removed. */
+async function stopsAgain(runDir, runId) {
+  const { buildFailurePacket } = await import("../run-outcome.mjs");
+  const { paths } = await import("../run-record.mjs");
+  const packet = buildFailurePacket({ runId, agent: "zephyr", job: { markName: "ZEPHYR NOTICE PROBE" }, failedStage: "record_matter_frame",
+    shortReason: "stopped again", reasonVerbatim: "stopped again" });
+  rmSync(join(runDir, ".sent"), { force: true });
+  writeFileSync(paths(runDir).failure, JSON.stringify(packet, null, 2) + "\n");
+  const sp = join(runDir, "status.json");
+  writeFileSync(sp, JSON.stringify({ ...JSON.parse(readFileSync(sp, "utf8")), state: "failed", sendPending: true }));
+  return packet.failureId;
+}
+
+/** The run recovers and finishes, as the delivery handoff records it: its report is owed and its failure packet is gone. */
+async function recovers(runDir, runId) {
+  const { paths } = await import("../run-record.mjs");
+  rmSync(paths(runDir).failure, { force: true });
+  writeFileSync(paths(runDir).delivery, JSON.stringify({ runId: runId ?? null, subject: "an invented report" }));
+  const sp = join(runDir, "status.json");
+  writeFileSync(sp, JSON.stringify({ ...JSON.parse(readFileSync(sp, "utf8")), state: "delivered", sendPending: true }));
+}
+
+const failureIdOf = async (runDir) => {
+  const { paths } = await import("../run-record.mjs");
+  return JSON.parse(readFileSync(paths(runDir).failure, "utf8")).failureId;
+};
+const sentOf = (runDir) => (existsSync(join(runDir, ".sent")) ? JSON.parse(readFileSync(join(runDir, ".sent"), "utf8")) : null);
+const owesASend = (runDir) => JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")).sendPending === true;
+
 // Every setting named every time, so one test's setting never carries into the next through the pinned environment.
 const routeEnv = (url, audiences, extra = {}) => ({ CLEAROTRON_NOTICE_URL: url, CLEAROTRON_NOTICE_AUDIENCES: audiences, CLEAROTRON_NOTICE_DEDUPE: "", ...extra });
 
@@ -470,22 +505,132 @@ test("an old acknowledgement that arrives after the run recovered settles nothin
     submit(box, "late-b-stops", "zephyr", { demoRun: true });
     await drain(box, routeEnv(rx.url, "submitter", { MOCK_FAIL_STAGE: "record_matter_frame" }));
     assert.equal(deliveries(box)[0].state, "ambiguous", "guard: the first handoff was not left uncertain");
-    // The run recovers and finishes: it now owes its report, a different send from the failure the notice was about.
     const result = JSON.parse(readFileSync(join(box.qdir, "late-b-stops.failed.result"), "utf8"));
-    const { paths } = await import("../run-record.mjs");
-    writeFileSync(paths(result.runDir).delivery, JSON.stringify({ runId: result.runId ?? null, subject: "an invented report" }));
-    const sp = join(result.runDir, "status.json");
-    writeFileSync(sp, JSON.stringify({ ...JSON.parse(readFileSync(sp, "utf8")), state: "delivered", sendPending: true }));
-    // The receiver that drops repeats is sent the notice again, and now answers with a downstream receipt.
+    // The receiver that drops repeats is sent the notice again. While it holds it, the run recovers and finishes: it
+    // now owes its report, a different send from the failure the notice was about. Then the receipt arrives.
     rx.state.mode = "receipt";
+    rx.state.beforeAnswer = () => recovers(result.runDir, result.runId);
     const later = Date.now() + 5 * 60_000;   // past the wait before an uncertain notice is sent again
-    const { out } = await pass(box, routeEnv(rx.url, "submitter", { CLEAROTRON_NOTICE_DEDUPE: "1" }), { now: () => later });
+    const env = routeEnv(rx.url, "submitter", { CLEAROTRON_NOTICE_DEDUPE: "1" });
+    const { out } = await pass(box, env, { now: () => later });
     assert.equal(out.confirmed, 1, "guard: the late acknowledgement did not arrive");
     assert.equal(deliveries(box)[0].downstream?.messageId?.startsWith("downstream-"), true);
-    assert.equal(existsSync(join(result.runDir, ".sent")), false, "the failure's acknowledgement marked the new report sent");
-    assert.equal(JSON.parse(readFileSync(sp, "utf8")).sendPending, true, "the new report is no longer owed");
+    assert.equal(sentOf(result.runDir), null, "the failure's acknowledgement marked the new report sent");
+    assert.equal(owesASend(result.runDir), true, "the new report is no longer owed");
+    // A run that recovered no longer stands stopped: nobody is told it stopped again, under any id.
+    const again = await pass(box, env, { now: () => later + 60 * 60_000 });
+    assert.deepEqual([again.out.sent, rx.records.length, deliveries(box).length], [0, 1, 1]);
   } finally {
     await rx.close();
     rmSync(box.root, { recursive: true, force: true });
+  }
+});
+
+test("a late acknowledgement for one failure leaves the next failure owed, which is told under its own id and settled by its own receipt", async () => {
+  const box = install();
+  const rx = await receiver({ dedupe: true });
+  try {
+    submit(box, "late-a-then-b", "zephyr", { demoRun: true });
+    // Failure A's notice is with the receiver when the run, resumed, stops again (failure B). Then A's receipt arrives.
+    let failureA = null, failureB = null;
+    rx.state.mode = "receipt";
+    rx.state.beforeAnswer = async () => {
+      const result = JSON.parse(readFileSync(join(box.qdir, "late-a-then-b.failed.result"), "utf8"));
+      failureA = await failureIdOf(result.runDir);
+      failureB = await stopsAgain(result.runDir, result.runId);
+    };
+    await drain(box, routeEnv(rx.url, "submitter", { MOCK_FAIL_STAGE: "record_matter_frame" }));
+    const result = JSON.parse(readFileSync(join(box.qdir, "late-a-then-b.failed.result"), "utf8"));
+    assert.ok(failureA && failureB && failureA !== failureB, "guard: two failures, each with its own id");
+    const [a] = deliveries(box);
+    assert.deepEqual([a.state, a.settle.failureId, a.downstream?.messageId], ["confirmed", failureA, `downstream-${a.id}`]);
+    assert.equal(sentOf(result.runDir), null, "A's receipt settled failure B");
+    assert.equal(owesASend(result.runDir), true, "failure B is no longer owed");
+
+    // Failure B is its own notice: a new id the receiver does not drop as a repeat, and its own receipt settles it.
+    const { out } = await pass(box, routeEnv(rx.url, "submitter", { CLEAROTRON_NOTICE_DEDUPE: "1" }));
+    assert.deepEqual([out.sent, out.confirmed, rx.records.length], [1, 1, 2]);
+    const b = deliveries(box).find((d) => d.id !== a.id);
+    assert.equal(b.settle.failureId, failureB);
+    assert.equal(rx.records[1].key, b.id);
+    assert.deepEqual([sentOf(result.runDir)?.messageId, sentOf(result.runDir)?.settled], [`downstream-${b.id}`, "failure"]);
+    assert.equal(owesASend(result.runDir), false);
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
+  }
+});
+
+test("a failure whose notice was left uncertain is not sent again once the run stops again: only the new failure's notice goes, and only its receipt settles", async () => {
+  const box = install();
+  const rx = await receiver({ dedupe: true });
+  rx.state.mode = "silent";
+  try {
+    submit(box, "uncertain-a-then-b", "zephyr", { demoRun: true });
+    await drain(box, routeEnv(rx.url, "submitter", { MOCK_FAIL_STAGE: "record_matter_frame" }));
+    const [a] = deliveries(box);
+    assert.equal(a.state, "ambiguous", "guard: failure A's notice was not left uncertain");
+    const result = JSON.parse(readFileSync(join(box.qdir, "uncertain-a-then-b.failed.result"), "utf8"));
+    const failureB = await stopsAgain(result.runDir, result.runId);
+    rx.state.mode = "receipt";
+    const { out } = await pass(box, routeEnv(rx.url, "submitter", { CLEAROTRON_NOTICE_DEDUPE: "1" }), { now: () => Date.now() + 5 * 60_000 });
+    assert.deepEqual([out.sent, rx.records.length], [1, 1], "A's uncertain notice was sent again");
+    const b = deliveries(box).find((d) => d.id !== a.id);
+    assert.deepEqual([b.settle.failureId, rx.records[0].key], [failureB, b.id]);
+    assert.equal(deliveries(box).find((d) => d.id === a.id).state, "ambiguous", "A's record is the operator's, as it was");
+    assert.equal(sentOf(result.runDir)?.messageId, `downstream-${b.id}`);
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
+  }
+});
+
+test("a failure packet with no id is settled by no receipt: the person is told, and the run stays owed", async () => {
+  const box = install();
+  const rx = await receiver();
+  try {
+    submit(box, "no-id-stops", "zephyr", { demoRun: true });
+    // The route is down as the run stops; the packet is then one written before packets carried an id.
+    await drain(box, routeEnv("http://127.0.0.1:9/notices", "submitter", { MOCK_FAIL_STAGE: "record_matter_frame" }));
+    const result = JSON.parse(readFileSync(join(box.qdir, "no-id-stops.failed.result"), "utf8"));
+    const { paths } = await import("../run-record.mjs");
+    const { failureId, ...packet } = JSON.parse(readFileSync(paths(result.runDir).failure, "utf8"));
+    assert.ok(failureId, "guard: the runner's packet carried an id");
+    writeFileSync(paths(result.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
+    rx.state.mode = "receipt";
+    const { out } = await pass(box, routeEnv(rx.url, "submitter"));
+    assert.deepEqual([out.sent, out.confirmed], [1, 1]);
+    const told = deliveries(box).find((d) => d.state === "confirmed");
+    assert.deepEqual([told.settle.failureId, told.downstream?.messageId], [null, `downstream-${told.id}`]);
+    assert.equal(sentOf(result.runDir), null, "a receipt settled a failure it cannot be bound to");
+    assert.equal(owesASend(result.runDir), true);
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
+  }
+});
+
+test("a settle that names its failure is written only while that failure is the one owed", async () => {
+  const root = mkdtempSync(join(tmpdir(), "settle-expect-"));
+  try {
+    pinEnv(process.env, "CLEAROTRON_WORK_DIR", root);
+    const { settleSend } = await import("../send-settle.mjs");
+    const { paths } = await import("../run-record.mjs");
+    const runDir = join(root, "run");
+    mkdirSync(dirname(paths(runDir).failure), { recursive: true });
+    writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: "invented-2026-01-01-probe", sendPending: true }));
+    const run = { runId: "invented-2026-01-01-probe", runDir, slug: null, codename: null };
+    const failureB = await stopsAgain(runDir, run.runId);
+    const asFor = (failureId) => settleSend({ run, evidence: { messageId: "m-1" }, via: "notice-route", expect: { settled: "failure", failureId } });
+    assert.deepEqual(asFor("an-earlier-failure"), { alreadySent: false, statusFlipped: null, refused: "packet-changed" });
+    assert.deepEqual(asFor(null).refused, "packet-changed", "an unnamed failure matched");
+    assert.equal(sentOf(runDir), null);
+    assert.equal(asFor(failureB).alreadySent, false);
+    assert.deepEqual([sentOf(runDir).messageId, owesASend(runDir)], ["m-1", false]);
+    // A caller that names no failure (mark_sent) settles as before.
+    await stopsAgain(runDir, run.runId);
+    assert.equal(settleSend({ run, evidence: { messageId: "m-2" }, via: "test" }).alreadySent, false);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
   }
 });
