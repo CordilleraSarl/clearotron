@@ -18,6 +18,7 @@ import { FIRST_VIEW, nextView, keepsLooking, lookAfterMs, receiptRoute, type Rec
 import { resultPath, HOME } from '../nav/nav.config.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
 import type { ShellContext } from '../shell/AppShell.tsx'
+import { seesEverything } from '../shell/permissions.ts'
 
 /** "14:20" from a stamp, 24-hour, as everywhere in the portal; null when the stamp is unreadable. */
 function clockOf(iso: string | null): string | null {
@@ -170,8 +171,9 @@ export function OrderReceiptPanel({ reference, account, name, duration, go, onAn
 /** The receipt reopened from its address: /portal/orders/<reference>?account=<company>. */
 export function OrderReceipt({ ctx }: { readonly ctx: ShellContext }) {
   const { reference, account } = receiptRoute(window.location.pathname, window.location.search)
-  const company = account ?? ctx.owner
-  if (!reference || !company) {
+  // Someone who sees everything is answered for any order, so a link naming no company still opens for them.
+  const company = account ?? ctx.owner ?? (seesEverything(ctx.me) ? '' : null)
+  if (!reference || company === null) {
     return (
       <div className="screen">
         <div className="empty">
