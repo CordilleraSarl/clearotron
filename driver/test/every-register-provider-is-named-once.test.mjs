@@ -35,9 +35,9 @@ test("each table lists the registers in the order its readers print", () => {
 
 test("each entry is the object its provider's folder exports, never a copy", async () => {
   for (const id of TABLE_ORDER) {
-    const at = (file) => pathToFileURL(join(PROVIDERS_DIR, id, "src", file)).href;
+    const at = (file) => join(PROVIDERS_DIR, id, "src", file);
     const [{ adapter }, { REGISTER_GRANT }, { CAPABILITIES }] = await Promise.all(
-      [at("adapter.js"), at("register-grant.mjs"), at("capabilities.js")].map((u) => import(u)));
+      [at("adapter.js"), at("register-grant.mjs"), at("capabilities.js")].map((f) => import(pathToFileURL(f).href)));
     assert.equal(PROVIDERS[id], adapter, `${id}: adapter`);
     assert.equal(REGISTER_SERVERS[id], REGISTER_GRANT, `${id}: grant`);
     assert.equal(PROVIDER_CAPABILITIES[id], CAPABILITIES, `${id}: capabilities`);
