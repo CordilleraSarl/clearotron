@@ -7,7 +7,6 @@
 //   npx clearotron doctor                     report what this machine is configured for, and make one real engine call when an engine is configured
 //   npx clearotron doctor --probe-providers   …and spend one cheap paired call proving each register lane
 //   npx clearotron doctor --probe-connector   …and ask your own door whether an assistant could sign in
-//   npx clearotron doctor --detail            …and print each failed check's own message, for diagnosing it on this machine
 //
 // DESIGN RULES THIS FILE IS HELD TO
 //
@@ -294,11 +293,6 @@ const PROBE_PROVIDERS = has("--probe-providers");
 // this is never implied, it says what it is about to create before it creates it, and it reports what
 // it left behind.
 const PROBE_CONNECTOR = has("--probe-connector");
-// A FAILED CHECK SAYS WHAT FAILED, NOT WHAT THE MACHINE SAID (design, 2026-11-27). Doctor's output is user-facing even in
-// the administrator's own terminal: a failed check names the setting or service, what failed and the supported action,
-// and never prints an exception's message, an error code or a program's own output. That message is the detail a local
-// diagnosis needs, so `--detail` prints it under the check it belongs to. Doctor writes nothing, so it keeps no log.
-const DETAIL = has("--detail");
 
 // ── output ───────────────────────────────────────────────────────────────────────────────────────────
 // WEIGHT WHERE THE MEANING IS (ruling 2026-08-31). Every line here used to
@@ -358,25 +352,15 @@ const blocking = (s) => { blockers.push(s); say(`  ${style.warn("!")} ${s}`); };
 // contract.
 const inert = [];
 const inertSetting = (s) => { inert.push(s); say(`  ${style.warn("!")} ${s}`); };
-// The message a failed check held back: printed under it with `--detail`, counted otherwise, so the verdict can say once
-// that there is more to see and how. A check with nothing to hold back passes nothing and counts nothing.
-let detailsHeld = 0;
+// A FAILED CHECK SAYS WHAT FAILED, NOT WHAT THE MACHINE SAID (design, 2026-11-27). Doctor's output is user-facing even in
+// the administrator's own terminal: a failed check names the file, setting or service and the next action, and never
+// prints an exception's message, an error code or a program's own output. Nothing turns that text back on: the file,
+// setting or service the line names is where a local diagnosis starts.
 // A FILE THE PERSON MUST EDIT, AS THEY WOULD TYPE IT (design, 2026-11-27): under their home, from `~`; anywhere else, as
 // it is, because they have to find it.
 const shownPath = (p, home = homedir()) => {
   const r = p ? relative(home, p) : "";
   return r && !r.startsWith("..") && !isAbsolute(r) ? `~${sep}${r}` : p;
-};
-const detailOf = (raw) => {
-  if (raw == null || raw === false) return "";
-  const text = typeof raw === "object" ? String(raw.message ?? raw.code ?? raw.name ?? raw) : String(raw);
-  return text.replace(/\s+/g, " ").trim().slice(0, 400);
-};
-const detail = (raw) => {
-  const text = detailOf(raw);
-  if (!text) return;
-  if (DETAIL) say(`      ${style.dim(`detail: ${text}`)}`);
-  else detailsHeld++;
 };
 // EXPLANATORY PROSE, WRAPPED AT THE INDENT IT IS PRINTED AT ( — F17). Owner:
 // "the formatting is still quite bad — line after line". The specific bug is the wrap: paragraphs were
@@ -1385,7 +1369,15 @@ export function engineMenuState({ env = process.env, enginesDir = undefined, rea
  * reporting the old file's values as the new ones.
  */
 export function readEnvFile(path, { home = homedir() } = {}) {
-  if (!existsSync(path)) return {};
+  return readEnvFileAndVerdict(path, { home }).env;
+}
+
+/**
+ * readEnvFile, and whether the file is there and could not be read: the loader's own verdict on the same read, so
+ * doctor never asks a second reader whether the file it read was readable.
+ */
+function readEnvFileAndVerdict(path, { home = homedir() } = {}) {
+  if (!existsSync(path)) return { env: {}, unreadable: false };
   const env = {};
   // NAMED, NOT INFERRED. This passed `repoRoot: dirname(path)` and relied on the
   // loader's resolution happening to land back on the same directory. It did — through the LEGACY
@@ -1399,8 +1391,8 @@ export function readEnvFile(path, { home = homedir() } = {}) {
   // name promises something it does not reach. With `home` here, an arm can plant a home that HAS a
   // settings file, ask THIS function for a different one, and fail on any machine if the inference
   // returns. It is not a knob — no caller passes it.
-  loadEnvLocal({ env, file: path, home, note: () => {} });
-  return env;
+  const read = loadEnvLocal({ env, file: path, home, note: () => {} });
+  return { env, unreadable: read?.reason === "unreadable" };
 }
 
 /** preflightCredentials, made to actually check the provider the candidate names. See the header. */
@@ -1676,7 +1668,7 @@ export async function runCheck() {
   await sayNode();
   await sayEngine({ ...ctx, turnLeads });
   await sayHowToRun();
-  await sayEnvFile();
+  await sayEnvFile(ctx);
   await sayConfigurationStore(ctx);
   await sayCustomInstructions(ctx);
   await sayRegister(ctx);
@@ -1713,7 +1705,18 @@ async function readCheckContext() {
   // Deployment — can name the box from the file the units load. A box line sourced from this command's
   // own shell would be the defect it is there to catch: the shell and the units' file can disagree,
   // and it is the units' value that decides what the running service thinks it is.
-  const fileEnv = readEnvFile(READ_ENV_PATH());
+  // A SETTINGS FILE THAT IS THERE AND CANNOT BE READ IS A FAILED CHECK, NEVER A FILE OF UNSET SETTINGS (design,
+  // 2026-11-27). It was ticked, every setting in it then read as unset, and the install was told it had chosen nothing,
+  // exit 0. So the file that failed is named, nothing in it is reported absent, and a setting this command's own
+  // environment carries is still read: it never came from the file.
+  const settingsPath = READ_ENV_PATH();
+  const { env: fileEnv, unreadable: settingsFileUnread } = readEnvFileAndVerdict(settingsPath);
+  const settingsUnread = settingsFileUnread
+    ? `${shownPath(settingsPath)} could not be read, so none of its settings were read. Make it readable by the user `
+      + `the services run as, then run \`${invoke("doctor")}\` again.`
+    : null;
+  /** A setting this command cannot judge absent: the settings file was not read and the environment does not carry it. */
+  const unjudged = (k) => Boolean(settingsUnread) && !present(process.env[k]);
   const unitDir = join(homedir(), ".config", "systemd", "user");
   const { BACKGROUND_UNITS, startPaths } = await import(pathToFileURL(join(REPO, "bin", "start.mjs")).href);
   const hosted = BACKGROUND_UNITS.some((u) => existsSync(join(unitDir, u)));
@@ -1809,8 +1812,10 @@ async function readCheckContext() {
   // A HOSTED BOX WHOSE UNIT ENVIRONMENT COULD NOT BE READ ANSWERS `null`, NEVER `fileEnv`. Falling back
   // to the CLI's file there would reproduce this defect exactly, and silently — `unitEnvironment`
   // already distinguishes a failure to look, and the door check below refuses to claim a lockout on one.
-  const serviceKnown = !hosted || unitEnv?.known === true;
-  const serviceFileEnv = hosted ? (unitEnv?.known === true ? unitEnv.env : null) : fileEnv;
+  // With no units the services are the children of `clearotron start` and read the same settings file, so a file that
+  // could not be read leaves what they read unknown, exactly as unreadable units do.
+  const serviceKnown = hosted ? unitEnv?.known === true : !settingsUnread;
+  const serviceFileEnv = hosted ? (unitEnv?.known === true ? unitEnv.env : null) : (settingsUnread ? null : fileEnv);
   const effectiveForService = (k, names = [k]) => {
     for (const name of names) {
       if (present(process.env[name])) return { v: process.env[name], from: "environment", name };
@@ -1915,7 +1920,6 @@ async function readCheckContext() {
     }
     else {
       problem(probeFailureText(v));
-      detail(v.detail);   // the engine's own output: a local diagnosis, under --detail
     }
   };
 
@@ -1968,6 +1972,7 @@ async function readCheckContext() {
     } else ok(`nothing a search is refused for at order time is missing from ${serviceEnvLabel}`);
   };
   const sayResearch = () => {
+    if (!hosted && !serviceKnown) return;   // the settings file the services read could not be read; the opening says so
     say("\n  Research provider");
     // The same reader as the register, for the same reason: this is a key the services use.
     const px = serviceKnown ? serviceValue("PERPLEXITY_API_KEY") : null;
@@ -1975,13 +1980,13 @@ async function readCheckContext() {
     else if (px) ok(`PERPLEXITY_API_KEY present (${px.from}) — presence only; add --probe-providers to prove it answers`);
     else info("PERPLEXITY_API_KEY is not set — the three clearance searches carry the common-law grid and cannot switch it off, so a clearance stops before it starts, and names the missing key; a Knockout search still runs and discloses the half it skipped");
   };
-  return { fileEnv, unitDir, startPaths, hosted, unitEnv, effective, serviceEnvLabel, serviceEnvFile, serviceKnown,
+  return { fileEnv, settingsPath, settingsUnread, unjudged, unitDir, startPaths, hosted, unitEnv, effective, serviceEnvLabel, serviceEnvFile, serviceKnown,
     serviceFileEnv, effectiveForService, servicesRead, engineEnvOf, engSel, engineId, engSpec, serviceValue,
     engineChosen, binSet, binSetting, bin, invEnv, installMode, runTurn, sayTurn, atOrder,
     sayWillASearchRun, sayResearch, turnRan: () => probeTurnRan };
 }
 
-async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, runTurn, sayTurn, atOrder,
+async function sayOpening({ hosted, serviceKnown, settingsUnread, engineId, engineChosen, bin, runTurn, sayTurn, atOrder,
   sayWillASearchRun, sayResearch }) {
   // ── THE OPENING: WHETHER A SEARCH CAN RUN, WHAT STOPS IT, AND THE NEXT ACTION ─────────────────────
   //
@@ -2015,7 +2020,10 @@ async function sayOpening({ hosted, serviceKnown, engineId, engineChosen, bin, r
   // none, so setup does not reach either. The record is the one `clearotron status` reads; `start` writes `envFile`.
   const { readRunning } = await import(pathToFileURL(join(REPO, "shared", "running-start.mjs")).href);
   const startRunning = leadIsTheRefusal && readRunning().some((r) => !r.demo && typeof r.envFile === "string" && r.envFile !== "");
-  const refusal = leadIsTheRefusal ? cannotSearchYet(missingWords, invoke("install"), startRunning ? { kind: "start" } : null) : null;
+  // A SETTINGS FILE THE SERVICES READ AND THIS COMMAND COULD NOT is the opening, and the verdict's first line: until it
+  // is read, what a search needs is not known either way.
+  const refusal = !hosted && settingsUnread ? settingsUnread
+    : leadIsTheRefusal ? cannotSearchYet(missingWords, invoke("install"), startRunning ? { kind: "start" } : null) : null;
   if (refusal) say(`  ${refusal}`);
   else {
     let turn = null;
@@ -2056,7 +2064,7 @@ async function sayDeployment({ fileEnv, hosted, unitEnv }) {
       + "archive's own build-info.json rather than from a checkout — currency is not a question this can answer");
     else info("not a git checkout, so currency is not a question this can answer");
   }
-  else { warn("could not tell whether this deployment is current"); detail(cur.detail); }
+  else warn("could not tell whether this deployment is current");
   if (cur.state !== "not-a-checkout" && cur.state !== "no-upstream" && cur.state !== "pinned") {
     info("this does not fetch — the count is against the last fetch, not against the remote right now");
   }
@@ -2152,7 +2160,7 @@ async function sayDeployment({ fileEnv, hosted, unitEnv }) {
     // A PACKAGED INSTALL HAS NO TREE TO BE BEHIND. npm replaces the whole package on an update, so this
     // question belongs to a checkout, and on a package it is a `!` nothing can ever clear.
     if (PACKAGED) info("running programs against a checkout's tree: not applicable to a packaged install");
-    else { warn("could not tell whether running programs are on the current tree"); detail(running.detail); }
+    else warn("could not tell whether running programs are on the current tree");
   }
 
   // ── AND THE MORE DANGEROUS ANSWER: A DIFFERENT TREE, NOT AN OLDER ONE ──────────────────────────────
@@ -2203,6 +2211,17 @@ async function sayNode() {
 
 async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, engineEnvOf, engSel, engineId,
   engSpec, binSet, binSetting, bin, invEnv, installMode, runTurn, sayTurn, turnLeads }) {
+  // With no units, the services read the settings file this command could not, so only the AI this command's own
+  // environment chooses is known (it wins over the file); the rest is not, and the opening says why.
+  if (!hosted && !serviceKnown) {
+    if (!engSel) return;
+    say("\n  Engine");
+    if (!engSpec) problem(`CLEAROTRON_AI="${engSel.v}" (${engSel.from}) is not an engine this driver ships — one of: `
+      + `${Object.keys(ENGINE_BINARIES).join(", ")}. The run refuses on this by itself (gateway.selectEngine); `
+      + "nothing can be checked here until it names an adapter.");
+    else ok(`${engineId} (${engSel.from}) — ${engSpec.label}`);
+    return;
+  }
   say("\n  Engine");
   // This block used to read CLEAROTRON_CLAUDE_PATH unconditionally, under the heading "Engine binary", on a
   // box that may be running codex — so it reported the wrong variable and could pass for the wrong
@@ -2378,7 +2397,6 @@ async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, e
       info(`Could not compare this machine against what the engine last recorded. `
         + `That comparison is what catches a settings page reading healthy while a search will not start, `
         + `so this run has not checked it either way.`);
-      detail(e);
     }
 
     // item 5 — WHICH BILLING LANE, reported rather than left to be inferred from a variable's
@@ -2479,8 +2497,9 @@ async function sayHowToRun() {
   }
 }
 
-async function sayEnvFile() {
+async function sayEnvFile({ settingsUnread }) {
   say("\n  .env");
+  if (settingsUnread) { problem(settingsUnread); return; }
   // ── THE FILE MOVED, SO ASK THE SAME QUESTION THE LOADER ASKS ─────────────────────────────────────
   //
   // `.env` now resolves to `~/.config/clearotron/.env`, and an install configured before that ruling has
@@ -2510,16 +2529,6 @@ async function sayEnvFile() {
         + "answers that name those directories are the paths above");
     } else info(`none at ${ENV_PATH} — run: ${invoke("install")}`);
   } else {
-    // A FILE THAT IS THERE AND CANNOT BE READ IS NOT A FILE THAT IS FINE. It used to be ticked, and every setting in it
-    // then read as unset, so the install was told it had chosen nothing and the verdict exited 0.
-    let unreadable = null;
-    try { accessSync(ENV_PATH, constants.R_OK); readFileSync(ENV_PATH); } catch (e) { unreadable = e; }
-    if (unreadable) {
-      problem(`${shownPath(ENV_PATH)} could not be read, so none of its settings were read. Make it readable by the user `
-        + `the services run as, then run \`${invoke("doctor")}\` again.`);
-      detail(unreadable);
-      return;
-    }
     ok(`${shownPath(ENV_PATH)}`);
     const mode = statSync(ENV_PATH).mode & 0o777;
     if (mode & 0o077) warn(`mode ${mode.toString(8)} — it holds credentials; 600 is the mode for that`);
@@ -2527,13 +2536,15 @@ async function sayEnvFile() {
 }
 
 async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, serviceEnvLabel, serviceEnvFile,
-  serviceKnown, serviceFileEnv, effectiveForService }) {
+  serviceKnown, serviceFileEnv, effectiveForService, unjudged }) {
   // — WHERE CONFIGURATION RESOLVES FROM, and whether that is inside the checkout.
   //
   // Unset is a REPORTABLE STATE, not silence: unset means this install is running our bundled demo
   // customers and our doctrine, which is a fine way to start and a bad thing to discover later from a
   // clearance that used a framework the reader did not choose. Inside-the-checkout is worse than unset
   // and is called a problem, because it is the state whose cost only arrives at the next `git pull`.
+  // Nothing in this section is known on a box with no units while every setting it reads sits in an unread file.
+  if (!hosted && ["CLEAROTRON_CUSTOMERS_DIR", "CLEAROTRON_INSTRUCTIONS_DIR", "PROFILE_REPO_ROOT", "CLEAROTRON_RECIPES_DIR"].every(unjudged)) return;
   say("\n  Configuration store");
   {
     const inCheckout = (p) => isInsideCheckout(p, REPO);
@@ -2554,7 +2565,7 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
       // told about the retired one goes looking for a variable they never touched. That second case is
       // the one measured, and it is why this is not a blanket rename.
       const e = effective(name);
-      if (!e) { info(`${name} is not set — ${what}`); continue; }
+      if (!e) { if (!unjudged(name)) info(`${name} is not set — ${what}`); continue; }
       if (!existsSync(e.v)) problem(`${e.name}=${e.v} (${e.from}) does not exist — this is a hard error at run time, not a fallback`);
       else if (inCheckout(e.v)) problem(`${e.name}=${e.v} (${e.from}) is INSIDE the checkout — edits here become local modifications to our files, and \`git pull\` will conflict`);
       else ok(`${e.name}=${e.v} (${e.from})`);
@@ -2574,7 +2585,8 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
     // none, every customer silently resolved to the bundled demo roster, and no operator running this
     // command by hand would have seen it. The authority for what a RUN used is that run's own
     // `profile-store` line, not this one.
-    try {
+    // Where the store's setting is in a settings file that could not be read, which store this resolves is not known.
+    if (!unjudged("CLEAROTRON_CUSTOMERS_DIR")) try {
       const mod = await import(`../driver/profiles.mjs?doctor=${Date.now()}`);
       const r = mod.profileStoreResolution();
       const where = `profiles resolve from ${r.store}`;
@@ -2694,12 +2706,10 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
         } catch (e) {
           problem(`the project overlays did not load — a project `
             + `under an unknown brand owner stops the whole tree, so this is not "no projects"`);
-          detail(e);
         }
       } catch (e) {
         problem(`the roster did not load — this is a refusal to `
           + `load, not an empty store, and every customer resolution fails until it is fixed`);
-        detail(e);
       }
       // ── CRITERION 3 OF — DO THE TWO SURFACES SERVE ONE STORE? ────────────────
       //
@@ -2755,10 +2765,10 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
             + "variable, so this catches a second store appearing in the code, not two environments disagreeing");
         }
       } catch (e) {
-        info("could not compare the settings surface's store with the roster's — a failure to look, not a finding"); detail(e);
+        info("could not compare the settings surface's store with the roster's — a failure to look, not a finding");
       }
     } catch (e) {
-      info("could not resolve the profile store from here — read a run's `profile-store` line instead"); detail(e);
+      info("could not resolve the profile store from here — read a run's `profile-store` line instead");
     }
 
     // ── AND WHERE A SAVE GOES ONCE IT IS COMMITTED ─────────────────────────────────────────────────────
@@ -2828,7 +2838,7 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
   // whether or not the env file names it. So "off" is only ever true of a hosted box. This read the env
   // file alone, and on a local install started before `start` wrote the store there, it told a portal
   // that was listing saved searches that they were off.
-  if (!hosted || serviceKnown) {
+  if ((!hosted || serviceKnown) && !unjudged("CLEAROTRON_RECIPES_DIR")) {
     // Layered as effectiveForService layers it — this command's environment over the services' file — so
     // the repository root is read from the same place the store directory is.
     let storeEnv = { ...(serviceFileEnv ?? {}), ...process.env };
@@ -2861,14 +2871,13 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
         if (unreadable) {
           warn(`saved searches cannot be read from ${shownPath(recipesDir)}. Every company's saved searches fail `
             + "to load, in the portal and the connector, until it is fixed");
-          detail(unreadable);
         } else ok(`saved searches are read from ${recipesDir}${handedBy}, and saves are committed in ${reach.repo}`);
       }
     }
   }
 }
 
-async function sayCustomInstructions({ hosted, unitEnv, serviceKnown, effectiveForService }) {
+async function sayCustomInstructions({ hosted, unitEnv, serviceKnown, effectiveForService, unjudged }) {
   // — WHICH DOCTRINE FILES THIS INSTALL OVERRIDES, AND WHETHER OURS HAVE MOVED UNDER THEM.
   //
   // The report itself shipped in and worked, reachable only as `npm run doctrine-report` — a name
@@ -2884,6 +2893,8 @@ async function sayCustomInstructions({ hosted, unitEnv, serviceKnown, effectiveF
   //
   // REPORTS, NEVER JUDGES: nothing here sets `problem()`. Drift is information for the reader, not a
   // fault in their install, and a doctor that called their own overrides broken would be wrong.
+  // Whether this install overrides any instructions is not known while the file that would name the folder is unread.
+  if (unjudged("CLEAROTRON_INSTRUCTIONS_DIR")) return;
   say("\n  Custom instructions");
   try {
     const report = overlayReport({ baseRoot: config.skillsBaseDir, overlayRoot: config.skillsOverlayDir });
@@ -2913,11 +2924,14 @@ async function sayCustomInstructions({ hosted, unitEnv, serviceKnown, effectiveF
     // An unreadable overlay THROWS by design (config.resolveSkillPath refuses rather than falling back
     // to the product's copy). Surfaced here rather than allowed to abort the whole check: the doctor's
     // job is to report every section, and a section that kills the run tells the reader least.
-    problem("the custom instructions could not be read"); detail(e);
+    problem("the custom instructions could not be read");
   }
 }
 
-async function sayRegister({ unitEnv, serviceKnown, serviceValue }) {
+async function sayRegister({ hosted, unitEnv, serviceKnown, serviceValue }) {
+  // With no units, the services read the settings file this command could not: nothing here is known, and the
+  // opening says why.
+  if (!hosted && !serviceKnown) return;
   say("\n  Register provider");
   // WHAT THE SERVICES WILL SEARCH, READ AS THE ORDER-TIME CHECK BELOW READS IT. This section asked the
   // shell and this command's .env, so in a fresh terminal on a hosted box it told a working install that
@@ -3106,7 +3120,7 @@ async function sayPortalBundle() {
   } catch (e) {
     // A could-not-look, and it is NOT a pass: the reader learns nothing about whether the portal can
     // render, which is the same position they were in before this section existed.
-    blocking("the portal bundle could not be read, so whether /portal can render is unknown"); detail(e);
+    blocking("the portal bundle could not be read, so whether /portal can render is unknown");
   }
 }
 
@@ -3213,6 +3227,7 @@ async function sayPortalTriggerKey({ hosted, serviceKnown, effectiveForService }
 }
 
 async function sayPortalSignIn({ startPaths, hosted, unitEnv, serviceEnvFile, serviceKnown, effectiveForService }) {
+  if (!hosted && !serviceKnown) return;   // the settings file the services read could not be read; the opening says so
   say("\n  Portal sign-in");
   {
     const { authView } = await import("../driver/portal-config-view.mjs");
@@ -3331,7 +3346,6 @@ async function sayPortalSignIn({ startPaths, hosted, unitEnv, serviceEnvFile, se
       } else if (unreadable) {
         problem(`the guest list at ${shownPath(grantsFile)} could not be read — the portal refuses `
           + `every request while that is true, and this is a failure to look rather than an empty list`);
-        detail(unreadable);
       } else if (!admitted.length) {
         // PRESENT-AND-WRONG vs ABSENT. A configured portal that grants nobody is wrong: every page
         // refuses and the symptom reads as a broken login. A box that has configured neither is a
@@ -3356,7 +3370,7 @@ async function sayPortalSignIn({ startPaths, hosted, unitEnv, serviceEnvFile, se
         }
       }
     } catch (e) {
-      info("could not judge who may use the portal — a failure to look, not a finding"); detail(e);
+      info("could not judge who may use the portal — a failure to look, not a finding");
     }
   }
 }
@@ -3429,7 +3443,7 @@ async function sayProvenProviders({ effective }) {
       }
     } catch (e) {
       // A probe that could not run says so. It is not evidence about the credential either way.
-      info("the register lane could not be probed"); detail(e);
+      info("the register lane could not be probed");
     } finally {
       // EVERY ONE PUT BACK, including those that were absent: the sections below read this process's
       // environment, and must not report a value from the file as though the shell had set it.
@@ -3447,7 +3461,10 @@ async function sayProvenProviders({ effective }) {
   }
 }
 
-async function sayFileLocations({ effective, serviceValue }) {
+async function sayFileLocations({ hosted, effective, serviceValue, unjudged }) {
+  // On a box with no units, every setting this section reads may sit in a settings file that could not be read; when the
+  // environment carries none of them, nothing here is known. (Units name the notice route in their own file.)
+  if (!hosted && ["CLEAROTRON_REPORTS_DIR", "CLEAROTRON_WORK_DIR", "CLEAROTRON_QUEUE_DIR", "CLEAROTRON_NOTICE_URL"].every(unjudged)) return;
   say("\n  Where files are stored");
   // Each entry is a FUNCTION, called only on the branch that prints it, so a getter is read at access
   // time and never captured as a constant here. The reader of this command is deciding what to
@@ -3472,7 +3489,7 @@ async function sayFileLocations({ effective, serviceValue }) {
     // — the name in every one of these lines is the spelling that ANSWERED, or the current one
     // when nothing did. Naming `k` regardless would tell an operator to set a retired variable, and
     // would report a value found under the new name as though it had been found under the old.
-    if (!e) { info(describeUnset(k)); continue; }
+    if (!e) { if (!unjudged(k)) info(describeUnset(k)); continue; }
     if (!existsSync(e.v)) warn(`${e.name}=${e.v} (${e.from}) does not exist yet`);
     else ok(`${e.name}=${e.v} (${e.from})`);
   }
@@ -3482,7 +3499,7 @@ async function sayFileLocations({ effective, serviceValue }) {
   const route = noticeRoute(Object.fromEntries(["CLEAROTRON_NOTICE_URL", "CLEAROTRON_NOTICE_AUDIENCES", "CLEAROTRON_NOTICE_DEDUPE"]
     .map((k) => [k, read(k)?.v]).filter(([, v]) => v != null)));
   const line = noticeRouteLine(route);
-  ({ ok, info, warn })[line.level](line.text);
+  if (hosted || !unjudged("CLEAROTRON_NOTICE_URL")) ({ ok, info, warn })[line.level](line.text);
 }
 
 async function sayBackgroundUnits({ hosted }) {
@@ -3519,7 +3536,6 @@ async function sayBackgroundUnits({ hosted }) {
     else {
       warn(`could not tell whether lingering is on for ${who}. That is this command `
         + "failing to look, not a report that it is off.");
-      detail(lingerWhy);
     }
   }
 }
@@ -3605,9 +3621,8 @@ async function sayStartButtonPath({ hosted, unitEnv }) {
       if (lane.state === "pass") ok(lane.message);
       else if (lane.state === "fail") problem(lane.message);
       else info(lane.message);
-      detail(lane.detail);
     }
-  } catch (e) { warn("the submit lane could not be read"); detail(e); }
+  } catch { warn("the submit lane could not be read"); }
 }
 
 async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effective, serviceFileEnv,
@@ -3643,7 +3658,6 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
         blocking(`the revocation list at ${shownPath(dl)} cannot be read — this install cannot `
           + "check whether keys have been revoked, so it is refusing all of them. "
           + `Run \`${invoke("start")}\` — it creates the list.`);
-        detail(e);
       }
     }
   }
@@ -3713,7 +3727,6 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
   } catch (e) {
     info("could not check the client door's access log — this is a report "
       + "that this command could not look, not that the log is missing.");
-    detail(e);
   }
 
   try {
@@ -3763,7 +3776,6 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
     if (doorAskFailed && existsSync(join(unitDir, doorUnit))) {
       warn(`could not ask systemd whether ${doorUnit} is running. That is this command `
         + "failing to look, not a report that the door is down.");
-      detail(doorAskFailed);
     }
     // THE RESTART COUNT IS HISTORY, AND THIS IS WHERE IT IS WORTH READING. It
     // used to be printed by `start --background`, where it can only ever be zero: that path either
@@ -3855,7 +3867,7 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
     else if (said.level === "problem") problem(said.text);
     else info(said.text);
     let grantsForKeys = null;
-    try { grantsForKeys = readGrantsFile(); } catch (e) { warn("issued-key records unreadable"); detail(e); }
+    try { grantsForKeys = readGrantsFile(); } catch { warn("issued-key records unreadable"); }
     const report = connectKeyReport(grantsForKeys ?? {}, { revoked: (jti) => revokedCheck(jti) });
     if (!report.rows.length) info("no issued connect key is on record (keys minted before records were kept do not appear here)");
     for (const r of report.rows) {
@@ -3904,7 +3916,6 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
     if (reach.state === "pass") ok(reach.message);
     else if (reach.state === "fail") problem(reach.message);
     else info(reach.message);
-    detail(reach.detail);
 
     // ── AND IS IT THE AUDIENCE THIS INSTALL CHECKS AGAINST? ───────────────────────────────────────
     //
@@ -3929,7 +3940,7 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
         // A COULD-NOT-LOOK IS SAID, NOT RAISED. The line above has already reported the address as
         // unreachable; repeating it as a second failure teaches the reader that this section
         // double-counts. It still states what was NOT established, which is the whole job.
-        else if (v.kind === "could-not-look") { info(v.message); detail(v.detail); }
+        else if (v.kind === "could-not-look") info(v.message);
         // NO ACCESS IN FRONT OF THE CLIENT DOOR IS A POSTURE, NOT A FAULT (ruling 2026-09-08).
         //
         // This is the CLIENT connector's address, and how a client reaches it is the client's decision:
@@ -3998,11 +4009,10 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
         if (made) info(`${made} throwaway OAuth client(s) were created by this probe, including the control.`);
       }
     }
-  } catch (e) { warn("the client-connector state could not be read"); detail(e); }
+  } catch { warn("the client-connector state could not be read"); }
 }
 
 function sayVerdict(probeTurnRan, refusal = null) {
-  if (detailsHeld) info(`Run \`${invoke("doctor")} --detail\` to see each failed check's own message.`);
   say("");
   // A BLOCKER THAT STOPS EVERY SEARCH IS SAID FIRST IN THE VERDICT TOO, WITH ITS FIX. The exit status stays the
   // contract below, so a reader who reads only the end is the one this is for. Where the opening was the
