@@ -202,3 +202,16 @@ test("a run's question route is frozen once, kept on resume, and the report cred
     assert.deepEqual(fallbackReport(runDir), { line: null, answered: 0, failed: 0 }, "none asked: no work is attributed to the fallback");
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
+
+test("an order says before it starts that Perplexity will answer its deepest questions, or which stop it would meet", async () => {
+  const { orderResearchNotice } = await import("../web-research.mjs");
+  const lacking = () => new Set(["gpt-6.1-terra", "gpt-6.1-sol", "gpt-6-luna"]);
+  const OWN_CODEX = { CLEAROTRON_WEB_RESEARCH: "own", CLEAROTRON_AI: "openai-agent" };
+  assert.deepEqual(orderResearchNotice({ product: "full-country-search", env: { ...OWN_CODEX, CLEAROTRON_WEB_RESEARCH_FALLBACK: "perplexity", PERPLEXITY_API_KEY: "k" }, readCatalog: lacking }),
+    { notice: "Perplexity will handle any questions that need the deepest research level." });
+  assert.deepEqual(orderResearchNotice({ product: "full-country-search", env: OWN_CODEX, readCatalog: lacking }),
+    { stop: "This Codex sign-in lacks the model needed for Full country. Configure the Perplexity fallback or choose a supported AI setup. (CLEAROTRON_WEB_RESEARCH_FALLBACK=perplexity, with PERPLEXITY_API_KEY)" });
+  assert.equal(orderResearchNotice({ product: "multi-country-focus-search", env: OWN_CODEX, readCatalog: lacking }), null);
+  assert.equal(orderResearchNotice({ product: "full-country-search", env: { CLEAROTRON_WEB_RESEARCH: "perplexity", CLEAROTRON_AI: "openai-agent" }, readCatalog: lacking }), null, "Perplexity installs show nothing");
+  assert.equal(orderResearchNotice({ product: "full-country-search", env: { CLEAROTRON_WEB_RESEARCH: "own", CLEAROTRON_AI: "anthropic-agent" }, readCatalog: () => { throw new Error("not read"); } }), null, "Claude's catalog is not read");
+});

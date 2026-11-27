@@ -176,6 +176,23 @@ export function ownSearchRoute({ policy, engine, catalog, env = process.env }) {
     + "Use Claude, or a Codex sign-in that offers it, then start the search again." };
 }
 
+/**
+ * WHAT AN ORDER SHOWS BEFORE IT STARTS, for the screens that take it (the portal, the connector): `{ notice }` where
+ * Perplexity will answer its deepest questions, `{ stop }` with the words of a stop the run would meet, or null. It
+ * reads the installation's setting and the Codex sign-in's catalog as the run's opening step does, with no model call;
+ * the run resolves and freezes its own route when it opens. `readCatalog` is engine/codex-catalog.mjs's. IMPURE through
+ * `readCatalog`.
+ */
+export function orderResearchNotice({ product, env = process.env, engine = null, readCatalog }) {
+  const install = installWebResearch(env);
+  if (install.service !== "own") return null;
+  const name = String(engine ?? env?.CLEAROTRON_AI ?? DEFAULT_ENGINE).trim().toLowerCase() || DEFAULT_ENGINE;
+  if (name !== "openai-agent") return null;
+  const route = ownSearchRoute({ policy: { level: product }, engine: name, catalog: readCatalog({ env }), env });
+  if (route.route === "perplexity") return { notice: route.disclosure };
+  return route.stop ? { stop: route.why.replace(/^\[preflight\] /, "") } : null;
+}
+
 /** Freeze the run's question route, once: a route already frozen is never rewritten. Returns the route that stands. IMPURE. */
 export function freezeQuestionRoute(runDir, route) {
   const held = questionRoute(runDir);
