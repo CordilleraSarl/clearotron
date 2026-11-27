@@ -55,6 +55,19 @@ test("a client's own order is told it was not started, in the shipped words, wit
   assert.match(p.reason, /token expired/, "the reason stays on the packet as a field for staff");
 });
 
+test("a client's order refused at intake is told it was not started, with its kind and none of the check's words", async () => {
+  const job = order({ profileKey: "demo-brand-owner", clientPrincipal: true });
+  await intakeNotify("intake-agent", "job-h", job, { classify: "clarify", errors: ["runCaps.dailyRuns=3 for demo-brand-owner"] }, "run-cap");
+  const p = packet("intake-job-h.failed");
+  assert.equal(p.text, clientNotStartedText(job, "VELLOQUIN"));
+  assert.deepEqual([p.reasonKind, p.errors], ["run-cap", []]);
+  assert.doesNotMatch(JSON.stringify(p), /runCaps|dailyRuns|job-h\.failed|queue/);
+  await intakeNotify("intake-agent", "job-i", order({ profileKey: "demo-brand-owner" }), { classify: "clarify", errors: ["no goods"] }, "details");
+  const staff = packet("intake-job-i.failed");
+  assert.match(staff.text, /needs clarification before it can run: no goods/, "an order staff placed keeps the check's words");
+  assert.deepEqual([staff.reasonKind, staff.errors], ["details", ["no goods"]]);
+});
+
 test("an intake refusal and a duplicate park carry the account too; an unreadable order carries none", async () => {
   await intakeNotify("intake-agent", "job-e", order({ profileKey: "demo-brand-owner" }), { classify: "clarify", errors: ["no goods"] });
   assert.equal(packet("intake-job-e.failed").account, "demo-brand-owner");

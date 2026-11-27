@@ -66,6 +66,7 @@
             "terminal",
             "runId",
             "reason",
+            "reasonKind",
             "updatedAt"
           ],
           "additionalProperties": false,
@@ -107,6 +108,21 @@
               "type": [
                 "string",
                 "null"
+              ]
+            },
+            "reasonKind": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "run-cap",
+                "details",
+                "policy",
+                "setup",
+                "duplicate",
+                "other",
+                null
               ]
             },
             "updatedAt": {
@@ -1288,6 +1304,7 @@
             "terminal",
             "runId",
             "reason",
+            "reasonKind",
             "updatedAt",
             "account",
             "organisation"
@@ -1325,6 +1342,21 @@
               "type": [
                 "string",
                 "null"
+              ]
+            },
+            "reasonKind": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "run-cap",
+                "details",
+                "policy",
+                "setup",
+                "duplicate",
+                "other",
+                null
               ]
             },
             "updatedAt": {
@@ -1382,6 +1414,7 @@
             "terminal",
             "runId",
             "reason",
+            "reasonKind",
             "updatedAt"
           ],
           "additionalProperties": false,
@@ -1417,6 +1450,21 @@
               "type": [
                 "string",
                 "null"
+              ]
+            },
+            "reasonKind": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "run-cap",
+                "details",
+                "policy",
+                "setup",
+                "duplicate",
+                "other",
+                null
               ]
             },
             "updatedAt": {

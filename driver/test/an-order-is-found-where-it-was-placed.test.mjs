@@ -66,8 +66,10 @@ test("the portal answers each person for their own company's orders only", async
 
   const refused = await get(CLIENT_A, "portal-a-refused", "demo-brand-owner");
   assert.equal(refused.status, 200, JSON.stringify(refused.json));
-  assert.deepEqual([refused.json.state, refused.json.runId, refused.json.reason],
-    ["refused", null, "demo-brand-owner is demo data and cannot run a real clearance."]);
+  // The reason as written is the operator's; the company is told which kind of refusal it was. An order refused before
+  // the runner recorded a kind is `other`.
+  assert.deepEqual([refused.json.state, refused.json.runId, refused.json.reason, refused.json.reasonKind],
+    ["refused", null, null, "other"]);
   assert.equal(refused.json.account, undefined, "a company's own answer does not echo the account back");
   const running = await get(CLIENT_A, "portal-a-running", "demo-brand-owner");
   assert.deepEqual([running.json.state, running.json.runId], ["running", "tmp41-found-probe-2026-11-26-quiet-heron"]);
@@ -80,6 +82,8 @@ test("the portal answers each person for their own company's orders only", async
   // Someone who sees everything is answered for every order, with the account it belongs to.
   const staff = await get(STAFF, "portal-b-waiting");
   assert.deepEqual([staff.status, staff.json.state, staff.json.account], [200, "waiting", "zephyr"]);
+  const staffRefused = await get(STAFF, "portal-a-refused");
+  assert.equal(staffRefused.json.reason, "demo-brand-owner is demo data and cannot run a real clearance.", "staff read the reason as written");
 });
 
 test("a queue that would not open is not a missing order, for a company's person as for staff", async () => {

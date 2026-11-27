@@ -278,6 +278,14 @@ const server = createServer((req, res) => {
     res.end(JSON.stringify(rosterNow))
     return
   }
+  // THE ORDER'S RECEIPT, which the queued screen follows by the reference Start returned (screens/OrderReceipt.tsx).
+  // Waiting, always: the receipt's own states are driven by scripts/order-receipt-render-check.mjs.
+  if (base.startsWith('/portal/api/orders/')) {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify({ reference: decodeURIComponent(base.slice('/portal/api/orders/'.length)), state: 'waiting', terminal: false,
+      runId: null, reason: null, reasonKind: null, updatedAt: new Date().toISOString() }))
+    return
+  }
   if (ROUTES[base] !== undefined) {
     res.writeHead(200, { 'content-type': 'application/json' })
     // /me carries whatever phase two has set about the engine; every other route is a constant. Merged

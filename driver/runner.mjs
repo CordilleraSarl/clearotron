@@ -387,22 +387,28 @@ function noticeAccount(job) {
 // self-contained event packet — no gateway, no messaging binary, no run dir needed. NEVER throws; the
 // .failed markers are written BEFORE this runs, so a notify failure can never lose the rejection
 // record. Returns the audit-trail outcome string appended to the .reason file (`notify: <outcome>`).
-async function intakeNotify(agentId, base, job, v) {
+async function intakeNotify(agentId, base, job, v, reasonKind = "other") {
   // plain optional chaining throughout: `Array.isArray(x) && ...` yields boolean false (NOT nullish) when
   // marks is absent, which would swallow the `?? base` fallback in exactly the null-job case it exists for.
   const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
   const what = v?.classify === "clarify"
     ? `needs clarification before it can run: ${v.errors.join("; ")}`
     : `was rejected at intake: ${(v?.errors ?? ["unparseable job file"]).join("; ")}`;
-  const text = `⚠️ Clearotron request "${mark}" ${what}. Nothing has been searched or delivered. ` +
-    `Job parked as ${base}.failed in the ${agentId} queue.`;
+  // A CLIENT'S ORDER IS TOLD IN THE CLIENT'S WORDS, as preRunFailNotify tells it (design, 2026-11-27). The check's own
+  // words name the installation's setup and the queue, which are staff's: the client's notice carries the shipped
+  // not-started sentence, `reasonKind` says which check refused it, and `errors` is empty. The words stay in `.reason`.
+  const client = job?.clientPrincipal === true;
+  const text = client
+    ? clientNotStartedText(job, mark)
+    : `⚠️ Clearotron request "${mark}" ${what}. Nothing has been searched or delivered. ` +
+      `Job parked as ${base}.failed in the ${agentId} queue.`;
   const p = writeOutboxPacket(`intake-${base}.failed`, {
-    kind: "intake-rejected", classify: v?.classify ?? "reject", base, agent: agentId,
+    kind: "intake-rejected", classify: v?.classify ?? "reject", reasonKind, base, agent: agentId,
     ...noticeAccount(job),
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
-    errors: v?.errors ?? ["unparseable job file"], text,
+    errors: client ? [] : (v?.errors ?? ["unparseable job file"]), text,
   });
   return p ? `packet ${p}` : "packet-failed";
 }
@@ -631,12 +637,17 @@ export function claimLockPath(procPath, token, platform = process.platform) {
 // Park a claimed job as terminally failed-at-intake: consume the .processing claim (else drainQueue re-claims
 // it as .json on the next 90s tick and it re-fails FOREVER — the leak the unparseable branch used to have),
 // record the reason, ping the requester, and append the ping outcome to the reason file for the audit trail.
-async function failAtIntake(procPath, qdir, base, agentId, job, v, reasons) {
+//
+// AND WHICH CHECK REFUSED IT, in `.failed.kind` beside the reason (driver/order-receipt.mjs REFUSAL_KINDS). The reason is
+// the operator's text; the kind is what a door may tell the person who placed the order, decided here, where the check
+// that refused is known, rather than guessed later from the words.
+async function failAtIntake(procPath, qdir, base, agentId, job, v, reasons, kind = "other") {
   retireMarker(procPath, join(qdir, `${base}.failed`), "failed at intake");
   cleanupClaimSidecars(procPath);
   cleanupProseParts(qdir, base);
   writeFileSync(join(qdir, `${base}.failed.reason`), reasons.join("\n") + "\n");
-  const notified = await intakeNotify(agentId, base, job, v);
+  try { writeFileSync(join(qdir, `${base}.failed.kind`), `${kind}\n`); } catch { /* best-effort: an absent kind reads as other */ }
+  const notified = await intakeNotify(agentId, base, job, v, kind);
   try { appendFileSync(join(qdir, `${base}.failed.reason`), `notify: ${notified}\n`); } catch { /* best-effort */ }
 }
 
@@ -917,7 +928,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   if (v.warnings?.length) note(`[runner] ${base} proceeding, with warnings: ${v.warnings.join("; ")}`);
   if (!v.ok) {
     note(`[runner] invalid job ${base} (${v.classify}): ${v.errors.join("; ")}`);
-    await failAtIntake(procPath, qdir, base, agentId, job, v, v.errors);
+    await failAtIntake(procPath, qdir, base, agentId, job, v, v.errors, "details");
     return null;
   }
   // ── IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
@@ -928,7 +939,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     if (refusal) {
       note(`[runner] ${base} REFUSED at order time — this install is not configured to run a search: ${refusal.names.join(", ")}`);
       await failAtIntake(procPath, qdir, base, agentId, job,
-        { classify: "reject", errors: [refusal.client] }, [refusal.operator]);
+        { classify: "reject", errors: [refusal.client] }, [refusal.operator], "setup");
       return null;
     }
   }
@@ -1007,7 +1018,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   if (gateMsg) {
     note(`[runner] ${base} search-policy ${rejectMsg ? "reject" : "clarify"}: ${gateMsg}`);
     await failAtIntake(procPath, qdir, base, agentId, job,
-      { classify: rejectMsg ? "reject" : "clarify", errors: [gateMsg] }, [gateMsg]);
+      { classify: rejectMsg ? "reject" : "clarify", errors: [gateMsg] }, [gateMsg], "policy");
     return null;
   }
   // EVERY RULE THAT NEEDS THE RESOLVED PRODUCT — THE WALL. The name count, the scope-vs-machinery fit
@@ -1034,7 +1045,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     // to know whether this was the budget or the geography, and a joined list of sentences does not say.
     const which = Object.entries(resolvedGates.byCheck).filter(([, e]) => e.length).map(([n]) => n).join("+");
     note(`[runner] ${base} ${which} clarify: ${resolvedGates.errors.join("; ")}`);
-    await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: resolvedGates.errors }, resolvedGates.errors);
+    await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: resolvedGates.errors }, resolvedGates.errors, "details");
     return null;
   }
   // Non-blocking by design: a deepening whose lane the account switched off, or a routing territory that
@@ -1057,7 +1068,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     organisation: typeof job.tenant === "string" && job.tenant ? job.tenant : null, searches });
   if (capMsg) {
     note(`[runner] ${base} ${capMsg}`);
-    await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: [capMsg] }, [capMsg]);
+    await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: [capMsg] }, [capMsg], "run-cap");
     return null;
   }
   // Matter-dedup gate (the observed double-enqueue): a prior run of THIS matter from another message — e.g.

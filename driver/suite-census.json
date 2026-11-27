@@ -1834,8 +1834,8 @@
           "todos": 0
         },
         "a-notice-filed-before-a-run-names-the-company-its-order-named.test.mjs": {
-          "tests": 4,
-          "asserts": 15,
+          "tests": 5,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -2208,6 +2208,12 @@
         "a-redone-register-reading-asks-nothing-already-answered.test.mjs": {
           "tests": 7,
           "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-refusal-before-any-run-says-which-check-refused.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -3611,7 +3617,13 @@
         },
         "an-order-is-found-where-it-was-placed.test.mjs": {
           "tests": 3,
-          "asserts": 19,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-order-refused-before-any-run-stays-in-clearances.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -9837,8 +9849,8 @@
           "todos": 0
         },
         "a-reference-names-an-order-only-to-its-own-account.test.mjs": {
-          "tests": 10,
-          "asserts": 49,
+          "tests": 11,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -10300,6 +10312,18 @@
         "allowanceParity.test.ts": {
           "tests": 3,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "anOrderIsFollowedFromStartToItsRunOrRefusal.test.ts": {
+          "tests": 7,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
+        "anOrderWithNoRunSitsAmongTheNamesWhereItsTimePutsIt.test.ts": {
+          "tests": 6,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

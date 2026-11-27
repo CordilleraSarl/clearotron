@@ -317,8 +317,10 @@ export function startRun(args = {}, { scope } = {}) {
     const prior = orderAlreadyFiled({ queueDirs: [qdir], filed: id, asked: args.id != null ? String(args.id) : "", job, scope: receiptScope(scope) });
     if (prior?.held === "mine") {
       const r = prior.receipt;
+      // The same rule as order_status: a company's session is told the kind of refusal, never the reason as written.
       return { ok: true, id: r.reference, existing: true, state: r.state, terminal: r.terminal, runId: r.runId,
-        reason: r.state === "refused" || !isClientSession(scope) ? r.reason : null, updatedAt: r.updatedAt };
+        reason: isClientSession(scope) ? null : r.reason, reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null,
+        updatedAt: r.updatedAt };
     }
     if (prior?.held === "hidden" || (prior?.held === "other" && ["waiting", "checking", "running"].includes(prior.state)))
       throw new Error(`start_run: a job with id "${prior.reference}" is already queued/processing`);
@@ -396,8 +398,12 @@ export function orderStatus(args = {}, { scope } = {}) {
   if (!answer.found) return { found: false, basis: answer.basis };
   const r = answer.receipt;
   const client = isClientSession(scope);
+  // THE REASON AS WRITTEN IS THE OPERATOR'S (design, 2026-11-27): it can name settings, profiles and, for a
+  // duplicate, an earlier order that may be another company's. A company's session is told which check refused the order,
+  // as `reasonKind`, and `reason` keeps its place in the answer, empty. Staff read both. An order refused before kinds
+  // were recorded is `other`.
   return { found: true, reference: r.reference, state: r.state, terminal: r.terminal, runId: r.runId,
-    reason: r.state === "refused" || !client ? r.reason : null, updatedAt: r.updatedAt,
+    reason: client ? null : r.reason, reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null, updatedAt: r.updatedAt,
     ...(client ? {} : { account: r.account, organisation: r.organisation ?? null }) };
 }
 

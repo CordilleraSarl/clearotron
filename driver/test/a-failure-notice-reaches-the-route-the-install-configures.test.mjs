@@ -16,6 +16,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn, spawnSync } from "node:child_process";
 import { createServer } from "node:http";
 import { pinEnv } from "../../shared/env-aliases.mjs";
+import { REFUSAL_KINDS } from "../order-receipt.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CLAUDE = join(HERE, "mock-claude.mjs");
@@ -143,12 +144,14 @@ test("the worker tells each company's submitter, and the operator, through the c
     await drain(box, env);
 
     const byKind = (kind, audience) => rx.records.filter((r) => r.notice.kind === kind && r.notice.audience === audience);
-    // Refused before any run existed: its submitter is told, with the runner's reason and no run id.
+    // Refused before any run existed: its submitter is told which check refused it, with no run id and none of the
+    // runner's words, which stay with the operator as order_status keeps them.
     const [refused] = byKind("order-refused", "submitter");
     assert.ok(refused, JSON.stringify(rx.records.map((r) => r.notice)));
     assert.deepEqual([refused.notice.order.reference, refused.notice.order.state, refused.notice.order.runId],
       ["notice-a-refused", "refused", null]);
-    assert.ok(refused.notice.order.reason?.length > 10, "the reason the runner recorded");
+    assert.equal(refused.notice.order.reason, null, "the reason as the runner recorded it is not the company's");
+    assert.ok(REFUSAL_KINDS.includes(refused.notice.order.reasonKind), refused.notice.order.reasonKind);
     assert.deepEqual([refused.notice.recipient.account, refused.notice.recipient.forwarderEmail], ["demo-brand-owner", "desk@demo-brand-owner.example"]);
     // Refused at the claim, on the order's own account: nothing for the operator to fix.
     assert.equal(byKind("order-refused", "operator").length, 0);

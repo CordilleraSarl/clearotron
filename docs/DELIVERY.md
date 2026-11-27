@@ -106,11 +106,16 @@ field, never "this was not a refusal".
 
 ### `intake-rejected` — `intake-<base>.failed.pending`
 
-`{ ts, kind: "intake-rejected", classify: "clarify"|"reject", base, agent, account, organisation,
+`{ ts, kind: "intake-rejected", classify: "clarify"|"reject", reasonKind, base, agent, account, organisation,
 jobId, msgId, forwarder, forwarderEmail, markName, errors[], text }` — `classify: "clarify"` means the fix
 is a question back to the requester (see [INTAKE.md](INTAKE.md)); `"reject"` means the job was
-malformed. `text` is ready to send ("… Nothing has been searched or delivered. Job parked as
+malformed. `reasonKind` names the check that refused it: `run-cap`, `details`, `policy`, `setup`,
+`duplicate` or `other`. `text` is ready to send ("… Nothing has been searched or delivered. Job parked as
 <base>.failed …").
+
+An order a client placed is told in the client's words instead: `text` is the shipped not-started sentence
+that `pre-run-failed` also uses, and `errors` is empty. The check's own words stay in the queue's
+`<base>.failed.reason`, which an operator reads.
 
 ### `duplicate-skipped` — `intake-<base>.duplicate.pending`
 
@@ -252,7 +257,8 @@ in `<outbox>/deliveries/route-since.json`, and an audience the route stops servi
 `engine-check-failed`, `delivery-stuck`), `audience`, `recipient` and `at`, and then:
 
 - for the person who placed the order, `order`: the receipt as `order_status` gives it to a company
-  (`reference`, `state`, `terminal`, `runId`, and `reason` only for an order refused before it ran),
+  (`reference`, `state`, `terminal`, `runId`, `reason`, which is always empty, and for an order refused
+  before it ran `reasonKind`, the kind of check that refused it; the reason as recorded is the operator's),
   with `recipient` naming the company, its organisation for Generic, and the `forwarder`,
   `forwarderEmail` and `msgId` the order carried;
 - for the operator, `fault`: the kind, the order or run it concerns, the stage and recorded reason

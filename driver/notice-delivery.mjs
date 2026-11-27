@@ -24,9 +24,9 @@
 //
 // WHAT EACH AUDIENCE IS SENT. Fields, never sentences: the words a recipient reads are the owner's, and none are
 // approved yet. The person who placed an order is sent the receipt as `order_status` gives it to a company (no
-// account, no diagnostics, a reason only for an order refused before it ran) and the recipient their order named.
-// The operator is sent the fault and the next recovery action as a code. Nothing sent for one company carries
-// another's reference, account or mark.
+// account, no diagnostics, and for an order refused before it ran the kind of check that refused it) and the recipient
+// their order named. The operator is sent the fault and the next recovery action as a code. Nothing sent for one
+// company carries another's reference, account or mark.
 //
 // ONE ROUTE PER EVENT AND RECIPIENT. The route serves the audiences the install names (CLEAROTRON_NOTICE_AUDIENCES);
 // an audience it does not name stays with the courier, through the outbox, untouched. A receiver's 2xx stops any
@@ -95,10 +95,14 @@ const reachable = (r) => Boolean(r.forwarder || r.forwarderEmail);
 const submitterKey = (r) => `submitter\u0000${r.account ?? ""}\u0000${r.organisation ?? ""}\u0000${r.forwarderEmail ?? r.forwarder ?? ""}`;
 const OPERATOR = Object.freeze({ role: "operator" });
 
-/** The receipt as a company sees it: the same fields `order_status` answers a client with. */
+/**
+ * The receipt as a company sees it: the same fields `order_status` answers a client with. A refusal is told by its
+ * kind, never by the reason as the runner recorded it, which can name the installation's setup or the queue and stays
+ * with the operator; `reason` keeps its place, empty (design, 2026-11-27).
+ */
 const clientView = (r) => ({
   reference: r.reference, state: r.state, terminal: true, runId: r.runId ?? null,
-  reason: r.state === "refused" ? (r.reason ?? null) : null,
+  reason: null, reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null,
 });
 
 // ── what is owed ────────────────────────────────────────────────────────────────────────────────────────────────
