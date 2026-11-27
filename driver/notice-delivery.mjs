@@ -156,12 +156,14 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
         const failureId = packet?.settled === "failure" ? stringOr(readJsonSafe(packet.path)?.failureId) : null;
         const eventKey = `run\u0000${r.runId ?? r.reference}${failureId ? `\u0000${failureId}` : ""}`;
         const kind = "run-stopped";
+        // Which failure each notice is about, kept on its record: a later failure or the run's report supersedes it.
+        const occurrence = runDir ? { occurrence: { runDir, failureId } } : {};
         if (reachable(submitter) && !(runDir && sendSettled(runDir)))
-          owed.push({ eventKey, kind, audience: "submitter", recipient: submitter, at: r.updatedAt, body: { order: clientView(r) },
+          owed.push({ eventKey, kind, audience: "submitter", recipient: submitter, at: r.updatedAt, body: { order: clientView(r) }, ...occurrence,
             // The send this notice settles is THIS failure's, told to THIS person: a later failure or the run's report
             // is never it. A failure without an id is settled by no receipt.
             ...(runDir ? { settle: { runDir, runId: r.runId, failureId, recipient: submitterKey(submitter) } } : {}) });
-        owed.push({ eventKey, kind, audience: "operator", recipient: OPERATOR, at: r.updatedAt,
+        owed.push({ eventKey, kind, audience: "operator", recipient: OPERATOR, at: r.updatedAt, ...occurrence,
           body: { fault: { kind, ...fault, failedStage: result?.failedStage ?? null, reason: r.reason ?? null, nextAction: NEXT_ACTIONS["read-the-run"] } } });
       }
     }
@@ -276,7 +278,8 @@ export async function deliverNotices({ env = process.env, now = () => Date.now()
       let rec = readJsonSafe(path);
       if (!rec) {
         rec = { id: n.id, kind: n.kind, audience: n.audience, recipient: n.recipient, eventAt: n.at, state: "pending",
-          ...(n.settle ? { settle: n.settle } : {}), attempts: [], createdAt: new Date(now()).toISOString(), updatedAt: new Date(now()).toISOString() };
+          ...(n.settle ? { settle: n.settle } : {}), ...(n.occurrence ? { occurrence: n.occurrence } : {}),
+          attempts: [], createdAt: new Date(now()).toISOString(), updatedAt: new Date(now()).toISOString() };
         writeAtomic(path, rec);
       }
       if (rec.state === "confirmed") { settleIfOwed(rec); continue; }
@@ -347,17 +350,38 @@ function settleIfOwed(rec) {
 }
 
 /**
- * What the operator sees: every notice not yet confirmed, with its next action. Newest first.
+ * What has taken a stopped run's notice over, read from the run as it is now: "later-failure" (the run stopped again, its
+ * packet carries another failure's id) or "report" (it recovered, and its report is the send it owes). null when nothing
+ * has, and when the notice or the run names no failure to compare by: a legacy unknown is never taken for superseded.
+ */
+export function supersededBy(rec) {
+  const occ = rec?.occurrence ?? (rec?.settle ? { runDir: rec.settle.runDir, failureId: rec.settle.failureId } : null);
+  if (rec?.kind !== "run-stopped" || !occ?.runDir || !occ.failureId) return null;
+  const owed = owedPacket(occ.runDir);
+  if (owed?.settled === "delivery") return "report";
+  if (owed?.settled !== "failure") return null;
+  const now = stringOr(readJsonSafe(owed.path)?.failureId);
+  return now && now !== occ.failureId ? "later-failure" : null;
+}
+
+/**
+ * What the operator sees: every notice not yet confirmed, with its next action. Newest first. A notice a later event
+ * superseded stays listed, with its own outcome, for the record: it is sent again by nothing and asks nothing of the
+ * operator, so only the current event's notice can carry an action.
  */
 export function undeliveredNotices({ env = process.env } = {}) {
   const dedupe = noticeRoute(env).dedupe === true;   // a receiver that drops repeats is sent an uncertain notice again
   const uncertain = (r) => (r.state === "ambiguous" || r.state === "attempted") && !dedupe;
   return noticeRecords().filter((r) => r.state !== "confirmed")
-    .map((r) => ({ id: r.id, kind: r.kind, audience: r.audience, state: r.state, attempts: r.attempts.length,
-      lastDetail: r.attempts.at(-1)?.detail ?? null, nextAttemptAt: r.nextAttemptAt ?? null, updatedAt: r.updatedAt ?? null,
-      // An uncertain delivery needs the operator; a failed one is sent again by itself.
-      retriesByItself: !uncertain(r),
-      nextAction: uncertain(r) ? NEXT_ACTIONS["settle-with-receiver"] : null }))
+    .map((r) => {
+      const superseded = supersededBy(r);
+      return { id: r.id, kind: r.kind, audience: r.audience, state: r.state, attempts: r.attempts.length,
+        lastDetail: r.attempts.at(-1)?.detail ?? null, nextAttemptAt: r.nextAttemptAt ?? null, updatedAt: r.updatedAt ?? null,
+        superseded,
+        // An uncertain delivery needs the operator; a failed one is sent again by itself; a superseded one, neither.
+        retriesByItself: !superseded && !uncertain(r),
+        nextAction: !superseded && uncertain(r) ? NEXT_ACTIONS["settle-with-receiver"] : null };
+    })
     .sort((a, b) => String(b.updatedAt ?? "").localeCompare(String(a.updatedAt ?? "")));
 }
 
@@ -366,7 +390,8 @@ export function undeliveredNotices({ env = process.env } = {}) {
  * supported action, so nobody edits a record by hand:
  *   "received"  the receiver holds it: this notice alone is confirmed, the same fact its 2xx would have stated; it
  *               settles no run
- *   "absent"    the receiver does not hold it: this notice alone is sent again, under the same id, on the next pass
+ *   "absent"    the receiver does not hold it: this notice alone is sent again, under the same id, on the next pass;
+ *               a notice a later event superseded is sent again by nothing, so the answer is refused, saying so
  * An answer that stays unknown is not given, and the notice keeps its state. Only a notice that was sent and is not
  * confirmed takes an answer. Returns { ok: true, id, state } or { ok: false, reason }, a code.
  */
@@ -380,6 +405,8 @@ export function reconcileNotice(id, answer, { now = Date.now() } = {}) {
     const rec = readJsonSafe(path);
     if (!rec) return { ok: false, reason: "no-such-notice" };
     if (!["ambiguous", "attempted", "failed"].includes(rec.state)) return { ok: false, reason: `not-reconcilable:${rec.state}` };
+    const superseded = supersededBy(rec);
+    if (answer === "absent" && superseded) return { ok: false, reason: "superseded-no-retry", superseded, retries: false };
     const at = new Date(now).toISOString();
     const attempts = [...rec.attempts, { at, outcome: answer === "received" ? "confirmed" : "absent", by: "operator" }];
     if (answer === "received") {

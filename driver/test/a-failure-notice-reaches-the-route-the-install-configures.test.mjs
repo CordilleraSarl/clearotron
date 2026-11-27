@@ -561,7 +561,7 @@ test("a late acknowledgement for one failure leaves the next failure owed, which
   }
 });
 
-test("a failure whose notice was left uncertain is not sent again once the run stops again, even released by the operator: only the new failure's notice goes, and only its receipt settles", async () => {
+test("a failure whose notice was left uncertain is not sent again once the run stops again, and the operator's stale release of it is refused: only the new failure's notice goes, and only its receipt settles", async () => {
   const box = install();
   const rx = await receiver({ dedupe: true });
   rx.state.mode = "silent";
@@ -572,12 +572,14 @@ test("a failure whose notice was left uncertain is not sent again once the run s
     assert.equal(a.state, "ambiguous", "guard: failure A's notice was not left uncertain");
     const result = JSON.parse(readFileSync(join(box.qdir, "uncertain-a-then-b.failed.result"), "utf8"));
     const failureB = await stopsAgain(result.runDir, result.runId);
-    // The operator, asked about A, says the receiver does not hold it: A is released to be sent again under its own id.
+    // The operator, asked about A, says the receiver does not hold it. A is superseded, so nothing sends it again, and the
+    // answer says so rather than appearing to release it.
     const env = routeEnv(rx.url, "submitter", { CLEAROTRON_NOTICE_DEDUPE: "1" });
     await pass(box, env, { skip: true });
     const { reconcileNotice } = await import("../notice-delivery.mjs");
-    assert.equal(reconcileNotice(a.id, "absent").ok, true);
+    assert.deepEqual(reconcileNotice(a.id, "absent"), { ok: false, reason: "superseded-no-retry", superseded: "later-failure", retries: false });
     const released = deliveries(box).find((d) => d.id === a.id);
+    assert.deepEqual(released, a, "a refused answer changed the record");
     rx.state.mode = "receipt";
     const { out } = await pass(box, env, { now: () => Date.now() + 5 * 60_000 });
     assert.deepEqual([out.sent, rx.records.length], [1, 1], "A's uncertain notice was sent again");
@@ -610,6 +612,9 @@ test("a failure packet with no id is settled by no receipt: the person is told, 
     assert.deepEqual([told.settle.failureId, told.downstream?.messageId], [null, `downstream-${told.id}`]);
     assert.equal(sentOf(result.runDir), null, "a receipt settled a failure it cannot be bound to");
     assert.equal(owesASend(result.runDir), true);
+    // The first notice was minted for a failure with an id the run no longer carries: an unknown, never taken for superseded.
+    const { out: listed } = operatorSays(box, "list");
+    assert.deepEqual(listed.map((n) => [n.state, n.superseded, n.retriesByItself]), [["failed", null, true]]);
   } finally {
     await rx.close();
     rmSync(box.root, { recursive: true, force: true });
@@ -638,5 +643,63 @@ test("a settle that names its failure is written only while that failure is the 
     assert.equal(settleSend({ run, evidence: { messageId: "m-2" }, via: "test" }).alreadySent, false);
   } finally {
     rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("after a restart, a superseded notice is listed for the record and asks nothing; the current failure's notice stays the operator's", async () => {
+  const box = install();
+  const rx = await receiver();
+  rx.state.mode = "silent";
+  try {
+    submit(box, "restart-a-then-b", "zephyr", { demoRun: true });
+    await drain(box, routeEnv(rx.url, "submitter", { MOCK_FAIL_STAGE: "record_matter_frame" }));
+    const [a] = deliveries(box);
+    assert.equal(a.state, "ambiguous", "guard: failure A's notice was not left uncertain");
+    const result = JSON.parse(readFileSync(join(box.qdir, "restart-a-then-b.failed.result"), "utf8"));
+    await stopsAgain(result.runDir, result.runId);
+    await drain(box, routeEnv(rx.url, "submitter"));   // the worker starts again: B's notice goes, and is left uncertain too
+    const b = deliveries(box).find((d) => d.id !== a.id);
+    assert.equal(b?.state, "ambiguous", "guard: failure B's notice was not left uncertain");
+
+    // Each command is its own process, reading only what is on disk.
+    const { out: listed } = operatorSays(box, "list");
+    const row = (id) => listed.find((n) => n.id === id);
+    assert.deepEqual([row(a.id).state, row(a.id).superseded, row(a.id).retriesByItself, row(a.id).nextAction], ["ambiguous", "later-failure", false, null],
+      "the superseded notice still asks for something, or lost its own outcome");
+    assert.deepEqual([row(b.id).superseded, row(b.id).nextAction], [null, "settle-with-receiver"], "the current failure's notice is no longer the operator's");
+    const stale = operatorSays(box, "absent", a.id);
+    assert.deepEqual([stale.code, stale.out.reason, stale.out.retries], [4, "superseded-no-retry", false]);
+    assert.deepEqual(deliveries(box).find((d) => d.id === a.id), a, "the refused answer changed A's record");
+    assert.deepEqual([operatorSays(box, "absent", b.id).out.state], ["failed"]);
+
+    // B, released, is sent again under its own id and settled by its own receipt; A is sent by nothing.
+    rx.state.mode = "receipt";
+    const { out } = await pass(box, routeEnv(rx.url, "submitter"), { now: () => Date.now() + 60_000 });
+    assert.deepEqual([out.sent, out.confirmed, rx.records.map((r) => r.key)], [1, 1, [b.id]]);
+    assert.equal(sentOf(result.runDir)?.messageId, `downstream-${b.id}`);
+    assert.deepEqual(deliveries(box).find((d) => d.id === a.id), a);
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
+  }
+});
+
+test("a stopped run's notice the run's report superseded is listed for the record and asks nothing", async () => {
+  const box = install();
+  const rx = await receiver();
+  rx.state.mode = "silent";
+  try {
+    submit(box, "report-supersedes", "zephyr", { demoRun: true });
+    await drain(box, routeEnv(rx.url, "submitter", { MOCK_FAIL_STAGE: "record_matter_frame" }));
+    const [a] = deliveries(box);
+    const result = JSON.parse(readFileSync(join(box.qdir, "report-supersedes.failed.result"), "utf8"));
+    await recovers(result.runDir, result.runId);
+    const { out: listed } = operatorSays(box, "list");
+    assert.deepEqual(listed.map((n) => [n.id, n.state, n.superseded, n.retriesByItself, n.nextAction]), [[a.id, "ambiguous", "report", false, null]]);
+    assert.equal(operatorSays(box, "absent", a.id).out.reason, "superseded-no-retry");
+    assert.equal(operatorSays(box, "received", a.id).out.state, "confirmed", "the receiver's answer for the record is still taken");
+  } finally {
+    await rx.close();
+    rmSync(box.root, { recursive: true, force: true });
   }
 });

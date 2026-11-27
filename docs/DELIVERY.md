@@ -283,9 +283,15 @@ found:
     node driver/notice-delivery.mjs absent <id>        # it does not: that notice alone is sent again, under the same id
 
 Where the answer stays unknown, nothing is given and the notice stays ambiguous. Each answer prints JSON; a refusal
-exits 4 with its reason code (`no-such-notice`, `not-reconcilable:<state>`). `list` gives each notice
-`retriesByItself`, true for one the worker sends again by itself, and `nextAction: settle-with-receiver` for one
-that waits on the operator.
+exits 4 with its reason code (`no-such-notice`, `not-reconcilable:<state>`, `superseded-no-retry`). `list` gives each
+notice `retriesByItself`, true for one the worker sends again by itself, and `nextAction: settle-with-receiver` for
+one that waits on the operator.
+
+A stopped run's notice that a later event has taken over stays listed with its own outcome, for the record, and
+carries `superseded`: `later-failure` when the run stopped again, or `report` when it recovered and owes its report.
+Such a notice is sent again by nothing, so it has `retriesByItself: false` and no next action, and `absent` on it is
+refused with `superseded-no-retry`. Only the current event's notice asks anything of the operator. A notice whose
+failure carries no `failureId` is never taken for superseded.
 
 **Settling the send.** A stopped run's owed send is settled only by a downstream send receipt for the person
 who placed it. The settle is made exactly as `mark_sent` makes it: `.sent` is written with `via: "notice-route"`
