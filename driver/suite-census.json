@@ -5133,6 +5133,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-research-request-names-its-model.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "every-run-log-name-is-classed-for-first-time.test.mjs": {
           "tests": 2,
           "asserts": 14,
@@ -8902,8 +8908,8 @@
           "todos": 0
         },
         "the-research-tool-takes-each-route-it-is-told-and-no-other.test.mjs": {
-          "tests": 3,
-          "asserts": 15,
+          "tests": 4,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
