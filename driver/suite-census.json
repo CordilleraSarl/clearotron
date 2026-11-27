@@ -1528,8 +1528,8 @@
           "todos": 0
         },
         "a-knockout-sweeps-through-the-runs-own-search.test.mjs": {
-          "tests": 9,
-          "asserts": 43,
+          "tests": 10,
+          "asserts": 48,
           "skips": 0,
           "todos": 0
         },
