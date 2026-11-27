@@ -18,7 +18,7 @@ import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";   // the ledger the wall counts
 import { resolveEffectiveProfile } from "../../driver/profiles.mjs";
 import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";   // one search left and an Urgent order
-import { ORDER_REF_RE, orderRefRefusal, filedReference, orderAlreadyFiled, orderReceipt, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // one rule for filing and finding an order
+import { ORDER_REF_RE, orderRefRefusal, filedReference, orderAlreadyFiled, orderReceipt, orderAnswer, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // one rule for filing and finding an order
 import { orderUrgency } from "./urgent.mjs";   // whether this installation can run an Urgent order, as the run asks it   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
@@ -316,11 +316,9 @@ export function startRun(args = {}, { scope } = {}) {
   {
     const prior = orderAlreadyFiled({ queueDirs: [qdir], filed: id, asked: args.id != null ? String(args.id) : "", job, scope: receiptScope(scope) });
     if (prior?.held === "mine") {
-      const r = prior.receipt;
-      // The same rule as order_status: a company's session is told the kind of refusal, never the reason as written.
-      return { ok: true, id: r.reference, existing: true, state: r.state, terminal: r.terminal, runId: r.runId,
-        reason: isClientSession(scope) ? null : r.reason, reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null,
-        updatedAt: r.updatedAt };
+      // The same answer as order_status, from the same builder: the kind of a refusal, never the reason as written.
+      const { reference, ...answer } = orderAnswer(prior.receipt);
+      return { ok: true, id: reference, existing: true, ...answer };
     }
     if (prior?.held === "hidden" || (prior?.held === "other" && ["waiting", "checking", "running"].includes(prior.state)))
       throw new Error(`start_run: a job with id "${prior.reference}" is already queued/processing`);
@@ -396,15 +394,11 @@ export function orderStatus(args = {}, { scope } = {}) {
   const queueDirs = args.agent ? [queueDir(String(args.agent))] : [queueDir(""), ...config.queueDirs];
   const answer = orderReceipt({ queueDirs, reference: args.id, scope: receiptScope(scope) });
   if (!answer.found) return { found: false, basis: answer.basis };
-  const r = answer.receipt;
-  const client = isClientSession(scope);
-  // THE REASON AS WRITTEN IS THE OPERATOR'S (design, 2026-11-27): it can name settings, profiles and, for a
-  // duplicate, an earlier order that may be another company's. A company's session is told which check refused the order,
-  // as `reasonKind`, and `reason` keeps its place in the answer, empty. Staff read both. An order refused before kinds
-  // were recorded is `other`.
-  return { found: true, reference: r.reference, state: r.state, terminal: r.terminal, runId: r.runId,
-    reason: client ? null : r.reason, reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null, updatedAt: r.updatedAt,
-    ...(client ? {} : { account: r.account, organisation: r.organisation ?? null }) };
+  // NOBODY IS GIVEN THE REASON AS WRITTEN (design, 2026-11-27): it can name settings, profiles, a queue and, for a
+  // duplicate, an earlier order that may be another company's. Every session is told which check refused the order, as
+  // `reasonKind`, and `reason` keeps its place in the answer, empty. An order refused before kinds were recorded is
+  // `other`. A session that sees every account is also told whose order it is.
+  return { found: true, ...orderAnswer(answer.receipt, { withAccount: !isClientSession(scope) }) };
 }
 
 // stop_run — cancel. A not-yet-claimed queue job is removed (a REAL cancel before any spend). A running run

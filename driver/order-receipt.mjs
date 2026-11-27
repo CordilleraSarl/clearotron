@@ -243,6 +243,22 @@ function receiptOf(r) {
 }
 
 /**
+ * AN ORDER AS ANY PERSON IS TOLD OF IT, at every door that answers by reference: the connector's `order_status`,
+ * `start_run`'s answer to a retried reference, the portal's orders route and `enqueue --status`. Nobody is given
+ * internal text, whatever their role or door (design, 2026-11-27): not the reason as the runner recorded it, which can
+ * name the installation's setup, a queue or a flag, nor where in the worker the order was refused. A refusal is told
+ * by its kind; `reason` keeps its place in the answer, empty. The recorded reason stays in the queue's
+ * `<id>.failed.reason`. `withAccount` adds whose order it is, for a caller who sees every account.
+ */
+export function orderAnswer(r, { withAccount = false } = {}) {
+  return {
+    reference: r.reference, state: r.state, terminal: r.terminal, runId: r.runId ?? null, reason: null,
+    reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null, updatedAt: r.updatedAt ?? null,
+    ...(withAccount ? { account: r.account ?? null, organisation: r.organisation ?? null } : {}),
+  };
+}
+
+/**
  * The receipt for `reference`, as `scope` may see it (the forms `orderInScope` takes).
  *
  * WHICH ORDERS A REFERENCE NAMES. A caller who sees everything names exactly the reference it gives: an operator files

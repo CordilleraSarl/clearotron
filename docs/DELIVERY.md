@@ -258,7 +258,7 @@ in `<outbox>/deliveries/route-since.json`, and an audience the route stops servi
 
 - for the person who placed the order, `order`: the receipt as `order_status` gives it to a company
   (`reference`, `state`, `terminal`, `runId`, `reason`, which is always empty, and for an order refused
-  before it ran `reasonKind`, the kind of check that refused it; the reason as recorded is the operator's),
+  before it ran `reasonKind`, the kind of check that refused it),
   with `recipient` naming the company, its organisation for Generic, and the `forwarder`,
   `forwarderEmail` and `msgId` the order carried;
 - for the operator, `fault`: the kind, the order or run it concerns, the stage and recorded reason

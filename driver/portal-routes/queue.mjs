@@ -7,15 +7,15 @@
 import { assertPrincipal, seesEverything } from "../portal-access.mjs";
 import { scanAccountRuns } from "../portal-runs.mjs";
 import { reorderQueue } from "../queue-order.mjs";
-import { orderReceipt } from "../order-receipt.mjs";
+import { orderReceipt, orderAnswer } from "../order-receipt.mjs";
 
 export async function queueRoutes({ poolRoot, workspaceRoot, queueDirs, stopRun, audit }, { method, parts, principal, body, query }) {
   // /portal/api/orders/<reference> — what became of an accepted order, by the reference its start returned, within this
   // person's own visibility: every order for someone who sees everything, else the named account's (and organisation's,
   // for Generic). Whatever this person may not see answers exactly as no order at all: 404, nothing else. A queue that
-  // would not open (503) and two of this person's own orders under one reference (409) say nothing of anyone else's. The
-  // reason as written is an operator's diagnostic, and only someone who sees everything is given it. A refusal before
-  // any run gives the requester its kind (order-receipt.mjs REFUSAL_KINDS), which the screen says in plain words.
+  // would not open (503) and two of this person's own orders under one reference (409) say nothing of anyone else's;
+  // someone who sees everything is told how many queues would not open, never which. Nobody is given the reason as written (order-receipt.mjs orderAnswer): a refusal before any run is
+  // told by its kind (REFUSAL_KINDS), which the screen says in plain words.
   if (parts[1] === "api" && parts[2] === "orders" && parts[3] && !parts[4] && method === "GET") {
     const everything = seesEverything(principal);
     let scope = { everything: true };
@@ -30,10 +30,7 @@ export async function queueRoutes({ poolRoot, workspaceRoot, queueDirs, stopRun,
       if (answer.basis === "ambiguous") return { status: 409, json: { error: "ambiguous" } };
       return { status: 404, json: { error: "not_found" } };
     }
-    const r = answer.receipt;
-    return { status: 200, json: { reference: r.reference, state: r.state, terminal: r.terminal, runId: r.runId,
-      reason: everything ? r.reason : null, reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null, updatedAt: r.updatedAt,
-      ...(everything ? { account: r.account, ...(r.organisation !== undefined ? { organisation: r.organisation } : {}) } : {}) } };
+    return { status: 200, json: orderAnswer(answer.receipt, { withAccount: everything }) };
   }
 
   // /portal/api/queue/<id>/cancel — drop a job that has not started. No spend has happened, so
