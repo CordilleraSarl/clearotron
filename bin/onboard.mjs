@@ -1915,7 +1915,7 @@ async function readCheckContext() {
     }
     else {
       problem(probeFailureText(v));
-      if (v.detail) info(`engine said: ${v.detail}`);
+      detail(v.detail);   // the engine's own output: a local diagnosis, under --detail
     }
   };
 
@@ -2056,7 +2056,7 @@ async function sayDeployment({ fileEnv, hosted, unitEnv }) {
       + "archive's own build-info.json rather than from a checkout — currency is not a question this can answer");
     else info("not a git checkout, so currency is not a question this can answer");
   }
-  else warn(`could not tell whether this deployment is current: ${cur.detail}`);
+  else { warn("could not tell whether this deployment is current"); detail(cur.detail); }
   if (cur.state !== "not-a-checkout" && cur.state !== "no-upstream" && cur.state !== "pinned") {
     info("this does not fetch — the count is against the last fetch, not against the remote right now");
   }
@@ -2152,7 +2152,7 @@ async function sayDeployment({ fileEnv, hosted, unitEnv }) {
     // A PACKAGED INSTALL HAS NO TREE TO BE BEHIND. npm replaces the whole package on an update, so this
     // question belongs to a checkout, and on a package it is a `!` nothing can ever clear.
     if (PACKAGED) info("running programs against a checkout's tree: not applicable to a packaged install");
-    else warn(`could not tell whether running programs are on the current tree: ${running.detail}`);
+    else { warn("could not tell whether running programs are on the current tree"); detail(running.detail); }
   }
 
   // ── AND THE MORE DANGEROUS ANSWER: A DIFFERENT TREE, NOT AN OLDER ONE ──────────────────────────────
@@ -2375,9 +2375,10 @@ async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, e
       // the check having stopped running. A doctor silent about its own failure is the defect the rest of
       // this change is about, an absence rendered as a clean bill, so it says so. A caution rather than a
       // problem: the engine may be perfectly fine and it is this check that is broken.
-      info(`Could not compare this machine against what the engine last recorded (${e?.message ?? e}). `
+      info(`Could not compare this machine against what the engine last recorded. `
         + `That comparison is what catches a settings page reading healthy while a search will not start, `
         + `so this run has not checked it either way.`);
+      detail(e);
     }
 
     // item 5 — WHICH BILLING LANE, reported rather than left to be inferred from a variable's
@@ -2691,12 +2692,14 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
           if (names.length) ok(`${names.length} project(s): ${names.join(", ")}`);
           else info("no projects resolve here — the store has no `projects/` tree, which is a complete install unless you added one");
         } catch (e) {
-          problem(`the project overlays did not load (${String(e?.message ?? e).slice(0, 160)}) — a project `
+          problem(`the project overlays did not load — a project `
             + `under an unknown brand owner stops the whole tree, so this is not "no projects"`);
+          detail(e);
         }
       } catch (e) {
-        problem(`the roster did not load (${String(e?.message ?? e).slice(0, 160)}) — this is a refusal to `
+        problem(`the roster did not load — this is a refusal to `
           + `load, not an empty store, and every customer resolution fails until it is fixed`);
+        detail(e);
       }
       // ── CRITERION 3 OF — DO THE TWO SURFACES SERVE ONE STORE? ────────────────
       //
@@ -2752,10 +2755,10 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
             + "variable, so this catches a second store appearing in the code, not two environments disagreeing");
         }
       } catch (e) {
-        info(`could not compare the settings surface's store with the roster's (${String(e?.message ?? e).slice(0, 80)}) — a failure to look, not a finding`);
+        info("could not compare the settings surface's store with the roster's — a failure to look, not a finding"); detail(e);
       }
     } catch (e) {
-      info(`could not resolve the profile store from here (${String(e?.message ?? e).slice(0, 80)}) — read a run's \`profile-store\` line instead`);
+      info("could not resolve the profile store from here — read a run's `profile-store` line instead"); detail(e);
     }
 
     // ── AND WHERE A SAVE GOES ONCE IT IS COMMITTED ─────────────────────────────────────────────────────
@@ -2909,7 +2912,7 @@ async function sayCustomInstructions({ hosted, unitEnv, serviceKnown, effectiveF
     // An unreadable overlay THROWS by design (config.resolveSkillPath refuses rather than falling back
     // to the product's copy). Surfaced here rather than allowed to abort the whole check: the doctor's
     // job is to report every section, and a section that kills the run tells the reader least.
-    problem(`the custom instructions could not be read — ${e.message}`);
+    problem("the custom instructions could not be read"); detail(e);
   }
 }
 
@@ -3102,7 +3105,7 @@ async function sayPortalBundle() {
   } catch (e) {
     // A could-not-look, and it is NOT a pass: the reader learns nothing about whether the portal can
     // render, which is the same position they were in before this section existed.
-    blocking(`the portal bundle could not be read — ${e.message} — so whether /portal can render is unknown`);
+    blocking("the portal bundle could not be read, so whether /portal can render is unknown"); detail(e);
   }
 }
 
@@ -3351,7 +3354,7 @@ async function sayPortalSignIn({ startPaths, hosted, unitEnv, serviceEnvFile, se
         }
       }
     } catch (e) {
-      info(`could not judge who may use the portal (${String(e?.message ?? e).slice(0, 80)}) — a failure to look, not a finding`);
+      info("could not judge who may use the portal — a failure to look, not a finding"); detail(e);
     }
   }
 }
@@ -3424,7 +3427,7 @@ async function sayProvenProviders({ effective }) {
       }
     } catch (e) {
       // A probe that could not run says so. It is not evidence about the credential either way.
-      info(`the register lane could not be probed: ${String(e?.message ?? e)}`);
+      info("the register lane could not be probed"); detail(e);
     } finally {
       // EVERY ONE PUT BACK, including those that were absent: the sections below read this process's
       // environment, and must not report a value from the file as though the shell had set it.
@@ -3511,8 +3514,11 @@ async function sayBackgroundUnits({ hosted }) {
       blocking(`the background units are installed but lingering is OFF for ${who}. systemd tears this `
         + "account's user manager down at logout, so the units stop with nothing written anywhere — no "
         + `unit failure and no journal line. As root:  loginctl enable-linger ${who}`);
-    else warn(`could not tell whether lingering is on for ${who} — ${lingerWhy}. That is this command `
-      + "failing to look, not a report that it is off.");
+    else {
+      warn(`could not tell whether lingering is on for ${who}. That is this command `
+        + "failing to look, not a report that it is off.");
+      detail(lingerWhy);
+    }
   }
 }
 
@@ -3598,7 +3604,7 @@ async function sayStartButtonPath({ hosted, unitEnv }) {
       else if (lane.state === "fail") problem(lane.message);
       else info(lane.message);
     }
-  } catch (e) { warn(`the submit lane could not be read: ${e.message}`); }
+  } catch (e) { warn("the submit lane could not be read"); detail(e); }
 }
 
 async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effective, serviceFileEnv,
@@ -3842,7 +3848,7 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
     else if (said.level === "problem") problem(said.text);
     else info(said.text);
     let grantsForKeys = null;
-    try { grantsForKeys = readGrantsFile(); } catch (e) { warn(`issued-key records unreadable: ${e.message}`); }
+    try { grantsForKeys = readGrantsFile(); } catch (e) { warn("issued-key records unreadable"); detail(e); }
     const report = connectKeyReport(grantsForKeys ?? {}, { revoked: (jti) => revokedCheck(jti) });
     if (!report.rows.length) info("no issued connect key is on record (keys minted before records were kept do not appear here)");
     for (const r of report.rows) {
@@ -3984,7 +3990,7 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
         if (made) info(`${made} throwaway OAuth client(s) were created by this probe, including the control.`);
       }
     }
-  } catch (e) { warn(`the client-connector state could not be read: ${e.message}`); }
+  } catch (e) { warn("the client-connector state could not be read"); detail(e); }
 }
 
 function sayVerdict(probeTurnRan, refusal = null) {

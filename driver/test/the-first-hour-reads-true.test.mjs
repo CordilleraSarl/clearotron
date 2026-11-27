@@ -158,7 +158,7 @@ test("doctor before the first start describes the portal start brings up, not a 
 test("doctor on a packaged install drops a checkout's questions and names no npm script", () => {
   const onboard = read("bin/onboard.mjs");
   assert.match(onboard, /const PACKAGED = installRoute\(REPO\) === "packaged";/);
-  assert.match(onboard, /if \(PACKAGED\) info\("running programs against a checkout's tree: not applicable to a packaged install"\);\n\s*else warn\(`could not tell whether running programs are on the current tree/);
+  assert.match(onboard, /if \(PACKAGED\) info\("running programs against a checkout's tree: not applicable to a packaged install"\);\n\s*else \{ warn\("could not tell whether running programs are on the current tree"/);
   assert.match(onboard, /if \(PACKAGED && !configuredTree\) info\("running programs on a different checkout: not applicable to a packaged install"\);\n\s*else warn\(`could not tell whether running programs are on a different checkout/);
   assert.doesNotMatch(onboard, /; `npm run example` needs no engine/, "doctor names a checkout's npm script as the demo");
   assert.match(onboard, /\$\{reachableCommand\("demo"\)\}\\` shows the example report, its audit trail and the assistant connection, and needs no engine/);
