@@ -102,6 +102,22 @@ export const SCHEMA_INSTRUCTIONS =
   "Populate the response schema from your research. Every URL must be one you actually found — never " +
   "fabricate URLs. Use null or the literal string 'not extracted' for fields you could not confirm.";
 
+// ── THE RESEARCH MODEL, NAMED ON EVERY RESEARCH REQUEST ────────────────────────────────────────────
+//
+// Each effort level carries a default model, and the vendor moves them (effort page and changelog, read 2026-11-27):
+// `low` and `medium` default to `openai/gpt-6-luna`, `high` to `openai/gpt-6.1-terra`, and `xhigh` to
+// `openai/gpt-6.2-sol` since `xhigh@2026-11-18.0`. A model left to the effort's default is a model the vendor chooses,
+// and changes without a change here. So every research request names its model, and only the model: the effort, tools,
+// results kept and search scope stay its own. The documented override is "Any field you pass alongside the effort
+// level overrides that default."
+//
+// `fast` is left to its default. It is setup's one-word key check, and the questions of a run frozen before its effort
+// was pinned, neither of which is a product's research effort.
+export const RESEARCH_MODEL = "openai/gpt-6.2-sol";
+const NAMES_THE_MODEL = new Set(["pro-search", "deep-research", "advanced-deep-research", "low", "medium", "high", "xhigh"]);
+/** The model a request on `preset` names, or null where the effort's own default stands. PURE. */
+export const researchModelFor = (preset) => (NAMES_THE_MODEL.has(preset) ? RESEARCH_MODEL : null);
+
 export function buildRequestBody({
   task,
   preset,
@@ -141,8 +157,9 @@ export function buildRequestBody({
     };
   }
 
-  if (modelOverride) {
-    body.model = modelOverride;
+  const model = modelOverride ?? researchModelFor(preset);
+  if (model) {
+    body.model = model;
   }
 
   // The vendor's documented override: "Any field you pass alongside the preset overrides that default"

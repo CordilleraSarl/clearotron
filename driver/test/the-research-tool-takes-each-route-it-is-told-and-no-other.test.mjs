@@ -10,7 +10,8 @@
 //   · a grid call with no task is served; the older form with a redundant task is still served;
 //   · a later page with no saved result, a page with no grid, and research with no task are each refused, and nothing
 //     is sent;
-//   · a depth, model or output schema a step still sends is ignored: the request carries none of them;
+//   · a depth, model or output schema a step still sends is ignored: the request carries none of them, and names the
+//     research model itself;
 //   · the provider's own charge never reaches the step's text, while an amount found in the research survives.
 // Invented values only; nothing leaves this machine.
 import { test } from "node:test";
@@ -21,7 +22,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { withoutProviderCharge } from "../../providers/perplexity/src/core.js";
+import { researchModelFor, withoutProviderCharge } from "../../providers/perplexity/src/core.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SERVER = join(HERE, "..", "engine", "mcp", "perplexity-server.mjs");
@@ -108,10 +109,25 @@ test("a depth, model or output schema a step still sends is ignored, and the pro
     const [body] = sent(r);
     assert.ok(body, "the question was not sent");
     assert.notEqual(body.model, "invented-model", "the step's model override reached the provider");
+    assert.equal(body.model ?? null, researchModelFor(body.preset), "the request names the research model wherever its effort is a research effort");
     assert.doesNotMatch(JSON.stringify(body), /invented-model|"schema"|response_format/, "the step's model or schema reached the provider");
     assert.match(reply, /\$40 each/, "an amount the research found was taken out");
     assert.doesNotMatch(reply, /Cost: \$/);
   } finally { rmSync(r.root, { recursive: true, force: true }); }
   const held = "Found at $40 each.\n\n---\n_Research metadata: Depth: pro-search | Tokens: 900 | Cost: $0.0123_";
   assert.equal(withoutProviderCharge(held), "Found at $40 each.\n\n---\n_Research metadata: Depth: pro-search | Tokens: 900_");
+});
+
+test("on a run whose product pins its effort, a question and a grid each name the research model, on the effort and tools they had", async () => {
+  const r = run();
+  try {
+    writeFileSync(driverDir(r.runDir, "search-policy.json"), JSON.stringify({ schema: 1, level: "global-preliminary-search", web: { questionPreset: "medium", resultsPerCell: 15 } }));
+    await call(r, { task: "Does the invented owner sell QZORVEL toys?" });
+    await call(r, { grid_spec_path: r.specPath });
+    const [question, grid] = sent(r);
+    assert.deepEqual({ preset: question.preset, model: question.model, tools: question.tools.map((t) => t.type) },
+      { preset: "medium", model: "openai/gpt-6.2-sol", tools: ["web_search"] }, "Global's question keeps its pinned effort and names the model");
+    assert.deepEqual({ preset: grid.preset, model: grid.model, tools: grid.tools.map((t) => t.type) },
+      { preset: "pro-search", model: "openai/gpt-6.2-sol", tools: ["sandbox", "web_search"] }, "the grid keeps its effort and tools and names the model");
+  } finally { rmSync(r.root, { recursive: true, force: true }); }
 });
