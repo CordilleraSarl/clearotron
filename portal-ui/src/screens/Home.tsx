@@ -39,7 +39,7 @@ import { api, saveFailureText } from '../contract/api.ts'
 import { displayName } from '../contract/reads.ts'
 import { toneColor } from '../contract/tone.ts'
 import {
-  recentlyFinished, finished, inFlight, recentFailures, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, slotNote, runsFor, readStamps, inFlightBreakdown, expectation,
+  recentlyFinished, finished, inFlight, recentFailures, acknowledged, active, waiting, runProductLabel, cardReason, limitLine, moveBefore, pips, stepList, slotNote, runsFor, readStamps, inFlightBreakdown, expectation,
 } from '../contract/home.ts'
 import { Icon } from '../components/Icon.tsx'
 import { Ticked } from '../components/Ticked.tsx'
@@ -373,6 +373,9 @@ function Card({
   const [asking, setAsking] = useState(false)
   const [took, setTook] = useState<StopOutcome | null>(null)
   const p = pips(run.stepN, run.stepTotal)
+  // EVERY STEP BY NAME, on a running or paused card only. A failed, stopped or queued card keeps today's
+  // single line, and so does a run whose list is not on the wire.
+  const list = run.state === 'running' || run.state === 'paused' ? stepList(run.steps, run.stepN, run.stepTotal) : null
   const label = runProductLabel(run.productName, run.marks.length)
   const reason = cardReason(run)
   const canStop = run.state === 'running' || run.state === 'paused'
@@ -521,17 +524,35 @@ function Card({
             already the long item on it. */}
         {stamp ? <div className="home2-card-when">{stamp}</div> : null}
 
-        {run.step ? <div className="home2-step">{run.step}</div> : null}
-
-        {/* N COMES FROM THE RUN. Nine for a clearance, five or six for a knockout — anything assuming a
-            constant mislabels every screen a client watches. */}
-        {p ? (
-          <div className="home2-pips">
-            {Array.from({ length: p.total }, (_, i) => (
-              <span key={i} className={`home2-pip${i < p.filled ? ` on ${run.state}` : ''}`} />
+        {/* EVERY STEP, BY NAME, IN THE ENGINE'S ORDER, in place of the single line and the bars. The names
+            are the run's own list; the browser holds no copy. The current step is the one the single line
+            named, so a step back reads as one here too. */}
+        {list ? (
+          <ol className={`home2-steps ${run.state}`}>
+            {list.map((s, i) => (
+              <li key={i} className={`home2-stepitem ${s.mark}`} aria-current={s.mark === 'current' ? 'step' : undefined}>
+                <span className="home2-stepmark" aria-hidden="true">
+                  {s.mark === 'done' ? (
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 7.5l3 3 6-7" /></svg>
+                  ) : <span className="home2-stepdot" />}
+                </span>
+                <span className="home2-stepname">{s.name}</span>
+              </li>
             ))}
-          </div>
-        ) : null}
+          </ol>
+        ) : (<>
+          {run.step ? <div className="home2-step">{run.step}</div> : null}
+
+          {/* N COMES FROM THE RUN. Nine for a clearance, five or six for a knockout — anything assuming a
+              constant mislabels every screen a client watches. */}
+          {p ? (
+            <div className="home2-pips">
+              {Array.from({ length: p.total }, (_, i) => (
+                <span key={i} className={`home2-pip${i < p.filled ? ` on ${run.state}` : ''}`} />
+              ))}
+            </div>
+          ) : null}
+        </>)}
 
         <div className="home2-card-foot">
           <span className={`home2-reason ${run.state}`}>{failed ?? reason}</span>

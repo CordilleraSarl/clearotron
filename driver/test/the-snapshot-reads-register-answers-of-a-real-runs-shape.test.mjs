@@ -54,7 +54,28 @@ test("the fixture folder holds one file per question, named as the tree under te
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("the gap the comparison prints names what is still invented: a clearance's band", () => {
-  assert.equal(SCENARIO_GAPS.length, 1);
-  assert.match(SCENARIO_GAPS[0], /clearance/);
+test("a clearance's band holds a hundred filings of a real run's shape, screened as the real screen marks them, and nothing is left on the gap list", async (t) => {
+  const { mockUnitBandWrite } = await import("./mock-stage-fixtures.mjs");
+  const { scenarioIds } = await import("./snapshot/behaviour-snapshot.mjs");
+  const runDir = mkdtempSync(join(tmpdir(), "real-shaped-band-"));
+  t.after(() => { delete process.env.MOCK_BAND_REAL_SHAPED; rmSync(runDir, { recursive: true, force: true }); });
+  process.env.MOCK_BAND_REAL_SHAPED = "100";
+  mockUnitBandWrite(runDir, "primary-sweep", "");
+  const records = JSON.parse(readFileSync(join(runDir, "register-units", "primary-sweep-band.json"), "utf8"))
+    .flatMap((b) => (b?.state === "enumerated" && Array.isArray(b.records) ? b.records : []));
+  const shaped = records.filter((r) => /\/rs[0-9a-f]+\d+$/.test(r.record_id));
+  assert.equal(shaped.length, 100, "the band does not hold the hundred filings");
+  const by = (v) => shaped.filter((r) => r.screen_verdict === v).length;
+  assert.ok(by("surface:in-scope-live") > 0 && by("drop:dead") > 0 && by("drop:out-of-class") > 0,
+    `the screen's three outcomes are not all represented: ${JSON.stringify({ surfaced: by("surface:in-scope-live"), dead: by("drop:dead"), out: by("drop:out-of-class") })}`);
+  assert.ok(shaped.some((r) => (r.raw?.classifications ?? []).some((c) => c.goods_services_text.length > 1000)), "no goods text of a real filing's length");
+  // A second write of the same band is the unit's own re-run: the hundred are not added twice.
+  mockUnitBandWrite(runDir, "primary-sweep", "");
+  const again = JSON.parse(readFileSync(join(runDir, "register-units", "primary-sweep-band.json"), "utf8"))
+    .flatMap((b) => (b?.state === "enumerated" && Array.isArray(b.records) ? b.records : [])).filter((r) => /\/rs[0-9a-f]+\d+$/.test(r.record_id));
+  assert.ok(again.length <= 100, "a re-run added the filings twice");
+  // The scenarios that drive it on both engines, and so the comparison prints no gap.
+  for (const id of ["clearance-real-shaped.claude", "clearance-real-shaped.codex", "knockout-real-shaped.claude", "knockout-real-shaped.codex"])
+    assert.ok(scenarioIds().includes(id), `no scenario ${id}`);
+  assert.deepEqual(SCENARIO_GAPS, []);
 });

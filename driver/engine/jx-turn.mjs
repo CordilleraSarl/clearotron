@@ -83,7 +83,9 @@ export function readJxTuple(tuple, { vendor, authMode, cloud = null, engine }) {
   // the receipt names who did the native-language work, and an alias does not name anyone. Both adapters
   // populate it (anthropic-agent from the assistant/init events, openai-agent from `ev.model`).
   const model = tuple?.modelWire ?? null;
-  const base = { model, vendor, authMode, cloud, usage, engine };
+  // The turn's speed record as the adapter wrote it: what it asked for, why standard where the run asked fast, and what
+  // the program reported serving. Null where no turn ran.
+  const base = { model, vendor, authMode, cloud, usage, engine, speed: tuple?.speed ?? null };
   // WHETHER TRUNCATION IS OBSERVABLE IS A FACT ABOUT THE ADAPTER, NOT ABOUT THIS TURN. It is keyed on the
   // engine deliberately: `anthropic-agent` writes `stopReason: r?.stop_reason` unconditionally, so the
   // KEY is present on every one of its turns whether or not the wire said anything — testing for the key
@@ -137,7 +139,13 @@ export async function makeJxTurnRunner({
   // machine's setting, read as below.
   runDir = null,
 } = {}) {
-  const rec = runDir ? (await import("./run-choices.mjs")).readRunChoices(runDir) : { state: "none" };
+  const choices = runDir ? await import("./run-choices.mjs") : null;
+  const rec = choices ? choices.readRunChoices(runDir) : { state: "none" };
+  // THE RUN'S SPEED. A lane serving a run ordered Urgent asks for the faster setting as the run's stages do; the adapter
+  // sends it where the lane's model has one and records why where it does not (engine/speed.mjs). A turn that serves no
+  // run, the portal's brief reader, is not part of any order and runs at standard speed.
+  const { turnSpeed } = await import("./speed.mjs");
+  const speed = choices ? turnSpeed({ urgent: choices.urgentForRun(runDir) }) : "standard";
   if (rec.state === "unreadable") return { error: `this run's engine record ${rec.detail}, so ${lane} do not run on the machine's engine in its place` };
   if (rec.state === "recorded" && !ENGINE_BINARIES[rec.engine])
     return { error: `this run started on the "${rec.engine}" engine, which this driver does not ship; ${lane} keep that engine rather than switch` };
@@ -168,10 +176,14 @@ export async function makeJxTurnRunner({
   const cloud = auth.cloud ?? null;   // which cloud account bills, under the cloud mode; null otherwise
   return {
     vendor, authMode, cloud, engine: id,
-    async turn({ prompt }) {
+    // `extra` is what one caller's turn adds to the door's own arguments: the own web search's research-only session
+    // names its one built-in tool, keeps the program's search and its event stream (engine/mcp/own-search.mjs). It
+    // cannot change the engine, the billing mode, the model or the speed this door resolved.
+    async turn({ prompt, extra = {} }) {
       let tuple;
+      const { builtinTools, allowedTools, webSearch, streamFile } = extra ?? {};
       // Its reply is its result, so it carries no output rule (engine/common.mjs, outputRule).
-      try { tuple = await runTurn({ message: prompt, model, thinking, timeoutSec, stallSec, output: { kind: "reply" } }); }
+      try { tuple = await runTurn({ message: prompt, model, thinking, speed, timeoutSec, stallSec, output: { kind: "reply" }, builtinTools, allowedTools, webSearch, streamFile }); }
       catch (e) {
         return { ok: false, cause: `the engine turn threw: ${String(e?.message ?? e).slice(0, 200)}`,
           model: null, vendor, authMode, cloud, engine: id, usage: { input: 0, output: 0 }, truncationObservable: false };

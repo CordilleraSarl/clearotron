@@ -212,6 +212,9 @@ export const NOT_COUNTED_EVENTS = {
     // The intake's families as the schedule read them, and each rating group's own file of filings: RECORDS of how the run was
     // split. A grouping the schedule refuses rates every name alone, which is the order still rated, not a step repeated.
     "knockout-families", "knockout-families-refused", "knockout-group-records",
+    // A grid the run's own AI program searched, prepared before the stage that reads it: a RECORD of that preparation.
+    // A grid it could not prepare is refused by the research server, and that stage's failure is what counts.
+    "own-search-grid",
     // The run's own span against the ten-minute target, written at delivery because that is the first
     // point at which the run's span is known. Same class as the sweep's line below: a RECORD, never a
     // failure. `overBar: null` on it means the span could not be measured, which is a gap in the record
@@ -223,7 +226,7 @@ export const NOT_COUNTED_EVENTS = {
     // wrong, a question re-asked or an attempt repeated, so it does not bear on "first time" (515).
     // The target moved off this line to the run's own, above: the bar is about a run and this span is
     // one stage of it.
-    "knockout-sweep-total", "level-scope-note",
+    "knockout-plain-language", "knockout-sweep-total", "level-scope-note",
     "named-band-merged", "named-band-remerged", "late-evidence", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred",
@@ -238,7 +241,7 @@ export const NOT_COUNTED_EVENTS = {
     "register-presence-skipped", "register-xcheck", "register-xcheck-decided", "run-integrity",
     "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean", "screen-gate-evidence",
     "seam-reapplied", "search-policy", "searched-jurisdictions", "senior-rights", "skip",
-    "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
+    "speed-rollup", "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
     "turnaround-reconciliation", "uncovered-market-rows", "unit-band-seeded-empty", "verdict", "verdict-conditions-followed", "verdict-conditions-recorded", "verdict-floors-pass", "verdict-frontmatter",
     "verdict-recomputed-steps-withdrawn", "whatif-settled-on-archive", "write-up-forms",
   ],

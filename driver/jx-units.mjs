@@ -397,7 +397,7 @@ export async function runJxSerpGrid(ctx, job, opts = {}, { runLog = () => {}, no
         ...jxBillingStamp(judgeSource, jr),
         took_ms: jr?.tookMs ?? (Date.now() - started), ok: Boolean(jr?.ok), judged: jr?.ok ? (jr.judgments?.length ?? 0) : 0,
         ...jxModelFields(judgeSource, jr),
-        ...(jr?.usage ? { usage: jr.usage } : {}), ...(jr?.ok ? {} : { cause: String(jr?.cause ?? "unknown").slice(0, 300) }) });
+        ...(jr?.usage ? { usage: jr.usage } : {}), ...(jr?.speed ? { speed: jr.speed } : {}), ...(jr?.ok ? {} : { cause: String(jr?.cause ?? "unknown").slice(0, 300) }) });
       if (!jr?.ok) { judgeDegraded = String(jr?.cause ?? "unknown").slice(0, 200); break; }
       const byId = new Map(jr.judgments.map((j) => [j.id, j]));
       for (const h of batch) {
@@ -639,7 +639,7 @@ export async function runJxNativeread(ctx, job, opts = {}, { runLog = () => {}, 
       ...jxBillingStamp(source, r),
       took_ms: r?.tookMs ?? (Date.now() - started), ok: Boolean(r?.ok), items: r?.ok ? (r.items?.length ?? 0) : 0,
       ...jxModelFields(source, r),
-      ...(r?.usage ? { usage: r.usage } : {}), ...(r?.ok ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }) });
+      ...(r?.usage ? { usage: r.usage } : {}), ...(r?.speed ? { speed: r.speed } : {}), ...(r?.ok ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }) });
     if (!r?.ok) {
       degradeUnit(run.runDir, key, st.attempts, r?.cause ?? "unknown");
       note(shadowLaneNote("jx nativeread", "degraded", String(r?.cause ?? "unknown"), `attempt ${st.attempts + 1}/${MAX_UNIT_ATTEMPTS}`));

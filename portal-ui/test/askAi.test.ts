@@ -338,7 +338,7 @@ test('THE CLASS: the control is drawn for every run kind, not gated on the frame
   // comes from the run. The arm that would have caught the original defect is exactly "is there a
   // control here at all", so it is asserted on the render rather than on the helper.
   assert.match(SCREEN, /<AskAi\s/, 'the shell draws one')
-  const header = /<span style=\{\{ flex: 1 \}\} \/>([\s\S]*?)<\/div>/.exec(SCREEN)?.[1] ?? ''
+  const header = /<span className="report-head-gap" \/>([\s\S]*?)<\/div>/.exec(SCREEN)?.[1] ?? ''
   assert.match(header, /<AskAi\s/, 'in the master header')
   // ASK AI, THEN EXPORT — the order the design gives the two actions.
   assert.ok(header.indexOf('<AskAi') < header.indexOf('<ExportMenu'), 'Ask AI does not come before Export')

@@ -225,6 +225,7 @@ function world(opts = {}) {
     ...("readTerritories" in opts ? { readTerritories: opts.readTerritories } : {}),
     ...("readRegisterLabel" in opts ? { readRegisterLabel: opts.readRegisterLabel } : {}),
     ...(opts.upstream ? { upstream: opts.upstream } : {}),
+    ...(opts.urgentAvailable ? { urgentAvailable: opts.urgentAvailable } : {}),
     ...(opts.composeRead ? { composeRead: opts.composeRead } : {}),
     ...(opts.readBudget ? { readBudget: opts.readBudget } : {}),
     // — the capture endpoint is retired and answers 410. A world that does not ask for it gets the
@@ -1375,9 +1376,10 @@ test("the config surface checks the DOOR before the method — and a wrong shape
 });
 
 // A failure `reason` is a truncated stack trace (pipeline.mjs — `String(e?.stack ?? e)`), so it
-// carries absolute paths, module names and provider error text. Staff need it; a client must not get it,
-// and redacting only in the UI would be theatre — the field travels over the wire either way.
-test('a failure reason reaches staff verbatim and never reaches a client', async () => {
+// carries absolute paths, module names and provider error text. No person is given it, whoever they are (design,
+// 2026-11-27): it stays in the run's own record. Redacting only in the UI would be theatre — the field travels over
+// the wire either way.
+test('a failure reason reaches no person, a person who sees everything included', async () => {
   const poolRoot = tempDir("portal-redact-");
   const workspaceRoot = tempDir("portal-redactws-");
   const dir = join(workspaceRoot, "workspace-t", "studio", "clearance-search", "s", "r");
@@ -1391,7 +1393,9 @@ test('a failure reason reaches staff verbatim and never reaches a client', async
     grants: GRANTS });
 
   const asStaff = await service.route("GET", "/portal/api/runs", STAFF, {}, { account: "demo-brand-owner" });
-  assert.equal(asStaff.json.runs[0].reason, TRACE, "staff get the engine's own words");
+  assert.equal(asStaff.json.runs[0].state, "failed", "the failure stays visible to someone who sees everything");
+  assert.doesNotMatch(JSON.stringify(asStaff.json), /TypeError|pipeline\.mjs|\/srv\/app/, "nor the engine's own words");
+  assert.equal(asStaff.json.runs[0].reasonRedacted, true);
 
   const asClient = await service.route("GET", "/portal/api/runs", CLIENT, {}, {});
   const row = asClient.json.runs[0];
@@ -1400,7 +1404,7 @@ test('a failure reason reaches staff verbatim and never reaches a client', async
   assert.equal(row.reasonRedacted, true, "the row says it was redacted rather than pretending there was no reason");
   // The failure itself stays visible — an invisible failure is worse than a visible one.
   assert.equal(row.state, "failed");
-  assert.equal(row.failedStage, "register-probe", "the stage is product vocabulary, not a stack");
+  assert.equal(row.failedStage, null, "the stage it stopped at stays in the run's own record (design, 2026-11-27)");
 });
 
 // ── one report, and who may open it (spec 2026-07-30 §5) ────────────────────────────────────────────
@@ -2184,6 +2188,24 @@ test("quota: a client at the day's limit gets the 429 that names the reset and t
   assert.match(String(r.json.errors?.[0]), /all 2 of this account's searches/);
   assert.match(String(r.json.errors?.[0]), /midnight UTC/, "a hard stop with no reset time is the worst version of a cap");
   assert.equal(triggers.length, 0);
+});
+
+test("quota: with one search left an Urgent order is refused in the order screen's words; Standard fits; two left admit Urgent", async () => {
+  // Design, 2026-11-26: the sentence is the order screen's own, and an Urgent order is never run, or counted, as Standard.
+  const at = async (used, body) => {
+    const { up } = upstreamSpy({ runCaps: { dailyRuns: 2 } });
+    const { service } = world({ upstream: up, urgentAvailable: () => true, queueDirs: [queueWith(Array.from({ length: used }, () => ({})))] });
+    return service.route("POST", "/portal/api/run/plan", CLIENT, body, {});
+  };
+  const urgent = { ...QUOTA_BODY, urgent: true };
+  const one = await at(1, urgent);
+  assert.equal(one.status, 429);
+  assert.deepEqual(one.json.errors, ["1 search left today."]);
+  assert.equal((await at(1, QUOTA_BODY)).status, 200, "one left: Standard fits");
+  assert.equal((await at(0, urgent)).status, 200, "two left: Urgent fits");
+  const none = await at(2, urgent);
+  assert.equal(none.status, 429);
+  assert.match(String(none.json.errors?.[0]), /all 2 of this account's searches/, "none left keeps its own sentence");
 });
 
 test("quota: under the limit, the ledger the wall reads admits the run", async () => {
@@ -3194,14 +3216,15 @@ test("a refused READ of a staff surface files nothing, but the WRITE beside it d
 
 // ══ 1986: a control the deployment cannot serve says so on /me ════════════════════════════════════
 
-test("/me carries the stop control's verdict — unavailable with a staff-only reason, default available", async () => {
+test("/me carries the stop control's verdict — unavailable with no reason for any person, default available", async () => {
   // The boot log said for days that the token cannot stop_run; every press failed identically. The
   // bootstrap reads the live token's posture and passes the verdict through this seam; the button
-  // disables itself with the reason instead of failing forever.
+  // disables itself instead of failing forever. Why names the install's own token and settings, so it
+  // is the operator's boot line, and no person's, a person who sees everything included (design, 2026-11-27).
   const dead = world({ stopControl: { available: false, reason: "the ops token's verbs are [start_run] — it cannot stop_run" } }).service;
   const staffMe = await dead.route("GET", "/portal/api/me", STAFF);
   assert.equal(staffMe.json.controls.stop.available, false);
-  assert.match(staffMe.json.controls.stop.reason, /cannot stop_run/, "staff read the posture reason");
+  assert.equal(staffMe.json.controls.stop.reason, null, "a person who sees everything reads the screen's sentence, not the token's posture");
   const clientMe = await dead.route("GET", "/portal/api/me", CLIENT);
   assert.equal(clientMe.json.controls.stop.available, false);
   assert.equal(clientMe.json.controls.stop.reason, null, "a client is not handed an operator instruction");
@@ -3563,4 +3586,23 @@ test("a live run's row names the stage it is in now, a step back included; a fin
   assert.ok(done, "a failed run left the listing");
   assert.equal(done.step, "Case law & refutation", "a finished run keeps the step its terminal write set");
   assert.equal(done.stepN, 6);
+});
+
+// ── A RUNNING CARD LISTS EVERY STEP BY NAME, FROM THE RUN'S OWN LIST (approved 2026-11-25) ────────────────
+// The browser keeps no copy of any step list: the row carries the names the run wrote, in order.
+test("a live run's row carries the run's own step list; a run recorded before the field carries none", async () => {
+  const { displayStepsFor, CONCLUSIONS_STEP } = await import("../progress.mjs");
+  const { service, workspaceRoot } = world();
+  const live = join(workspaceRoot, "workspace-test", "studio", "clearance-search", "tmp9-live", "2026-07-18-amber-x", "status.json");
+  const write = (s) => writeFileSync(live, JSON.stringify({ runId: "tmp9-live-amber-x", markName: "LIVEMARK", updatedAt: "2026-07-18T10:00:00Z", ...s }));
+  const row = async () => (await service.route("GET", "/portal/api/runs", CLIENT, {}, {})).json.runs.find((r) => r.runId === "tmp9-live-amber-x");
+  const steps = [...displayStepsFor("global-preliminary-search")];
+  write({ state: "running", steps, currentStep: { index: 5, label: CONCLUSIONS_STEP, n: 6, total: 9 }, lastStage: "narrative-refutation", stepLabel: CONCLUSIONS_STEP, stepN: 6, stepTotal: 9 });
+  const r = await row();
+  assert.deepEqual(r.steps, steps, "the row carries every step the run walks, in order");
+  assert.equal(r.step, CONCLUSIONS_STEP);
+  write({ state: "running", currentStep: { index: 1, label: "Searching registers and common law", n: 2, total: 9 }, stepN: 2, stepTotal: 9 });
+  assert.equal((await row()).steps, null, "no list on the record: the card keeps its single line");
+  write({ state: "running", steps: ["Framing the matter", 7], stepN: 1, stepTotal: 2 });
+  assert.equal((await row()).steps, null, "a list that is not all names is not a list");
 });

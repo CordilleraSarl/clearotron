@@ -19,12 +19,25 @@
 //     to be read by a human ("the request changed after confirmation — review the plan again and
 //     re-confirm"). Paraphrasing them in the UI is how a precise instruction becomes a vague one.
 
+import { decodeReceipt, decodePreRunOrder, type OrderReceipt, type PreRunOrder } from './orderReceipt.ts'
 import type { Tone, Band } from './tone.ts'
 import { asTone } from './tone.ts'
 import type { BriefRead } from './composeRead.ts'
 import type { CompanyFacts } from './companyFacts.ts'
 import { wireAccount } from './genericKey.ts'
 import type { BillingRefusal } from './engineState.ts'
+
+/** Each of this person's searches and its state, as the last answer to `runsMine` gave them; null before one. */
+let lastRunStates: ReadonlyMap<string, RunState> | null = null
+/** The last reading of this person's searches, for the tab title's count: no request of its own. */
+export const lastSeenRunStates = (): ReadonlyMap<string, RunState> | null => lastRunStates
+
+/**
+ * The accepted orders with no run yet that the last `runsMine` answer carried beside its runs (contract/orderReceipt.ts).
+ * Kept beside the run states, from the same answer, so Clearances reads them without a second request.
+ */
+let lastOrders: readonly PreRunOrder[] = []
+export const lastSeenOrders = (): readonly PreRunOrder[] => lastOrders
 
 export type Result<T> =
   | { kind: 'ok'; value: T }
@@ -574,6 +587,9 @@ export type Run = {
   readonly step: string | null
   readonly stepN: number | null
   readonly stepTotal: number | null
+  /** Every step the run walks, by name and in order, as the engine wrote the run's own list. Null for a
+   *  run recorded before the field and on every row that is not live. The browser keeps no copy. */
+  readonly steps: readonly string[] | null
   /** A stop has been asked for and the step in flight is finishing. Beside a
    *  non-terminal state this is the screen's "Stopping…"; the terminal replaces it. */
   readonly stopRequestedAt: string | null
@@ -1139,6 +1155,12 @@ export type ProviderState = {
    * the hop; the reason and the file stay with the server.
    */
   readonly credential: 'absent' | 'usable' | 'unusable' | 'unreadable' | null
+  /**
+   * WHETHER A SEARCH REFUSES TO RUN WITHOUT THIS SOURCE, as the server decides it from the order door's own
+   * requirements: true for the register and the research key, false for every source a search runs without
+   * and discloses. Null from an older server, which the page draws as needed, the look every row had.
+   */
+  readonly needed: boolean | null
 }
 
 /**
@@ -1359,6 +1381,12 @@ export type Searches = {
    * not send it, and the same fail-open direction the product list takes.
    */
   readonly maxMarkName: number | null
+  /**
+   * Whether an Urgent order runs on the AI service's faster setting on this installation. Absent ⇒ not
+   * available: New clearance then offers Standard and says why Urgent is not offered, which is the safe
+   * direction, since an Urgent order counts two searches.
+   */
+  readonly urgent: { readonly available: boolean }
   readonly read: ReadCapability
   /**
    * Which territories the register wired to THIS deployment can actually search, as composer
@@ -1512,6 +1540,7 @@ const decodeRun = (raw: unknown): Run | null => {
     stoppable: r['stoppable'] !== false,
     stepN: asNumber(r['stepN']),
     stepTotal: asNumber(r['stepTotal']),
+    steps: Array.isArray(r['steps']) && (r['steps'] as unknown[]).length ? asStrings(r['steps']) : null,
     reason: asString(r['reason']),
     failedStage: asString(r['failedStage']),
     reasonDetail: asString(r['reasonDetail']),
@@ -2032,11 +2061,15 @@ export const api = {
    * everywhere. Two capabilities, two names.
    */
   runsMine: (): Promise<Result<readonly Run[]>> =>
-    call('/portal/api/runs?scope=mine', (b) =>
-      asArray(b['runs'])
+    call('/portal/api/runs?scope=mine', (b) => {
+      const runs = asArray(b['runs'])
         .map(decodeRun)
-        .filter((r): r is Run => r !== null),
-    ),
+        .filter((r): r is Run => r !== null)
+      // KEPT AS THE LAST READING, so a tab going out of view knows what is in flight without asking again.
+      lastRunStates = new Map(runs.map((r) => [r.runId, r.state]))
+      lastOrders = asArray(b['orders']).map(decodePreRunOrder).filter((o): o is PreRunOrder => o !== null)
+      return runs
+    }),
 
   /**
    *  — THE CROSS-MARK PARAGRAPH for a run published over several names.
@@ -2114,6 +2147,13 @@ export const api = {
    * Can lose a race with the runner: a 409 with `action: 'already-claimed'` means it started between
    * the click and the request. That is a race, not an error — re-read the list and it is a running run.
    */
+  /**
+   * What became of an accepted order, by the reference Start returned, for one company (contract/orderReceipt.ts).
+   * Another company's order and an order nobody holds are both `notFound`.
+   */
+  orderReceipt: (reference: string, account: string): Promise<Result<OrderReceipt | null>> =>
+    call(`/portal/api/orders/${encodeURIComponent(reference)}${accountQuery(account)}`, decodeReceipt),
+
   cancelQueued: (id: string, account: string): Promise<Result<{ readonly action: string | null }>> =>
     call(`/portal/api/queue/${encodeURIComponent(id)}/cancel${accountQuery(account)}`, (b) => ({ action: asString(b['action']) }), {
       method: 'POST',
@@ -2180,6 +2220,7 @@ export const api = {
           nativeLanguage: r['nativeLanguage'] === true,
         }
       }),
+      urgent: { available: typeof b['urgent'] === 'object' && b['urgent'] !== null && (b['urgent'] as Record<string, unknown>)['available'] === true },
       read: decodeReadCapability(b['read']),
     })),
 
@@ -2661,6 +2702,7 @@ export const api = {
                 const s = asRecord(r['credential'])['state']
                 return s === 'absent' || s === 'usable' || s === 'unusable' || s === 'unreadable' ? s : null
               })(),
+              needed: typeof r['needed'] === 'boolean' ? r['needed'] : null,
             }
           })
         : null,

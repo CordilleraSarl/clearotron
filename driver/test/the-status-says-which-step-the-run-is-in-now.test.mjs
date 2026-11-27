@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { seedRunStatus, recordTransition, stepForStage } from "../progress.mjs";
+import { seedRunStatus, recordTransition, stepForStage, displayStepsFor, DISPLAY_STEPS, CONCLUSIONS_STEP } from "../progress.mjs";
 
 function run() {
   const studioRoot = mkdtempSync(join(tmpdir(), "prog-current-"));
@@ -48,4 +48,48 @@ test("a stage with no display step leaves currentStep on the step it runs inside
 test("a seeded run already answers: currentStep is the first step before any transition", () => {
   const { read } = run();
   assert.equal(read().currentStep.label, stepForStage("matter-frame").label);
+});
+
+// ── A SEARCH THAT DOES NOT READ CASE LAW NAMES ITS SIXTH STEP FOR WHAT IT DOES (approved 2026-11-25) ─────
+//
+// Global preliminary and Multi-country focus do not search case law (`caseLaw: false` in products.mjs), and
+// their sixth step reviews the conclusions. Named "Case law & refutation", every surface that names the step
+// told the reader case law was covered. The run records its own list, and every write names the step from it.
+function runOf(product) {
+  const studioRoot = mkdtempSync(join(tmpdir(), "prog-steps-"));
+  const runDir = join(studioRoot, "tmp9-demo-brand-owner", "2026-06-02-copper-spire");
+  mkdirSync(runDir, { recursive: true });
+  const ctx = { run: { runDir, studioRoot, slug: "tmp9-demo-brand-owner", codename: "copper-spire", date: "2026-06-02" },
+    job: { id: "j9", forwarder: "requester", ref: "TMP9001", markName: "AURORA", classes: [9] }, agent: "mailagent",
+    searchPolicy: { schema: 1, level: product, pipeline: "clearance" } };
+  seedRunStatus(ctx);
+  return { ctx, read: () => JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")) };
+}
+
+test("Global preliminary and Multi-country focus name their sixth step \"Checking the conclusions\", everywhere the run records it", () => {
+  for (const product of ["global-preliminary-search", "multi-country-focus-search"]) {
+    const { ctx, read } = runOf(product);
+    assert.deepEqual(read().steps, [...displayStepsFor(product)], `${product}: the seed records the run's own list`);
+    assert.equal(read().steps[5], CONCLUSIONS_STEP);
+    assert.equal(read().steps.length, DISPLAY_STEPS.length, "the same nine steps; only a name differs");
+    for (const k of ["matter-frame", "synthesis", "narrative-refutation"]) recordTransition(ctx, k);
+    const s = read();
+    assert.equal(s.stepLabel, CONCLUSIONS_STEP, `${product}: the furthest step reached`);
+    assert.equal(s.currentStep.label, CONCLUSIONS_STEP, `${product}: the step it is in now`);
+    assert.equal(s.stepN, 6);
+    assert.ok(!JSON.stringify(s).includes(DISPLAY_STEPS[5]), `${product}: the case-law step's name appears nowhere in its status`);
+  }
+});
+
+test("a Full country search keeps the nine shipped names, \"Case law & refutation\" included", () => {
+  const { ctx, read } = runOf("full-country-search");
+  assert.deepEqual(read().steps, [...DISPLAY_STEPS]);
+  recordTransition(ctx, "case-law");
+  assert.equal(read().stepLabel, DISPLAY_STEPS[5]);
+  assert.equal(read().currentStep.label, DISPLAY_STEPS[5]);
+});
+
+test("a run whose product this build cannot place keeps the shipped names", () => {
+  assert.equal(displayStepsFor(null), DISPLAY_STEPS);
+  assert.equal(displayStepsFor("no-such-product"), DISPLAY_STEPS);
 });

@@ -66,6 +66,7 @@ export const VERBS = {
   sync:    ["bin/uspto-sync.mjs"],
   update:  ["bin/update.mjs"],
   mcp:     ["bin/mcp.mjs"],
+  notices: ["bin/notices.mjs"],
 };
 
 export const SUMMARY = {
@@ -89,6 +90,7 @@ export const SUMMARY = {
   sync:    "build or update the free US register index (a large download, and hours of ingest)",
   update:  "bring this install up to date — and REFUSE to do it over the top of your own configuration",
   mcp:     "serve this install's searches to an assistant over MCP, or the demo's where there is no install",
+  notices: "list | received <id> | absent <id>",   // the usage alone: no wording for this line was approved
 };
 
 /**

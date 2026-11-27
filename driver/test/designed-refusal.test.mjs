@@ -172,21 +172,27 @@ test("the failure packet's copy says REFUSED, not FAILED, and never calls it a t
 
   const refused = buildFailurePacket({ ...base, terminalKind: REFUSAL_TERMINAL_KIND });
   assert.equal(refused.refused, true);
-  assert.match(refused.subject, /REFUSED/);
-  assert.doesNotMatch(refused.subject, /FAILED/);
-  assert.match(refused.whatsappText, /REFUSED at knockout-register-count/);
-  assert.doesNotMatch(refused.whatsappText, /FAILED/);
-  assert.match(refused.emailBodyHtml, /Nothing failed\./, "the kind sentence has to say nothing broke");
-  assert.doesNotMatch(refused.emailBodyHtml, /technical failure/);
-  assert.match(refused.emailBodyHtml, /before any work was done/);
+  // The notice a person reads says it was not started, never that it failed, and carries no stage or reason.
+  assert.match(refused.subject, /search not started, nothing delivered/);
+  assert.match(refused.whatsappText, /^The search for WANDERER was not started, and nothing was delivered\./);
+  assert.doesNotMatch(refused.subject + refused.whatsappText + refused.emailBodyHtml, /FAILED|technical failure|knockout-register-count|free-tier/);
+  // The run's own record keeps the refusal's copy.
+  assert.match(refused.diagnostic.subject, /REFUSED/);
+  assert.doesNotMatch(refused.diagnostic.subject, /FAILED/);
+  assert.match(refused.diagnostic.line, /REFUSED at knockout-register-count/);
+  assert.doesNotMatch(refused.diagnostic.line, /FAILED/);
+  assert.match(refused.diagnostic.emailBodyHtml, /Nothing failed\./, "the kind sentence has to say nothing broke");
+  assert.doesNotMatch(refused.diagnostic.emailBodyHtml, /technical failure/);
+  assert.match(refused.diagnostic.emailBodyHtml, /before any work was done/);
 
   // CONTROL — an ordinary failure's copy is untouched, which is what makes the change a discriminator
   // rather than a rewording.
   const failed = buildFailurePacket({ ...base, terminalKind: "deterministic" });
   assert.equal(failed.refused, false, "written false, never omitted (#755's rule: absence must not be the signal)");
-  assert.match(failed.subject, /run FAILED, nothing delivered/);
-  assert.match(failed.whatsappText, /❌ Clearotron search for WANDERER FAILED at knockout-register-count/);
-  assert.match(failed.emailBodyHtml, /FAILED at stage/);
+  assert.match(failed.subject, /search stopped, nothing delivered/);
+  assert.match(failed.diagnostic.subject, /run FAILED, nothing delivered/);
+  assert.match(failed.diagnostic.line, /❌ Clearotron search for WANDERER FAILED at knockout-register-count/);
+  assert.match(failed.diagnostic.emailBodyHtml, /FAILED at stage/);
 
   // and a client-started refusal still gets the redacted copy — no machine reason to a client
   const client = buildFailurePacket({ ...base, job: { markName: "WANDERER", clientPrincipal: true }, terminalKind: REFUSAL_TERMINAL_KIND });
@@ -294,8 +300,9 @@ test("an ordinary knockout failure is no refusal, and carries the end kind a cle
   const packet = readJson(driverDir(runDir, "failure.json"));
   assert.equal(packet.refused, false);
   assert.notEqual(packet.terminalKind, REFUSAL_TERMINAL_KIND);
-  assert.match(packet.whatsappText, /FAILED at knockout-scope \[factual\]: .* — nothing was delivered; needs human attention\.$/);
-  assert.match(packet.emailBodyHtml, /A factual gap the machinery could not close — this is a human decision, not a retry\./);
+  assert.match(packet.diagnostic.line, /FAILED at knockout-scope \[factual\]: .* — nothing was delivered; needs human attention\.$/);
+  assert.match(packet.diagnostic.emailBodyHtml, /A factual gap the machinery could not close — this is a human decision, not a retry\./);
+  assert.doesNotMatch(packet.whatsappText + packet.emailBodyHtml, /knockout-scope|factual/, "the notice a person reads names no stage or kind");
   // The signature and class the clearance end records travel here too, and change no word of the notice.
   const marker = readJson(join(runDir, ".failed"));
   assert.match(String(marker.sig ?? ""), /\S/, "the sentinel carries the failure's signature");
@@ -303,7 +310,7 @@ test("an ordinary knockout failure is no refusal, and carries the end kind a cle
   assert.equal(packet.failureSignature, marker.sig, "the packet carries the same signature");
   assert.equal(marker.recoveryAttempts, 0, "a run that never parked says so, as a clearance's sentinel does");
   assert.equal(packet.recoveryAttempts, 0);
-  assert.doesNotMatch(packet.whatsappText, /automatic recovery/, "no attempts, no clause");
+  assert.doesNotMatch(packet.diagnostic.line, /automatic recovery/, "no attempts, no clause");
   // That fields land here too, and on a SHORT reason the answer is "nothing was cut" — never a missing key
   assert.equal(status.reasonTruncated, false);
   assert.equal(status.reasonFull, null);
@@ -327,8 +334,8 @@ test("a knockout that already spent recovery attempts says how many when it fail
 
   assert.equal(res.failedStage, "knockout-scope", "premise: the same factual failure, which buys no further park");
   const packet = readJson(driverDir(runDir, "failure.json"));
-  assert.match(packet.whatsappText, /FAILED at knockout-scope after 2 automatic recovery attempts \[factual\]: /);
-  assert.match(packet.emailBodyHtml, /FAILED at stage <b>knockout-scope<\/b> after <b>2 automatic recovery attempts<\/b> and NOTHING was delivered/);
+  assert.match(packet.diagnostic.line, /FAILED at knockout-scope after 2 automatic recovery attempts \[factual\]: /);
+  assert.match(packet.diagnostic.emailBodyHtml, /FAILED at stage <b>knockout-scope<\/b> after <b>2 automatic recovery attempts<\/b> and NOTHING was delivered/);
   assert.equal(packet.recoveryAttempts, 2);
   assert.equal(readJson(join(runDir, ".failed")).recoveryAttempts, 2);
   const failed = readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)).filter((r) => r.event === "failed");

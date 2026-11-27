@@ -782,7 +782,7 @@ async function pipelineInner(job, opts = {}) {
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
   // paraphrase drift between the request and the frame is a defect, not a style choice.
   try {
-    const scope = instructedScopeToWrite(job, { jobRebuiltFromStatus: opts.jobRebuiltFromStatus, scopeOnDisk: existsSync(P.instructedScope) }); if (scope) writeFileSync(P.instructedScope, JSON.stringify(scope, null, 2) + "\n");
+    const scope = instructedScopeToWrite(job, { jobRebuiltFromStatus: opts.jobRebuiltFromStatus, scopeOnDisk: existsSync(P.instructedScope) }); if (scope) { writeFileSync(P.instructedScope, JSON.stringify(scope, null, 2) + "\n"); writeStatedFacts(P, job); }   // what the order states, kept with its source (stated-facts.mjs)
   } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
   // THE STORED DEFAULTS THE ENGINE CANNOT SEARCH — recorded by the run, not only by the plan preview.
   //
@@ -2183,3 +2183,4 @@ export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scop
 // Hoisted, so placed last: an import at the top would move every line citation into this file.
 import { commandLineRefusal } from "./run-requirements.mjs";
 import { runTables } from "./order-tables.mjs";
+import { writeStatedFacts } from "./stated-facts.mjs";

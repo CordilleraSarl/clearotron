@@ -242,7 +242,16 @@ if (process.env.MOCK_BARRIER_FILE && /matter-context\.md/.test(msg)) {
 }
 
 // ── Forced stage failure (parity with mock-claude MOCK_FAIL_STAGE): stderr + exit 1, no turn.completed. ──
-if (process.env.MOCK_FAIL_STAGE && process.env.MOCK_FAIL_STAGE.split("&&").every((part) => msg.includes(part))) {
+// MOCK_FAIL_STAGE_ONCE=<file>: the forced failure fires on the first matching turn only, and the file records that it
+// has. A stage that fails once and then passes: a pass that a later repeat recovers.
+const failOnceSpent = () => {
+  const f = process.env.MOCK_FAIL_STAGE_ONCE;
+  if (!f) return false;
+  if (existsSync(f)) return true;
+  writeFileSync(f, "spent\n");
+  return false;
+};
+if (process.env.MOCK_FAIL_STAGE && process.env.MOCK_FAIL_STAGE.split("&&").every((part) => msg.includes(part)) && !failOnceSpent()) {
   beforeForcedFailure(argv, msg);
   process.stderr.write("mock forced failure\n");
   process.exit(1);
@@ -257,6 +266,15 @@ function completeTurn(text, { noNewline } = {}) {
   const tc = { type: "turn.completed", usage: usageOf() };
   if (noNewline) process.stdout.write(JSON.stringify(tc)); else send(tc);
   process.exit(0);
+}
+
+// — MOCK_CODEX_WEB_SEARCH=<json>: the program's own web search, in a research-only session (engine/mcp/own-search.mjs).
+// A list of { queries, results? }: each is a `web_search` item (several queries is a pooled search; no `results` is a
+// search whose list the program did not report), then a reply.
+if (process.env.MOCK_CODEX_WEB_SEARCH) {
+  JSON.parse(process.env.MOCK_CODEX_WEB_SEARCH).forEach((w, i) => send({ type: "item.completed", item: { id: `ws_${i}`, type: "web_search",
+    action: w.queries.length > 1 ? { type: "search", queries: w.queries } : { type: "search", query: w.queries[0] }, ...(w.results ? { results: w.results } : {}) } }));
+  completeTurn("done");
 }
 
 // ── Warm-patch ladder substrate (parity with mock-claude MOCK_WARM_MODE). ──

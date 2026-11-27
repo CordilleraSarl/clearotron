@@ -137,6 +137,11 @@ if (existsSync(join(UNIT_DIR, CLIENT_DOOR_UNIT))) {
   const dir = unitsEnv.CLEAROTRON_WORK_DIR ? join(unitsEnv.CLEAROTRON_WORK_DIR, "engine-check") : engineCheckDir();
   const lines = engine ? failedCheckLines(readEngineCheck(engine, { dir }), lastEngineAnswer(engine, { dir })) : [];
   if (lines.length) say(`\n  ⚠ ${lines.join("\n    ")}`);
+  // FAILURE NOTICES NOT YET CONFIRMED, from this install's own record, in the words approved for status. The settings are
+  // read by the one function `clearotron notices` reads them with, so the notice named here is the one it answers.
+  const { installNoticeSettings, undeliveredNotices, noticeStatusLines } = await import("../driver/notice-delivery.mjs");
+  const notices = noticeStatusLines(undeliveredNotices({ env: installNoticeSettings() }), invoke("notices"));
+  if (notices.length) say(`\n  ⚠ ${notices.join("\n    ")}`);
 }
 say(`\n  Configuration questions: ${invoke("doctor")}`);
 process.exit(0);

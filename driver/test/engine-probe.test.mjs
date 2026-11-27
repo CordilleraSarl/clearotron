@@ -938,7 +938,11 @@ test("through the real codex adapter: a renewal still failing when the probe's w
   // probe's watchdog stops the turn, and the door refused the job as "openai-agent is not signed in".
   const dir = mkdtempSync(join(tmpdir(), "clearotron-codex-renewal-stopped-"));
   const quick = { timeoutSec: 20, stallSec: 1 };
-  const controls = { MOCK_CODEX_RENEWAL_FAILED: join(dir, "dropped"), MOCK_CODEX_RENEWAL_STALL: "1" };
+  // THE STUB'S START-UP IS NOT A STALL. Before its first byte the watchdog waits max(stall, spawn grace), 2 s by
+  // default; on a loaded machine the stub took longer than that to start, was stopped before it wrote its renewal
+  // line, and the verdict was `timed-out` instead of `refresh-failed`. A wide grace covers the start-up; once the
+  // stub has spoken, the 1 s stall stops the turn as quickly as before.
+  const controls = { MOCK_CODEX_RENEWAL_FAILED: join(dir, "dropped"), MOCK_CODEX_RENEWAL_STALL: "1", CLEAROTRON_SPAWN_GRACE_MS: "15000" };
   Object.assign(process.env, controls);
   try {
     const v = await probeEngineTurn({ env: CODEX, ...quick });

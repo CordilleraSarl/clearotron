@@ -46,6 +46,7 @@ import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join } from "node:path";
 import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted, acceptedEnvelope } from "./preserve-merge.mjs";
 import { paths, readJson } from "./run-record.mjs";
+import { slotsFilledFrom, slotText } from "./stated-facts.mjs";
 
 export const MATTER_CONTEXT_FILE = "matter-context.md";
 const SCHEMA_VERSION = 1;
@@ -86,7 +87,7 @@ export const MEANING_ANGLE_MAX_CHARS = 90;
  *
  * PURE.
  */
-export function renderInstructedScope(scope) {
+export function renderInstructedScope(scope, slots = null) {
   const out = ["## Instructed scope", ""];
   const row = (label, v) => {
     const vals = Array.isArray(v) ? list(v) : (str(v) ? [str(v)] : []);
@@ -95,7 +96,12 @@ export function renderInstructedScope(scope) {
   row("Mark(s)", scope?.marks);
   row("Classes", scope?.classes);
   row("Instructed territories", scope?.jurisdictions);
-  row("Goods/services", scope?.goods);
+  // An order that names no goods of its own is given the ones its request states, each with where it was found
+  // (stated-facts.mjs). An order that names its goods renders exactly as it always did.
+  if (!str(scope?.goods) && slots?.goods) out.push(`- **Goods/services:** ${slotText(slots.goods)}`);
+  else row("Goods/services", scope?.goods);
+  if (slots?.use) out.push(`- **Use:** ${slotText(slots.use)}`);
+  if (slots?.channels) out.push(`- **Sales channels:** ${slotText(slots.channels)}`);
   out.push("", "Stamped by the driver from `_driver/instructed-scope.json`, the record written at intake "
     + "before any model ran. It is not retyped by the frame, so it cannot drift from the request.", "");
   return out;
@@ -117,7 +123,7 @@ export function renderInstructedScope(scope) {
  */
 export function renderMatterFrame(model) {
   const out = [`# Matter frame`, ""];
-  out.push(...renderInstructedScope(model.instructed_scope));
+  out.push(...renderInstructedScope(model.instructed_scope, model.stated_slots ?? null));
 
   out.push("## The matter", "", model.prose_body, "");
 
@@ -330,7 +336,7 @@ export function mergeMatterFrameCall(stored, received) {
   };
 }
 
-export function acceptMatterFrame(params, { instructedScope = null } = {}) {
+export function acceptMatterFrame(params, { instructedScope = null, statedFacts = null } = {}) {
   const prose_body = str(params?.prose_body);
   // The floors the old validator applied to the whole hand-written file now apply to the field that
   // actually carries the judgment. Same numbers, aimed at the thing they were always about.
@@ -492,6 +498,7 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
   const model = {
     schema_version: SCHEMA_VERSION,
     instructed_scope: instructedScope ?? null,
+    ...(slotsFilledFrom(statedFacts) ? { stated_slots: slotsFilledFrom(statedFacts) } : {}),
     prose_body,
     scope_basis,
     scope_jurisdictions: list(params?.scope_jurisdictions),
@@ -511,6 +518,12 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
 export function readInstructedScope(runDir) {
   try { return readJson(paths(String(runDir ?? "")).instructedScope); }
   catch { return null; }   // legacy/replay run with no receipt — the section renders `none given`
+}
+
+/** What the order states, with its sources, as intake recorded it; null when it states none. IMPURE. */
+export function readStatedFacts(runDir) {
+  try { return readJson(paths(String(runDir ?? "")).statedFacts); }
+  catch { return null; }
 }
 
 /**
@@ -547,7 +560,7 @@ export function recordMatterFrame(runDir, received, { now = () => new Date().toI
     return { written: null, refused: undeclared, captured: closeCapture({ ok: false, refused: undeclared }), capture_failed: captureFailed };
   }
   const call = mergeMatterFrameCall(lastAcceptedMatterFrame(runDir), received);
-  const verdict = acceptMatterFrame(call, { instructedScope: readInstructedScope(runDir) });
+  const verdict = acceptMatterFrame(call, { instructedScope: readInstructedScope(runDir), statedFacts: readStatedFacts(runDir) });
   if (!verdict.ok) {
     return { written: null, refused: verdict.reason, captured: closeCapture({ ok: false, refused: verdict.reason }), capture_failed: captureFailed };
   }

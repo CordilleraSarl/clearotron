@@ -14,6 +14,7 @@ import { readableFailure } from '../contract/failure.ts'
 import type { Tone } from '../contract/tone.ts'
 import { toneColor } from '../contract/tone.ts'
 import { STOPPED_LINE } from '../contract/nameRow.ts'
+import { inFlightWord } from '../contract/reads.ts'
 
 export function RiskDot({ tone, label }: { readonly tone: Tone | null; readonly label: string | null }) {
   if (!label) return <span style={{ color: 'var(--text-faint)' }}>—</span>
@@ -160,7 +161,7 @@ export function StatusCell({
     )
   }
 
-  const label = state === 'queued' ? 'Queued' : state === 'paused' ? 'Paused' : 'Running'
+  const label = inFlightWord(state) ?? 'Running'
   // Three pauses, one word. They differ only in the reason line: a provider cap resumes at a stated
   // time (the only clock this system possesses); a retry backs off on its own; and a system restart
   // (a deploy caught the run mid-flight) resumes on the next pass. None of them needs anything from

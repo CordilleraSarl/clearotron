@@ -56,5 +56,6 @@ test("every area label is neutral, and an unlisted file says so", () => {
   assert.equal(owner("driver/progress.mjs"), "record and report");
   assert.equal(owner(".github/workflows/ci.yml"), "release");
   assert.equal(owner("driver/some-new-module.mjs"), "unassigned");
-  assert.ok(SCENARIO_GAPS.length > 0, "a scenario not driven stays on the list a comparison prints");
+  assert.ok(Array.isArray(SCENARIO_GAPS) && SCENARIO_GAPS.every((g) => typeof g === "string" && g.length > 0),
+    "a scenario not driven is named on the list a comparison prints");
 });

@@ -1,5 +1,5 @@
 {
-  "total": 301,
+  "total": 302,
   "files": {
     "driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs": [
       0,
@@ -337,6 +337,10 @@
       1,
       0
     ],
+    "driver/test/an-urgent-order-counts-two-searches-where-it-runs-fast.test.mjs": [
+      2,
+      0
+    ],
     "driver/test/attributed-span.test.mjs": [
       1,
       0
@@ -474,7 +478,7 @@
       0
     ],
     "driver/test/depth-ladder-rung-discipline.test.mjs": [
-      4,
+      2,
       0
     ],
     "driver/test/depth-ladder-table.test.mjs": [

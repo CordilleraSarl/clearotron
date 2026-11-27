@@ -287,3 +287,23 @@ test("the engine says whether any AI is chosen, by the order wall's own test", a
     assert.equal(engineInventory(env).selected, !refusedForWantOfAnAi, `CLEAROTRON_AI=${JSON.stringify(value)}`);
   }
 });
+
+// ── WHICH SOURCES A SEARCH REFUSES TO RUN WITHOUT (Installation settings' Needed and Optional, 2026-11-25) ──
+// The page groups by `needed`, so `needed` has to be the order door's own answer: the register every search
+// reads, and the research key the three clearance searches refuse without. A source a search runs without and
+// discloses is optional.
+test("each provider row says whether a search refuses to run without it, as the order door's requirements do", async () => {
+  const { runRequirements, REGISTER_ENV, RESEARCH_ENV } = await import("../run-requirements.mjs");
+  const rows = providerInventory({});
+  const byKey = (k) => rows.filter((r) => r.key === k);
+  assert.ok(rows.every((r) => typeof r.needed === "boolean"), "a row does not say");
+  assert.ok(byKey("register").every((r) => r.needed), "the register is optional");
+  assert.ok(byKey("research").some((r) => r.needed), "the research key is optional");
+  assert.ok(byKey("web").every((r) => !r.needed), "the Chinese marketplace key is needed");
+  assert.ok(byKey("caselaw").every((r) => !r.needed), "a case-law source is needed");
+  // The same answer from the requirements' side: the door names the register and the research key, and
+  // never the Chinese marketplace key.
+  const named = runRequirements({}).map((r) => r.name);
+  assert.ok(named.includes(REGISTER_ENV) && named.includes(RESEARCH_ENV), "the door no longer names the register or the research key");
+  assert.ok(!named.includes("SERPAPI_API_KEY"), "the door now refuses without the Chinese marketplace key, and the page calls it optional");
+});

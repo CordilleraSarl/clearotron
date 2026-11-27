@@ -71,7 +71,12 @@ const adminConfig = {
 }
 const about = productIdentity()
 
-const state = { contact: CONTACT, reset: null, programMissing: false }
+const state = { contact: CONTACT, reset: null, programMissing: false, nothingSet: false }
+
+// NOTHING SET UP (boards approved 2026-11-25): no AI chosen, no register, no keys. Every Needed row is red with
+// the setup command beside it, the research row says a Knockout search can still run, and the Optional rows
+// stay neutral. The driver's own inventory again, against an empty environment.
+const bareDeployment = { OAUTH_BRIDGE_CREDS_DIR: credsDir, PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '' }
 // THE PAGE'S OWN LOADS, COUNTED. A screen that asks the server twice paints exactly like one that asks once,
 // and each request spends the person's rate budget, so the only instrument that sees a double load is a count.
 const loads = []
@@ -89,6 +94,10 @@ const server = createServer((req, res) => {
       accountNames: { northwind: 'Northwind Foods' }, brand: 'Northwind Group', administratorContact: state.contact })
   }
   if (path === '/portal/admin/config' && !wantsPage) {
+    if (state.nothingSet) {
+      return json({ ...adminConfig, engine: { ...engineInventory(bareDeployment), binaryPresent: true, program: 'claude', install: null },
+        providers: providerInventory(bareDeployment) })
+    }
     return json(state.programMissing ? { ...adminConfig, engine: { ...adminConfig.engine, binaryPresent: false } } : adminConfig)
   }
   if (path === '/portal/api/about') return json(about)
@@ -257,19 +266,27 @@ const settingsProbe = `(() => {
     mono: [...r.querySelectorAll('.cfg-note.mono')].map((n) => flat(n.textContent)),
     guide: r.querySelector('.cfg-act a.pill') ? { text: flat(r.querySelector('.cfg-act a.pill').textContent), href: r.querySelector('.cfg-act a.pill').getAttribute('href'), target: r.querySelector('.cfg-act a.pill').getAttribute('target') } : null,
     stateRight: Math.round(r.querySelector('.cfg-state').getBoundingClientRect().right),
+    dot: r.querySelector('.cfg-dot')?.className ?? null,
+    command: flat(r.querySelector('.cfg-cmd code')?.textContent) || null,
+    copy: flat(r.querySelector('.cfg-cmd button')?.textContent) || null,
   })
+  // NEEDED, THEN OPTIONAL (board approved 2026-11-25). The engine is the first category under Needed.
+  const cats = (g, group) => [...(g?.querySelectorAll('.cfg-cat') ?? [])].map((c) => ({
+    group,
+    label: flat(c.querySelector('.cfg-sub')?.textContent),
+    note: flat(c.querySelector('.cfg-cat-note')?.textContent) || null,
+    rows: [...c.querySelectorAll('.cfg-row')].map(row),
+  }))
+  const all = [...cats(groups[1], 'Needed'), ...cats(groups[2], 'Optional')]
   const pageText = document.body.innerText
   return {
     renderedChars: flat(screen.innerText).length,
     title: flat(screen.querySelector('h1.page-title')?.textContent),
     sections: groups.map((g) => flat(g.querySelector(':scope > .eyebrow')?.textContent)),
+    headings: groups.map((g) => g.querySelector(':scope > .eyebrow')?.tagName ?? null),
     signIn: [...(groups[0]?.querySelectorAll('.cfg-row') ?? [])].map(row),
-    engine: [...(groups[1]?.querySelectorAll('.cfg-row') ?? [])].map(row),
-    categories: [...(groups[2]?.querySelectorAll('.cfg-cat') ?? [])].map((c) => ({
-      label: flat(c.querySelector('.cfg-sub')?.textContent),
-      note: flat(c.querySelector('.cfg-cat-note')?.textContent) || null,
-      rows: [...c.querySelectorAll('.cfg-row')].map(row),
-    })),
+    engine: all.find((c) => c.label === 'Engine')?.rows ?? [],
+    categories: all.filter((c) => c.label !== 'Engine'),
     leaks: ${LEAKS}.flatMap((re) => { const m = re.exec(pageText); return m ? [m[0]] : [] }),
   }
 })()`
@@ -410,7 +427,8 @@ for (const theme of ['light', 'dark']) {
     out[`settings-${theme}`] = s
     ok(s.renderedChars > 400, `the page rendered real text (${s.renderedChars} chars) — every absence below is worthless without it`)
     ok(s.title === 'Installation settings', `the page is titled "Installation settings" (saw "${s.title}")`)
-    ok(same(s.sections, ['Sign-in', 'Engine', 'Providers']), `three sections: Sign-in, Engine, Providers (saw ${JSON.stringify(s.sections)})`)
+    ok(same(s.sections, ['Sign-in', 'Needed', 'Optional']), `three sections: Sign-in, Needed, Optional (saw ${JSON.stringify(s.sections)})`)
+    ok(same(s.headings, ['DIV', 'H2', 'H2']), `Needed and Optional are headings (saw ${JSON.stringify(s.headings)})`)
     ok(s.signIn.length === 1, `Sign-in is one row (saw ${s.signIn.length})`)
     const si = s.signIn[0]
     ok(si && si.name === SPEC.signInName && si.val === null && si.state === 'Configured',
@@ -419,17 +437,27 @@ for (const theme of ['light', 'dark']) {
     const rights = [...s.signIn, ...s.engine, ...s.categories.flatMap((c) => c.rows)].map((r) => r.stateRight)
     ok(rights.length >= 9 && new Set(rights).size === 1, `every state lines up in one column (right edges ${JSON.stringify([...new Set(rights)])})`)
     ok(s.engine.length === 1 && s.engine[0].name === 'Anthropic' && s.engine[0].state === 'Subscription',
-      `Engine carries the engine row alone (saw ${JSON.stringify(s.engine)})`)
+      `Engine, first under Needed, carries the engine row alone (saw ${JSON.stringify(s.engine)})`)
     ok(!s.engine.some((r) => /web search/i.test(r.name)), "the engine's own web search, off on both engines, has no row under Engine")
     ok(same(s.categories.map((c) => c.label), SPEC.categories), `four provider categories, in order (saw ${JSON.stringify(s.categories.map((c) => c.label))})`)
+    ok(same(s.categories.map((c) => c.group), ['Needed', 'Needed', 'Optional', 'Optional']),
+      `the register and the research key are Needed, the Chinese marketplace and case law Optional (saw ${JSON.stringify(s.categories.map((c) => [c.label, c.group]))})`)
     const repeated = s.categories.flatMap((c) => c.rows.filter((r) => [r.name, r.val ?? '', ...r.notes].some((t) => t.includes(c.label))).map((r) => `${c.label} on ${r.name}`))
     ok(repeated.length === 0, `no category name is repeated on a row (saw ${JSON.stringify(repeated)})`)
     ok(!s.categories.flatMap((c) => c.rows).some((r) => /web search/i.test(r.name)), 'the engine\'s web search is not also listed as a provider')
     const rows = Object.fromEntries(s.categories.flatMap((c) => c.rows).map((r) => [r.name, r]))
     ok(rows.Corsearch?.state === 'Configured' && rows.Perplexity?.state === 'Configured', 'the configured register and research key read Configured')
-    ok(rows.SerpAPI?.state === 'Missing' && same(rows.SerpAPI?.notes, ['A key is needed'])
+    // AN OPTIONAL KEY ABSENT IS NOT A FAULT: "Not set up", the off look with an open dot, its guide, and the
+    // setup command with Copy (boards approved 2026-11-25).
+    ok(rows.SerpAPI?.state === 'Not set up' && same(rows.SerpAPI?.notes, ['A key is needed'])
       && rows.SerpAPI?.guide?.text === 'Setup guide' && /providers\/README\.md#research-and-support-sources$/.test(rows.SerpAPI?.guide?.href ?? '') && rows.SerpAPI?.guide?.target === '_blank',
-      `a missing key says "A key is needed" beside a Setup guide that opens its guide (saw ${JSON.stringify(rows.SerpAPI)})`)
+      `an optional missing key reads "Not set up" with "A key is needed" beside a Setup guide that opens its guide (saw ${JSON.stringify(rows.SerpAPI)})`)
+    ok(/\boff\b/.test(rows.SerpAPI?.dot ?? '') && /\bopen\b/.test(rows.SerpAPI?.dot ?? '') && !/\bbad\b/.test(rows.SerpAPI?.dot ?? ''),
+      `an optional source not set up takes the neutral open dot (saw ${JSON.stringify(rows.SerpAPI?.dot)})`)
+    ok(rows.SerpAPI?.command === 'npx clearotron install' && rows.SerpAPI?.copy === 'Copy',
+      `the optional key's row shows the setup command with Copy (saw ${JSON.stringify([rows.SerpAPI?.command, rows.SerpAPI?.copy])})`)
+    ok(['CourtListener', 'Legal Data Hunter', 'EUR-Lex', 'EUIPO Boards of Appeal', 'Corsearch', 'Perplexity'].every((n) => rows[n]?.command === null),
+      'a sign-in, a configured source or one this build does not ship shows a command')
     for (const name of ['CourtListener', 'Legal Data Hunter']) {
       ok(rows[name]?.state === 'Not set up' && same(rows[name]?.notes, ['One-time sign-in needed']) && rows[name]?.guide?.text === 'Setup guide'
         && /oauth-mcp-bridge\/README\.md#one-time-setup-per-remote-mcp-server$/.test(rows[name]?.guide?.href ?? ''),
@@ -472,6 +500,35 @@ for (const theme of ['light', 'dark']) {
     await capture(`installation-settings-program-missing-${theme}`)
   }
   state.programMissing = false
+
+  // ── Installation settings, nothing set up
+  console.log('\nInstallation settings, nothing set up:')
+  state.nothingSet = true
+  if (await open('/portal/admin/config', "document.querySelectorAll('.cfg-row').length >= 9", 'Installation settings drew its rows with nothing set up')) {
+    await setTheme(theme)
+    const bare = (await evalIn(settingsProbe)) ?? {}
+    const rowsBare = Object.fromEntries(bare.categories.flatMap((c) => c.rows).map((r) => [r.name, r]))
+    ok(bare.engine?.[0]?.state === 'Missing' && bare.engine?.[0]?.command === 'npx clearotron install',
+      `the Engine row with no AI chosen shows the setup command (saw ${JSON.stringify(bare.engine?.[0])})`)
+    ok(rowsBare['No register selected']?.state === 'Missing' && rowsBare['No register selected']?.command === 'npx clearotron install',
+      `no register chosen shows the setup command (saw ${JSON.stringify(rowsBare['No register selected'])})`)
+    ok(rowsBare.Perplexity?.state === 'Missing' && same(rowsBare.Perplexity?.notes, ['A key is needed. A Knockout search can still run.'])
+      && /\bbad\b/.test(rowsBare.Perplexity?.dot ?? '') && rowsBare.Perplexity?.command === 'npx clearotron install',
+      `the research row says a Knockout search can still run, red, with the command (saw ${JSON.stringify(rowsBare.Perplexity)})`)
+    ok(!Object.values(rowsBare).some((r) => r.name !== 'Perplexity' && r.notes.some((n) => /Knockout search can still run/.test(n))),
+      'the Knockout sentence is on another row')
+    ok(rowsBare.SerpAPI?.state === 'Not set up' && /\bopen\b/.test(rowsBare.SerpAPI?.dot ?? ''), `SerpAPI stays neutral (saw ${JSON.stringify(rowsBare.SerpAPI)})`)
+    ok(bare.leaks.length === 0, `no variable name, credential path or README reference anywhere on the page (saw ${JSON.stringify(bare.leaks)})`)
+    await capture(`installation-settings-nothing-set-${theme}`)
+    // AT PHONE WIDTH the command lines and their Copy stay inside the page.
+    await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 900, deviceScaleFactor: 1, mobile: true })
+    await sleep(250)
+    const sideways = (await evalIn('document.documentElement.scrollWidth - document.documentElement.clientWidth')) ?? null
+    ok(sideways === 0, `Installation settings at 390 px does not scroll sideways (${sideways}px)`)
+    await cmd('Emulation.clearDeviceMetricsOverride', {})
+    await capture(`installation-settings-nothing-set-${theme}-390`, 390)
+  }
+  state.nothingSet = false
 
   // ── Preferences, contact set and unset
   for (const [label, contact] of [['contact-set', CONTACT], ['contact-unset', null]]) {

@@ -19,6 +19,7 @@
 // expression in the screen for a row's colour, state or note.
 
 import type { AuthState, ProviderState } from './api.ts'
+import { setupPackage } from './engineState.ts'
 
 /** Where a "Setup guide" button goes. Each is the document in the product's source that holds the detail. */
 export type SetupGuide = 'register' | 'research' | 'case-law' | 'sign-in'
@@ -42,6 +43,8 @@ export type SettingsRow = {
   readonly ok: boolean
   /** Nothing to fix on this box: drawn faint rather than red. */
   readonly off: boolean
+  /** An optional source not set up: the off look with an open dot (board SettingsProposed, 2026-11-25). */
+  readonly open: boolean
   readonly name: string
   /** What the source covers — the middle cell. */
   readonly mono: string | null
@@ -54,6 +57,12 @@ export type SettingsRow = {
   readonly detail: string | null
   /** The guide a row that needs action opens. */
   readonly guide: SetupGuide | null
+  /**
+   * The documented command that fixes the problem this row shows, drawn with a Copy control. Only on a row
+   * reading "Missing" or "Not set up" whose problem the setup wizard fixes; never on one whose state could
+   * not be read, and never on a case-law sign-in, which no single command completes.
+   */
+  readonly command: string | null
 }
 
 export type ProviderCategory = {
@@ -63,11 +72,26 @@ export type ProviderCategory = {
   readonly label: string
   /** Said once under the heading, where the rows would otherwise each say it. */
   readonly note: string | null
+  /** Whether a search refuses to run without this category: the page's Needed group, else Optional. */
+  readonly needed: boolean
   readonly rows: readonly SettingsRow[]
 }
 
+/**
+ * THE SETUP WIZARD, in the form every install can run — the page's one rule for naming it (see
+ * `setupPackage`): `npx clearotron install`, or the beta's package on a beta.
+ */
+export const setupCommand = (channel: 'beta' | 'latest' | null | undefined): string =>
+  `npx ${setupPackage(channel)} install`
+
+/**
+ * The common-law and marketplace source's line while its key is missing (approved 2026-11-25): three of the
+ * four searches refuse without it, and a Knockout search runs and says so on its report.
+ */
+export const KNOCKOUT_STILL_RUNS = 'A Knockout search can still run.'
+
 const row = (r: Partial<SettingsRow> & Pick<SettingsRow, 'name' | 'state'>): SettingsRow => ({
-  ok: true, off: false, mono: null, faults: [], note: null, detail: null, guide: null, ...r,
+  ok: true, off: false, open: false, mono: null, faults: [], note: null, detail: null, guide: null, command: null, ...r,
 })
 
 export const KEY_NEEDED = 'A key is needed'
@@ -160,9 +184,15 @@ export function engineCapabilityRows(providers: readonly ProviderState[]): reado
  * page listing a complete set of two. What changes is the note, and the note is chosen from the row's
  * kind, never copied from its remedy.
  */
-export function providerRow(p: ProviderState): SettingsRow {
+export function providerRow(p: ProviderState, { channel = null }: { readonly channel?: 'beta' | 'latest' | null } = {}): SettingsRow {
   const { name, covers } = splitSourceLabel(p.providerLabel ?? p.provider ?? '')
   const guide: SetupGuide = p.key === 'register' ? 'register' : p.enrolment === 'oauth' ? 'case-law' : 'research'
+  // A SOURCE A SEARCH RUNS WITHOUT is not a fault when it is absent (approved 2026-11-25): it takes the
+  // neutral look this page already has for a row that is off, and an absent key reads "Not set up" as an
+  // absent sign-in does. One whose state could not be read keeps "Unknown", neutral too. Null is an older
+  // server, drawn as needed, the look every row had.
+  const optional = p.needed === false
+  const command = setupCommand(channel)
 
   if (p.configured) {
     return row({ name, mono: covers, state: 'Configured', note: p.enrolment === 'built-in' ? 'Read by the engine itself' : null })
@@ -173,21 +203,25 @@ export function providerRow(p: ProviderState): SettingsRow {
   }
   // A register nobody has chosen yet: the thing to do is choose one, not find a key.
   if (p.key === 'register' && p.provider === null) {
-    return row({ ok: false, name: 'No register selected', state: 'Missing', faults: ['A register is needed'], guide })
+    return row({ ok: false, name: 'No register selected', state: 'Missing', faults: ['A register is needed'], guide, command })
   }
   // An id the environment names and this build does not ship: a typo, not an unmade choice.
   if (!p.known) {
     return row({ ok: false, name, mono: covers, state: 'Not in this build', faults: [`This build does not ship a provider called ${name}.`], guide })
   }
   if (p.missing.length) {
-    return row({ ok: false, name, mono: covers, state: 'Missing', faults: [KEY_NEEDED], guide })
+    if (optional) return row({ ok: false, off: true, open: true, name, mono: covers, state: 'Not set up', faults: [KEY_NEEDED], guide, command })
+    // THE ONE SOURCE A KNOCKOUT RUNS WITHOUT, said while its key is missing and on no other row.
+    const faults = p.key === 'research' ? [`${KEY_NEEDED}. ${KNOCKOUT_STILL_RUNS}`] : [KEY_NEEDED]
+    return row({ ok: false, name, mono: covers, state: 'Missing', faults, guide, command })
   }
   // A one-time sign-in not done, or done and no longer usable — the same step either way. One that could not
   // be LOOKED AT is neither: telling the reader to sign in again would send them the wrong way.
   if (p.credential === 'unreadable') {
-    return row({ ok: false, name, mono: covers, state: 'Unknown', faults: ['Could not be checked'], guide })
+    return row({ ok: false, off: optional, open: optional, name, mono: covers, state: 'Unknown', faults: ['Could not be checked'], guide })
   }
-  return row({ ok: false, name, mono: covers, state: 'Not set up', faults: [SIGN_IN_NEEDED], guide })
+  // NO COMMAND: no single command completes a one-time sign-in; its setup guide carries the steps.
+  return row({ ok: false, off: optional, open: optional, name, mono: covers, state: 'Not set up', faults: [SIGN_IN_NEEDED], guide })
 }
 
 /**
@@ -196,7 +230,10 @@ export function providerRow(p: ProviderState): SettingsRow {
  * The heading is the category's own name from the server's rows, so no category is spelled here and none is
  * repeated on a row. The engine's own capabilities are not providers and are left for the Engine section.
  */
-export function providerCategories(providers: readonly ProviderState[]): readonly ProviderCategory[] {
+export function providerCategories(
+  providers: readonly ProviderState[],
+  { channel = null }: { readonly channel?: 'beta' | 'latest' | null } = {},
+): readonly ProviderCategory[] {
   const order: string[] = []
   const byKey = new Map<string, ProviderState[]>()
   for (const p of providers) {
@@ -213,7 +250,10 @@ export function providerCategories(providers: readonly ProviderState[]): readonl
       key,
       label: rows[0]?.label || key,
       note: key === 'caselaw' && unset ? CASE_LAW_GAP : null,
-      rows: rows.map(providerRow),
+      // ONE SOURCE FOR THE GROUP: the server's `needed`, which a category's rows share. A row from an older
+      // server that does not say is needed, the look it always had.
+      needed: rows.some((p) => p.needed !== false),
+      rows: rows.map((p) => providerRow(p, { channel })),
     }
   })
 }

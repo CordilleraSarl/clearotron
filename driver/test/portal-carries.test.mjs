@@ -112,6 +112,7 @@ const PROBES = {
   priorUse: { send: "probe: in use since 2019 in DE" },
   campaignShape: { send: "probe: single launch, twelve months" },
   deadline: { send: "2026-12-01" },
+  urgent: { send: true },
 };
 
 const CARRIES = [...PORTAL_JOB_FIELDS.carries];

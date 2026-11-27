@@ -26,9 +26,9 @@ That returns nothing, and an empty result is the pass here — the one match in 
 citing a chunk bound, not an import.
 
 A vendor reaches the planner as **data**. `../driver/register-capabilities.mjs` resolves a provider id
-to the frozen `CAPABILITIES` object that `<id>/src/capabilities.js` declares, and passes it in. That
-resolver is the single module that names all six, and it has to: mapping ids to declarations is what
-it is for. An unknown id throws loudly with no fallback capability set, because planning against
+to the frozen `CAPABILITIES` object that `<id>/src/capabilities.js` declares, and passes it in. The ids
+themselves are named once, in [`registers.mjs`](registers.mjs): the capability map, the driver's adapter
+map, the register server's grants and the list an operator is shown are each built from it. An unknown id throws loudly with no fallback capability set, because planning against
 corsearch's abilities while a thinner provider executes is exactly the defect this contract prevents.
 
 Six adapters behind one contract. **Three cost nothing in vendor fees** — `euipo`, `uspto-local`, and

@@ -10,6 +10,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { parseAudit, parseReport, parseBlocks, parseFront, parseSections, buildAuditMd, placementAuditRows } from "./driver.mjs";
 import { readJson } from "../../driver/run-record.mjs";
+import { noteDocumentRead } from "./document-reads.mjs";   // the answer names the document version it was read from
 
 // id-stamp the three block lists so callers (get_finding / trace) can address a single record.
 function idStamp(lists) {
@@ -53,7 +54,7 @@ export function reportDocumentOf(P, kind = "clearance") {
   try {
     if (!P?.reportDocument || !existsSync(P.reportDocument)) return null;
     const doc = readJson(P.reportDocument);
-    return doc?.document === `report-document/${kind}-1` ? doc : null;
+    return doc?.document === `report-document/${kind}-1` ? noteDocumentRead(doc) : null;
   } catch { return null; }
 }
 

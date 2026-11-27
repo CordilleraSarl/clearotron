@@ -14,15 +14,23 @@ import { randomUUID } from "node:crypto";
 import { config } from "./driver.mjs";
 import { validateJob } from "../../driver/enqueue-schema.mjs";
 import { doorGates } from "../../driver/door-gates.mjs";   // the resolved-product checks every door runs
-import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";   //
+import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch-probe.mjs";
+import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";   // the ledger the wall counts
+import { resolveEffectiveProfile } from "../../driver/profiles.mjs";
+import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";   // one search left and an Urgent order
+import { ORDER_REF_RE, orderRefRefusal, filedReference, orderAlreadyFiled, orderReceipt, orderAnswer, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // one rule for filing and finding an order
+import { orderUrgency } from "./urgent.mjs";   // whether this installation can run an Urgent order, as the run asks it   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
 import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one marker shape, shared with the engine
 import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver/engine/child-record.mjs";   //
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
+import { userFailurePacket } from "../../driver/run-outcome.mjs";   // a failure packet leaves only as its notice and routing
+import { userOutboxPacket } from "../../driver/outbox-notices.mjs";   // so does every outbox packet
 import { stopReason } from "../../shared/stop-reason.mjs";   //
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { driverDir, paths, readJson } from "../../driver/run-record.mjs";   // — one definition of where `_driver/` is
+import { owedPacket, sendSettled, clearSendMarkers, settleSend } from "../../driver/send-settle.mjs";   // one settle for every sender
 
 // Queue resolution (mirrors the enqueue CLI, docs/INTAKE.md): with NO explicit agent, a
 // headless deployment's CLEAROTRON_QUEUE_DIR wins; otherwise the default agent's workspace queue. An
@@ -60,14 +68,27 @@ export function enqueuedViaFor(scope) {
   return String(scope?.sub ?? "") === PORTAL_TOKEN_SUB ? "portal/start_run" : "mcp/start_run";
 }
 
-// THE QUEUE ID'S RULE, STATED WHOLE IN THE REFUSAL. The id becomes a queue file name, so it is held to a slug
-// of at most this many characters that starts with a letter or digit. The refusal named only the characters, and an assistant whose id was
-// too long read it as a bad character, changed nothing that mattered, and lost the order's first call on
-// three mornings before it made one up that fit. stop_run's queue form holds a queued id to the same rule.
-const QUEUE_ID_MAX = 128;
-const QUEUE_ID_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${QUEUE_ID_MAX - 1}}$`);
-const queueIdRefusal = (id) => `id ${JSON.stringify(id)}: Use an ID of 1–${QUEUE_ID_MAX} characters. Start with an ASCII letter or digit. `
-  + `The remaining characters may also include a dot, underscore, @ or hyphen.${id.length > QUEUE_ID_MAX ? ` This one has ${id.length} characters.` : ""}`;
+// THE QUEUE ID'S RULE, STATED WHOLE IN THE REFUSAL (driver/order-receipt.mjs: ORDER_REF_RE, orderRefRefusal). The id
+// becomes a queue file name, so it is held to a slug of at most 128 characters that starts with a letter or digit. The
+// refusal named only the characters, and an assistant whose id was too long read it as a bad character, changed nothing
+// that mattered, and lost the order's first call on three mornings before it made one up that fit. stop_run's queue
+// form holds a queued id to the same rule.
+//
+// ── AN ACCOUNT'S REFERENCE IS ITS OWN (design, 2026-11-26) ──────────────────────────────────────────────────────────
+//
+// A session that does not see every account names its order by a reference it may have chosen itself, and a session of
+// another account may choose the same one. Any answer that differed only when they met (a refusal, a fresh reference,
+// the order's state) would tell one account about the other's order, and the file could only hold one of them. So
+// every order such a session files carries a fixed mark of its account, and of the organisation for Generic: two
+// accounts' references never meet, and a retry by the same account meets its own order and spends nothing. The reply
+// gives the reference the order is filed under; a reference that already ends in the session's own mark is that
+// reference, not a new one. A session that sees every account (an operator) files the reference as sent. The rule
+// lives in the driver (filedReference, orderAlreadyFiled, orderReceipt), so every door files and finds by one rule.
+const seesEveryAccount = (scope) => scope?.accounts == null || scope.accounts === "*";
+/** This session's visibility, in the form the receipt takes: every order, or the accounts its grant reaches. */
+const receiptScope = (scope) => (seesEveryAccount(scope) ? { everything: true } : { sees: (account, organisation) => accountVisible(scope, account, organisation) });
+/** A client's session is told why an order was refused before it ran; why a run stopped is the operator's to read. */
+const isClientSession = (scope) => scope?.kind === "account" || scope?.kind === "user";
 
 export function buildJob(args = {}, { scope } = {}) {
   // marks[] (search-depth spine): a knockout BATCH is ONE job carrying every mark — accept an explicit
@@ -81,7 +102,7 @@ export function buildJob(args = {}, { scope } = {}) {
   const id = String(args.id || `mcp-${Date.now().toString(36)}-${randomUUID().slice(0, 8)}`);
   // Input hardening: the id becomes a QUEUE FILENAME (join(qdir, `${id}.json`)) — a
   // path-shaped id would escape the queue directory. Slug-validated unconditionally, every caller.
-  if (id !== basename(id) || id.includes("..") || !QUEUE_ID_RE.test(id)) throw new Error(queueIdRefusal(id));
+  if (id !== basename(id) || id.includes("..") || !ORDER_REF_RE.test(id)) throw new Error(orderRefRefusal(id));
   const classes = Array.isArray(args.classes) ? args.classes.map(Number).filter(Number.isFinite) : undefined;
   // `||` not `??`: markName "" is falsy-but-not-nullish and must fall through to the
   // first batch mark, never enqueue an empty display name.
@@ -146,6 +167,9 @@ export function buildJob(args = {}, { scope } = {}) {
     // field and silently ignores it. validateJob owns the vocabulary (see the note above); it refuses,
     // in the same sentence the portal and the CLI refuse with.
     ...("caseLaw" in args && args.caseLaw != null ? { caseLaw: args.caseLaw } : {}),
+    // URGENT, carried verbatim like the toggle above: `true` orders the faster setting, `false` and absence are a
+    // standard order, and any other value reaches validateJob, which refuses it rather than run it as Standard.
+    ...("urgent" in args && args.urgent != null ? { urgent: args.urgent } : {}),
     ...("searchLevel" in args ? { searchLevel: args.searchLevel } : {}),   // presence, null included
     ...(args.customerUnknown === true ? { customerUnknown: true } : {}),
     ...(args.dupOverride === true ? { dupOverride: true } : {}),
@@ -209,6 +233,8 @@ export const START_RUN_JOB_FIELDS = Object.freeze({
     // and "I said nothing" are two different searches and only a positive instruction can tell them apart.
     "geography",
     "product", "recipeKey", "nativeLanguage", "caseLaw", "searchLevel", "deliveryRoute", "parentRunId",
+    // the order's How soon option: true is Urgent. Carried as sent; validateJob refuses a value that is not a boolean.
+    "urgent",
     "customer", "profileKey", "projectKey", "customerUnknown", "tenant",
     "upfrontInstructions", "brief", "rawRequest", "deliverableSpec", "commercialFlexibility",
     "priorUse", "campaignShape", "deadline",
@@ -256,15 +282,50 @@ export function resolveScopedProfileKey(args, scope, verb) {
 
 // start_run — enqueue a clearotron job the runner will drain. Returns the queue id + slug; the runId/codename is
 // assigned by the runner on claim, so the caller polls list_runs(slug) / run_changes for it.
+/**
+ * The one-left sentence for a session the daily allowance binds, or null. The same count the preview reads (plan.mjs
+ * allowanceFor) and the same rule the wall applies (urgent-count.mjs). A ledger or profile that cannot be read refuses
+ * nothing: the wall still holds. Generic is answered as the preview answers it, by the wall alone.
+ */
+function oneLeftAtStart(job, scope) {
+  if (scope?.kind !== "account" || scope?.everything === true) return null;
+  try {
+    const profile = resolveEffectiveProfile(job).profile;
+    if (!profile?.key || profile.key === "generic") return null;
+    const limit = Number.isInteger(profile.runCaps?.dailyRuns) ? profile.runCaps.dailyRuns : DEFAULT_CLIENT_DAILY_RUNS;
+    const used = accountUsage({ queueDirs: config.queueDirs, account: profile.key });
+    if (!used?.complete) return null;
+    return oneLeftRefusal({ used: used.today, limit, searches: admittedSearches(job) });
+  } catch { return null; }
+}
+
 export function startRun(args = {}, { scope } = {}) {
   const agent = args.agent ? String(args.agent) : "";
   args = resolveScopedProfileKey(args, scope, "start_run");
   const qdir = queueDir(agent);
   // ONE builder shared with plan_run, so the preview a caller confirms is the job that actually runs.
   let job;
-  try { job = buildJob(args, { scope }); }
+  try { job = buildJob(args, { scope }); job.id = filedReference(job.id, job, { everyAccount: seesEveryAccount(scope) }); }
   catch (e) { throw new Error(`start_run: ${e.message}`); }
   const { id } = job;
+  // AN ID IN ANY STATE IS THAT ORDER, asked before anything else so a retry is recognised as one: before validation, and
+  // before the allowance is counted again for an order already counted, so a retry at the day's limit is answered with
+  // its order rather than refused. The same account's order under the reference it is filed under, or under the
+  // reference as sent (an order filed before references carried a mark), IS this order: the answer is that order, and
+  // nothing is written or spent. Another account's order this session may see is not this one, and is refused as before;
+  // one it may not see is nothing at all under the reference as sent, and under the filed reference is refused naming
+  // nothing of it, never written over.
+  {
+    const prior = orderAlreadyFiled({ queueDirs: [qdir], filed: id, asked: args.id != null ? String(args.id) : "", job, scope: receiptScope(scope) });
+    if (prior?.held === "mine") {
+      // The same answer as order_status, from the same builder: the kind of a refusal, never the reason as written.
+      const { reference, ...answer } = orderAnswer(prior.receipt);
+      return { ok: true, id: reference, existing: true, ...answer };
+    }
+    if (prior?.held === "hidden" || (prior?.held === "other" && ["waiting", "checking", "running"].includes(prior.state)))
+      throw new Error(`start_run: a job with id "${prior.reference}" is already queued/processing`);
+    if (prior?.held === "other") throw new Error(`start_run: a job with id "${prior.reference}" already exists: ${RECEIPT_STATES[prior.state]}`);
+  }
 
   const v = validateJob(job);
   if (v.classify === "reject" || !v.ok) {
@@ -292,6 +353,20 @@ export function startRun(args = {}, { scope } = {}) {
     e.classify = "clarify";
     throw e;
   }
+  // AN URGENT ORDER THIS INSTALLATION CANNOT RUN starts at Standard, counts one search, and says so; it is never
+  // refused and never held. The job is written as Standard, so the run and its count agree with the reply.
+  const urgency = orderUrgency(job);
+  job = urgency.job;
+  // ONE SEARCH LEFT AND AN ORDER THAT COUNTS TWO (design, 2026-11-26): refused here in the order screen's words, as the
+  // portal's start and the runner's wall refuse it, rather than queued for the wall to refuse at claim, where this
+  // caller never sees it. Never written as Standard instead.
+  const oneLeft = oneLeftAtStart(job, scope);
+  if (oneLeft) {
+    const e = new Error(`start_run: job rejected — ${oneLeft}`);
+    e.errors = [oneLeft];
+    e.classify = "clarify";
+    throw e;
+  }
 
   mkdirSync(qdir, { recursive: true });
   const tmp = join(qdir, `${id}.json.tmp`);
@@ -304,11 +379,28 @@ export function startRun(args = {}, { scope } = {}) {
   const watch = probeQueueWatch({ queueDirs: [qdir] });
   return {
     ok: true, id, agent: agent || config.defaultAgent, queue: qdir, queued: true, classify: v.classify,
-    warnings: [...(v.warnings || []), ...gates.warnings,
+    warnings: [...(v.warnings || []), ...gates.warnings, ...urgency.warnings,
       ...(watch.state === "fail" ? [unwatchedQueueWarning(qdir, watch.unitPath)] : [])],
     queuePath: dest, queueWatched: watch.state,
     note: "Queued. The runner assigns a runId/codename on claim — poll list_runs (filter by markName) or run_changes for progress.",
   };
+}
+
+// order_status — what became of an order, by the reference start_run returned or the one the caller sent, within this
+// session's own visibility (driver/order-receipt.mjs). An order this session may not see answers exactly as no order
+// at all. Reads only: nothing is written, counted or sent.
+export function orderStatus(args = {}, { scope } = {}) {
+  // A WORKSPACE THE CALLER NAMES IS THE ONLY ONE READ: the order went to that queue, so another queue can neither answer
+  // for it nor, unreadable, spoil the answer. Named by no one, the default queue and every known queue are read, under the
+  // same visibility, and two of them holding the reference is "ambiguous".
+  const queueDirs = args.agent ? [queueDir(String(args.agent))] : [queueDir(""), ...config.queueDirs];
+  const answer = orderReceipt({ queueDirs, reference: args.id, scope: receiptScope(scope) });
+  if (!answer.found) return { found: false, basis: answer.basis };
+  // NOBODY IS GIVEN THE REASON AS WRITTEN (design, 2026-11-27): it can name settings, profiles, a queue and, for a
+  // duplicate, an earlier order that may be another company's. Every session is told which check refused the order, as
+  // `reasonKind`, and `reason` keeps its place in the answer, empty. An order refused before kinds were recorded is
+  // `other`. A session that sees every account is also told whose order it is.
+  return { found: true, ...orderAnswer(answer.receipt, { withAccount: !isClientSession(scope) }) };
 }
 
 // stop_run — cancel. A not-yet-claimed queue job is removed (a REAL cancel before any spend). A running run
@@ -322,7 +414,7 @@ export async function stopRun(args = {}, { scope, endTurn = endEngineChild } = {
     const qdir = queueDir(agent);
     // same filename hardening as start_run — the id is joined into the queue path
     const sid = String(args.id);
-    if (sid !== basename(sid) || sid.includes("..") || !QUEUE_ID_RE.test(sid)) throw new Error(`stop_run: ${queueIdRefusal(sid)}`);
+    if (sid !== basename(sid) || sid.includes("..") || !ORDER_REF_RE.test(sid)) throw new Error(`stop_run: ${orderRefRefusal(sid)}`);
     const f = join(qdir, `${String(args.id)}.json`);
     const NOT_FOUND = { ok: false, action: "not-found", id: args.id, note: "No queued job with that id (already run, or never queued)." };
     // ACCOUNT GATE: the runId form is gated at the dispatch chokepoint, but a QUEUED job
@@ -519,8 +611,21 @@ export function listOutboxEvents() {
     try { raw = readFileSync(join(config.outboxDir, file), "utf8"); } catch { return null; } // raced an ack — skip
     try { return { file, ...JSON.parse(raw) }; }
     catch { return { file, kind: "delivered", runId: file.replace(/\.pending$/, ""), agent: raw.trim() || null }; }
-  }).filter(Boolean);
+  }).filter(Boolean)
+    // Every packet is handed on as the notice a person reads and the routing a courier sends by, whoever reads the
+    // outbox and whichever version wrote the file (design, 2026-11-27): the shape it is written in (outbox-notices.mjs),
+    // so a file an earlier version wrote, and the worker has not yet rewritten, is told in the same words as a new one.
+    .map(userOutboxPacket);
   return { ok: true, count: events.length, events };
+}
+
+// `whatsappToReason` tells an install how to give a requester a chat number: it names the requester's address and the
+// setting that holds the numbers. That is the install's own setup, never a person's to be handed (design, 2026-11-27);
+// a courier routes by `whatsappTo`, which stays. The packet on disk keeps it.
+function withoutSetupHint(p) {
+  if (!p || typeof p !== "object" || !("whatsappToReason" in p)) return p;
+  const { whatsappToReason: _hint, ...rest } = p;
+  return rest;
 }
 
 // get_delivery_packet — the run's send payload(s): _driver/delivery.json (success) and/or
@@ -538,7 +643,9 @@ export function getDeliveryPacket(args = {}) {
   return {
     ok: true, runId: run.runId, state: run.state,
     sendPending: run.status?.sendPending ?? null, sent: existsSync(join(run.runDir, ".sent")),
-    delivery, failure,
+    // `failure` is the notice and its routing, never `_driver/failure.json` as written: the stage, the reason and the
+    // repairs stay in that file, the run's own record (design, 2026-11-27).
+    delivery: withoutSetupHint(delivery), failure: failure ? userFailurePacket(failure) : null,
   };
 }
 
@@ -632,55 +739,13 @@ export function markSent(args = {}) {
   if (!args.runId) throw new Error("mark_sent: runId is required");
   const run = resolveRun(String(args.runId));
   if (!run) throw new Error(`mark_sent: run "${args.runId}" not found`);
-  const deliveryPath = paths(run.runDir).delivery;
-  const failurePath = paths(run.runDir).failure;
-  const packetPath = existsSync(deliveryPath) ? deliveryPath : failurePath;
-  if (!existsSync(packetPath))
+  const owed = owedPacket(run.runDir);
+  if (!owed)
     throw new Error(`mark_sent: run "${run.runId}" has no delivery or failure packet — nothing was pending a send`);
-  // Clear the delivered outbox marker (edge-trigger only; a missing marker is a no-op). Runs on BOTH the
-  // fresh and the alreadySent paths: the .sent guard is written BEFORE this removal, so a first call
-  // interrupted (deliver-trigger.sh SIGKILLs the wake at 840s) between the two used to orphan the marker
-  // forever — the alreadySent early-return then suppressed every retry of this cleanup. Making the
-  // removal idempotent lets a retried mark_sent finish the cleanup a killed first call left undone.
-  //
-  // EVERY FORM THE RUN WAS EVER KNOWN BY, not just one (post-merge audit 2). A pre-change packet carries the
-  // legacy dateless `<slug>-<codename>` runId while the resolved run's own id is the dated canonical
-  // `<slug>-<date>-<codename>` — a run delivered on 2026-07-29 still has exactly that pair on disk, its
-  // _driver/delivery.json naming the dateless form and its status.json the dated one. That is also why
-  // resolveRun keeps its historical dateless arm (runs.mjs), so both ids reach this function.
-  // Removing only the packet's form left the OTHER form's marker on disk, and the outbox re-fires on
-  // whatever is there; worse, the alreadySent early-return repeated the same single-form removal, so no
-  // retry could ever finish the cleanup — the orphan was permanent. Same dual-form defence rescanOwedRuns
-  // already applies when it decides a marker is already queued (charter P1 §3): one settle clears every
-  // name that delivery could have been minted under. Best-effort per form; a missing one is a no-op.
-  const clearMarker = () => {
-    const packet = (() => { try { return readJson(packetPath); } catch { return {}; } })();
-    const sanitize = (s) => String(s).replace(/[^A-Za-z0-9._-]/g, "_");   // rescanOwedRuns' own marker-name gate
-    // The three OBSERVED ids are not the whole set: rescanOwedRuns DERIVES the legacy
-    // `<slug>-<codename>` form (outbox-backoff.mjs), and a marker minted under that name is named by
-    // none of them when the packet was rewritten with the dated id after its marker was minted. That
-    // orphan is not permanent — the courier re-passes the marker's own name next pass — but it costs a
-    // RE-SEND, i.e. a duplicate report to the reader, because the deliver skill sends before mark_sent.
-    // So derive the same form rescanOwedRuns derives, and the mirror is complete rather than partial.
-    const legacy = run.slug && run.codename ? `${run.slug}-${run.codename}` : null;
-    const forms = [...new Set([packet.runId, run.runId, args.runId, legacy]
-      .filter((id) => id != null && String(id).trim() !== "").map(sanitize))];
-    // BOTH SUFFIXES, because a failure's marker IS its packet. The delivery lane drops `<id>.pending`;
-    // the failure lane writes its packet through the outbox as `<id>.failed.pending`, which the same
-    // *.pending watch matches. Clearing only the first left the failure form on disk after a settle, the
-    // sweep re-armed off it, and the run stayed owed forever — the permanent SEND PENDING the pipelines'
-    // old comment feared, arriving by the one route nobody had named. A missing form is a no-op, as
-    // before. (How many were stranded when this was found is a fact about one box on one day; it lives on
-    // the issue, not here, because a count in a comment rots and the mechanism does not.)
-    for (const id of forms) {
-      for (const suffix of [".pending", ".failed.pending"]) {
-        try { rmSync(join(config.outboxDir, `${id}${suffix}`), { force: true }); } catch { /* best-effort */ }
-      }
-    }
-  };
-  const sentPath = join(run.runDir, ".sent");
-  if (existsSync(sentPath)) {
-    clearMarker();
+  // The settle itself (driver/send-settle.mjs) is shared with the route an install configures, so a send is settled
+  // one way whichever sender made it. Its markers are cleared on the already-sent path too.
+  if (sendSettled(run.runDir)) {
+    clearSendMarkers({ run, askedId: args.runId, packetPath: owed.path });
     return { ok: true, runId: run.runId, alreadySent: true, note: "Already marked sent — outbox marker cleared (idempotent)." };
   }
   // SETTLING REQUIRES EVIDENCE (audit item 7, proven on a delivered run): the email was BLOCKED on the
@@ -697,26 +762,7 @@ export function markSent(args = {}) {
     throw new Error(`mark_sent: refusing to settle run "${run.runId}" without send evidence — pass messageId `
       + `(the sent email's id) or attestation (an explicit out-of-band statement of how the packet reached the reader, `
       + `recorded verbatim). If the send was blocked or failed, do NOT call mark_sent: leave the marker so the send stays owed.`);
-  // `settled` names WHICH packet this receipt is for. A .sent beside a failure packet and a .sent beside a
-  // delivery mean two different things to anyone reading the run dir afterwards — "the client was told it
-  // failed" is not "the client got their report" — and the file used to be silent about which.
-  writeFileSync(sentPath, JSON.stringify({
-    ts: new Date().toISOString(), messageId, via: "mcp/mark_sent",
-    ...(attestation ? { attestation } : {}),
-    settled: packetPath === deliveryPath ? "delivery" : "failure",
-  }, null, 2) + "\n");
-  // status.json: sendPending -> false (atomic tmp+rename; a torn read must never lose the flip).
-  // A failed flip is NON-FATAL (.sent is the primary store and the rollup now derives from it too) but
-  // never silent: the note names it, so a courier transcript shows the sidecar disagreeing.
-  let statusFlipped = true;
-  try {
-    const sp = join(run.runDir, "status.json");
-    const status = readJson(sp);
-    status.sendPending = false;
-    writeFileSync(`${sp}.tmp`, JSON.stringify(status, null, 2) + "\n");
-    renameSync(`${sp}.tmp`, sp);
-  } catch { statusFlipped = false; /* best-effort — .sent is the primary guard */ }
-  clearMarker();
+  const { statusFlipped } = settleSend({ run, askedId: args.runId, evidence: { messageId, attestation }, via: "mcp/mark_sent" });
   return { ok: true, runId: run.runId, alreadySent: false,
     note: `.sent written${statusFlipped ? ", sendPending cleared" : " (status.json flip FAILED — the rollup settles from .sent)"}, outbox marker removed.` };
 }

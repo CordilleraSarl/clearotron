@@ -21,16 +21,12 @@
 // fetched without the table gives nothing. Any doubt reads as no page, and the statement stays as the search answer
 // gave it, cut or not established whole.
 //
-// A pure leaf: node:fs, node:path and shared/driver-dir.mjs only, so the goods reader and the band tool server can
-// both import it.
+// A pure leaf: node:fs, node:path, run-record.mjs and research-records.mjs only, so the goods reader and the band tool
+// server can both import it.
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { paths, readJson } from "./run-record.mjs";
-
-// The research server's own name for a call's file: the time it was kept, with ":" and "." made "-", the server's
-// process id, and the number of the call.
-const QUESTION_FILE = /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-\d+-(\d+)\.json$/;
-const questionOf = (name) => { const m = QUESTION_FILE.exec(name); return m ? Number(m[1]) : null; };
+import { researchResult, researchResultCall } from "./research-records.mjs";   // one reading of a kept research result
 
 // USPTO's status page for one serial. Its other pages (the documents, the search) carry no goods table.
 const STATUS_PAGE = /^https?:\/\/tsdr\.uspto\.gov\/statusview\/sn(\d+)\/?(?:[?#].*)?$/i;
@@ -79,17 +75,15 @@ export function statusPageGoods(markdown) {   // @internal — driven by its tes
   return [];
 }
 
-/** The status pages one saved research result fetched, each with its goods table: [{serial, goods}]. A grid's result and a page without the table give none. PURE. */
+/** The status pages one saved research result fetched, each with its goods table: [{serial, goods}]. A grid's result, a result that cannot be read and a page without the table give none. PURE. */
 export function statusPagesIn(result) {   // @internal — driven by its test
-  if (result?.tool !== "perplexity_research" || result?.kind !== "question" || !Array.isArray(result?.items)) return [];
+  const read = researchResult(result);
+  if (!read.known || read.kind !== "question") return [];
   const out = [];
-  for (const item of result.items) {
-    if (item?.type !== "fetch_url_results" || !Array.isArray(item.contents)) continue;
-    for (const page of item.contents) {
-      const serial = STATUS_PAGE.exec(String(page?.url ?? "").trim())?.[1];
-      const goods = serial ? statusPageGoods(page?.snippet) : [];
-      if (goods.length) out.push({ serial, goods });
-    }
+  for (const page of read.pages) {
+    const serial = STATUS_PAGE.exec(page.url)?.[1];
+    const goods = serial ? statusPageGoods(page.text) : [];
+    if (goods.length) out.push({ serial, goods });
   }
   return out;
 }
@@ -97,26 +91,33 @@ export function statusPagesIn(result) {   // @internal — driven by its test
 /**
  * A reader of the status pages the run's research saved. Each call returns Map(serial → [{question, goods}]) from the
  * folder as it stands, the pages in the order they were saved. A file is read once, as the research server writes each
- * once; a file that will not parse, as one still being written will not, is read again on the next call. IMPURE.
+ * once; a file that will not parse, as one still being written will not, is read again on the next call. The map's
+ * `unreadable` property counts the research results that parsed but could not be read (research-records.mjs): they give
+ * no page, and they are not results that fetched none. IMPURE.
  */
 export function savedStatusPages(runDir) {
-  if (!runDir) return () => new Map();
+  const none = () => { const m = new Map(); Object.defineProperty(m, "unreadable", { value: 0, enumerable: false }); return m; };
+  if (!runDir) return none;
   const dir = paths(runDir).webResults;
   const read = new Map();
   return () => {
     let names = [];
-    try { names = readdirSync(dir).filter((n) => questionOf(n) != null).sort(); } catch { names = []; }
+    try { names = readdirSync(dir).filter((n) => researchResultCall(n) != null).sort(); } catch { names = []; }
     const pages = new Map();
+    let unreadable = 0;
     for (const name of names) {
       if (!read.has(name)) {
         let result; try { result = readJson(join(dir, name)); } catch { continue; }
-        read.set(name, statusPagesIn(result));
+        read.set(name, { known: researchResult(result).known, found: statusPagesIn(result) });
       }
-      for (const { serial, goods } of read.get(name)) {
+      const { known, found } = read.get(name);
+      if (!known) unreadable++;
+      for (const { serial, goods } of found) {
         if (!pages.has(serial)) pages.set(serial, []);
-        pages.get(serial).push({ question: questionOf(name), goods });
+        pages.get(serial).push({ question: researchResultCall(name), goods });
       }
     }
+    Object.defineProperty(pages, "unreadable", { value: unreadable, enumerable: false });
     return pages;
   };
 }

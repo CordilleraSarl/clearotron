@@ -20,7 +20,8 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { claudeTurnInstructions, FILE_OUTPUT, absolutizeSkillRefs, resolveSpawnCwd, spawnGraceMs, isRecordTool, stallMs, engineMaxBufferChars, startGovernedChild, governWatchdog, readGovernedStreams } from "./common.mjs";   // the child, its watchdog, its reader, and the stall and buffer limits both engines share
-import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
+import { resolveEngineProgram, resolveModel } from "../driver.config.mjs";
+import { sessionSpeed } from "./speed.mjs";   // — whether this session's model can take the speed its run asks for   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { clearEngineChild } from "./child-record.mjs";   // the shared child (startGovernedChild) writes the record; this clears it at settle
 import { engineEnv } from "./engine-env.mjs";   // — the program's environment, by list (see spawnEnv)
@@ -338,14 +339,17 @@ export const OWN_SEARCH_TOOLS = Object.freeze(["WebSearch"]);
 /** The program's tools that write a file. A result that comes back an error is a write that failed. */
 const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
-export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
+export function buildClaudeArgs({ message, model, thinking, speed = "standard", footing = null, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, webSearch = false }) {
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
   const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
   const m = claudeModel(model); if (m) args.push("--model", m);
   args.push("--effort", effortFor(thinking));
-  // FAST MODE REMOVED (2026-06-17): the Opus `--settings {"fastMode":true}` knob ~2.5×'d subscription-billed
-  // usage and tripped the Claude 5-hour session cap mid-run (overage org-disabled → hard 429 → every stage
-  // nonzero_exit_1). Reverted everywhere; HIGH effort is retained on the verdict/safety stages.
+  // THE SPEED is a setting, not a flag: `fastMode` in the one `--settings` value below (stageSettings), the vendor's
+  // unattended form (https://code.claude.com/docs/en/fast-mode, "Toggle fast mode": `claude -p --settings
+  // '{"fastMode": true}'`, v2.1.205 or later). Every session of an Urgent run asks for it where the model sent above has
+  // a faster setting (engine/speed.mjs, sessionSpeed); on any other model it is not asked for, so the model stays the
+  // one the stage chose, and the turn's record says why it ran at standard speed.
+  const sp = sessionSpeed({ ordered: speed, engine: "anthropic-agent", model: m });
   // Stages WRITE their output file; acceptEdits auto-approves Write/Edit in non-interactive -p (Read is
   // always allowed). Gather tools (E3) ride --allowedTools so they never prompt either.
   args.push("--permission-mode", "acceptEdits");
@@ -364,7 +368,10 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   // through Bash on a login with no rule allowing it. A bare name here "removes the matching tools from
   // Claude's context" (the vendor's CLI reference, `--disallowedTools`), on every call, the resumed one
   // included, so the model is never offered them. See COMMAND_TOOLS for the three names.
-  args.push("--disallowedTools", [...COMMAND_TOOLS, ...OWN_SEARCH_TOOLS].join(" "));
+  // A RESEARCH-ONLY SESSION (`webSearch`) is the one turn that keeps the program's own web search: it is handed nothing
+  // but its dictated searches, and its tool records are read back search by search (engine/mcp/own-search.mjs). Every
+  // stage removes it.
+  args.push("--disallowedTools", [...COMMAND_TOOLS, ...(webSearch === true ? [] : OWN_SEARCH_TOOLS)].join(" "));
   const cap = maxBudgetUsd ?? (process.env.CLEAROTRON_MAX_BUDGET_USD ? Number(process.env.CLEAROTRON_MAX_BUDGET_USD) : null);
   if (cap != null && Number.isFinite(cap)) args.push("--max-budget-usd", String(cap));
   // FILE ACCESS: claude's Read/Write/Edit tools are confined to cwd + --add-dir roots even under
@@ -398,9 +405,12 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   const rd = runDirGrant({ runDir, dispatch: grantDispatch ?? input, seatWrites });
   const granted = rd.grant ? runDir : null;
   if (granted) args.push("--add-dir", granted);
-  const boundary = writeBoundarySettings({ skillsRoots: grantRoots, profilesDir, runDir: granted });
-  args.push("--settings", stageSettings(boundary));
-  return { args, input, grantNote: rd.note };
+  const boundary = writeBoundarySettings({ skillsRoots: grantRoots, profilesDir, runDir: granted, footingWord: footing?.word ?? null });
+  args.push("--settings", stageSettings(boundary, { fast: sp.sent === "fast" }));
+  // THE FOOTING CHECK reads the program's hook events, which it reports only when asked (`--include-hook-events`, the
+  // vendor's CLI help: "Include all hook lifecycle events in the output stream"). Only the check's own turn asks.
+  if (footing?.word) args.push("--include-hook-events");
+  return { args, input, grantNote: rd.note, speed: sp };
 }
 
 /**
@@ -416,9 +426,13 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
  */
 export const READ_FENCE = Object.freeze({ blockReadsOutsideWorkingDirectories: true });
 
-/** The one `--settings` value a turn carries: the read fence, and the write boundary's hook when there is one. */
-export function stageSettings(boundary) {
-  return JSON.stringify({ permissions: { ...READ_FENCE }, ...(boundary ? JSON.parse(boundary) : {}) });
+/**
+ * The one `--settings` value a turn carries: the read fence, the write boundary's hook when there is one, and the faster
+ * speed when the turn asks for it. One value, because the program reads one `--settings`: a second would replace the
+ * first, and the boundary with it.
+ */
+export function stageSettings(boundary, { fast = false } = {}) {
+  return JSON.stringify({ permissions: { ...READ_FENCE }, ...(boundary ? JSON.parse(boundary) : {}), ...(fast ? { fastMode: true } : {}) });
 }
 
 /**
@@ -439,7 +453,7 @@ export function stageSettings(boundary) {
  * NOTE for whoever next edits the flag list: `--bare` disables hooks. Adding it removes this boundary
  * silently, exactly as `--add-dir` silently granted write.
  */
-export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, runDir = null, hookPath = null } = {}) {
+export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, runDir = null, hookPath = null, footingWord = null } = {}) {
   const trees = authorityTrees({ skillsRoots, profilesDir, runDir });
   if (!trees.length) return null;
   const hook = hookPath ?? join(dirname(fileURLToPath(import.meta.url)), "deny-authority-write.mjs");
@@ -456,9 +470,14 @@ export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, ru
   // that runs every clearance with no boundary and says nothing.
   try { statSync(hook); }
   catch { throw new Error(`write_boundary_hook_missing:${hook} (the deny-hook is not in this deployment; a missing hook command fails OPEN in the CLI, so the dispatch is refused rather than run unprotected)`); }
-  const payload = Buffer.from(JSON.stringify({ trees, runDir: runDir ?? null }), "utf8").toString("base64");
+  // THE FOOTING CHECK'S WORD, on the check's turn alone (engine/probe.mjs). The same program and the same policy are
+  // installed on the session's start too, and answer there with the word, on stderr: proof from the program's own
+  // output that the hooks this value carries run in this session. Every other turn carries neither.
+  const footing = typeof footingWord === "string" && footingWord ? footingWord : null;
+  const payload = Buffer.from(JSON.stringify({ trees, runDir: runDir ?? null, ...(footing ? { footing } : {}) }), "utf8").toString("base64");
   return JSON.stringify({
     hooks: {
+      ...(footing ? { SessionStart: [{ hooks: [{ type: "command", command: process.execPath, args: [hook, payload] }] }] } : {}),
       PreToolUse: [{
         // Bash is in the matcher because seats had it and it walked past this hook entirely. The command
         // tools are now removed from every stage (COMMAND_TOOLS, above), and the arm stays for a program
@@ -495,9 +514,9 @@ export const anthropicAgentEngine = {
   writeBoundary: "enforced",
   // The id a turn's rows record as asked for: the tier through Claude's catalog, `opus` → `anthropic/claude-opus`.
   resolveModelId(model) { return resolveModel(model); },
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, speed = "standard", footing = null, timeoutSec, resumeRef, mcpConfig, allowedTools, builtinTools = null, output = FILE_OUTPUT, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null, webSearch = false } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
-    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
+    const { args, input, grantNote, speed: sent } = buildClaudeArgs({ message, model, thinking, speed, footing, resumeRef, mcpConfig, allowedTools, builtinTools, output, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch, webSearch });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);
@@ -521,7 +540,7 @@ export const anthropicAgentEngine = {
     const pollMs = Math.max(50, Math.min(1000, Math.floor(Math.min(STALL, NOPROG) / 2)));  // tight enough for fast tests, ≤1s in prod
     return await new Promise((resolve) => {
       // The turn's state, which every phase below reads and writes (the phases follow the adapter).
-      const st = { resolve, resumeRef, cwd, runDir, progressFiles, streamFile, args, input, t0, STALL, NOPROG, MIN_RATE, WARMUP, hardMs, pollMs };
+      const st = { resolve, resumeRef, cwd, runDir, progressFiles, streamFile, args, input, t0, STALL, NOPROG, MIN_RATE, WARMUP, hardMs, pollMs, speed: sent.sent, standardBecause: sent.standardBecause };
       st.settle = (code) => settle(st, code);   // declared before any phase, as the hoisted function it was
       if (!spawnTurn(st)) return;
       streamState(st);
@@ -597,6 +616,15 @@ function streamState(st) {
   // and no open message is a call of its own, as it always was.
   st.perMessage = new Map();
   st.openMessage = null; st.anonMessages = 0;
+  // SPEED GAUGE: the speed each API call reports it was served at (`usage.speed`), by message, as the usage above is.
+  // Read from the program's own output, never from what the turn asked for (engine/speed.mjs).
+  st.speedByMessage = new Map();
+  st.noteSpeed = (key, u) => { if (typeof u?.speed === "string" && u.speed) st.speedByMessage.set(key, u.speed); };
+  st.fastInit = null;                     // init's fast_mode_state and fast_mode_disabled_reason: the session's start
+  st.fastNotice = null;                   // the program's own notice about fast mode (out of usage credits), first one
+  st.sessionInit = null;                  // the session's id as init states it: what a turn killed before its result resumes
+  st.sessionReport = null;                // init's own account of the session: tools, helpers, key source, version
+  st.hookResponses = [];                  // the hooks the program reports it ran, when the turn asked to be told
   st.foldUsage = (key, u) => {
     if (!u) return;
     const was = st.perMessage.get(key);
@@ -845,6 +873,33 @@ function lineParser(st) {
     else if (ev.type === "system" && ev.subtype === "init") {
       // MODEL GAUGE — the session's configured model, the earliest wire statement of what will run.
       if (typeof ev.model === "string" && ev.model && !isCliLabel(ev.model)) st.wireModelInit ??= ev.model;
+      st.fastInit ??= { state: ev.fast_mode_state ?? null, reason: ev.fast_mode_disabled_reason ?? null };
+      // THE SESSION'S ID, as the program states it when the session opens. The result event repeats it at the end, but a
+      // turn stopped at its time limit never sends one, and the warm resume of a turn stopped while working needs the id
+      // of the session to resume: handed the stage's own key instead, the program refuses it ("requires a valid session
+      // ID"), and the retry is spent on the refusal (measured in testing, 2026-11-26).
+      if (typeof ev.session_id === "string" && ev.session_id) st.sessionInit ??= ev.session_id;
+      // WHAT THE PROGRAM SAYS ABOUT ITS OWN SESSION: the built-in tools it offers, the helpers it can hand work to, where
+      // its API key came from, and its version. The footing check reads these (engine/probe.mjs); recording only here.
+      st.sessionReport ??= {
+        tools: Array.isArray(ev.tools) ? ev.tools.map(String) : null,
+        agents: Array.isArray(ev.agents) ? ev.agents.map(String) : null,
+        apiKeySource: typeof ev.apiKeySource === "string" ? ev.apiKeySource : null,
+        version: typeof ev.claude_code_version === "string" ? ev.claude_code_version : null,
+      };
+    }
+    // A HOOK THE PROGRAM RAN, as it reports one when asked (`--include-hook-events`): which event, how it ended, and the
+    // start of what it wrote to stderr. Bounded, since only the footing check reads them.
+    else if (ev.type === "system" && ev.subtype === "hook_response") {
+      if (st.hookResponses.length < 20) st.hookResponses.push({ hook: ev.hook_event ?? null, outcome: ev.outcome ?? null,
+        exitCode: Number.isFinite(ev.exit_code) ? ev.exit_code : null, stderr: String(ev.stderr ?? "").slice(0, 200) });
+    }
+    // THE PROGRAM'S NOTICE ABOUT FAST MODE. Out of usage credits, it retries each fast request at standard speed and says so
+    // "on the message stream as a `system` message with subtype `notification`" (the vendor's fast-mode page, "Handle rate
+    // limits"). The first such notice is kept, bounded, as the row's reason.
+    else if (ev.type === "system" && ev.subtype === "notification") {
+      const text = [ev.text, ev.message, ev.notification, ev.title].find((x) => typeof x === "string" && x) ?? "";
+      if (!st.fastNotice && /fast/i.test(text)) st.fastNotice = text.slice(0, 300);
     }
     else if (ev.type === "assistant") {
       // MODEL GAUGE — the model that served THIS API call. Authoritative over init (see above).
@@ -897,7 +952,9 @@ function lineParser(st) {
       st.syncOpenAsk();
       // This block's usage, folded into its own call: the largest reading wins, so a block's early count
       // never replaces the delta's running total, and a second block of the same call adds nothing twice.
-      st.foldUsage(ev.message?.id ?? st.openMessage ?? `__assistant_${++st.anonMessages}`, mapUsage(ev.message?.usage));
+      const usageKey = ev.message?.id ?? st.openMessage ?? `__assistant_${++st.anonMessages}`;
+      st.foldUsage(usageKey, mapUsage(ev.message?.usage));
+      st.noteSpeed(usageKey, ev.message?.usage);
       if (!st.firstCall && ev.message?.usage) st.firstCall = mapUsage(ev.message.usage);
       st.progress();
     }
@@ -937,9 +994,10 @@ function lineParser(st) {
       if (t === "message_start") {
         st.openMessage = ev.event.message?.id ?? `__start_${++st.anonMessages}`;
         st.foldUsage(st.openMessage, mapUsage(ev.event.message?.usage));
+        st.noteSpeed(st.openMessage, ev.event.message?.usage);
         st.progress();
       }
-      else if (t === "message_delta") { st.foldUsage(st.openMessage ?? "__delta_without_start", mapUsage(ev.event?.usage)); st.progress(); }
+      else if (t === "message_delta") { st.foldUsage(st.openMessage ?? "__delta_without_start", mapUsage(ev.event?.usage)); st.noteSpeed(st.openMessage ?? "__delta_without_start", ev.event?.usage); st.progress(); }
       else if (t === "content_block_delta" || t === "content_block_start") st.progress();
       // THINKING GAUGE (partials): the earliest tells. Any one is sufficient; belt-and-braces so a
       // display-mode or CLI-version change cannot silently blind the gauge.
@@ -1250,11 +1308,16 @@ function wireStreams(st) {
       // Never the requested alias, and never init's answer for a turn only the CLI answered — see the
       // declaration above.
       modelWire: st.wireModelAssistant ?? (st.answeredItself ? null : st.wireModelInit),
+      // SPEED GAUGE: what the turn asked for beside what the program reported serving (speedOfClaudeTurn).
+      speed: speedOfClaudeTurn({ requested: st.speed, standardBecause: st.standardBecause, result: st.resultEvent, init: st.fastInit, calls: st.speedByMessage, notice: st.fastNotice }),
+      // FOOTING: what the program reported about its own session, and the hooks it reported running. Null when it said
+      // nothing at start, which the footing check reads as a session it could not see (engine/probe.mjs).
+      footing: st.sessionReport ? { ...st.sessionReport, hooks: [...st.hookResponses] } : null,
       // PROVIDER GAUGE: the program's own word for who served the turn, read from the result's per-model
       // usage ("firstParty" on Anthropic's own API and "foundry" on Azure Foundry, measured 2026-09-14),
       // or null when the stream never said or its models disagree. Recorded, never inferred from config.
       providerWire: providerOf(st.resultEvent),
-      sessionRef: st.resultEvent?.session_id ?? st.resumeRef ?? null,
+      sessionRef: st.resultEvent?.session_id ?? st.sessionInit ?? st.resumeRef ?? null,
       // The raw result event's total_cost_usd is a provider-side field and stays in the provider's
       // own stream; the tuple carries no currency (tokens-only directive 2026-07-11) — `usage` is
       // the telemetry.
@@ -1282,6 +1345,31 @@ function wireStreams(st) {
   }
 
 
+/**
+ * One turn's speed record: what it asked for and what the program reported serving. PURE.
+ *
+ * `served` is the result's `usage.speed`, the program's word for the turn; where the result says nothing, the calls'
+ * own words decide it (`mixed` when they disagree), and null where none spoke. `calls` counts the turn's API calls by
+ * the speed each reported, so a run can say how many of its calls ran fast. `state` and `disabledReason`
+ * are the program's `fast_mode_state` and `fast_mode_disabled_reason` (measured on 2.1.295 and 2.1.326: `on`; `off` with
+ * `sdk_opt_in_required` when the turn did not ask), and `notice` its own words when it ran a fast request at standard
+ * speed for want of usage credits. `standardBecause` is why a session of a fast run asked for standard (engine/speed.mjs,
+ * sessionSpeed), null otherwise. Nothing here is inferred from what the turn asked for.
+ */
+export function speedOfClaudeTurn({ requested = "standard", standardBecause = null, result = null, init = null, calls = new Map(), notice = null } = {}) {
+  const count = { fast: 0, standard: 0, unknown: 0 };
+  for (const v of calls.values()) count[v === "fast" ? "fast" : v === "standard" ? "standard" : "unknown"]++;
+  const reported = typeof result?.usage?.speed === "string" && result.usage.speed ? result.usage.speed : null;
+  const fromCalls = count.fast && count.standard ? "mixed" : count.fast ? "fast" : count.standard ? "standard" : null;
+  const served = reported ?? fromCalls;
+  return {
+    requested, standardBecause: standardBecause ?? null, served, basis: served ? "reported" : "unknown", calls: count,
+    state: result?.fast_mode_state ?? init?.state ?? null,
+    disabledReason: result?.fast_mode_disabled_reason ?? init?.reason ?? null,
+    notice: notice ?? null,
+  };
+}
+
 function errResult(t0, e, resumeRef) {
   return {
     code: 1, killed: false, wall: (Date.now() - t0) / 1000, stdout: "",
@@ -1289,7 +1377,7 @@ function errResult(t0, e, resumeRef) {
     // reads: a spawn error means NO turn ran — [] is the true observation (nothing was read), not a gap.
     // modelWire: null for the opposite reason — no turn ran, so the wire said nothing about a model, and
     // the record must say UNKNOWN rather than inherit the alias that was asked for.
-    json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, providerWire: null, sessionRef: resumeRef ?? null,
+    json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, providerWire: null, sessionRef: resumeRef ?? null, footing: null,
     // No session ran, so there is nothing to have been interrupted and no stream: null, never an empty record.
     toolCallsByName: null, toolCallsErroredByName: null, session: null, stream: null,
   };

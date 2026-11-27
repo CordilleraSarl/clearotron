@@ -28,6 +28,24 @@ each its own. The ops face is never on the internet. If you are looking for the 
 use, it is the Client face. The API-key door is that same client face reached with a credential instead of a
 browser login — see "The API-key door" below.
 
+## What each tool answers
+
+Every tool lists the shape of its answer as an `outputSchema` and returns that answer as
+`structuredContent`, beside the same text block as before. A host that reads only the text sees no
+change. The shapes are in `mcp-server/result-shapes.json`, one entry per tool, so a change to an answer
+shows in a diff of that file.
+
+- A tool whose answer differs by session has two entries: `client` for sessions on the Client face and the
+  API-key door, whose answers are the scrubbed cut, and `staff` for every other session.
+- The six tools that change something (`start_run`, `stop_run`, `feed_context`, `what_if_run`,
+  `mark_sent`, `ack_event`) add an `outcome` field that says whether it happened. A refusal answers
+  `outcome: "refused"`, with the refusal's sentence in `reason`. `start_run` sent the reference of an order the
+  same company already placed answers `outcome: "already-filed"` with that order's state, and queues nothing.
+- The six report readers (`brief`, `list_findings`, `get_finding`, `list_evidence`, `list_searches`,
+  `get_search_coverage`) add a `document` field naming the report document version they read, such as
+  `report-document/clearance-1`, or null where they read the run's own files.
+- A list goes out under `items`, because a structured answer is an object.
+
 ## The two principals outside your staff
 
 **`user` — a run-bound report link.** A read-only token pinned to one run, no enumeration. The scope
@@ -71,7 +89,7 @@ An `account` principal reaches **eighteen** tools, for its own companies only �
 | the report | `brief`, `read_artifact` (the report; `clientSummary` is retired from this face and stays an ops-only internal source), `list_findings` (curated cards) |
 | the evidence behind it | `list_evidence`, `list_searches`, `get_search_coverage` |
 | the audit chain | `read_artifact` over `audit`, `narrative`, `registerFindings`, `commonLaw`, `caseLaw`, `matterContext` and `registerUnit:<axis>`; `list_findings` on the raw `kind` path; `get_finding`, `get_run`, `trace`, `decision_timeline` |
-| the run lifecycle | `list_runs`, `describe_options`, `plan_run`, `start_run`, `stop_run` |
+| the run lifecycle | `list_runs`, `describe_options`, `plan_run`, `start_run`, `order_status`, `stop_run` |
 | what-if | `what_if_plan` (free), `what_if_run` (queues a sandbox job), `what_if_result` (collects it) |
 
 The evidence layer exists because a lawyer defending a filing decision needs the records

@@ -45,6 +45,20 @@ ladder consumes it without knowing which engine produced it ([gateway.mjs](../ga
                                      // null = nothing was observed, never the requested alias
   providerWire: string | null,       // PROVIDER GAUGE — the program's own word for who served the turn
                                      // ("firstParty", "foundry"); null = not said, or said inconsistently
+  speed:      Speed,                 // SPEED GAUGE — what the turn asked for beside what the program
+                                     // reported serving (engine/speed.mjs): { requested: "standard"|"fast",
+                                     // standardBecause, served, basis: "reported"|"unknown", calls, state,
+                                     // disabledReason, notice }. `requested` is what was sent: a turn asked
+                                     // for fast on a model with no faster setting sends standard, and
+                                     // `standardBecause` says so ("model-not-fast"). Claude reports each
+                                     // call's `usage.speed` and its fast_mode_state; Codex reports none, so
+                                     // served is null and basis "unknown" on every turn, fast or not
+  footing?:   Footing | null,        // FOOTING GAUGE (anthropic-agent only) — what the program said about its own
+                                     // session when it opened: { tools, agents, apiKeySource, version, hooks },
+                                     // `hooks` the hook responses it reported, when the turn asked for them
+                                     // (`--include-hook-events`). The engine probe reads it to prove the write
+                                     // boundary ran and the expected tools and key source are in place
+                                     // (engine/probe.mjs); null = the program gave no account of its session
   signals:    { stalled?, noProgress?, hardWall?, rateLimited?, rateLimitBasis?, resetsAt?,
                 resetsAtBasis?, usageStreamed?, noStreamEvents?, thought: bool|null },
                                      // THINKING GAUGE — see below.

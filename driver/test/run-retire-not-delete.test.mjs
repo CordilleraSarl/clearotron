@@ -207,9 +207,10 @@ test("arm 9 — nothing on this path deletes anything, and the screen never offe
   assert.match(screen, /api\.setRetired\(\{ action: 'retire', runIds \}\)/, "the row control calls the audited capability");
   assert.match(screen, /api\.setRetired\(\{ action: 'restore', runIds: \[run\.runId\] \}\)/, "…and so does the way back");
   // The confirm answers the thing a person actually fears before it asks for a decision.
-  const handler = screen.slice(screen.indexOf("const retireMark"), screen.indexOf("const retireMark") + 900);
-  assert.match(handler, /window\.confirm\(/);
-  assert.match(handler, /report links keep working/);
+  // Asked in the product's own dialog (board Clearances, approved 2026-11-25).
+  const handler = screen.slice(screen.indexOf("const retireMark"), screen.indexOf("const retireMark") + 1100);
+  assert.match(handler, /setAsk\(\{/);
+  assert.match(handler, /Existing report links keep working\./);
   assert.match(handler, /mark\.reads\.map\(\(r\) => r\.runId\)/,
     "a row is a name and the tag is per run — retiring one read of a retired name is a half-done act");
 });
@@ -230,8 +231,10 @@ test("arm 10 — the SERVED BUNDLE carries it; portal-ui/dist is what the browse
   // ANCHORED ON THE TOGGLE ITSELF, not on the phrase "Show retired". That phrase is in the confirm and
   // in the row tooltip too, so a bundle carrying those and NOT the control passed this arm — caught by
   // the break matrix, which is the only reason this reads the way it does now.
-  assert.ok(anyHas("Show retired ("), "the served bundle has no way into the fold — dist was not rebuilt");
-  assert.ok(anyHas("Hide retired"), "…the toggle does not close either, so it is not the control at all");
-  assert.ok(anyHas("report links keep working"), "…nor is the confirm there");
+  // THE RETIRED TAB is the way back now (board Clearances, approved 2026-11-25): anchored on its own key and
+  // on its empty view, which only the tab draws.
+  assert.ok(anyHas("No retired searches in this view."), "the served bundle has no Retired tab — dist was not rebuilt");
+  assert.ok(anyHas("Existing report links keep working."), "…nor is the question there");
+  assert.ok(anyHas(" to Failed."), "…nor the way a failed search goes back to Failed");
   assert.ok(anyHas("/portal/admin/retired"), "…nor the route it calls");
 });

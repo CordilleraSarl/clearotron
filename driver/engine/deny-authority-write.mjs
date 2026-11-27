@@ -150,6 +150,14 @@ function main() {
       + `refuses rather than assumes. This is a driver fault and it affects every write in this run until it is `
       + `fixed. The refusal was issued by the driver, not by the model.`);
   }
+  // THE RUN'S FOOTING CHECK (engine/probe.mjs, footing). The check installs this same program, with the same policy, on
+  // the session's start as well, and the policy then carries a word minted for that turn. The word goes to STDERR, which
+  // the program reports in its hook event and never hands the model. A session in which this line ran is a session in
+  // which the hooks passed with `--settings` run, and in which this program starts under this Node from this path.
+  if (call?.hook_event_name === "SessionStart") {
+    if (typeof policy?.footing === "string" && policy.footing) process.stderr.write(`footing:${policy.footing}\n`);
+    process.exit(0);
+  }
   // — a file tool names ONE target; a Bash command can mark several, so both shapes reduce to a list.
   // An empty list is "not a write we can locate", which is this arm's normal answer and not a pass: the
   // arm is a detector and says so at its declaration.

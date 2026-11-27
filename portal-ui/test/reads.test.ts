@@ -229,3 +229,27 @@ test('a long name is bounded before it goes into a confirm, and a real mark is u
   assert.equal(inSentence('x'.repeat(200), 10), `${'x'.repeat(10)}…`)
   assert.equal(inSentence('' as unknown as string), '')
 })
+
+// ── A NAME'S SEARCH HISTORY (board ReportHeader and its refinement, approved 2026-11-25) ──────────────────
+// One set of rules for the Clearances list and the report's Search history.
+test('the search history ticks the report read, tags the newest issued once, and gives a time only where a date repeats', async () => {
+  const { searchHistory, latestIssued, sameDateAsAnother, inFlightWord } = await import('../src/contract/reads.ts')
+  const r = (runId: string, state: string, date: string, issuedAt: string) =>
+    ({ runId, state, date, issuedAt, productName: 'Full country search', stageLabel: null }) as unknown as Parameters<typeof searchHistory>[0][number]
+  const reads = [
+    r('a', 'running', '2026-11-20', '2026-11-20T16:00:00Z'),
+    r('b', 'delivered', '2026-11-20', '2026-11-20T15:45:00Z'),
+    r('c', 'delivered', '2026-11-20', '2026-11-20T09:20:00Z'),
+    r('d', 'delivered', '2026-11-19', '2026-11-19T12:00:00Z'),
+  ]
+  const rows = searchHistory(reads, 'c')
+  assert.deepEqual(rows.map((x) => [x.run.runId, x.time, x.current, x.latest, x.live]), [
+    ['a', null, false, false, 'Running'],
+    ['b', '15:45 UTC', false, true, null],
+    ['c', '09:20 UTC', true, false, null],
+    ['d', null, false, false, null],
+  ])
+  assert.equal(latestIssued(reads)?.runId, 'b', 'the newest search that delivered is the latest report')
+  assert.equal(sameDateAsAnother(reads, reads[3]!), false)
+  assert.deepEqual(['queued', 'paused', 'running', 'delivered'].map((s) => inFlightWord(s as never)), ['Queued', 'Paused', 'Running', null])
+})

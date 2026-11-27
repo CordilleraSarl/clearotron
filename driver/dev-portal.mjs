@@ -82,6 +82,8 @@ export const DEV_COCKPIT_JOB_FIELDS = Object.freeze({
       + "from its own form and writes no sidecars, so it may not claim that shape.",
     forwarderDomain: "the cockpit's assembler defaults it; a dev form has no forwarding domain to state.",
     provider: "which register vendor answers is the dev instance's own configuration, not a form field.",
+    urgent: "an Urgent order. The order screens and the connector carry it with its count of searches; this dev "
+      + "form has no such option, and a dev job that needs one is written as a job file.",
     name: "the pre-markName spelling of the search subject. The form posts `mark`.",
     use: "the pre-goods spelling of the goods description. The form posts `goods`.",
     tmp: "the pre-ref spelling of the reference number. The form posts `ref`.",

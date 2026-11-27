@@ -99,6 +99,12 @@ export function matterLedgerPath(qdir) { return join(dirname(qdir), ".matter-led
  * No paths in the return value: it is spread into client-facing JSON by both the portal and the MCP
  * preview, and server paths are not a client's business.
  */
+/**
+ * The searches one ledger row counts: what admission recorded on it, or 1 for a row written before the count
+ * was recorded (every order was one search then). An Urgent order that ran fast is recorded as 2.
+ */
+export const ledgerSearches = (e) => (Number.isInteger(e?.searches) && e.searches > 0 ? e.searches : 1);
+
 export function accountUsage({ queueDirs, account, organisation = null, now = Date.now() }) {
   // A Generic run counts in the lane of the organisation it was filed under, as checkRunCaps counts it.
   const inLane = (key, org) => (key ?? null) === account && (account !== "generic" || (org ?? null) === organisation);
@@ -118,11 +124,11 @@ export function accountUsage({ queueDirs, account, organisation = null, now = Da
         let e; try { e = JSON.parse(line); } catch { continue; }
         if (!inLane(e.profileKey, e.organisation) || typeof e.ts !== "number") continue;
         const stamp = new Date(e.ts).toISOString();
-        if (stamp.slice(0, 7) === monthKey) thisMonth++;
+        if (stamp.slice(0, 7) === monthKey) thisMonth += ledgerSearches(e);
         // `today` must count exactly what the WALL counts, or the screen lies. checkRunCaps skips failed
         // rows for the daily allowance (a client is not charged their day for our failure) while the
         // monthly figure still includes them (a failed run spent). Same asymmetry, same source.
-        if (stamp.slice(0, 10) === dayKey && e.clientPrincipal === true && e.failed !== true) today++;
+        if (stamp.slice(0, 10) === dayKey && e.clientPrincipal === true && e.failed !== true) today += ledgerSearches(e);
       }
     } catch (e) {
       // ENOENT is "no ledger beside this queue" — indistinguishable from "wrong queue", so it leaves

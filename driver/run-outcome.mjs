@@ -6,6 +6,7 @@
 //
 // Moved out of pipeline.mjs unchanged, so the Knockout pipeline can import them without importing the clearance
 // pipeline, which imports it back. pipeline.mjs exports them again for every importer that reads them there.
+import { randomUUID } from "node:crypto";
 import { CLIENT_ACTION } from "../shared/client-failure-note.mjs";
 import { batchMarkName } from "./mark-name.mjs";
 import { abbrev } from "./repair-contract.mjs";
@@ -102,8 +103,63 @@ export function terminalReasonFields(reason, { cap = 200, fullCap = 4000 } = {})
 // `refused` branch below, without its markup, because a notice filed before any run exists is relayed as
 // text. It names what was ordered from `job.product` exactly as that branch does.
 export function clientNotStartedText(job, mark) {
-  const ordered = reportIdentityFor(job?.product ?? null).identity;
-  return `${ordered ? `The ${ordered}` : "The search"} for ${mark} was not started, and nothing was delivered. ${CLIENT_ACTION}`;
+  return userFailureNotice({ product: job?.product ?? null, mark, refused: true }).text;
+}
+
+// The notice for an order the dedup gate parked: the approved words and this order's reference, nothing about the match.
+export function duplicateNoticeText(base) {
+  return `This order was flagged as a duplicate. Order reference: ${base}`;
+}
+
+// ── A PROVIDER'S USAGE CAP, IN THE OWNER'S PRE-COMMITTED WORDS ───────────────────────────────────────────
+//
+// Only a cap wait on record produces it: capWait is null when the history carries no cap park (capWaitFrom), and a
+// packet written before the field existed carries none, so neither can claim a cap that never was.
+export function capSentence(capWait, terminalKind) {
+  return terminalKind === "weather-exhausted" ? capWords(capWait) : null;
+}
+// The words alone, for a cap wait already established as the reason the run stopped: a packet's `capWait` field is
+// written only then (buildFailurePacket), so a door composing from that field needs no kind to gate it again.
+function capWords(capWait) {
+  if (!capWait || !Number.isFinite(capWait.waitedMin) || !Number.isFinite(capWait.parks)) return null;
+  return `A provider's usage cap was still in force after ${humanWait(capWait.waitedMin)} of waiting across ${capWait.parks} attempt${capWait.parks === 1 ? "" : "s"} — a subscription outcome, not a finding about the run or the mark. Nothing in the run itself failed a check.${capWait.statedResets ? " The provider stated its own reset time and the run waited for it." : ""} Re-trigger once the cap has reset.`;
+}
+
+// ── THE NOTICE A PERSON READS WHEN A RUN DELIVERED NOTHING ───────────────────────────────────────────────
+//
+// The same words for every person, whoever placed the order and however it came in (design, 2026-11-27), and the same
+// in the email and the messaging line: the stopped or not-started sentence the owner's failed-run ruling approved, then
+// one recovery action. That action is the administrator sentence, or, when the run waited out a provider's usage cap
+// and stopped for it, the owner's cap sentence, which ends in its own. PURE: every door composes it from fields.
+export function userFailureNotice({ product = null, mark, refused = false, cap = null }) {
+  const ordered = reportIdentityFor(product).identity;
+  const orderedIs = ordered ? `The ${ordered}` : "The search";
+  const orderedFor = ordered ? `${ordered} — ${mark}` : mark;
+  const what = refused ? "was not started, and nothing was delivered" : "stopped before it finished, and nothing was delivered";
+  const action = (refused ? null : capWords(cap)) ?? CLIENT_ACTION;
+  return {
+    subject: `${orderedFor} — search ${refused ? "not started" : "stopped"}, nothing delivered`,
+    emailBodyHtml: `<p>${escapeText(orderedIs)} for <b>${escapeText(mark)}</b> ${what}.</p><p>${escapeText(action)}</p>`,
+    text: `${orderedIs} for ${mark} ${what}. ${action}`,
+  };
+}
+
+// What may leave the engine from a failure packet: the routing a courier sends by, what the notice is composed from, and
+// the notice composed again from those fields. Never the stored text, so a packet written by an earlier version, whose
+// email quoted the stage and the reason, is told in the same words as a new one; and never a field not named here. The
+// outbox file is written in this shape, and every door hands a packet on in it, so composing it twice gives it unchanged.
+// `capWait` is the cap wait the run stopped for, and only that: buildFailurePacket writes the field only when the cap is
+// on record and the run ended on it, and a packet written before the field existed carries none.
+const PACKET_ROUTING = ["kind", "file", "runId", "agent", "failed", "refused", "forwarder", "forwarderEmail", "msgId",
+  "conversationId", "whatsappTo", "whatsappChannel", "whatsappCcOperator", "markName", "failureId"];
+export function userFailurePacket(p) {
+  if (!p || typeof p !== "object") return p;
+  const out = {};
+  for (const k of PACKET_ROUTING) if (k in p) out[k] = p[k];
+  const product = p.product ?? null, noticeMark = p.noticeMark ?? p.markName ?? "the matter";
+  const cap = capWords(p.capWait) ? p.capWait : null;
+  const n = userFailureNotice({ product, mark: noticeMark, refused: p.refused === true, cap });
+  return { ...out, product, noticeMark, capWait: cap, subject: n.subject, emailBodyHtml: n.emailBodyHtml, whatsappText: n.text, text: n.text };
 }
 
 // (enforcement check E11 in the family) — `reasonDetail` and `reasonQuantity` are PACKET FIELDS.
@@ -117,10 +173,14 @@ export function clientNotStartedText(job, mark) {
 //
 // Both are written UNCONDITIONALLY as string|null and number|null. Never omitted, never 0: "no key" and
 // "this failure carries no count" are different facts, the same distinction `reasonTruncated` is written on
-// every terminal failure to preserve. And per the payload stays OUT of the sentence — `whatsappText`
-// and the CLIENT body are untouched; the staff body gets it in its own <pre>, beside the verbatim reason
-// that body already quotes.
-export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, reasonDetail = null, reasonQuantity = null, capWait = null }) {
+// every terminal failure to preserve. And the payload stays OUT of every notice a person reads: only the run's own
+// record, `diagnostic`, carries it in its own <pre>, beside the verbatim reason that record already quotes.
+//
+// `failureId` names THIS failure, minted when its packet is built: a run that is resumed and stops again writes a new
+// packet with a new id, and a writer that rewrites the same failure's packet passes the id it already holds. A notice
+// about a failure, and the record that its person was told, are bound to this id (notice-delivery.mjs), so word of
+// one failure never settles another.
+export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, reasonDetail = null, reasonQuantity = null, capWait = null, failureId = null }) {
   const esc = escapeText;
   const detail = typeof reasonDetail === "string" && reasonDetail.trim() ? reasonDetail.trim() : null;
   const quantity = Number.isFinite(reasonQuantity) ? reasonQuantity : null;
@@ -174,9 +234,7 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
   // Falls back to the weather sentence when the history carries no cap park, so an actual outage is
   // still described as one. capWait is null in that case BY CONSTRUCTION (capWaitFrom returns null
   // rather than a zeroed object), which is what keeps this branch from claiming a cap that never was.
-  const capLine = capWait && terminalKind === "weather-exhausted"
-    ? `A provider's usage cap was still in force after ${humanWait(capWait.waitedMin)} of waiting across ${capWait.parks} attempt${capWait.parks === 1 ? "" : "s"} — a subscription outcome, not a finding about the run or the mark. Nothing in the run itself failed a check.${capWait.statedResets ? " The provider stated its own reset time and the run waited for it." : ""} Re-trigger once the cap has reset.`
-    : null;
+  const capLine = capSentence(capWait, terminalKind);
   const kindLine = capLine ?? KIND_SENTENCES[terminalKind] ?? "The run stopped on a technical failure; the run directory is preserved for diagnosis.";
   const attempted = repairs.length
     ? `<p>What the machine already attempted:</p><ul>${repairs.map((r) => `<li>${esc(r.repair)} → ${esc(r.outcome)}${r.target ? ` (${esc(r.target)})` : ""}</li>`).join("")}</ul>`
@@ -197,13 +255,6 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
   const detailBlock = detail
     ? `<p>Which one${quantity === null ? "" : ` (${quantity})`}:</p><pre style="white-space:pre-wrap">${esc(detail)}</pre>`
     : "";
-  // CLIENT-STARTED runs (2026-07-29 hardening): the email lane routes to job.forwarderEmail, and for a
-  // clientPrincipal run that address IS the client. The verbatim machine reason (String(e?.stack ?? e)
-  // upstream — absolute paths, module names, provider error text) is exactly what every client-facing
-  // listing already redacts (sanitizeRunForClient / CLIENT_FAILURE_NOTE); the failure EMAIL was the one
-  // client surface still quoting it. The client gets the same neutral notice the listings use; the
-  // verbatim reason, repairs and retry hints stay on the packet fields + WhatsApp (staff surfaces).
-  const clientRun = job.clientPrincipal === true;
   // — WHAT FAILED, named as the thing that was ORDERED. These four strings said "Preliminary
   // clearance" whatever the request was, so a Knockout search that died at the sweep told its requester
   // a preliminary clearance had failed — a product they did not buy, under a name the offering no longer
@@ -216,6 +267,12 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
   const ordered = reportIdentityFor(job.product ?? null).identity;
   const orderedIs = ordered ? `The ${ordered}` : "The search";
   const orderedFor = ordered ? `${ordered} — ${mark}` : mark;
+  // EVERY PERSON IS TOLD IN PRODUCT WORDS, whoever placed the order (design, 2026-11-27). The subject, the email and
+  // the messaging line are the notice a person reads, and they carry the same sentences for every run: never a stage,
+  // a kind, a path, an exception or the reason as the driver reported it. Those stay in `diagnostic`, which is the
+  // run's own record in `_driver/failure.json`; every door that hands a packet on recomposes it (userFailurePacket).
+  const cap = capLine ? capWait : null;
+  const notice = userFailureNotice({ product: job.product ?? null, mark, refused, cap });
   return {
     // `failed: true` and `kind: "run-failed"` (added by both callers) are UNCHANGED on a refusal, and
     // deliberately: they are the packet's ROUTING — "this run delivered nothing, send the no-delivery
@@ -226,29 +283,31 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
     runId, agent, failed: true, refused,
     forwarder: job.forwarder, forwarderEmail: job.forwarderEmail, msgId: job.msgId,
     conversationId: job.conversationId ?? null,
-    subject: clientRun
-      ? `${orderedFor} — search ${refused ? "not started" : "stopped"}, nothing delivered`
-      : `${orderedFor} — run ${refused ? "REFUSED" : "FAILED"}, nothing delivered`,
-    emailBodyHtml: clientRun
-      // — the owner's failed-run ruling. This said "<BRAND> has been notified
-      // and will follow up. Nothing is needed from your side." Nobody had been notified; the box has no
-      // outbox. And a client told there is nothing for them to do does not tell their operator, which
-      // was the only action that would have moved it — so the sentence did not merely overclaim, it
-      // stopped the thing that would have helped. One author for all three client surfaces now.
-      ? `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> ${refused ? "was not started, and nothing was delivered" : "stopped before it finished, and nothing was delivered"}.</p><p>${esc(CLIENT_ACTION)}</p>`
-      : refused
-        ? `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> was REFUSED at stage <b>${esc(failedStage)}</b> before any work was done, and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre><p>The run directory is preserved; this is not a defect to diagnose.</p>`
-        : `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> FAILED at stage <b>${esc(failedStage)}</b>${priorAttempts ? ` after <b>${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}</b>` : ""} and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre>${detailBlock}${attempted}<p>The run directory is preserved for diagnosis; re-trigger the run when the cause is addressed.</p>`,
+    subject: notice.subject,
+    emailBodyHtml: notice.emailBodyHtml,
     // THE NOTICE GOES TO WHOEVER ASKED, as the completion notice does (whatsappRouting, stages.mjs): the requester's own
     // number where one is held, the gap stated where none is, and the operator's copy beside it. It went to the agent's
     // number, which every user of a deployment shares, so the operator was told of a failure the requester never heard.
     ...whatsappRouting(job, agent),
-    whatsappText: refused
-      ? `⛔ Clearotron search for ${mark} REFUSED at ${failedStage} [${terminalKind}]: ${shortReason} — nothing was delivered and nothing broke; ${retryHint}.`
-      : `❌ Clearotron search for ${mark} FAILED at ${failedStage}${priorAttempts ? ` after ${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}` : ""}${terminalKind ? ` [${terminalKind}]` : ""}: ${shortReason} — nothing was delivered; ${retryHint}.`,
+    whatsappText: notice.text,
+    // What a door needs to compose the notice again, from fields rather than stored text: what was ordered, the name
+    // or names it was for, and the cap wait that alone may produce the cap sentence.
+    product: job.product ?? null, noticeMark: mark, capWait: cap,
+    // THE RUN'S OWN RECORD of how it stopped, kept for whoever diagnoses it in the run directory: the stage, the kind's
+    // sentence, the reason as the driver reported it, the payload and the repairs already attempted. No door hands it on.
+    diagnostic: {
+      subject: `${orderedFor} — run ${refused ? "REFUSED" : "FAILED"}, nothing delivered`,
+      emailBodyHtml: refused
+        ? `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> was REFUSED at stage <b>${esc(failedStage)}</b> before any work was done, and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre><p>The run directory is preserved; this is not a defect to diagnose.</p>`
+        : `<p>${esc(orderedIs)} for <b>${esc(mark)}</b> FAILED at stage <b>${esc(failedStage)}</b>${priorAttempts ? ` after <b>${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}</b>` : ""} and NOTHING was delivered.</p><p>${esc(kindLine)}</p><p>The driver reported, verbatim:</p><pre style="white-space:pre-wrap">${esc(reasonVerbatim)}</pre>${detailBlock}${attempted}<p>The run directory is preserved for diagnosis; re-trigger the run when the cause is addressed.</p>`,
+      line: refused
+        ? `⛔ Clearotron search for ${mark} REFUSED at ${failedStage} [${terminalKind}]: ${shortReason} — nothing was delivered and nothing broke; ${retryHint}.`
+        : `❌ Clearotron search for ${mark} FAILED at ${failedStage}${priorAttempts ? ` after ${priorAttempts} automatic recovery attempt${priorAttempts === 1 ? "" : "s"}` : ""}${terminalKind ? ` [${terminalKind}]` : ""}: ${shortReason} — nothing was delivered; ${retryHint}.`,
+    },
     markName: job.markName ?? job.name ?? null, failedStage, reason: shortReason,
     reasonVerbatim, failureSignature: sig, failClass, terminalKind, repairs, recoveryAttempts: priorAttempts,
     reasonDetail: detail, reasonQuantity: quantity,
+    failureId: failureId ?? randomUUID(),
   };
 }
 

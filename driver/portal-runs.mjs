@@ -9,7 +9,6 @@ import { clientFailureNote } from "../shared/client-failure-note.mjs";
 import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { batchMarkName } from "./mark-name.mjs";
 import { resolveNumericSetting } from "./numeric-setting.mjs";
-import { seesEverything } from "./portal-access.mjs";
 import { reportsOf } from "./portal-report.mjs";
 import { stageNow } from "./progress.mjs";
 import { readArchivedSet } from "./publish/archive-tags.mjs";
@@ -17,6 +16,7 @@ import { orderedQueueFiles } from "./queue-order.mjs";
 import { paths, readJson } from "./run-record.mjs";
 import { policyFor, reportIdentityFor } from "./search-policy.mjs";
 import { drainingState } from "./worker-heartbeat.mjs";
+import { config } from "./driver.config.mjs";
 
 // A run in one of these has finished; its step is the one its terminal write set, not the stage it last entered.
 const TERMINAL_STATES = new Set(["delivered", "failed", "cancelled"]);
@@ -37,6 +37,94 @@ function ladderOf(meta) {
     : [];
   const toneFor = (label) => bands.find((b) => b.label === label)?.tone ?? null;
   return { bands, toneFor };
+}
+
+// ── ONE LIST OF STATES, AND THE PORTAL'S PAUSED STATE AS A PROJECTION OF IT ────────────────────────
+//
+// The engine writes these words into a run's status, and the connector passes them through as written. The portal
+// folds the three waits into one paused state with a kind, and this is the one place that fold is written, so the
+// two faces cannot disagree about which wait a run is in. `queued` is an order no worker has claimed yet.
+export const RUN_STATES = Object.freeze(["running", "delivered", "failed", "postponed", "recovering", "parked-for-human", "cancelled", "queued"]);
+const PAUSED_KINDS = Object.freeze({ postponed: "rate-limit", recovering: "recovering", "parked-for-human": "operator" });
+/** The portal's paused kind for an engine state, or null for a state that is not a wait. */
+export const pausedKindOf = (state) => PAUSED_KINDS[state] ?? null;
+
+/**
+ * WHAT AN UNCLAIMED ORDER IS DOING, in the words the portal has always shown. "Waiting to start" is true of a job
+ * behind other work and of a job nothing will pick up; the second says which. `draining` is read once per walk:
+ * a queued job cannot answer it itself, and two rows of one answer must agree about whether a worker exists.
+ * `null` means not known, which is every install except a local one whose launcher supervises the worker.
+ */
+export const queuedStep = (draining) => (draining === false ? "Waiting for a worker" : "Waiting to start");
+
+// ── THE WALK: WHICH RUNS EXIST, READ ONCE FOR BOTH FACES ───────────────────────────────────────────────
+//
+// The portal's list and the connector's tools both answer "which runs are there, for whom, in what state", and
+// each used to make its own walk of the same folders, with its own rules about which folders count. Two walks
+// gave two answers. This is the only walk: each face projects its own rows from what it read, and keeps only
+// what is its own, its row shape and its access filter.
+//
+// WHAT IT READS, AND NOTHING MORE. `records` reads the pool's delivered records (the portal's delivered rows);
+// `archive` reads the status of runs moved into the archive (the connector's delivered rows); `orders` reads the
+// queue. A face asks only for what it shows, so a connector lookup never pays for the pool or the queue, and a
+// portal poll never walks the archive.
+//
+//   records  [{ name, meta }]                       — <pool>/<name>/meta.json
+//   runs     [{ dir, agent, where, status }]         — studio/<slug>/<run> ("live"), archive/<month>/<slug>/<run>
+//   queued   [{ lane, laneIdx, file, job, mtimeMs }] — every pending `<id>.json` in every queue lane, in admission order
+//   retired  the run ids the portal's list leaves out (the pool's archive tags)
+//   draining whether a worker is draining the queue: true, false, or null for not known
+//
+// A folder whose name starts with `_` or `.` holds no run: history, what-if shadows, a run's own working files.
+export function walkRuns({ poolRoot = null, workspaceRoot = null, queueDirs = [], records = false, archive = false, orders = true } = {}) {
+  const walk = { records: [], runs: [], queued: [], retired: poolRoot ? readArchivedSet(poolRoot) : new Set(), draining: orders ? drainingState() : null };
+  if (records && poolRoot) {
+    let names = []; try { names = readdirSync(poolRoot); } catch { /* no pool yet */ }
+    for (const name of names) {
+      const metaPath = join(poolRoot, name, "meta.json");
+      if (!existsSync(metaPath)) continue;
+      try { walk.records.push({ name, meta: readJson(metaPath) }); } catch { /* unreadable meta — skip */ }
+    }
+  }
+  const statusAt = (dir, agent, where) => {
+    try { walk.runs.push({ dir, agent, where, status: readJson(join(dir, "status.json")) }); } catch { /* not a run dir */ }
+  };
+  const subdirs = (dir) => { try { return readdirSync(dir).filter((n) => !n.startsWith("_") && !n.startsWith(".")); } catch { return []; } };
+  const lanes = [], laneKeys = new Set();
+  const lane = (dir) => { const key = pathResolve(dir); if (!laneKeys.has(key)) { laneKeys.add(key); lanes.push(dir); } };
+  // THE CANONICAL INTAKE FIRST: the configured queue is where the enqueue CLI and the connector's `start_run`
+  // write, and a headless install may have no workspace at all. The workspace lanes are a union with it, so a
+  // deployment whose queue is not configured keeps working: this adds a place to look, never removes one.
+  for (const d of Array.isArray(queueDirs) ? queueDirs : []) if (typeof d === "string" && d) lane(d);
+  let workspaces = []; try { workspaces = readdirSync(workspaceRoot); } catch { /* no workspace */ }
+  for (const ws of workspaces) {
+    const agent = config.agentIdFromWorkspaceName(ws);
+    if (agent == null) continue;
+    const studio = studioDirFor(join(workspaceRoot, ws));
+    for (const slug of subdirs(studio)) {
+      if (slug === "queue") { lane(join(studio, slug)); continue; }
+      if (slug === "archive") {
+        if (!archive) continue;
+        for (const month of subdirs(join(studio, slug)))
+          for (const aSlug of subdirs(join(studio, slug, month)))
+            for (const r of subdirs(join(studio, slug, month, aSlug))) statusAt(join(studio, slug, month, aSlug, r), agent, "archive");
+        continue;
+      }
+      for (const r of subdirs(join(studio, slug))) statusAt(join(studio, slug, r), agent, "live");
+    }
+  }
+  // A PENDING job is `<id>.json` with no suffix; the runner renames it `.done` or `.failed` when it is through, and
+  // those are history the pool and the status files already own. The order is the order the runner admits them
+  // (queue-order.mjs, the same function the drain sorts with), so a list and the engine can never disagree.
+  for (const dir of orders ? lanes : []) {
+    let files = []; try { files = readdirSync(dir); } catch { continue; }
+    const ordered = orderedQueueFiles(dir, files.filter((f) => f.endsWith(".json") && !f.startsWith(".")));
+    for (const [laneIdx, f] of ordered.entries()) {
+      try { walk.queued.push({ lane: dir, laneIdx, file: f, job: readJson(join(dir, f)), mtimeMs: statSync(join(dir, f)).mtimeMs }); }
+      catch { /* not a job file */ }
+    }
+  }
+  return walk;
 }
 
 // ── run listing: delivered (pool metas) + live (workspace status + frozen profile sidecar) ─────────
@@ -102,13 +190,11 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   // rewrite exists precisely so those keep resolving — 404ing them here would rot them from a curation
   // command, which is not what "archive" means to the person typing it. Ownership is still enforced at
   // that route, unchanged; retirement is about what the pool ADVERTISES, not about who may read what.
-  const retired = readArchivedSet(poolRoot);
-  try {
-    for (const name of readdirSync(poolRoot)) {
-      const metaPath = join(poolRoot, name, "meta.json");
-      if (!existsSync(metaPath)) continue;
+  const walk = walkRuns({ poolRoot, workspaceRoot, queueDirs, records: true });
+  const retired = walk.retired;
+  {
+    for (const { name, meta } of walk.records) {
       try {
-        const meta = readJson(metaPath);
         const owner = meta.customerKey || "generic";
         if (!mine(owner, meta.organisation ?? null)) continue;
         // Tagged by runId — the same key pool-admin writes, which is the pool DIRECTORY name. Checking
@@ -218,13 +304,12 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
           // row, on every surface that has ever consumed this listing; a `retired: false` on all of
           // them would be a new field for every reader to ignore.
           ...(isRetired ? { retired: true } : {}) });
-      } catch { /* unreadable meta — skip */ }
+      } catch { /* a row that cannot be built — skip */ }
     }
-  } catch { /* no pool yet */ }
+  }
   // live runs: status.json + the frozen profile sidecar (freezeProfile writes `profileKey`)
-  const readRun = (dir) => {
+  const readRun = ({ dir, status: s }) => {
     try {
-      const s = readJson(join(dir, "status.json"));
       // A DELIVERED RUN IS SKIPPED BEFORE ITS PROFILE IS READ: the pool row is its face, and every path
       // below returns for it either way, so reading the profile first only cost a file per delivered run.
       if (s.state === "delivered") return;   // the pool row is the delivered face
@@ -268,7 +353,8 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
       // with the run in flight. Mapped HERE, like the other two, so the wire NEVER carries the raw
       // value: the portal contract would coerce an unknown state to "running", which is exactly the
       // zombie face this state exists to end. pausedKind "operator" tells the UI which words to use.
-      const paused = s.state === "postponed" || s.state === "recovering" || s.state === "parked-for-human";
+      const pausedKind = pausedKindOf(s.state);
+      const paused = pausedKind !== null;
       out.push({ ...(liveRetired ? { retired: true } : {}),
         runId: s.runId, account: owner, ...(owner === "generic" ? { organisation: p.organisation ?? null } : {}), title: s.markName ?? s.slug,
         // THE RUN’S OWN PIPELINE, off the frozen policy sidecar this branch already reads — the same
@@ -291,7 +377,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         product: sp?.level ?? null, stageLabel: stageLabelOf(sp?.level) ?? sp?.stageLabel ?? null,
         productName: productNameOf(sp?.level),
         state: paused ? "paused" : (s.state ?? "running"),
-        pausedKind: paused ? (s.state === "recovering" ? "recovering" : s.state === "parked-for-human" ? "operator" : "rate-limit") : null,
+        pausedKind,
         // The ONE honest ETA this system possesses. The engine computes it from the provider's own
         // reset header and has always written it; it reached the ops surface and stopped one hop short
         // of the browser. Absent for a recovery park, which backs off on a schedule rather than to a
@@ -304,6 +390,10 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         ...(TERMINAL_STATES.has(s.state)
           ? { step: s.stepLabel ?? null, stepN: s.stepN ?? null, stepTotal: s.stepTotal ?? null }
           : stageNow(s)),
+        // EVERY STEP THE RUN WALKS, by name and in order, as the run wrote its own list (progress.mjs
+        // displayStepsFor; the Knockout lane's koSteps). Home lists them on a running card; the browser
+        // keeps no copy. Null for a run recorded before the field, which keeps today's single step line.
+        steps: Array.isArray(s.steps) && s.steps.length && s.steps.every((x) => typeof x === "string") ? s.steps : null,
         // — a requested stop is a state the screen shows. Stamped by stop_run,
         // preserved by writeRunStatus's spread-merge, replaced by the terminal when the honour check
         // fires. The UI derives "Stopping…" from this beside a non-terminal state.
@@ -384,25 +474,15 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   // tenants have queued, which is the same thing the 404-never-403 rule exists to prevent. Staff
   // reading across every account see the true lane depth anyway, because for them every row is visible.
   const queuedRows = [];   // { row, lane, laneIdx } — positions assigned once the whole scan is in
-  // — READ ONCE per scan, not per row: every row of one response must agree about whether a worker
-  // exists, and a boundary crossed mid-scan would otherwise put "waiting its turn" and "waiting for a
-  // worker" in the same list. A queued job cannot answer this itself — it has no claim and no sidecar, so
-  // claim liveness is silent on precisely the rows that need it.
-  //
-  // `null` means NOT KNOWN, and that is the default EVERYWHERE except a local install. A deployed instance
-  // drains through the systemd path/timer units, which run `main({once:true})` and write no heartbeat — so
-  // a service that read a missing heartbeat as "no worker" would put a false alarm on every queued row in
-  // production. Only the launcher that actually supervises a worker claims to know, and it is the same
-  // launcher that sets the lock dir, so the two can never be set without each other.
-  const draining = drainingState();
-  const readQueued = (dir) => {
-    let files = []; try { files = readdirSync(dir); } catch { return; }
-    const ordered = orderedQueueFiles(dir, files.filter((f) => f.endsWith(".json") && !f.startsWith(".")));
-    for (const [laneIdx, f] of ordered.entries()) {
+  // Whether a worker is draining is read once, by the walk (`walk.draining`), so every row of one answer agrees.
+  // `null` means NOT KNOWN, the default everywhere except a local install: a deployed instance drains through the
+  // systemd path/timer units, which write no heartbeat, and reading a missing heartbeat as "no worker" would put a
+  // false alarm on every queued row in production (queuedStep).
+  const readQueued = ({ lane: dir, laneIdx, file: f, job: j, mtimeMs }) => {
+    {
       try {
-        const j = readJson(join(dir, f));
         const owner = j.profileKey ?? "generic";
-        if (!mine(owner, j.tenant ?? null)) continue;
+        if (!mine(owner, j.tenant ?? null)) return;
         // ALL the names, spelled the way the run's own status.json and its delivered meta.json spell
         // them — this took `marks[0].name` and named ONE mark of N, so a client who had just ordered a
         // three-name knockout screen saw a single name on the row that tells them it went in.
@@ -431,16 +511,16 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
           // — "Waiting to start" is true of both a job behind other work and a job nothing will
           // ever pick up, and those are not the same thing to whoever just pressed Start. The position
           // still says where it sits in the line; this says whether the line is moving at all.
-          state: "queued", step: draining === false ? "Waiting for a worker" : "Waiting to start", stepN: null, stepTotal: null,
+          state: "queued", step: queuedStep(walk.draining), stepN: null, stepTotal: null,
           reason: null, failedStage: null,
           // Part of the row contract now; a job that has not started has none of them.
           pausedKind: null, resetsAt: null, startedAt: null,
           // A job file has no updatedAt — it has not run. Its MTIME is when it was queued, which is a
           // real fact rather than a fabricated one, sorts a just-queued run to the top where the
           // person who pressed Start will look, and is deterministic under test.
-          date: new Date(statSync(join(dir, f)).mtimeMs).toISOString().slice(0, 10), overall: null,
+          date: new Date(mtimeMs).toISOString().slice(0, 10), overall: null,
           // Queued: its mtime, at full precision, for the same reason the day-level `date` uses it.
-          issuedAt: new Date(statSync(join(dir, f)).mtimeMs).toISOString(),
+          issuedAt: new Date(mtimeMs).toISOString(),
           // The names the job was submitted with — no bands, because nothing has been rated. Same rule as
           // the live row: this array answers "which names", and only the delivered row can answer "at
           // what band".
@@ -456,37 +536,11 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
   // EVERY QUEUE ONCE. A directory can be reached both ways — `config.queueDirs`
   // lists the workspace queues too — and reading one twice would list every job in it twice and give
   // each row two positions in the line.
-  const scannedQueues = new Set();
-  const scanQueue = (dir) => {
-    const key = pathResolve(dir);
-    if (scannedQueues.has(key)) return;
-    scannedQueues.add(key);
-    readQueued(dir);
-  };
-  // THE CANONICAL INTAKE FIRST, and it is why this parameter exists. `CLEAROTRON_QUEUE_DIR` is where the
-  // enqueue CLI and ops-MCP `start_run` write — which is where the PORTAL's own submissions land, since
-  // its `trigger` is an ops-MCP hop. The walk below finds only `workspace-*/studio/clearance-search/queue`,
-  // and a documented headless install has no workspaces at all: measured on a test deployment, the only queue
-  // under the whole tree is the configured one, and it holds portal-prefixed jobs. So this scan ran ZERO
-  // times there, and a submitted search was invisible on the dashboard from submit until claim — a
-  // minute and a half of a client believing their order was lost.
-  for (const d of Array.isArray(queueDirs) ? queueDirs : []) {
-    if (typeof d === "string" && d) scanQueue(d);
-  }
-  try {
-    for (const ws of readdirSync(workspaceRoot).filter((n) => n.startsWith("workspace-"))) {
-      const studio = studioDirFor(join(workspaceRoot, ws));
-      let slugs = []; try { slugs = readdirSync(studio); } catch { continue; }
-      for (const slug of slugs) {
-        // Still walked, so a deployment whose queue is not in `queueDirs` keeps working. The union is
-        // deliberate: this must add a place to look, never remove one.
-        if (slug === "queue") { scanQueue(join(studio, slug)); continue; }
-        if (slug === "archive" || slug.startsWith("_") || slug.startsWith(".")) continue;
-        let runs = []; try { runs = readdirSync(join(studio, slug)); } catch { continue; }
-        for (const r of runs) readRun(join(studio, slug, r));
-      }
-    }
-  } catch { /* no workspace */ }
+  // The walk's runs in the order it read them, then the queued orders: the same rows, in the same order, the
+  // portal's own walk produced before the connector and the portal shared one.
+  for (const run of walk.runs) readRun(run);
+  // An order is active work, so it belongs in the ordinary list; the retired index lists retired runs and nothing else.
+  if (!includeRetired) for (const q of walk.queued) readQueued(q);
   // Assign the ordinals last, across every lane at once. Cross-lane order is genuinely undefined —
   // the lanes are per-agent and drain concurrently against one shared pair of slots — so lanes are
   // ordered by path purely to make the result STABLE. An ordinal that reshuffled between two polls
@@ -534,15 +588,18 @@ export const concurrentRunsCap = () => {
 };
 
 export function forRole(runs, principal) {
-  // A person who sees everything reads failure reasons verbatim; everyone else gets the plain note. That redaction is the ONLY
-  // role-shaping left: the held-run suppression is retired (one report — a run you
-  // have rights to is always listed; the machine-QC record lives on the audit workbook).
-  if (seesEverything(principal)) return runs;
+  // EVERY PERSON GETS THE PLAIN NOTE, a person who sees everything included (design, 2026-11-27): a failed run's reason
+  // as the engine wrote it stays in the run's own record, and what this list returns is user output whoever reads it.
+  // `principal` still decides which runs are listed, upstream; it no longer decides what a failure says. The held-run
+  // suppression is retired too (one report — a run you have rights to is always listed; the machine-QC record lives on
+  // the audit workbook).
+  void principal;
   return runs.map((r) => {
     let out = r;
     // — the redaction must take `reasonDetail` with it. `reason` is replaced by a fixed note for a
     // client session; a second field carrying the engine's raw words would walk straight past that.
-    if (r.state === "failed") out = { ...out, reason: CLIENT_FAILURE_NOTE, reasonDetail: null, reasonRedacted: true };
+    // The stage it stopped at goes with them: the run's own record keeps it, and the screen says the run is not finished.
+    if (r.state === "failed") out = { ...out, reason: CLIENT_FAILURE_NOTE, reasonDetail: null, failedStage: null, reasonRedacted: true };
     return out;
   });
 }

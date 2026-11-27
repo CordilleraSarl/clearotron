@@ -94,7 +94,9 @@ const ROUTES = {
     // `nativeLanguage` rides the list row because the composer has to say what geography a saved search
     // accepts while the row is being clicked. Stubbed as the wire sends it.
     recipes: [{ slug: 'launch-screen', label: 'Launch screen', base: 'global-preliminary-search', version: 3, nativeLanguage: false }],
-    read: { available: true, maxBrief: 12000, note: null },
+    // Whether this installation can read a brief. Mutable for one pass below: an installation that cannot
+    // read one offers no box to write it in (board approved 2026-11-25).
+    get read() { return readNow },
   },
   '/portal/api/config/profile': {
     account: 'coastline',
@@ -155,6 +157,11 @@ const gets = []
 let runLanding = null
 
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.json': 'application/json' }
+
+/** The brief reader's capability the searches answer carries. Mutable for the reason `meEngine` is. */
+let readNow = { available: true, maxBrief: 12000, note: null }
+// Whether this installation runs an Urgent order fast. Off for every pass but How soon's, which drives both.
+let urgentNow = false
 
 const server = createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost')
@@ -262,12 +269,21 @@ const server = createServer((req, res) => {
       // null, or the key absent. A `?? null` here would tell every screen the register is unrestricted.
       ...(registerReach === undefined ? {} : { territories: registerReach }),
       ...(registerLabelNow ? { registerLabel: registerLabelNow } : {}),
+      urgent: { available: urgentNow },
     }))
     return
   }
   if (base === '/portal/admin/roster' && rosterNow) {
     res.writeHead(200, { 'content-type': 'application/json' })
     res.end(JSON.stringify(rosterNow))
+    return
+  }
+  // THE ORDER'S RECEIPT, which the queued screen follows by the reference Start returned (screens/OrderReceipt.tsx).
+  // Waiting, always: the receipt's own states are driven by scripts/order-receipt-render-check.mjs.
+  if (base.startsWith('/portal/api/orders/')) {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(JSON.stringify({ reference: decodeURIComponent(base.slice('/portal/api/orders/'.length)), state: 'waiting', terminal: false,
+      runId: null, reason: null, reasonKind: null, updatedAt: new Date().toISOString() }))
     return
   }
   if (ROUTES[base] !== undefined) {
@@ -350,8 +366,24 @@ const SCRIPT = `
   // Pick one of the four, by NAME. Each row is a card holding its pick button — the selected search holds
   // a control of its own, and a button cannot hold a button — so the click goes to the button, and a row
   // that has lost it is a miss that says so rather than a click on a card that does nothing.
-  const pickProduct = (re) => {
-    const row = [...document.querySelectorAll('.pick-row')].find((b) => re.test(b.innerText || ''));
+
+  // THE FOLDS (board approved 2026-11-25): the company's settings fold into one line behind "Change", and
+  // Which search shows the chosen search with the other three behind "All four searches". A pass that
+  // reaches into either opens it first, the way a reader would.
+  const discloser = (re) => [...document.querySelectorAll('button.nc-disclose')].find((x) => re.test(x.textContent.trim()));
+  const openFold = async (re, done) => {
+    const b = discloser(re);
+    if (!b || b.getAttribute('aria-expanded') === 'true') return;
+    b.click();
+    const t0 = Date.now();
+    while (Date.now() - t0 < 3000 && !done()) await new Promise((r) => setTimeout(r, 40));
+  };
+  const openAllSearches = () => openFold(/^All four searches$/, () => document.querySelectorAll('.pick-row').length >= 4);
+  const openCompanyCard = () => openFold(/^Change$/, () => Boolean(document.querySelector('.ctx-card')));
+  const pickProduct = async (re) => {
+    const find = () => [...document.querySelectorAll('.pick-row')].find((b) => re.test(b.innerText || ''));
+    if (!find()) await openAllSearches();
+    const row = find();
     if (!row) throw new Error('no product row matching ' + String(re));
     const hit = row.querySelector('.pick-row-hit');
     if (!hit) throw new Error('the row matching ' + String(re) + ' has no pick button');
@@ -387,9 +419,25 @@ const SCRIPT = `
     ['Where', topOf(titleEl(/^Where$/))],
     ['Goods or services', topOf(titleEl(/^Goods or services$/))],
     ['Context (optional)', topOf(titleEl(/^Context \\(optional\\)$/))],
-    ['company card', topOf(document.querySelector('.composer-col .ctx-card'))],
+    ['company line', topOf(document.querySelector('.composer-col .nc-company-line'))],
     ['Which search', topOf(titleEl(/^Which search$/))],
   ];
+
+  // ── THE COMPANY'S SETTINGS FOLD INTO ONE LINE (board approved 2026-11-25) ───────────────────────────
+  // The company has classes on file, so nothing needs putting right and the card starts folded. The line
+  // states what the search will use; "Change" opens today's card in place and moves focus into it.
+  {
+    const line = document.querySelector('.nc-company-line');
+    out.companyLabel = line ? (line.querySelector('.field-label') || {}).textContent : null;
+    out.companyLine = line ? (line.querySelector('.nc-company-line-value') || {}).textContent : null;
+    out.companyShown = (document.querySelector('.nc-company-name') || {}).textContent || null;
+    out.companyFoldedAtRest = !document.querySelector('.ctx-card');
+    out.changeClosedAtRest = (discloser(/^Change$/) || {}).getAttribute?.('aria-expanded') === 'false';
+    await openCompanyCard();
+    out.changeOpens = Boolean(document.querySelector('.ctx-card#nc-company-card'))
+      && discloser(/^Change$/).getAttribute('aria-expanded') === 'true';
+    out.changeFocusesCard = Boolean(document.activeElement && document.activeElement.closest('.ctx-card'));
+  }
 
   // AT REST NOTHING IS CHOSEN. "Recommended for what you entered" is a claim about input, and an
   // untouched form has none — so no row is selected, no row is tagged, and the bar says so.
@@ -462,6 +510,14 @@ const SCRIPT = `
   out.footerCodes = /EU, CH/.test(footerText());
   out.footerTurnaroundInWords = /1\\.5 to 2\\.5 hours/.test(footerText()) && !/\\d–\\d/.test(footerText());
   out.footerOneSearch = /1 search/.test(footerText());
+  // ── WHICH SEARCH SHOWS THE CHOSEN SEARCH, the other three one press away ──────────────────────────
+  out.oneRowWhenChosen = document.querySelectorAll('.pick-row').length === 1
+    && /Multi-country focus search/.test((document.querySelector('.pick-row') || {}).innerText || '');
+  out.allFourClosed = (discloser(/^All four searches$/) || {}).getAttribute?.('aria-expanded') === 'false';
+  await openAllSearches();
+  out.allFourOpens = document.querySelectorAll('.pick-row').length === 4
+    && discloser(/^All four searches$/).getAttribute('aria-expanded') === 'true';
+  out.allFourFocusesList = Boolean(document.activeElement && document.activeElement.closest('#nc-all-searches'));
   // Back to an empty Where, so the passes below start from the form they were written against.
   document.querySelector('button[aria-label="Remove European Union"]').click();
   await sleep(140);
@@ -503,7 +559,7 @@ const SCRIPT = `
 
   // Move to a clearance before carrying on. The read picked the Knockout search — "just the obvious
   // blockers" — and everything after this point exercises the clearance half of the offering.
-  pickProduct(/Multi-country focus search/);
+  await pickProduct(/Multi-country focus search/);
   await sleep(150);
   out.registersRestored = /Multi-country focus search/.test(txt());
   out.steps.push('read');
@@ -578,7 +634,7 @@ const SCRIPT = `
     return el ? el.innerText.trim() : null;
   };
 
-  pickProduct(/Knockout search/);
+  await pickProduct(/Knockout search/);
   await sleep(160);
   out.knockoutTier = /Knockout search/.test(tierText() || '');
   out.knockoutSweep = /1 broad sweep per name/.test(txt());
@@ -598,7 +654,7 @@ const SCRIPT = `
   // geography, and a place the register cannot reach is still marked on the place itself. The check is
   // INVERTED rather than deleted — an assertion that simply goes away lets the wording come back with
   // nothing to notice, which is how those notes arrived in the first place.
-  pickProduct(/Global preliminary search/);
+  await pickProduct(/Global preliminary search/);
   await sleep(160);
   out.globalNoTerritoryInput = !whereBox();
   out.globalRestatesNoGeography = !/This search is not narrowed/.test(txt());
@@ -606,7 +662,7 @@ const SCRIPT = `
 
   // A MULTI-COUNTRY FOCUS SEARCH offers regions AND countries, and the one toggle in the offering —
   // inside its own row.
-  pickProduct(/Multi-country focus search/);
+  await pickProduct(/Multi-country focus search/);
   await sleep(160);
   out.multiHasTerritoryInput = Boolean(whereBox());
   set(whereBox(), 'euro');
@@ -633,7 +689,7 @@ const SCRIPT = `
   // A FULL COUNTRY SEARCH offers COUNTRIES ONLY — a region is not a country, and the control fits the
   // product rather than refusing it afterwards. The panel no longer says so in a note beside the control;
   // see the ruling recorded at the Global preliminary search above. Inverted, not deleted.
-  pickProduct(/Full country search/);
+  await pickProduct(/Full country search/);
   await sleep(160);
   out.fullRestatesNoGeography = !/Regions are not offered here/.test(txt());
   set(whereBox(), 'euro');
@@ -651,7 +707,7 @@ const SCRIPT = `
   out.steps.push('full country picked');
 
   // Back to the shape the wire assertions below read.
-  pickProduct(/Multi-country focus search/);
+  await pickProduct(/Multi-country focus search/);
   await sleep(160);
   set(whereBox(), 'china');
   await sleep(180);
@@ -738,7 +794,7 @@ const SCRIPT = `
     'Back never came back after the failure notice cleared');
   findByText('button', /^Back$/).click();
   await mustSettle(() => !document.querySelector('.modal-scrim'), 5000, 'the composer never came back after Back');
-  pickProduct(/Full country search/);
+  await pickProduct(/Full country search/);
   await sleep(200);
   // Scoped to a TERRITORY chip. The chip-own class is the class chips' class too, so an unscoped search
   // for a Remove button took the first CLASS off the request instead — and every geography assertion
@@ -762,7 +818,7 @@ const SCRIPT = `
   // The picker rendering and the footer label prove the screen. What decides which product is run and
   // billed is what reaches the server — and a control that changes the label and sends the old value is
   // exactly the shape of the last two incidents on this screen.
-  pickProduct(/Knockout search/);
+  await pickProduct(/Knockout search/);
   await sleep(220);
   out.knockoutReviewable = findByText('button', /Review search/).disabled === false;
   findByText('button', /Review search/).click();
@@ -777,7 +833,7 @@ const SCRIPT = `
   out.modalDismissed = !document.querySelector('.modal-scrim');
 
   // ── fourth pass: the marketplaces control, and the comparison table ─────────────────────────────
-  pickProduct(/Full country search/);
+  await pickProduct(/Full country search/);
   await sleep(220);
   set(whereBox(), 'united s');
   await sleep(200);
@@ -895,7 +951,7 @@ const SCRIPT = `
   out.steps.push('template applied and cleared');
 
   // Leave it on a state a human can read: the deepest search, one country, nothing blocked.
-  pickProduct(/Full country search/);
+  await pickProduct(/Full country search/);
   await sleep(200);
   set(whereBox(), 'united s');
   await sleep(200);
@@ -951,8 +1007,21 @@ const INHERITED_SCRIPT = `
   const rowText = (label) => { const r = [...scrim().querySelectorAll('.modal-row')]
     .find((x) => ((x.querySelector('.field-label') || {}).textContent || '') === label);
     return r ? r.innerText.replace(/\\s+/g, ' ').trim() : null; };
-  const pickProduct = (re) => {
-    const row = [...document.querySelectorAll('.pick-row')].find((b) => re.test(b.innerText || ''));
+
+  // THE FOLDS (board approved 2026-11-25): see the first pass.
+  const discloser = (re) => [...document.querySelectorAll('button.nc-disclose')].find((x) => re.test(x.textContent.trim()));
+  const openFold = async (re, done) => {
+    const b = discloser(re);
+    if (!b || b.getAttribute('aria-expanded') === 'true') return;
+    b.click();
+    const t0 = Date.now();
+    while (Date.now() - t0 < 3000 && !done()) await new Promise((r) => setTimeout(r, 40));
+  };
+  const openAllSearches = () => openFold(/^All four searches$/, () => document.querySelectorAll('.pick-row').length >= 4);
+  const pickProduct = async (re) => {
+    const find = () => [...document.querySelectorAll('.pick-row')].find((b) => re.test(b.innerText || ''));
+    if (!find()) await openAllSearches();
+    const row = find();
     if (!row) throw new Error('no product row matching ' + String(re));
     const hit = row.querySelector('.pick-row-hit');
     if (!hit) throw new Error('the row matching ' + String(re) + ' has no pick button');
@@ -960,7 +1029,8 @@ const INHERITED_SCRIPT = `
   const out = { steps: [] };
   try {
 
-  await mustSettle(() => document.querySelectorAll('.pick-row').length >= 4 && /Describe it/.test(txt()), 8000,
+  // The company's own places preselect a search at paint, and a chosen search shows its own row only.
+  await mustSettle(() => document.querySelectorAll('.pick-row').length >= 1 && /Describe it/.test(txt()), 8000,
     'the one form never painted its search rows');
 
   // WAIT FOR THE COMPANY’S OWN LIST TO LAND BEFORE TOUCHING THE FORM. The profile arrives after the
@@ -1015,7 +1085,7 @@ const INHERITED_SCRIPT = `
   // fix that stamped every empty draft the same way would break the one product it must not touch.
   findByText('button', /^Back$/).click();
   await mustSettle(() => !scrim(), 5000, 'the composer never came back after Back');
-  pickProduct(/Global preliminary search/);
+  await pickProduct(/Global preliminary search/);
   await sleep(300);
   // Named with the service that searches it, from the provider's own label — this pass serves 'Signa'.
   out.worldwideChipText = ([...document.querySelectorAll('.chip')].map((c) => (c.innerText || '').trim()).find((t) => /^Worldwide/.test(t))) ?? null;
@@ -1153,7 +1223,7 @@ const REACH_AND_READ = `(async () => {
     while (Date.now() - t0 < ms) { if (pred()) return true; await sleep(60); } return false; };
   const byText = (sel, re) => [...document.querySelectorAll(sel)].find((e) => re.test(e.innerText || ''));
 
-  if (!await settle(() => document.querySelectorAll('.pick-row').length >= 4, 8000)) return { fatal: 'the one form never painted' };
+  if (!await settle(() => document.querySelectorAll('.pick-row').length >= 1, 8000)) return { fatal: 'the one form never painted' };
   // The notice REPLACES the start button, so either one appearing means the footer is painted and the
   // screen has decided. Waiting for the notice alone would hang for the full budget on a regression that
   // renders the button instead, and report it as "nothing rendered" rather than as what it is.
@@ -1236,7 +1306,8 @@ const EVIDENCE_HELPERS = `
     Object.getOwnPropertyDescriptor(proto.prototype, 'value').set.call(el, v);
     el.dispatchEvent(new Event(el.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }));
   };
-  const ready = () => must(() => document.querySelectorAll('.pick-row').length >= 4, 8000, 'the form never painted');
+  // A search preselected at paint shows its own row only (board approved 2026-11-25), so one row is a painted form.
+  const ready = () => must(() => document.querySelectorAll('.pick-row').length >= 1, 8000, 'the form never painted');
   const brief = () => document.querySelector('textarea[aria-label="Describe the search"]');
   const names = () => document.querySelector('textarea[aria-label="Names to clear"]');
   const addPlace = async (typed, name) => {
@@ -1256,6 +1327,13 @@ const EVIDENCE_HELPERS = `
     await sleep(200);
     if (native) { byText('button', /Native-language investigation/).click(); await sleep(200); }
   };
+  // THE FOLDS (board approved 2026-11-25): see the first pass.
+  const openFold = async (re, done) => {
+    const b = [...document.querySelectorAll('button.nc-disclose')].find((x) => re.test(x.textContent.trim()));
+    if (!b || b.getAttribute('aria-expanded') === 'true') return;
+    b.click();
+    if (!await settle(done, 3000)) throw new Error('the fold ' + String(re) + ' did not open');
+  };
   const reviewed = async () => {
     byText('button', /Review search/).click();
     await must(() => /review before you start/i.test(txt()), 5000, 'the review never opened');
@@ -1271,6 +1349,28 @@ const EVIDENCE = [
             await must(() => Boolean(document.querySelector('.pick-row-on')), 3000, 'nothing was preselected');
             if (!byText('button', /Review search/).disabled) throw new Error('the start is not refused with no searches left');` },
   { name: 'filled', usage: PLENTY, setup: 'await ready(); await described(true);' },
+  // HOW SOON (board Urgent clearance, approved 2026-11-25): Urgent chosen, and an installation that cannot run it.
+  { name: 'how-soon-urgent', usage: { today: 16, dailyRuns: 20 }, urgent: true,
+    setup: `await ready(); await described(true);
+            await must(() => document.querySelectorAll('.nc-how-soon [role="radio"]').length === 2, 3000, 'How soon never appeared');
+            document.querySelectorAll('.nc-how-soon [role="radio"]')[1].click(); await sleep(200);
+            await must(() => /· Urgent/.test(document.querySelector('.composer-footer')?.innerText ?? ''), 3000, 'the footer never said Urgent');
+            document.querySelector('.nc-how-soon').scrollIntoView({ block: 'center' });` },
+  { name: 'how-soon-unavailable', usage: PLENTY, urgent: false,
+    setup: `await ready(); await described(true);
+            await must(() => document.querySelector('.nc-how-soon [role="radio"][aria-disabled="true"]'), 3000, 'Urgent was not disabled');
+            document.querySelector('.nc-how-soon').scrollIntoView({ block: 'center' });` },
+  // THE FOLDS OPENED: "Change" shows today's card in place, and "All four searches" the other three.
+  { name: 'folds-open', usage: PLENTY,
+    setup: `await ready(); await described(true);
+            await openFold(/^Change$/, () => Boolean(document.querySelector('.ctx-card')));
+            await openFold(/^All four searches$/, () => document.querySelectorAll('.pick-row').length >= 4);
+            await must(() => Boolean(document.querySelector('.ctx-card')) && document.querySelectorAll('.pick-row').length === 4, 3000, 'the folds did not open');` },
+  // NO BRIEF READER ON THIS INSTALLATION: no box, no button, the server's sentence; Names to clear first.
+  { name: 'no-brief-reader', usage: PLENTY,
+    read: { available: false, maxBrief: 12000, note: 'Reading a brief is not available on this instance — set the search up below.' },
+    setup: `await ready();
+            if (document.querySelector('textarea[aria-label="Describe the search"]')) throw new Error('the brief box is on an installation that cannot read one');` },
   { name: 'template', usage: PLENTY,
     setup: `await ready(); set(document.querySelector('select[aria-label="Search templates"]'), 'launch-screen');
             await must(() => /sets the search and how deep it goes/.test(txt()), 4000, 'the template line never appeared');` },
@@ -1370,15 +1470,28 @@ const savedCodes = (await evalIn(`(async () => {
 const footerAgrees = (await evalIn(`(async () => {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const footer = () => { const f = document.querySelector('.composer-footer'); return f ? f.innerText.replace(/\\s+/g, ' ') : ''; };
-  const pick = (re) => { const row = [...document.querySelectorAll('.pick-row')].find((b) => re.test(b.innerText || ''));
+
+  // THE FOLDS (board approved 2026-11-25): see the first pass.
+  const discloser = (re) => [...document.querySelectorAll('button.nc-disclose')].find((x) => re.test(x.textContent.trim()));
+  const openFold = async (re, done) => {
+    const b = discloser(re);
+    if (!b || b.getAttribute('aria-expanded') === 'true') return;
+    b.click();
+    const t0 = Date.now();
+    while (Date.now() - t0 < 3000 && !done()) await new Promise((r) => setTimeout(r, 40));
+  };
+  const openAllSearches = () => openFold(/^All four searches$/, () => document.querySelectorAll('.pick-row').length >= 4);
+  const pick = async (re) => { const find = () => [...document.querySelectorAll('.pick-row')].find((b) => re.test(b.innerText || ''));
+    if (!find()) await openAllSearches();
+    const row = find();
     const hit = row && row.querySelector('.pick-row-hit'); if (!hit) return false; hit.click(); return true; };
   const out = {};
-  out.pickedGlobal = pick(/Global preliminary search/);
+  out.pickedGlobal = await pick(/Global preliminary search/);
   await sleep(250);
   const chip = [...document.querySelectorAll('.chip')].find((c) => /^Worldwide/.test(c.innerText.trim()));
   out.whereLine = chip ? chip.innerText.trim() : null;
   out.globalFooter = footer();
-  out.pickedMulti = pick(/Multi-country focus search/);
+  out.pickedMulti = await pick(/Multi-country focus search/);
   await sleep(250);
   out.multiFooter = footer();
   return out;
@@ -1445,12 +1558,141 @@ const landing = (await evalIn(`(async () => {
   return { landed: location.pathname, arrived, asked };
 })()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
 runLanding = null
+
+// ── HOW SOON (board Urgent clearance, approved 2026-11-25) ─────────────────────────────────────────────
+// Standard and Urgent side by side below Which search, each with its turnaround and count from the effort
+// model; choosing Urgent moves the footer and the review, and the order sends `urgent: true`. Where this
+// installation cannot run Urgent fast, the option is disabled and says why. Driven at 1280 and at 400 px.
+const HOW_SOON = `(async () => {
+  ${EVIDENCE_HELPERS}
+  const radios = () => [...document.querySelectorAll('.nc-how-soon [role="radio"]')];
+  const read = () => radios().map((r) => ({ label: r.querySelector('.nc-speed-label')?.textContent ?? null, line: r.querySelector('.nc-speed-line')?.textContent ?? null,
+    note: r.querySelector('.nc-speed-note')?.textContent ?? null, checked: r.getAttribute('aria-checked'), disabled: r.getAttribute('aria-disabled'), tab: r.tabIndex }));
+  const footer = () => (document.querySelector('.composer-footer')?.innerText ?? '').replace(/\\s+/g, ' ');
+  const pickRow = async (re) => {
+    let row = [...document.querySelectorAll('.pick-row')].find((r) => re.test(r.innerText || ''));
+    if (!row) { const fold = [...document.querySelectorAll('button')].find((b) => /^All four searches$/.test((b.innerText || '').trim())); if (fold) { fold.click(); await sleep(200); }
+      row = [...document.querySelectorAll('.pick-row')].find((r) => re.test(r.innerText || '')); }
+    row?.querySelector('.pick-row-hit')?.click(); await sleep(250);
+  };
+  await ready();
+  set(names(), 'BRAVOLINE'); await sleep(120);
+  await pickRow(/Knockout search/);
+  await must(() => radios().length === 2, 4000, 'How soon never appeared under Which search');
+  const W = document.documentElement.clientWidth;
+  const pair = document.querySelector('.nc-speed-pair').getBoundingClientRect();
+  const out = { head: (document.querySelector('.nc-how-soon .nc-which-head')?.innerText ?? '').replace(/\\s+/g, ' ').trim(),
+    group: document.querySelector('.nc-speed-pair')?.getAttribute('role'), label: document.querySelector('.nc-speed-pair')?.getAttribute('aria-labelledby'),
+    sideBySide: radios()[0].getBoundingClientRect().top === radios()[1].getBoundingClientRect().top,
+    inside: radios().every((r) => { const b = r.getBoundingClientRect(); return b.left >= -1 && b.right <= W + 1; }), overflow: document.documentElement.scrollWidth - W,
+    afterWhich: Boolean(document.querySelector('#nc-all-searches')?.compareDocumentPosition(document.querySelector('.nc-how-soon')) & Node.DOCUMENT_POSITION_FOLLOWING),
+    ko: read(), koFooter: footer() };
+  radios()[1].click(); await sleep(200);
+  out.koUrgent = read(); out.koUrgentFooter = footer();
+  radios()[1].focus(); radios()[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })); await sleep(200);
+  out.byKey = { options: read(), focused: document.activeElement?.querySelector('.nc-speed-label')?.textContent ?? null };
+  await pickRow(/Global preliminary search/);
+  radios()[1]?.click(); await sleep(200);
+  out.gp = read(); out.gpFooter = footer();
+  const review = [...document.querySelectorAll('button')].find((b) => /Review search/.test(b.innerText || ''));
+  if (review && !review.disabled) { review.click(); await must(() => /Start search/.test(txt()), 6000, 'the review never opened');
+    out.review = [...document.querySelectorAll('.modal-card [class*="row"], .modal-card dt, .modal-card dd')].map((e) => (e.innerText || '').trim()).join(' | '); }
+  else out.review = 'Review search was not pressable: ' + (review ? 'disabled' : 'absent');
+  return out;
+})()`
+const UNAVAILABLE = `(async () => {
+  ${EVIDENCE_HELPERS}
+  const radios = () => [...document.querySelectorAll('.nc-how-soon [role="radio"]')];
+  await ready();
+  set(names(), 'BRAVOLINE'); await sleep(120);
+  const row = [...document.querySelectorAll('.pick-row')].find((r) => /Knockout search/.test(r.innerText || ''));
+  row?.querySelector('.pick-row-hit')?.click(); await sleep(250);
+  await must(() => radios().length === 2, 4000, 'How soon never appeared');
+  radios()[1].click(); await sleep(200);
+  return { options: radios().map((r) => ({ label: r.querySelector('.nc-speed-label')?.textContent, line: r.querySelector('.nc-speed-line')?.textContent,
+    note: r.querySelector('.nc-speed-note')?.textContent ?? null, checked: r.getAttribute('aria-checked'), disabled: r.getAttribute('aria-disabled') })),
+    footer: (document.querySelector('.composer-footer')?.innerText ?? '').replace(/\\s+/g, ' ') };
+})()`
+const howSoon = {}
+for (const width of [1280, 400]) {
+  urgentNow = true
+  const before = posted.length
+  await cdp('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 700 })
+  await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+  await new Promise((r) => setTimeout(r, 1200))
+  const got = (await evalIn(HOW_SOON)).result?.result
+  howSoon[width] = got?.value ?? { fatal: got?.description ?? 'evaluate returned nothing' }
+  howSoon[width].sent = posted.slice(before).filter((p) => p.path === '/portal/api/run/plan').map((p) => p.body.urgent ?? null)
+  urgentNow = false
+  await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+  await new Promise((r) => setTimeout(r, 1200))
+  const off = (await evalIn(UNAVAILABLE)).result?.result
+  howSoon[width].unavailable = off?.value ?? { fatal: off?.description ?? 'evaluate returned nothing' }
+}
+await cdp('Emulation.clearDeviceMetricsOverride', {})
+console.log(`how soon: ${JSON.stringify(howSoon)}`)
+
+// ── ZERO, ONE AND TWO SEARCHES LEFT (design ruling 2026-11-26) ──────────────────────────────────────────
+// Urgent counts two: with exactly one left it is disabled, its cost stays, and "1 search left today." sits
+// beside it while Standard stays available. With two left both can be chosen; with none, nothing starts.
+const LEFT = `(async () => {
+  ${EVIDENCE_HELPERS}
+  const radios = () => [...document.querySelectorAll('.nc-how-soon [role="radio"]')];
+  await ready();
+  set(names(), 'BRAVOLINE'); await sleep(120);
+  const row = [...document.querySelectorAll('.pick-row')].find((r) => /Knockout search/.test(r.innerText || ''));
+  row?.querySelector('.pick-row-hit')?.click(); await sleep(250);
+  await must(() => radios().length === 2, 4000, 'How soon never appeared');
+  radios()[1].click(); await sleep(200);
+  const review = [...document.querySelectorAll('button')].find((b) => /Review search/.test(b.innerText || ''));
+  return { options: radios().map((r) => ({ line: r.querySelector('.nc-speed-line')?.textContent, note: r.querySelector('.nc-speed-note')?.textContent ?? null,
+    checked: r.getAttribute('aria-checked'), disabled: r.getAttribute('aria-disabled') })),
+    footer: (document.querySelector('.composer-footer')?.innerText ?? '').replace(/\\s+/g, ' '), reviewable: Boolean(review && !review.disabled) };
+})()`
+const leftStates = {}
+const usageBefore = usageNow
+for (const left of [2, 1, 0]) {
+  urgentNow = true
+  usageNow = { ...usageNow, today: 20 - left, dailyRuns: 20, capped: true }
+  await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+  await new Promise((r) => setTimeout(r, 1200))
+  const got = (await evalIn(LEFT)).result?.result
+  leftStates[left] = got?.value ?? { fatal: got?.description ?? 'evaluate returned nothing' }
+}
+usageNow = usageBefore
+urgentNow = false
+console.log(`searches left: ${JSON.stringify(leftStates)}`)
+
+// ── AN INSTALLATION THAT CANNOT READ A BRIEF OFFERS NO BOX TO WRITE ONE IN (approved 2026-11-25) ────
+// Describe it keeps its heading, its "optional" mark and the server's own sentence, and the first field a
+// person types in is Names to clear. The installation that can read one keeps the box: the first pass.
+const NO_READER_NOTE = 'Reading a brief is not available on this instance — set the search up below.'
+readNow = { available: false, maxBrief: 12000, note: NO_READER_NOTE }
+await evalIn(`location.href = ${JSON.stringify(`http://127.0.0.1:${port}/portal/new`)}; 'go'`)
+await new Promise((r) => setTimeout(r, 1200))
+const noReader = (await evalIn(`(async () => {
+  const t0 = Date.now();
+  while (Date.now() - t0 < 8000 && !document.querySelector('textarea[aria-label="Names to clear"]')) await new Promise((r) => setTimeout(r, 60));
+  const col = document.querySelector('.composer-col');
+  const firstBox = col ? col.querySelector('textarea, input:not([type="hidden"])') : null;
+  return {
+    box: Boolean(document.querySelector('textarea[aria-label="Describe the search"]')),
+    fill: [...document.querySelectorAll('button')].some((b) => /Fill it in for me/.test(b.textContent || '')),
+    heading: /Describe it/.test(col ? col.innerText : '') && /optional/.test(col ? col.innerText : ''),
+    sentence: (col ? col.innerText : '').includes(${JSON.stringify(NO_READER_NOTE)}),
+    firstBox: firstBox ? firstBox.getAttribute('aria-label') : null,
+  };
+})()`)).result?.result?.value ?? { fatal: 'evaluate returned nothing' }
+readNow = { available: true, maxBrief: 12000, note: null }
+
 const evidence = []
 if (shotDir) {
   // A named company and a named operator, so each line reads the way a reader meets it.
   meEngine = { brand: 'Tolliver & Quillon', accountNames: { coastline: 'Coastline Drinks' } }
   for (const st of EVIDENCE) {
     usageNow = { ...usageNow, ...st.usage }
+    readNow = st.read ?? { available: true, maxBrief: 12000, note: null }
+    urgentNow = st.urgent ?? false
     // A state says what the deployment is, or inherits the default: no declared reach, no register name,
     // and no company territories. Reset every time rather than left set, so one state cannot silently
     // decide what the next one renders.
@@ -1476,6 +1718,7 @@ if (shotDir) {
   registerLabelNow = null
   profileTerritories = []
   meEngine = {}
+  readNow = { available: true, maxBrief: 12000, note: null }
 }
 
 // ── THE FORM AT A PHONE'S WIDTH, MEASURED ─────────────────────────────────────────────────────────────
@@ -1553,6 +1796,48 @@ const countsBody = planPosts.length > 1 ? planPosts[planPosts.length - 1].body :
 const fail = []
 const ok = (cond, msg) => { if (!cond) fail.push(msg) }
 
+// ZERO, ONE AND TWO SEARCHES LEFT (design ruling 2026-11-26).
+{
+  const two = leftStates[2], one = leftStates[1], none = leftStates[0]
+  if ([two, one, none].some((s) => !s || s.fatal)) fail.push(`the searches-left pass: ${JSON.stringify(leftStates)}`)
+  else {
+    ok(two.options[1].disabled !== 'true' && two.options[1].checked === 'true' && /· Urgent/.test(two.footer) && two.reviewable,
+      `with two searches left Urgent is not chosen and runnable: ${JSON.stringify(two)}`)
+    ok(one.options[1].disabled === 'true' && one.options[1].line === '3 to 6 minutes · uses 2 searches' && one.options[1].note === '1 search left today.'
+      && one.options[0].checked === 'true' && !/· Urgent/.test(one.footer) && one.reviewable,
+      `with one search left Urgent is not disabled beside its cost and the sentence, or Standard is not available: ${JSON.stringify(one)}`)
+    ok(!none.reviewable, `with no searches left a search can still start: ${JSON.stringify(none)}`)
+  }
+}
+
+// HOW SOON, both states, at both widths. The words are the board's and the issue's, byte for byte.
+for (const [width, h] of Object.entries(howSoon)) {
+  const at = `How soon at ${width}px`
+  if (!h || h.fatal) { fail.push(`${at}: ${h?.fatal ?? 'no result'}`); continue }
+  ok(h.head === 'How soon Same search, same checks, same report', `${at}: the heading reads "${h.head}"`)
+  ok(h.group === 'radiogroup' && h.label === 'nc-how-soon-title' && h.afterWhich, `${at}: not a labelled radio group below Which search: ${JSON.stringify(h)}`)
+  ok(Number(width) < 560 ? !h.sideBySide : h.sideBySide, `${at}: the two options ${h.sideBySide ? 'sit side by side' : 'are stacked'}`)
+  ok(h.inside && h.overflow <= 1, `${at}: an option is off the screen or the page scrolls sideways (${h.overflow}px)`)
+  ok(JSON.stringify(h.ko?.map((o) => [o.label, o.line, o.checked])) === JSON.stringify([['Standard', '5 to 10 min · uses 1 search', 'true'], ['Urgent', '3 to 6 minutes · uses 2 searches', 'false']]),
+    `${at}: a Knockout's options read ${JSON.stringify(h.ko)}`)
+  ok(h.ko?.[1]?.note === "Uses AI fast mode setting at increased cost." && h.ko?.[0]?.note === null, `${at}: the Urgent note reads ${JSON.stringify(h.ko?.[1]?.note)}`)
+  ok(!/Urgent/.test(h.koFooter) && /1 search/.test(h.koFooter) && /5 to 10 min/.test(h.koFooter), `${at}: the Standard footer reads "${h.koFooter}"`)
+  ok(/Knockout search · Urgent/.test(h.koUrgentFooter) && /2 searches/.test(h.koUrgentFooter) && /uses · 2 left today/i.test(h.koUrgentFooter) && /3 to 6 minutes/.test(h.koUrgentFooter),
+    `${at}: the Urgent footer reads "${h.koUrgentFooter}"`)
+  ok(h.koUrgent?.[1]?.checked === 'true' && h.koUrgent?.[1]?.tab === 0 && h.koUrgent?.[0]?.tab === -1, `${at}: choosing Urgent did not move the choice and the tab stop: ${JSON.stringify(h.koUrgent)}`)
+  ok(h.byKey?.options?.[0]?.checked === 'true' && h.byKey?.focused === 'Standard', `${at}: an arrow key did not move the choice back to Standard: ${JSON.stringify(h.byKey)}`)
+  ok(JSON.stringify(h.gp?.map((o) => [o.label, o.line])) === JSON.stringify([['Standard', '1.5 to 2.5 hours · uses 1 search'], ['Urgent', '30 minutes to 1 hour · uses 2 searches']]),
+    `${at}: a clearance's options read ${JSON.stringify(h.gp)}`)
+  ok(/Global preliminary search · Urgent/.test(h.gpFooter) && /30 minutes to 1 hour/.test(h.gpFooter), `${at}: the clearance's Urgent footer reads "${h.gpFooter}"`)
+  ok(/2 searches/.test(h.review) && /30 minutes to 1 hour/.test(h.review), `${at}: the review does not show the Urgent count and turnaround: ${h.review}`)
+  ok(h.sent.at(-1) === true, `${at}: the order sent urgent ${JSON.stringify(h.sent)}`)
+  const u = h.unavailable
+  if (!u || u.fatal) { fail.push(`${at}, unavailable: ${u?.fatal ?? 'no result'}`); continue }
+  ok(u.options?.[1]?.disabled === 'true' && u.options?.[1]?.line === "Not available with this installation's AI service. Searches run at Standard." && u.options?.[1]?.note === null,
+    `${at}: where Urgent cannot run its option reads ${JSON.stringify(u.options?.[1])}`)
+  ok(u.options?.[0]?.checked === 'true' && u.options?.[1]?.checked === 'false' && !/Urgent/.test(u.footer), `${at}: pressing the unavailable Urgent changed the order: ${JSON.stringify(u)}`)
+}
+
 if (out.fatal) {
   console.error('FATAL:', out.fatal)
   console.error(out.body ?? out.raw ?? '')
@@ -1566,7 +1851,7 @@ ok(out.forkGone, 'the screen still opens on a fork — "Describe it" and "Set it
   ok(!missing.length, `a section of the form is not on the page: ${JSON.stringify(missing)}`)
   const tops = out.sectionTops.map(([, top]) => top)
   ok(!missing.length && tops.every((t, i) => i === 0 || t > tops[i - 1]),
-    `the form does not read in the design's order — company, Describe it, Names to clear, Where, Goods or services, Context, the company card, Which search: ${JSON.stringify(out.sectionTops)}`)
+    `the form does not read in the design's order — company, Describe it, Names to clear, Where, Goods or services, Context, the company's line, Which search: ${JSON.stringify(out.sectionTops)}`)
 }
 ok(out.nothingSelectedAtRest, 'an untouched form has a search selected or tagged — "for what you entered" is a claim about input, and there is none')
 ok(out.footerNoSearchAtRest, 'at rest the bar does not say "No search picked" with the turnaround "Not set"')
@@ -1607,6 +1892,21 @@ ok(out.receiptLines.length >= 4, `the receipt is thin: ${JSON.stringify(out.rece
 
 // ── THE COMPANY CARD ────────────────────────────────────────────────────────────────────────────────
 ok(out.contextCard, 'the company card did not render')
+ok(!noReader.fatal && !noReader.box && !noReader.fill, `an installation that cannot read a brief still offers the box or "Fill it in for me": ${JSON.stringify(noReader)}`)
+ok(noReader.heading && noReader.sentence, `Describe it lost its heading, its "optional" mark or the server's sentence: ${JSON.stringify(noReader)}`)
+ok(noReader.firstBox === 'Names to clear', `the first field a person types in is not Names to clear: ${JSON.stringify(noReader.firstBox)}`)
+// THE FOLDS (board approved 2026-11-25).
+ok(out.companyLabel === `From ${out.companyShown}`, `the company's line is not labelled "From {company}": ${JSON.stringify([out.companyLabel, out.companyShown])}`)
+ok(out.companyLine === 'No project · Classes 5, 32 · 13 marketplaces',
+  `the company's line does not state what the search will use: ${JSON.stringify(out.companyLine)}`)
+ok(out.companyFoldedAtRest, 'the company card is open at rest on a company with nothing to put right')
+ok(out.changeClosedAtRest, '"Change" does not say the card is closed')
+ok(out.changeOpens, '"Change" did not open the card in place, or does not say it is open')
+ok(out.changeFocusesCard, 'focus did not move into the card "Change" opened')
+ok(out.oneRowWhenChosen, 'with a search chosen, Which search shows more than the chosen search')
+ok(out.allFourClosed, '"All four searches" does not say the list is closed')
+ok(out.allFourOpens, '"All four searches" did not open the four, or does not say they are open')
+ok(out.allFourFocusesList, 'focus did not move into the list "All four searches" opened')
 ok(out.manageProjects, 'the company card offers no Manage projects')
 ok(out.inheritedClassChips.some((c) => /^5 · /.test(c)) && out.inheritedClassChips.some((c) => /^32 · /.test(c)),
   `the owner's own classes are not shown as named chips: ${JSON.stringify(out.inheritedClassChips)}`)

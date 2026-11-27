@@ -159,6 +159,12 @@ const CANNOT_RUN_IN_CI = [
       + "intents, and wiring this one into the browser job would break the other's reason for existing.",
   },
   {
+    path: "scripts/readme-pictures.mjs",
+    why: "it ASSERTS NOTHING either: it retakes the README's three portal pictures from the demo, for a "
+      + "person to look at and commit, and a picture is not a pass or a fail. Like report-screenshot.mjs it "
+      + "loads the brand webfonts on purpose, the opposite of the render checks' blocked network.",
+  },
+  {
     path: "scripts/live-surface-check.mjs",
     why: "it interrogates a RUNNING DEPLOYMENT — the processes, the environment they were started in, "
       + "and the commit they were started from. CI has no deployment; pointed at one it would be "

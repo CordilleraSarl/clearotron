@@ -208,7 +208,7 @@ export function paths(runDir) {
     // What was DECIDED about the receipt's deferrals, and when — kept apart from plan-execution.json,
     // which is an execution-FACTS receipt several validators fail-closed on. See envelope-settle.mjs.
     envelopeDecision: p(driverRel("envelope-decision.json")),
-    instructedScope: p(driverRel("instructed-scope.json")), defaultTerritories: p(driverRel("default-territories.json")),   // the stored account defaults the engine cannot search — written at intake, read by no stage (pipeline.mjs writes it)
+    instructedScope: p(driverRel("instructed-scope.json")), statedFacts: p(driverRel("stated-facts.json")), defaultTerritories: p(driverRel("default-territories.json")),   // the stored account defaults the engine cannot search — written at intake, read by no stage (pipeline.mjs writes it)
     // compute-don't-author — the per-class scope truth (scope-facts.mjs): instructed × frozen plan ×
     // band states × coverage ledger. The masthead classes/coverage_line are stamped FROM this sidecar.
     scopeFacts: p(driverRel("scope-facts.json")),

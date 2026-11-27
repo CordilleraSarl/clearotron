@@ -133,7 +133,7 @@ test("arm 5 — taking the census out of the message does NOT blind the converge
 
 test("arm 6 — a client session sees neither the reason nor the payload", () => {
   const t = liveOf(driverSource("portal-service.mjs"));
-  assert.match(t, /reason: CLIENT_FAILURE_NOTE, reasonDetail: null, reasonRedacted: true/,
+  assert.match(t, /reason: CLIENT_FAILURE_NOTE, reasonDetail: null, failedStage: null, reasonRedacted: true/,
     "the redaction must take the new field with it — a second field carrying the engine's raw words "
     + "would walk straight past the note that replaced the first");
   assert.match(t, /reasonDetail: s\.reasonDetail \?\? null/, "…and staff still get it");

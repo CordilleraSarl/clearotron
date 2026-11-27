@@ -70,6 +70,9 @@ export function quoteForJob({ job, profile = null, searchPolicy = null, scope = 
       // disagree with it no longer exists.
       caseLaw: searchPolicy?.caseLaw === true,
       territories: eff?.jurisdictions ?? [],
+      // AN URGENT ORDER, as the job states it: `true` and nothing else, the reading the run itself makes
+      // when it starts (enqueue-schema.mjs). It moves the count and the turnaround row, not the work.
+      urgent: job?.urgent === true,
     });
     return quoteEffort({
       levers: { ...levers, nativeLanguage: levers.nativeLanguage && nativeLaneRuns({ job, profile, searchPolicy }) },

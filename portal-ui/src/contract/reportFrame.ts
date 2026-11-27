@@ -36,7 +36,7 @@ export type FrameCommand = 'exportPDF' | 'pickAll' | 'openAll'
  * as its own Theme control would. Keeping both out of `FrameCommand` is what stops either appearing as a
  * menu row: `exportMenu` and `readFrameControls` are both closed over that type.
  */
-export type FrameVerb = FrameCommand | 'section' | 'theme'
+export type FrameVerb = FrameCommand | 'section' | 'theme' | 'copied'
 
 /** The two themes the portal and the report both draw. Dark is an explicit choice on both, never the OS's. */
 export type FrameTheme = 'light' | 'dark'
@@ -192,6 +192,59 @@ export function readFrameScroll(data: unknown, sameSource: boolean): number | nu
   if (msg.source !== FRAME_TAG || msg.type !== 'scrollTo') return null
   if (typeof msg.top !== 'number' || !Number.isFinite(msg.top)) return null
   return Math.min(Math.max(msg.top, 0), MAX_FRAME)
+}
+
+/**
+ * THE DOCUMENT ASKS THE PAGE TO SCROLL BY AN AMOUNT, to keep a reader's place while its own column reflows (a
+ * panel opening beside the cards narrows them). The frame is sized to its content and cannot scroll the portal,
+ * so it posts the distance and the PAGE moves by it. Same trust model as the jump above; the distance is clamped
+ * to the frame's own size, so a document cannot throw the page further than it is tall.
+ */
+export function readFrameScrollBy(data: unknown, sameSource: boolean): number | null {
+  if (!sameSource) return null
+  if (typeof data !== 'object' || data === null) return null
+  const msg = data as { source?: unknown; type?: unknown; dy?: unknown }
+  if (msg.source !== FRAME_TAG || msg.type !== 'scrollBy') return null
+  if (typeof msg.dy !== 'number' || !Number.isFinite(msg.dy)) return null
+  return Math.min(Math.max(msg.dy, -MAX_FRAME), MAX_FRAME)
+}
+
+/**
+ * A CARD'S OWN ID, as the page gives it: `c<n>` on a clearance, `k<name>-<n>` on a Knockout. Anything else is not
+ * a card this page draws, and is refused rather than written into an address.
+ */
+const CARD_ID = /^(c\d{1,4}|k\d{1,3}-\d{1,4})$/
+
+/**
+ * A CARD'S "COPY LINK", pressed inside the document and answered outside it. The document cannot write the
+ * clipboard or know the portal's address, so it names the card and the page does both. Same trust model as
+ * Ask AI: source identity, never origin.
+ */
+export function readCopyLink(data: unknown, sameSource: boolean): { card: string } | null {
+  if (!sameSource) return null
+  if (typeof data !== 'object' || data === null) return null
+  const m = data as { source?: unknown; type?: unknown; card?: unknown }
+  if (m.source !== FRAME_TAG || m.type !== 'copyLink') return null
+  return typeof m.card === 'string' && CARD_ID.test(m.card) ? { card: m.card } : null
+}
+
+/**
+ * THE ADDRESS OF ONE CARD: the report screen this page is showing, with the card named, and nothing else. Today's
+ * report address carries the run (and a Knockout's name) in its path, so access is exactly what it was; any other
+ * query or fragment on the page is left out, because the address carries the run and the card only.
+ */
+export function cardAddress(href: string, card: string): string {
+  const url = new URL(href)
+  url.search = ''
+  url.hash = ''
+  url.searchParams.set('card', card)
+  return url.toString()
+}
+
+/** The card a report address names, or null. The same check as a copy request, so a hand-typed one cannot widen it. */
+export function cardFromSearch(search: string): string | null {
+  const card = new URLSearchParams(search).get('card')
+  return card !== null && CARD_ID.test(card) ? card : null
 }
 
 /**

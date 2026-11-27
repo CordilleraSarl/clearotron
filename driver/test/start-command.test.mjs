@@ -329,7 +329,9 @@ test("the portal only relabels a queued row on an EXPLICIT no — never on 'not 
   // row into a false alarm. It is now `drainingState()` in driver/worker-heartbeat.mjs, held by its own
   // arms against a contract rather than a shape. What this file still owns is the CONSUMER: that only an
   // explicit false relabels, and that the producer is called rather than re-implemented here.
-  assert.match(src, /const draining = drainingState\(\);/,
+  // The call is the contract, not its spelling: the shared run walk reads it once per walk, and only when it reads the
+  // queue, so it is a call inside a condition there rather than a declaration of its own.
+  assert.match(src, /\bdrainingState\(\)/,
     "portal-service re-implements the producer instead of calling it — the #1786 plant lands here again");
   assert.ok(!/PORTAL_LOCAL_WORKER/.test(src),
     "the opt-in check is back inline in portal-service; it belongs in drainingState, where it is unit-tested");

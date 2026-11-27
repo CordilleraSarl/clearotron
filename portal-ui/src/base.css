@@ -171,6 +171,70 @@ html.anon-on [data-anon='mark']:not(.anon-clear) {
   padding: 10px 0 12px;
   border-bottom: 1px solid var(--border-hairline);
 }
+.report-head-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 2px; }
+.report-head-name { font-size: 19px; font-weight: 700; margin: 0; color: var(--text-strong); }
+.report-head-gap { flex: 1; }
+
+/* ONE HEADER, TWO STATES, on a desktop width (board ReportHeader, approved 2026-11-25). At the top of the
+   page the header sits in the page and scrolls with it; once the reader is past it, the same header is pinned
+   under the topbar as one row. Its slot keeps the full header's height meanwhile, so nothing under it moves.
+   A phone keeps the pinned header above. No transition, so a reader who asked for reduced motion gets none
+   and nobody else gets any either. */
+.report-head-slot { position: relative; }
+.report-head-sentinel { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; pointer-events: none; }
+/* A PHONE KEEPS THE PINNED HEADER, and a sticky box sticks only inside its parent: the slot would carry the
+   header away with it. Below the desktop width the slot is no box at all, and the sentinel is not drawn. */
+@media (max-width: 899px) {
+  .report-head-slot { display: contents; }
+  .report-head-sentinel { display: none; }
+}
+@media (min-width: 900px) {
+  .report-head { position: static; }
+  .report-head.compact {
+    position: fixed; top: 56px; z-index: 20;
+    padding: 8px 0; box-sizing: border-box;
+  }
+  .report-head.compact .report-head-row { flex-wrap: nowrap; gap: 10px; margin-bottom: 0; }
+  .report-head.compact .report-head-name {
+    font-size: 15px; flex: 0 1 auto; min-width: 3ch; max-width: 24ch;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .report-head.compact .report-sections { flex: 1 1 auto; min-width: 0; }
+  /* Where the pinned row cannot hold the name, the sections and both actions, the full header is pinned instead. */
+  .report-head.pinned-full { position: fixed; top: 56px; z-index: 20; box-sizing: border-box; }
+  /* "Ask AI" stays one line in the pinned row; where the row cannot hold it whole, the full header is pinned instead. */
+  .report-head.compact .ask-ai-btn { white-space: nowrap; flex: none; }
+  .report-head.compact .report-head-gap { flex: 0 0 0; }
+}
+.btn-ghost.report-back-icon { flex: none; padding: 6px 7px; border-color: var(--border-hairline); }
+
+/* SEARCH HISTORY, one press away in the pinned row (refinement picture search-history.png). */
+.report-history { position: relative; flex: none; }
+.report-history-btn {
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  padding: 5px 12px; border: 1px solid var(--accent); border-radius: 999px;
+  background: var(--accent-wash); color: var(--text-accent); font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+}
+.report-history-list {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 30; min-width: 360px;
+  max-height: calc(100vh - 140px); overflow-y: auto;
+  list-style: none; margin: 0; padding: 6px; display: flex; flex-direction: column; gap: 4px;
+  background: var(--surface-float); border: 1px solid var(--border-strong); border-radius: 10px; box-shadow: var(--shadow-lg);
+}
+.report-history-row {
+  width: 100%; display: flex; align-items: center; gap: 10px; text-align: left;
+  padding: 8px 10px; border: 1px solid transparent; border-radius: 8px;
+  background: transparent; color: var(--text-body); font: inherit; cursor: pointer;
+}
+.report-history-row:hover, .report-history-row:focus-visible { background: var(--surface-sunken); }
+.report-history-row.current { background: var(--accent-wash); border-color: var(--accent); }
+.report-history-nodot { width: 7px; height: 7px; flex: none; }
+.report-history-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.report-history-search { font-size: 13px; font-weight: 700; color: var(--text-strong); white-space: nowrap; }
+.report-history-date { font-size: 12px; color: var(--text-muted); }
+.report-history-tag { flex: none; }
+.report-history-live { flex: none; font-size: 12px; color: var(--text-muted); }
+.report-history-tick { flex: none; display: inline-flex; color: var(--text-accent); }
 
 /* THE HEADER'S LOWER ROWS: which read you are in, then where you are inside it.
    The Reads strip used to sit BELOW this box and the report's own section breadcrumb inside the frame,
@@ -715,7 +779,7 @@ table.data tr.group-head td {
 }
 
 table.data tr.group-head .owner-name {
-  font-size: 14px;
+  font-size: 19px;
   font-weight: 600;
   color: var(--text-strong);
   letter-spacing: 0;
@@ -921,6 +985,7 @@ table.data td.nest-2 {
 }
 /* The bordered Open. One width, whatever its label says: the track decides, not the text. */
 button.row-open {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   width: 100%;
   padding: 5px 8px;
   border: 1px solid var(--border-strong);
@@ -1504,6 +1569,34 @@ input.filter {
 .cfg-dot.off {
   background: var(--text-faint);
 }
+
+/* An optional source not set up: the off look, with the dot open (board SettingsProposed, 2026-11-25). */
+.cfg-dot.off.open {
+  box-sizing: border-box;
+  background: transparent;
+  border: 1.5px solid var(--text-muted);
+}
+
+/* Needed and Optional: headings over their categories, each with a rule to the right. */
+.cfg-group-head {
+  display: flex; align-items: center; gap: 12px; margin: 0;
+  font-size: 15px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--text-strong);
+}
+.cfg-group-head::after { content: ''; flex: 1; height: 1px; background: var(--border-hairline); }
+
+/* The command that fixes a row's problem, with Copy at its right (board SettingsCommand, 2026-11-25). */
+.cfg-cmd {
+  display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 6px 6px 6px 14px;
+  border: 1px solid var(--border-hairline); border-radius: 8px; background: var(--surface-sunken);
+}
+.cfg-cmd code { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 13px; color: var(--text-strong); overflow-wrap: anywhere; }
+.cfg-copy {
+  flex: none; min-height: 44px; padding: 0 14px; border: 1px solid var(--border-strong); border-radius: 7px;
+  background: var(--surface-raised); color: var(--text-strong); font: inherit; font-size: 12.5px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+}
+.cfg-copy:hover { border-color: var(--accent-ink); color: var(--text-accent); }
+.cfg-copy.is-copied { color: var(--tone-low); }
 
 /* ── mobile ──────────────────────────────────────────────────────────────────────────────────────── */
 
@@ -2804,6 +2897,20 @@ details[open] > .fold-summary .fold-chev {
 .nc-company-name { font-size: 15px; font-weight: 600; color: var(--text-strong); }
 .nc-project { max-width: 340px; flex: 1; }
 .nc-describe-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px; }
+/* The company's settings as one line, with "Change" (board NewClearanceProposed, 2026-11-25). */
+.nc-company-line {
+  display: flex; align-items: center; gap: 16px; padding: 16px 18px;
+  border: 1px solid var(--border-hairline); border-radius: 12px; background: var(--surface-raised);
+}
+.nc-company-line-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.nc-company-line-value { font-size: 14.5px; color: var(--text-body); overflow-wrap: anywhere; }
+/* "Change" and "All four searches": real buttons that say whether what they open is open. */
+.nc-disclose {
+  flex: none; min-height: 44px; padding: 0 18px; border: 1px solid var(--border-strong); border-radius: 8px;
+  background: var(--surface-raised); color: var(--text-strong); font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer;
+}
+.nc-disclose:hover { border-color: var(--accent-ink); color: var(--text-accent); }
+.nc-all-searches { align-self: flex-start; margin-top: 12px; }
 .nc-optional { font-size: 11.5px; color: var(--text-faint); }
 .nc-which-head {
   display: flex;
@@ -2958,6 +3065,19 @@ details[open] > .fold-summary .fold-chev {
 .home2-pip.on.paused { background: var(--tone-medium); }
 .home2-pip.on.failed { background: var(--tone-high); }
 .home2-pip.on.cancelled { background: var(--text-faint); }
+
+/* A running card's steps, every one by name (board Main, 2026-11-25). Done: a tick and muted text.
+   Current: bold, with a filled dot in the accent colour, or today's paused colour on a paused card.
+   To come: an open dot and muted text. Names wrap at phone width; nothing clips. */
+.home2-steps { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.home2-stepitem { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.35; color: var(--text-muted); }
+.home2-stepmark { flex: none; width: 14px; height: 14px; margin-top: 1px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); }
+.home2-stepname { min-width: 0; overflow-wrap: anywhere; }
+.home2-stepitem.current { font-size: 14.5px; font-weight: 700; color: var(--text-strong); }
+.home2-stepitem.current .home2-stepmark { margin-top: 2px; }
+.home2-stepitem.current .home2-stepdot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-accent); }
+.home2-steps.paused .home2-stepitem.current .home2-stepdot { background: var(--tone-medium); }
+.home2-stepitem.todo .home2-stepdot { width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid var(--border-strong); }
 
 .home2-card-foot {
   margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-hairline);
@@ -3542,3 +3662,120 @@ ol.steps > li::before {
   color: var(--text-faint);
   font-size: 12px;
 }
+
+/* ── CLEARANCES (board Clearances, approved 2026-11-25) ─────────────────────────────────────────────────
+   The title counts its names and carries "Group names"; under it, Find a name and Filters, the narrowing
+   in force as chips, the status tabs, then the list. A company is a full-width band with its count; a
+   family and a name are indented within it. */
+.clr-title-count { margin-left: 10px; font-size: 13px; font-weight: 500; color: var(--text-muted); letter-spacing: 0; }
+.btn-ghost.clr-group-btn { display: inline-flex; align-items: center; gap: 8px; border-color: var(--border-strong); }
+.clr-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.clr-find {
+  display: inline-flex; align-items: center; gap: 8px; flex: 0 1 220px; min-width: 0;
+  padding: 0 12px; height: 38px; border: 1px solid var(--border-hairline); border-radius: 8px; background: var(--surface-raised);
+  color: var(--text-muted);
+}
+.clr-find input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--text-strong); outline: none; }
+.btn-ghost.clr-filters-btn { display: inline-flex; align-items: center; gap: 8px; height: 38px; border-color: var(--border-strong); }
+.clr-filters-count {
+  display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
+  background: var(--accent); color: var(--text-on-accent); font-size: 11px; font-weight: 700;
+}
+.clr-filters {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; margin-top: 10px; padding: 14px;
+  border: 1px solid var(--border-hairline); border-radius: 10px; background: var(--surface-raised);
+}
+.clr-filter { display: flex; flex-direction: column; gap: 6px; min-width: 180px; }
+.clr-filter-check { padding-bottom: 8px; }
+.clr-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chip.clr-chip { cursor: pointer; font: inherit; font-size: 12.5px; }
+.clr-tabs { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 14px 0 6px; border-bottom: 1px solid var(--border-hairline); }
+.clr-tab {
+  padding: 6px 0 8px; border: 0; border-bottom: 2px solid transparent; background: transparent; margin-bottom: -1px;
+  font: inherit; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer;
+}
+.clr-tab[aria-pressed='true'] { color: var(--text-accent); border-bottom-color: var(--accent); }
+.clr-tab-count { margin-left: 5px; font-weight: 500; }
+.clr-note { margin: 8px 0 0; font-size: 13px; color: var(--text-body); }
+.clr-meta { font-size: 12.5px; font-weight: 500; color: var(--text-muted); }
+.clr-family-icon { display: inline-flex; vertical-align: -2px; margin-right: 6px; color: var(--text-muted); }
+.col-actions-head { text-align: right; }
+.clr-search-name { display: block; font-size: 13.5px; font-weight: 700; color: var(--text-strong); }
+
+/* The dialogs that replace the browser's own confirm and prompt boxes. */
+.modal-card.clr-dialog { max-width: 460px; }
+.clr-dialog-title { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-strong); }
+.clr-dialog-body { padding: 14px 24px 4px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--text-body); }
+.clr-dialog-body p { margin: 0; }
+.clr-field { display: flex; flex-direction: column; gap: 6px; }
+.clr-names { margin: 0; padding: 10px 12px; border: 1px solid var(--border-hairline); border-radius: 8px; display: flex; flex-direction: column; gap: 6px; }
+.clr-name-choice { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.clr-quiet { color: var(--text-muted); font-size: 12.5px; }
+
+/* THE LIST ON A PHONE (board Clearances, phone, approved 2026-11-25): each row is a card, so the name, its
+   status, its risk, its report button and its menu are all in reach without scrolling sideways. The name and
+   its risk share the top line; the status, the report button and the menu share the bottom one. */
+.clr-phone-only { display: none; }
+@media (max-width: 699px) {
+  .clr-phone-only { display: inline; color: var(--text-muted); font-weight: 500; }
+  .names-wrap { overflow-x: visible; }
+  /* The 860px floor below 560px was for a table a reader drags sideways; cards need none. */
+  .names-wrap table.data.fixed { display: block; table-layout: auto; min-width: 0; width: 100%; }
+  .names-wrap table.data.fixed colgroup,
+  .names-wrap table.data.fixed thead { display: none; }
+  .names-wrap table.data.fixed tbody { display: block; }
+  .names-wrap table.data.fixed tr {
+    /* The right column holds at most 55% of the card, so a risk with two bands wraps between them instead
+       of squeezing the name and the status until a word breaks inside itself. */
+    display: grid; grid-template-columns: 22px minmax(0, 1fr) fit-content(55%);
+    grid-template-areas: "tw name risk" "tw status actions";
+    align-items: center; column-gap: 8px; row-gap: 6px; padding: 10px 8px;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+  .names-wrap table.data.fixed tr.group-head { display: block; padding: 0; }
+  .names-wrap table.data.fixed td { display: block; padding: 0; border: 0; min-width: 0; }
+  .names-wrap table.data.fixed td.clr-td-twisty { grid-area: tw; align-self: start; }
+  .names-wrap table.data.fixed td.clr-td-name { grid-area: name; }
+  .names-wrap table.data.fixed td.clr-td-risk { grid-area: risk; text-align: right; align-self: start; }
+  .names-wrap table.data.fixed td.clr-td-status { grid-area: status; min-width: 76px; }
+  .names-wrap table.data.fixed td.col-actions { grid-area: actions; }
+  .names-wrap table.data.fixed td.clr-td-status:empty,
+  .names-wrap table.data.fixed td.clr-td-risk:empty { display: none; }
+  .names-wrap table.data.fixed td.col-actions .row-actions-box,
+  .names-wrap table.data.fixed td.col-actions .row-actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+  .names-wrap table.data.fixed td.col-actions button.row-open { width: auto; white-space: nowrap; padding: 8px 12px; }
+  .names-wrap table.data.fixed tr.read-row { background: var(--surface-sunken); }
+  .names-wrap table.data.fixed tr.read-row > td { background-color: transparent; }
+  /* The Retired tab's searches as cards too: the name and Restore on the top line, the status beneath. */
+  .table-wrap table.data.clr-retired-table { display: block; min-width: 0; width: 100%; }
+  .table-wrap table.data.clr-retired-table thead { display: none; }
+  .table-wrap table.data.clr-retired-table tbody { display: block; }
+  .table-wrap table.data.clr-retired-table tr.row {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name actions" "status status";
+    align-items: start; column-gap: 8px; row-gap: 6px; padding: 10px 8px; border-bottom: 1px solid var(--border-hairline);
+  }
+  .table-wrap table.data.clr-retired-table tr.row > td { display: block; padding: 0; border: 0; min-width: 0; }
+  .table-wrap table.data.clr-retired-table td.clr-td-name { grid-area: name; }
+  .table-wrap table.data.clr-retired-table td.clr-td-status { grid-area: status; }
+  .table-wrap table.data.clr-retired-table td.col-actions { grid-area: actions; }
+}
+
+
+/* HOW SOON (board Urgent clearance, approved 2026-11-25): two options side by side in Which search's
+   chosen-card style, stacked on a phone. */
+.nc-how-soon .nc-how-soon-note { margin: 0; }
+.nc-speed-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+/* The look of a Which search row (.pick-row), under its own name so nothing that counts the searches counts these. */
+.nc-speed {
+  display: flex; align-items: flex-start; gap: 10px; text-align: left; font: inherit; color: inherit; cursor: pointer;
+  padding: 13px 15px; border-radius: 10px; border: 1px solid var(--border-hairline); background: var(--surface-raised);
+}
+.nc-speed:hover { border-color: var(--accent-ink); }
+.nc-speed-on { border-color: var(--accent); background: var(--accent-wash); }
+.nc-speed-off { background: var(--surface-sunken); border-style: dashed; cursor: default; }
+.nc-speed-off:hover { border-color: var(--border-hairline); }
+.nc-speed-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.nc-speed-label { color: var(--text-strong); font-size: 14px; }
+.nc-speed-line { color: var(--text-body); font-size: 13px; }
+.nc-speed-note { color: var(--text-muted); font-size: 12.5px; line-height: 1.45; }
+@media (max-width: 560px) { .nc-speed-pair { grid-template-columns: 1fr; } }

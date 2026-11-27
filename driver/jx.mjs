@@ -534,7 +534,7 @@ export async function runJxCandidateFold(ctx, job, opts = {}, { runLog = () => {
         // the model the turn reported, as `model` and `modelActual`, or `modelActual: null` for a turn
         // that ran and named none — see jxModelFields.
         ...jxModelFields(source, r),
-        ...(r?.usage ? { usage: r.usage } : {}), ...(r?.ok ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }) };
+        ...(r?.usage ? { usage: r.usage } : {}), ...(r?.speed ? { speed: r.speed } : {}), ...(r?.ok ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }) };
       try { appendFileSync(ledgerPath, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort */ }
       // Before the degraded-lane `continue` below: a lane that FAILED still ran a turn, and the model
       // that produced the failure is part of who did this run's native-language work.

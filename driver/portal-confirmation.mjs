@@ -20,6 +20,9 @@ export function jobHashOf(job) {
     marks: JSON.stringify(marks), markName: String(job.markName ?? "").toLowerCase(),
     classes: JSON.stringify([...(job.classes ?? [])].sort()), goods: String(job.goods ?? ""),
     product: job.product ?? null, recipeKey: job.recipeKey ?? null,
+    // An Urgent order counts twice, so a review confirmed at Standard must not start it. Present only when true,
+    // so every Standard job hashes exactly as it did before the field existed.
+    ...(job.urgent === true ? { urgent: true } : {}),
   })).digest("base64url");
 }
 export function mintConfirmation({ secret, account, email, jobHash, now = Date.now(), ttlMs = 10 * 60 * 1000 }) {

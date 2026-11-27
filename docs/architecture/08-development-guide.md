@@ -140,21 +140,25 @@ The reasoning layer dictates what it needs; a thin adapter supplies it. Concrete
    (`REC` accessors in `registry-fidelity.mjs` — application/registration numbers, dates,
    `statusClass`, proprietor, designations).
 2. **The tools**: wrap the core in `providers/<id>/src/mount.js`, like corsearch's (~130 lines); the one
-   register server mounts it by name. Add it to `REGISTER_SERVERS` in `gather-config.mjs` (`registerEntry()` **throws loudly** for any provider
+   register server mounts it by name. Its grant, with the reason for every tool it withholds, is
+   `providers/<id>/src/register-grant.mjs` (`registerEntry()` **throws loudly** for any provider
    without a built server — a provider flip without the server breaks every register unit, loudly).
-3. **Driver adapter**: `providers/<id>/src/adapter.js`, listed in `PROVIDERS` in `driver.config.mjs` (label, credential env name,
-   `recordFetch` + `executePlan` adapters, public-record-URL capability) — the credential is
-   preflighted at run start. Add the id to `KNOWN_REGISTER_PROVIDERS` too, or the error message that
-   tells an operator what to set will omit it. Selection is `CLEAROTRON_DATABASE` in every
+3. **Driver adapter**: `providers/<id>/src/adapter.js` (label, credential env name, `recordFetch` +
+   `executePlan` adapters, public-record-URL capability) — the credential is preflighted at run start.
+   Its capability contract is `providers/<id>/src/capabilities.js`.
+4. **One row in `providers/registers.mjs`**: the id, its place on ADR-0001's ladder, and the three
+   exports above. The driver's `PROVIDERS`, `KNOWN_REGISTER_PROVIDERS` (the list an operator is shown
+   when no register is set), the register server's `REGISTER_SERVERS` and the planner's
+   `PROVIDER_CAPABILITIES` are all built from it. Selection is `CLEAROTRON_DATABASE` in every
    environment, production included; there is no committed default to flip.
-4. **Skill doc**: `skills/clearance-register/providers/<provider>.md` — the provider-specific craft
+5. **Skill doc**: `skills/clearance-register/providers/<provider>.md` — the provider-specific craft
    the register stages read.
-5. **The empirical verification checklist** — the real work is not code volume: operator
+6. **The empirical verification checklist** — the real work is not code volume: operator
    vocabulary and composition semantics, pagination behaviour to `has_more:false`, status-enum
    truth-testing against known-live/known-dead marks, record-field mapping, rate/ceiling behaviour.
    The primary provider's engineered-around realities (hard record caps, broken server-side status
    filters, session-cookie auth) are exactly the class of thing to verify per estate.
-6. **A/B + replay** before any live matter, like every grade-moving change.
+7. **A/B + replay** before any live matter, like every grade-moving change.
 
 ## How to: edit doctrine (skills)
 
