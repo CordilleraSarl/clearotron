@@ -30,7 +30,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { handRunEnv } from "./drive-env.mjs";
 import { shownAddress } from "../../shared/shown-address.mjs";
 import { triggerLaneVerdict, laneProbeUrl, HOSTED } from "../../shared/trigger-lane.mjs";
-import { clientDoorReachability } from "../../shared/client-door.mjs";
+import { clientDoorReachability, carriesUserOrPassword } from "../../shared/client-door.mjs";
+import { billingLine, billingUnresolved } from "../../bin/onboard.mjs";
 
 const ONBOARD = fileURLToPath(new URL("../../bin/onboard.mjs", import.meta.url));
 const WINDOWS = process.platform === "win32";
@@ -202,14 +203,68 @@ test("an address that carries a user, a password or a query is shown without the
     const { out } = doctor(home, {
       PORTAL_MCP_URL: `http://door-user:door-pass@127.0.0.1:${port}?token=door-secret`,
       PORTAL_OPS_TOKEN: "an-ops-token-for-this-test",
-      CLEAROTRON_CLIENT_MCP_URL: `https://client-user:client-pass@127.0.0.1:${port}/mcp?key=client-secret`,
+      CLEAROTRON_CLIENT_MCP_URL: `https://127.0.0.1:${port}/mcp?key=client-secret`,
     });
     assert.ok(out.includes(`http://127.0.0.1:${port} is configured`), `the engine door's address is not shown at all:\n${out}`);
     assert.ok(out.includes(`https://127.0.0.1:${port}/mcp is configured`), `the client door's address is not shown at all:\n${out}`);
-    for (const secret of ["door-user", "door-pass", "door-secret", "client-user", "client-pass", "client-secret", "an-ops-token-for-this-test"])
+    for (const secret of ["door-user", "door-pass", "door-secret", "client-secret", "an-ops-token-for-this-test"])
       assert.ok(!out.includes(secret), `a credential reached doctor's output (${secret}):\n${out}`);
     assert.doesNotMatch(out, RAW, `the machine's own words reached doctor's output:\n${out}`);
   } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+// An assistant's client refuses an address with a user or a password in it before it connects (the protocol SDK's
+// client, measured 2026-11-27), so doctor names the address as the fault, asks nothing of it, and shows none of it.
+const CARRIES = "The client connector address includes a username or password. Remove it from the address before "
+  + "sharing it with an assistant.";
+
+test("a client connector address with a user or a password in it is the failed check, and none of it is shown", async () => {
+  const port = await closedPort();
+  const { home } = setUpHome();
+  try {
+    const { out, code } = doctor(home, { CLEAROTRON_CLIENT_MCP_URL: `https://client-user:client-pass@127.0.0.1:${port}/mcp?key=client-secret` });
+    assert.equal(code, 1, `an address an assistant refuses exited ${code}:\n${out}`);
+    assert.ok(out.includes(`✗ ${CARRIES}`), `the address is not named as the fault:\n${out}`);
+    assert.doesNotMatch(out, /DOES NOT ANSWER|NOBODY ASKED/, `the address was judged as a door rather than as an address:\n${out}`);
+    for (const secret of ["client-user", "client-pass", "client-secret", `127.0.0.1:${port}`])
+      assert.ok(!out.includes(secret), `the address or what it carries reached doctor's output (${secret}):\n${out}`);
+    assert.doesNotMatch(out, RAW, `the machine's own words reached doctor's output:\n${out}`);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("a user alone, a password alone, or both: the same failure, whatever a probe said, and a plain address is still asked", () => {
+  // Judged before the unprobed branch, so an address doctor did not ask fails rather than reading as not yet asked.
+  for (const url of ["https://u@mcp.example.com/mcp", "https://:p@mcp.example.com/mcp", "https://u:p@mcp.example.com/mcp", "http://u:p@mcp.example.com/mcp"]) {
+    assert.equal(carriesUserOrPassword(url), true, url);
+    for (const probe of [null, { ok: true, status: 405 }, { ok: false, error: "ECONNREFUSED" }]) {
+      assert.deepEqual(clientDoorReachability({ url, probe }), { state: "fail", message: CARRIES }, `${url} ${JSON.stringify(probe)}`);
+    }
+  }
+  for (const url of ["https://mcp.example.com/mcp", "https://mcp.example.com/mcp?key=xyz", "nope nope", ""]) assert.equal(carriesUserOrPassword(url), false, url);
+  // The control: a valid address keeps the ordinary check, so a real outage keeps its own explanation.
+  assert.equal(clientDoorReachability({ url: "https://mcp.example.com/mcp", probe: { ok: true, status: 405 } }).state, "pass");
+  assert.match(clientDoorReachability({ url: "https://mcp.example.com/mcp", probe: { ok: false, error: "ECONNREFUSED" } }).message,
+    /^https:\/\/mcp\.example\.com\/mcp is configured and DOES NOT ANSWER\./);
+});
+
+test("billing that cannot be resolved is a failed check in the product's words, and a resolved mode is still said", () => {
+  // Harmless stand-ins for what a resolver can throw: the machine's own words, and the resolver's own refusal.
+  const raw = () => { throw new Error("EACCES: a harmless stand-in for the machine's words"); };
+  const refusal = () => { throw Object.assign(new Error("CLEAROTRON_AI_BILLING=sk-not-a-mode is not a billing mode — refusing to guess"), { billingRefusal: true }); };
+  const unresolved = billingLine("anthropic-agent", {}, { resolve: raw });
+  assert.deepEqual(unresolved, { kind: "problem", text: billingUnresolved() });
+  assert.equal(billingUnresolved(""), "Clearotron couldn\u2019t determine how this engine is paid for. Run clearotron install to check its billing settings.");
+  assert.equal(billingUnresolved("npx "), "Clearotron couldn\u2019t determine how this engine is paid for. Run npx clearotron install to check its billing settings.",
+    "the install is not named as the reader invokes it");
+  const refused = billingLine("anthropic-agent", {}, { resolve: refusal });
+  assert.equal(refused.kind, "problem");
+  assert.ok(refused.text.startsWith("CLEAROTRON_AI_BILLING is set to a word that is not a billing mode"), refused.text);
+  assert.ok(!refused.text.includes("sk-not-a-mode"), refused.text);
+  // A mode that resolved stays said, with its own words.
+  assert.deepEqual(billingLine("anthropic-agent", {}, { resolve: () => ({ mode: "api-key", apiBilled: true }) }),
+    { kind: "ok", text: "billing: api-key — charged per token against ANTHROPIC_API_KEY" });
+  assert.deepEqual(billingLine("an-engine-nobody-ships", {}, { resolve: () => ({ mode: "api-key", apiBilled: true }) }),
+    { kind: "ok", text: "billing: api-key" }, "a resolved mode was lost because its key could not be named");
 });
 
 test("an engine door whose address carries a user and password is asked as the portal dials it, and answers", async () => {
@@ -240,7 +295,8 @@ test("an address is shown as scheme, host and path, and one that does not parse 
   // Both door checks, on every branch that names the address: unprobed, refused, answered.
   for (const probe of [null, { ok: false, error: "ECONNREFUSED" }, { ok: false, status: 500 }, { ok: true, status: 405 }]) {
     const lane = triggerLaneVerdict({ url: "http://u:p@127.0.0.1:9?token=xyz", hasToken: true, posture: HOSTED, probe });
-    const client = clientDoorReachability({ url: "https://u:p@mcp.example.com/mcp?key=xyz", probe });
+    const client = clientDoorReachability({ url: "https://mcp.example.com/mcp?key=xyz", probe });
+    assert.ok(client.message.startsWith("https://mcp.example.com/mcp "), `the client door's line does not name its address: ${client.message}`);
     for (const said of [lane.message, client.message]) {
       assert.doesNotMatch(said, /u:p|xyz|ECONNREFUSED/, `a credential or the error reached the line: ${said}`);
     }

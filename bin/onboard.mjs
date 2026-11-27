@@ -234,9 +234,31 @@ export function cloudSettings(cloud, answers = {}) {
 /** A cloud setting as setup shows it after writing it: a secret (auth.mjs's CLOUD_SECRETS) as set, never its value. */
 export const shownSetting = (k, v) => `${k}=${CLOUD_SECRETS.includes(k) ? "…" : v}`;
 
+/** The billing check that could not resolve how the engine is paid for (design, 2026-11-27). */
+export const billingUnresolved = (prefix = invocationPrefix()) =>
+  `Clearotron couldn’t determine how this engine is paid for. Run ${prefix}clearotron install to check its billing settings.`;
+
 /** Whose bill a cloud billing mode charges, as doctor says it. */
 export const cloudAccount = (cloud) =>
   cloud === "gateway" ? "the gateway at ANTHROPIC_BASE_URL" : (CLOUD_CHOICES.find((c) => c.id === cloud)?.account ?? `the ${cloud} account`);
+
+/**
+ * The engine section's billing line, as `{kind, text}` with `kind` one of ok, info, problem. `resolve` is the run's
+ * own resolver; a test hands it one that throws.
+ */
+export function billingLine(eng, env, { resolve = resolveAuthMode } = {}) {
+  let auth;
+  try { auth = resolve({ engineName: eng, env }); }
+  // A word that is not a billing mode is quoted by the run door, and a key pasted there by mistake is
+  // that word: said by name here, as the order-time reason says it. Anything else the resolver threw is the
+  // machine's own words, so the check fails in the product's (design, 2026-11-27).
+  catch (e) { return { kind: "problem", text: e?.billingRefusal ? billingRefusalWords(String(e.message)) : billingUnresolved() }; }
+  // THE MODE RESOLVED, so the line says it even when what it is charged against cannot be named.
+  if (auth.mode === "unknown") return { kind: "info", text: `billing: no policy for ${eng} — this engine declares no sign-in modes` };
+  if (auth.mode === "cloud") return { kind: "ok", text: `billing: cloud — charged per use ${auth.cloud === "gateway" ? "through" : "to"} ${cloudAccount(auth.cloud)}` };
+  const keyName = ENGINE_BINARIES[eng]?.apiKeyEnv;
+  return { kind: "ok", text: `billing: ${auth.mode}${auth.apiBilled ? (keyName ? ` — charged per token against ${keyName}` : "") : " — charged to the signed-in subscription, not per token"}` };
+}
 
 /** What a completed probe turn says served it, as the program reported; null when it named nothing. */
 export const servedLine = (v) => (v?.served || v?.provider)
@@ -2414,17 +2436,8 @@ async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, e
       // are on it, because with the billing word read from the file and a cloud's switch left to the shell,
       // a cloud file that runs would read as refused.
       const envForResolve = engineEnvOf(engineEnvKeys());
-      const billingOf = (eng, env) => {
-        try {
-          const auth = resolveAuthMode({ engineName: eng, env });
-          if (auth.mode === "unknown") return { say: info, text: `billing: no policy for ${eng} — this engine declares no sign-in modes` };
-          if (auth.mode === "cloud") return { say: ok, text: `billing: cloud — charged per use ${auth.cloud === "gateway" ? "through" : "to"} ${cloudAccount(auth.cloud)}` };
-          return { say: ok, text: `billing: ${auth.mode}${auth.apiBilled ? ` — charged per token against ${ENGINE_BINARIES[eng]?.apiKeyEnv ?? engSpec.apiKeyEnv}` : " — charged to the signed-in subscription, not per token"}` };
-        // A word that is not a billing mode is quoted by the run door, and a key pasted there by mistake is
-        // that word: said by name here, as the order-time reason says it.
-        } catch (e) { return { say: problem, text: billingRefusalWords(String(e?.message ?? e)) }; }
-      };
-      const here = billingOf(engineId, envForResolve);
+      const line = billingLine(engineId, envForResolve);
+      const here = { say: { ok, info, problem }[line.kind], text: line.text };
       // A TICK IS A CLAIM ABOUT SOMETHING THAT RESOLVED. Measured on a clean container with no reasoning
       // CLI and no settings file: the Engine block said demo mode, no program on PATH, nothing to probe —
       // and this line still printed a green tick for a billing mode. `billingOf` answers from the default
@@ -2435,8 +2448,8 @@ async function sayEngine({ hosted, serviceEnvFile, serviceKnown, servicesRead, e
       // was the only line claiming a verdict it had not reached.
       const engineResolved = !!(bin?.path && bin.executable && !bin.relative);
       (engineResolved || here.say === problem ? here.say : info)(here.text);
-    } catch (e) {
-      problem(String(e?.message ?? e));
+    } catch {
+      problem(billingUnresolved());
     }
 
     // An executable file is not a working engine, and this command says so rather than implying
@@ -3898,7 +3911,7 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
     // THE PUBLISHED ADDRESS, AND WHETHER IT ANSWERS (acceptance 2). Reported here
     // rather than beside the unit, because the unit running and the address being reachable are
     // different facts and the second is the one a client depends on.
-    const { clientDoorReachability } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
+    const { clientDoorReachability, carriesUserOrPassword } = await import(pathToFileURL(join(REPO, "shared", "client-door.mjs")).href);
     // FROM THE FILE THE UNITS LOAD, NOT THE SHELL THIS COMMAND WAS TYPED IN (the same family,
     // met again here). On a hosted box the published address lives in the units' environment,
     // and reading `process.env` reported "no client connector address is published — that is correct
@@ -3908,8 +3921,10 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
     // A SHORT, CHEAP ASK, and a failure to reach IS the finding rather than a failure to look — the
     // property under test is reachability itself. What would be dishonest is calling an address green
     // because nothing asked, which is why `probe` stays null when there is nothing to ask about.
+    // An address with a user or a password in it is not asked: an assistant's client refuses it before connecting, and
+    // the check below says so (design, 2026-11-27).
     let probe = null;
-    if (String(published ?? "").trim()) {
+    if (String(published ?? "").trim() && !carriesUserOrPassword(published)) {
       try {
         const ctl = AbortSignal.timeout(2500);
         const res = await fetch(published, { method: "GET", signal: ctl, redirect: "manual" });

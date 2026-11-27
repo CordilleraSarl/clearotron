@@ -1085,6 +1085,17 @@ export function applyDisablePlan(plan, io) {
 // PURE, so the two branches that matter can be tested without a network: an address nobody can reach,
 // and a probe that could not run. A live probe on a healthy box produces neither.
 
+const CARRIES_USER_OR_PASSWORD = "The client connector address includes a username or password. Remove it from the "
+  + "address before sharing it with an assistant.";
+
+/** Whether the address names a user or a password before its host: the one a caller does not ask, and this check fails. */
+export function carriesUserOrPassword(url) {
+  try {
+    const u = new URL(String(url ?? "").trim());
+    return Boolean(u.username || u.password);
+  } catch { return false; }
+}
+
 /**
  * @param {object} a
  * @param {string|null} a.url        the published address, exactly as configured — never normalised
@@ -1107,6 +1118,10 @@ export function clientDoorReachability({ url = null, probe = null } = {}) {
   // Scheme, host and path only: a user, password or query in the address is never shown (design, 2026-11-27).
   const shown = shownAddress(raw);
   if (shown == null) return { state: "fail", message: "the client connector address is not a URL" };
+  // AN ASSISTANT'S CLIENT REFUSES AN ADDRESS WITH A USER OR A PASSWORD IN IT BEFORE IT CONNECTS (the protocol SDK's
+  // client, measured 2026-11-27), so the fault is the address and not the door. Nothing is asked of it, and the line
+  // names neither the address nor what it carries (design, 2026-11-27).
+  if (carriesUserOrPassword(raw)) return { state: "fail", message: CARRIES_USER_OR_PASSWORD };
   if (parsed.protocol !== "https:" && !/^(localhost|127\.|\[::1\])/.test(parsed.hostname)) {
     return { state: "fail",
       message: `the client connector address is published over ${parsed.protocol}// to ${parsed.hostname} — an `
