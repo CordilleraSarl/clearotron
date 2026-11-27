@@ -116,3 +116,31 @@ export function receiptRoute(pathname: string, search: string): { reference: str
   const account = new URLSearchParams(search).get('account')
   return { reference, account: account || null }
 }
+
+/**
+ * An order the portal's Start accepted that has no run yet, as the runs list carries it beside its runs: being checked,
+ * or refused before any run. A waiting order is its queued row and an order with a run is its run's row, so neither is
+ * one of these.
+ */
+export type PreRunOrder = {
+  readonly reference: string
+  readonly state: 'checking' | 'refused'
+  readonly reasonKind: RefusalKind | null
+  readonly account: string
+  readonly organisation: string | null
+  readonly markName: string | null
+  readonly updatedAt: string | null
+}
+
+/** One of the runs list's `orders`, or null when it is not one this build can show. PURE. */
+export function decodePreRunOrder(v: unknown): PreRunOrder | null {
+  if (!v || typeof v !== 'object') return null
+  const b = v as Record<string, unknown>
+  const reference = str(b['reference'])
+  const account = str(b['account'])
+  const state = b['state'] === 'checking' || b['state'] === 'refused' ? b['state'] : null
+  if (!reference || !account || !state) return null
+  const kind = KINDS.find((k) => k === b['reasonKind']) ?? (state === 'refused' ? 'other' : null)
+  return { reference, state, reasonKind: state === 'refused' ? kind : null, account, organisation: str(b['organisation']),
+    markName: str(b['markName']), updatedAt: str(b['updatedAt']) }
+}

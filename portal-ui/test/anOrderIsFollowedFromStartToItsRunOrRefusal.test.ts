@@ -13,7 +13,7 @@
 //   - the address that reopens a receipt reads back to the same reference and company.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { decodeReceipt, viewOf, nextView, keepsLooking, FIRST_VIEW, receiptPath, receiptRoute, type ReceiptView } from '../src/contract/orderReceipt.ts'
+import { decodeReceipt, decodePreRunOrder, viewOf, nextView, keepsLooking, FIRST_VIEW, receiptPath, receiptRoute, type ReceiptView } from '../src/contract/orderReceipt.ts'
 
 const receipt = (b: Record<string, unknown>) => {
   const r = decodeReceipt({ reference: 'ORDER-1@0123456789ab', terminal: false, runId: null, updatedAt: '2026-11-27T00:00:00Z', ...b })
@@ -77,4 +77,13 @@ test('the address that reopens a receipt reads back to the same reference and co
   assert.deepEqual(receiptRoute(pathname ?? '', `?${search ?? ''}`), { reference: 'ORDER-1@0123456789ab', account: 'demo-brand-owner' })
   assert.deepEqual(receiptRoute('/portal/orders', ''), { reference: null, account: null })
   assert.deepEqual(receiptRoute('/portal/orders/%E0%A4%A', '?account=x'), { reference: null, account: 'x' }, 'a malformed address names nothing')
+})
+
+test('the runs list carries only the orders a row is drawn for: being checked, or refused before any run', () => {
+  assert.deepEqual(decodePreRunOrder({ reference: 'R@1', state: 'refused', reasonKind: 'policy', account: 'generic', organisation: 'orgx', markName: 'M', updatedAt: 'x' }),
+    { reference: 'R@1', state: 'refused', reasonKind: 'policy', account: 'generic', organisation: 'orgx', markName: 'M', updatedAt: 'x' })
+  assert.equal(decodePreRunOrder({ reference: 'R@1', state: 'checking', reasonKind: 'policy', account: 'a' })?.reasonKind, null, 'a kind only on a refusal')
+  assert.equal(decodePreRunOrder({ reference: 'R@1', state: 'refused', account: 'a' })?.reasonKind, 'other')
+  for (const odd of [null, {}, { reference: 'R@1', state: 'waiting', account: 'a' }, { reference: 'R@1', state: 'refused' }])
+    assert.equal(decodePreRunOrder(odd), null, JSON.stringify(odd))
 })

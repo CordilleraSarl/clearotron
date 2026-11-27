@@ -19,7 +19,7 @@
 //     to be read by a human ("the request changed after confirmation — review the plan again and
 //     re-confirm"). Paraphrasing them in the UI is how a precise instruction becomes a vague one.
 
-import { decodeReceipt, type OrderReceipt } from './orderReceipt.ts'
+import { decodeReceipt, decodePreRunOrder, type OrderReceipt, type PreRunOrder } from './orderReceipt.ts'
 import type { Tone, Band } from './tone.ts'
 import { asTone } from './tone.ts'
 import type { BriefRead } from './composeRead.ts'
@@ -31,6 +31,13 @@ import type { BillingRefusal } from './engineState.ts'
 let lastRunStates: ReadonlyMap<string, RunState> | null = null
 /** The last reading of this person's searches, for the tab title's count: no request of its own. */
 export const lastSeenRunStates = (): ReadonlyMap<string, RunState> | null => lastRunStates
+
+/**
+ * The accepted orders with no run yet that the last `runsMine` answer carried beside its runs (contract/orderReceipt.ts).
+ * Kept beside the run states, from the same answer, so Clearances reads them without a second request.
+ */
+let lastOrders: readonly PreRunOrder[] = []
+export const lastSeenOrders = (): readonly PreRunOrder[] => lastOrders
 
 export type Result<T> =
   | { kind: 'ok'; value: T }
@@ -2060,6 +2067,7 @@ export const api = {
         .filter((r): r is Run => r !== null)
       // KEPT AS THE LAST READING, so a tab going out of view knows what is in flight without asking again.
       lastRunStates = new Map(runs.map((r) => [r.runId, r.state]))
+      lastOrders = asArray(b['orders']).map(decodePreRunOrder).filter((o): o is PreRunOrder => o !== null)
       return runs
     }),
 

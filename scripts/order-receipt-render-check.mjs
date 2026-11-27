@@ -13,6 +13,8 @@
 //   refused       "Order did not start", the reference on its own line, and each kind's sentence
 //   unchecked     a look that failed after one that answered: the last state stays, with the retry line
 //   missing       a reference this reader may not see reads as an address nobody serves
+// And Clearances: an order being checked and one refused before any run are rows of their own, and the refused one's row
+// opens its receipt.
 // With --shots, each state is also captured at 1280 px in both themes, for a reader to compare with the design.
 //
 // MUST NOT run as a user with a virtual-memory ulimit (`ulimit -v`) — Chrome dumps core under one.
@@ -38,6 +40,10 @@ const ME = { permissions: { run: true, manage: false }, email: 'demo@example.tes
 /** What the order lookup answers, by look: each state is a list, the last entry repeating. */
 let answers = []
 let looks = 0
+const ORDERS = [
+  { reference: REF, state: 'refused', reasonKind: 'run-cap', account: 'coastline', markName: 'PREVENA', updatedAt: '2026-11-27T09:14:00Z' },
+  { reference: 'ORDER-8@0123456789ab', state: 'checking', reasonKind: null, account: 'coastline', markName: 'TALLOWMERE', updatedAt: '2026-11-27T09:20:00Z' },
+]
 const receipt = (b) => ({ status: 200, body: { reference: REF, terminal: false, runId: null, reason: null, reasonKind: null, updatedAt: '2026-11-27T09:14:00Z', ...b } })
 
 const server = createServer((req, res) => {
@@ -45,6 +51,7 @@ const server = createServer((req, res) => {
   const path = url.pathname
   const json = (status, body) => { res.writeHead(status, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)) }
   if (path === '/portal/api/me') return json(200, ME)
+  if (path === '/portal/api/runs') return json(200, { account: '*', runs: [], orders: ORDERS })
   if (path.startsWith('/portal/api/orders/')) {
     const a = answers[Math.min(looks, answers.length - 1)]
     looks++
@@ -148,6 +155,23 @@ await capture('unchecked')
 t = await open([{ status: 404, body: { error: 'not_found' } }], /That page does not exist/)
 expect('missing', t, /That page does not exist\./)
 never('missing', t, /Order reference|did not start/)
+
+// Clearances: both orders are rows; the refused one opens its receipt.
+answers = [receipt({ state: 'refused', terminal: true, reasonKind: 'run-cap' })]
+looks = 0
+await cdp('Page.navigate', { url: `${origin}/portal/clearances` })
+{
+  const t0 = Date.now()
+  while (Date.now() - t0 < 8000 && !/TALLOWMERE/.test(await text())) await sleep(200)
+  t = await text()
+  expect('clearances', t, /PREVENA/, /TALLOWMERE/, /Order did not start/, /Waiting to start/, /2 names/)
+  await capture('clearances')
+  await cdp('Runtime.evaluate', { expression: `[...document.querySelectorAll('tr.read-row')].find((r) => /PREVENA/.test(r.innerText))?.click(); 'ok'` })
+  const t1 = Date.now()
+  while (Date.now() - t1 < 8000 && !/Order reference/.test(await text())) await sleep(200)
+  t = await text()
+  expect('clearances → receipt', t, /Order did not start/, /Your account has reached its search limit\./, new RegExp(`Order reference: ${REF.replace(/[.@]/g, '\\$&')}`))
+}
 
 ws.close()
 server.close()

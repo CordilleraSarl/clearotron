@@ -24,7 +24,8 @@
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Result, Run } from '../contract/api.ts'
-import { api, saveFailureText } from '../contract/api.ts'
+import { api, saveFailureText, lastSeenOrders } from '../contract/api.ts'
+import { receiptPath, type PreRunOrder } from '../contract/orderReceipt.ts'
 import { bandRank } from '../contract/tone.ts'
 import { displayName, newestFirst, readLabel, readLabelParts, readTime, sameDateAsAnother } from '../contract/reads.ts'
 import { marksOf, nameCount, rowsOf, NO_FAMILIES } from '../contract/grouping.ts'
@@ -168,6 +169,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // identical call, so whichever of the two mounts consumes it; the other asks for itself.
   const { result, reload } = useLoad(() => api.runsMine(), [], 'runs:mine')
   const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
+  // THE ORDERS WITH NO RUN YET, from the same answer as the runs (contract/orderReceipt.ts): being checked, or refused
+  // before any run. Each opens its receipt, the one its Start showed.
+  const allOrders: readonly PreRunOrder[] = result?.kind === 'ok' ? lastSeenOrders() : []
 
   // THE COMPANY FILTER IS THE SIDEBAR SWITCHER. There is one control, and it is in the nav.
   //
@@ -361,6 +365,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // Paging and cross-owner disambiguation are decided in contract/listView.ts, where they can be
   // tested — this screen has no DOM harness, so logic left inline here is logic nothing checks.
   const { current, pageCount, visible, from, to } = pageWindow(rows, page, PAGE)
+  // ONE ROW PER ORDER, above the runs, on the unfiltered view of its company, and found by its name like any run.
+  const orderRows = filter !== 'all' ? [] : allOrders.filter((o) => (!ownerFilter || runKey(o) === ownerFilter)
+    && (!query.trim() || (o.markName ?? '').toLowerCase().includes(query.trim().toLowerCase())))
   const resetPage = () => setPage(0)
   // removed the cross-owner disambiguation chip, and with it the only consumer of ambiguousTitles
   // on this screen. The helper stays in contract/listView.ts with its own tests: introduces an
@@ -412,7 +419,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   //
   // The full-screen first-run stays for an account that genuinely has nothing: there is no filter to
   // undo and nothing to keep on screen. An empty FILTER renders inside the list instead, below.
-  if (!allRuns.length) return <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
+  if (!allRuns.length && !allOrders.length) return <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
 
   // A family is asserted over RUNS, because a mark is a grouping the browser derives rather than
   // anything the pool stores. Ticking a name therefore files every read of it.
@@ -552,7 +559,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       {/* THE TITLE NAMES THE SCREEN AND COUNTS ITS NAMES; "Group names" sits at its right (board Clearances,
           approved 2026-11-25). The lede names the company in view and the allowance, as before. */}
       <PageHeader
-        title={<>Clearances <span className="clr-title-count">{namesLabel(nameCount(rows))}</span></>}
+        title={<>Clearances <span className="clr-title-count">{namesLabel(nameCount(rows) + orderRows.length)}</span></>}
         lede={<>
           {/* No separator after the company: the allowance line is a block of its own beneath it, and
               renders nothing at all above five searches left — a trailing "·" would then point at
@@ -722,7 +729,20 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             {/* THE EMPTY STATE LIVES HERE, in the list, and nowhere else. Everything above it — the
                 company chips and the status filters — stays on screen in every state, so the way out of
                 an empty view is where it was when you arrived at it. */}
-            {!visible.length ? (
+            {orderRows.map((o) => (
+              <tr key={`order-${o.reference}`} className="read-row openable" onClick={() => ctx.go(receiptPath(o.reference, runKey(o)))}>
+                <td className="clr-td-twisty nest-1" />
+                <td className="clr-td-name">
+                  <b className="clr-search-name"><span data-anon="mark">{o.markName ?? o.reference}</span></b>
+                  {o.updatedAt ? <span className="sub mono" style={{ fontSize: 12.5 }}><span className="nowrap-date">{o.updatedAt.slice(0, 10)}</span></span> : null}
+                </td>
+                {showOwnerColumn ? <td>{ctx.ownerName(runKey(o))}</td> : null}
+                <td className="clr-td-status">{o.state === 'refused' ? 'Order did not start' : 'Waiting to start'}</td>
+                <td className="clr-td-risk"><span style={{ color: 'var(--text-faint)' }}>—</span></td>
+                <td className="col-actions" />
+              </tr>
+            ))}
+            {!visible.length && !orderRows.length ? (
               <tr>
                 <td colSpan={5 + (showOwnerColumn ? 1 : 0)} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
                   {/* THE WAY OUT, ON THE EMPTY VIEW ITSELF (board Clearances, approved 2026-11-25). */}

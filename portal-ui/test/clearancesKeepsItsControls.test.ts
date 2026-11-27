@@ -23,7 +23,8 @@ import { fileURLToPath } from 'node:url'
 const SRC = readFileSync(fileURLToPath(new URL('../src/screens/Clearances.tsx', import.meta.url)), 'utf8')
 
 test('the full-screen first run is keyed off the account, not off the filter', () => {
-  assert.match(SRC, /if \(!allRuns\.length\) return <FirstRun/,
+  // An accepted order with no run yet is something the account has, so it keeps the list too.
+  assert.match(SRC, /if \(!allRuns\.length(?: && !allOrders\.length)?\) return <FirstRun/,
     'the first-run screen tests the filtered set again — an empty company replaces the whole page')
   assert.doesNotMatch(SRC, /if \(!runs\.length\) return <FirstRun/,
     'the filtered set is back in the early return, which is the defect exactly')
