@@ -1087,3 +1087,23 @@ test("the probe's other two tools carry the recording tools' and the page fetch'
   assert.ok(fetchUrl, "the fetch server lists no fetch_url");
   assert.deepEqual(byName.look.annotations, fetchUrl.annotations);
 });
+
+test("the run door's refusal carries the product's words, and the engine's own go to the run's log", async () => {
+  // A refused run's reason reaches the run response and the park record a person reads, so the engine's free text stays
+  // out of it (design, 2026-11-27). It is still kept: in this process's log, and on the error for a caller that records it.
+  const said = "Please run /login (a harmless stand-in for the engine's own words)";
+  const logged = [];
+  const was = console.error;
+  console.error = (...a) => { logged.push(a.join(" ")); };
+  try {
+    await assert.rejects(() => preflightEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
+      wait: async () => {}, runTurn: async () => tupleOf({ stderr: said }) }),
+    (e) => {
+      assert.match(e.message, /^\[preflight\] anthropic-agent is not signed in/);
+      assert.ok(!e.message.includes("harmless stand-in"), `the engine's words reached the refusal: ${e.message}`);
+      assert.ok(String(e.engineSaid).includes("harmless stand-in"), `the engine's words were not kept on the error: ${e.engineSaid}`);
+      return true;
+    });
+  } finally { console.error = was; }
+  assert.ok(logged.some((l) => l.includes("engine said: ") && l.includes("harmless stand-in")), `the engine's words did not reach the log:\n${logged.join("\n")}`);
+});
