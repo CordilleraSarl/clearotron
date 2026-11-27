@@ -65,7 +65,7 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
     why: "the model's answer to a defect, `changed` or `stands`, and the driver's own reading of a defect beside it, both read back and never returned by a call being logged" },
   { file: "driver/engine/mcp/recording-server.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "out-of-scope",
     why: "a tool schema's description of the field a defect's answer carries" },
-  { file: "driver/engine/mcp/own-search.mjs", noun: "outcome", sites: 20, atWriteSite: 0, verdict: "result",
+  { file: "driver/engine/mcp/own-search.mjs", noun: "outcome", sites: 19, atWriteSite: 0, verdict: "result",
     why: "what became of each dictated search, read from the program's own tool records: a failed, pooled or capped "
       + "record, no record at all, the results it returned and whether each was on the site asked for. A literal the "
       + "record decides, never a call's return. It reaches the run's search-records file inside each record, which a "

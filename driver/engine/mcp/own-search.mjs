@@ -303,7 +303,8 @@ export const questionModel = (tier, engine) => tier?.models?.[engine] ?? tier?.m
 /** A question session's prompt: the question, and how to answer it. Words the model reads, approved by design. PURE. */
 export function questionPrompt(question) {
   return ["Answer the question below using your web search. Answer in plain text. After the answer, list every page you relied on, one full web address per line.",
-    "If your searches find nothing that answers it, say that plainly; never answer from memory.", "", `Question: ${String(question ?? "").trim()}`].join("\n");
+    "If you completed the requested web search and found no evidence that answers the question, reply with exactly Nothing found and nothing else. Never answer from memory.",
+    "", `Question: ${String(question ?? "").trim()}`].join("\n");
 }
 
 const URL_RE = /https?:\/\/[^\s<>()"'\]]+/g;
@@ -353,32 +354,23 @@ export function answerEvidence(search, events = []) {
   return { searches, searched: [...searched.values()], read: [...read.values()], failed };
 }
 
-// THE NEGATIVE REPLY: the words a session is told to answer with where its searches find nothing, matched as the reply's
-// whole first line. None until design approves an instruction that asks for one; until then a reply that cites no
-// page its searches returned is unverified, a genuine negative included.
-export const NEGATIVE_REPLY = null;
+// THE NEGATIVE REPLY: the words a session is told to answer with where its completed search found no evidence. It counts
+// only as the whole reply, on a clean turn, after a search that ran with no failed operation: a page fetch alone, a
+// search that failed, or any other word beside it is not a completed negative. It means this search found no
+// supporting evidence, never that no such use exists (design's ruling, 2026-11-27).
+export const NEGATIVE_REPLY = "Nothing found";
 
 /** The outcomes a question can have. Only "supported" and "negative" reach a stage or an owner lookup as an answer. */
-export const QUESTION_OUTCOMES = Object.freeze(["supported", "negative", "unsupported-cited", "no-source", "failed", "unsearched"]);
-
-/** Drop every address in `text` its searches did not return, and any line left holding nothing but list marks. PURE. */
-function withoutUnrecorded(text, recorded) {
-  const out = [];
-  for (const line of String(text).split("\n")) {
-    const kept = line.replace(URL_RE, (u) => (recorded.has(urlKey(u)) ? u : ""));
-    if (kept !== line && /^[\s\-*•·\d.)(<>\[\]:,;]*$/.test(kept)) continue;
-    out.push(kept);
-  }
-  return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
-}
+export const QUESTION_OUTCOMES = Object.freeze(["supported", "negative", "mixed", "unsupported-cited", "no-source", "failed", "unsearched"]);
 
 /**
  * What a question session's reply is, by the program's own records: `{ outcome, text, sources, unrecorded, evidence }`.
- * A reply that cites at least one page its tool records show is "supported", and its text keeps only the addresses those
- * records show: an address no search returned is dropped from the text, so it never reaches the evidence. A reply that
- * cites only unrecorded pages is "unsupported-cited"; one that cites none is "no-source"; one with no search behind it
- * "unsearched". `failed` is the caller's, from the turn. A claim whose only citation was dropped stays in the prose with
- * no citation: telling it apart would need a model call. PURE.
+ * Only a reply every one of whose cited pages the records show is "supported", and its text is kept as written. A reply
+ * that cites a recorded page and an unrecorded one is "mixed" and is withheld whole: its claims cannot be told from their
+ * sources without a model call, and a claim whose citation was stripped would reach the evidence unsupported. A reply
+ * citing only unrecorded pages is "unsupported-cited"; one that cites none is "no-source"; one with no search or read
+ * behind it "unsearched". A withheld reply's words are returned as `withheld`, for the run's record and nothing else.
+ * `failed` is the caller's, from the turn. PURE.
  */
 export function questionAnswer(search, { events = [], text = "" } = {}, { negative = NEGATIVE_REPLY } = {}) {
   const evidence = answerEvidence(search, events);
@@ -387,10 +379,12 @@ export function questionAnswer(search, { events = [], text = "" } = {}, { negati
   const cited = [...new Map((reply.match(URL_RE) ?? []).map((u) => [urlKey(u), trimUrl(u)])).values()];
   const sources = cited.filter((u) => recorded.has(urlKey(u))).map((u) => recorded.get(urlKey(u))), unrecorded = cited.filter((u) => !recorded.has(urlKey(u)));
   const base = { sources, unrecorded, evidence };
-  if (!evidence.searches && !evidence.read.length) return { ...base, outcome: "unsearched", text: "" };
-  if (negative && reply.split("\n")[0].trim() === negative && !cited.length) return { ...base, outcome: "negative", text: negative };
-  if (sources.length) return { ...base, outcome: "supported", text: withoutUnrecorded(reply, recorded) };
-  return { ...base, outcome: cited.length ? "unsupported-cited" : "no-source", text: "" };
+  const withheld = (outcome) => ({ ...base, outcome, text: "", ...(reply ? { withheld: reply } : {}) });
+  if (!evidence.searches && !evidence.read.length) return withheld("unsearched");
+  if (negative && reply === negative) return evidence.searches > 0 && evidence.failed === 0 ? { ...base, outcome: "negative", text: negative } : withheld("no-source");
+  if (sources.length && !unrecorded.length) return { ...base, outcome: "supported", text: reply };
+  if (sources.length) return withheld("mixed");
+  return withheld(cited.length ? "unsupported-cited" : "no-source");
 }
 
 /**
@@ -430,7 +424,7 @@ export function ownSearchQuestioner(runDir, { tier, timeoutSec = SESSION_TIMEOUT
     const outcome = a?.outcome ?? (r.cause ? "failed" : ev.searches || ev.read.length ? "no-source" : "unsearched");
     const record = { kind: "question", outcome, service, model: r.model ?? null, speed: r.speed ?? null, question: task,
       searches: ev.searches, searched: ev.searched, read: ev.read, failedOperations: ev.failed, sources: a?.sources ?? [], unrecorded: a?.unrecorded ?? [],
-      seconds: r.seconds ?? null, usage: r.usage ?? null };
+      ...(a?.withheld ? { withheld: a.withheld } : {}), seconds: r.seconds ?? null, usage: r.usage ?? null };
     try { ensureDriverDir(runDir, RECORDS_DIR); appendFileSync(questionRecordsPath(runDir), JSON.stringify({ ts: new Date().toISOString(), ...record }) + "\n"); }
     catch { /* best-effort: a record that cannot be written never fails a lookup */ }
     if (outcome === "supported" || outcome === "negative")
@@ -441,6 +435,7 @@ export function ownSearchQuestioner(runDir, { tier, timeoutSec = SESSION_TIMEOUT
     const cause = outcome === "failed" ? `own search: ${String(said ? `${r.cause}: ${said}` : r.cause).slice(0, 300)}`
       : outcome === "unsearched" ? "own search: the session answered without searching"
       : outcome === "unsupported-cited" ? "own search: the answer cites no page its searches returned"
+      : outcome === "mixed" ? "own search: the answer cites a page its searches did not return, so none of it is used"
       : !String(r.text ?? "").trim() ? "own search: the session ran its searches and gave no answer"
       : "own search: the answer cites no page at all";
     return { ok: false, outcome, cause, service, model: r.model ?? null, tookMs: Date.now() - started };

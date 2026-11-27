@@ -155,10 +155,11 @@ test("a run without the setting is unchanged: no key, no grid", async () => {
   assert.match(text, /PERPLEXITY_API_KEY not set/);
 });
 
-test("at the stage's tool, an answer citing only an unrecorded page is a failed lookup, and a mixed one keeps only recorded pages", async () => {
+test("at the stage's tool, only a fully supported answer or a completed negative is an answer; a mixed one is withheld whole", async () => {
   const A = "https://pages.example.com/qzorvak", B = "https://elsewhere.example.org/claim";
   const searchOf = (urls) => ({ type: "item.completed", item: { type: "web_search", action: { type: "search", queries: ["QZORVAK"] }, results: urls.map((url) => ({ url })) } });
-  for (const [text, expect] of [[`Northwind sells QZORVAK candles.\n${B}`, "unsupported"], [`Northwind sells QZORVAK candles.\n${A}\n${B}`, "mixed"]]) {
+  for (const [text, expect] of [[`Northwind sells QZORVAK candles.\n${B}`, "unsupported"], [`Northwind sells QZORVAK candles (${A}). Lakeside sells them too (${B}).`, "mixed"],
+    [`Northwind sells QZORVAK candles.\n${A}`, "supported"], ["Nothing found", "negative"]]) {
     const { runDir } = aRun();
     const stop = serveOwnQuestions(runDir, { pollMs: 50, tierOf: () => QUESTION_TIERS["global-preliminary-search"],
       makeSessions: async () => ({ search: "codex", question: async () => ({ text, events: [searchOf([A])] }) }) });
@@ -170,11 +171,16 @@ test("at the stage's tool, an answer citing only an unrecorded page is a failed 
         assert.equal(out, "ERROR: Research failed — own search: the answer cites no page its searches returned");
         assert.deepEqual({ ok: row.ok, outcome: row.outcome }, { ok: false, outcome: "unsupported-cited" });
         assert.equal(kept, "", "nothing is kept for reuse");
-      } else {
-        assert.match(out, /pages\.example\.com\/qzorvak/);
-        assert.doesNotMatch(out, /elsewhere\.example\.org/, "the stage was handed an address no search returned");
+      } else if (expect === "mixed") {
+        assert.equal(out, "ERROR: Research failed — own search: the answer cites a page its searches did not return, so none of it is used");
+        assert.deepEqual({ ok: row.ok, outcome: row.outcome }, { ok: false, outcome: "mixed" });
+        assert.equal(kept, "", "nothing of a mixed answer is kept for reuse");
+      } else if (expect === "supported") {
+        assert.equal(out, text, "a fully supported answer reaches the stage as written");
         assert.deepEqual({ ok: row.ok, outcome: row.outcome, sources: row.sources }, { ok: true, outcome: "supported", sources: 1 });
-        assert.doesNotMatch(kept, /elsewhere\.example\.org/, "an unrecorded address was kept for reuse");
+      } else {
+        assert.equal(out, "Nothing found");
+        assert.deepEqual({ ok: row.ok, outcome: row.outcome }, { ok: true, outcome: "negative" });
       }
     } finally { stop(); }
   }

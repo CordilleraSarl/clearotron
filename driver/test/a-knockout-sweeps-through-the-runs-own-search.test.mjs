@@ -137,7 +137,7 @@ test("an owner lookup on own search is one question on the Knockout's tier, and 
     mkdirSync(join(runDir, "research"), { recursive: true });
     const made = [];
     const makeSessions = async (o) => { made.push({ model: o.model, thinking: o.thinking }); return { search: "codex", engine: "openai-agent",
-      question: async (task) => ({ text: `Northwind Play GmbH sells wooden toys.\nhttps://invented.test/about\nhttps://northwind.test/shop`, model: "gpt-6.1-terra", speed: "standard", seconds: 2, usage: null,
+      question: async (task) => ({ text: `Northwind Play GmbH sells wooden toys.\nhttps://northwind.test/shop`, model: "gpt-6.1-terra", speed: "standard", seconds: 2, usage: null,
         events: codexAnswer(["https://northwind.test/shop", "https://register.test/1"]), asked: task }) }; };
     const exec = ownSearchQuestioner(runDir, { tier: QUESTION_TIERS["knockout-search"], makeSessions });
     const rows = await runOwnerChecks({ owners: [{ mark: "QZORVAK", owner: "Northwind Play GmbH", recordIds: ["r1"], classes: [28] },
@@ -154,11 +154,10 @@ test("an owner lookup on own search is one question on the Knockout's tier, and 
     assert.equal(recs.length, 2, "each question's record is kept with the run");
     assert.deepEqual(recs[0].searched, ["https://northwind.test/shop", "https://register.test/1"]);
     assert.deepEqual(recs[0].sources, ["https://northwind.test/shop"]);
-    assert.deepEqual(recs[0].unrecorded, ["https://invented.test/about"]);
+    assert.deepEqual(recs[0].unrecorded, []);
     assert.equal(recs[0].outcome, "supported");
     const payload = readFileSync(join(runDir, "research", rows[0].payloadFile), "utf8");
-    assert.doesNotMatch(payload, /invented\.test/, "an address no search returned reached the owner's payload");
-    assert.match(payload, /northwind\.test\/shop/);
+    assert.equal(payload, "Northwind Play GmbH sells wooden toys.\nhttps://northwind.test/shop", "a fully supported answer reaches the payload as written");
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
@@ -234,15 +233,51 @@ test("each answer has one outcome; a page the program opened counts as read, nev
   assert.equal(questionAnswer("codex", { events: [searchOf([A])], text: `Yes.\n${B}` }).outcome, "unsupported-cited");
   assert.equal(questionAnswer("codex", { events: [searchOf([A])], text: "Yes, they sell toys." }).outcome, "no-source");
   assert.equal(questionAnswer("codex", { events: [], text: `Yes.\n${A}` }).outcome, "unsearched");
-  const mixed = questionAnswer("codex", { events: [searchOf([A]), readOf([B])], text: `Yes, per ${A}.\n- ${A}\n- ${B}/\n- https://invented.test/x` });
-  assert.deepEqual({ outcome: mixed.outcome, sources: mixed.sources, unrecorded: mixed.unrecorded }, { outcome: "supported", sources: [A, B], unrecorded: ["https://invented.test/x"] });
-  assert.doesNotMatch(mixed.text, /invented\.test/);
+  const both = questionAnswer("codex", { events: [searchOf([A]), readOf([B])], text: `Yes, per ${A}.\n- ${A}\n- ${B}/` });
+  assert.deepEqual({ outcome: both.outcome, sources: both.sources, text: both.text }, { outcome: "supported", sources: [A, B], text: `Yes, per ${A}.\n- ${A}\n- ${B}/` },
+    "a searched page and an opened page are both recorded, and the answer is kept as written");
+  const mixed = questionAnswer("codex", { events: [searchOf([A])], text: `Northwind sells toys (${A}). Lakeside sells candles (https://invented.test/x).` });
+  assert.deepEqual({ outcome: mixed.outcome, sources: mixed.sources, unrecorded: mixed.unrecorded, text: mixed.text }, { outcome: "mixed", sources: [A], unrecorded: ["https://invented.test/x"], text: "" },
+    "one claim on a recorded page and one on an unrecorded page: the whole answer is withheld");
+  assert.match(mixed.withheld, /Lakeside sells candles/, "the withheld words stay for the run's record");
   assert.deepEqual(answerEvidence("codex", [searchOf([A]), readOf([B]), { type: "item.completed", item: { type: "web_search", status: "failed", action: { type: "search" }, results: [{ url: "https://failed.test/" }] } }]),
     { searches: 1, searched: [A], read: [B], failed: 1 });
   assert.equal(questionAnswer("codex", { events: [searchOf([A])], text: `Yes.\n${A.replace("pages.example.com", "PAGES.example.com")}#top` }).outcome, "supported", "the same page, written another way");
   assert.equal(questionAnswer("codex", { events: [searchOf([A])], text: "Yes.\nhttps://pages.example.com/other" }).outcome, "unsupported-cited", "the same host is not the same page");
-  // The negative reply waits on design's ruling; handed one, it is read only as the whole first line.
-  assert.equal(questionAnswer("codex", { events: [searchOf([])], text: "Nothing found" }, { negative: "Nothing found" }).outcome, "negative");
-  assert.equal(questionAnswer("codex", { events: [searchOf([])], text: "Nothing found" }).outcome, "no-source", "no negative is read until one is approved");
-  assert.equal(questionAnswer("codex", { events: [searchOf([])], text: "Nothing found for Northwind, but Lakeside sells toys." }, { negative: "Nothing found" }).outcome, "no-source");
+  // The negative reply is the whole reply, after a search that ran with no failed operation (design's ruling, 2026-11-27).
+  assert.deepEqual(questionAnswer("codex", { events: [searchOf([])], text: "Nothing found" }), { sources: [], unrecorded: [], evidence: { searches: 1, searched: [], read: [], failed: 0 }, outcome: "negative", text: "Nothing found" });
+  assert.equal(questionAnswer("codex", { events: [searchOf([])], text: "  Nothing found\n" }).outcome, "negative", "trimmed");
+  for (const [events, text, why] of [
+    [[searchOf([])], "Nothing found for Northwind, but Lakeside sells toys.", "words beside it"],
+    [[searchOf([])], "Nothing found\nLakeside sells toys.", "an affirmative sentence after it"],
+    [[searchOf([])], "Nothing found.", "not exactly the words"],
+    [[readOf([A])], "Nothing found", "a page fetch alone is no completed search"],
+    [[searchOf([]), { type: "item.completed", item: { type: "web_search", status: "failed", action: { type: "search" } } }], "Nothing found", "a search that failed"],
+  ]) assert.notEqual(questionAnswer("codex", { events, text }).outcome, "negative", why);
+});
+
+test("a mixed owner answer is withheld whole, its words kept only in the run's record", async () => {
+  const runDir = aRun("own");
+  try {
+    mkdirSync(join(runDir, "research"), { recursive: true });
+    const exec = ownSearchQuestioner(runDir, { tier: QUESTION_TIERS["knockout-search"],
+      makeSessions: async () => ({ search: "codex", question: async () => ({ text: `Northwind Play GmbH sells wooden toys (${A}). It also licenses candles (${B}).`, events: [searchOf([A])] }) }) });
+    const [row] = await runOwnerChecks({ owners: [{ mark: "QZORVAK", owner: "Northwind Play GmbH", recordIds: ["r1"], classes: [28] }], exec, runDir });
+    assert.deepEqual({ ok: row.ok, cause: row.cause, payloadFile: row.payloadFile, source: row.source },
+      { ok: false, cause: "own search: the answer cites a page its searches did not return, so none of it is used", payloadFile: null, source: null });
+    const [rec] = readFileSync(questionRecordsPath(runDir), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+    assert.deepEqual({ outcome: rec.outcome, sources: rec.sources, unrecorded: rec.unrecorded }, { outcome: "mixed", sources: [A], unrecorded: [B] });
+    assert.match(rec.withheld, /licenses candles/, "the withheld answer stays in the run's record for inspection");
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
+});
+
+test("a completed negative reaches the owner lookup as one, and says only that this search found nothing", async () => {
+  const runDir = aRun("own");
+  try {
+    mkdirSync(join(runDir, "research"), { recursive: true });
+    const exec = ownSearchQuestioner(runDir, { tier: QUESTION_TIERS["knockout-search"],
+      makeSessions: async () => ({ search: "codex", question: async () => ({ text: "Nothing found", events: [searchOf([])] }) }) });
+    const r = await exec("what does Northwind Play GmbH sell");
+    assert.deepEqual({ ok: r.ok, outcome: r.outcome, text: r.text, sources: r.sources }, { ok: true, outcome: "negative", text: "Nothing found", sources: [] });
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
