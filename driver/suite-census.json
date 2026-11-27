@@ -10132,7 +10132,7 @@
         },
         "no-session-is-given-the-runners-words-for-a-stopped-run.test.mjs": {
           "tests": 3,
-          "asserts": 38,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
