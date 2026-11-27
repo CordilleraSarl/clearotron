@@ -7827,6 +7827,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-client-door-guide-counts-the-tools-the-door-lists.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-conflicts-below-the-risk-sit-behind-one-closed-heading.test.mjs": {
           "tests": 7,
           "asserts": 27,
