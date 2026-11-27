@@ -1404,7 +1404,7 @@ test('a failure reason reaches no person, a person who sees everything included'
   assert.equal(row.reasonRedacted, true, "the row says it was redacted rather than pretending there was no reason");
   // The failure itself stays visible — an invisible failure is worse than a visible one.
   assert.equal(row.state, "failed");
-  assert.equal(row.failedStage, "register-probe", "the stage is product vocabulary, not a stack");
+  assert.equal(row.failedStage, null, "the stage it stopped at stays in the run's own record (design, 2026-11-27)");
 });
 
 // ── one report, and who may open it (spec 2026-07-30 §5) ────────────────────────────────────────────
@@ -3216,14 +3216,15 @@ test("a refused READ of a staff surface files nothing, but the WRITE beside it d
 
 // ══ 1986: a control the deployment cannot serve says so on /me ════════════════════════════════════
 
-test("/me carries the stop control's verdict — unavailable with a staff-only reason, default available", async () => {
+test("/me carries the stop control's verdict — unavailable with no reason for any person, default available", async () => {
   // The boot log said for days that the token cannot stop_run; every press failed identically. The
   // bootstrap reads the live token's posture and passes the verdict through this seam; the button
-  // disables itself with the reason instead of failing forever.
+  // disables itself instead of failing forever. Why names the install's own token and settings, so it
+  // is the operator's boot line, and no person's, a person who sees everything included (design, 2026-11-27).
   const dead = world({ stopControl: { available: false, reason: "the ops token's verbs are [start_run] — it cannot stop_run" } }).service;
   const staffMe = await dead.route("GET", "/portal/api/me", STAFF);
   assert.equal(staffMe.json.controls.stop.available, false);
-  assert.match(staffMe.json.controls.stop.reason, /cannot stop_run/, "staff read the posture reason");
+  assert.equal(staffMe.json.controls.stop.reason, null, "a person who sees everything reads the screen's sentence, not the token's posture");
   const clientMe = await dead.route("GET", "/portal/api/me", CLIENT);
   assert.equal(clientMe.json.controls.stop.available, false);
   assert.equal(clientMe.json.controls.stop.reason, null, "a client is not handed an operator instruction");

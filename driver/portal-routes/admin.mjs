@@ -37,9 +37,12 @@ export async function adminRoutes({ poolRoot, workspaceRoot, grants, localSignIn
       // who signed in. Dynamic import deliberately: `profiles.mjs` captures the store directory at
       // MODULE LOAD (see this file's note above), so it is never pulled in at our own load time.
       const { companyFactsOf } = await import("../profiles.mjs");
-      // A company whose file would not load is named with its reason (staff-only route), never left out
-      // in silence: a switcher with one company where there were twenty-five reads as deleted work.
-      const unreadable = Array.isArray(profiles?.unreadable) ? profiles.unreadable.map((u) => ({ key: u.key, reason: u.reason })) : [];
+      // A company whose file would not load is named (staff-only route), never left out in silence: a switcher with one
+      // company where there were twenty-five reads as deleted work. Its key and the screen's shipped sentences say so;
+      // why it would not load is the loader's own message, which can name the file's path, so no person is handed it,
+      // a person who sees everything included (design, 2026-11-27). An order for that company is refused with it, in the
+      // run's own record (profiles.mjs resolveProfile).
+      const unreadable = Array.isArray(profiles?.unreadable) ? profiles.unreadable.map((u) => ({ key: u.key })) : [];
       return { status: 200, json: { customers: [...profiles.values()].map((p) => ({ key: p.key, name: p.name, ...companyFactsOf(p) })), ...(unreadable.length ? { unreadable } : {}) } };
     }
     // /portal/admin/config — what this deployment actually has switched on. Read from the SNAPSHOT,

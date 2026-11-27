@@ -10,7 +10,8 @@
 //   - one this version wrote, which waited out a provider's usage cap and stopped for it.
 // Each door that answers about a run or its notice is read whole: list_runs, get_run, decision_timeline,
 // get_delivery_packet and list_outbox_events. The run's own record keeps every word; no door hands one on. The notice
-// is the approved sentence, and the cap sentence only where a cap wait is on record.
+// is the approved sentence, and the cap sentence only where a cap wait is on record. The engineering doors read the
+// run's own logs and are read too: they hand on what was measured, and the private record's files are not served.
 // Every name is invented.
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -33,8 +34,12 @@ const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
 const { InMemoryTransport } = await import("@modelcontextprotocol/sdk/inMemory.js");
 
 const RECORDED = "TypeError: receiver said ETIMEDOUT at Object.probe (/srv/invented/app/driver/pipeline.mjs:2411:9)";
-// What no door may hand on, in a run read or a notice.
-const INTERNAL = /\/srv\/invented|ETIMEDOUT|TypeError|pipeline\.mjs|CLEAROTRON_REQUESTER_WHATSAPP|reasonVerbatim|failureSignature|diagnostic/;
+// What no door may hand on, in a run read or a notice: the reason as recorded, a validator's message, a private path, and
+// the kind the run stopped on.
+const INTERNAL = /\/srv\/invented|ETIMEDOUT|TypeError|pipeline\.mjs|invalid_file|front-matter|CLEAROTRON_REQUESTER_WHATSAPP|reasonVerbatim|failureSignature|diagnostic|deterministic|weather-exhausted|failedStage|terminalKind/;
+// What a run row may not name besides: the stage it stopped at. The decision chain names its steps, a failed attempt's
+// included (the audit chain, ruled 2026-08-27).
+const STOPPED_AT = /register-probe/;
 // What the notice a person reads may not name besides: the stage, the kind, the word the staff copy used.
 const NOT_IN_A_NOTICE = /register-probe|deterministic|weather-exhausted|FAILED|REFUSED|verbatim/;
 
@@ -45,8 +50,19 @@ function stoppedRun(slug, packet) {
   mkdirSync(driverDir(runDir), { recursive: true });
   const runId = `${slug}-${codename}`;
   writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId, slug, codename, date: "2026-11-27", agent: config.defaultAgent, state: "failed",
-    markName: "VELLOQUIN", failedStage: "register-probe", reason: RECORDED, terminalKind: packet.terminalKind, sendPending: true }));
+    markName: "VELLOQUIN", failedStage: "register-probe", reason: RECORDED, reasonFull: RECORDED, terminalKind: packet.terminalKind, sendPending: true,
+    lastStage: "register-probe", tokens: { input: 1200, output: 340 },
+    recoveryHistory: [{ at: "2026-11-27T08:00:00Z", stage: "register-probe", reason: RECORDED, sig: "register-probe|abc", waitedMin: 60 }] }));
   writeFileSync(join(runDir, "run.jsonl"), `${JSON.stringify({ event: "failed", stage: "register-probe", reason: RECORDED, ts: "2026-11-27T09:00:00Z" })}\n`);
+  // The run's own event log and one step's attempt log, as the engine writes them: the measured facts beside the prose.
+  writeFileSync(driverDir(runDir, "run.jsonl"), [
+    { ts: "2026-11-27T07:00:00Z", event: "profile-store", detail: "profiles resolve from the configured store /srv/invented/config/profiles", store: "/srv/invented/config/profiles" },
+    { ts: "2026-11-27T07:10:00Z", event: "stage", stage: "matter-frame", ok: true, attempts: 1, model: "invented-model", tokens: { input: 900, output: 200 }, wall: 41 },
+    { ts: "2026-11-27T08:00:00Z", event: "attempt", stage: "register-probe", attempt: 1, ok: false, fail: `invalid_file:/srv/invented/run/report.md:missing:front-matter ${RECORDED}`, wall: 12 },
+    { ts: "2026-11-27T09:00:00Z", event: "failed", stage: "register-probe", reason: RECORDED, terminalKind: "deterministic" },
+  ].map((e) => JSON.stringify(e)).join("\n") + "\n");
+  writeFileSync(driverDir(runDir, "register-probe.jsonl"), `${JSON.stringify({ attempt: 1, ok: false, fail: RECORDED, model: "invented-model", wall: 12, dispatch: "/srv/invented/run/_driver/register-probe.attempt1.dispatch.txt" })}\n`);
+  writeFileSync(driverDir(runDir, "repairs.json"), JSON.stringify([{ repair: "retry", outcome: RECORDED }]));
   const full = { kind: "run-failed", ...packet, runId, agent: config.defaultAgent };
   writeFileSync(driverDir(runDir, "failure.json"), JSON.stringify(full));
   mkdirSync(OUTBOX, { recursive: true });
@@ -85,6 +101,13 @@ async function call(name, args = {}) {
   return r;
 }
 const wire = (r) => JSON.stringify(r);
+async function raw(fn) {
+  const [a, b] = InMemoryTransport.createLinkedPair();
+  await makeServer().connect(b);
+  const client = new Client({ name: "stopped-run-words-test", version: "1" });
+  await client.connect(a);
+  try { return await fn(client); } finally { await client.close(); }
+}
 
 test("a session that sees every company reads a stopped run without the runner's words, at every run door", async () => {
   const runs = await call("list_runs");
@@ -96,8 +119,11 @@ test("a session that sees every company reads a stopped run without the runner's
     assert.equal(row.agent, config.defaultAgent, "the courier's routing stays");
   }
   assert.doesNotMatch(wire(runs), INTERNAL, "list_runs");
+  assert.doesNotMatch(wire(runs), STOPPED_AT, "list_runs");
   for (const id of [OLDER, CAPPED]) {
-    assert.doesNotMatch(wire(await call("get_run", { runId: id })), INTERNAL, `get_run ${id}`);
+    const run = await call("get_run", { runId: id });
+    assert.doesNotMatch(wire(run), INTERNAL, `get_run ${id}`);
+    assert.doesNotMatch(JSON.stringify(run.structuredContent.run), STOPPED_AT, `get_run ${id}: the run's own row`);
     assert.doesNotMatch(wire(await call("decision_timeline", { runId: id })), INTERNAL, `decision_timeline ${id}`);
   }
 });
@@ -124,9 +150,44 @@ test("a stopped run's notice leaves the outbox doors in the approved words, whic
   }
   for (const r of [await call("get_delivery_packet", { runId: OLDER }), await call("get_delivery_packet", { runId: CAPPED }), await call("list_outbox_events")]) {
     assert.doesNotMatch(wire(r), INTERNAL);
-    assert.doesNotMatch(wire(r), /register-probe|deterministic|weather-exhausted/, "no stage or kind in a notice packet");
+    assert.doesNotMatch(wire(r), STOPPED_AT, "no stage in a notice packet");
   }
   // The run's own record keeps every word.
   const record = JSON.parse(readFileSync(driverDir(join(WS, "studio", "clearance-search", "tmpx-velloquin", "2026-11-27-slate-heron"), "failure.json"), "utf8"));
   assert.equal(record.reasonVerbatim, RECORDED);
+});
+
+test("a session that sees every company reads a stopped run's own logs as measured, and is not served the private record", async () => {
+  const telemetry = await call("get_telemetry", { runId: OLDER, stage: "register-probe" });
+  assert.doesNotMatch(wire(telemetry), INTERNAL, "get_telemetry");
+  const events = (await call("get_telemetry", { runId: OLDER })).structuredContent.runEvents;
+  assert.deepEqual(events.find((e) => e.event === "stage")?.tokens, { input: 900, output: 200 }, "the tokens a step spent stay");
+  assert.equal(events.find((e) => e.event === "attempt")?.failed, true, "a failed attempt keeps the fact");
+  assert.equal(telemetry.structuredContent.attempts[0].wall, 12, "an attempt's measured time stays");
+  for (const [name, args] of [["get_coverage", {}], ["trace", { target: "verdict" }], ["run_changes", {}],
+    ["read_artifact", { name: "status.json" }], ["read_artifact", { name: "run.jsonl" }]]) {
+    assert.doesNotMatch(wire(await call(name, { runId: OLDER, ...args })), INTERNAL, `${name} ${JSON.stringify(args)}`);
+  }
+  // A search echoes its query, so its hits are what is read.
+  for (const query of ["ETIMEDOUT", "invented", "invalid_file", "deterministic"]) {
+    const hits = (await call("search", { runId: OLDER, query, mode: "any" })).structuredContent.hits;
+    assert.doesNotMatch(JSON.stringify(hits), INTERNAL, `search ${query}`);
+  }
+  const status = JSON.parse((await call("read_artifact", { runId: OLDER, name: "status.json" })).structuredContent.text);
+  assert.deepEqual(status.tokens, { input: 1200, output: 340 }, "what the run spent stays in its status");
+  assert.equal(status.recoveryHistory[0].waitedMin, 60, "how long a park waited stays");
+  const across = (await call("search_runs", { query: "ETIMEDOUT invented invalid_file", mode: "any", scope: "all-artifacts" })).structuredContent.hits;
+  assert.doesNotMatch(JSON.stringify(across), INTERNAL, "search_runs");
+  // The private record's files are no document of the run's, by any name.
+  for (const name of ["failure", "repairs", "failure.json", "repairs.json"]) {
+    const r = await raw((c) => c.callTool({ name: "read_artifact", arguments: { runId: OLDER, name } }));
+    assert.ok(r.isError, `read_artifact ${name} was served`);
+    assert.doesNotMatch(wire(r), INTERNAL, `read_artifact ${name}`);
+  }
+  const listing = await raw((c) => c.callTool({ name: "read_artifact", arguments: { runId: OLDER, name: "nothing-by-this-name" } }));
+  assert.doesNotMatch(listing.content[0].text, /\bfailure\b|repairs/, "the private record is not offered by name either");
+  const resource = await raw((c) => c.readResource({ uri: `trademark://run/${OLDER}/status.json` }));
+  assert.doesNotMatch(wire(resource), INTERNAL, "the Resources door");
+  const refused = await raw((c) => c.readResource({ uri: `trademark://run/${OLDER}/failure.json` }).then(() => null, (e) => e));
+  assert.ok(refused, "the Resources door serves no private-record file");
 });

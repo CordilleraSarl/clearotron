@@ -598,7 +598,8 @@ export function forRole(runs, principal) {
     let out = r;
     // — the redaction must take `reasonDetail` with it. `reason` is replaced by a fixed note for a
     // client session; a second field carrying the engine's raw words would walk straight past that.
-    if (r.state === "failed") out = { ...out, reason: CLIENT_FAILURE_NOTE, reasonDetail: null, reasonRedacted: true };
+    // The stage it stopped at goes with them: the run's own record keeps it, and the screen says the run is not finished.
+    if (r.state === "failed") out = { ...out, reason: CLIENT_FAILURE_NOTE, reasonDetail: null, failedStage: null, reasonRedacted: true };
     return out;
   });
 }

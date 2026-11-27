@@ -83,13 +83,13 @@ const runRowProps = {
   client: closed(["key", "name"], { key: SN, name: SN, known: { const: false }, note: S }),
   project: { anyOf: [{ type: "null" }, closed(["key", "name"], { key: S, name: SN })] },
   product: SN, state: S, location: S, tier: SN, caption: SN, url: SN, markName: SN, ref: ANY, classes: ANY, step: SN,
-  startedAt: SN, updatedAt: SN, deliveredAt: SN, failedStage: SN, reason: ANY,
-  resetsAt: SN, recoveryResumesAt: SN, parkedKind: SN, terminalKind: SN, sendPending: B, sent: B,
+  startedAt: SN, updatedAt: SN, deliveredAt: SN, reason: ANY,
+  resetsAt: SN, recoveryResumesAt: SN, parkedKind: SN, sendPending: B, sent: B,
   channels: closed(["email", "whatsapp"], { email: channel, whatsapp: channel }),
 };
 const RUN_ROW_REQUIRED = ["runId", "slug", "codename", "date", "agent", "client", "project", "product", "state", "location", "tier", "caption",
-  "url", "markName", "ref", "classes", "step", "startedAt", "updatedAt", "deliveredAt", "failedStage", "reason", "resetsAt",
-  "recoveryResumesAt", "parkedKind", "terminalKind", "sendPending", "sent", "channels"];
+  "url", "markName", "ref", "classes", "step", "startedAt", "updatedAt", "deliveredAt", "reason", "resetsAt",
+  "recoveryResumesAt", "parkedKind", "sendPending", "sent", "channels"];
 // A failed run's reason is the same note for every session (server.mjs presentForEveryone), flagged as a company's is.
 const staffRunRow = closed(RUN_ROW_REQUIRED, { ...runRowProps, reasonRedacted: { const: true } });
 // The client cut (server.mjs sanitizeRunForClient): no `url`, no `agent`; a failed run's reason is the firm's note.

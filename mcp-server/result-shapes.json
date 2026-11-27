@@ -744,12 +744,10 @@
               "startedAt",
               "updatedAt",
               "deliveredAt",
-              "failedStage",
               "reason",
               "resetsAt",
               "recoveryResumesAt",
               "parkedKind",
-              "terminalKind",
               "sendPending",
               "sent",
               "channels"
@@ -902,12 +900,6 @@
                   "null"
                 ]
               },
-              "failedStage": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
               "reason": {},
               "resetsAt": {
                 "type": [
@@ -922,12 +914,6 @@
                 ]
               },
               "parkedKind": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "terminalKind": {
                 "type": [
                   "string",
                   "null"
@@ -1039,11 +1025,9 @@
               "startedAt",
               "updatedAt",
               "deliveredAt",
-              "failedStage",
               "resetsAt",
               "recoveryResumesAt",
               "parkedKind",
-              "terminalKind",
               "sendPending",
               "sent",
               "channels"
@@ -1184,12 +1168,6 @@
                   "null"
                 ]
               },
-              "failedStage": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
               "reason": {
                 "type": "string"
               },
@@ -1206,12 +1184,6 @@
                 ]
               },
               "parkedKind": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "terminalKind": {
                 "type": [
                   "string",
                   "null"
