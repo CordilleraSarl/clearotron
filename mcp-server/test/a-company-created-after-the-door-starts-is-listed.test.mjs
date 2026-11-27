@@ -16,14 +16,15 @@
 //
 // Driven through the real HTTP face with mcpToolCall — the call the live surface check makes — so the
 // account filter the face applies is part of what is measured rather than assumed. Here the first call
-// fills the door's copy of the roster, as the boot line does on a running door.
+// fills the door's copy of the roster, as the boot line does on a running door. That copy is the module's, not a
+// server's: each request is answered by a server built for it (design, 2026-11-27), so a stale roster would come from
+// the module cache, which is what these arms hold to.
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 import "./_fixture.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
@@ -39,32 +40,21 @@ process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "roster-moves-secret";
 
 const { makeHttpHandler } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
+const { mcpServe } = await import("../lib/mcp-serve.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
 const { mintToken } = await import("../../shared/scope.mjs");
 const { mcpToolCall } = await import("../../driver/portal-mcp-client.mjs");
 
 // ── the door, booted once for the file, as portal-trigger-wire.test.mjs boots it ──────────────────
-const sessions = new Map();
-async function createSession(map, scope = { kind: "internal", runId: null }, owner = null) {
-  const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-  const server = makeServer({ scope, local: false });
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
-    onsessioninitialized: (id) => map.set(id, { server, transport, lastSeen: Date.now(), email: owner, sub: scope?.sub ?? null, kind: scope?.kind ?? null }),
-  });
-  transport.onclose = () => { if (transport.sessionId) map.delete(transport.sessionId); };
-  await server.connect(transport);
-  return transport;
-}
+const serve = mcpServe((scope) => makeServer({ scope, local: false }));
 let srv, url;
 before(async () => {
   srv = createServer(makeHttpHandler({ verify: null, devMode: true, limiter: new RateLimiter({ perMinute: 500 }),
-    sessions, createSession, ns: "roster-moves" }));
+    serve, ns: "roster-moves" }));
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   url = `http://127.0.0.1:${srv.address().port}`;
 });
 after(async () => {
-  for (const [, e] of sessions) { try { e.transport.close(); } catch { /* */ } try { e.server?.close?.(); } catch { /* */ } }
   srv.closeAllConnections?.();
   await new Promise((r) => srv.close(r));
 });

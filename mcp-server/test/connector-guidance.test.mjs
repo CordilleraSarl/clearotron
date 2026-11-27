@@ -11,13 +11,13 @@ process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "guidance-test-secret";
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 const { buildFixture, buildRichRun, buildKnockoutRun, RUN_ID } = await import("./_fixture.mjs");
 const { instructionsFor } = await import("../lib/instructions.mjs");
 const { makeHttpHandler } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
+const { mcpServe } = await import("../lib/mcp-serve.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
 const { mintToken } = await import("../../shared/scope.mjs");
 const { scrubBody } = await import("../lib/scrub.mjs");
@@ -140,52 +140,64 @@ before(async () => {
   // the class the lookup claims to cover.
   buildRichRun();
   buildKnockoutRun();
-  const sessions = new Map();
-  async function createSession(s, scope, owner = null) {
-    const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-    const server = makeServer({ scope, local: false });
-    const transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: () => randomUUID(),
-      onsessioninitialized: (id) => s.set(id, { server, transport, lastSeen: Date.now(), email: owner, kind: scope?.kind ?? null }),
-    });
-    transport.onclose = () => { if (transport.sessionId) s.delete(transport.sessionId); };
-    await server.connect(transport);
-    return transport;
-  }
-  srv = createServer(makeHttpHandler({ verify: null, devMode: true, limiter: new RateLimiter({ perMinute: 500 }), sessions, createSession, ns: "guidance-test" }));
+  // The doors' own composition: each request is answered by a server built from that request's scope.
+  const serve = mcpServe((scope) => makeServer({ scope, local: false }));
+  srv = createServer(makeHttpHandler({ verify: null, devMode: true, limiter: new RateLimiter({ perMinute: 500 }), serve, ns: "guidance-test" }));
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   url = `http://127.0.0.1:${srv.address().port}`;
 });
-after(() => { try { srv?.close(); } catch { /* best-effort */ } });
+after(() => { try { srv?.closeAllConnections?.(); srv?.close(); } catch { /* best-effort */ } });
 
-// raw initialize — mcpToolCall does not surface the init result, and `instructions` only rides there
-async function initialize(token) {
-  const res = await fetch(`${url}/mcp`, {
-    method: "POST",
-    headers: { "content-type": "application/json", accept: "application/json, text/event-stream", "x-trademark-token": token },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "test", version: "1" } } }),
-  });
+// The briefing rides the opening answer, which mcpToolCall does not surface, so both are read raw. A client of the
+// protocol's older revision opens with `initialize`; one of the 2026-07-28 revision has no handshake and asks
+// `server/discover` instead (design, 2026-11-27). Both are one request on their own, scoped from the key they carry.
+const answerOf = async (res) => {
   const text = await res.text();
   const line = text.split("\n").find((l) => l.startsWith("data: ")) ?? text;
   return JSON.parse(line.replace(/^data: /, "")).result;
+};
+async function initialize(token) {
+  return answerOf(await fetch(`${url}/mcp`, {
+    method: "POST",
+    headers: { "content-type": "application/json", accept: "application/json, text/event-stream", "x-trademark-token": token },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "test", version: "1" } } }),
+  }));
+}
+async function discover(token) {
+  return answerOf(await fetch(`${url}/mcp`, {
+    method: "POST",
+    headers: { "content-type": "application/json", accept: "application/json, text/event-stream", "x-trademark-token": token,
+      "mcp-protocol-version": "2026-07-28", "mcp-method": "server/discover" },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "server/discover", params: { _meta: {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28", "io.modelcontextprotocol/clientInfo": { name: "test", version: "1" },
+      "io.modelcontextprotocol/clientCapabilities": {} } } }),
+  }));
 }
 
-test("wire: initialize carries the RIGHT pack for each token, ops included", async () => {
+test("wire: the opening answer carries the RIGHT pack for each token, ops included, in either revision", async () => {
   // THE WIRE ARM, which is the one that matters: instructionsFor can return the correct text while the
-  // server never puts it on `initialize`, and then every connecting assistant is briefed by nothing
+  // server never puts it on the opening answer, and then every connecting assistant is briefed by nothing
   // while the unit arm above is green. This drives a real token through a real transport.
-  const client = await initialize(mintToken({ scope: "user", runId: RUN_ID, ttlSec: 3600 }));
+  const clientToken = mintToken({ scope: "user", runId: RUN_ID, ttlSec: 3600 });
+  const client = await initialize(clientToken);
   assert.ok(client.instructions, "instructions absent on the wire — a connecting client is briefed by nothing");
   assert.match(client.instructions, /plain language/i);
 
   // CHANGED BY RULING 7: an ops token used to receive nothing here. On a
   // self-hosted install the customer IS ops — they connect over this connector and were briefed with
   // nothing while the ops pack shipped, mapped and undelivered.
-  const ops = await initialize(mintToken({ scope: "ops", sub: "guidance-test", ttlSec: 3600 }));
+  const opsToken = mintToken({ scope: "ops", sub: "guidance-test", ttlSec: 3600 });
+  const ops = await initialize(opsToken);
   assert.ok(ops.instructions, "an ops principal reached initialize with no briefing — the pack ships and "
     + "SKILL_DIR maps it, so nothing was missing except the line that serves it");
   assert.notEqual(ops.instructions, client.instructions,
     "ops received the report-link pack, which briefs it for a surface it is not on");
+
+  // THE NEWER REVISION never sends `initialize`, so a briefing that rode only there would reach none of its clients.
+  assert.equal((await discover(clientToken))?.instructions, client.instructions,
+    "a client of the newer revision was not briefed with the pack the older revision's client gets");
+  assert.equal((await discover(opsToken))?.instructions, ops.instructions,
+    "an ops principal of the newer revision was not briefed with the ops pack");
 });
 
 // ---- the methodology backstop ------------------------------------------------------------------
@@ -232,14 +244,12 @@ test("the Methodology OUTPUT still survives — only the machinery goes", () => 
 
 const { tools, attachHandlers } = await import("../server.mjs");
 const { ACCOUNT_ARTIFACTS, USER_ARTIFACTS } = await import("../../shared/scope.mjs");
-const { ListPromptsRequestSchema, GetPromptRequestSchema } =
-  await import("@modelcontextprotocol/sdk/types.js");
 
 // The served surface for one audience, built through attachHandlers — never by calling the description
-// helper directly, which would assert the wiring instead of exercising it.
+// helper directly, which would assert the wiring instead of exercising it. Handlers are registered by method name.
 function servedSurface(kind) {
   const h = new Map();
-  attachHandlers({ setRequestHandler(schema, fn) { h.set(schema, fn); } }, { scope: { kind, runId: RUN_ID }, local: false });
+  attachHandlers({ setRequestHandler(method, fn) { h.set(method, fn); } }, { scope: { kind, runId: RUN_ID }, local: false });
   return h;
 }
 async function servedTools(kind) {
@@ -287,7 +297,7 @@ test("a bare MARK NAME finds its runs — the filter that told a client his data
   assert.deepEqual(tools.list_runs({ mark: "myrkur", state: "no-such-state" }), []);
 
   // `mark` NARROWS AND NEVER WIDENS, which is what keeps it out of the account gate's way. list_runs is
-  // a cross-run tool: a scoped session's rows are dropped by filterByAccounts AFTER the tool returns
+  // a cross-run tool: a scoped principal's rows are dropped by filterByAccounts AFTER the tool returns
   // (server.mjs), so the property that matters is that no filter value can surface a run the unfiltered
   // call does not already return. A one-character substring is the widest input there is.
   const everything = new Set(tools.list_runs({}).map((r) => r.runId));
@@ -328,7 +338,7 @@ test("the tool descriptions a CLIENT reads carry no operator vocabulary — and 
 });
 
 test("named prompts are offered to the client audiences, gated, and refused by name otherwise", async () => {
-  const list = async (kind) => (await servedSurface(kind).get(ListPromptsRequestSchema)({ params: {} })).prompts.map((p) => p.name);
+  const list = async (kind) => (await servedSurface(kind).get("prompts/list")({ params: {} })).prompts.map((p) => p.name);
   const account = await list("account");
   const user = await list("user");
   assert.ok(account.includes("explain-my-report") && account.includes("what-wasnt-covered"),
@@ -342,7 +352,7 @@ test("named prompts are offered to the client audiences, gated, and refused by n
   assert.deepEqual(await list("ops"), [], "ops is offered client prompts");
   assert.deepEqual(await list("internal"), [], "staff are offered client prompts");
 
-  const get = (kind, name) => servedSurface(kind).get(GetPromptRequestSchema)({ params: { name } });
+  const get = (kind, name) => servedSurface(kind).get("prompts/get")({ params: { name } });
   const got = await get("account", "compare-the-search-options");
   assert.match(got.messages[0].content.text, /what this deployment can actually run/i);
   // An unoffered name is REFUSED BY NAME. An empty message would read to the model as "there is nothing

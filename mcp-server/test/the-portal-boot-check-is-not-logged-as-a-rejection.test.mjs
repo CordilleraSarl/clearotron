@@ -10,14 +10,14 @@
 // its reject log. What the door answers is unchanged, because the portal reads the refusal's body, and a
 // keyless request that does not name itself is still logged.
 //
-// Driven with mock req/res, as http-handler.test.mjs drives the handler: no network and no transport.
+// Driven with mock req/res, as http-handler.test.mjs drives the handler: no network and no MCP server.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { makeHttpHandler } from "../lib/http-handler.mjs";
 import { RateLimiter } from "../lib/ratelimit.mjs";
 import { BOOT_PROBE_HEADER, triggerLaneVerdict, HOSTED } from "../../shared/trigger-lane.mjs";
 
-const noSession = async () => { throw new Error("createSession must not run for a keyless request"); };
+const noServe = async () => { throw new Error("serve must not run for a keyless request"); };
 function mockRes() {
   return {
     statusCode: null, body: null, headersSent: false, _finish: [],
@@ -31,7 +31,7 @@ const mockReq = (method, headers = {}) => ({ method, url: "/mcp", headers, async
 async function ask(method, headers) {
   const said = [];
   const h = makeHttpHandler({ verify: null, tokenOnly: true, limiter: new RateLimiter({ perMinute: 100 }),
-    sessions: new Map(), createSession: noSession, log: (l) => said.push(l) });
+    serve: noServe, log: (l) => said.push(l) });
   const res = mockRes();
   await h(mockReq(method, headers), res);
   return { res, said };

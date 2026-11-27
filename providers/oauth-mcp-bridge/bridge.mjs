@@ -15,14 +15,11 @@
 // seeded one-time via `mcporter auth <server>` followed by `bootstrap.mjs`.
 // See README.md.
 
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-  ListToolsRequestSchema,
-  CallToolRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
+// SDK v2 on both sides (2026-11-27): the upstream case-law server is reached in whichever revision of the protocol it
+// speaks, and the engine is served in whichever revision it opens with.
+import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
+import { Server } from "@modelcontextprotocol/server";
+import { serveStdio } from "@modelcontextprotocol/server/stdio";
 import { readFile, writeFile, mkdir, rename } from "node:fs/promises";
 // — the audit line is written SYNCHRONOUSLY inside the call handler: an await here would put the
 // log on a different tick from the call it describes, and a process that exits mid-call would lose it.
@@ -313,19 +310,14 @@ async function main() {
   const transport = new StreamableHTTPClientTransport(new URL(creds.serverUrl), {
     authProvider,
   });
+  // `auto`: the newer revision where the upstream server speaks it, the handshake where it does not.
   const upstream = new Client(
     { name: "trademark-oauth-bridge-client", version: "0.1.0" },
-    { capabilities: {} },
+    { capabilities: {}, versionNegotiation: { mode: "auto" } },
   );
   await upstream.connect(transport);
   process.stderr.write(
     `[oauth-bridge:${serverName}] connected to ${creds.serverUrl}\n`,
-  );
-
-  // Downstream: local stdio MCP server, exposed to the client that spawned us.
-  const downstream = new Server(
-    { name: `trademark-bridge-${serverName}`, version: "0.1.0" },
-    { capabilities: { tools: {} } },
   );
 
   // A LONG ANSWER IS SERVED IN PARTS when the bridge was given an answer size (shared/answer-parts.mjs). An
@@ -341,7 +333,14 @@ async function main() {
     return { content: [{ type: "text", text: servedPart(tool, pieces, 1) }] };
   };
 
-  downstream.setRequestHandler(ListToolsRequestSchema, async () => {
+  // Downstream: local stdio MCP server, exposed to the client that spawned us. Built by a factory, because
+  // `serveStdio` builds one for the connection once the opening message has said which revision it speaks.
+  const makeDownstream = () => {
+  const downstream = new Server(
+    { name: `trademark-bridge-${serverName}`, version: "0.1.0" },
+    { capabilities: { tools: {} } },
+  );
+  downstream.setRequestHandler("tools/list", async () => {
     const upstreamResp = await upstream.listTools();
     const upstreamTools = upstreamResp?.tools ?? [];
     const tools = upstreamTools.filter((t) => allowedTools.has(t.name));
@@ -356,7 +355,7 @@ async function main() {
     return { ...upstreamResp, tools: budget ? tools.map((t) => ({ ...t, inputSchema: withAnswerPart(t.inputSchema) })) : tools };
   });
 
-  downstream.setRequestHandler(CallToolRequestSchema, async (req) => {
+  downstream.setRequestHandler("tools/call", async (req) => {
     const name = req.params.name;
     if (!allowedTools.has(name)) {
       process.stderr.write(
@@ -389,8 +388,9 @@ async function main() {
     }
   });
 
-  const stdio = new StdioServerTransport();
-  await downstream.connect(stdio);
+  return downstream;
+  };
+  serveStdio(makeDownstream);
   process.stderr.write(`[oauth-bridge:${serverName}] stdio ready\n`);
 }
 

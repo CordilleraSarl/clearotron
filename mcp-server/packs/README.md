@@ -22,7 +22,8 @@ live doctrine drifting silently against this one:
 | `account/` | [`skills/clearotron-account/SKILL.md`](../../skills/clearotron-account/SKILL.md) |
 | `ops/` | [`skills/clearotron-ops/SKILL.md`](../../skills/clearotron-ops/SKILL.md) + `COURIER.md` beside it |
 
-`lib/instructions.mjs` reads them from there and serves them at `initialize`, stripping the YAML
+`lib/instructions.mjs` reads them from there and serves them as the server's instructions (at `initialize` in the
+protocol's older revision, at `server/discover` in its 2026-07-28 revision), stripping the YAML
 frontmatter that makes them discoverable as skills — that frontmatter addresses the plugin host, not
 the assistant being briefed.
 

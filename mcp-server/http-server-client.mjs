@@ -44,7 +44,6 @@
 
 import { createServer } from "node:http";
 import { envFrom } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
-import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { warnRetiredEnv } from "../shared/env-aliases.mjs";   // — names only; reads no file
 import { makeServer, NS } from "./server.mjs";
@@ -52,6 +51,7 @@ import { makeAccessVerifier } from "./lib/cf-access.mjs";
 import { accessAudience, audienceIncludes } from "../shared/access-audience.mjs";   // — F54
 import { RateLimiter } from "./lib/ratelimit.mjs";
 import { makeHttpHandler } from "./lib/http-handler.mjs";
+import { mcpServe } from "./lib/mcp-serve.mjs";   // one request, answered on its own, in either revision of the protocol
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { listenOrDie, resolvePort } from "../shared/listen.mjs";   // — a taken port is a sentence, not a stack
 
@@ -92,8 +92,6 @@ const EMAIL_CLAIM = process.env.CLIENT_MCP_EMAIL_CLAIM || process.env.TRADEMARK_
 // here would match nothing and refuse every correctly authenticated caller.
 const AUTH_HEADER = (process.env.CLIENT_MCP_AUTH_HEADER || process.env.TRADEMARK_MCP_AUTH_HEADER || "cf-access-jwt-assertion").toLowerCase();
 const ALLOWED_HOSTS = (process.env.CLIENT_MCP_ALLOWED_HOSTS || "").split(",").map((s) => s.trim()).filter(Boolean);
-const SESSION_TTL_MS = Number(process.env.CLIENT_MCP_SESSION_TTL_MS || 30 * 60 * 1000);
-const SESSION_MAX = Number(process.env.CLIENT_MCP_SESSION_MAX || 500);
 const RATE_PER_MIN = Number(process.env.CLIENT_MCP_RATE_PER_MIN || 120);
 const ACCOUNT_ACCESS = process.env.CLIENT_MCP_ACCOUNT_ACCESS === "1";
 // THE API-KEY DOOR. Cloudflare Access authenticates a HUMAN in a browser; a connector whose settings offer
@@ -130,23 +128,10 @@ const LOOPBACK = new Set(["127.0.0.1", "::1"]);
 // shelling is no longer a hidden tool but the tool's own shape — server.mjs's what_if_run ENQUEUES for an
 // account and never imports the engine, and driver/whatif-worker.mjs is what runs it. `local:false` still
 // stands and still keeps what-if out of an OPS session's listing; it is simply no longer the whole story.
-// `owner` is the CF-verified email, recorded so lib/http-handler.mjs's session owner check ("session
-// belongs to another identity") actually fires here. It was omitted, so the map entry had no email and the
-// check was inert on this surface — tolerable while every session was pinned to one run by its token, and
-// not tolerable now that an account session carries a whole account's reach.
-async function createSession(sessions, scope, owner = null) {
-  const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-  const server = makeServer({ scope, local: false });
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
-    enableDnsRebindingProtection: ALLOWED_HOSTS.length > 0,
-    allowedHosts: ALLOWED_HOSTS.length ? ALLOWED_HOSTS : undefined,
-    onsessioninitialized: (id) => sessions.set(id, { server, transport, lastSeen: Date.now(), email: owner, kind: scope?.kind ?? null }),
-  });
-  transport.onclose = () => { if (transport.sessionId) sessions.delete(transport.sessionId); };
-  await server.connect(transport);
-  return transport;
-}
+// ONE SERVER PER REQUEST, FROM THAT REQUEST'S SCOPE (2026-11-27). The protocol's newer revision has no sessions, and
+// the older one is served statelessly (lib/mcp-serve.mjs): every request is scoped from its own key, so a second key on
+// one connection gets its own scope, and an account principal's reach is read again on every call.
+const serve = mcpServe((scope) => makeServer({ scope, local: false }));
 
 // ---- bootstrap (only when executed directly) ---------------------------------------------------
 const isMain = isEntrypoint(import.meta.url);
@@ -198,12 +183,6 @@ if (isMain) {
     : "client ACCOUNT access OFF — run-bound report tokens only (set CLIENT_MCP_ACCOUNT_ACCESS=1 to enable).");
 
   const limiter = new RateLimiter({ perMinute: RATE_PER_MIN });
-  const sessions = new Map();
-  const sweep = setInterval(() => {
-    const now = Date.now();
-    for (const [id, e] of sessions) if (now - e.lastSeen > SESSION_TTL_MS) { try { e.transport.close(); } catch { /* ignore */ } sessions.delete(id); }
-  }, 60_000);
-  sweep.unref();
 
   // clientSurface:true — the load-bearing flag: resolveScope() admits ONLY a run-bound user token here.
   // devMode mirrors the staff surface: makeHttpHandler fail-closes on verify:null unless the dev knobs
@@ -211,7 +190,7 @@ if (isMain) {
   // authHeader was NOT passed before, so this door read `cf-access-jwt-assertion` whatever the
   // operator configured — the seam above would have been advertised and inert, which is worse than
   // absent. The staff face has always passed it; this is the same line, one file over.
-  const handler = makeHttpHandler({ verify, limiter, sessions, createSession, ns: NS, sessionMax: SESSION_MAX, clientSurface: true, authHeader: AUTH_HEADER, devMode: !verify && !TOKEN_ONLY, tokenOnly: TOKEN_ONLY, log });
+  const handler = makeHttpHandler({ verify, limiter, serve, allowedHosts: ALLOWED_HOSTS, ns: NS, clientSurface: true, authHeader: AUTH_HEADER, devMode: !verify && !TOKEN_ONLY, tokenOnly: TOKEN_ONLY, log });
   const mode = verify ? "auth ON" : TOKEN_ONLY ? "API-KEY door (key mandatory)" : "AUTH OFF (dev)";
   // — this is the door a client's own AI connects through, so the person who meets a taken port is
   // very often not the person who can read a Node stack trace.
