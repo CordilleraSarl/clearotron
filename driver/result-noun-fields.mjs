@@ -75,6 +75,10 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
       + "the record had no line a reader meets first, `applied` after the rewrite passed the merged gate and was "
       + "written, and the `keep()` forms after the artifact or the gate refused it. Every one is a fact "
       + "about what already happened to the record, never the return of the call being logged" },
+  // Read at the writing site: `settled` names WHICH packet a receipt is for, "delivery" or "failure", taken from the run's own
+  // packet on disk (`owedPacket`). It is never a call's return read back as a verdict. Moved here from the connector's
+  // mark_sent when the settle became one function for every sender.
+  { file: "driver/send-settle.mjs", noun: "settled", sites: 3, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "driver/steps/register-sweep.mjs", noun: "closed", sites: 6, atWriteSite: 4, verdict: "result",
     why: "closure counts derived from the landed set (`qids.filter(q => landed.has(q)).length`) and from the receipt" },
   { file: "driver/steps/register-sweep.mjs", noun: "executed", sites: 3, atWriteSite: 3, verdict: "result",
@@ -144,7 +148,6 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
   // and "recorded" for a register term whose stored row says it did NOT answer. None is a call's return
   // read back as a verdict, which is the defect this table exists to find.
   { file: "mcp-server/lib/knockout.mjs", noun: "outcome", sites: 3, atWriteSite: 0, verdict: "out-of-scope" },
-  { file: "mcp-server/lib/ops.mjs", noun: "settled", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "mcp-server/server.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "scripts/backfill-started-at.mjs", noun: "outcome", sites: 5, atWriteSite: 0, verdict: "out-of-scope" },
   { file: "scripts/e2e.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "out-of-scope" },
