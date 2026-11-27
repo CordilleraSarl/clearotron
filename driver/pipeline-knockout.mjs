@@ -1101,7 +1101,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
             // per-mark detail (classes/ref from the request, e.g. the cockpit's "NAME [9, 42]" rows) — the
             // frame reads THIS file, so without it those classes silently vanished (review 2026-07-17)
             marksDetailed: markRows.map((m) => ({ name: String(m.name), ...(Array.isArray(m.classes) && m.classes.length ? { classes: m.classes } : {}), ...(m.ref ? { ref: m.ref } : {}) })),
-          }, null, 2) + "\n");
+          }, null, 2) + "\n"); writeStatedFacts(paths(run.runDir), job);   // what the order states, kept with its source (stated-facts.mjs)
         } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
         // The stored defaults the engine cannot search — the clearance lane's record, on this lane too. A
         // knockout reads the same account profile and dropped the same entries in the same silence.
@@ -1772,3 +1772,4 @@ export async function knockoutInner(ctx, job, opts = {}) {
     } },
   ] });
 }
+import { writeStatedFacts } from "./stated-facts.mjs";
