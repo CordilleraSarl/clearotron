@@ -6,7 +6,7 @@
 // here, offline, for two accounts.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, chmodSync, existsSync, readdirSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, chmodSync, existsSync, readdirSync, rmSync, utimesSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -124,6 +124,18 @@ function queueWith(files) {
   return qdir;
 }
 const stateOf = (qdir, ref = "x") => receiptIn(qdir, ref, readdirSync(qdir));
+
+test("a refused order is dated by its refusal, not by when it was placed", () => {
+  // The marker is the job file renamed, and a rename keeps the file's time: alone, it says when the order was placed.
+  const qdir = queueWith({ "x.failed": JOB(), "x.failed.reason": "Refused at the claim.\n" });
+  const placed = new Date(Date.now() - 3_600_000), refused = new Date(Date.now() - 60_000);
+  utimesSync(join(qdir, "x.failed"), placed, placed);
+  utimesSync(join(qdir, "x.failed.reason"), refused, refused);
+  // A file's time is kept to the filesystem's own resolution, so the reading is held to the second.
+  const at = Date.parse(stateOf(qdir).updatedAt);
+  assert.ok(Math.abs(at - refused.getTime()) < 1000, `dated ${stateOf(qdir).updatedAt}, not by its refusal`);
+  assert.ok(at - placed.getTime() > 3_000_000, "dated by when it was placed");
+});
 
 test("claiming is not passing: a claimed order is being checked until its run is dispatched", () => {
   assert.equal(stateOf(queueWith({ "x.processing": JOB() })).state, "checking");

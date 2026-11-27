@@ -951,6 +951,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failure-notice-reaches-the-route-the-install-configures.test.mjs": {
+          "tests": 19,
+          "asserts": 128,
+          "skips": 7,
+          "todos": 0
+        },
         "a-family-withheld-by-judgment-is-not-read-as-awaiting.test.mjs": {
           "tests": 6,
           "asserts": 15,
@@ -3412,8 +3418,8 @@
           "todos": 0
         },
         "an-accepted-order-keeps-its-receipt.test.mjs": {
-          "tests": 6,
-          "asserts": 43,
+          "tests": 7,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -4438,14 +4444,14 @@
           "todos": 0
         },
         "depth-ladder-prose-rung.test.mjs": {
-          "tests": 9,
-          "asserts": 24,
+          "tests": 1,
+          "asserts": 3,
           "skips": 0,
           "todos": 0
         },
         "depth-ladder-reaches-the-prompt.test.mjs": {
           "tests": 6,
-          "asserts": 14,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -4462,8 +4468,8 @@
           "todos": 0
         },
         "depth-ladder-rung-discipline.test.mjs": {
-          "tests": 9,
-          "asserts": 18,
+          "tests": 8,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -5009,7 +5015,7 @@
         },
         "every-dispatch-carries-the-charter.test.mjs": {
           "tests": 7,
-          "asserts": 17,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -7829,7 +7835,7 @@
         },
         "the-corrective-pass-inherits-the-depth-rung.test.mjs": {
           "tests": 3,
-          "asserts": 6,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
