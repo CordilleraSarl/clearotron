@@ -605,7 +605,7 @@
         },
         "a-credential-is-not-a-wired-lane.test.mjs": {
           "tests": 10,
-          "asserts": 24,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -4613,7 +4613,7 @@
         },
         "doctor-before-the-first-start-says-what-start-creates.test.mjs": {
           "tests": 5,
-          "asserts": 20,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -4633,6 +4633,12 @@
           "tests": 4,
           "asserts": 6,
           "skips": 2,
+          "todos": 0
+        },
+        "doctor-names-what-it-could-not-read.test.mjs": {
+          "tests": 6,
+          "asserts": 28,
+          "skips": 3,
           "todos": 0
         },
         "doctor-names-who-is-in-the-store.test.mjs": {
@@ -8699,7 +8705,7 @@
         },
         "the-published-door-must-answer-not-merely-exist.test.mjs": {
           "tests": 5,
-          "asserts": 14,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
