@@ -65,10 +65,9 @@ async function readJsonBody(req, maxBody) {
  * is no session for another identity to present, so a second key on one connection gets its own scope.
  */
 export function makeHttpHandler({ verify, limiter, opsLimiter = null, serve, allowedHosts = [], ns = "trademark-artifacts", maxBody = 4 * 1024 * 1024, authHeader = "cf-access-jwt-assertion", firmDomains = [], clientSurface = false, door: doorName = null, devMode = false, tokenOnly = false, keyDoorPath = null,
-  // Is this identity still on the guest list? ASKED PER REQUEST on an ACCOUNT session, cached on the
+  // Is this identity still on the guest list? ASKED PER REQUEST for an ACCOUNT principal, cached on the
   // grants file's mtime, so it costs a stat between edits. Injected so an arm can move the answer
-  // without a file; the default is the real read, because a door composed without this seam would
-  // silently go back to resolving reach once and holding it for half an hour.
+  // without a file; the default is the real read.
   stillEnrolled = (email) => addressesInGrants().includes(String(email ?? "").trim().toLowerCase()),
   log = () => {} }) {
   if (!verify && !devMode && !tokenOnly) throw new Error("makeHttpHandler: verify is required unless devMode:true or tokenOnly:true (fail-closed; refusing to build an unauthenticated handler)");
@@ -104,33 +103,27 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, serve, all
   };
 
   /**
-   * Has this identity been taken off the guest list since its session was opened? Null when it has not,
-   * or when the question does not apply — and the body to send back when it has.
-   *
-   * ── WHY THIS IS ASKED AGAIN AT ALL ──────────────────────────────────────────────────────────────
-   *
-   * An ACCOUNT session's reach is resolved ONCE, at `resolveScope`, and lives in the server the
-   * transport was built around. After that, this branch compared the caller's email against the
-   * session's and nothing else — so somebody removed from an installation kept a whole account's reach
-   * through their assistant until the session went idle for `SESSION_TTL_MS`, half an hour by default.
-   * The portal's own side has never had that gap: it reads the file on every request. The People page
-   * now tells a manager that removing somebody takes their access away "straight away, here and through
-   * their AI", and this is what makes the second half of that sentence true rather than nearly true.
+   * Has this identity been taken off the guest list? Null when it has not, or when the question does not
+   * apply — and the body to send back when it has. Asked on EVERY request, as the portal's own side reads
+   * the file on every request: the People page tells a manager that removing somebody takes their access
+   * away "straight away, here and through their AI", and this is the second half of that sentence. (It was
+   * first written when an account's reach was held in a session for up to half an hour; the doors keep no
+   * sessions now, and the check stays where every request passes.)
    *
    * ── WHY IT IS THIS NARROW ───────────────────────────────────────────────────────────────────────
    *
-   * Four kinds of session reach this branch and only one of them is answerable from the guest list.
-   * A run-bound `user` session and an `ops` session carry a token whose subject is a run id or an
+   * Four kinds of principal reach this branch and only one of them is answerable from the guest list.
+   * A run-bound `user` principal and an `ops` principal carry a token whose subject is a run id or an
    * automation principal, neither of which is an address anybody enrols; `internal` is firm staff,
    * admitted by a domain rule that does not live in this file. Asking the guest list about any of them
    * would refuse a caller for not being something they were never supposed to be — so the gate is the
    * client surface and the `account` kind, which is exactly the population the removal sentence is
-   * about. Every other session behaves as it did.
+   * about. Every other principal behaves as it did.
    *
    * ── AND WHY IT FAILS CLOSED ─────────────────────────────────────────────────────────────────────
    *
    * A guest list that names nobody refuses. `CLEAROTRON_ACCESS_FILE` is mandatory on any door that can
-   * hold an account session (the boot guard exits on its absence), and the file is written by an atomic
+   * serve an account principal (the boot guard exits on its absence), and the file is written by an atomic
    * rename, so a reader sees the old file or the new one and never a torn one. An empty answer is
    * therefore a real state — the file was emptied, or it stopped parsing — and not a transient worth
    * holding a door open for.
@@ -139,16 +132,16 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, serve, all
     // WHO, read off the SCOPE and never off `user.email`. The two are the same address on a
     // CF-fronted door and are NOT on the others: a key door names the token's subject, and dev mode
     // hands out a synthetic identity that was never enrolled anywhere. Asking the guest list about the
-    // synthetic one refuses every session on a developer's box, which is how this was found.
+    // synthetic one refuses every request on a developer's box, which is how this was found.
     if (!clientSurface || entry?.kind !== "account" || !entry?.sub) return null;
     if (stillEnrolled(entry.sub)) return null;
-    log(`session withdrawn mid-session: ${entry.sub} is no longer on this installation's guest list`);
+    log(`access withdrawn: ${entry.sub} is no longer on this installation's guest list`);
     return { error: "your access to this installation has been withdrawn — ask whoever manages it, then start a new session" };
   };
 
   return async (req, res) => {
     try {
-      // THE BASE IS A CONSTANT, AND WHAT THE `Host` HEADER IS USED FOR HERE IS: NOTHING. Only
+      // THE BASE IS A CONSTANT, AND THE `Host` HEADER PLAYS NO PART IN PARSING THE URL. Only
       // `pathname` and `searchParams` are read below, so the base exists purely so a bare
       // `req.url` parses as a path. Interpolating the caller's `Host` bought a crash and no behaviour:
       // a value that is not a valid authority makes `new URL` throw, the outer catch answers 500 with a
@@ -156,8 +149,8 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, serve, all
       // unauthenticated caller who can reach the port gets it. Measured 2026-08-26: six of nine `Host`
       // values crashed this door and all nine answered 401 at the portal, which has always used this
       // constant. It also skipped the guard written for this exact header: TRADEMARK_MCP_ALLOWED_HOSTS
-      // arms the transport's DNS-rebinding protection and the server refuses to start without it, but a
-      // `Host` malformed enough to throw never reaches the transport at all.
+      // arms the DNS-rebinding check further down (by the exact Host, after authentication) and the server
+      // refuses to start without it, but a `Host` malformed enough to throw would never have reached it.
       const url = new URL(req.url, "http://localhost");
       if (req.method === "GET" && url.pathname === "/healthz") return send(res, 200, { ok: true, ns });
       if (url.pathname !== "/mcp") return send(res, 404, { error: "not found — the MCP endpoint is /mcp" });
@@ -210,8 +203,8 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, serve, all
         }
       } else if (tokenOnly) {
         // No auth proxy in front, so the key IS the authentication — checked here, before the rate
-        // limiter, the body, the session and anything else, and with NO synthetic identity to fall back
-        // on. resolveScope verifies it again at session creation (cheap HMAC); this pass exists so an
+        // limiter, the body and anything else, and with NO synthetic identity to fall back
+        // on. resolveScope verifies it again when it scopes the request (cheap HMAC); this pass exists so an
         // unkeyed request is refused at the very front and so the limiter and audit log can name the
         // principal rather than an anonymous transport.
         const tok = readInnerToken(url, req.headers, { allowAuthorization: true });

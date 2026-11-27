@@ -1,20 +1,21 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// Taking somebody off the guest list ends their assistant's session too, on the next request.
+// Taking somebody off the guest list ends their assistant's reach too, on the next request.
 //
-// An ACCOUNT session's reach is resolved once, at `resolveScope`, and lives in the server the transport
-// was built around. After that the door compared the caller's address against the session's and nothing
-// else — so somebody removed from an installation kept a whole account's reach through their assistant
-// until the session went idle for `SESSION_TTL_MS`, half an hour by default. The portal's own side has
-// never had that gap: it reads the access file on every request.
+// An ACCOUNT session's reach used to be resolved once, at `resolveScope`, and lived in the server the
+// transport was built around, so somebody removed from an installation kept a whole account's reach through
+// their assistant until the session went idle, half an hour by default. The portal's own side has never had
+// that gap: it reads the access file on every request. Sessions no longer exist (design, 2026-11-27): every
+// request is scoped from its own key and asked the guest-list question before it is served, which is what
+// these arms hold the client door to.
 //
 // This matters because the People page now says, before a manager presses the button, that removing
 // somebody takes their access away "straight away, here and through their AI". That sentence was true of
 // the website and nearly true of the assistant, and "nearly" is a half-hour window in which somebody who
 // has just been removed can still read the installation's work.
 //
-// WHAT IS DELIBERATELY NOT CHECKED is the other three kinds of session, and they are driven here for
-// that reason. A run-bound `user` session and an `ops` session carry a token whose subject is a run id
+// WHAT IS DELIBERATELY NOT CHECKED is the other three kinds of key, and they are driven here for
+// that reason. A run-bound `user` key and an `ops` key carry a token whose subject is a run id
 // or an automation principal — neither is an address anybody enrols — and `internal` is firm staff,
 // admitted by a domain rule that does not live in the guest list. Asking the guest list about any of
 // them would refuse a caller for not being something they were never meant to be.
@@ -29,33 +30,25 @@ process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "withdrawn-test-secret";
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 import { pinEnv } from "../../shared/env-aliases.mjs";
 
 const { buildFixture, RUN_ID } = await import("./_fixture.mjs");
 const { makeHttpHandler } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
+const { mcpServe } = await import("../lib/mcp-serve.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
 const { mintToken } = await import("../../shared/scope.mjs");
 const { mcpToolCall } = await import("../../driver/portal-mcp-client.mjs");
 
 /**
- * A session factory that stores NEITHER `sub` NOR `kind` — the shape some of this repository's callers
- * have and others do not. It is the deliberate choice here: the gate reads both, so if it depended on
- * this factory to set them it would be a gate that quietly stops gating wherever the factory is thinner.
- * The handler stamps them onto the stored entry itself, and this arm is what proves that.
+ * The doors' own composition, counted: each request is answered by a server built from that request's scope, and
+ * `served` counts the requests that got as far as that server. The gate must turn a removed person away BEFORE this
+ * point, from the scope the handler resolved itself, so a refusal that still reached the server would be a gate in
+ * name only.
  */
-async function createSession(sessions, scope, owner = null) {
-  const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-  const server = makeServer({ scope, local: false });
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
-    onsessioninitialized: (id) => sessions.set(id, { server, transport, lastSeen: Date.now(), email: owner }),
-  });
-  transport.onclose = () => { if (transport.sessionId) sessions.delete(transport.sessionId); };
-  await server.connect(transport);
-  return transport;
-}
+const answer = mcpServe((scope) => makeServer({ scope, local: false }));
+let served = 0;
+const serve = (req, res, ctx) => { served++; return answer(req, res, ctx); };
 
 const LAWYER = "lawyer@acme.example";
 let url, srv, enrolled;
@@ -77,7 +70,7 @@ before(async () => {
 
   srv = createServer(makeHttpHandler({
     verify: null, devMode: true, clientSurface: true, limiter: new RateLimiter({ perMinute: 500 }),
-    sessions: new Map(), createSession, ns: "withdrawn-test",
+    serve, ns: "withdrawn-test",
     stillEnrolled: (email) => enrolled.has(String(email ?? "").toLowerCase()),
   }));
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
@@ -93,46 +86,50 @@ const refusal = async (token, tool = "list_runs") => {
   catch (e) { return String(e?.message ?? e); }
 };
 
-test("an account session works while its holder is on the guest list", async () => {
+test("an account key works while its holder is on the guest list", async () => {
   const token = account();
-  assert.ok(await ask(token), "the session could not be opened at all — nothing below would mean anything");
-  assert.ok(await ask(token), "a second request on the same session was refused before anybody was removed");
+  assert.ok(await ask(token), "the key was not served at all — nothing below would mean anything");
+  assert.ok(await ask(token), "a second request with the same key was refused before anybody was removed");
   assert.equal(enrolled.has(LAWYER), true, "the arm removed them before it meant to");
 });
 
 test("the request AFTER the removal is refused, and says why in words the holder can act on", async () => {
   const token = account();
-  assert.ok(await ask(token), "the session must be live before it can be withdrawn");
+  assert.ok(await ask(token), "the key must be served before it can be withdrawn");
   enrolled.delete(LAWYER);
   const said = await refusal(token);
-  assert.ok(said, "a removed person's next request went through — the session held its reach");
+  assert.ok(said, "a removed person's next request went through — the key held its reach");
   assert.match(said, /403/);
   assert.match(said, /withdrawn/);
   // NOT "expired", NOT "invalid key". Somebody reading this in their assistant has to know that the
   // answer is to ask whoever manages the installation, not to reconnect.
   assert.doesNotMatch(said, /expired|invalid/i);
+  // And the answer is asked again on every request, not remembered: put back on the list, the same key is served.
   enrolled.add(LAWYER);
+  assert.ok(await ask(token), "a person put back on the guest list was still refused — the refusal was held, not asked");
 });
 
-test("a RUN-BOUND session is untouched — its subject is a run, not somebody's address", async () => {
+test("a RUN-BOUND key is untouched — its subject is a run, not somebody's address", async () => {
   const token = runBound();
   const read = () => ask(token, "read_artifact", { runId: RUN_ID, name: "report" });
-  assert.ok(await read(), "the run-bound session could not be opened");
-  // Empty the guest list entirely. A gate that asked about this session would refuse it now.
+  assert.ok(await read(), "the run-bound key was not served");
+  // Empty the guest list entirely. A gate that asked about this key would refuse it now.
   const held = [...enrolled];
   enrolled.clear();
-  assert.ok(await read(), "a run-bound session was refused for not being on a guest list it was never on");
+  assert.ok(await read(), "a run-bound key was refused for not being on a guest list it was never on");
   for (const e of held) enrolled.add(e);
 });
 
-test("the gate does not depend on the session factory storing anything — the door stamps it", async () => {
-  // `createSession` above records neither `sub` nor `kind`. If the gate read what that factory wrote it
-  // would pass this file and every other one, and do nothing on the real client door.
+test("the gate turns a removed person away before the server that would answer them is reached", async () => {
+  // The gate reads the scope the handler resolved from this request's own key, not anything the server that answers
+  // records. A gate that ran inside, or after, that server could let the call it refuses be answered first.
   const token = account();
-  assert.ok(await ask(token), "the session could not be opened");
+  const before = served;
+  assert.ok(await ask(token), "the key was not served");
+  assert.equal(served, before + 1, "the request that went through never reached the server, so the count below means nothing");
   enrolled.delete(LAWYER);
   const said = await refusal(token);
-  assert.ok(said && /withdrawn/.test(said),
-    "the gate read a field the session factory never set, so it never fired — the handler must stamp it");
+  assert.ok(said && /withdrawn/.test(said), "a removed person's request was not refused by the guest-list gate");
+  assert.equal(served, before + 1, "a removed person's request reached the server that answers requests");
   enrolled.add(LAWYER);
 });

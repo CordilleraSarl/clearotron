@@ -84,7 +84,7 @@ const DEV = process.env.TRADEMARK_MCP_DEV === "1";
 //
 // `token` wires the ACCESS-KEY door lib/http-handler.mjs already implements (`tokenOnly:true`): no auth
 // proxy in front, and a valid HMAC-signed scoped key REQUIRED on every request, checked before the rate
-// limiter, the body, the session and anything else, with no synthetic identity to fall back on. It is
+// limiter, the body and anything else, with no synthetic identity to fall back on. It is
 // the opposite of `TRADEMARK_MCP_AUTH_DISABLED` — which authenticates nobody and hands every caller
 // `local-test@disabled` — and the handler refuses outright to build the two together.
 //
