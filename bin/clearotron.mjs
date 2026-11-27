@@ -66,7 +66,7 @@ export const VERBS = {
   sync:    ["bin/uspto-sync.mjs"],
   update:  ["bin/update.mjs"],
   mcp:     ["bin/mcp.mjs"],
-  notices: ["driver/notice-delivery.mjs"],
+  notices: ["bin/notices.mjs"],
 };
 
 export const SUMMARY = {
