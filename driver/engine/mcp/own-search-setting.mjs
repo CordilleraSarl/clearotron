@@ -15,10 +15,21 @@ import { driverDir } from "../../../shared/driver-dir.mjs";
 
 export const RUN_RECORD_FILE = "run-choices.json";
 
-/** Whether this run's dictated searches are its own AI program's. A stage experiment's shadow folder reads its run's record. IMPURE (reads). */
-export function ownSearchOn(runDir) {
-  if (!runDir) return false;
+/** The run's record, or null: a stage experiment's shadow folder reads its run's. IMPURE (reads). */
+function runRecord(runDir) {
+  if (!runDir) return null;
   const p = [runDir, String(runDir).split("/_experiments/")[0]].map((d) => driverDir(d, RUN_RECORD_FILE)).find((f) => existsSync(f));
-  if (!p) return false;
-  try { return String(JSON.parse(readFileSync(p, "utf8"))?.research ?? "").trim().toLowerCase() === "own"; } catch { return false; }
+  if (!p) return null;
+  try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; }
+}
+
+/** Whether this run's dictated searches are its own AI program's. IMPURE (reads). */
+export function ownSearchOn(runDir) {
+  return String(runRecord(runDir)?.research ?? "").trim().toLowerCase() === "own";
+}
+
+/** The engine the run recorded, or null. IMPURE (reads). */
+export function recordedEngine(runDir) {
+  const e = String(runRecord(runDir)?.engine ?? "").trim().toLowerCase();
+  return e || null;
 }

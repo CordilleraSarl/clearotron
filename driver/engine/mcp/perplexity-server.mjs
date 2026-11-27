@@ -30,6 +30,7 @@ import { parsePrRiskResults, connotationObligations, renderConnotationObligation
 import { obligationsSidecarPath } from "../../disposition-tool.mjs";
 import { writeGridProvenance } from "./grid-provenance.mjs";   // — what served the grid, beside the ledger
 import { ownSearchOn } from "./own-search-setting.mjs";   // a run whose dictated searches are its own AI program's
+import { askTheDriver } from "./own-question-channel.mjs";   // — and whose questions the driver answers with its own engine
 import { insideRun } from "../../../shared/inside-run.mjs";   // a path a tool is handed is served only inside this run
 import { keepResearchAnswer, isResearchAnswer, replayAnswersFrom, researchReplayOn, savedResearchAnswer, researchRequestKey, heldAnswerToRequest } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage, which is answered from it; a replay answers from them
 
@@ -231,11 +232,11 @@ async function research(params) {
   // A REFUSED QUESTION IS LOGGED as a failed one is. It left no line, so the run's record could not tell a question
   // refused for want of a credential from one never asked, and a writer whose every question was refused wrote
   // "no result" with nothing in the log to say otherwise. The reason names the refusal, never the key.
-  // A RUN WHOSE SEARCHES ARE ITS OWN AI PROGRAM'S (engine/mcp/own-search.mjs) needs no key for its grid: the driver has
-  // prepared the grid's ledger, and it is served below as recorded. Its questions still go to this service.
+  // A RUN WHOSE SEARCHES ARE ITS OWN AI PROGRAM'S (engine/mcp/own-search.mjs) needs no key: the driver has prepared its
+  // grid's ledger, which is served below as recorded, and answers its questions with the run's own engine.
   const ownSearch = ownSearchOn(RUN_DIR);
   if (!API_KEY) {
-    if (!(ownSearch && params?.grid_spec_path)) {
+    if (!ownSearch) {
       logCall("perplexity_research", { task: params?.task ?? "", ...(params?.grid_spec_path ? { grid: true } : {}) },
         { ok: false, error: "refused: no research credential" });
       return "ERROR: PERPLEXITY_API_KEY not set — marketplace research unavailable.";
@@ -326,6 +327,7 @@ async function research(params) {
     logCall("perplexity_research", { task: "", depth: null }, { ok: false, error: "empty task" });
     return "ERROR: `task` is required for research. A grid call needs only `grid_spec_path`.";
   }
+  if (ownSearch) return askOwnSearch(task);
   const preset = questionPresetFor({ pinned: PINNED_QUESTION_PRESET, depth, task });
   // The resolved preset, not the requested one: `depth` is often absent and detectPreset decides, so
   // logging the request would record a null where the fact is what actually ran. `pinned` says the run's
@@ -360,6 +362,32 @@ async function research(params) {
     logCall("perplexity_research", asked, { ok: false, error: String(err?.message ?? err).slice(0, 200) });
     return `ERROR: Research failed — ${err.message}${err?.cause ? ` (${err.cause.code || err.cause.name || err.cause})` : ""}`;
   }
+}
+
+// ── A QUESTION ON A RUN WHOSE SEARCHES ARE ITS OWN AI PROGRAM'S ──────────────────────────────────────────
+//
+// Answered by the driver with a session of the run's engine (engine/mcp/own-question-channel.mjs): this server holds
+// none of the engine's settings, so it hands the question over and waits. A question this stage already got an answer
+// to is not asked again. Every call is logged as a lookup is, naming the service that answered, so the run's record
+// says who searched; one with no answer is logged as failed, with why, and the stage is told it did not complete.
+async function askOwnSearch(task) {
+  const request = researchRequestKey({ service: "own", task });
+  const held = heldAnswerToRequest(RUN_DIR, SESSION, request);
+  if (held) {
+    logCall("perplexity_research", { task, service: "own" }, { ok: true, bytes: held.text.length, reused: true, service: "own" });
+    return held.text;
+  }
+  const a = await askTheDriver(RUN_DIR, task, { session: SESSION || null, agent: AGENT || null });
+  const service = typeof a?.service === "string" ? a.service : "own";
+  if (!a?.ok || !isResearchAnswer(a.text)) {
+    const cause = String(a?.cause ?? "own search gave no answer").slice(0, 200);
+    logCall("perplexity_research", { task, service: "own" }, { ok: false, error: cause, service });
+    return `ERROR: Research failed — ${cause}`;
+  }
+  logCall("perplexity_research", { task, service: "own" }, { ok: true, bytes: a.text.length, service,
+    ...(a.model ? { model: a.model } : {}), sources: Array.isArray(a.sources) ? a.sources.length : 0 });
+  keepResearchAnswer(RUN_DIR, { session: SESSION, agent: AGENT, task, preset: null, request, text: a.text });
+  return a.text;
 }
 
 // ── A REPLAY: THE RUN'S OWN ANSWER, OR NOTHING ─────────────────────────────────────────────────────────

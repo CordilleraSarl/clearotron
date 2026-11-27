@@ -15,5 +15,6 @@ export const PERPLEXITY_KEY = "PERPLEXITY_API_KEY";
 
 // THE PARTS OF A CLEARANCE'S WEB RESEARCH THAT OWN SEARCH DOES NOT RUN YET, each still sent to Perplexity. While one is
 // listed, own search needs the Perplexity key for it, and says so: a part with no service would be a question the writer
-// is refused, which a report reads as "no result". Each part leaves the list when own search runs it.
-export const OWN_SEARCH_STILL_PERPLEXITY = Object.freeze(["follow-up questions"]);
+// is refused, which a report reads as "no result". Each part leaves the list when own search runs it. None is listed:
+// own search runs the dictated searches, the meaning re-asks, a Knockout's owner lookups and every stage's questions.
+export const OWN_SEARCH_STILL_PERPLEXITY = Object.freeze([]);

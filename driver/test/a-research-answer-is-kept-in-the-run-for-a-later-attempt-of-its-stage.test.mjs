@@ -56,5 +56,9 @@ test("the research server keeps a free-form answer when it is returned, never on
   const freeForm = SRC.slice(SRC.indexOf("if (!task || task.trim()"), SRC.indexOf("serve({"));
   const success = freeForm.slice(freeForm.indexOf("const text = "), freeForm.indexOf("return text;"));
   assert.match(success, /keepResearchAnswer\(RUN_DIR, \{ session: SESSION, agent: AGENT, task, preset, request, text \}\);/, "the answer returned is not kept with its request");
-  assert.equal((SRC.match(/keepResearchAnswer\(/g) ?? []).length, 1, "an answer is kept from somewhere other than the returned free-form answer");
+  // THE OTHER SITE is a question the run's own AI program answered (askOwnSearch): kept only after its answer is checked.
+  const own = SRC.slice(SRC.indexOf("async function askOwnSearch("), SRC.indexOf("// ── A REPLAY"));
+  assert.match(own.slice(own.indexOf("if (!a?.ok || !isResearchAnswer(a.text))")), /keepResearchAnswer\(RUN_DIR, \{ session: SESSION, agent: AGENT, task, preset: null, request, text: a\.text \}\);/,
+    "an own-search answer is kept before it is checked");
+  assert.equal((SRC.match(/keepResearchAnswer\(/g) ?? []).length, 2, "an answer is kept from somewhere other than the two returned answers");
 });

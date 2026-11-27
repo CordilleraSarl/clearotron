@@ -6,7 +6,8 @@
 // Where a run's dictated searches are run by its own AI program (engine/mcp/own-search.mjs), the driver prepares each
 // grid's ledger before the stage, and the research server, run here as its own process, serves that ledger as recorded,
 // with no research credential at all. A grid the driver did not prepare is refused, and nothing is sent to the
-// research service: one run never mixes two search services in one grid. A run without the setting is unchanged.
+// research service: one run never mixes two search services in one grid. A stage's question is handed to the driver,
+// which answers it with the run's own program on the product's tier. A run without the setting is unchanged.
 // Every name and host is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -16,6 +17,9 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { driverDir } from "../../shared/driver-dir.mjs";
+import { serveOwnQuestions } from "../own-search-questions.mjs";
+import { QUESTION_TIERS } from "../engine/mcp/own-search.mjs";
+import { researchCall } from "../research-records.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SERVER = join(HERE, "..", "engine", "mcp", "perplexity-server.mjs");
@@ -98,10 +102,35 @@ test("a grid it did not prepare is refused, and nothing is sent elsewhere, even 
   assert.equal(written, false, "no ledger was bought");
 });
 
-test("a question still needs the research service's key on such a run: only the grid is the program's own", async () => {
+test("a stage's question on such a run is answered by the run's own program through the driver, and never sent elsewhere", async () => {
   const { runDir } = aRun();
-  const text = await callTool({ task: "Does QZORVAK sell candles?" }, { CLEAROTRON_BAND_RUN_DIR: runDir });
-  assert.match(text, /PERPLEXITY_API_KEY not set/);
+  const asked = [];
+  const makeSessions = async (o) => ({ search: "codex", engine: "openai-agent", made: o,
+    question: async (task) => { asked.push({ task, model: o.model, thinking: o.thinking });
+      return { text: "QZORVAK candles are sold by Northwind Play GmbH.\nhttps://pages.example.com/qzorvak", model: "gpt-6.1-sol", speed: "standard", seconds: 1,
+        events: [{ type: "item.completed", item: { type: "web_search", action: { query: "QZORVAK candles" }, results: [{ title: "QZORVAK", url: "https://pages.example.com/qzorvak" }] } }] }; } });
+  const stop = serveOwnQuestions(runDir, { makeSessions, pollMs: 50, tierOf: () => QUESTION_TIERS["multi-country-focus-search"] });
+  try {
+    // A key is set, and is not used: nobody chose that service for this run.
+    const text = await callTool({ task: "Does QZORVAK sell candles?" }, { CLEAROTRON_BAND_RUN_DIR: runDir, PERPLEXITY_API_KEY: "placeholder-not-a-key" });
+    assert.match(text, /^QZORVAK candles are sold by Northwind Play GmbH\./, text.slice(0, 300));
+    assert.deepEqual(asked, [{ task: "Does QZORVAK sell candles?", model: "opus", thinking: "high" }], "asked once, on the product's ruled tier");
+    const row = log(runDir).find((r) => r.tool === "perplexity_research");
+    assert.deepEqual({ ok: row.ok, service: row.service, model: row.model, sources: row.sources }, { ok: true, service: "own:codex", model: "gpt-6.1-sol", sources: 1 });
+    assert.deepEqual(researchCall(row), { known: true, service: "own:codex", kind: "question", question: "Does QZORVAK sell candles?", ok: true, error: null, session: null, replay: false },
+      "the run's record says which service answered");
+  } finally { stop(); }
+});
+
+test("a question the driver cannot answer on its product's tier is a failed lookup with why, never an answer", async () => {
+  const { runDir } = aRun();
+  const stop = serveOwnQuestions(runDir, { makeSessions: async () => ({ error: "unused" }), pollMs: 50, tierOf: () => null });
+  try {
+    const text = await callTool({ task: "Does QZORVAK sell candles?" }, { CLEAROTRON_BAND_RUN_DIR: runDir });
+    assert.equal(text, "ERROR: Research failed — own search: no question tier is ruled for this run's product");
+    const row = log(runDir).find((r) => r.tool === "perplexity_research");
+    assert.deepEqual({ ok: row.ok, service: row.service }, { ok: false, service: "own" });
+  } finally { stop(); }
 });
 
 test("a run without the setting is unchanged: no key, no grid", async () => {

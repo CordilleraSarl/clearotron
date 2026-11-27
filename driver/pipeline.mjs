@@ -4,6 +4,7 @@
 // turn, joins the fan-out in code (the fan-in barrier), gates on the refutation
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
+import { stopServingOwnQuestions } from "./own-search-questions.mjs";   // a run on its own search: its questions are answered while its segment runs
 import { writePark } from "./run-park.mjs";
 import { CLEARANCE_ENDING } from "./run-failed.mjs";
 import { runShell } from "./run-shell.mjs";
@@ -488,6 +489,7 @@ export async function pipeline(job, opts = {}) {
     if (isRunChoiceUnavailable(e)) return parkForRunChoice(e, { job, agent: opts.agent ?? config.defaultAgent });
     throw e;
   } finally {
+    stopServingOwnQuestions(opts.__runRef?.runDir);   // the segment's questions end with it (own-search-questions.mjs)
     reconcilePassStamps(opts.__runRef, opts.__ctx);
     releaseSlot(slot);
     liveRunSlot = null;

@@ -16,6 +16,7 @@ import { engineNamed, registeredEngines, selectEngine } from "../engine/registry
 import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerDoor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { urgentDecision } from "../engine/speed.mjs";
 import { installWebResearch, researchDoor, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
+import { serveOwnQuestions } from "../own-search-questions.mjs";   // a run on its own search has its stages' questions answered here
 import { resolveAuthMode } from "../engine/auth.mjs";
 import { note, runLog } from "../log.mjs";
 import { buildRunContext } from "../phase0.mjs";
@@ -339,6 +340,10 @@ export async function openRun({ job, opts }) {
     if (!isResume && runResearch == null)
       throw new Error(`the run's record that this installation chose no web-research service could not be written, so its web half could be searched with a service nobody chose: ${String(e?.message ?? e).slice(0, 300)}`);
   }
+  // A RUN WHOSE SEARCHES ARE ITS OWN AI PROGRAM'S has its stages' research questions answered by this process, with a
+  // session of its engine (own-search-questions.mjs), from here until the segment ends (pipeline.mjs). Nothing is asked
+  // until a stage asks.
+  serveOwnQuestions(run.runDir);
   // — WHICH ENGINE THIS RUN LOADED, beside the doctrine store whose commit sits one line up. Those
   // two `head`s are different repositories, which is the whole reason this event names its key
   // `engineHead`: reading the store's commit as the engine's is the mistake that produced two near-miss

@@ -48,7 +48,7 @@ test("own search follows the engine's route; Perplexity needs its key; the check
     [{ service: "perplexity", env: { PERPLEXITY_API_KEY: "secret-value" } }, true],
     [{ service: "google" }, false, /names no service/],
   ];
-  // Own search still sends its follow-up questions to Perplexity, so the cases that pass hold its key.
+  // A key held beside own search changes nothing: the next test shows own search passing without one.
   const KEY = { PERPLEXITY_API_KEY: "secret-value" };
   for (const [args, ok, why] of cases) {
     const r = webResearchCapability({ ...args, env: { ...(args.service === "own" ? KEY : {}), ...(args.env ?? {}) } });
@@ -59,14 +59,14 @@ test("own search follows the engine's route; Perplexity needs its key; the check
   assert.deepEqual(webResearchCapability({ service: "perplexity", env: {} }).missing, ["PERPLEXITY_API_KEY"]);
 });
 
-test("a part own search does not run yet keeps needing the Perplexity key, and the check says which part", () => {
-  assert.deepEqual([...OWN_SEARCH_STILL_PERPLEXITY], ["follow-up questions"]);
-  const r = webResearchCapability({ service: "own", env: {} });
+test("own search needs no Perplexity key; a part it did not run would need it, and the check would say which", () => {
+  assert.deepEqual([...OWN_SEARCH_STILL_PERPLEXITY], [], "own search runs every part of a clearance's web research");
+  assert.equal(webResearchCapability({ service: "own", env: {} }).ok, true, "no key, and own search runs");
+  const r = webResearchCapability({ service: "own", env: {}, stillPerplexity: ["a part"] });
   assert.equal(r.ok, false);
   assert.deepEqual(r.missing, ["PERPLEXITY_API_KEY"]);
-  assert.match(r.why, /still sends its follow-up questions to Perplexity/);
-  assert.deepEqual(webResearchCapability({ service: "own", env: { PERPLEXITY_API_KEY: "k" } }).stillPerplexity, ["follow-up questions"]);
-  assert.match(webResearchCapability({ service: "own", env: { CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_BEDROCK: "1" } }).why, /Amazon Bedrock/,
+  assert.match(r.why, /still sends its a part to Perplexity/);
+  assert.match(webResearchCapability({ service: "own", env: { CLEAROTRON_AI_BILLING: "cloud", CLAUDE_CODE_USE_BEDROCK: "1" }, stillPerplexity: ["a part"] }).why, /Amazon Bedrock/,
     "a route with no search is named first: a key would not make it run");
 });
 
@@ -74,7 +74,7 @@ test("the door checks the run's service, and the service handed in wins over the
   const p = policyFor("full-country-search");
   const KEY = { PERPLEXITY_API_KEY: "k" };
   assert.equal(researchDoor(p, { [WEB_RESEARCH_SETTING]: "own", ...KEY }).service, "own");
-  assert.throws(() => researchDoor(p, { [WEB_RESEARCH_SETTING]: "own" }), /still sends its follow-up questions to Perplexity/);
+  assert.equal(researchDoor(p, { [WEB_RESEARCH_SETTING]: "own" }).service, "own", "own search needs no key");
   assert.throws(() => researchDoor(p, { [WEB_RESEARCH_SETTING]: "own", ...KEY, CLEAROTRON_AI: "openai-agent" }, { engine: "probe-retired" }), /probe-retired engine has no web search/,
     "the door judges the engine the run uses, not the one the environment names");
   assert.throws(() => researchDoor(p, { [WEB_RESEARCH_SETTING]: "own" }, { service: "perplexity" }), /missing PERPLEXITY_API_KEY/,

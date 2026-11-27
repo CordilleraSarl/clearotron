@@ -30,7 +30,7 @@ import { gridProvenancePath } from "./grid-provenance.mjs";
 import { parsePrRiskResults } from "../../connotation-search.mjs";
 import { driverDir, ensureDriverDir } from "../../../shared/driver-dir.mjs";
 
-import { ownSearchOn } from "./own-search-setting.mjs";
+import { ownSearchOn, recordedEngine } from "./own-search-setting.mjs";
 export { RUN_RECORD_FILE, ownSearchOn } from "./own-search-setting.mjs";
 
 const words = (q) => String(q ?? "").trim().replace(/\s+/g, " ");
@@ -280,11 +280,24 @@ export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSIO
 //
 // A follow-up question (an owner lookup, a use check) is asked of the run's own AI program in a session of its own,
 // handed nothing but the question and the program's own web search. The model is the one ruled for the question's
-// level, never a lesser one: a Knockout's owner lookup is one question at light depth on the sweep tier (Sonnet on
-// Claude, GPT-6.1 Terra on Codex). An answer counts only where the program searched: a reply with no search behind it is
-// an answer from memory, and is recorded as not answered. The pages behind an answer are the addresses the program's own
-// search records returned, never addresses the reply names that no search returned.
-export const QUESTION_TIERS = Object.freeze({ "knockout-search": Object.freeze({ model: "sonnet", thinking: "low" }) });
+// level, never a lesser one (design's ruling, 2026-11-26), named per product:
+//   · Knockout: one question at light depth on the sweep tier, Sonnet on Claude and GPT-6.1 Terra on Codex;
+//   · Global preliminary: the same models, at medium effort, the depth its questions are asked at today;
+//   · Multi-country: Opus 5.5 on Claude and GPT-6.1 Sol on Codex, at high effort;
+//   · Full country: Opus 5.5 at its highest effort on Claude, GPT-6.2 Sol at its deepest on Codex.
+// These are the candidates the comparison verifies, not a finding that they match the other service. An answer counts
+// only where the program searched: a reply with no search behind it is an answer from memory, and is recorded as not
+// answered. The pages behind an answer are the addresses the program's own search records returned, never addresses
+// the reply names that no search returned.
+export const QUESTION_TIERS = Object.freeze({
+  "knockout-search": Object.freeze({ model: "sonnet", thinking: "low" }),
+  "global-preliminary-search": Object.freeze({ model: "sonnet", thinking: "medium" }),
+  "multi-country-focus-search": Object.freeze({ model: "opus", thinking: "high" }),
+  "full-country-search": Object.freeze({ model: "opus", thinking: "max", models: Object.freeze({ "openai-agent": "gpt-6.2-sol" }) }),
+});
+
+/** The model a tier asks for on `engine`: the tier's own name for that engine where it has one, else its tier. PURE. */
+export const questionModel = (tier, engine) => tier?.models?.[engine] ?? tier?.model ?? null;
 
 /** A question session's prompt: the question, and how to answer it. Words the model reads, approved by design. PURE. */
 export function questionPrompt(question) {
@@ -317,9 +330,10 @@ export const QUESTION_RECORDS_FILE = "web-question-records.jsonl";
  * `{ ok: false, cause, service }`. Its sessions are made once per run, on the tier `tier` names, when the first question
  * asks; each question's record is kept with the run. IMPURE.
  */
-export function ownSearchQuestioner(runDir, { tier, makeSessions = makeOwnSearchSessions } = {}) {
+export function ownSearchQuestioner(runDir, { tier, timeoutSec = SESSION_TIMEOUT_SEC, makeSessions = makeOwnSearchSessions } = {}) {
   let made = null;
-  const sessions = () => (made ??= Promise.resolve(makeSessions({ runDir, sessionDir: driverDir(runDir, "own-search-sessions"), model: tier.model, thinking: tier.thinking })));
+  const sessions = () => (made ??= Promise.resolve(makeSessions({ runDir, sessionDir: driverDir(runDir, "own-search-sessions"),
+    model: questionModel(tier, recordedEngine(runDir)), thinking: tier.thinking, timeoutSec })));
   return async (task) => {
     const started = Date.now();
     const s = await sessions();
