@@ -4636,9 +4636,9 @@
           "todos": 0
         },
         "doctor-names-what-it-could-not-read.test.mjs": {
-          "tests": 6,
-          "asserts": 28,
-          "skips": 3,
+          "tests": 8,
+          "asserts": 35,
+          "skips": 4,
           "todos": 0
         },
         "doctor-names-who-is-in-the-store.test.mjs": {
