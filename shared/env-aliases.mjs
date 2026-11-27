@@ -46,10 +46,10 @@ export const RETIRED_NEW_SPELLINGS = Object.freeze({
     + "self-contained outbox packet (docs/DELIVERY.md). If this was set to `stage`, nothing is sending "
     + "your notices: the packets are being written and are waiting for an integrator to consume them.",
   // The four session settings of the two HTTP doors, deleted with their sessions (2026-11-27).
-  TRADEMARK_MCP_SESSION_TTL_MS: "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set.",
-  TRADEMARK_MCP_SESSION_MAX: "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set.",
-  CLIENT_MCP_SESSION_TTL_MS: "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set.",
-  CLIENT_MCP_SESSION_MAX: "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set.",
+  TRADEMARK_MCP_SESSION_TTL_MS: "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set, and the setting does nothing: delete the line.",
+  TRADEMARK_MCP_SESSION_MAX: "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set, and the setting does nothing: delete the line.",
+  CLIENT_MCP_SESSION_TTL_MS: "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set, and the setting does nothing: delete the line.",
+  CLIENT_MCP_SESSION_MAX: "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set, and the setting does nothing: delete the line.",
 });
 
 /** Set and non-empty. An `X=` line in an EnvironmentFile means "not configured", never "empty value". */
