@@ -2,9 +2,9 @@
 
 *What the engine emits when a run finishes, and who does the sending.*
 
-The engine **never sends anything**. In the default comms mode (`handoff`) it publishes the
-report to the pool and writes **self-contained event packets** to the outbox; the integrator
-consumes them and does the sending. This is the productized seam: wire your channel layer
+The engine sends nothing of its own unless the install names a route for failure notices (see
+"A route of the install's own" below). It publishes the report to the pool and writes
+**self-contained event packets** to the outbox; the integrator consumes them and does the sending. This is the productized seam: wire your channel layer
 (email/chat/webhook) against the packets below and you never touch engine internals.
 
 ## Comms mode — there isn't one
@@ -208,6 +208,100 @@ The filesystem loop below remains equivalent for integrators that do have data-p
 The markers are edge-triggers; `status.json.sendPending` + `.sent` are the source of truth.
 A lost marker never loses a delivery (the backstop scan finds it); a duplicate marker never
 double-sends (`.sent` guards it).
+
+## A route of the install's own
+
+An install with no courier, or a courier that cannot see every notice, can name a receiver on the
+same machine, and the worker sends it each owed failure notice itself. With nothing configured the
+install behaves exactly as described above.
+
+| Setting | Meaning |
+|---|---|
+| `CLEAROTRON_NOTICE_URL` | The receiver: `http://` or `https://` on a loopback address (`127.0.0.1`, `::1`, `localhost`). Any other address is refused, and nothing is sent. |
+| `CLEAROTRON_NOTICE_AUDIENCES` | `submitter`, `operator`, or both. An audience left out stays with the courier: its packets are left in the outbox, untouched. |
+| `CLEAROTRON_NOTICE_DEDUPE` | `1` when the receiver drops a repeated `Idempotency-Key`. |
+
+**What is owed, and to whom.** Notices are read from the order's receipt in the queue and from the
+engine check's record, never from the `.pending` markers:
+
+| What happened | The person who placed the order | The operator |
+|---|---|---|
+| Refused at the claim (allowance, the order's content, a demo company) | yes | no |
+| Refused at dispatch (the checks before a run starts, the engine's sign-in) | yes | yes |
+| A run stopped before delivering | yes | yes |
+| The engine check failed | | yes |
+| A finished report's send is stuck: the courier's wakes delivered nothing, and the outbox set its marker aside (`quarantine/STUCK-ALERTS.jsonl`) | no | yes |
+
+The route carries failures only. A finished report reaches its submitter through the courier, as before, and the
+receipt shows it ready. A send that is merely still owed raises nothing; only the outbox's own record of a stuck
+send does. That alert settles nothing: the report stays owed to its submitter, and the courier's delivery settles it,
+with no second search.
+
+Each time a run stops is its own notice, named by the `failureId` its failure packet carries: a run that is
+resumed and stops again owes a new notice under a new delivery id, and the earlier one is not sent again. A
+run that recovered and owes its report no longer stands stopped, so nobody is told it stopped, although its
+order still reads failed in the queue.
+
+A cancelled order and a parked one are owed nothing. An audience is owed nothing from before the
+route began to serve it: naming a route does not send the install's history, and an audience moved
+from a courier to the route is not told again what the courier told it. The time is kept per audience
+in `<outbox>/deliveries/route-since.json`, and an audience the route stops serving loses it.
+
+**The request.** One `POST` per notice, `Content-Type: application/json`, header `Idempotency-Key:
+<deliveryId>`. The body carries `deliveryId`, `kind` (`order-refused`, `run-stopped`,
+`engine-check-failed`, `delivery-stuck`), `audience`, `recipient` and `at`, and then:
+
+- for the person who placed the order, `order`: the receipt as `order_status` gives it to a company
+  (`reference`, `state`, `terminal`, `runId`, and `reason` only for an order refused before it ran),
+  with `recipient` naming the company, its organisation for Generic, and the `forwarder`,
+  `forwarderEmail` and `msgId` the order carried;
+- for the operator, `fault`: the kind, the order or run it concerns, the stage and recorded reason
+  where there are ones, and `nextAction`, a code (`check-engine`, `read-the-run`, and for a stuck send
+  `release-the-delivery`, with the outbox's own recovery step in `recover`).
+
+Neither carries a sentence for the recipient: the words are the receiver's to choose. Nothing sent for
+one company names another company or its orders.
+
+**The answer.** A `2xx` takes the notice: the receiver accepted it, and it is not handed over again. It does
+not say the recipient was told. A receiver that has sent the notice on to its recipient says so in the same
+answer's body, `{"sent":{"messageId":"<that message's id>"}}`: a downstream send receipt. Anything else, or no
+connection, leaves the notice `failed`, and it is sent again after a wait: one minute, doubling, at most fifteen.
+Only the notice is sent again, never the search.
+
+**The record.** Each notice has one file in `<outbox>/deliveries/`, named by its delivery id, a hash of
+the event, the audience and the recipient, so restarts and retries keep it. Its `state` is `pending`,
+`attempted` (written before the request goes out), `confirmed`, `failed` or `ambiguous`. A notice is
+ambiguous when its request went out and no answer came back, or when the worker stopped between sending
+it and recording the answer. An ambiguous notice is sent again only where `CLEAROTRON_NOTICE_DEDUPE=1`;
+otherwise it waits for the operator to settle it with the receiver.
+
+**Settling an uncertain notice.** The operator checks the receiver for the notice's delivery id, then says what it
+found:
+
+    node driver/notice-delivery.mjs list               # every notice not confirmed: its id, state and next action
+    node driver/notice-delivery.mjs received <id>      # the receiver holds it: that notice alone is confirmed, nothing settled
+    node driver/notice-delivery.mjs absent <id>        # it does not: that notice alone is sent again, under the same id
+
+Where the answer stays unknown, nothing is given and the notice stays ambiguous. Each answer prints JSON; a refusal
+exits 4 with its reason code (`no-such-notice`, `not-reconcilable:<state>`, `superseded-no-retry`). `list` gives each
+notice `retriesByItself`, true for one the worker sends again by itself, and `nextAction: settle-with-receiver` for
+one that waits on the operator.
+
+A stopped run's notice that a later event has taken over stays listed with its own outcome, for the record, and
+carries `superseded`: `later-failure` when the run stopped again, or `report` when it recovered and owes its report.
+Such a notice is sent again by nothing, so it has `retriesByItself: false` and no next action, and `absent` on it is
+refused with `superseded-no-retry`. Only the current event's notice asks anything of the operator. A notice whose
+failure carries no `failureId` is never taken for superseded.
+
+**Settling the send.** A stopped run's owed send is settled only by a downstream send receipt for the person
+who placed it. The settle is made exactly as `mark_sent` makes it: `.sent` is written with `via: "notice-route"`
+and the receipt's `messageId`, `sendPending` is cleared, and the run's markers are removed. A bare `2xx` settles
+nothing, and neither does the delivery id, which is minted before the send. The settle is bound to the failure and
+the person the notice was about, as recorded when the notice was first seen, and the failure is read again as the
+settle is written. Where the run has since recovered and owes its report, or has stopped again, or its failure
+packet carries no `failureId` (one written before packets carried it), the run stays owed. Otherwise it is
+settled by the courier's `mark_sent`, or an operator's attestation of the send. A run already settled is not sent
+at all.
 
 ## Legacy notes
 

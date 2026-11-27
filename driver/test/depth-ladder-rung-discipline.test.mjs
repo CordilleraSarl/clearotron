@@ -22,36 +22,15 @@ const RUNGS = Object.entries(stages)
   .filter(([name, v]) => /RungDirective$/.test(name) && typeof v === "function")
   .map(([name, fn]) => ({ name, fn }));
 
-/**
- * Rungs CONVERTED to driver selection, and therefore correctly uncalled.
- *
- * That architecture prefers driver selection wherever the typed key precedes the dispatch: the
- * driver lists the items and unlisted work is never asked for, which has none of a directive's failure
- * modes. `profileRungDirective` graded grounded profiles by asking the seat to classify findings at
- * review time; the band is on findings.json before that stage runs, so `profile-selection.mjs` lists
- * the ordinals instead.
- *
- * NAMED HERE RATHER THAN REMOVED FROM THE SCAN, because "uncalled" and "converted" look identical to a
- * grep and only one of them is fine. A rung that quietly stops being called is the vacuous pass this
- * file exists to catch; a converted one has a replacement, and the arm at the end asserts it is wired.
- */
-const CONVERTED = {
-  profileRungDirective: { to: "profileSelectionDirective", from: "./profile-selection.mjs" },
-};
-/**
- * Rungs RETIRED with no replacement, and therefore correctly uncalled. `proseRungDirective` gave rules for per-finding write-ups in
- * the narrative, and the synthesis call records sections only and says those write-ups are not a field, so the rules contradicted
- * the message they rode in (design, 2026-11-06). The arm at the end of this file asserts that nothing calls it.
- */
-const RETIRED_RUNGS = new Set(["proseRungDirective"]);
+// Which findings get a grounded profile is not a rung: the band is on findings.json before that stage runs, so the driver lists
+// the ordinals (`profile-selection.mjs`), and the arm at the end of this file asserts that selection is wired. The narrative's
+// per-finding prose rules left the synthesis dispatch with no replacement (design, 2026-11-06).
 
-/** The depth field each rung reads, derived from its own name: proseRungDirective → narrativeProse. */
+/** The depth field each rung reads, derived from its own name: inquiryRungDirective → inquiryTrace. */
 const FIELD_OF = {
-  proseRungDirective: "narrativeProse",
   inquiryRungDirective: "inquiryTrace",
   skepticRungDirective: "skepticFlagging",
   variantRungDirective: "variantManifest",
-  profileRungDirective: "groundedProfiles",
 };
 
 /** Every value any product's table actually uses for that field, plus the ways a value can be absent. */
@@ -66,7 +45,6 @@ test("every rung is CALLED by a stage — a defined-but-unwired rung grades noth
   const src = driverSource("stages.mjs")
     .split("\n").filter((l) => !/^export function \w+RungDirective\(/.test(l)).join("\n");
   for (const { name } of RUNGS) {
-    if (CONVERTED[name] || RETIRED_RUNGS.has(name)) continue;   // asserted by the arms at the end of this file instead
     // `(depth` NOT `(depth)`: a rung that grew a second argument — the prose rung takes the run's band
     // order now — is still called, and an exact-paren match would report it unwired. That reads as the
     // vacuous pass this arm exists to catch, in the opposite direction.
@@ -78,8 +56,9 @@ test("every rung is CALLED by a stage — a defined-but-unwired rung grades noth
 });
 
 test("the rung family is DISCOVERABLE and non-empty — a zero here is a broken instrument", () => {
-  assert.ok(RUNGS.length >= 5,
-    `found ${RUNGS.length} rung directive(s) in stages.mjs. Five rungs ship today; a collapse means `
+  assert.ok(RUNGS.length >= 3,
+    `found ${RUNGS.length} rung directive(s) in stages.mjs. Three rungs ship today (the profile rung became driver selection, `
+    + "and the prose rung left the synthesis dispatch); a collapse below that means "
     + "the naming convention moved and every rung below is now unguarded, not that the ladder got simpler.");
   for (const { name } of RUNGS) {
     assert.ok(FIELD_OF[name],
@@ -169,28 +148,10 @@ test("no rung tells a seat to keep a STAND-IN entry — grading is by omission",
   assert.ok(checked >= 5, `only ${checked} graded instruction(s) examined — the vocabularies moved`);
 });
 
-test("a CONVERTED rung's replacement IS wired — 'uncalled' and 'converted' look the same to a grep", () => {
-  // The other half of the skip above. Skipping a converted rung there is only safe if something asserts
-  // its replacement actually reached a dispatch — otherwise "we converted it" is a comment, and the
-  // product runs ungraded with a tidy explanation for why nothing calls the old function.
+test("the grounded-profile selection IS wired — the driver lists the ordinals the retired directive asked the seat for", () => {
+  // Driver selection replaced a directive here, and "replaced" and "quietly unwired" look the same to a grep: the product would
+  // run ungraded with a tidy explanation for why nothing asks. So the replacement's import and its call are both asserted.
   const src = driverSource("stages.mjs");
-  assert.ok(Object.keys(CONVERTED).length, "nothing is marked converted — this arm reads nothing");
-  for (const [name, { to, from }] of Object.entries(CONVERTED)) {
-    assert.ok(src.includes(from), `${name} is marked converted to ${to}, and stages.mjs does not import ${from}`);
-    assert.match(src, new RegExp(`\\b${to}\\(`),
-      `${name} is marked converted and its replacement ${to} is never called — the product is ungraded `
-      + "with a comment explaining why the old function is unused");
-  }
-});
-
-test("a RETIRED rung is called by no stage — retired means gone from every dispatch, not merely unlisted", () => {
-  const src = driverSource("stages.mjs")
-    .split("\n").filter((l) => !/^export function \w+RungDirective\(/.test(l)).join("\n");
-  const pipeline = driverSource("pipeline.mjs");
-  assert.ok(RETIRED_RUNGS.size, "nothing is marked retired — this arm reads nothing");
-  for (const name of RETIRED_RUNGS) {
-    assert.ok(RUNGS.some((r) => r.name === name), `${name} is marked retired and is no longer exported: drop it from RETIRED_RUNGS`);
-    for (const [where, text] of [["stages.mjs", src], ["pipeline.mjs", pipeline]])
-      assert.equal([...text.matchAll(new RegExp(`\\b${name}\\(`, "g"))].length, 0, `${where} still calls the retired ${name}`);
-  }
+  assert.ok(src.includes("./profile-selection.mjs"), "stages.mjs does not import ./profile-selection.mjs");
+  assert.match(src, /\bprofileSelectionDirective\(/, "profileSelectionDirective is never called — the product is ungraded");
 });
