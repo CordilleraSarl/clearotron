@@ -55,7 +55,8 @@ import { engineCheckDir } from "./engine/health.mjs";
 import { owedPacket, sendSettled, settleSend } from "./send-settle.mjs";
 import { runDirFor } from "./outbox-backoff.mjs";   // the run a stuck marker names, live or archived
 import { note } from "./log.mjs";
-import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { homedir } from "node:os";
+import { parseEnvFile } from "../shared/env-file-merge.mjs";
 
 export const NOTICE_STATES = Object.freeze(["pending", "attempted", "confirmed", "failed", "ambiguous"]);
 /** What the operator does next, as a code: the words are the owner's. */
@@ -450,23 +451,16 @@ export function noticeStatusLines(listed, command) {
   return lines;
 }
 
-// THE OPERATOR'S COMMAND LINE: `clearotron notices list | received <id> | absent <id>`. Every answer is the status
-// lines for what still waits, in their approved words, and nothing else: no record field, reason or code reaches the person
-// running it. An answer that was not taken exits 4; a command that is not one of the three exits 2 with the usage alone.
-if (isEntrypoint(import.meta.url)) {
-  const [verb, id] = process.argv.slice(2);
-  const { invoke } = await import("../shared/invocation.mjs");
-  const waiting = () => {
-    const lines = noticeStatusLines(undeliveredNotices(), invoke("notices"));
-    if (lines.length) process.stdout.write(lines.join("\n") + "\n");
-  };
-  if (verb === "list" && !id) waiting();
-  else if ((verb === "received" || verb === "absent") && id) {
-    const r = reconcileNotice(id, verb);
-    waiting();
-    if (!r.ok) process.exitCode = 4;
-  } else {
-    process.stderr.write(`${invoke("notices")} list | received <id> | absent <id>\n`);
-    process.exitCode = 2;
-  }
+/**
+ * The install's own settings, read once and the same way for `clearotron status` and `clearotron notices`: this process's
+ * environment, then the install's settings file (`~/.env`, what the background services read), the file winning. The
+ * outbox and work folders the file names are applied to this process where it names none, so both commands read the same
+ * notice record; the returned settings carry the receiver's duplicate-handling setting too. IMPURE.
+ */
+export function installNoticeSettings({ env = process.env, home = homedir() } = {}) {
+  let file = {};
+  try { file = parseEnvFile(readFileSync(join(home, ".env"), "utf8")); } catch { /* no file: this process's settings alone */ }
+  const effective = { ...env, ...file };
+  for (const k of ["CLEAROTRON_OUTBOX_DIR", "CLEAROTRON_WORK_DIR"]) if (effective[k] && !env[k]) env[k] = effective[k];
+  return effective;
 }

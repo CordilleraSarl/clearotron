@@ -6,7 +6,7 @@
 // approved for these surfaces (2026-11-27), counted for the state the install is in.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -92,8 +92,10 @@ test("status, run as the person running the install, reads the install's own rec
 });
 
 // The packaged command, as the person running the install meets it: no record field, recorded reason or code reaches them.
+// From an ordinary shell: only the install's settings file names the outbox, as for status. Passing the outbox to the
+// command here hid a command that read a different folder from the one status named (beta.1 review, 2026-11-27).
 const notices = (home, ...args) => spawnSync(process.execPath, [join(REPO, "bin", "clearotron.mjs"), "notices", ...args],
-  { env: { ...cleanEnv(home), CLEAROTRON_OUTBOX_DIR: join(home, "trademark", "outbox") }, encoding: "utf8" });
+  { env: cleanEnv(home), encoding: "utf8" });
 const INTERNAL = /ETIMEDOUT|ECONNREFUSED|lastDetail|retriesByItself|nextAction|not-a-delivery-id|no-such-notice|not-reconcilable|superseded-no-retry|a-pass-is-running|"state"|\{/;
 
 test("notices list, from the packaged launcher, after a receiver timeout: the approved lines and nothing of the record", () => {
@@ -133,5 +135,40 @@ test("an answer the record does not take exits 4 and shows only what still waits
     const usage = notices(home, "unknown");
     assert.equal(usage.status, 2);
     assert.match(usage.stderr.trim(), /clearotron notices list \| received <id> \| absent <id>$/);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("status and the notices command read the same settings file: the notice status names is the one the command lists and answers", () => {
+  const home = install();
+  try {
+    const status = spawnSync(process.execPath, [join(REPO, "bin", "status.mjs")], { env: cleanEnv(home), encoding: "utf8" });
+    const named = /Check whether the receiver accepted notice ([0-9a-f]{24})\./.exec(status.stdout)?.[1];
+    assert.equal(named, "bbbbbbbbbbbbbbbbbbbbbbbb", "guard: status does not name the uncertain notice");
+    const list = notices(home, "list");
+    assert.equal(list.status, 0, list.stderr);
+    assert.match(list.stdout, new RegExp(`Check whether the receiver accepted notice ${named}\\.`), "the command lists nothing status named");
+    // Both operator answers, taken from status's own instruction, are taken.
+    const received = notices(home, "received", named);
+    assert.equal(received.status, 0, "received, as status instructs, was refused");
+    const rec = (id) => JSON.parse(readFileSync(join(home, "trademark", "outbox", "deliveries", `${id}.json`), "utf8"));
+    assert.equal(rec(named).state, "confirmed");
+    const second = "dddddddddddddddddddddddd";
+    writeFileSync(join(home, "trademark", "outbox", "deliveries", `${second}.json`), JSON.stringify({ id: second, kind: "run-stopped", audience: "operator",
+      recipient: { role: "operator" }, state: "ambiguous", attempts: [{ at: "2026-11-27T05:00:00Z", outcome: "ambiguous" }], updatedAt: "2026-11-27T05:00:00Z", nextAttemptAt: null }));
+    assert.equal(notices(home, "absent", second).status, 0, "absent, as status instructs, was refused");
+    assert.equal(rec(second).state, "failed");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("the receiver's duplicate handling, set only in the settings file, is read alike by status and the command", () => {
+  const home = install();
+  try {
+    writeFileSync(join(home, ".env"), readFileSync(join(home, ".env"), "utf8") + "CLEAROTRON_NOTICE_DEDUPE=1\n");
+    const status = spawnSync(process.execPath, [join(REPO, "bin", "status.mjs")], { env: cleanEnv(home), encoding: "utf8" });
+    const list = notices(home, "list");
+    // A receiver that drops repeats is sent an uncertain notice again by itself: both count it among the retries.
+    assert.match(status.stdout, /2 failure notices await automatic retry\./);
+    assert.equal(list.stdout.trim(), "2 failure notices await automatic retry.");
+    assert.doesNotMatch(status.stdout + list.stdout, /Check whether the receiver accepted notice/);
   } finally { rmSync(home, { recursive: true, force: true }); }
 });

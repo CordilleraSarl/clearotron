@@ -445,7 +445,7 @@ test("a finished report the courier cannot send: the operator is alerted once, t
  */
 const operatorSays = (box, verb, id) => {
   if (verb !== "list" && verb !== "received" && verb !== "absent") {
-    const r = spawnSync(process.execPath, [join(HERE, "..", "notice-delivery.mjs"), verb, ...(id ? [id] : [])], { env: { ...process.env, ...box.env }, encoding: "utf8" });
+    const r = spawnSync(process.execPath, [join(HERE, "..", "..", "bin", "notices.mjs"), verb, ...(id ? [id] : [])], { env: { ...process.env, ...box.env }, encoding: "utf8" });
     return { code: r.status, out: null, stderr: r.stderr };
   }
   const mod = JSON.stringify(pathToFileURL(join(HERE, "..", "notice-delivery.mjs")).href);
