@@ -31,7 +31,9 @@ You are the courier, not the author.
    is owed this notice as they are owed a report, and only `mark_sent` settles it. An `ack_event` leaves it
    owed, and the notice goes out again on the next sweep.
 
-4. **`kind: "intake-rejected"`** — a request died at validation; `text` says why. For a `clarify`,
+4. **`kind: "intake-rejected"`** — a request died at validation; `text` says why. For a client-filed order, send the
+   packet’s not-started text. Its errors list is empty and reasonKind identifies the check. An authorized operator
+   can use order_status for the recorded diagnostic. Keep that diagnostic with the operator. For a `clarify`,
    the fix is a question back to the requester — thread it on the packet's `msgId`. Then
    **`ack_event { file }`**.
 
