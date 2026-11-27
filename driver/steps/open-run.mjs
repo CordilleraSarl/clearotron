@@ -15,7 +15,8 @@ import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
 import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerDoor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { urgentDecision } from "../engine/speed.mjs";
-import { installWebResearch, refuseUnchosenResearch, researchDoor, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
+import { installWebResearch, ownSearchLevelRefusal, refuseUnchosenResearch, researchDoor, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
+import { readCodexCatalog } from "../engine/codex-catalog.mjs";   // the models a Codex sign-in offers, read with no model call
 import { serveOwnQuestions } from "../own-search-questions.mjs";   // a run on its own search has its stages' questions answered here
 import { resolveAuthMode } from "../engine/auth.mjs";
 import { note, runLog } from "../log.mjs";
@@ -413,6 +414,17 @@ export async function openRun({ job, opts }) {
   // A RUN WITH NO WEB-RESEARCH SERVICE, NOW THAT ITS PRODUCT IS KNOWN: a clearance is refused before its first stage, as
   // the research door refuses one its order names; a Knockout, its profile's default included, runs its register half.
   if (runResearch == null && !opts.recordFetcher) refuseUnchosenResearch(ctx.searchPolicy);
+  // A RUN ON ITS OWN SEARCH WHOSE ENGINE DOES NOT OFFER THE MODEL ITS PRODUCT'S QUESTIONS ARE RULED FOR stops here,
+  // before its first stage, rather than paying for its register stages and failing at its first question. A resumed one
+  // parks by name with its work kept. Read from the sign-in's own catalog, with no model call (engine/codex-catalog.mjs).
+  if (runResearch === "own" && !opts.recordFetcher) {
+    const runEngine = recorded.state === "recorded" ? recorded.engine : selectEngine().name;
+    const stop = runEngine === "openai-agent" ? ownSearchLevelRefusal({ policy: ctx.searchPolicy, engine: runEngine, catalog: readCodexCatalog({ env: engineEnv }) }) : null;
+    if (stop) {
+      if (recorded.state === "recorded") throw park({ kind: "research", recorded: "own", machine: machineResearch.service ?? null, detail: stop.why });
+      throw new Error(stop.why);
+    }
+  }
   // acceptance 5 — recorded on EVERY run, ungraded included: "which ladder applied" must be a
   // read, never an inference from which product the job asked for.
   runLog(run.runDir, depthLadderEvent(ctx));

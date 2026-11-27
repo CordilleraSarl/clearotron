@@ -25,6 +25,8 @@
 // IT IS NEVER A TOOL SERVER'S IMPORT: it reads the setting and the billing rules (engine/auth.mjs), which no tool server is
 // handed. The names alone live in web-research-names.mjs, for the modules tool servers do import.
 import { resolveAuthMode } from "./engine/auth.mjs";
+import { QUESTION_TIERS, questionModel } from "./engine/mcp/own-search.mjs";   // the model each product's questions are ruled for
+import { openaiModel } from "./engine/openai-agent.mjs";   // — as the Codex engine names it
 
 import { OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";
 import { preflightResearchCredential } from "./driver.config.mjs";
@@ -112,6 +114,25 @@ export function researchDoor(policy, env = process.env, { service, engine = null
  */
 export function refuseUnchosenResearch(policy) {
   if (policy?.components?.commonLawGrid === true) throw new Error(notChosenRefusal(policy));
+}
+
+/**
+ * WHETHER THE RUN'S ENGINE OFFERS THE MODEL ITS PRODUCT'S QUESTIONS ARE RULED FOR, on own search: `{ model, why }` where
+ * the sign-in's catalog (engine/codex-catalog.mjs) is known and lacks it, else null. Design's ruling, 2026-11-27: such a
+ * question never runs on another model, and the order stops before anything is spent. Codex only: Claude's catalog is
+ * not read here. PURE.
+ */
+export function ownSearchLevelRefusal({ policy, engine, catalog }) {
+  // The run's frozen policy names its product `level`; the registry's own entry names it `product`.
+  const level = policy?.level ?? policy?.product ?? null;
+  if (engine !== "openai-agent" || !(catalog instanceof Set) || !level) return null;
+  const tier = QUESTION_TIERS[level];
+  if (!tier) return null;
+  let model;
+  try { model = openaiModel(questionModel(tier, engine)); } catch { return null; }
+  if (!model || catalog.has(model)) return null;
+  return { model, why: `[preflight] This search's research questions need ${model}, which this Codex sign-in does not offer. `
+    + "Use Claude, or a Codex sign-in that offers it, then start the search again." };
 }
 
 /** The door's words for an installation that has chosen no web-research service. PURE. */

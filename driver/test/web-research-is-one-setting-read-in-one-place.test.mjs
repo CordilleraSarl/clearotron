@@ -146,3 +146,27 @@ test("a run whose service this runner cannot serve parks under its own kind", ()
   assert.match(e.message, /started on the AI program's own web search, and this runner cannot serve it/);
   assert.match(new RunChoiceUnavailable({ kind: "research", recorded: "perplexity", run: null }).message, /started on the perplexity web research/);
 });
+
+test("on own search, a Codex sign-in whose catalog lacks the model a product's questions are ruled for stops that product before anything is spent", async () => {
+  const { ownSearchLevelRefusal } = await import("../web-research.mjs");
+  const { catalogFrom, readCodexCatalog } = await import("../engine/codex-catalog.mjs");
+  // The catalog's shape as `codex debug models` renders it (measured 2026-11-27), model ids only.
+  const catalog = catalogFrom(JSON.stringify({ models: [{ slug: "gpt-6.1-terra" }, { slug: "gpt-6.1-sol" }, { slug: "gpt-6-luna" }] }));
+  assert.deepEqual([...catalog], ["gpt-6.1-terra", "gpt-6.1-sol", "gpt-6-luna"]);
+  const full = ownSearchLevelRefusal({ policy: policyFor("full-country-search"), engine: "openai-agent", catalog });
+  assert.equal(full.model, "gpt-6.2-sol");
+  assert.match(full.why, /^\[preflight\] This search's research questions need gpt-6\.2-sol, which this Codex sign-in does not offer\./);
+  for (const product of ["knockout-search", "global-preliminary-search", "multi-country-focus-search"])
+    assert.equal(ownSearchLevelRefusal({ policy: policyFor(product), engine: "openai-agent", catalog }), null, `${product}: its model is offered`);
+  assert.equal(ownSearchLevelRefusal({ policy: policyFor("full-country-search"), engine: "anthropic-agent", catalog }), null, "Claude's catalog is not read here");
+  assert.equal(ownSearchLevelRefusal({ policy: policyFor("full-country-search"), engine: "openai-agent", catalog: null }), null,
+    "a catalog that could not be read stops nothing: not known is not 'offers nothing'");
+  for (const text of ["not json", JSON.stringify({ models: [] }), JSON.stringify({ other: 1 })]) assert.equal(catalogFrom(text), null, text);
+  // The program is asked for its catalog, with no model call, and a failed or refused render reads as not known.
+  const asked = [];
+  const run = (bin, args) => { asked.push(args); return { status: 0, stdout: JSON.stringify({ models: [{ slug: "gpt-6-luna" }] }) }; };
+  assert.deepEqual([...readCodexCatalog({ env: { CLEAROTRON_CODEX_PATH: "/usr/local/bin/codex" }, run })], ["gpt-6-luna"]);
+  assert.deepEqual(asked, [["debug", "models"]]);
+  assert.equal(readCodexCatalog({ env: { CLEAROTRON_CODEX_PATH: "/usr/local/bin/codex" }, run: () => ({ status: 1, stdout: "" }) }), null);
+  assert.equal(readCodexCatalog({ env: { CLEAROTRON_CODEX_PATH: "/usr/local/bin/codex" }, run: () => { throw new Error("ENOENT"); } }), null);
+});
