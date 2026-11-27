@@ -33,6 +33,8 @@ if (!existsSync(join(DIST, 'index.html'))) { console.error('order-receipt-render
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.json': 'application/json', '.woff2': 'font/woff2' }
 
 const REF = 'ORDER-7@0123456789ab'
+/** The reference line, matched literally: every character a pattern treats as special is escaped. */
+const REF_LINE = new RegExp(`Order reference: ${REF.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
 const ME = { permissions: { run: true, manage: false }, email: 'demo@example.test', accounts: ['coastline'], allAccounts: false,
   access: [{ kind: 'company', key: 'coastline', name: 'Coastline', org: 'coastline-org' }], organisations: [{ key: 'coastline-org', name: 'Coastline' }],
   accountOrgs: { coastline: 'coastline-org' } }
@@ -75,8 +77,8 @@ const origin = `http://127.0.0.1:${server.address().port}`
 
 const { profile: userDir, env: chromeEnv } = browserRun('order-receipt-check-')
 const chrome = spawn('google-chrome', ['--headless=new', '--disable-gpu', '--no-sandbox', '--hide-scrollbars',
-  `--user-data-dir=${userDir}`, '--window-size=1280,900', '--remote-debugging-port=0', 'about:blank'],
-{ stdio: ['ignore', 'pipe', 'pipe'], detached: true, env: chromeEnv })
+  `--user-data-dir=${userDir}`, '--window-size=1280,900', '--remote-debugging-port=0', 'about:blank',
+], { stdio: ['ignore', 'pipe', 'pipe'], detached: true, env: chromeEnv })
 reapOnExit(chrome)
 let said = ''
 const wsUrl = await new Promise((resolve, reject) => {
@@ -146,7 +148,7 @@ const KINDS = {
 }
 for (const [kind, sentence] of Object.entries(KINDS)) {
   t = await open([receipt({ state: 'refused', terminal: true, reasonKind: kind })], /Order did not start/)
-  expect(`refused/${kind}`, t, /Order did not start/, sentence, new RegExp(`Order reference: ${REF.replace(/[.@]/g, '\\$&')}`))
+  expect(`refused/${kind}`, t, /Order did not start/, sentence, REF_LINE)
   if (kind === 'setup') expect('refused/setup', t, KINDS.other)
   if (kind === 'run-cap') await capture('refused-run-cap')
   if (kind === 'other') await capture('refused-other')
@@ -180,7 +182,7 @@ await cdp('Page.navigate', { url: `${origin}/portal/clearances` })
   const t1 = Date.now()
   while (Date.now() - t1 < 8000 && !/Order reference/.test(await text())) await sleep(200)
   t = await text()
-  expect('clearances → receipt', t, /Order did not start/, /Your company has reached its search limit\./, new RegExp(`Order reference: ${REF.replace(/[.@]/g, '\\$&')}`))
+  expect('clearances → receipt', t, /Order did not start/, /Your company has reached its search limit\./, REF_LINE)
 }
 
 ws.close()
