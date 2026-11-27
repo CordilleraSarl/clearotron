@@ -17,7 +17,7 @@ import { test } from "node:test";
 import { driverSource } from "./driver-source.mjs";
 import assert from "node:assert/strict";
 import { stageCharter } from "../pipeline.mjs";
-import { proseRungDirective, inquiryRungDirective } from "../stages.mjs";
+import { inquiryRungDirective } from "../stages.mjs";
 import { depthFor } from "../search-policy.mjs";
 
 const SRC = driverSource("pipeline.mjs");
@@ -78,7 +78,6 @@ test("the charter IS the fresh dispatch's directive — one string, not two that
   // SYNTHESIS CARRIES NONE (design, 2026-11-06): the retired prose rung's rules for per-finding write-ups contradicted the
   // synthesis call, which records sections only. Its warm dispatches still append the charter, which now adds nothing.
   assert.equal(stageCharter("synthesis", depth(WORLDWIDE)), "", "a synthesis dispatch still carries the retired prose rung");
-  assert.ok(!stageCharter("synthesis", depth(WORLDWIDE)).includes(proseRungDirective(depth(WORLDWIDE))) || !proseRungDirective(depth(WORLDWIDE)));
 });
 
 test("the UNGRADED product adds nothing, and an unknown stage adds nothing", () => {

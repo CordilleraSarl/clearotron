@@ -15,12 +15,7 @@ import { fixtureRecordsDir } from "../../register-fixture-marker.mjs";
 import { ledgerPath, runRecordLogPath } from "../../../providers/_shared/ledger-path.mjs";
 import { CORRECTION_POSITIONS_ENV } from "./correction-positions.mjs";   // the positions a correction hands its save
 import { REGISTER_TOOLS } from "../../../providers/_shared/register-tools.mjs";
-import { REGISTER_GRANT as CORSEARCH_GRANT } from "../../../providers/corsearch/src/register-grant.mjs";
-import { REGISTER_GRANT as CLARIVATE_GRANT } from "../../../providers/clarivate/src/register-grant.mjs";
-import { REGISTER_GRANT as SIGNA_GRANT } from "../../../providers/signa/src/register-grant.mjs";
-import { REGISTER_GRANT as EUIPO_GRANT } from "../../../providers/euipo/src/register-grant.mjs";
-import { REGISTER_GRANT as USPTOLOCAL_GRANT } from "../../../providers/uspto-local/src/register-grant.mjs";
-import { REGISTER_GRANT as FREETIER_GRANT } from "../../../providers/free-tier/src/register-grant.mjs";
+import { byRegister } from "../../../providers/registers.mjs";   // every register provider, named once
 import { STAGE_DECLARATIONS, declaredStageOf } from "../../stage-declarations.mjs";   // each stage's grant, by name
 
 const MCP_DIR = dirname(fileURLToPath(import.meta.url));
@@ -38,15 +33,9 @@ const BRIDGE = process.env.CLEAROTRON_OAUTH_BRIDGE || join(MCP_DIR, "..", "..", 
 // requires a provider by design. Reading this table directly lets it take the UNION for "what
 // names exist" and the INTERSECTION for "what every provider grants", without re-introducing the
 // default deleted.
-// Each provider's grant, with the reason for every tool it withholds, lives in its own folder (providers/<name>/src/register-grant.mjs).
-export const REGISTER_SERVERS = {
-  corsearch: CORSEARCH_GRANT,
-  clarivate: CLARIVATE_GRANT,
-  signa: SIGNA_GRANT,
-  euipo: EUIPO_GRANT,
-  "uspto-local": USPTOLOCAL_GRANT,
-  "free-tier": FREETIER_GRANT,
-};
+// Each provider's grant, with the reason for every tool it withholds, lives in its own folder (providers/<name>/src/register-grant.mjs),
+// and the providers are listed once, in providers/registers.mjs.
+export const REGISTER_SERVERS = byRegister("grant");
 
 // ── RECORDING: THE ONE REGISTRY THE GRANT DERIVES FROM ─────────────────────────────────────────────
 //
@@ -861,6 +850,11 @@ const BUILTIN_TOOLS = Object.freeze({ "knockout-register-read": Object.freeze(["
   // THE REVIEW AND THE CORRECTION ARE HANDED WHAT THEY CHECK, so a consult is one deliberate read: measured in testing, 2026-11-24,
   // with file search the review searched the run's files call after call, and each call carried everything before it.
   "knockout-review": Object.freeze(["Read", "ToolSearch"]), "knockout-correct": Object.freeze(["Read", "ToolSearch"]) });
+/**
+ * Every built-in tool any stage is granted, once each. The run's footing check (engine/probe.mjs) asks the program to
+ * offer exactly these and reads back which it does, so a program that stopped offering one is found at the door.
+ */
+export const EVERY_STAGE_BUILTIN_TOOL = Object.freeze([...new Set([...READ_SEARCH_AND_WRITE, ...Object.values(BUILTIN_TOOLS).flat()])]);
 export function builtinToolsFor(stage) {
   const declared = declaredStageOfLabel(stage);
   if (!declared) return null;
