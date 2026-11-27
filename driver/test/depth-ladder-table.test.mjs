@@ -158,7 +158,12 @@ test("the ladder grades the graded products and NOT product 1", () => {
  * consumed is listed here with its reason, and this arm is what keeps that list honest: wire one
  * without moving it here and the arm reds, leave one wired-but-unlisted and it reds the other way.
  */
-const DECLARED_ONLY = {};
+const DECLARED_ONLY = {
+  // The directive that read it asked the seat to classify findings for a grounded profile; it is retired, and the driver now
+  // selects them itself from `profileKeptBandRank` (profile-selection.mjs). The row stays as the products' stated rung until the
+  // product table is next revised.
+  groundedProfiles: "read by no code since the profile rung became driver selection on profileKeptBandRank",
+};
 
 test("every depth row is either CONSUMED by the driver or listed as declared-only, with a reason", () => {
   const sources = ["pipeline.mjs", "stages.mjs"].map((f) => driverSource(f)).join("\n");
