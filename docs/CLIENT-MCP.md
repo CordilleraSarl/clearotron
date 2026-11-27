@@ -81,7 +81,7 @@ ids to the denylist and strikes them from the record; it does not stop the unit 
 `clearotron disconnect --everyone`, which states how many keys and how many people that is before
 acting — and does not stop the service either.
 
-An `account` principal reaches **eighteen** tools, for its own companies only — everything carrying
+An `account` principal reaches **twenty** tools, for its own companies only — everything carrying
 `accountSafe: true` in `TOOL_SCOPES` (`shared/scope.mjs`), and nothing else:
 
 | Layer | Tools |
@@ -91,6 +91,7 @@ An `account` principal reaches **eighteen** tools, for its own companies only �
 | the audit chain | `read_artifact` over `audit`, `narrative`, `registerFindings`, `commonLaw`, `caseLaw`, `matterContext` and `registerUnit:<axis>`; `list_findings` on the raw `kind` path; `get_finding`, `get_run`, `trace`, `decision_timeline` |
 | the run lifecycle | `list_runs`, `describe_options`, `plan_run`, `start_run`, `order_status`, `stop_run` |
 | what-if | `what_if_plan` (free), `what_if_run` (queues a sandbox job), `what_if_result` (collects it) |
+| the source offer | `server_info` (this server's name, version, licence, source repository and the commit it runs; it reads no run) |
 
 The evidence layer exists because a lawyer defending a filing decision needs the records
 under the report, not just its prose. It projects named structured fields and enums derived from
@@ -229,7 +230,7 @@ long-lived credential pointed at it can spend without limit.
    `CLIENT_MCP_ACCOUNT_ACCESS=1` + `CLEAROTRON_ACCESS_FILE`, and drop the CF AUD lines (unused here).
 3. Verify before exposing: `curl 127.0.0.1:<port>/healthz`; the boot log says `API-KEY door — no auth
    proxy in front`; an MCP request **without** a key is a 401.
-4. Mint a key, hand it over with the address. `tools/list` must be exactly the eleven `account` tools
+4. Mint a key, hand it over with the address. `tools/list` must be exactly the twenty `account` tools
    above — anything more means the door resolved a wider principal than `account`.
 
 ## Turning it on
