@@ -397,7 +397,7 @@ export function orderStatus(args = {}, { scope } = {}) {
   if (!answer.found) return { found: false, basis: answer.basis };
   const r = answer.receipt;
   const client = isClientSession(scope);
-  // THE REASON AS WRITTEN IS THE OPERATOR'S (design, tracker issue 1525): it can name settings, profiles and, for a
+  // THE REASON AS WRITTEN IS THE OPERATOR'S (design, 2026-11-27): it can name settings, profiles and, for a
   // duplicate, an earlier order that may be another company's. A company's session is told which check refused the order,
   // as `reasonKind`, and `reason` keeps its place in the answer, empty. Staff read both. An order refused before kinds
   // were recorded is `other`.
