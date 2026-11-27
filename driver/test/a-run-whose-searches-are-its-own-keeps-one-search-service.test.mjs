@@ -93,10 +93,26 @@ test("on a run without the setting, a recorded grid is still stamped as the rese
   assert.equal(stamp.ran, false);
 });
 
-test("a grid it did not prepare is refused, and nothing is sent elsewhere, even with a key", async () => {
+test("a grid it did not prepare is handed to the driver, searched by the run's own program, and served as recorded", async () => {
   const { runDir, specPath, ledgerPath } = aRun({ prepared: false });
-  const text = await callTool({ task: "", grid_spec_path: specPath }, { CLEAROTRON_BAND_RUN_DIR: runDir, PERPLEXITY_API_KEY: "placeholder-not-a-key" });
-  assert.match(text, /searches are run by its own AI program, and the driver has not prepared the grid/);
+  const codex = (q, url) => ({ type: "item.completed", item: { type: "web_search", action: { query: q }, results: [{ title: "QZORVAK", url }] } });
+  const makeSessions = async () => ({ search: "codex", engine: "openai-agent", session: async (batch) => ({ answered: true, model: "gpt-6-luna",
+    events: batch.map((d) => d.site ? codex(`${d.query} site:${d.site}`, `https://${d.site}/qzorvak`) : codex(d.query, "https://pages.example.com/qzorvak")) }) });
+  const stop = serveOwnQuestions(runDir, { makeSessions, pollMs: 50 });
+  try {
+    const text = await callTool({ task: "", grid_spec_path: specPath }, { CLEAROTRON_BAND_RUN_DIR: runDir, PERPLEXITY_API_KEY: "placeholder-not-a-key" });
+    assert.match(text, /^Grid ALREADY RECORDED for this spec \(2\/2 cells present\)/, text.slice(0, 300));
+    assert.ok(JSON.parse(readFileSync(ledgerPath, "utf8")).cells.length === 2, "the driver wrote the ledger its own program searched");
+  } finally { stop(); }
+});
+
+test("a grid the driver could not prepare is refused, with why, and nothing is sent elsewhere, even with a key", async () => {
+  const { runDir, specPath, ledgerPath } = aRun({ prepared: false });
+  const stop = serveOwnQuestions(runDir, { makeSessions: async () => ({ error: "the engine is signed out" }), pollMs: 50 });
+  let text;
+  try { text = await callTool({ task: "", grid_spec_path: specPath }, { CLEAROTRON_BAND_RUN_DIR: runDir, PERPLEXITY_API_KEY: "placeholder-not-a-key" }); }
+  finally { stop(); }
+  assert.match(text, /searches are run by its own AI program, and the driver has not prepared the grid .* \(own search: the engine is signed out\)/);
   assert.ok(!log(runDir).some((r) => r.ok === true), "nothing was searched");
   let written = true; try { readFileSync(ledgerPath); } catch { written = false; }
   assert.equal(written, false, "no ledger was bought");

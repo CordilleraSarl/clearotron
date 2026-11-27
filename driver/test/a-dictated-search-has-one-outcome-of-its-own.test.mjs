@@ -218,7 +218,7 @@ test("the records are kept with the run, and a replay answers from them without 
 });
 
 // ── ONE GRID PREPARED BEFORE ITS STAGE: the ledger where the spec says, served as recorded, and nothing asked twice.
-const { prepareOwnSearchGrid, gridRecorded, dictatedSearches, ownSearchOn, RUN_RECORD_FILE } = await import("../engine/mcp/own-search.mjs");
+const { prepareOwnSearchGrid, gridRecorded, dictatedSearches, ownSearchOn, RUN_RECORD_FILE, searchRecordsPath } = await import("../engine/mcp/own-search.mjs");
 const { reconcileGridLedger } = await import("../../providers/perplexity/src/core.js");
 const { mkdirSync: mkdir, readFileSync: readF, existsSync: exists } = await import("node:fs");
 
@@ -247,7 +247,7 @@ test("a grid's ledger is prepared where its spec says, its checks read it as rec
   assert.equal(ledger.extras.pr_risk.length, 1);
   assert.equal(reconcileGridLedger(JSON.stringify(ledger), spec).missing.length, 0, "every cell is accounted for, the gap as a gap");
   assert.equal(gridRecorded(spec), true, "the research server serves it as recorded");
-  assert.ok(exists(join(runDir, "_driver", "web-search-records.jsonl")));
+  assert.ok(exists(searchRecordsPath(runDir)));
   const before = calls;
   assert.deepEqual(await prepareOwnSearchGrid(runDir, specPath, { sessions }), { prepared: false, why: "recorded" });
   assert.equal(calls, before, "a prepared grid is not searched again");

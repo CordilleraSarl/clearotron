@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { meaningReissuerFor, reissueMeaningSearches, savedSearchRecords, SEARCH_RECORDS_FILE } from "../engine/mcp/own-search.mjs";
+import { meaningReissuerFor, reissueMeaningSearches, savedSearchRecords, searchRecordsPath } from "../engine/mcp/own-search.mjs";
 import { parsePrRiskResults } from "../connotation-search.mjs";
 
 const codexSearch = (queries, results) => ({ type: "item.completed",
@@ -35,7 +35,7 @@ test("only the queries asked are searched, each answered search is a row in the 
     assert.deepEqual(r.rows.map((x) => x.query).sort(), ["qzorvak slang", "what does qzorvak mean"]);
     assert.equal(r.rows[0].results.length, 2, "the spec's own result limit");
     assert.deepEqual(r.rows, parsePrRiskResults(JSON.stringify({ extras: { pr_risk: r.rows } })), "the shape the ledger's rows are read in");
-    assert.ok(existsSync(join(runDir, "_driver", SEARCH_RECORDS_FILE)), "each search's record is kept with the run");
+    assert.ok(existsSync(searchRecordsPath(runDir)), "each search's record is kept with the run");
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 

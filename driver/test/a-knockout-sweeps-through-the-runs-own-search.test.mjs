@@ -15,9 +15,10 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";
-import { ownSearchKnockoutGrid, ownSearchQuestioner, savedSearchRecords, QUESTION_RECORDS_FILE, QUESTION_TIERS } from "../engine/mcp/own-search.mjs";
+import { ownSearchKnockoutGrid, ownSearchQuestioner, savedSearchRecords, questionRecordsPath, QUESTION_TIERS } from "../engine/mcp/own-search.mjs";
 import { resolveSweepExecutor } from "../pipeline-knockout.mjs";
 import { runOwnerChecks } from "../owner-use-check.mjs";
+import { rollupTokens } from "../tokens.mjs";
 import { CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "../search-policy.mjs";
 
 const codexSearch = (queries, results) => ({ type: "item.completed",
@@ -147,7 +148,7 @@ test("an owner lookup on own search is one question on the Knockout's tier, and 
       assert.equal(row.model, "gpt-6.1-terra");
       assert.equal(row.source, "https://northwind.test/shop", "the source is a page a search returned, never one only the wording names");
     }
-    const recs = readFileSync(join(runDir, "_driver", QUESTION_RECORDS_FILE), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+    const recs = readFileSync(questionRecordsPath(runDir), "utf8").trim().split("\n").map((l) => JSON.parse(l));
     assert.equal(recs.length, 2, "each question's record is kept with the run");
     assert.deepEqual(recs[0].pages, ["https://northwind.test/shop", "https://register.test/1"]);
     assert.deepEqual(recs[0].sources, ["https://northwind.test/shop"]);
@@ -166,6 +167,23 @@ test("an owner question answered without a search, or with no session, is not an
     const failed = ownSearchQuestioner(runDir, { tier: QUESTION_TIERS["knockout-search"],
       makeSessions: async () => ({ search: "codex", question: async () => ({ text: "", cause: "usage limit", events: codexAnswer(["https://x.test/1"]) }) }) });
     assert.match((await failed("q")).cause, /^own search: usage limit/);
-    assert.equal(existsSync(join(runDir, "_driver", QUESTION_RECORDS_FILE)), true, "a question that did not answer is recorded too");
+    assert.equal(existsSync(questionRecordsPath(runDir)), true, "a question that did not answer is recorded too");
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
+});
+
+test("own search's records are no stage's: the token rollup reads none of them as an attempt", async () => {
+  const runDir = aRun("own");
+  try {
+    const exec = ownSearchQuestioner(runDir, { tier: QUESTION_TIERS["knockout-search"],
+      makeSessions: async () => ({ search: "codex", question: async () => ({ text: "Toys.\nhttps://northwind.test/shop", model: "gpt-6.1-terra",
+        usage: { input: 900, output: 90 }, events: codexAnswer(["https://northwind.test/shop"]) }) }) });
+    await exec("what does Northwind Play GmbH sell");
+    const grid = ownSearchKnockoutGrid(runDir, { makeSessions: async () => ({ search: "codex", engine: "openai-agent", session: async (batch) => ({ answered: true, model: "gpt-6-luna",
+      usage: { input: 500, output: 50 }, events: batch.map((d) => codexSearch([d.site ? `${d.query} site:${d.site}` : d.query], [{ title: "a", url: d.site ? `https://${d.site}/1` : "https://example.test/1" }])) }) }) });
+    await grid(SPEC(join(runDir, "research", "qzorvak.json")));
+    assert.ok(existsSync(questionRecordsPath(runDir)) && savedSearchRecords(runDir).length > 0, "both kinds of record were written");
+    const t = rollupTokens(runDir);
+    assert.equal(t.total.attempts, 0, "a search or question record was counted as a stage attempt");
+    assert.deepEqual(Object.keys(t.byStage), []);
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });

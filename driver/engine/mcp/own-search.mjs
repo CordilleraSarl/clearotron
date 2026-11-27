@@ -265,9 +265,10 @@ export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSIO
         usage: r?.usage ?? null, model: r?.model ?? null, speed: r?.speed ?? null, cause: r?.ok ? null : r?.cause ?? null };
     },
     /** One question, answered with the program's own web search: what `answerOf` reads. */
-    async question(task) {
+    async question(task, { timeoutSec: turnSec = null } = {}) {
       const streamFile = join(sessionDir, `${new Date().toISOString().replace(/[:.]/g, "-")}-${process.pid}-${++n}-question.jsonl`);
-      const extra = search === "claude" ? { builtinTools: ["WebSearch"], allowedTools: "WebSearch", webSearch: true, streamFile } : { webSearch: true, streamFile };
+      const limit = Number(turnSec) > 0 ? { timeoutSec: turnSec } : {};
+      const extra = search === "claude" ? { builtinTools: ["WebSearch"], allowedTools: "WebSearch", webSearch: true, streamFile, ...limit } : { webSearch: true, streamFile, ...limit };
       const t0 = Date.now();
       const r = await runner.turn({ prompt: questionPrompt(task), extra });
       return { events: readSessionStream(streamFile), text: r?.ok ? String(r.text ?? "") : "", seconds: (Date.now() - t0) / 1000,
@@ -321,8 +322,6 @@ export function answerOf(search, { events = [], text = "" } = {}) {
   return { answered: recs.length > 0 && String(text).trim() !== "", searches: recs.length, pages, sources };
 }
 
-/** Where a run's question records are kept, one line per question asked. */
-export const QUESTION_RECORDS_FILE = "web-question-records.jsonl";
 
 /**
  * A QUESTION EXECUTOR THROUGH THE RUN'S OWN AI PROGRAM, in the shape the Knockout lane asks its owner lookups in
@@ -334,18 +333,18 @@ export function ownSearchQuestioner(runDir, { tier, timeoutSec = SESSION_TIMEOUT
   let made = null;
   const sessions = () => (made ??= Promise.resolve(makeSessions({ runDir, sessionDir: driverDir(runDir, "own-search-sessions"),
     model: questionModel(tier, recordedEngine(runDir)), thinking: tier.thinking, timeoutSec })));
-  return async (task) => {
+  return async (task, { timeoutSec: turnSec = null } = {}) => {
     const started = Date.now();
     const s = await sessions();
     if (!s?.question) return { ok: false, cause: `own search: ${s?.error ?? "no research-only session on this run"}`, tookMs: Date.now() - started };
     const service = `own:${s.search}`;
     let r;
-    try { r = await s.question(task); }
+    try { r = await s.question(task, turnSec ? { timeoutSec: turnSec } : {}); }
     catch (e) { return { ok: false, cause: `own search: ${String(e?.message ?? e).slice(0, 160)}`, service, tookMs: Date.now() - started }; }
     const a = answerOf(s.search, r);
     const record = { kind: "question", service, model: r.model ?? null, speed: r.speed ?? null, question: task, answered: a.answered,
       searches: a.searches, pages: a.pages, sources: a.sources, seconds: r.seconds ?? null, usage: r.usage ?? null };
-    try { ensureDriverDir(runDir); appendFileSync(driverDir(runDir, QUESTION_RECORDS_FILE), JSON.stringify({ ts: new Date().toISOString(), ...record }) + "\n"); }
+    try { ensureDriverDir(runDir, RECORDS_DIR); appendFileSync(questionRecordsPath(runDir), JSON.stringify({ ts: new Date().toISOString(), ...record }) + "\n"); }
     catch { /* best-effort: a record that cannot be written never fails a lookup */ }
     if (!a.answered)
       return { ok: false, service, model: r.model ?? null, tookMs: Date.now() - started,
@@ -360,14 +359,23 @@ export function ownSearchQuestioner(runDir, { tier, timeoutSec = SESSION_TIMEOUT
 // the site, the outcome, the links, and its session's number, seconds and token categories. They are the matter's own content, so they are
 // written there and nowhere else. A replay answers each dictated search from the latest record of the same words and
 // site, and sends nothing: a search the run never recorded is "not-sent" in the replay, never an empty one.
-export const SEARCH_RECORDS_FILE = "web-search-records.jsonl";
-const recordsPath = (runDir) => driverDir(runDir, SEARCH_RECORDS_FILE);
+//
+// IN A FOLDER OF THEIR OWN, NEVER BESIDE THE STAGE LOGS. Every `_driver/*.jsonl` is read as a stage's telemetry
+// (tokens.mjs, attributed-span.mjs, seat-attempts.mjs), and a search's record carries the model that served it, which
+// the token rollup reads as one more attempt of a stage named after the file. These records are no stage's.
+export const RECORDS_DIR = "own-search-records";
+export const SEARCH_RECORDS_FILE = "searches.jsonl";
+export const QUESTION_RECORDS_FILE = "questions.jsonl";
+/** Where a run's search records, and its question records, are kept. PURE. */
+export const searchRecordsPath = (runDir) => driverDir(runDir, RECORDS_DIR, SEARCH_RECORDS_FILE);
+export const questionRecordsPath = (runDir) => driverDir(runDir, RECORDS_DIR, QUESTION_RECORDS_FILE);
+const recordsPath = searchRecordsPath;
 
 /** Append the records to the run's file. Best-effort: a failed write never fails the searches. IMPURE. */
 export function keepSearchRecords(runDir, records) {
   if (!runDir || !records?.length) return;
   try {
-    ensureDriverDir(runDir);
+    ensureDriverDir(runDir, RECORDS_DIR);
     appendFileSync(recordsPath(runDir), records.map((r) => JSON.stringify({ ts: new Date().toISOString(), ...r })).join("\n") + "\n");
   } catch { /* best-effort */ }
 }

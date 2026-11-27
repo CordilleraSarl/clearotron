@@ -226,7 +226,7 @@ function judgeBlock(cands, part, gridSpecPath, reserve = 0) {
     + JSON.stringify(parts[p - 1], null, 2) + `\n${tail}`;
 }
 
-async function research(params) {
+async function research(params, { preparing = false } = {}) {
   // A REPLAY SENDS NOTHING OUT, so it is answered before the key is asked for: an offline replay needs none.
   if (researchReplayOn(RUN_DIR)) return replayResearch(params);
   // A REFUSED QUESTION IS LOGGED as a failed one is. It left no line, so the run's record could not tell a question
@@ -287,9 +287,13 @@ async function research(params) {
     if (Number(part) > 1)
       return requiredLedgerRefusal(`ERROR: page ${Math.floor(Number(part))} of this grid cannot be served: no saved result was found at ${spec.output_path}. Call perplexity_research with grid_spec_path alone for the first page.`, { spec, gridSpecPath: grid_spec_path });
     // A GRID THIS RUN'S OWN PROGRAM SEARCHES IS NEVER SENT HERE. The driver prepares it before the stage; one it did not
-    // prepare is refused, and nothing is sent, so a run keeps one search service.
+    // prepare, a repair's supplementary grid among them, is handed to the driver to prepare now
+    // (engine/mcp/own-question-channel.mjs) and served as recorded once it is. One still not prepared is refused, and
+    // nothing is sent, so a run keeps one search service.
     if (ownSearch) {
-      return requiredLedgerRefusal(`ERROR: this run's searches are run by its own AI program, and the driver has not prepared the grid at ${spec.output_path}, so nothing was searched and nothing was sent elsewhere. Do not retry the call.`, { spec, gridSpecPath: grid_spec_path });
+      const prepared = preparing ? null : await askTheDriver(RUN_DIR, { grid: grid_spec_path }, { session: SESSION || null, agent: AGENT || null });
+      if (prepared?.ok && recordedLedgerFor(spec)) return research(params, { preparing: true });
+      return requiredLedgerRefusal(`ERROR: this run's searches are run by its own AI program, and the driver has not prepared the grid at ${spec.output_path}${prepared?.cause ? ` (${prepared.cause})` : ""}, so nothing was searched and nothing was sent elsewhere. Do not retry the call.`, { spec, gridSpecPath: grid_spec_path });
     }
     const gridTask = buildGridProgramTask(spec);
     try {

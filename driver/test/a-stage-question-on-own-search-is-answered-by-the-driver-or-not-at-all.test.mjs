@@ -13,7 +13,7 @@ import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { answerRequest, askTheDriver, pendingRequests, QUESTION_WAIT_SEC, QUESTION_SESSION_SEC } from "../engine/mcp/own-question-channel.mjs";
+import { answerRequest, askTheDriver, pendingRequests, questionTimeLeft, requestFile, QUESTION_WAIT_SEC, QUESTION_SESSION_SEC, MIN_QUESTION_SEC } from "../engine/mcp/own-question-channel.mjs";
 import { runQuestionTier, serveOwnQuestions, stopServingOwnQuestions } from "../own-search-questions.mjs";
 import { cancelPath } from "../cancel.mjs";
 import { QUESTION_TIERS, questionModel } from "../engine/mcp/own-search.mjs";
@@ -104,4 +104,31 @@ test("a run not on own search is not watched, and a stopped run's question is an
     assert.deepEqual({ ok: a.ok, cause: a.cause }, { ok: false, cause: "own search: the run was stopped" });
     assert.equal(asked, 0, "a stopped run asks its program nothing");
   } finally { stop(); }
+});
+
+test("a question behind others gets only the time the server's wait has left, and none is started with too little", async () => {
+  const t0 = Date.parse("2026-11-27T10:00:00Z");
+  assert.equal(questionTimeLeft(new Date(t0).toISOString(), { now: t0 }), QUESTION_SESSION_SEC, "a fresh question gets the session's whole limit");
+  assert.equal(questionTimeLeft(new Date(t0).toISOString(), { now: t0 + 100_000 }), QUESTION_WAIT_SEC - 100 - 20, "one asked 100 s ago gets what is left, less a margin");
+  assert.equal(questionTimeLeft(new Date(t0).toISOString(), { now: t0 + (QUESTION_WAIT_SEC - MIN_QUESTION_SEC) * 1000 }), 0, "too little left: not started");
+  assert.equal(questionTimeLeft("not a time", { now: t0 }), 0);
+  // Two requests already waiting when the driver picks them up: one asked 500 s ago, one 100 s ago.
+  const runDir = aRun({ level: "global-preliminary-search" });
+  mkdirSync(join(runDir, "_driver", "own-questions"), { recursive: true });
+  const at = (sec) => new Date(Date.now() - sec * 1000).toISOString();
+  for (const [id, sec] of [["1-late", 500], ["2-soon", 100]]) writeFileSync(requestFile(runDir, id), JSON.stringify({ id, task: `question ${id}`, askedAt: at(sec) }));
+  const started = [];
+  const stop = serveOwnQuestions(runDir, { pollMs: 20, makeSessions: async () => ({ search: "codex", question: async (task, o) => { started.push({ task, timeoutSec: o.timeoutSec });
+    return { text: "An answer.\nhttps://pages.example.com/1", events: [{ type: "item.completed", item: { type: "web_search", action: { query: task }, results: [{ url: "https://pages.example.com/1" }] } }] }; } }) });
+  try {
+    await until(() => pendingRequests(runDir).length === 0);
+    assert.equal(started.length, 1, "the question with too little time left was never started");
+    assert.equal(started[0].task, "question 2-soon");
+    assert.ok(started[0].timeoutSec <= QUESTION_WAIT_SEC - 100 - 20 && started[0].timeoutSec > QUESTION_WAIT_SEC - 100 - 25, `the session's limit is the time left: ${started[0].timeoutSec}`);
+  } finally { stop(); }
+});
+
+test("a request the server withdrew gets no answer", () => {
+  const runDir = aRun();
+  assert.equal(answerRequest(runDir, "never-asked", { ok: true, text: "late" }), false);
 });

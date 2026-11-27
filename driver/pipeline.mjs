@@ -4,7 +4,7 @@
 // turn, joins the fan-out in code (the fan-in barrier), gates on the refutation
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
-import { stopServingOwnQuestions } from "./own-search-questions.mjs";   // a run on its own search: its questions are answered while its segment runs
+import { serveOwnQuestions, stopServingOwnQuestions } from "./own-search-questions.mjs";   // a run on its own search: its questions are answered while its segment runs
 import { writePark } from "./run-park.mjs";
 import { CLEARANCE_ENDING } from "./run-failed.mjs";
 import { runShell } from "./run-shell.mjs";
@@ -1357,6 +1357,7 @@ export async function runExperiment(job, opts) {   // @internal
   try {
     return await runExperimentInner(job, opts);
   } finally {
+    stopServingOwnQuestions(opts.__experimentDir);
     // Best-effort, like the run slot's own release: the lock reaper covers a process that dies here, and
     // a stale draw lock with a dead pid does not refuse a deploy — the guard tests liveness.
     try { releaseSlot(lock); } catch { /* the reaper covers what this misses */ }
@@ -1413,6 +1414,10 @@ async function runExperimentInner(job, opts) {
   const shadowDir = join(ctx.paths.runDir, "_experiments", `${ts}-${tag}`);
   mkdirSync(join(shadowDir, "register-units"), { recursive: true });
   ensureDriverDir(shadowDir);
+  // AN ARM OF A RUN ON ITS OWN SEARCH asks its questions into its shadow folder, where its tool server serves: they are
+  // answered from here, as the run's are (own-search-questions.mjs), until the experiment ends (runExperiment).
+  opts.__experimentDir = shadowDir;
+  serveOwnQuestions(shadowDir);
   // Any ctx field holding a PATH is dropped rather than inherited: reconstructCtx resolved them against
   // the canonical run, and a sandbox whose prompt names a canonical path is not a sandbox. The
   // derivations below re-set them against ctx.paths, which here is the shadow dir.

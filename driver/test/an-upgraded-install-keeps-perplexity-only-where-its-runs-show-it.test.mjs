@@ -13,7 +13,8 @@ import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { questionRecordsPath, searchRecordsPath } from "../engine/mcp/own-search.mjs";
 import { installationRunDirs, researchOnRecord, webResearchToAdd, UPGRADE_NOTE } from "../web-research-upgrade.mjs";
 import { runRequiredNames } from "../run-requirements.mjs";
 import { studioDirFor } from "../../shared/pre-rename-spellings.mjs";
@@ -33,7 +34,7 @@ function aRun(root, { archived = false, readingLog = null, sweep = null, choices
   if (readingLog) writeFileSync(join(dir, "_driver", "reading-log.jsonl"), jsonl(readingLog));
   if (sweep) writeFileSync(join(dir, "_driver", "knockout-sweep.jsonl"), jsonl(sweep));
   if (choices) writeFileSync(join(dir, "_driver", "run-choices.json"), JSON.stringify({ schema: 1, engine: "anthropic-agent", register: null, ...choices }));
-  if (ownRecords) writeFileSync(join(dir, "_driver", "web-search-records.jsonl"), jsonl([{ query: "probe", outcome: "results" }]));
+  if (ownRecords) { mkdirSync(dirname(searchRecordsPath(dir)), { recursive: true }); writeFileSync(searchRecordsPath(dir), jsonl([{ query: "probe", outcome: "results" }])); }
   return dir;
 }
 const asked = (over = {}) => ({ tool: "perplexity_research", args: { task: "who uses the name", ...over.args }, ok: true, ...over.row });
@@ -59,7 +60,8 @@ test("research Perplexity completed is evidence; a replay, a failure, a skip and
   assert.equal(researchOnRecord(aRun(root, { choices: { research: null } })), "other", "a run recorded with no service chosen");
   assert.equal(researchOnRecord(aRun(root, { ownRecords: true, readingLog: [asked()] })), "other", "a run holding its own search's records");
   const asksOwn = aRun(root, { sweep: [swept()] });
-  writeFileSync(join(asksOwn, "_driver", "web-question-records.jsonl"), JSON.stringify({ kind: "question", service: "own:claude" }) + "\n");
+  mkdirSync(dirname(questionRecordsPath(asksOwn)), { recursive: true });
+  writeFileSync(questionRecordsPath(asksOwn), JSON.stringify({ kind: "question", service: "own:claude" }) + "\n");
   assert.equal(researchOnRecord(asksOwn), "other", "a run whose questions its own AI program answered");
   assert.equal(researchOnRecord(aRun(root, { choices: { research: "perplexity" }, readingLog: [asked()] })), "perplexity");
 });

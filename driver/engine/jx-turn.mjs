@@ -182,8 +182,10 @@ export async function makeJxTurnRunner({
     async turn({ prompt, extra = {} }) {
       let tuple;
       const { builtinTools, allowedTools, webSearch, streamFile } = extra ?? {};
+      // A turn may be given less time than the door's, never more: a question answered inside another program's wait.
+      const turnSec = Number(extra?.timeoutSec) > 0 ? Math.min(timeoutSec, Math.floor(Number(extra.timeoutSec))) : timeoutSec;
       // Its reply is its result, so it carries no output rule (engine/common.mjs, outputRule).
-      try { tuple = await runTurn({ message: prompt, model, thinking, speed, timeoutSec, stallSec, output: { kind: "reply" }, builtinTools, allowedTools, webSearch, streamFile }); }
+      try { tuple = await runTurn({ message: prompt, model, thinking, speed, timeoutSec: turnSec, stallSec: turnSec < timeoutSec ? Math.min(stallSec, turnSec) : stallSec, output: { kind: "reply" }, builtinTools, allowedTools, webSearch, streamFile }); }
       catch (e) {
         return { ok: false, cause: `the engine turn threw: ${String(e?.message ?? e).slice(0, 200)}`,
           model: null, vendor, authMode, cloud, engine: id, usage: { input: 0, output: 0 }, truncationObservable: false };
