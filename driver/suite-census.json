@@ -4636,8 +4636,8 @@
           "todos": 0
         },
         "doctor-names-what-it-could-not-read.test.mjs": {
-          "tests": 8,
-          "asserts": 35,
+          "tests": 9,
+          "asserts": 39,
           "skips": 4,
           "todos": 0
         },
