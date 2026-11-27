@@ -70,10 +70,6 @@ test("a whole tool call completes over a real unix socket", {
     req.on("end", () => {
       const msg = JSON.parse(body || "{}");
       seen.push({ path: req.url, host: req.headers.host, token: req.headers["x-trademark-token"], method: msg.method });
-      if (msg.method === "initialize") {
-        res.writeHead(200, { "content-type": "application/json", "mcp-session-id": "sess-1" });
-        return res.end(JSON.stringify({ jsonrpc: "2.0", id: 1, result: { protocolVersion: "2025-06-18", capabilities: {} } }));
-      }
       if (msg.method === "tools/call") {
         res.writeHead(200, { "content-type": "application/json" });
         return res.end(JSON.stringify({ jsonrpc: "2.0", id: 2, result: { content: [{ type: "text", text: '{"queueId":"q-7"}' }] } }));
@@ -86,9 +82,8 @@ test("a whole tool call completes over a real unix socket", {
     const out = await mcpToolCall({ url: `unix:${path}`, token: "k-abc", tool: "start_run", args: { markName: "X" } });
     assert.deepEqual(out, { queueId: "q-7" }, "the call's own result comes back through the socket");
 
-    // EVERY REQUEST OF THE HANDSHAKE, not just the first. The address is resolved once for exactly this
-    // reason: re-parsed per call, a divergence shows up as a session that initializes and is then not found.
-    assert.equal(seen.length, 3, `the handshake is three requests; the socket saw ${seen.length}`);
+    // ONE REQUEST IS THE WHOLE EXCHANGE in the protocol's 2026-07-28 revision (2026-11-27): no handshake before it.
+    assert.equal(seen.length, 1, `the call is one request; the socket saw ${seen.length}`);
     for (const r of seen) {
       assert.equal(r.path, "/mcp", "every request asks the door for /mcp");
       // NOT discriminating on its own — Node supplies this default — and kept because a server that
@@ -96,7 +91,7 @@ test("a whole tool call completes over a real unix socket", {
       assert.equal(r.host, "localhost", "every request carries a Host");
       assert.equal(r.token, "k-abc", "and the key, which is the whole reason this door exists");
     }
-    assert.deepEqual(seen.map((r) => r.method), ["initialize", "notifications/initialized", "tools/call"]);
+    assert.deepEqual(seen.map((r) => r.method), ["tools/call"]);
   } finally { server.close(); rmSync(dir, { recursive: true, force: true }); }
 });
 

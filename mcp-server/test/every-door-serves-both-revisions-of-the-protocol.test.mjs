@@ -14,8 +14,8 @@
 //     inherit from the first;
 //   - the local door (stdio): the new client ends on the new revision, the old one on the old, and both list the same
 //     tools;
-//   - a gather server the engine's stages reach (stdio, the shared `serve`): still the older revision only, and a
-//     client that asks the new way falls back to it. Its move follows in this branch.
+//   - a gather server the engine's stages reach (stdio, the shared `serve`): the same, both clients on their own
+//     revision and the same tools.
 // WHAT THIS DOES NOT PROVE: that any one assistant connects. These are the protocol's reference clients.
 // Every name is invented.
 import { test, after } from "node:test";
@@ -228,6 +228,6 @@ test("the local door serves the new revision and the old one", async () => {
   await assertStdioServerServesBoth(LOCAL_DOOR, {});
 });
 
-test("a gather server: a probe before the handshake is method-not-found, and the client falls back and lists the tools", async () => {
-  await assertStdioServerFallsBack(GATHER_SERVER, {});
+test("a gather server serves the new revision and the old one", async () => {
+  await assertStdioServerServesBoth(GATHER_SERVER, {});
 });

@@ -598,7 +598,9 @@ const tools = {
     let changes = timeline;
     if (Array.isArray(kinds) && kinds.length) changes = changes.filter((c) => kinds.includes(c.kind));
     return {
-      runId: run.runId, state: run.state, tier: run.tier, since: since ?? null, cursor,
+      // `since` echoed as the string the declared shape names, whichever form the caller polled with: the cursor is a
+      // number, and a client that checks results against their declared shape refuses a number here.
+      runId: run.runId, state: run.state, tier: run.tier, since: since == null ? null : String(since), cursor,
       count: changes.length, changes,
       note: "Poll again with since=cursor (a stable sequence number) for only newer events — MCP has no push. cursor is independent of the kinds filter.",
     };

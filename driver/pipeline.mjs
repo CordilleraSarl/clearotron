@@ -1774,6 +1774,11 @@ const RETIRED_ENV = {
   CLEAROTRON_NATIVE_LANGUAGE_JA: ["2026-11-11", "a native-language lane runs wherever the run's frozen lane decision carries it; there is no per-language off switch"],
   CLEAROTRON_NATIVE_LANGUAGE_KO: ["2026-11-11", "a native-language lane runs wherever the run's frozen lane decision carries it; there is no per-language off switch"],
   CLEAROTRON_RECIPES_MODE: ["2026-07-27", "a saved search is honoured wherever it resolves"],
+  // The two HTTP doors' session settings, deleted with their sessions.
+  TRADEMARK_MCP_SESSION_TTL_MS: ["2026-11-27", "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set"],
+  TRADEMARK_MCP_SESSION_MAX: ["2026-11-27", "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set"],
+  CLIENT_MCP_SESSION_TTL_MS: ["2026-11-27", "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set"],
+  CLIENT_MCP_SESSION_MAX: ["2026-11-27", "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set"],
 
   // ── ─────────────────────────────────────────────────────────────────────────────────────
   // THE DELIVERY ONE IS THE REASON THIS TABLE GREW, and it is the only entry here that a deployment

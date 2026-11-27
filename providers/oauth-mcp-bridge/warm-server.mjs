@@ -38,18 +38,12 @@
 // change. A later refactor can extract a common module once the warm model is
 // proven for courtlistener.
 
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import {
-  ListToolsRequestSchema,
-  CallToolRequestSchema,
-  isInitializeRequest,
-} from "@modelcontextprotocol/sdk/types.js";
+// SDK v2 on both sides (2026-11-27): the upstream server in whichever revision it speaks, and the downstream served in
+// both revisions, statelessly, one request at a time.
+import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
+import { Server, createMcpHandler } from "@modelcontextprotocol/server";
 import { readFile, writeFile, mkdir, rename } from "node:fs/promises";
 import { homedir } from "node:os";
-import { randomUUID } from "node:crypto";
 import http from "node:http";
 import path from "node:path";
 import { listenOrDie } from "../../shared/listen.mjs";   // — a taken port is a sentence, not a stack
@@ -286,14 +280,14 @@ function scheduleKeepWarm(expiresInSec) {
   keepWarmTimer.unref?.();
 }
 
-// A downstream MCP server (one per client session) that proxies to the shared
+// A downstream MCP server (one per request) that proxies to the shared
 // warm upstream through the serialization mutex, applying the allowlist.
 function makeProxyServer() {
   const server = new Server(
     { name: `clearotron-warm-${serverName}`, version: "0.1.0" },
     { capabilities: { tools: {} } },
   );
-  server.setRequestHandler(ListToolsRequestSchema, async () => {
+  server.setRequestHandler("tools/list", async () => {
     const resp = await withUpstream(() => upstream.listTools()).catch((err) => {
       noteUpstreamError(err);
       throw err;
@@ -308,7 +302,7 @@ function makeProxyServer() {
     }
     return { ...resp, tools };
   });
-  server.setRequestHandler(CallToolRequestSchema, async (req) => {
+  server.setRequestHandler("tools/call", async (req) => {
     const name = req.params.name;
     if (!allowedTools.has(name)) {
       throw new Error(
@@ -356,7 +350,7 @@ async function main() {
 
   upstream = new Client(
     { name: "clearotron-warm-mcp-client", version: "0.1.0" },
-    { capabilities: {} },
+    { capabilities: {}, versionNegotiation: { mode: "auto" } },
   );
   const clientTransport = new StreamableHTTPClientTransport(
     new URL(creds.serverUrl),
@@ -366,8 +360,9 @@ async function main() {
   log(`connected upstream to ${creds.serverUrl}`);
   scheduleKeepWarm(authProvider.expiresInSec);
 
-  // Downstream: streamable-HTTP MCP server, one transport per client session.
-  const sessions = new Map(); // sessionId -> transport
+  // Downstream: streamable-HTTP MCP server. No sessions: every request is answered on its own, in the revision it was
+  // sent in, by a proxy server built for it; the shared warm upstream is what persists between requests.
+  const handler = createMcpHandler(() => makeProxyServer(), { legacy: "stateless" });
 
   const httpServer = http.createServer(async (req, res) => {
     try {
@@ -379,40 +374,15 @@ async function main() {
         res.writeHead(404).end();
         return;
       }
-      const sid = req.headers["mcp-session-id"];
-
-      if (req.method === "POST") {
-        const body = await readJsonBody(req);
-        let transport;
-        if (sid && sessions.has(sid)) {
-          transport = sessions.get(sid);
-        } else if (!sid && isInitializeRequest(body)) {
-          transport = new StreamableHTTPServerTransport({
-            sessionIdGenerator: () => randomUUID(),
-            onsessioninitialized: (id) => sessions.set(id, transport),
-          });
-          transport.onclose = () => {
-            if (transport.sessionId) sessions.delete(transport.sessionId);
-          };
-          await makeProxyServer().connect(transport);
-        } else {
-          writeJson(res, 400, {
-            jsonrpc: "2.0",
-            error: { code: -32000, message: "Bad Request: no valid session" },
-            id: null,
-          });
-          return;
-        }
-        await transport.handleRequest(req, res, body);
-      } else if (req.method === "GET" || req.method === "DELETE") {
-        if (!sid || !sessions.has(sid)) {
-          res.writeHead(400).end("Missing or unknown session");
-          return;
-        }
-        await sessions.get(sid).handleRequest(req, res);
-      } else {
-        res.writeHead(405).end();
-      }
+      const body = req.method === "POST" ? await readJsonBody(req) : undefined;
+      const headers = new Headers();
+      for (const [k, v] of Object.entries(req.headers)) if (v != null) headers.set(k, Array.isArray(v) ? v.join(", ") : String(v));
+      const answer = await handler.fetch(new Request(`http://localhost${req.url}`, {
+        method: req.method, headers, body: body !== undefined ? JSON.stringify(body) : undefined,
+      }), body !== undefined ? { parsedBody: body } : {});
+      res.writeHead(answer.status, Object.fromEntries(answer.headers));
+      if (answer.body) for await (const chunk of answer.body) res.write(chunk);
+      res.end();
     } catch (err) {
       log(`request error: ${err?.stack ?? err}`);
       if (!res.headersSent) res.writeHead(500).end();

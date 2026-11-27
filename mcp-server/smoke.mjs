@@ -2,8 +2,8 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // Manual smoke: spawn the real server process and drive it over MCP (SDK client) against the test fixture.
 //   node smoke.mjs
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { Client } from "@modelcontextprotocol/client";
+import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { buildFixture, buildRichRun, RUN_ID2 } from "./test/_fixture.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -13,7 +13,8 @@ buildFixture(); // sets CLEAROTRON_WORK_DIR / CLEAROTRON_REGISTER_CALL_LOG + wri
 buildRichRun(); // a second, archived run: a re-digest (sha change), BLOCKING→CONDITIONAL, a _history snapshot
 
 const transport = new StdioClientTransport({ command: "node", args: [join(here, "server.mjs")], env: { ...process.env } });
-const client = new Client({ name: "smoke", version: "0.0.0" }, { capabilities: {} });
+// `auto`: the protocol's 2026-07-28 revision, which the local door serves, falling back to the handshake if it did not.
+const client = new Client({ name: "smoke", version: "0.0.0" }, { capabilities: {}, versionNegotiation: { mode: "auto" } });
 await client.connect(transport);
 
 const tools = await client.listTools();
