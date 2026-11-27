@@ -3609,6 +3609,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-order-refused-before-any-run-stays-in-clearances.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "an-ordered-field-is-a-field-the-tool-can-express.test.mjs": {
           "tests": 1,
           "asserts": 6,
