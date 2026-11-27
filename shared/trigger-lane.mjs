@@ -226,7 +226,10 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
     return { state: "pass",
       message: `the trigger lane answers at ${raw}${probe.status ? ` (${probe.status})` : ""}${challengeNote(challenge)}` };
   }
-  const why = probe.error ? probe.error : `it answered ${probe.status}`;
+  // What the door answered is a plain status and stays in the sentence; the error a failed connection threw is the
+  // machine's own words, so it rides as `detail`, for a local diagnosis (design, 2026-11-27).
+  const answered = probe.error ? "" : ` — it answered ${probe.status}`;
+  const detail = probe.error ? String(probe.error) : null;
   // ── A DOOR THAT IS NOT LISTENING YET IS NOT A DOOR THAT IS DOWN ───────────────────────────────────
   //
   // On a simultaneous restart of the unit set the portal binds before the engine door does — the units
@@ -245,14 +248,14 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
   // there yet, or at all", and at boot the first is ordinary. A door that ANSWERED something wrong is a
   // fault that no amount of waiting fixes, and keeps the full warning.
   if (probe.error && /ECONNREFUSED|ECONNRESET|EHOSTUNREACH|ENETUNREACH|ETIMEDOUT|EAI_AGAIN|socket hang up|fetch failed/i.test(String(probe.error))) {
-    return { state: "unsettled",
-      message: `${raw} is configured and nothing answered there when this was checked — ${why}. THIS IS A `
+    return { state: "unsettled", detail,
+      message: `${raw} is configured and nothing answered there when this was checked${answered}. THIS IS A `
         + "BOOT-TIME OBSERVATION, NOT A VERDICT: the submit path re-probes on every request and does not "
         + "consult this, so it says nothing about what a clearance will do. On a simultaneous restart the "
         + "portal routinely binds before the engine door and this clears itself within seconds. If it is "
         + "still true after the box has settled, the engine door is genuinely down — check it then." };
   }
-  return { state: "fail",
-    message: `${raw} is configured and the engine door DOES NOT ANSWER — ${why}. This is the submit lane: `
+  return { state: "fail", detail,
+    message: `${raw} is configured and the engine door DOES NOT ANSWER${answered}. This is the submit lane: `
       + "a clearance ordered from the portal returns 502 while the portal's own health endpoint stays 200." };
 }

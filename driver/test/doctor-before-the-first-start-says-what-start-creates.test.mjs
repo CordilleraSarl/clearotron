@@ -93,7 +93,8 @@ test("the control: a revocation list the settings name, and cannot be read, stil
   const home = setUpHome({ extra: "TRADEMARK_MCP_TOKEN_DENYLIST=/nonexistent/a-named-revocation-list" });
   try {
     const out = doctor(home);
-    assert.match(out, /! the revocation list at \/nonexistent\/a-named-revocation-list cannot be read \(ENOENT\)/, out);
+    assert.match(out, /! the revocation list at \/nonexistent\/a-named-revocation-list cannot be read — /, out);
+    assert.doesNotMatch(out, /ENOENT/, "the machine's own words reached doctor's output without --detail");
     // What the key check does then, in the door's own words: it refuses every key, and doctor used to say the opposite.
     const said = "this install cannot check whether keys have been revoked, so it is refusing all of them";
     assert.ok(out.replace(/\s+/g, " ").includes(said), `doctor does not say what the door does:\n${out}`);
@@ -110,7 +111,7 @@ test("the control: the default list missing after a start has run still blocks",
     // The grants file is what the first start writes; with it present, start has run.
     writeFileSync(join(home, "trademark", "grants.json"), "{}\n");
     const out = doctor(home);
-    assert.match(out, /! the revocation list at .*token-denylist cannot be read \(ENOENT\)/, out);
+    assert.match(out, /! the revocation list at ~[\\/].*token-denylist cannot be read — /, out);
     assert.doesNotMatch(out, /no revocation list yet/, "a list start's door reads by name was called not created yet");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });

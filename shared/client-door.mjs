@@ -1127,9 +1127,11 @@ export function clientDoorReachability({ url = null, probe = null } = {}) {
     return { state: "pass",
       message: `${raw} answers${probe.status ? ` (${probe.status})` : ""}${challengeNote(challenge)}` };
   }
-  const why = probe.error ? probe.error : `it answered ${probe.status}`;
-  return { state: "fail",
-    message: `${raw} is configured and DOES NOT ANSWER — ${why}. Every surface that advertises the `
+  // What the door answered stays in the sentence; the error a failed connection threw rides as `detail` (design,
+  // 2026-11-27), for a local diagnosis.
+  const answered = probe.error ? "" : ` — it answered ${probe.status}`;
+  return { state: "fail", detail: probe.error ? String(probe.error) : null,
+    message: `${raw} is configured and DOES NOT ANSWER${answered}. Every surface that advertises the `
       + "connector renders from this value being set, so a client would be handed an address that fails "
       + "on first use while this box reported itself configured." };
 }

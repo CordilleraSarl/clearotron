@@ -2859,8 +2859,9 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
         let unreadable = null;
         try { loadRecipes({ dir: recipesDir, force: true }); } catch (e) { unreadable = String(e?.message ?? e).split("\n")[0]; }
         if (unreadable) {
-          warn(`saved searches cannot be read from ${recipesDir}: ${unreadable}. Every company's saved searches fail `
+          warn(`saved searches cannot be read from ${shownPath(recipesDir)}. Every company's saved searches fail `
             + "to load, in the portal and the connector, until it is fixed");
+          detail(unreadable);
         } else ok(`saved searches are read from ${recipesDir}${handedBy}, and saves are committed in ${reach.repo}`);
       }
     }
@@ -3328,8 +3329,9 @@ async function sayPortalSignIn({ startPaths, hosted, unitEnv, serviceEnvFile, se
         info("who may use this portal is not judged here: the units' environment could not be read, so a "
           + "grants file configured there would be invisible to this check");
       } else if (unreadable) {
-        problem(`the guest list at ${grantsFile} could not be read (${unreadable}) — the portal refuses `
+        problem(`the guest list at ${shownPath(grantsFile)} could not be read — the portal refuses `
           + `every request while that is true, and this is a failure to look rather than an empty list`);
+        detail(unreadable);
       } else if (!admitted.length) {
         // PRESENT-AND-WRONG vs ABSENT. A configured portal that grants nobody is wrong: every page
         // refuses and the symptom reads as a broken login. A box that has configured neither is a
@@ -3603,6 +3605,7 @@ async function sayStartButtonPath({ hosted, unitEnv }) {
       if (lane.state === "pass") ok(lane.message);
       else if (lane.state === "fail") problem(lane.message);
       else info(lane.message);
+      detail(lane.detail);
     }
   } catch (e) { warn("the submit lane could not be read"); detail(e); }
 }
@@ -3637,9 +3640,10 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
       } else {
         // NOT `warn`. The door refuses every key while its list cannot be read, so every assistant connected
         // to it stops, and this sentence is the door's own (mcp-server/lib/http-handler.mjs).
-        blocking(`the revocation list at ${dl} cannot be read (${e.code ?? e.message}) — this install cannot `
+        blocking(`the revocation list at ${shownPath(dl)} cannot be read — this install cannot `
           + "check whether keys have been revoked, so it is refusing all of them. "
           + `Run \`${invoke("start")}\` — it creates the list.`);
+        detail(e);
       }
     }
   }
@@ -3707,8 +3711,9 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
       }
     }
   } catch (e) {
-    info(`could not check the client door's access log (${e?.code ?? e?.message ?? e}) — this is a report `
+    info("could not check the client door's access log — this is a report "
       + "that this command could not look, not that the log is missing.");
+    detail(e);
   }
 
   try {
@@ -3755,9 +3760,11 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
     }
     // ONLY WHEN THE ANSWER WOULD HAVE MATTERED. If the unit is not installed, its activity is not a
     // question the reader has, and a could-not-look line about it would be noise on every fresh box.
-    if (doorAskFailed && existsSync(join(unitDir, doorUnit)))
-      warn(`could not ask systemd whether ${doorUnit} is running — ${doorAskFailed}. That is this command `
+    if (doorAskFailed && existsSync(join(unitDir, doorUnit))) {
+      warn(`could not ask systemd whether ${doorUnit} is running. That is this command `
         + "failing to look, not a report that the door is down.");
+      detail(doorAskFailed);
+    }
     // THE RESTART COUNT IS HISTORY, AND THIS IS WHERE IT IS WORTH READING. It
     // used to be printed by `start --background`, where it can only ever be zero: that path either
     // installs the units fresh or refreshes them, and an explicit `systemctl restart` sets the counter
@@ -3897,6 +3904,7 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
     if (reach.state === "pass") ok(reach.message);
     else if (reach.state === "fail") problem(reach.message);
     else info(reach.message);
+    detail(reach.detail);
 
     // ── AND IS IT THE AUDIENCE THIS INSTALL CHECKS AGAINST? ───────────────────────────────────────
     //
@@ -3921,7 +3929,7 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
         // A COULD-NOT-LOOK IS SAID, NOT RAISED. The line above has already reported the address as
         // unreachable; repeating it as a second failure teaches the reader that this section
         // double-counts. It still states what was NOT established, which is the whole job.
-        else if (v.kind === "could-not-look") info(v.message);
+        else if (v.kind === "could-not-look") { info(v.message); detail(v.detail); }
         // NO ACCESS IN FRONT OF THE CLIENT DOOR IS A POSTURE, NOT A FAULT (ruling 2026-09-08).
         //
         // This is the CLIENT connector's address, and how a client reaches it is the client's decision:
