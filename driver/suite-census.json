@@ -4017,6 +4017,12 @@
           "skips": 0,
           "todos": 0
         },
+        "clearances-stays-quick-as-completed-orders-accumulate.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "cleared-signatures.test.mjs": {
           "tests": 9,
           "asserts": 19,
