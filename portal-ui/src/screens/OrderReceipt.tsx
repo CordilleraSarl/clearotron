@@ -23,9 +23,9 @@ import { seesEverything } from '../shell/permissions.ts'
 /** The sentence a refusal of each kind gets. `other` has none of its own: the help line is the whole answer. */
 function refusalSentence(kind: RefusalKind): string | null {
   switch (kind) {
-    case 'run-cap': return 'Your account has reached its search limit.'
+    case 'run-cap': return 'Your company has reached its search limit.'
     case 'details': return 'More information is needed before this search can start.'
-    case 'policy': return 'This search falls outside the rules set for your account.'
+    case 'policy': return 'This search falls outside the rules set for your company.'
     case 'setup': return 'This installation needs attention before the search can start.'
     case 'duplicate': return 'This order was flagged as a duplicate.'
     case 'other': return null

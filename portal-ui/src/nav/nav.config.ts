@@ -200,7 +200,9 @@ export const NAV: readonly NavEntry[] = [
   { id: 'result', label: 'Clearance', path: '/portal/result', icon: 'layers', hidden: true, subtree: true },
   // ONE ORDER'S RECEIPT, reached from Start and from the order's Clearances row, never from the sidebar. It owns its
   // subtree for the reason `result` does: the reference is in the path, /portal/orders/<reference>?account=<company>.
-  { id: 'order', label: 'Order', path: '/portal/orders', icon: 'layers', hidden: true, subtree: true },
+  // Its label is never drawn: the rail skips a hidden entry, and the top bar names only the avatar menu's screens. It
+  // reuses the result screen's word rather than add one nobody approved.
+  { id: 'order', label: 'Clearance', path: '/portal/orders', icon: 'layers', hidden: true, subtree: true },
   // About — the AGPL §13 source offer. `hidden`, and reached from the AVATAR MENU, which
   // renders on every screen: §13 wants the offer available wherever the user is, and the sidebar is
   // the WORK lane. A sidebar item would rank a licence notice above "New clearance" in the visual

@@ -137,9 +137,9 @@ expect('started', t, /Order started/, /View clearance/)
 await capture('started')
 
 const KINDS = {
-  'run-cap': /Your account has reached its search limit\./,
+  'run-cap': /Your company has reached its search limit\./,
   details: /More information is needed before this search can start\./,
-  policy: /This search falls outside the rules set for your account\./,
+  policy: /This search falls outside the rules set for your company\./,
   setup: /This installation needs attention before the search can start\./,
   duplicate: /This order was flagged as a duplicate\./,
   other: /Contact your administrator and give them this order reference\./,
@@ -180,7 +180,7 @@ await cdp('Page.navigate', { url: `${origin}/portal/clearances` })
   const t1 = Date.now()
   while (Date.now() - t1 < 8000 && !/Order reference/.test(await text())) await sleep(200)
   t = await text()
-  expect('clearances → receipt', t, /Order did not start/, /Your account has reached its search limit\./, new RegExp(`Order reference: ${REF.replace(/[.@]/g, '\\$&')}`))
+  expect('clearances → receipt', t, /Order did not start/, /Your company has reached its search limit\./, new RegExp(`Order reference: ${REF.replace(/[.@]/g, '\\$&')}`))
 }
 
 ws.close()
