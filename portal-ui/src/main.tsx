@@ -16,6 +16,7 @@ import { NewCompany } from './screens/NewCompany.tsx'
 import { SavedSearches } from './screens/SavedSearches.tsx'
 import { Preferences } from './screens/Preferences.tsx'
 import { UseYourAI } from './screens/UseYourAI.tsx'
+import { OrderReceipt } from './screens/OrderReceipt.tsx'
 import { Profile } from './screens/Profile.tsx'
 import { Projects } from './screens/Projects.tsx'
 import { GlobalConfig } from './screens/GlobalConfig.tsx'
@@ -93,6 +94,9 @@ function screen(id: ScreenId, ctx: ShellContext) {
       )
     case 'ai':
       return <UseYourAI ctx={ctx} />
+    case 'order':
+      // Keyed on the address: two orders' receipts are two mounts, each following its own reference.
+      return <OrderReceipt key={`${window.location.pathname}${window.location.search}#${ctx.visit}`} ctx={ctx} />
     case 'result': {
       // /portal/result/<runId>             — the run: its own document, or a batch's list of names.
       // /portal/result/<runId>/<markSlug>  — ONE name's document out of a batch, in the shell.
