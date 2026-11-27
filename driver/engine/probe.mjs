@@ -76,7 +76,6 @@ import { fileURLToPath } from "node:url";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   // a run's driver folder, reached through its one helper
 
 /** The server the probe hands the engine, named as a stage names its own (`mcp__<server>__<tool>`). */
 export const PROBE_SERVER = "probe";
@@ -304,13 +303,14 @@ export function lastClaudeVersionIn(spineText) {
 export async function lastRanClaudeVersion({ workspaceRoot = null, maxRuns = 30 } = {}) {
   try {
     const { walkRuns } = await import("../portal-runs.mjs");
+    const { paths } = await import("../run-record.mjs");   // a run's files, named by the record's one door
     const root = workspaceRoot ?? (await import("../driver.config.mjs")).config.workspaceRoot;
     const { runs } = walkRuns({ workspaceRoot: root, archive: true, orders: false });
     const newest = runs.filter((r) => typeof r.status?.startedAt === "string")
       .sort((a, b) => b.status.startedAt.localeCompare(a.status.startedAt)).slice(0, maxRuns);
     for (const r of newest) {
       let text = null;
-      try { text = readFileSync(driverDir(r.dir, "run.jsonl"), "utf8"); } catch { continue; }
+      try { text = readFileSync(paths(r.dir).run, "utf8"); } catch { continue; }
       const v = lastClaudeVersionIn(text);
       if (v) return v;
     }
