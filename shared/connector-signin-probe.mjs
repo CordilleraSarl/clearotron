@@ -83,7 +83,7 @@ export function registrationBody(redirectUri, { clientName = "clearotron doctor 
  *   does not accept registrations.
  */
 export function registrationEndpointFrom({ status = null, document = null, error = null } = {}) {
-  if (error) return { endpoint: null, looked: false, why: `the discovery document could not be read: ${error}` };
+  if (error) return { endpoint: null, looked: false, why: "the discovery document could not be read" };
   if (status !== 200) {
     return { endpoint: null, looked: false,
       why: `the discovery document answered ${status ?? "nothing"} — with no document there is nothing `
@@ -126,7 +126,7 @@ export async function probeRegistration({ post, endpoint, vendors = VENDOR_REDIR
   const control = await post(endpoint, registrationBody(CONTROL_REDIRECT));
   if (!registrationAccepted(control?.status)) {
     return { looked: false, control,
-      why: `the localhost control answered ${control?.status ?? control?.error ?? "nothing"} rather than 201, so `
+      why: `the localhost control answered ${control?.status ?? "nothing"} rather than 201, so `
         + "the registration endpoint itself is not working normally. A refusal for a vendor below would "
         + "not mean what it looks like, so none was asked for.",
       vendors: [] };
@@ -153,7 +153,7 @@ export function describeRegistration(result, { host = "this address" } = {}) {
     if (v.accepted) { out.push({ state: "pass", text: `${v.vendor} can sign in here` }); continue; }
     out.push({ state: "fail",
       text: `${v.vendor} CANNOT sign in here — its registration was refused `
-        + `(${v.status ?? v.error ?? "no answer"}), and the only symptom a reader sees is the connector `
+        + `(${v.status ?? "no answer"}), and the only symptom a reader sees is the connector `
         + `failing after the browser opens. Add ${v.uri} to the allowed redirect addresses of the `
         + "application in front of this hostname. Every provider that fronts an MCP route keeps such a "
         + "list; on Cloudflare Access it is the application's Allowed redirect URIs, and its "

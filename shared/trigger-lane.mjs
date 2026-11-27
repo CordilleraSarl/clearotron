@@ -45,6 +45,7 @@
 
 /** The posture decides what an absent value MEANS, which is why it is an input rather than a guess. */
 import { challengeVerdict, blockedByAccessChallenge, challengeNote } from "./mcp-challenge.mjs";   // — F57
+import { shownAddress } from "./shown-address.mjs";
 export const HOSTED = "hosted";
 export const SUPERVISED = "supervised";
 
@@ -111,6 +112,11 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
         + "it and hands it to the portal it supervises. This says nothing about a portal already running." };
   }
 
+  // THE ADDRESS AS A LINE MAY SHOW IT: scheme, host and path, never a user, password or query (design, 2026-11-27). A
+  // local socket is a filesystem path and is shown as configured. A value that is not an address is not shown.
+  const shown = /^unix:/i.test(raw) ? raw : shownAddress(raw);
+  if (shown == null) return { state: "fail", message: "PORTAL_MCP_URL is not a URL" };
+
   // BOTH DIRECTIONS, OR THE INSTALL IS NOT HEALTHY (owner, 2026-09-02, on finding "Stop now" unavailable
   // against his own running clearance). A lane that can start a run and cannot stop it is not a working
   // lane — it is a client committed to a run they cannot recall, and the refusal arrives from upstream
@@ -132,7 +138,7 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
   // presence alone; asserting the same thing here would reproduce it one surface further along.
   if (!hasToken) {
     return { state: "fail",
-      message: `PORTAL_MCP_URL is ${raw} and no ops token is set, so the lane is half-wired: the portal `
+      message: `PORTAL_MCP_URL is ${shown} and no ops token is set, so the lane is half-wired: the portal `
         + "knows where to call and cannot authenticate. The Start button fails at the door." };
   }
 
@@ -157,7 +163,7 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
 
   let parsed;
   try { parsed = new URL(raw); }
-  catch { return { state: "fail", message: `PORTAL_MCP_URL is not a URL: ${raw}` }; }
+  catch { return { state: "fail", message: "PORTAL_MCP_URL is not a URL" }; }
   // AN ORIGIN, NOT AN ENDPOINT. The portal's client appends `/mcp` itself, so a value carrying it
   // produces `/mcp/mcp` — a 404 at submit time and nothing wrong anywhere else.
   if (parsed.pathname !== "/" && parsed.pathname !== "") {
@@ -168,7 +174,7 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
 
   if (!probe) {
     return { state: "unprobed",
-      message: `${raw} is configured with a token and NOBODY WALKED THE HOP. Configuration is what every `
+      message: `${shown} is configured with a token and NOBODY WALKED THE HOP. Configuration is what every `
         + "surface that missed the incident already checked; only the hop is evidence." };
   }
   // THE SAME BLINDNESS THE CLIENT CONNECTOR HAD ( — F57). F57 names the client
@@ -176,7 +182,7 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
   // 500, so a Cloudflare-Access browser challenge in front of the submit lane reads as an answering
   // lane while no assistant can reach it — which is this module's founding incident with a new cause.
   const challenge = challengeVerdict(probe);
-  if (challenge.blocked) return { state: "fail", message: blockedByAccessChallenge(raw, probe.status) };
+  if (challenge.blocked) return { state: "fail", message: blockedByAccessChallenge(shown, probe.status) };
   if (probe.ok) {
     // ── A 401 IS ANSWERED BY STATUS AND REFUSED IN SUBSTANCE ─────────────────────────────────────────
     //
@@ -194,14 +200,14 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
     const wants = doorCredential(probe);
     if (probe.status === 401 && wants === "proxy") {
       return { state: "fail",
-        message: `${raw} is fronted by an identity proxy: it refused an unauthenticated request by asking `
+        message: `${shown} is fronted by an identity proxy: it refused an unauthenticated request by asking `
           + "for a proxy identity, and this portal presents an access key. The Start button will fail at "
           + "the door with a 401 upstream and a 502 to the client, whatever the key is. Either put the "
           + "portal behind the same proxy, or give it a door that accepts the key." };
     }
     if (probe.status === 401 && wants === "key") {
       return { state: "pass",
-        message: `the trigger lane answers at ${raw} (401 to an unauthenticated check, asking for the `
+        message: `the trigger lane answers at ${shown} (401 to an unauthenticated check, asking for the `
           + `access key this portal holds)${challengeNote(challenge)}` };
     }
     if (probe.status === 401) {
@@ -211,7 +217,7 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
       // EITHER place is there nothing to go on.
       if (/bearer|oauth/i.test(String(probe.challenge ?? ""))) {
         return { state: "pass",
-          message: `the trigger lane answers at ${raw} (401 to an unauthenticated check, challenging for a `
+          message: `the trigger lane answers at ${shown} (401 to an unauthenticated check, challenging for a `
             + `token)${challengeNote(challenge)}` };
       }
       // REPORTED, NOT JUDGED — the doctrine this block already follows for an ambiguous challenge. A 401
@@ -219,14 +225,17 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
       // door that changed its wording; claiming either way would be the original defect with the
       // confidence pointed somewhere new.
       return { state: "unsettled",
-        message: `${raw} refused an unauthenticated check with 401 and did not say which credential it `
+        message: `${shown} refused an unauthenticated check with 401 and did not say which credential it `
           + "wants, in its challenge or its body, so this cannot tell whether the portal's access key will "
           + "be accepted. Present the key against it before relying on the Start button." };
     }
     return { state: "pass",
-      message: `the trigger lane answers at ${raw}${probe.status ? ` (${probe.status})` : ""}${challengeNote(challenge)}` };
+      message: `the trigger lane answers at ${shown}${probe.status ? ` (${probe.status})` : ""}${challengeNote(challenge)}` };
   }
-  const why = probe.error ? probe.error : `it answered ${probe.status}`;
+  // What the door answered is a plain status and stays in the sentence; the error a failed connection threw is the
+  // machine's own words, so it rides as `detail`, for a local diagnosis (design, 2026-11-27).
+  const answered = probe.error ? "" : ` — it answered ${probe.status}`;
+  const detail = probe.error ? String(probe.error) : null;
   // ── A DOOR THAT IS NOT LISTENING YET IS NOT A DOOR THAT IS DOWN ───────────────────────────────────
   //
   // On a simultaneous restart of the unit set the portal binds before the engine door does — the units
@@ -245,14 +254,14 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
   // there yet, or at all", and at boot the first is ordinary. A door that ANSWERED something wrong is a
   // fault that no amount of waiting fixes, and keeps the full warning.
   if (probe.error && /ECONNREFUSED|ECONNRESET|EHOSTUNREACH|ENETUNREACH|ETIMEDOUT|EAI_AGAIN|socket hang up|fetch failed/i.test(String(probe.error))) {
-    return { state: "unsettled",
-      message: `${raw} is configured and nothing answered there when this was checked — ${why}. THIS IS A `
+    return { state: "unsettled", detail,
+      message: `${shown} is configured and nothing answered there when this was checked${answered}. THIS IS A `
         + "BOOT-TIME OBSERVATION, NOT A VERDICT: the submit path re-probes on every request and does not "
         + "consult this, so it says nothing about what a clearance will do. On a simultaneous restart the "
         + "portal routinely binds before the engine door and this clears itself within seconds. If it is "
         + "still true after the box has settled, the engine door is genuinely down — check it then." };
   }
-  return { state: "fail",
-    message: `${raw} is configured and the engine door DOES NOT ANSWER — ${why}. This is the submit lane: `
+  return { state: "fail", detail,
+    message: `${shown} is configured and the engine door DOES NOT ANSWER${answered}. This is the submit lane: `
       + "a clearance ordered from the portal returns 502 while the portal's own health endpoint stays 200." };
 }

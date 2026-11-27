@@ -210,8 +210,9 @@ export function audienceVerdict({ configured = "", read = {} } = {}) {
   const cfgList = Array.isArray(cfg) ? cfg : (cfg ? [cfg] : []);
   switch (read.kind) {
     case "unreachable":
+      // Why it could not be reached is the connection's own error, so it stays out of the sentence (design, 2026-11-27).
       return { kind: "could-not-look", ok: false,
-        message: `the edge could not be reached, so the audience it issues is unknown (${read.why}). `
+        message: "the edge could not be reached, so the audience it issues is unknown. "
           + "This is a failure to look, not agreement." };
     case "not-fronted":
       return { kind: "not-fronted", ok: false,
