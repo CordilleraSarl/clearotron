@@ -19,7 +19,7 @@
 import { writeFileSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { RECEIPT_STATES } from "../driver/order-receipt.mjs";   // the states an order can be in, named once
+import { RECEIPT_STATES, REFUSAL_KINDS } from "../driver/order-receipt.mjs";   // the states an order can be in, and the kinds of refusal, named once
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "mcp-server", "result-shapes.json");
@@ -40,9 +40,11 @@ const startRun = closed(["outcome", "ok", "id", "agent", "queue", "queued", "war
 // A RETRY IS THE ORDER IT REPEATS: the same account's order already filed under that reference, answered as it stands,
 // with nothing written or counted (driver/order-receipt.mjs orderAlreadyFiled).
 const ORDER_STATES = { enum: Object.keys(RECEIPT_STATES) };
-const startRunExisting = closed(["outcome", "ok", "id", "existing", "state", "terminal", "runId", "reason", "updatedAt"], {
+// `reasonKind` says which check refused an order before any run (driver/order-receipt.mjs REFUSAL_KINDS), null otherwise.
+const REFUSAL_KIND = { type: ["string", "null"], enum: [...REFUSAL_KINDS, null] };
+const startRunExisting = closed(["outcome", "ok", "id", "existing", "state", "terminal", "runId", "reason", "reasonKind", "updatedAt"], {
   outcome: { const: "already-filed" }, ok: { const: true }, id: S, existing: { const: true }, state: ORDER_STATES, terminal: B,
-  runId: SN, reason: SN, updatedAt: SN });
+  runId: SN, reason: SN, reasonKind: REFUSAL_KIND, updatedAt: SN });
 
 const stopRun = [
   closed(["outcome", "ok", "action", "id", "note"], { outcome: { const: "dequeued" }, ok: { const: true }, action: { const: "dequeued" }, id: S, note: S }),
@@ -93,16 +95,16 @@ const staffRunRow = closed(RUN_ROW_REQUIRED, runRowProps);
 const { url: _u, agent: _a, ...clientRowProps } = runRowProps;
 const clientRunRow = closed(RUN_ROW_REQUIRED.filter((k) => !["url", "agent", "reason"].includes(k)), { ...clientRowProps, reason: S, reasonRedacted: { const: true } });
 
-const orderFound = (extra) => closed(["found", "reference", "state", "terminal", "runId", "reason", "updatedAt", ...Object.keys(extra)],
-  { found: { const: true }, reference: S, state: ORDER_STATES, terminal: B, runId: SN, reason: SN, updatedAt: SN, ...extra });
+const orderFound = (extra) => closed(["found", "reference", "state", "terminal", "runId", "reason", "reasonKind", "updatedAt", ...Object.keys(extra)],
+  { found: { const: true }, reference: S, state: ORDER_STATES, terminal: B, runId: SN, reason: SN, reasonKind: REFUSAL_KIND, updatedAt: SN, ...extra });
 const orderNotFound = closed(["found", "basis"], { found: { const: false }, basis: { enum: ["not-found", "invalid-reference", "could-not-look", "ambiguous"] } });
 
 const reads = {
   server_info: { all: closed(["name", "version", "commit", "sourceRepo", "sourceUrl", "license", "copyright"],
     { name: S, version: SN, commit: SN, sourceRepo: S, sourceUrl: S, license: S, copyright: S }) },
   list_runs: { staff: items(staffRunRow), client: items(clientRunRow) },
-  // What became of one order (driver/order-receipt.mjs). The operator's answer names the account it belongs to and why a
-  // run stopped; a client's names neither, and gives the reason only for an order refused before it ran.
+  // What became of one order (driver/order-receipt.mjs). The operator's answer names the account it belongs to and why it
+  // was refused or stopped; a client's names neither, and says which check refused an order as `reasonKind` only.
   order_status: { staff: { type: "object", anyOf: [orderFound({ account: SN, organisation: SN }), orderNotFound] },
     client: { type: "object", anyOf: [orderFound({}), orderNotFound] } },
   list_profiles: { all: closed(["_note", "clients", "genericFallback"], { _note: S, clients: { type: "array", items: O }, genericFallback: S, storeUnreadable: S, unreadable: A }) },

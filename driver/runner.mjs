@@ -386,7 +386,7 @@ function noticeAccount(job) {
 // self-contained event packet — no gateway, no messaging binary, no run dir needed. NEVER throws; the
 // .failed markers are written BEFORE this runs, so a notify failure can never lose the rejection
 // record. Returns the audit-trail outcome string appended to the .reason file (`notify: <outcome>`).
-async function intakeNotify(agentId, base, job, v) {
+async function intakeNotify(agentId, base, job, v, reasonKind = "other") {
   // plain optional chaining throughout: `Array.isArray(x) && ...` yields boolean false (NOT nullish) when
   // marks is absent, which would swallow the `?? base` fallback in exactly the null-job case it exists for.
   const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
@@ -396,7 +396,7 @@ async function intakeNotify(agentId, base, job, v) {
   const text = `⚠️ Clearotron request "${mark}" ${what}. Nothing has been searched or delivered. ` +
     `Job parked as ${base}.failed in the ${agentId} queue.`;
   const p = writeOutboxPacket(`intake-${base}.failed`, {
-    kind: "intake-rejected", classify: v?.classify ?? "reject", base, agent: agentId,
+    kind: "intake-rejected", classify: v?.classify ?? "reject", reasonKind, base, agent: agentId,
     ...noticeAccount(job),
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
@@ -640,7 +640,7 @@ async function failAtIntake(procPath, qdir, base, agentId, job, v, reasons, kind
   cleanupProseParts(qdir, base);
   writeFileSync(join(qdir, `${base}.failed.reason`), reasons.join("\n") + "\n");
   try { writeFileSync(join(qdir, `${base}.failed.kind`), `${kind}\n`); } catch { /* best-effort: an absent kind reads as other */ }
-  const notified = await intakeNotify(agentId, base, job, v);
+  const notified = await intakeNotify(agentId, base, job, v, kind);
   try { appendFileSync(join(qdir, `${base}.failed.reason`), `notify: ${notified}\n`); } catch { /* best-effort */ }
 }
 

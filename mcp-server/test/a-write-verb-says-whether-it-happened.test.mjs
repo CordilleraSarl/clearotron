@@ -241,7 +241,7 @@ test("a result that leaves out its outcome, or a refusal with no reason, does no
   const good = { outcome: "queued", ok: true, id: "x", agent: "a", queue: "q", queued: true, warnings: [], queuePath: "p", queueWatched: "ok", note: "n" };
   assert.equal(start(good).valid, true, "the shape start_run declares accepts its own answer");
   assert.equal(start({ ...good, surprise: 1 }).valid, false, "and refuses a field it does not declare");
-  const filed = { outcome: "already-filed", ok: true, id: "x", existing: true, state: "refused", terminal: true, runId: null, reason: "r", updatedAt: null };
+  const filed = { outcome: "already-filed", ok: true, id: "x", existing: true, state: "refused", terminal: true, runId: null, reason: "r", reasonKind: "other", updatedAt: null };
   assert.equal(start(filed).valid, true, "the order a retry meets is an answer start_run declares");
   assert.equal(start({ ...filed, state: "lost" }).valid, false, "in one of the states an order can be in");
 });
