@@ -16,7 +16,7 @@
 import { appendFileSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
-import { receiptIn, orderInScope } from "./order-receipt.mjs";
+import { markersByReference, orderInScope, receiptIn, stateFromNames } from "./order-receipt.mjs";
 
 export const STARTS_DIR = "portal-starts";
 
@@ -66,6 +66,12 @@ const STATES = new Set(["checking", "refused"]);
  * before any run. A waiting order already has its queued row and an order with a run has the run's row, so neither is
  * here, and each order is one row at any moment. Each is held to the reader's visibility: `scopes` (one
  * `{ account, organisation }` per company being listed) or `everything`. Newest first.
+ *
+ * BOUNDED BY THE ORDERS THAT CAN BE ROWS (review, 2026-11-27). Clearances calls this on every
+ * open, synchronously, so its cost is paid by everyone on the portal process. Each queue listing is indexed by
+ * reference in one pass, and an order whose names already settle it (delivered, cancelled, waiting, parked) is passed
+ * over without opening a file: only an order a worker may be checking, or one that stopped, is read. Measured before
+ * this: 4.6 to 5.7 s at 4,000 delivered orders.
  */
 export function preRunOrders({ workspaceRoot, queueDirs = [], scopes = [], everything = false } = {}) {
   const listings = [];
@@ -73,28 +79,38 @@ export function preRunOrders({ workspaceRoot, queueDirs = [], scopes = [], every
     try { listings.push({ qdir: d, names: readdirSync(d) }); } catch { /* a queue that will not open answers nothing here */ }
   }
   const sees = (job) => everything || scopes.some((s) => orderInScope(job, { account: s.account, organisation: s.organisation ?? null }));
-  const rows = [];
+  const references = [];
   const done = new Set();
   for (const file of recordFiles(workspaceRoot, { scopes, everything })) {
     for (const reference of referencesIn(file)) {
       if (done.has(reference)) continue;
       done.add(reference);
-      for (const { qdir, names } of listings) {
-        const r = receiptIn(qdir, reference, names);
-        if (!r) continue;
-        if (sees(r.job) && STATES.has(r.state)) {
-          const j = r.job ?? {};
-          const account = j.profileKey ?? "generic";
-          rows.push({
-            reference, state: r.state, reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null,
-            account, ...(account === "generic" ? { organisation: j.tenant ?? null } : {}),
-            markName: (j.markName ?? j.name ?? j.marks?.[0]?.name) || null,
-            marks: (Array.isArray(j.marks) ? j.marks : []).map((m) => m?.name).filter((n) => typeof n === "string" && n),
-            product: j.product ?? null, updatedAt: r.updatedAt ?? null,
-          });
-        }
-        break;
+      references.push(reference);
+    }
+  }
+  for (const l of listings) l.byRef = markersByReference(l.names, done);
+  const rows = [];
+  for (const reference of references) {
+    for (const { qdir, names, byRef } of listings) {
+      const own = byRef.get(reference);
+      if (!own) continue;
+      const named = stateFromNames(reference, own);
+      if (named === null) continue;
+      if (named !== "open") break;   // its names settle it, and as no row of this list
+      const r = receiptIn(qdir, reference, names, { own });
+      if (!r) continue;
+      if (sees(r.job) && STATES.has(r.state)) {
+        const j = r.job ?? {};
+        const account = j.profileKey ?? "generic";
+        rows.push({
+          reference, state: r.state, reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null,
+          account, ...(account === "generic" ? { organisation: j.tenant ?? null } : {}),
+          markName: (j.markName ?? j.name ?? j.marks?.[0]?.name) || null,
+          marks: (Array.isArray(j.marks) ? j.marks : []).map((m) => m?.name).filter((n) => typeof n === "string" && n),
+          product: j.product ?? null, updatedAt: r.updatedAt ?? null,
+        });
       }
+      break;
     }
   }
   return rows.sort((a, b) => String(b.updatedAt ?? "").localeCompare(String(a.updatedAt ?? "")));
