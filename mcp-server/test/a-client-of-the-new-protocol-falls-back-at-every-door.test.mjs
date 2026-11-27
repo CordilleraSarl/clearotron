@@ -87,6 +87,19 @@ async function startDoor(file, env) {
   return child;
 }
 
+/**
+ * Start a door on a port the kernel called free, and on another when something took it first. The port is released
+ * before the door binds it, and on a shared runner another job can take it in that gap: the door then refuses, by
+ * design, rather than move. Only that refusal is retried; any other exit fails the test as it stands.
+ */
+async function startDoorOnAFreePort(file, envFor, attempts = 5) {
+  for (let i = 1; ; i++) {
+    const port = await freePort();
+    try { await startDoor(file, envFor(port)); return port; }
+    catch (e) { if (i >= attempts || !/is already in use/.test(String(e?.message))) throw e; }
+  }
+}
+
 /** A fetch that records each request's JSON-RPC method beside the status the door answered it with. */
 function recordingFetch(seen) {
   return async (url, init) => {
@@ -169,20 +182,18 @@ async function assertStdioServerFallsBack(file, env) {
 }
 
 test("the staff door: a keyed probe is refused with a 400 sentence, and the client falls back and lists the tools", async () => {
-  const port = await freePort();
-  await startDoor(STAFF_DOOR, {
+  const port = await startDoorOnAFreePort(STAFF_DOOR, (port) => ({
     TRADEMARK_MCP_AUTH_MODE: "token", TRADEMARK_MCP_AUTH_DISABLED: "", TRADEMARK_MCP_DEV: "",
     TRADEMARK_MCP_HTTP_HOST: "127.0.0.1", TRADEMARK_MCP_HTTP_PORT: String(port), TRADEMARK_MCP_ALLOWED_HOSTS: `127.0.0.1:${port}`,
-  });
+  }));
   await assertHttpDoorFallsBack(`http://127.0.0.1:${port}/mcp`, mintToken({ scope: "ops", sub: "fallback-test", ttlSec: 600 }));
 });
 
 test("the client door: a company's keyed probe is refused with a 400 sentence, and the client falls back and lists the tools", async () => {
-  const port = await freePort();
-  await startDoor(CLIENT_DOOR, {
+  const port = await startDoorOnAFreePort(CLIENT_DOOR, (port) => ({
     CLIENT_MCP_TOKEN_ONLY: "1", CLIENT_MCP_ACCOUNT_ACCESS: "1", CLIENT_MCP_AUTH_DISABLED: "", CLIENT_MCP_DEV: "",
     CLIENT_MCP_HTTP_HOST: "127.0.0.1", CLIENT_MCP_HTTP_PORT: String(port), CLIENT_MCP_ALLOWED_HOSTS: `127.0.0.1:${port}`,
-  });
+  }));
   await assertHttpDoorFallsBack(`http://127.0.0.1:${port}/mcp`,
     mintToken({ scope: "account", sub: "lawyer@acme.example", accounts: ["acme"], ttlSec: 600 }));
 });
