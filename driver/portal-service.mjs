@@ -2446,11 +2446,11 @@ const PORT = PORT_CHOICE.port;
   // drift. This asks the same function and prints what it says.
   if (laneWired) {
     try {
-      const { triggerLaneVerdict, HOSTED, BOOT_PROBE_HEADER } = await import("../shared/trigger-lane.mjs");
+      const { triggerLaneVerdict, laneProbeUrl, HOSTED, BOOT_PROBE_HEADER } = await import("../shared/trigger-lane.mjs");
       let probe = null;
       try {
         // NAMED AS THE PROBE, so the door does not log this expected 401 as a rejection on every start.
-        const res = await fetch(new URL("/mcp", MCP_URL), { method: "GET", redirect: "manual",
+        const res = await fetch(laneProbeUrl(MCP_URL), { method: "GET", redirect: "manual",
           headers: { [BOOT_PROBE_HEADER]: "1" }, signal: AbortSignal.timeout(2500) });
         // THE BODY IS READ BECAUSE THE HEADER DOES NOT SEPARATE THE TWO DOORS. A proxy-fronted door and
         // a key door both refuse with 401 and no `www-authenticate`; each names the credential it wants

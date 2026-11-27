@@ -90,6 +90,19 @@ export function doorCredential(probe) {
   return null;
 }
 
+/**
+ * The engine door's `/mcp` as the portal's client dials it, for a probe to ask. The client (driver/portal-mcp-client.mjs)
+ * connects to the address's host and port and sends no user or password from it, so a probe that kept them asked a
+ * question the portal never asks: `fetch` refuses an address carrying them before it connects, and the door read as
+ * down while the portal reached it (measured 2026-11-27).
+ */
+export function laneProbeUrl(url) {
+  const u = new URL("/mcp", String(url ?? "").trim());
+  u.username = "";
+  u.password = "";
+  return u;
+}
+
 export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null, posture = SUPERVISED, probe = null, invoke = "" } = {}) {
   const startCmd = `${invoke}clearotron start`;
   const raw = String(url ?? "").trim();

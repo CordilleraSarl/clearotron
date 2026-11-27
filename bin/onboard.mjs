@@ -3557,7 +3557,7 @@ async function sayBackgroundUnits({ hosted }) {
 async function sayStartButtonPath({ hosted, unitEnv }) {
   say("\n  Start-button path");
   try {
-    const { triggerLaneVerdict, HOSTED, SUPERVISED } = await import(pathToFileURL(join(REPO, "shared", "trigger-lane.mjs")).href);
+    const { triggerLaneVerdict, laneProbeUrl, HOSTED, SUPERVISED } = await import(pathToFileURL(join(REPO, "shared", "trigger-lane.mjs")).href);
     // POSTURE FROM THE BOX, NOT FROM A FLAG. Units installed means the units serve, and the units read
     // %h/.env — so an absent value there is the incident. No units means `start` supervises and derives
     // the value at runtime, where reading this process's environment says nothing either way.
@@ -3603,7 +3603,7 @@ async function sayStartButtonPath({ hosted, unitEnv }) {
     let probe = null;
     if (String(url ?? "").trim()) {
       try {
-        const res = await fetch(new URL("/mcp", url), { method: "GET", signal: AbortSignal.timeout(2500), redirect: "manual" });
+        const res = await fetch(laneProbeUrl(url), { method: "GET", signal: AbortSignal.timeout(2500), redirect: "manual" });
         // The door speaks MCP, not HTTP GET: a 4xx from it is a door answering. Only 5xx — or nothing
         // at all — is the state the 502 came from.
         // THE CHALLENGE FORM TRAVELS WITH THE STATUS ( — F57). `headers.get`

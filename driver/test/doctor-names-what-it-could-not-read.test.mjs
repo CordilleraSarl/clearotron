@@ -20,15 +20,16 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFile, execFileSync } from "node:child_process";
 import { chmodSync, mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { createServer } from "node:net";
+import { createServer as createHttpServer } from "node:http";
 import { tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { handRunEnv } from "./drive-env.mjs";
 import { shownAddress } from "../../shared/shown-address.mjs";
-import { triggerLaneVerdict, HOSTED } from "../../shared/trigger-lane.mjs";
+import { triggerLaneVerdict, laneProbeUrl, HOSTED } from "../../shared/trigger-lane.mjs";
 import { clientDoorReachability } from "../../shared/client-door.mjs";
 
 const ONBOARD = fileURLToPath(new URL("../../bin/onboard.mjs", import.meta.url));
@@ -71,6 +72,17 @@ function doctor(home, env = {}) {
     });
     return { out, code: 0 };
   } catch (e) { return { out: `${e.stdout ?? ""}${e.stderr ?? ""}`, code: e.status }; }
+}
+
+/** doctor, without blocking this process: for an arm whose door runs in this process and must answer while doctor asks. */
+function doctorAsync(home, env = {}) {
+  return new Promise((resolve) => {
+    execFile(process.execPath, [ONBOARD, "--check"], {
+      encoding: "utf8", timeout: 120_000,
+      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: SEARCHED, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1",
+        ...(WINDOWS ? { SystemRoot: process.env.SystemRoot } : {}), ...env }, {}),
+    }, (e, stdout, stderr) => resolve({ out: `${stdout ?? ""}${stderr ?? ""}`, code: e ? e.code : 0 }));
+  });
 }
 
 const flat = (s) => s.replace(/\s+/g, " ");
@@ -198,6 +210,25 @@ test("an address that carries a user, a password or a query is shown without the
       assert.ok(!out.includes(secret), `a credential reached doctor's output (${secret}):\n${out}`);
     assert.doesNotMatch(out, RAW, `the machine's own words reached doctor's output:\n${out}`);
   } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("an engine door whose address carries a user and password is asked as the portal dials it, and answers", async () => {
+  // The portal's client dials the host and port and sends no user or password from the address, so the portal reaches
+  // this door. Doctor's probe kept them, `fetch` refused the address before connecting, and a door that was up read as
+  // down (2026-11-27). The probe now asks what the portal asks.
+  const seen = [];
+  const door = createHttpServer((req, res) => { seen.push({ url: req.url, auth: Boolean(req.headers.authorization) }); res.writeHead(405); res.end(); });
+  await new Promise((r) => door.listen(0, "127.0.0.1", r));
+  const { port } = door.address();
+  const { home } = setUpHome();
+  try {
+    const { out } = await doctorAsync(home, { PORTAL_MCP_URL: `http://door-user:door-pass@127.0.0.1:${port}`, PORTAL_OPS_TOKEN: "an-ops-token-for-this-test" });
+    assert.ok(seen.some((r) => r.url === "/mcp" && !r.auth), `the probe never reached the door as the portal dials it: ${JSON.stringify(seen)}\n${out}`);
+    assert.ok(out.includes(`✓ the trigger lane answers at http://127.0.0.1:${port} (405)`), `a door that answered was not reported answering:\n${out}`);
+    for (const secret of ["door-user", "door-pass", "an-ops-token-for-this-test"])
+      assert.ok(!out.includes(secret), `a credential reached doctor's output (${secret}):\n${out}`);
+  } finally { await new Promise((r) => door.close(r)); rmSync(home, { recursive: true, force: true }); }
+  assert.equal(String(laneProbeUrl("http://u:p@127.0.0.1:9?token=t")), "http://127.0.0.1:9/mcp");
 });
 
 test("an address is shown as scheme, host and path, and one that does not parse is not shown", () => {
