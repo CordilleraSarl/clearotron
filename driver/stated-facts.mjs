@@ -5,8 +5,8 @@
 // The matter frame restates the request, and a restatement can drop a fact the request gave: a request form named
 // its product and four sales channels, the order's goods field was empty, and the frame said the brief gave no goods
 // specification. Every later stage read that frame. The facts a request states plainly are now read by code, once,
-// before any model runs, and stamped into the frame beside the instructed scope, each with where it was found. A frame
-// that omits or contradicts one cannot take it out of what later stages read.
+// before any model runs, and kept in the run as `_driver/stated-facts.json`, each with where it was found: the record
+// a later stage can be given its facts from, and the evidence of what was asked whatever any frame says.
 //
 // What is read, and only this:
 //   - the order's own fields: `goods` (or its older spelling `use`), and `priorUse`;
@@ -14,9 +14,10 @@
 //     the product, the goods or services, the use, and the sales channels: a line `Label: value`, a table row rendered
 //     `Label | value`, a label whose value follows as a list, or a form flattened onto one line, where a capitalised
 //     `Label:` opens each field and the value runs to the next one.
-// Nothing is inferred and nothing is judged: no word overlap, no model, no gate. A fact stated twice, differently, is
-// kept both times and marked uncertain. A request with no labelled fact and an order with no such field have nothing
-// to stamp.
+// Nothing is inferred and nothing is judged: no word overlap, no model, no gate. A fact stated more than once,
+// differently, is kept every time, each with its source, and listed as having multiple stated values: different
+// descriptions may all be true. Where a label sits in a quoted older email, its source says where the text was found,
+// not that it governs this order. A request with no labelled fact and an order with no such field record nothing.
 import { rmSync, writeFileSync } from "node:fs";
 import { goodsOf } from "./queue-markers.mjs";
 
@@ -84,7 +85,8 @@ export function requestFormFacts(rawRequest) {
 
 /**
  * What an order states, from its own fields and its verbatim request: `{ facts: [{ field, value, source }],
- * uncertain: [field] }`, or null when it states none. A repeated identical fact is kept once. PURE.
+ * multiple: [field] }`, or null when it states none. `multiple` names each field stated more than once, differently. A
+ * repeated identical fact is kept once. PURE.
  */
 export function statedFactsOf(job) {
   const facts = [];
@@ -96,25 +98,8 @@ export function statedFactsOf(job) {
   const kept = facts.filter((f) => { const k = `${f.field}\u0000${clean(f.value).toLowerCase()}`; return seen.has(k) ? false : (seen.add(k), true); });
   if (!kept.length) return null;
   kept.sort((a, b) => STATED_FIELDS.indexOf(a.field) - STATED_FIELDS.indexOf(b.field));
-  const uncertain = STATED_FIELDS.filter((f) => kept.filter((x) => x.field === f).length > 1);
-  return { facts: kept, uncertain };
-}
-
-// THE WORDS BELOW ARE READ BY THE MODEL in every stage that reads the frame. They are a draft put to design, and
-// land only on its approval.
-const HEADINGS = Object.freeze({ description: "Product or description", goods: "Goods/services", use: "Use", channels: "Sales channels" });
-
-/** The frame's stamped section for the stated facts, or no lines at all when the order states none. PURE. */
-export function renderStatedFacts(record) {
-  const facts = Array.isArray(record?.facts) ? record.facts.filter((f) => STATED_FIELDS.includes(f?.field) && clean(f?.value)) : [];
-  if (!facts.length) return [];
-  const uncertain = new Set(Array.isArray(record?.uncertain) ? record.uncertain : []);
-  const out = ["## Stated in the request", ""];
-  for (const f of facts)
-    out.push(`- **${HEADINGS[f.field]}${uncertain.has(f.field) ? " (stated more than once, differently: each kept)" : ""}:** ${String(f.value).trim()} — ${f.source}`);
-  out.push("", "Stamped by the driver from `_driver/stated-facts.json`: what the order states in its own words, read "
-    + "before any model ran, each with where it was found. Nothing here is inferred.", "");
-  return out;
+  const multiple = STATED_FIELDS.filter((f) => kept.filter((x) => x.field === f).length > 1);
+  return { facts: kept, multiple };
 }
 
 /**
