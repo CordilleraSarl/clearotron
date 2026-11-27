@@ -1535,7 +1535,7 @@
         },
         "a-knockout-sweeps-through-the-runs-own-search.test.mjs": {
           "tests": 12,
-          "asserts": 65,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
@@ -2620,8 +2620,8 @@
           "todos": 0
         },
         "a-run-keeps-the-web-research-it-started-on.pipeline.test.mjs": {
-          "tests": 5,
-          "asserts": 22,
+          "tests": 6,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
