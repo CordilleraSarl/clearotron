@@ -179,7 +179,7 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
     // alone cannot say which pages the lookup was handed.
     const ok = Boolean(r?.ok && isResearchAnswer(r?.text));
     // THE SOURCE COMES FROM THE CALL'S RECORD where the service keeps one: own search names the pages its searches
-    // returned (engine/mcp/own-search.mjs, answerOf), and an address the answer's wording names that no search returned
+    // returned (engine/mcp/own-search.mjs, questionAnswer), and an address the answer's wording names that no search returned
     // is never the source. A service that keeps no such record has its answer's first address, as before.
     const source = !ok ? null : Array.isArray(r.sources) ? r.sources[0] ?? null : firstSourceUrl(r.text);
     const ts = now(), took = r?.tookMs ?? (Date.now() - started);

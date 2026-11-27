@@ -65,11 +65,13 @@ export const RESULT_NOUN_FIELDS = Object.freeze([
     why: "the model's answer to a defect, `changed` or `stands`, and the driver's own reading of a defect beside it, both read back and never returned by a call being logged" },
   { file: "driver/engine/mcp/recording-server.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "out-of-scope",
     why: "a tool schema's description of the field a defect's answer carries" },
-  { file: "driver/engine/mcp/own-search.mjs", noun: "outcome", sites: 13, atWriteSite: 0, verdict: "result",
+  { file: "driver/engine/mcp/own-search.mjs", noun: "outcome", sites: 20, atWriteSite: 0, verdict: "result",
     why: "what became of each dictated search, read from the program's own tool records: a failed, pooled or capped "
       + "record, no record at all, the results it returned and whether each was on the site asked for. A literal the "
       + "record decides, never a call's return. It reaches the run's search-records file inside each record, which a "
-      + "call-site scan does not see" },
+      + "call-site scan does not see. A question's outcome is the same kind of fact: what its answer was by those records" },
+  { file: "driver/engine/mcp/perplexity-server.mjs", noun: "outcome", sites: 1, atWriteSite: 0, verdict: "result",
+    why: "a question its run's own AI program answered: the logged outcome is what the answer was by the program's own records (supported, unsupported-cited, no-source, failed, unsearched), never whether a call returned" },
   { file: "driver/pipeline-knockout.mjs", noun: "outcome", sites: 4, atWriteSite: 4, verdict: "result",
     why: "the reviewing pass's own verdict on itself, read at each writing site: `nothing-flagged` when "
       + "the record had no line a reader meets first, `applied` after the rewrite passed the merged gate and was "

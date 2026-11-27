@@ -308,20 +308,90 @@ export function questionPrompt(question) {
 
 const URL_RE = /https?:\/\/[^\s<>()"'\]]+/g;
 const trimUrl = (u) => String(u).replace(/[.,;:!?)\]]+$/, "");
+/** The form two addresses are compared in: trailing punctuation, a trailing slash and a fragment aside, the host in lower case. Never the host alone. PURE. */
+const urlKey = (u) => {
+  const t = trimUrl(u);
+  try { const x = new URL(t); x.hash = ""; return `${x.protocol}//${x.host.toLowerCase()}${x.pathname.replace(/\/+$/, "")}${x.search}`; }
+  catch { return t.replace(/#.*$/, "").replace(/\/+$/, ""); }
+};
 
 /**
- * What a question session's events and reply say: `{ answered, searches, pages, sources }`. `searches` is how many
- * searches the program ran; `pages` every address its searches returned; `sources` the reply's listed addresses that a
- * search returned, in the reply's order. A reply with no search behind it is not answered. PURE.
+ * WHAT THE PROGRAM'S OWN TOOL RECORDS SHOW IT RECEIVED, from a session's events: `{ searches, searched, read, failed }`.
+ * `searched` are the addresses its searches returned; `read` the pages it opened, never a search result relabelled;
+ * `failed` how many of its web operations failed, which show nothing. Codex reports a page it opened as a web item
+ * whose action is not a search; Claude as a page fetch that returned. PURE.
  */
-export function answerOf(search, { events = [], text = "" } = {}) {
-  const recs = searchRecords(search, events).filter((r) => r.ran && !r.failed);
-  const pages = [...new Set(recs.flatMap((r) => r.results.map((x) => trimUrl(x.url))))];
-  const returned = new Set(pages);
-  const sources = [...new Set((String(text).match(URL_RE) ?? []).map(trimUrl))].filter((u) => returned.has(u));
-  return { answered: recs.length > 0 && String(text).trim() !== "", searches: recs.length, pages, sources };
+export function answerEvidence(search, events = []) {
+  const searched = new Map(), read = new Map();
+  let searches = 0, failed = 0;
+  const add = (into, url) => { const t = trimUrl(url ?? ""); if (/^https?:\/\//.test(t) && !into.has(urlKey(t))) into.set(urlKey(t), t); };
+  if (search === "claude") {
+    const fetched = new Map();
+    for (const e of events) {
+      if (e?.type === "assistant") for (const b of e.message?.content ?? []) if (b?.type === "tool_use" && b.name === "WebFetch") fetched.set(String(b.id), b.input?.url);
+      if (e?.type !== "user") continue;
+      for (const b of e.message?.content ?? []) {
+        if (b?.type !== "tool_result" || !fetched.has(String(b.tool_use_id))) continue;
+        if (b.is_error === true) failed++; else add(read, fetched.get(String(b.tool_use_id)));
+      }
+    }
+    for (const r of searchRecords("claude", events)) {
+      if (r.failed) { failed++; continue; }
+      if (r.ran) searches++;
+      for (const x of r.results) add(searched, x.url);
+    }
+  } else {
+    for (const e of events) {
+      if (e?.type !== "item.completed" || e.item?.type !== "web_search") continue;
+      const it = e.item;
+      if (it.status === "failed") { failed++; continue; }
+      const isSearch = it.action?.type === "search" || (!it.action?.type && Boolean(it.query || it.action?.query || it.action?.queries?.length));
+      if (isSearch) searches++;
+      for (const x of Array.isArray(it.results) ? it.results : []) add(isSearch ? searched : read, x?.url);
+    }
+  }
+  return { searches, searched: [...searched.values()], read: [...read.values()], failed };
 }
 
+// THE NEGATIVE REPLY: the words a session is told to answer with where its searches find nothing, matched as the reply's
+// whole first line. None until design approves an instruction that asks for one; until then a reply that cites no
+// page its searches returned is unverified, a genuine negative included.
+export const NEGATIVE_REPLY = null;
+
+/** The outcomes a question can have. Only "supported" and "negative" reach a stage or an owner lookup as an answer. */
+export const QUESTION_OUTCOMES = Object.freeze(["supported", "negative", "unsupported-cited", "no-source", "failed", "unsearched"]);
+
+/** Drop every address in `text` its searches did not return, and any line left holding nothing but list marks. PURE. */
+function withoutUnrecorded(text, recorded) {
+  const out = [];
+  for (const line of String(text).split("\n")) {
+    const kept = line.replace(URL_RE, (u) => (recorded.has(urlKey(u)) ? u : ""));
+    if (kept !== line && /^[\s\-*•·\d.)(<>\[\]:,;]*$/.test(kept)) continue;
+    out.push(kept);
+  }
+  return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+/**
+ * What a question session's reply is, by the program's own records: `{ outcome, text, sources, unrecorded, evidence }`.
+ * A reply that cites at least one page its tool records show is "supported", and its text keeps only the addresses those
+ * records show: an address no search returned is dropped from the text, so it never reaches the evidence. A reply that
+ * cites only unrecorded pages is "unsupported-cited"; one that cites none is "no-source"; one with no search behind it
+ * "unsearched". `failed` is the caller's, from the turn. A claim whose only citation was dropped stays in the prose with
+ * no citation: telling it apart would need a model call. PURE.
+ */
+export function questionAnswer(search, { events = [], text = "" } = {}, { negative = NEGATIVE_REPLY } = {}) {
+  const evidence = answerEvidence(search, events);
+  const recorded = new Map([...evidence.searched, ...evidence.read].map((u) => [urlKey(u), u]));
+  const reply = String(text ?? "").trim();
+  const cited = [...new Map((reply.match(URL_RE) ?? []).map((u) => [urlKey(u), trimUrl(u)])).values()];
+  const sources = cited.filter((u) => recorded.has(urlKey(u))).map((u) => recorded.get(urlKey(u))), unrecorded = cited.filter((u) => !recorded.has(urlKey(u)));
+  const base = { sources, unrecorded, evidence };
+  if (!evidence.searches && !evidence.read.length) return { ...base, outcome: "unsearched", text: "" };
+  if (negative && reply.split("\n")[0].trim() === negative && !cited.length) return { ...base, outcome: "negative", text: negative };
+  if (sources.length) return { ...base, outcome: "supported", text: withoutUnrecorded(reply, recorded) };
+  return { ...base, outcome: cited.length ? "unsupported-cited" : "no-source", text: "" };
+}
 
 /**
  * The program's own words for why a session failed, from its events, or null: Codex's failed turn or error event, its
@@ -355,19 +425,25 @@ export function ownSearchQuestioner(runDir, { tier, timeoutSec = SESSION_TIMEOUT
     let r;
     try { r = await s.question(task, turnSec ? { timeoutSec: turnSec } : {}); }
     catch (e) { return { ok: false, cause: `own search: ${String(e?.message ?? e).slice(0, 160)}`, service, tookMs: Date.now() - started }; }
-    const a = answerOf(s.search, r);
-    const record = { kind: "question", service, model: r.model ?? null, speed: r.speed ?? null, question: task, answered: a.answered,
-      searches: a.searches, pages: a.pages, sources: a.sources, seconds: r.seconds ?? null, usage: r.usage ?? null };
+    const a = r.cause || !String(r.text ?? "").trim() ? null : questionAnswer(s.search, r);
+    const ev = a?.evidence ?? answerEvidence(s.search, r.events ?? []);
+    const outcome = a?.outcome ?? (r.cause ? "failed" : ev.searches || ev.read.length ? "no-source" : "unsearched");
+    const record = { kind: "question", outcome, service, model: r.model ?? null, speed: r.speed ?? null, question: task,
+      searches: ev.searches, searched: ev.searched, read: ev.read, failedOperations: ev.failed, sources: a?.sources ?? [], unrecorded: a?.unrecorded ?? [],
+      seconds: r.seconds ?? null, usage: r.usage ?? null };
     try { ensureDriverDir(runDir, RECORDS_DIR); appendFileSync(questionRecordsPath(runDir), JSON.stringify({ ts: new Date().toISOString(), ...record }) + "\n"); }
     catch { /* best-effort: a record that cannot be written never fails a lookup */ }
-    if (!a.answered) {
-      // THE PROGRAM'S OWN REASON, where it gave one: a model its account does not carry reads as that, not as a turn that
-      // "did not complete cleanly".
-      const said = r.cause ? programRefusal(r.events) : null;
-      return { ok: false, service, model: r.model ?? null, tookMs: Date.now() - started,
-        cause: r.cause ? `own search: ${String(said ? `${r.cause}: ${said}` : r.cause).slice(0, 300)}` : a.searches ? "own search: the session ran its searches and gave no answer" : "own search: the session answered without searching" };
-    }
-    return { ok: true, text: r.text, sources: a.sources, service, model: r.model ?? null, speed: r.speed ?? null, tookMs: Date.now() - started };
+    if (outcome === "supported" || outcome === "negative")
+      return { ok: true, outcome, text: a.text, sources: a.sources, service, model: r.model ?? null, speed: r.speed ?? null, tookMs: Date.now() - started };
+    // THE PROGRAM'S OWN REASON, where it gave one: a model its account does not carry reads as that, not as a turn that
+    // "did not complete cleanly".
+    const said = r.cause ? programRefusal(r.events) : null;
+    const cause = outcome === "failed" ? `own search: ${String(said ? `${r.cause}: ${said}` : r.cause).slice(0, 300)}`
+      : outcome === "unsearched" ? "own search: the session answered without searching"
+      : outcome === "unsupported-cited" ? "own search: the answer cites no page its searches returned"
+      : !String(r.text ?? "").trim() ? "own search: the session ran its searches and gave no answer"
+      : "own search: the answer cites no page at all";
+    return { ok: false, outcome, cause, service, model: r.model ?? null, tookMs: Date.now() - started };
   };
 }
 

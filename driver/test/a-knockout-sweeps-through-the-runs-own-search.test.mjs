@@ -15,7 +15,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";
-import { ownSearchKnockoutGrid, ownSearchQuestioner, programRefusal, savedSearchRecords, questionRecordsPath, QUESTION_TIERS } from "../engine/mcp/own-search.mjs";
+import { answerEvidence, ownSearchKnockoutGrid, ownSearchQuestioner, programRefusal, questionAnswer, savedSearchRecords, questionRecordsPath, QUESTION_TIERS } from "../engine/mcp/own-search.mjs";
 import { resolveSweepExecutor } from "../pipeline-knockout.mjs";
 import { runOwnerChecks } from "../owner-use-check.mjs";
 import { rollupTokens } from "../tokens.mjs";
@@ -150,8 +150,13 @@ test("an owner lookup on own search is one question on the Knockout's tier, and 
     }
     const recs = readFileSync(questionRecordsPath(runDir), "utf8").trim().split("\n").map((l) => JSON.parse(l));
     assert.equal(recs.length, 2, "each question's record is kept with the run");
-    assert.deepEqual(recs[0].pages, ["https://northwind.test/shop", "https://register.test/1"]);
+    assert.deepEqual(recs[0].searched, ["https://northwind.test/shop", "https://register.test/1"]);
     assert.deepEqual(recs[0].sources, ["https://northwind.test/shop"]);
+    assert.deepEqual(recs[0].unrecorded, ["https://invented.test/about"]);
+    assert.equal(recs[0].outcome, "supported");
+    const payload = readFileSync(join(runDir, "research", rows[0].payloadFile), "utf8");
+    assert.doesNotMatch(payload, /invented\.test/, "an address no search returned reached the owner's payload");
+    assert.match(payload, /northwind\.test\/shop/);
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
@@ -202,4 +207,40 @@ test("a question the program refused carries the program's own reason, never onl
     assert.equal(r.ok, false);
     assert.equal(r.cause, "own search: the engine turn did not complete cleanly (code 1, status error): The 'invented-model' model is not supported when using Codex with a ChatGPT account.");
   } finally { rmSync(runDir, { recursive: true, force: true }); }
+});
+
+// Izar's counterexample (1521, c.7206990753), with invented names: a search returned page A, and the answer cites only page B.
+const A = "https://pages.example.com/a", B = "https://elsewhere.example.org/b";
+const searchOf = (urls) => ({ type: "item.completed", item: { type: "web_search", action: { type: "search", queries: ["q"] }, results: urls.map((url) => ({ url })) } });
+const readOf = (urls) => ({ type: "item.completed", item: { type: "web_search", action: { type: "other" }, results: urls.map((url) => ({ url, ref_id: "turn1view0" })) } });
+
+test("an owner answer that cites only a page no search returned is not an answer, and leaves no payload", async () => {
+  const runDir = aRun("own");
+  try {
+    mkdirSync(join(runDir, "research"), { recursive: true });
+    const exec = ownSearchQuestioner(runDir, { tier: QUESTION_TIERS["knockout-search"],
+      makeSessions: async () => ({ search: "codex", question: async () => ({ text: `Northwind Play GmbH sells wooden toys.\n${B}`, events: [searchOf([A])] }) }) });
+    const [row] = await runOwnerChecks({ owners: [{ mark: "QZORVAK", owner: "Northwind Play GmbH", recordIds: ["r1"], classes: [28] }], exec, runDir });
+    assert.deepEqual({ ok: row.ok, cause: row.cause, payloadFile: row.payloadFile, source: row.source },
+      { ok: false, cause: "own search: the answer cites no page its searches returned", payloadFile: null, source: null });
+    const [rec] = readFileSync(questionRecordsPath(runDir), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+    assert.deepEqual({ outcome: rec.outcome, sources: rec.sources, unrecorded: rec.unrecorded }, { outcome: "unsupported-cited", sources: [], unrecorded: [B] });
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
+});
+
+test("each answer has one outcome; a page the program opened counts as read, never as a search result", () => {
+  assert.equal(questionAnswer("codex", { events: [searchOf([A])], text: `Yes.\n${B}` }).outcome, "unsupported-cited");
+  assert.equal(questionAnswer("codex", { events: [searchOf([A])], text: "Yes, they sell toys." }).outcome, "no-source");
+  assert.equal(questionAnswer("codex", { events: [], text: `Yes.\n${A}` }).outcome, "unsearched");
+  const mixed = questionAnswer("codex", { events: [searchOf([A]), readOf([B])], text: `Yes, per ${A}.\n- ${A}\n- ${B}/\n- https://invented.test/x` });
+  assert.deepEqual({ outcome: mixed.outcome, sources: mixed.sources, unrecorded: mixed.unrecorded }, { outcome: "supported", sources: [A, B], unrecorded: ["https://invented.test/x"] });
+  assert.doesNotMatch(mixed.text, /invented\.test/);
+  assert.deepEqual(answerEvidence("codex", [searchOf([A]), readOf([B]), { type: "item.completed", item: { type: "web_search", status: "failed", action: { type: "search" }, results: [{ url: "https://failed.test/" }] } }]),
+    { searches: 1, searched: [A], read: [B], failed: 1 });
+  assert.equal(questionAnswer("codex", { events: [searchOf([A])], text: `Yes.\n${A.replace("pages.example.com", "PAGES.example.com")}#top` }).outcome, "supported", "the same page, written another way");
+  assert.equal(questionAnswer("codex", { events: [searchOf([A])], text: "Yes.\nhttps://pages.example.com/other" }).outcome, "unsupported-cited", "the same host is not the same page");
+  // The negative reply waits on design's ruling (1521, c.7208961543); handed one, it is read only as the whole first line.
+  assert.equal(questionAnswer("codex", { events: [searchOf([])], text: "Nothing found" }, { negative: "Nothing found" }).outcome, "negative");
+  assert.equal(questionAnswer("codex", { events: [searchOf([])], text: "Nothing found" }).outcome, "no-source", "no negative is read until one is approved");
+  assert.equal(questionAnswer("codex", { events: [searchOf([])], text: "Nothing found for Northwind, but Lakeside sells toys." }, { negative: "Nothing found" }).outcome, "no-source");
 });

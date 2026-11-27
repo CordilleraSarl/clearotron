@@ -154,3 +154,28 @@ test("a run without the setting is unchanged: no key, no grid", async () => {
   const text = await callTool({ task: "", grid_spec_path: specPath }, { CLEAROTRON_BAND_RUN_DIR: runDir });
   assert.match(text, /PERPLEXITY_API_KEY not set/);
 });
+
+test("at the stage's tool, an answer citing only an unrecorded page is a failed lookup, and a mixed one keeps only recorded pages", async () => {
+  const A = "https://pages.example.com/qzorvak", B = "https://elsewhere.example.org/claim";
+  const searchOf = (urls) => ({ type: "item.completed", item: { type: "web_search", action: { type: "search", queries: ["QZORVAK"] }, results: urls.map((url) => ({ url })) } });
+  for (const [text, expect] of [[`Northwind sells QZORVAK candles.\n${B}`, "unsupported"], [`Northwind sells QZORVAK candles.\n${A}\n${B}`, "mixed"]]) {
+    const { runDir } = aRun();
+    const stop = serveOwnQuestions(runDir, { pollMs: 50, tierOf: () => QUESTION_TIERS["global-preliminary-search"],
+      makeSessions: async () => ({ search: "codex", question: async () => ({ text, events: [searchOf([A])] }) }) });
+    try {
+      const out = await callTool({ task: "Does QZORVAK sell candles?" }, { CLEAROTRON_BAND_RUN_DIR: runDir });
+      const row = log(runDir).find((r) => r.tool === "perplexity_research");
+      let kept = ""; try { kept = readFileSync(join(runDir, "_driver", "research-answers.jsonl"), "utf8"); } catch { /* none */ }
+      if (expect === "unsupported") {
+        assert.equal(out, "ERROR: Research failed — own search: the answer cites no page its searches returned");
+        assert.deepEqual({ ok: row.ok, outcome: row.outcome }, { ok: false, outcome: "unsupported-cited" });
+        assert.equal(kept, "", "nothing is kept for reuse");
+      } else {
+        assert.match(out, /pages\.example\.com\/qzorvak/);
+        assert.doesNotMatch(out, /elsewhere\.example\.org/, "the stage was handed an address no search returned");
+        assert.deepEqual({ ok: row.ok, outcome: row.outcome, sources: row.sources }, { ok: true, outcome: "supported", sources: 1 });
+        assert.doesNotMatch(kept, /elsewhere\.example\.org/, "an unrecorded address was kept for reuse");
+      }
+    } finally { stop(); }
+  }
+});

@@ -383,12 +383,15 @@ async function askOwnSearch(task) {
   }
   const a = await askTheDriver(RUN_DIR, task, { session: SESSION || null, agent: AGENT || null });
   const service = typeof a?.service === "string" ? a.service : "own";
+  // AN ANSWER IS ONLY ONE ITS PROGRAM'S SEARCHES SUPPORT (engine/mcp/own-search.mjs, questionAnswer): its text holds only
+  // the addresses those searches returned, and one that cites none of them is not an answer. Each call's outcome is logged.
+  const outcome = typeof a?.outcome === "string" ? { outcome: a.outcome } : {};
   if (!a?.ok || !isResearchAnswer(a.text)) {
     const cause = String(a?.cause ?? "own search gave no answer").slice(0, 200);
-    logCall("perplexity_research", { task, service: "own" }, { ok: false, error: cause, service });
+    logCall("perplexity_research", { task, service: "own" }, { ok: false, error: cause, service, ...outcome });
     return `ERROR: Research failed — ${cause}`;
   }
-  logCall("perplexity_research", { task, service: "own" }, { ok: true, bytes: a.text.length, service,
+  logCall("perplexity_research", { task, service: "own" }, { ok: true, bytes: a.text.length, service, ...outcome,
     ...(a.model ? { model: a.model } : {}), sources: Array.isArray(a.sources) ? a.sources.length : 0 });
   keepResearchAnswer(RUN_DIR, { session: SESSION, agent: AGENT, task, preset: null, request, text: a.text });
   return a.text;
