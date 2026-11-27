@@ -44,6 +44,7 @@ import { homedir } from "node:os";
 import { challengeVerdict, blockedByAccessChallenge, challengeNote } from "./mcp-challenge.mjs";   // — F57
 import { whatHoldsPort } from "./os-advice.mjs";
 import { defaultDenylistPath } from "./scope.mjs";   // — the verifier owns the path; see the re-export below
+import { shownAddress } from "./shown-address.mjs";
 
 /** The unit that runs the client door. Installed like any other; started only by this module. */
 export const CLIENT_DOOR_UNIT = "clearotron-client-mcp.service";
@@ -1102,7 +1103,10 @@ export function clientDoorReachability({ url = null, probe = null } = {}) {
   }
   let parsed;
   try { parsed = new URL(raw); }
-  catch { return { state: "fail", message: `the client connector address is not a URL: ${raw}` }; }
+  catch { return { state: "fail", message: "the client connector address is not a URL" }; }
+  // Scheme, host and path only: a user, password or query in the address is never shown (design, 2026-11-27).
+  const shown = shownAddress(raw);
+  if (shown == null) return { state: "fail", message: "the client connector address is not a URL" };
   if (parsed.protocol !== "https:" && !/^(localhost|127\.|\[::1\])/.test(parsed.hostname)) {
     return { state: "fail",
       message: `the client connector address is published over ${parsed.protocol}// to ${parsed.hostname} — an `
@@ -1113,7 +1117,7 @@ export function clientDoorReachability({ url = null, probe = null } = {}) {
   // here too would make this check agree with the thing it was written to contradict.
   if (!probe) {
     return { state: "unprobed",
-      message: `${raw} is configured and NOBODY ASKED whether it answers — being set is what the page `
+      message: `${shown} is configured and NOBODY ASKED whether it answers — being set is what the page `
         + "already assumes, so this half did not run rather than passing." };
   }
   // THE CHALLENGE FORM IS A DIFFERENT FACT FROM REACHABILITY ( — F57), and it is
@@ -1122,16 +1126,16 @@ export function clientDoorReachability({ url = null, probe = null } = {}) {
   // connect. Judged by the shared reader, never by a rule written here — the staff lane asks the same
   // question and the two must not drift.
   const challenge = challengeVerdict(probe);
-  if (challenge.blocked) return { state: "fail", message: blockedByAccessChallenge(raw, probe.status) };
+  if (challenge.blocked) return { state: "fail", message: blockedByAccessChallenge(shown, probe.status) };
   if (probe.ok) {
     return { state: "pass",
-      message: `${raw} answers${probe.status ? ` (${probe.status})` : ""}${challengeNote(challenge)}` };
+      message: `${shown} answers${probe.status ? ` (${probe.status})` : ""}${challengeNote(challenge)}` };
   }
-  // What the door answered stays in the sentence; the error a failed connection threw rides as `detail` (design,
-  // 2026-11-27), for a local diagnosis.
+  // What the door answered stays in the sentence; the error a failed connection threw is the machine's own words and
+  // stays out of it (design, 2026-11-27).
   const answered = probe.error ? "" : ` — it answered ${probe.status}`;
-  return { state: "fail", detail: probe.error ? String(probe.error) : null,
-    message: `${raw} is configured and DOES NOT ANSWER${answered}. Every surface that advertises the `
+  return { state: "fail",
+    message: `${shown} is configured and DOES NOT ANSWER${answered}. Every surface that advertises the `
       + "connector renders from this value being set, so a client would be handed an address that fails "
       + "on first use while this box reported itself configured." };
 }

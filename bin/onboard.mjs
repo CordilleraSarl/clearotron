@@ -2896,8 +2896,13 @@ async function sayCustomInstructions({ hosted, unitEnv, serviceKnown, effectiveF
   // Whether this install overrides any instructions is not known while the file that would name the folder is unread.
   if (unjudged("CLEAROTRON_INSTRUCTIONS_DIR")) return;
   say("\n  Custom instructions");
+  // WITH NO UNITS, THE FOLDER IS THE ONE `clearotron start` HANDS THE SERVICES: this command's environment over the
+  // settings file. This process does not load that file, so reading its own resolution reported a folder named there as
+  // "none configured", and a folder it could not read along with it (measured 2026-11-27). On a machine with units this
+  // process's own folder is reported, and the services' is the line below.
+  const overlayRoot = hosted ? config.skillsOverlayDir : (effectiveForService("CLEAROTRON_INSTRUCTIONS_DIR")?.v || null);
   try {
-    const report = overlayReport({ baseRoot: config.skillsBaseDir, overlayRoot: config.skillsOverlayDir });
+    const report = overlayReport({ baseRoot: config.skillsBaseDir, overlayRoot });
     for (const line of renderOverlayReport(report, { indent: "" })) say(`  ${line}`);
     // ── AND THE SERVICES MAY HAVE ONE THIS PROCESS CANNOT SEE ───────────────────────────────────────
     //
@@ -2925,6 +2930,12 @@ async function sayCustomInstructions({ hosted, unitEnv, serviceKnown, effectiveF
     // to the product's copy). Surfaced here rather than allowed to abort the whole check: the doctor's
     // job is to report every section, and a section that kills the run tells the reader least.
     problem("the custom instructions could not be read");
+    // A FOLDER THAT IS THERE AND CANNOT BE READ, said as what it is (design, 2026-11-27): the setting names it.
+    let folderUnreadable = false;
+    if (overlayRoot && existsSync(overlayRoot)) {
+      try { accessSync(overlayRoot, constants.R_OK | constants.X_OK); } catch { folderUnreadable = true; }
+    }
+    if (folderUnreadable) info("CLEAROTRON_INSTRUCTIONS_DIR names a folder this user cannot read.");
   }
 }
 
