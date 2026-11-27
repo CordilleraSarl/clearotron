@@ -51,7 +51,7 @@ export function installWebResearch(env = process.env) {
  * settings a reader can add, never a value; `why` says in a phrase what stands in the way. It places no search and
  * calls no service: a credential that is set but refused is the service's own door's to find. `stillPerplexity` is the
  * parts own search still sends to Perplexity for the product asking, which then need its key; a Knockout asks with none,
- * since its owner lookups take their own course without the key. PURE.
+ * since its owner lookups are asked of the program itself. PURE.
  *
  * Own search follows the engine's route, from the vendors' documentation read on 2026-11-25:
  *   · Claude on a subscription or an API key carries its web search;

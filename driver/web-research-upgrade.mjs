@@ -22,7 +22,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { readRunChoices } from "./engine/run-choices.mjs";
-import { SEARCH_RECORDS_FILE } from "./engine/mcp/own-search.mjs";
+import { QUESTION_RECORDS_FILE, SEARCH_RECORDS_FILE } from "./engine/mcp/own-search.mjs";
 import { walkRuns } from "./portal-runs.mjs";
 import { researchCall } from "./research-records.mjs";
 import { paths } from "./run-record.mjs";
@@ -42,7 +42,7 @@ const rows = (file) => {
 export function researchOnRecord(runDir) {
   const rec = readRunChoices(runDir);
   if ((rec.state === "recorded" && Object.hasOwn(rec, "research") && rec.research !== "perplexity")
-    || existsSync(driverDir(runDir, SEARCH_RECORDS_FILE))) return "other";
+    || [SEARCH_RECORDS_FILE, QUESTION_RECORDS_FILE].some((f) => existsSync(driverDir(runDir, f)))) return "other";
   const P = paths(runDir);
   const ran = rows(P.readingLog).some((row) => {
     const call = researchCall(row);

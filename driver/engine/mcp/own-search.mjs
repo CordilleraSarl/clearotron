@@ -247,9 +247,9 @@ export function readSessionStream(file) {
  * A maker of research-only sessions for `runDir`, or `{ error }` where the run's engine cannot run one. `session(items)`
  * runs one batch and returns what `runDictatedSearches` reads. `makeRunner` is the native-language turns' door.
  */
-export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSION_TIER, timeoutSec = SESSION_TIMEOUT_SEC, makeRunner = null } = {}) {
+export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSION_TIER, thinking = "low", timeoutSec = SESSION_TIMEOUT_SEC, makeRunner = null } = {}) {
   const make = makeRunner ?? (await import("../jx-turn.mjs")).makeJxTurnRunner;
-  const runner = await make({ runDir, model, thinking: "low", lane: "the own web search", timeoutSec });
+  const runner = await make({ runDir, model, thinking, lane: "the own web search", timeoutSec });
   if (runner?.error) return { error: runner.error };
   const search = SEARCH_OF_ENGINE[runner.engine];
   if (!search) return { error: `the ${runner.engine} engine has no web search of its own that this reads` };
@@ -264,6 +264,79 @@ export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSIO
       return { events: readSessionStream(streamFile), answered: Boolean(r?.ok && String(r.text ?? "").trim()), seconds: (Date.now() - t0) / 1000,
         usage: r?.usage ?? null, model: r?.model ?? null, speed: r?.speed ?? null, cause: r?.ok ? null : r?.cause ?? null };
     },
+    /** One question, answered with the program's own web search: what `answerOf` reads. */
+    async question(task) {
+      const streamFile = join(sessionDir, `${new Date().toISOString().replace(/[:.]/g, "-")}-${process.pid}-${++n}-question.jsonl`);
+      const extra = search === "claude" ? { builtinTools: ["WebSearch"], allowedTools: "WebSearch", webSearch: true, streamFile } : { webSearch: true, streamFile };
+      const t0 = Date.now();
+      const r = await runner.turn({ prompt: questionPrompt(task), extra });
+      return { events: readSessionStream(streamFile), text: r?.ok ? String(r.text ?? "") : "", seconds: (Date.now() - t0) / 1000,
+        usage: r?.usage ?? null, model: r?.model ?? null, speed: r?.speed ?? null, cause: r?.ok ? null : r?.cause ?? null };
+    },
+  };
+}
+
+// ── ONE QUESTION, ANSWERED BY A RESEARCH-ONLY SESSION OF THE RUN'S OWN ENGINE ───────────────────────────────────────
+//
+// A follow-up question (an owner lookup, a use check) is asked of the run's own AI program in a session of its own,
+// handed nothing but the question and the program's own web search. The model is the one ruled for the question's
+// level, never a lesser one: a Knockout's owner lookup is one question at light depth on the sweep tier (Sonnet on
+// Claude, GPT-6.1 Terra on Codex). An answer counts only where the program searched: a reply with no search behind it is
+// an answer from memory, and is recorded as not answered. The pages behind an answer are the addresses the program's own
+// search records returned, never addresses the reply names that no search returned.
+export const QUESTION_TIERS = Object.freeze({ "knockout-search": Object.freeze({ model: "sonnet", thinking: "low" }) });
+
+/** A question session's prompt: the question, and how to answer it. Words the model reads, approved by design. PURE. */
+export function questionPrompt(question) {
+  return ["Answer the question below using your web search. Answer in plain text. After the answer, list every page you relied on, one full web address per line.",
+    "If your searches find nothing that answers it, say that plainly; never answer from memory.", "", `Question: ${String(question ?? "").trim()}`].join("\n");
+}
+
+const URL_RE = /https?:\/\/[^\s<>()"'\]]+/g;
+const trimUrl = (u) => String(u).replace(/[.,;:!?)\]]+$/, "");
+
+/**
+ * What a question session's events and reply say: `{ answered, searches, pages, sources }`. `searches` is how many
+ * searches the program ran; `pages` every address its searches returned; `sources` the reply's listed addresses that a
+ * search returned, in the reply's order. A reply with no search behind it is not answered. PURE.
+ */
+export function answerOf(search, { events = [], text = "" } = {}) {
+  const recs = searchRecords(search, events).filter((r) => r.ran && !r.failed);
+  const pages = [...new Set(recs.flatMap((r) => r.results.map((x) => trimUrl(x.url))))];
+  const returned = new Set(pages);
+  const sources = [...new Set((String(text).match(URL_RE) ?? []).map(trimUrl))].filter((u) => returned.has(u));
+  return { answered: recs.length > 0 && String(text).trim() !== "", searches: recs.length, pages, sources };
+}
+
+/** Where a run's question records are kept, one line per question asked. */
+export const QUESTION_RECORDS_FILE = "web-question-records.jsonl";
+
+/**
+ * A QUESTION EXECUTOR THROUGH THE RUN'S OWN AI PROGRAM, in the shape the Knockout lane asks its owner lookups in
+ * (owner-use-check.mjs, runOwnerChecks): `async (task) -> { ok, text, sources, service, model, speed, tookMs }` or
+ * `{ ok: false, cause, service }`. Its sessions are made once per run, on the tier `tier` names, when the first question
+ * asks; each question's record is kept with the run. IMPURE.
+ */
+export function ownSearchQuestioner(runDir, { tier, makeSessions = makeOwnSearchSessions } = {}) {
+  let made = null;
+  const sessions = () => (made ??= Promise.resolve(makeSessions({ runDir, sessionDir: driverDir(runDir, "own-search-sessions"), model: tier.model, thinking: tier.thinking })));
+  return async (task) => {
+    const started = Date.now();
+    const s = await sessions();
+    if (!s?.question) return { ok: false, cause: `own search: ${s?.error ?? "no research-only session on this run"}`, tookMs: Date.now() - started };
+    const service = `own:${s.search}`;
+    let r;
+    try { r = await s.question(task); }
+    catch (e) { return { ok: false, cause: `own search: ${String(e?.message ?? e).slice(0, 160)}`, service, tookMs: Date.now() - started }; }
+    const a = answerOf(s.search, r);
+    const record = { kind: "question", service, model: r.model ?? null, speed: r.speed ?? null, question: task, answered: a.answered,
+      searches: a.searches, pages: a.pages, sources: a.sources, seconds: r.seconds ?? null, usage: r.usage ?? null };
+    try { ensureDriverDir(runDir); appendFileSync(driverDir(runDir, QUESTION_RECORDS_FILE), JSON.stringify({ ts: new Date().toISOString(), ...record }) + "\n"); }
+    catch { /* best-effort: a record that cannot be written never fails a lookup */ }
+    if (!a.answered)
+      return { ok: false, service, model: r.model ?? null, tookMs: Date.now() - started,
+        cause: r.cause ? `own search: ${String(r.cause).slice(0, 160)}` : a.searches ? "own search: the session ran its searches and gave no answer" : "own search: the session answered without searching" };
+    return { ok: true, text: r.text, sources: a.sources, service, model: r.model ?? null, speed: r.speed ?? null, tookMs: Date.now() - started };
   };
 }
 

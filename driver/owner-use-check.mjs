@@ -178,7 +178,10 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
     // THE SEARCHES BEHIND THE ANSWER ARE KEPT, answered or not, beside the answer's own name: the answer
     // alone cannot say which pages the lookup was handed.
     const ok = Boolean(r?.ok && isResearchAnswer(r?.text));
-    const source = ok ? firstSourceUrl(r.text) : null;
+    // THE SOURCE COMES FROM THE CALL'S RECORD where the service keeps one: own search names the pages its searches
+    // returned (engine/mcp/own-search.mjs, answerOf), and an address the answer's wording names that no search returned
+    // is never the source. A service that keeps no such record has its answer's first address, as before.
+    const source = !ok ? null : Array.isArray(r.sources) ? r.sources[0] ?? null : firstSourceUrl(r.text);
     const ts = now(), took = r?.tookMs ?? (Date.now() - started);
     const out = sharers.map((s, k) => {
       if (rawDir && Array.isArray(r?.raw) && r.raw.length) {
@@ -200,6 +203,9 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
         ...(ok ? {} : { cause: String(r?.cause ?? "no result").slice(0, 300) }),
         // A LOOKUP THAT WAS NEVER SENT says so, and is not a lookup that did not answer: nothing searched for it.
         ...(r?.notRun === true ? { notRun: true } : {}),
+        // WHICH SERVICE ANSWERED, where the executor says: the report names who searched each part.
+        ...(typeof r?.service === "string" ? { service: r.service } : {}),
+        ...(typeof r?.model === "string" ? { model: r.model } : {}),
         ...(r?.outage === true ? { outage: true } : {}),
         ...(k > 0 ? { sharedQuestion: true } : {}),
         ts, took_ms: took,

@@ -30,7 +30,7 @@ import { fileURLToPath } from "node:url";
 
 import { keepPriorOutput, runLaneStage } from "./stage-runner.mjs";   // the one stage skeleton both lanes run through
 import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, missingCredentials } from "./driver.config.mjs";
-import { ownSearchOn, ownSearchKnockoutGrid } from "./engine/mcp/own-search.mjs";   // a run whose searches are its own AI program's
+import { ownSearchOn, ownSearchKnockoutGrid, ownSearchQuestioner, QUESTION_TIERS } from "./engine/mcp/own-search.mjs";   // a run whose searches are its own AI program's
 import { webResearchCapability } from "./web-research.mjs";
 import { readRunChoices, researchNotChosen } from "./engine/run-choices.mjs";
 import { registerAdapter as adapterForRegister } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
@@ -793,20 +793,14 @@ export function resolveSweepExecutor(opts, { runDir = null } = {}) {   // export
   // missing key nor a route that cannot search.
   if (researchNotChosen(runDir)) return { source: "none", grid: null, exec: null, skipped: "web-research-not-chosen" };
   // A RUN WHOSE SEARCHES ARE ITS OWN AI PROGRAM'S sweeps through that program (engine/mcp/own-search.mjs), never through
-  // Perplexity. Its owner lookups are questions, which own search does not run yet (web-research.mjs): they go to
-  // Perplexity where its key is set, and otherwise are not run, each recorded as not run with why. A route that carries no
-  // web search of its own skips the web half, as a missing key does, under its own cause.
+  // Perplexity, and asks its owner lookups of it too: each is one question at the Knockout's light depth, on the tier
+  // ruled for it, so a Knockout on own search needs no Perplexity key. A route that carries no web search of its own
+  // skips the web half, as a missing key does, under its own cause.
   if (ownSearchOn(runDir)) {
     const can = webResearchCapability({ service: "own", engine: engineOfRun(runDir), stillPerplexity: [] });
     if (!can.ok) return { source: "own", grid: null, exec: null, skipped: "own-search-unavailable", why: can.why };
-    const keyed = Boolean(process.env.PERPLEXITY_API_KEY);
-    return {
-      source: `own:${can.search.toLowerCase()}`,
-      grid: ownSearchKnockoutGrid(runDir),
-      exec: keyed ? (task, { preset }) => RESEARCH_PROVIDERS.perplexity.research(task, { preset })
-        : async () => ({ ok: false, notRun: true, cause: "not run: own search does not run owner lookups yet, and no Perplexity key is set" }),
-      ownerChecksBy: keyed ? "perplexity" : null,
-    };
+    const source = `own:${can.search.toLowerCase()}`;
+    return { source, grid: ownSearchKnockoutGrid(runDir), exec: ownSearchQuestioner(runDir, { tier: QUESTION_TIERS["knockout-search"] }), ownerChecksBy: source };
   }
   if (!process.env.PERPLEXITY_API_KEY) return { source: "perplexity", grid: null, exec: null, skipped: "common-law-no-credential" };
   return {

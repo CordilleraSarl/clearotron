@@ -58,6 +58,9 @@ test("research Perplexity completed is evidence; a replay, a failure, a skip and
   assert.equal(researchOnRecord(aRun(root, { choices: { research: "own" } })), "other", "a run recorded on its own AI program's search");
   assert.equal(researchOnRecord(aRun(root, { choices: { research: null } })), "other", "a run recorded with no service chosen");
   assert.equal(researchOnRecord(aRun(root, { ownRecords: true, readingLog: [asked()] })), "other", "a run holding its own search's records");
+  const asksOwn = aRun(root, { sweep: [swept()] });
+  writeFileSync(join(asksOwn, "_driver", "web-question-records.jsonl"), JSON.stringify({ kind: "question", service: "own:claude" }) + "\n");
+  assert.equal(researchOnRecord(asksOwn), "other", "a run whose questions its own AI program answered");
   assert.equal(researchOnRecord(aRun(root, { choices: { research: "perplexity" }, readingLog: [asked()] })), "perplexity");
 });
 
