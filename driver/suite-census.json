@@ -8494,8 +8494,8 @@
           "todos": 0
         },
         "the-operator-is-told-where-failure-notices-go.test.mjs": {
-          "tests": 5,
-          "asserts": 32,
+          "tests": 7,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
