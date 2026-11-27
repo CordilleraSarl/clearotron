@@ -7,6 +7,7 @@
 //   npx clearotron doctor                     report what this machine is configured for, and make one real engine call when an engine is configured
 //   npx clearotron doctor --probe-providers   …and spend one cheap paired call proving each register lane
 //   npx clearotron doctor --probe-connector   …and ask your own door whether an assistant could sign in
+//   npx clearotron doctor --detail            …and print each failed check's own message, for diagnosing it on this machine
 //
 // DESIGN RULES THIS FILE IS HELD TO
 //
@@ -79,7 +80,7 @@ import { styleFor, banner } from "../shared/tty-style.mjs";   // — weight wher
 import { bracketAsciiCells, BRAND } from "../shared/brand.mjs";      // F18 — the mark, from the geometry the SVG already uses
 // THE REFUSALS ABOUT THE SIGN-IN ADDRESS ITSELF, shared with `bin/start.mjs`. Two copies would be a
 // wizard that accepts an address the launcher then sends back.
-import { join, dirname, isAbsolute, resolve } from "node:path";
+import { join, dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { delimiter } from "node:path";
 import { Writable } from "node:stream";
@@ -293,6 +294,11 @@ const PROBE_PROVIDERS = has("--probe-providers");
 // this is never implied, it says what it is about to create before it creates it, and it reports what
 // it left behind.
 const PROBE_CONNECTOR = has("--probe-connector");
+// A FAILED CHECK SAYS WHAT FAILED, NOT WHAT THE MACHINE SAID (design, 2026-11-27). Doctor's output is user-facing even in
+// the administrator's own terminal: a failed check names the setting or service, what failed and the supported action,
+// and never prints an exception's message, an error code or a program's own output. That message is the detail a local
+// diagnosis needs, so `--detail` prints it under the check it belongs to. Doctor writes nothing, so it keeps no log.
+const DETAIL = has("--detail");
 
 // ── output ───────────────────────────────────────────────────────────────────────────────────────────
 // WEIGHT WHERE THE MEANING IS (ruling 2026-08-31). Every line here used to
@@ -352,6 +358,26 @@ const blocking = (s) => { blockers.push(s); say(`  ${style.warn("!")} ${s}`); };
 // contract.
 const inert = [];
 const inertSetting = (s) => { inert.push(s); say(`  ${style.warn("!")} ${s}`); };
+// The message a failed check held back: printed under it with `--detail`, counted otherwise, so the verdict can say once
+// that there is more to see and how. A check with nothing to hold back passes nothing and counts nothing.
+let detailsHeld = 0;
+// A FILE THE PERSON MUST EDIT, AS THEY WOULD TYPE IT (design, 2026-11-27): under their home, from `~`; anywhere else, as
+// it is, because they have to find it.
+const shownPath = (p, home = homedir()) => {
+  const r = p ? relative(home, p) : "";
+  return r && !r.startsWith("..") && !isAbsolute(r) ? `~${sep}${r}` : p;
+};
+const detailOf = (raw) => {
+  if (raw == null || raw === false) return "";
+  const text = typeof raw === "object" ? String(raw.message ?? raw.code ?? raw.name ?? raw) : String(raw);
+  return text.replace(/\s+/g, " ").trim().slice(0, 400);
+};
+const detail = (raw) => {
+  const text = detailOf(raw);
+  if (!text) return;
+  if (DETAIL) say(`      ${style.dim(`detail: ${text}`)}`);
+  else detailsHeld++;
+};
 // EXPLANATORY PROSE, WRAPPED AT THE INDENT IT IS PRINTED AT ( — F17). Owner:
 // "the formatting is still quite bad — line after line". The specific bug is the wrap: paragraphs were
 // hand-broken at a fixed width and handed to the terminal, so on anything narrower than the author's
@@ -2483,7 +2509,17 @@ async function sayEnvFile() {
         + "answers that name those directories are the paths above");
     } else info(`none at ${ENV_PATH} — run: ${invoke("install")}`);
   } else {
-    ok(`${ENV_PATH}`);
+    // A FILE THAT IS THERE AND CANNOT BE READ IS NOT A FILE THAT IS FINE. It used to be ticked, and every setting in it
+    // then read as unset, so the install was told it had chosen nothing and the verdict exited 0.
+    let unreadable = null;
+    try { accessSync(ENV_PATH, constants.R_OK); readFileSync(ENV_PATH); } catch (e) { unreadable = e; }
+    if (unreadable) {
+      problem(`${shownPath(ENV_PATH)} could not be read, so none of its settings were read. Make it readable by the user `
+        + `the services run as, then run \`${invoke("doctor")}\` again.`);
+      detail(unreadable);
+      return;
+    }
+    ok(`${shownPath(ENV_PATH)}`);
     const mode = statSync(ENV_PATH).mode & 0o777;
     if (mode & 0o077) warn(`mode ${mode.toString(8)} — it holds credentials; 600 is the mode for that`);
   }
@@ -3952,6 +3988,7 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
 }
 
 function sayVerdict(probeTurnRan, refusal = null) {
+  if (detailsHeld) info(`Run \`${invoke("doctor")} --detail\` to see each failed check's own message.`);
   say("");
   // A BLOCKER THAT STOPS EVERY SEARCH IS SAID FIRST IN THE VERDICT TOO, WITH ITS FIX. The exit status stays the
   // contract below, so a reader who reads only the end is the one this is for. Where the opening was the
