@@ -1528,8 +1528,8 @@
           "todos": 0
         },
         "a-knockout-sweeps-through-the-runs-own-search.test.mjs": {
-          "tests": 6,
-          "asserts": 26,
+          "tests": 8,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -3695,7 +3695,7 @@
         },
         "an-upgraded-install-keeps-perplexity-only-where-its-runs-show-it.test.mjs": {
           "tests": 4,
-          "asserts": 15,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
