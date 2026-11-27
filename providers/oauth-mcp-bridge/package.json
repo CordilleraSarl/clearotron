@@ -6,8 +6,11 @@
   "description": "OAuth 2.1 MCP stdio bridge used by the engine's case-law gather stage (courtlistener / legaldatahunter).",
   "type": "module",
   "main": "bridge.mjs",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.31.0"
+  "engines": {
+    "node": ">=22.13.0"
   },
-  "engines": { "node": ">=22.13.0" }
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.4.0",
+    "@modelcontextprotocol/server": "2.4.0"
+  }
 }

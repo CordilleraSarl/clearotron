@@ -137,11 +137,10 @@ if (existsSync(join(UNIT_DIR, CLIENT_DOOR_UNIT))) {
   const dir = unitsEnv.CLEAROTRON_WORK_DIR ? join(unitsEnv.CLEAROTRON_WORK_DIR, "engine-check") : engineCheckDir();
   const lines = engine ? failedCheckLines(readEngineCheck(engine, { dir }), lastEngineAnswer(engine, { dir })) : [];
   if (lines.length) say(`\n  ⚠ ${lines.join("\n    ")}`);
-  // FAILURE NOTICES NOT YET CONFIRMED, from this install's own record, in the words approved for status. The record sits
-  // under the outbox the services use, so their file names it, as it names the engine above.
-  for (const k of ["CLEAROTRON_OUTBOX_DIR", "CLEAROTRON_WORK_DIR"]) if (unitsEnv[k] && !process.env[k]) process.env[k] = unitsEnv[k];
-  const { undeliveredNotices, noticeStatusLines } = await import("../driver/notice-delivery.mjs");
-  const notices = noticeStatusLines(undeliveredNotices({ env: unitsEnv }), invoke("notices"));
+  // FAILURE NOTICES NOT YET CONFIRMED, from this install's own record, in the words approved for status. The settings are
+  // read by the one function `clearotron notices` reads them with, so the notice named here is the one it answers.
+  const { installNoticeSettings, undeliveredNotices, noticeStatusLines } = await import("../driver/notice-delivery.mjs");
+  const notices = noticeStatusLines(undeliveredNotices({ env: installNoticeSettings() }), invoke("notices"));
   if (notices.length) say(`\n  ⚠ ${notices.join("\n    ")}`);
 }
 say(`\n  Configuration questions: ${invoke("doctor")}`);

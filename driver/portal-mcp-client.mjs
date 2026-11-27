@@ -1,11 +1,17 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // portal-mcp-client.mjs — the portal's MINIMAL MCP Streamable-HTTP client for the ops face's /mcp
-// endpoint (Phase 3b). One job: initialize a session with the accounts-scoped ops token, fire ONE
-// tools/call, return the tool's JSON result. No SDK dependency — the wire shape is three fetches and
-// is pinned by a test against the face's own makeHttpHandler (mcp-server/lib/http-handler.mjs), so a
-// transport change there fails CI here instead of 404ing live (review 2026-07-18: the previous
-// bare-REST /tools/start_run target existed on no HTTP face — the spend path was dead as wired).
+// endpoint (Phase 3b). One job: fire ONE tools/call with the accounts-scoped ops token and return the
+// tool's JSON result. No SDK dependency — the wire shape is one request, pinned by a test against the
+// face's own makeHttpHandler (mcp-server/lib/http-handler.mjs), so a transport change there fails CI here
+// instead of failing live (review 2026-07-18: the previous bare-REST /tools/start_run target existed on no
+// HTTP face — the spend path was dead as wired).
+//
+// IN THE PROTOCOL'S 2026-07-28 REVISION, ONE REQUEST IS THE WHOLE EXCHANGE (2026-11-27). There is no
+// handshake and no session: the request names its revision and method in its headers, its tool in
+// `Mcp-Name`, and what the handshake used to carry in `params._meta`. It used to take three requests —
+// initialize, the initialized notification, then the call — and to refuse to go on without a session id,
+// which the doors no longer hand out.
 //
 // Response parsing handles BOTH content types the Streamable-HTTP transport may answer with
 // (application/json or text/event-stream); a tool isError result throws with the tool's text so the
@@ -15,7 +21,14 @@ import { request as httpRequest } from "node:http";
 import { request as httpsRequest } from "node:https";
 
 const JSONRPC = "2.0";
-const PROTOCOL_VERSION = "2025-03-26";
+const PROTOCOL_VERSION = "2026-07-28";
+// What the handshake used to carry, on the request itself: the revision, who is asking, and what it can do (nothing
+// beyond the call — the portal neither receives requests from the server nor lists anything).
+const REQUEST_META = Object.freeze({
+  "io.modelcontextprotocol/protocolVersion": PROTOCOL_VERSION,
+  "io.modelcontextprotocol/clientInfo": { name: "trademark-portal", version: "poc" },
+  "io.modelcontextprotocol/clientCapabilities": {},
+});
 
 // node:http, deliberately NOT fetch: undici's WASM OOMs/hangs under constrained dev ulimits (the
 // dev-portal test convention), and the SSE answer needs early-close handling a streamed fetch text()
@@ -145,34 +158,19 @@ export const SOCKET_FAILURE_CODES = Object.freeze([
 export const isSocketFailure = (e) => SOCKET_FAILURE_CODES.includes(e?.code);
 
 export async function mcpToolCall({ url, token, tool, args, timeoutMs = 30000 }) {
-  // Resolved ONCE, so all three requests of the handshake dial the same place. Composed per call, the
-  // socket form would have to be re-parsed three times and a divergence would show up as a session that
-  // initializes and then cannot be found.
   const endpoint = dialTarget(url, "/mcp");
-  const headers = (extra = {}) => ({
-    "content-type": "application/json",
-    "accept": "application/json, text/event-stream",
-    "x-trademark-token": token,
-    ...extra,
-  });
-
-  // 1 — initialize (the transport refuses everything else without a session)
-  const initRes = await post(null, { target: endpoint, headers: headers(), wantId: 1, timeoutMs,
-    body: JSON.stringify({ jsonrpc: JSONRPC, id: 1, method: "initialize", params: {
-      protocolVersion: PROTOCOL_VERSION, capabilities: {},
-      clientInfo: { name: "trademark-portal", version: "poc" } } }) });
-  if (initRes.status >= 400) throw transportError(`MCP initialize refused (${initRes.status}): ${initRes.text.slice(0, 200)}`, initRes.status);
-  const sessionId = initRes.headers["mcp-session-id"];
-  if (!sessionId) throw new Error("MCP initialize returned no mcp-session-id — transport contract changed");
-  parseRpcText(initRes, 1);   // surfaces JSON-RPC-level init errors
-
-  // 2 — initialized notification (the spec's handshake close; some transports require it)
-  await post(null, { target: endpoint, headers: headers({ "mcp-session-id": sessionId }), timeoutMs,
-    body: JSON.stringify({ jsonrpc: JSONRPC, method: "notifications/initialized" }) }).catch(() => { /* best-effort */ });
-
-  // 3 — the one tool call
-  const callRes = await post(null, { target: endpoint, headers: headers({ "mcp-session-id": sessionId }), wantId: 2, timeoutMs,
-    body: JSON.stringify({ jsonrpc: JSONRPC, id: 2, method: "tools/call", params: { name: tool, arguments: args } }) });
+  // The one request: its revision and method in the headers, its tool in `Mcp-Name` (the door refuses a body and
+  // headers that disagree), and the handshake's facts in `_meta`.
+  const callRes = await post(null, { target: endpoint, wantId: 2, timeoutMs,
+    headers: {
+      "content-type": "application/json",
+      "accept": "application/json, text/event-stream",
+      "x-trademark-token": token,
+      "mcp-protocol-version": PROTOCOL_VERSION,
+      "mcp-method": "tools/call",
+      "mcp-name": tool,
+    },
+    body: JSON.stringify({ jsonrpc: JSONRPC, id: 2, method: "tools/call", params: { name: tool, arguments: args, _meta: REQUEST_META } }) });
   if (callRes.status >= 400) throw transportError(`MCP tools/call refused (${callRes.status}): ${callRes.text.slice(0, 200)}`, callRes.status);
   const msg = parseRpcText(callRes, 2);
   if (msg.error) throw new Error(`MCP error: ${msg.error.message ?? JSON.stringify(msg.error).slice(0, 200)}`);

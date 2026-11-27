@@ -18,14 +18,11 @@
 // Imports the clearotron-driver read-only via ./lib/* — touches no driver/template/deploy file.
 
 import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+// THE PROTOCOL'S TWO REVISIONS, ONE SERVER (2026-11-27). SDK v2 serves the 2026-07-28 revision, which has no opening
+// handshake and no sessions, beside the older one from the same server: a handler is registered by its method name.
+import { Server } from "@modelcontextprotocol/server";
+import { serveStdio } from "@modelcontextprotocol/server/stdio";
 import { appendAudit } from "./lib/audit.mjs";
-import {
-  ListToolsRequestSchema, CallToolRequestSchema,
-  ListResourcesRequestSchema, ReadResourceRequestSchema, ListResourceTemplatesRequestSchema,
-  ListPromptsRequestSchema, GetPromptRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
 import { existsSync, readdirSync } from "node:fs";
 import { join, basename, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -601,7 +598,9 @@ const tools = {
     let changes = timeline;
     if (Array.isArray(kinds) && kinds.length) changes = changes.filter((c) => kinds.includes(c.kind));
     return {
-      runId: run.runId, state: run.state, tier: run.tier, since: since ?? null, cursor,
+      // `since` echoed as the string the declared shape names, whichever form the caller polled with: the cursor is a
+      // number, and a client that checks results against their declared shape refuses a number here.
+      runId: run.runId, state: run.state, tier: run.tier, since: since == null ? null : String(since), cursor,
       count: changes.length, changes,
       note: "Poll again with since=cursor (a stable sequence number) for only newer events — MCP has no push. cursor is independent of the kinds filter.",
     };
@@ -985,11 +984,11 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
   const demo = demoServing();
   const allow = visibleTools({ kind: scope.kind, local, demo });
   const toolDefs = TOOL_DEFS.filter((d) => allow(d.name)).map((d) => withOutputSchema(withAnnotations(demo ? inDemo(describeForAudience(d, scope.kind), scope.kind) : describeForAudience(d, scope.kind)), scope.kind));
-  server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: toolDefs }));
+  server.setRequestHandler("tools/list", async () => ({ tools: toolDefs }));
 
   // Prompts are guidance, like the pack: offered to the two client audiences, empty for everyone else.
-  server.setRequestHandler(ListPromptsRequestSchema, async () => ({ prompts: promptsFor(scope.kind) }));
-  server.setRequestHandler(GetPromptRequestSchema, async (req) => {
+  server.setRequestHandler("prompts/list", async () => ({ prompts: promptsFor(scope.kind) }));
+  server.setRequestHandler("prompts/get", async (req) => {
     const name = req.params?.name;
     const text = promptText(scope.kind, name);
     // An unoffered name is refused BY NAME rather than answered with an empty message — an empty prompt
@@ -998,7 +997,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     return { messages: [{ role: "user", content: { type: "text", text } }] };
   });
 
-  server.setRequestHandler(CallToolRequestSchema, async (req) => {
+  server.setRequestHandler("tools/call", async (req) => {
     const { name, arguments: args = {} } = req.params;
     const fn = tools[name];
     if (!fn) return { isError: true, content: [{ type: "text", text: `unknown tool "${name}"` }] };
@@ -1047,10 +1046,10 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     }
   });
 
-  server.setRequestHandler(ListResourceTemplatesRequestSchema, async () => ({
+  server.setRequestHandler("resources/templates/list", async () => ({
     resourceTemplates: [{ uriTemplate: "trademark://run/{runId}/{artifact}", name: "clearotron run artifact", description: "Raw text of a run artifact (report, audit, narrative, registerFindings, commonLaw, matterContext, a register axis, status.json, run.jsonl).", mimeType: "text/markdown" }],
   }));
-  server.setRequestHandler(ListResourcesRequestSchema, async () => {
+  server.setRequestHandler("resources/list", async () => {
     // / AGPL §13 — LISTED FIRST, AND FOR EVERY SCOPE. An offer nobody can find is not an offer, and
     // the whole point of the resource form is that a client which never calls a tool still meets it.
     const resources = [{ uri: ABOUT_URI, name: "about this server", mimeType: "application/json",
@@ -1081,7 +1080,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     }
     return { resources };
   });
-  server.setRequestHandler(ReadResourceRequestSchema, async (req) => {
+  server.setRequestHandler("resources/read", async (req) => {
     // / AGPL §13 — the same offer as a RESOURCE, above the run gate because it is about the server
     // and not about any run. A client token reaches it for the same reason it reaches the tool.
     if (req.params.uri === ABOUT_URI)
@@ -1307,7 +1306,9 @@ export { tools, TOOL_DEFS, NS, log };
 // does NOT start a stdio server. stdio is the trusted local surface and keeps the full tool set incl. what-if.
 const isMain = isEntrypoint(import.meta.url);
 if (isMain) {
-  makeServer().connect(new StdioServerTransport())
+  // `serveStdio` decides the revision from the opening message and pins one server for the connection: an assistant that
+  // opens with the older handshake is served as before, one that asks `server/discover` is served the newer revision.
+  Promise.resolve(serveStdio(() => makeServer()))
     .then(() => {
       log("ready — read-only interrogation + gated what-if over clearotron runs");
       // ── LEAVE A RECORD THE PORTAL CAN READ ────────────────────────────────────────────────────────

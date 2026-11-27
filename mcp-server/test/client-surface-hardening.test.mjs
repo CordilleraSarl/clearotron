@@ -157,11 +157,11 @@ test("LOCK: the handler never grants firm-staff-ness on a client surface, even a
     const res = { statusCode: null, body: null, headersSent: false, writeHead(s) { this.statusCode = s; this.headersSent = true; }, end(b) { this.body = b; } };
     const handler = makeHttpHandler({
       verify: null, devMode: true, clientSurface: true,
-      limiter: new RateLimiter({ perMinute: 100 }), sessions: new Map(),
-      createSession: async () => { throw new Error("a token-less client-surface caller must never reach session creation"); },
+      limiter: new RateLimiter({ perMinute: 100 }),
+      serve: async () => { throw new Error("a token-less client-surface caller must never be served"); },
     });
     await handler(req, res);
-    assert.equal(res.statusCode, 403, "token-less ⇒ forbidden, never an internal read-all session");
+    assert.equal(res.statusCode, 403, "token-less ⇒ forbidden, never an internal read-all scope");
     assert.match(String(res.body), /run-scoped token/);
   } finally {
     pinEnv(process.env, "CLEAROTRON_ACCESS_FILE", savedGrants);

@@ -138,12 +138,59 @@ function runIdFromMeta(job, meta) {
   try { return `${deriveSlug(job)}-${meta.dateISO}-${meta.codename}`; } catch { return null; }
 }
 
-/** The marker files for one reference in one queue directory, by the name they carry. */
-function markersFor(qdir, names, ref) {
-  const own = names.filter((n) => n === `${ref}.json` || n.startsWith(`${ref}.`));
+/**
+ * The marker files for one reference in one queue directory, by the name they carry. `own`, when a caller already
+ * holds this reference's names (markersByReference), saves a pass over the whole listing.
+ */
+function markersFor(qdir, names, ref, own = null) {
+  own = own ?? names.filter((n) => n === `${ref}.json` || n.startsWith(`${ref}.`));
   const has = (s) => own.includes(`${ref}.${s}`);
   const claimed = own.find((n) => n.startsWith(`${ref}.processing.claimed-`) && !/\.(pid|meta|skips|tmp)$/.test(n)) ?? null;
   return { own, has, claimed };
+}
+
+/** Which terminal and which live marker an order's names carry, decided from the names alone. */
+function markerState({ has, claimed }) {
+  const terminal = ["done", "failed", "cancelled", "duplicate"].find((s) => has(s)) ?? null;
+  const live = has("postponed") ? "postponed" : has("processing") ? "processing" : claimed ? "claimed" : has("json") ? "json" : null;
+  return { terminal, live };
+}
+
+/**
+ * Each wanted reference's own marker names in one queue listing, found in ONE pass over it. A name belongs to a
+ * reference when it is `<ref>.json` or starts `<ref>.`, as markersFor reads it; a reference may itself hold dots, so
+ * every prefix that ends before a dot is tried. A lookup of many references then costs one pass over the listing,
+ * not one pass per reference (review, 2026-11-27).
+ */
+export function markersByReference(names, refs) {
+  const wanted = refs instanceof Set ? refs : new Set(refs);
+  const out = new Map();
+  for (const n of names) {
+    for (let i = n.indexOf("."); i > 0; i = n.indexOf(".", i + 1)) {
+      const ref = n.slice(0, i);
+      if (!wanted.has(ref)) continue;
+      if (!out.has(ref)) out.set(ref, []);
+      out.get(ref).push(n);
+    }
+  }
+  return out;
+}
+
+/**
+ * What an order's names alone say it is, before any of its files is opened: null when the names hold nothing for it,
+ * a settled state when they decide it, and "open" when only its files can (a stop, a duplicate, a claim being checked).
+ * Agrees with receiptIn by construction: both read markerState.
+ */
+export function stateFromNames(ref, own) {
+  const m = markersFor(null, null, ref, own);
+  const { terminal, live } = markerState(m);
+  if (!terminal && !live) return null;
+  if (terminal === "done") return "delivered";
+  if (terminal === "cancelled") return "cancelled";
+  if (terminal) return "open";
+  if (live === "postponed") return "resumable";
+  if (live === "json") return "waiting";
+  return "open";
 }
 
 /**
@@ -151,11 +198,11 @@ function markersFor(qdir, names, ref) {
  * The job is read from whichever marker carries it; `.result` decides before `.meta`, so a refusal after dispatch reads
  * as a refusal, and a run directory holding a park sentinel reads as resumable whatever the queue marker says.
  */
-export function receiptIn(qdir, ref, names) {
-  const { has, claimed } = markersFor(qdir, names, ref);
+export function receiptIn(qdir, ref, names, { own = null } = {}) {
+  const markers = markersFor(qdir, names, ref, own);
+  const { claimed } = markers;
   const at = (s) => join(qdir, `${ref}.${s}`);
-  const terminal = ["done", "failed", "cancelled", "duplicate"].find((s) => has(s)) ?? null;
-  const live = has("postponed") ? "postponed" : has("processing") ? "processing" : claimed ? "claimed" : has("json") ? "json" : null;
+  const { terminal, live } = markerState(markers);
   if (!terminal && !live) return null;
   const markerPath = terminal ? at(terminal) : live === "claimed" ? join(qdir, claimed) : at(live);
   const job = readJsonSafe(markerPath);

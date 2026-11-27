@@ -136,16 +136,20 @@ const mockReq = (headers = {}, path = "/mcp") => ({
   method: "POST", url: path, headers,
   async *[Symbol.asyncIterator]() { yield Buffer.from(JSON.stringify(initBody)); },
 });
-const mockRes = () => ({ statusCode: null, body: null, headersSent: false, writeHead(s) { this.statusCode = s; this.headersSent = true; }, end(b) { this.body = b; } });
+// The double emits `finish` because the handler listens for it: the audit line for a served POST is written then.
+const mockRes = () => ({ statusCode: null, body: null, headersSent: false, _finish: [],
+  once(ev, fn) { if (ev === "finish") this._finish.push(fn); return this; },
+  writeHead(s) { this.statusCode = s; this.headersSent = true; },
+  end(b) { this.body = b; for (const fn of this._finish.splice(0)) fn(); } });
 
-// Captures the scope the handler resolved, standing in for the SDK transport.
+// Captures the scope the handler resolved for THIS request, standing in for the MCP server that would answer it.
 function doorWithCapture(captured, extra = {}) {
-  const createSession = async (sessions, scope, owner) => {
-    captured.scope = scope; captured.owner = owner;
-    return { handleRequest: async (_req, res) => { res.writeHead(200); res.end("{}"); } };
+  const serve = async (_req, res, { scope, email }) => {
+    captured.scope = scope; captured.owner = email;
+    res.writeHead(200); res.end("{}");
   };
   return makeHttpHandler({ verify: null, tokenOnly: true, clientSurface: true,
-    limiter: new RateLimiter({ perMinute: 500 }), sessions: new Map(), createSession, ...extra });
+    limiter: new RateLimiter({ perMinute: 500 }), serve, ...extra });
 }
 
 test("NO KEY ⇒ 401 with no synthetic identity — the property the whole door rests on", async () => {
@@ -153,14 +157,16 @@ test("NO KEY ⇒ 401 with no synthetic identity — the property the whole door 
   const res = mockRes();
   await withEnvAsync(DOOR, () => doorWithCapture(captured)(mockReq(), res));
   assert.equal(res.statusCode, 401);
-  assert.equal(captured.scope, undefined, "an unkeyed request reached session creation");
+  assert.equal(captured.scope, undefined, "an unkeyed request was served");
   assert.match(String(res.body), /needs an access key/, "the refusal must tell a client what to do about it");
 });
 
-test("a garbage key is refused before any body, session or data", async () => {
+test("a garbage key is refused before any body, scope or data", async () => {
+  const captured = {};
   const res = mockRes();
-  await withEnvAsync(DOOR, () => doorWithCapture({})(mockReq({ authorization: "Bearer v1.nope.nope" }), res));
+  await withEnvAsync(DOOR, () => doorWithCapture(captured)(mockReq({ authorization: "Bearer v1.nope.nope" }), res));
   assert.equal(res.statusCode, 401);
+  assert.equal(captured.scope, undefined, "a garbage key was served");
   assert.match(String(res.body), /invalid access key/);
 });
 
@@ -180,7 +186,7 @@ test("all four ways of presenting the key resolve to the SAME principal", async 
     await withEnvAsync(DOOR, () => doorWithCapture(captured)(mockReq(headers, path), res));
     assert.equal(captured.scope?.kind, "account", `${label} did not authenticate`);
     assert.deepEqual(captured.scope.accounts, ["acme", "acme-eu"], `${label} resolved a different grant`);
-    assert.equal(captured.owner, "lawyer@acme.example", `${label} left the session unattributable`);
+    assert.equal(captured.owner, "lawyer@acme.example", `${label} left the request unattributable`);
   }
 });
 
@@ -196,7 +202,7 @@ test("a CF-fronted door does NOT read Authorization as a trademark key", async (
 });
 
 test("a misconfigured door refuses to BUILD rather than serving something weaker", () => {
-  const base = { limiter: new RateLimiter({ perMinute: 10 }), sessions: new Map(), createSession: async () => {} };
+  const base = { limiter: new RateLimiter({ perMinute: 10 }), serve: async () => {} };
   assert.throws(() => makeHttpHandler({ ...base, verify: null, tokenOnly: true, devMode: true }),
     /mutually exclusive/, "the dev knob's synthetic identity would have answered instead of the key");
   assert.throws(() => makeHttpHandler({ ...base, verify: async () => ({}), tokenOnly: true }), /pass verify:null/);

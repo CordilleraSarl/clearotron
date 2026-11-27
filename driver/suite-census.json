@@ -4023,6 +4023,12 @@
           "skips": 0,
           "todos": 0
         },
+        "clearances-stays-quick-as-completed-orders-accumulate.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "cleared-signatures.test.mjs": {
           "tests": 9,
           "asserts": 19,
@@ -6238,8 +6244,8 @@
           "todos": 0
         },
         "portal-mcp-client.test.mjs": {
-          "tests": 9,
-          "asserts": 22,
+          "tests": 8,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -8500,8 +8506,8 @@
           "todos": 0
         },
         "the-operator-is-told-where-failure-notices-go.test.mjs": {
-          "tests": 5,
-          "asserts": 32,
+          "tests": 7,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -9712,8 +9718,8 @@
           "todos": 0
         },
         "what-an-order-states-is-kept-with-its-source.test.mjs": {
-          "tests": 7,
-          "asserts": 13,
+          "tests": 10,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
@@ -9800,12 +9806,6 @@
     "mcp-server": {
       "ext": "mjs",
       "perFile": {
-        "a-client-of-the-new-protocol-falls-back-at-every-door.test.mjs": {
-          "tests": 4,
-          "asserts": 14,
-          "skips": 0,
-          "todos": 0
-        },
         "a-company-created-after-the-door-starts-is-listed.test.mjs": {
           "tests": 6,
           "asserts": 16,
@@ -9838,7 +9838,7 @@
         },
         "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
           "tests": 13,
-          "asserts": 33,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -9880,7 +9880,7 @@
         },
         "a-removed-person-loses-their-assistant-too.test.mjs": {
           "tests": 4,
-          "asserts": 12,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -9921,8 +9921,8 @@
           "todos": 0
         },
         "account-audit-chain.test.mjs": {
-          "tests": 12,
-          "asserts": 52,
+          "tests": 13,
+          "asserts": 59,
           "skips": 0,
           "todos": 0
         },
@@ -9970,7 +9970,7 @@
         },
         "api-key-door.test.mjs": {
           "tests": 15,
-          "asserts": 31,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -10018,7 +10018,7 @@
         },
         "connector-guidance.test.mjs": {
           "tests": 14,
-          "asserts": 77,
+          "asserts": 79,
           "skips": 0,
           "todos": 0
         },
@@ -10064,6 +10064,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-door-serves-both-revisions-of-the-protocol.test.mjs": {
+          "tests": 4,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "findings-backstop.test.mjs": {
           "tests": 7,
           "asserts": 16,
@@ -10077,8 +10083,8 @@
           "todos": 0
         },
         "http-handler.test.mjs": {
-          "tests": 23,
-          "asserts": 58,
+          "tests": 24,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },
@@ -10126,7 +10132,7 @@
         },
         "no-session-is-given-the-runners-words-for-a-stopped-run.test.mjs": {
           "tests": 3,
-          "asserts": 38,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
