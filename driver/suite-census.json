@@ -23,7 +23,7 @@
       "perFile": {
         "a-backgrounded-install-can-actually-run-a-clearance.test.mjs": {
           "tests": 10,
-          "asserts": 49,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -2698,8 +2698,8 @@
           "todos": 0
         },
         "a-run-whose-searches-are-its-own-keeps-one-search-service.test.mjs": {
-          "tests": 9,
-          "asserts": 30,
+          "tests": 10,
+          "asserts": 33,
           "skips": 0,
           "todos": 0
         },
@@ -9688,8 +9688,8 @@
           "todos": 0
         },
         "web-research-is-one-setting-read-in-one-place.test.mjs": {
-          "tests": 10,
-          "asserts": 66,
+          "tests": 11,
+          "asserts": 79,
           "skips": 0,
           "todos": 0
         },
