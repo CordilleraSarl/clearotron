@@ -248,6 +248,10 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   assert.ok(dupPacket.priorRecordedAt, "the packet does not say WHEN the prior run was recorded");
   assert.deepEqual([dupPacket.matterSignature, dupPacket.matchedBy], [undefined, undefined], "the dedup ledger's keys stay in the ledger");
   assert.doesNotMatch(JSON.stringify(dupPacket), /dup-override|dupOverride/, "no person is given the override flag");
+  // What the notice no longer says, the queue's record still keeps: which earlier order, and how it matched.
+  const velRecord = readFileSync(join(q, `${velDup[0]}.duplicate.reason`), "utf8");
+  assert.match(velRecord, new RegExp(`matches prior msgId ${dupPacket.priorMsgId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`));
+  assert.match(velRecord, /matched by: /);
   // AND IT DOES NOT PROMISE WHAT IT CANNOT KNOW. "The original run will deliver" was true of the happy
   // case and a guess in every other; the packet names the run instead and lets the reader look.
   assert.doesNotMatch(dupPacket.text, /has been notified|will follow up/i,
