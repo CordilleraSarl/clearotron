@@ -16,7 +16,7 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { execFileSync, spawn } from "node:child_process";
-import { deploymentCurrency, programsOnAnOlderTree, readOwnProcesses } from "../../bin/onboard.mjs";
+import { deploymentCurrency, programsOnAnOlderTree, readOwnProcesses, programIn } from "../../bin/onboard.mjs";
 import { processTable } from "../../shared/process-table.mjs";   // — /proc is not the only box
 import { pinEnv } from "../../shared/env-aliases.mjs";   // every spelling of both names, from the table
 
@@ -198,4 +198,21 @@ test("a process table that could not be read is still null, not an empty box", (
   // the filter does — a passing assertion that had never once excluded anything.
   assert.deepEqual(readOwnProcesses(ROOT, { table: [{ pid: process.pid, cmd: `node ${ROOT}/bin/onboard.mjs doctor`, startedAt: 1 }] }), [],
     "doctor reported ITSELF as a program running on an older tree");
+});
+
+test("a program on the older tree is named by the file it runs, never by its arguments", () => {
+  // A command line carries whatever its caller passed, a key included; the reader needs the program to restart
+  // (design, 2026-11-27).
+  const moved = 1_000_000;
+  const older = programsOnAnOlderTree({ pulledAt: moved, repo: "/repo",
+    readProcs: () => [{ pid: 4242, startedAt: moved - 60_000, cmd: "node /repo/driver/portal-service.mjs --token=a-harmless-stand-in" }] });
+  assert.equal(older.programs[0].program, "driver/portal-service.mjs");
+  assert.equal(programIn("/usr/bin/node /repo-other/x.mjs /repo/bin/clearotron.mjs run --job \"a b\"", "/repo"), "bin/clearotron.mjs",
+    "a sibling folder that starts with the checkout's name was read as the checkout");
+  assert.equal(programIn("node -e x // /repo", "/repo"), null, "a command line naming the checkout and no file in it gained a program");
+  assert.equal(programIn("C:\\r\\bin\\x.mjs", "C:\\r"), "bin/x.mjs");
+  // And doctor prints that, and nothing else of the command line.
+  const doctor = readFileSync(new URL("../../bin/onboard.mjs", import.meta.url), "utf8");
+  assert.ok(doctor.includes("say(`      pid ${pr.pid}${pr.program ? `  ${pr.program}` : \"\"}`)"), "doctor's line no longer prints the program alone");
+  assert.ok(!/pid \$\{pr\.pid\}[^\n]*\$\{pr\.cmd\}/.test(doctor), "doctor still prints the command line");
 });

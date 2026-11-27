@@ -1600,8 +1600,27 @@ export function programsOnAnOlderTree({ repo = REPO, pulledAt = null, readProcs 
   // apart: not supplied uses the real scan, and a scan that fails returns null and is reported as such.
   const found = (readProcs ?? readOwnProcesses)(repo);
   if (found === null) return { state: "unknown", detail: "could not read the process table", programs: [] };
-  const older = found.filter((p) => Number.isFinite(p.startedAt) && p.startedAt < movedAt);
+  const older = found.filter((p) => Number.isFinite(p.startedAt) && p.startedAt < movedAt)
+    .map((p) => ({ ...p, program: programIn(p.cmd, repo) }));
   return { state: older.length ? "older-tree" : "current", programs: older, movedAt };
+}
+
+/**
+ * The program a process runs from `repo`, as its path inside the checkout (`driver/portal-service.mjs`), or null where
+ * the command line names the checkout and no file in it. Its arguments are never part of it: a reader needs the
+ * program to restart, and a command line can carry anything its caller passed (design, 2026-11-27). PURE.
+ */
+export function programIn(cmd, repo) {
+  const line = String(cmd ?? "");
+  const root = String(repo ?? "").replace(/[\\/]+$/, "");
+  if (!root) return null;
+  for (let at = line.indexOf(root); at >= 0; at = line.indexOf(root, at + 1)) {
+    const rest = line.slice(at + root.length);
+    if (!/^[\\/]/.test(rest)) continue;
+    const path = rest.slice(1).match(/^[^\s"']*/)[0];
+    if (path) return path.replaceAll("\\", "/");
+  }
+  return null;
 }
 
 /**
@@ -2152,7 +2171,8 @@ async function sayDeployment({ fileEnv, hosted, unitEnv }) {
   if (running.state === "older-tree") {
     warn(`${running.programs.length} running program(s) started before this checkout last moved — they are `
       + "executing the previous tree until restarted:");
-    for (const pr of running.programs.slice(0, 6)) say(`      pid ${pr.pid}  ${pr.cmd}`);
+    // The program to restart, never its arguments (design, 2026-11-27).
+    for (const pr of running.programs.slice(0, 6)) say(`      pid ${pr.pid}${pr.program ? `  ${pr.program}` : ""}`);
     if (running.programs.length > 6) say(`      … and ${running.programs.length - 6} more`);
     say("      Restart whatever supervises them; this command does not, because which supervisor owns");
     say("      them is a property of your deployment and not of this checkout.");
