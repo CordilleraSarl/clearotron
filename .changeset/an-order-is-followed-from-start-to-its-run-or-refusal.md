@@ -8,5 +8,3 @@ New: After Start, the portal shows the order's receipt and follows it while it w
 New: An order that is still being checked, or was refused before any search ran, has its own row in Clearances. It sits among the names by date and reads "Waiting to start" or "Order did not start".
 
 New: `order_status` now says which check refused an order before it started, as `reasonKind`: run-cap, details, policy, setup, duplicate or other.
-
-Fixed: When intake refused an order placed from the portal or a company's own connector, the notice quoted the check's own words and named the queue. It now carries the not-started sentence a failed start already uses, and the check's words stay with the operator.

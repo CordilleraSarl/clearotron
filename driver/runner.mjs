@@ -391,24 +391,18 @@ async function intakeNotify(agentId, base, job, v, reasonKind = "other") {
   // plain optional chaining throughout: `Array.isArray(x) && ...` yields boolean false (NOT nullish) when
   // marks is absent, which would swallow the `?? base` fallback in exactly the null-job case it exists for.
   const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
-  const what = v?.classify === "clarify"
-    ? `needs clarification before it can run: ${v.errors.join("; ")}`
-    : `was rejected at intake: ${(v?.errors ?? ["unparseable job file"]).join("; ")}`;
-  // A CLIENT'S ORDER IS TOLD IN THE CLIENT'S WORDS, as preRunFailNotify tells it (design, 2026-11-27). The check's own
-  // words name the installation's setup and the queue, which are staff's: the client's notice carries the shipped
-  // not-started sentence, `reasonKind` says which check refused it, and `errors` is empty. The words stay in `.reason`.
-  const client = job?.clientPrincipal === true;
-  const text = client
-    ? clientNotStartedText(job, mark)
-    : `⚠️ Clearotron request "${mark}" ${what}. Nothing has been searched or delivered. ` +
-      `Job parked as ${base}.failed in the ${agentId} queue.`;
+  // EVERY ORDER IS TOLD IN PRODUCT WORDS (design, 2026-11-27): whoever placed it and however it came in. The check's own
+  // words can name the installation's setup, a queue or a flag, so no person is given them: the notice carries the
+  // shipped not-started sentence, `reasonKind` says which check refused it, and `errors` is empty. The words stay in the
+  // queue's `<base>.failed.reason`, the record failAtIntake wrote before this ran.
+  const text = clientNotStartedText(job, mark);
   const p = writeOutboxPacket(`intake-${base}.failed`, {
     kind: "intake-rejected", classify: v?.classify ?? "reject", reasonKind, base, agent: agentId,
     ...noticeAccount(job),
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
-    errors: client ? [] : (v?.errors ?? ["unparseable job file"]), text,
+    errors: [], text,
   });
   return p ? `packet ${p}` : "packet-failed";
 }
@@ -654,7 +648,6 @@ async function failAtIntake(procPath, qdir, base, agentId, job, v, reasons, kind
 // Best-effort duplicate-skip notice (mirrors intakeNotify: one outbox packet). Returns the audit-trail
 // outcome string for the .reason file.
 async function duplicateNotify(agentId, base, job, prior = null, sig = null, shown = true) {
-  const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
   // ── A REFUSAL DELIVERED AS SILENCE IS INDISTINGUISHABLE FROM A LOST JOB ────────
   //
   // The observable outcome of a dedup park was an empty queue and no run, which is exactly what an
@@ -662,40 +655,24 @@ async function duplicateNotify(agentId, base, job, prior = null, sig = null, sho
   // sharper when `clearotron cancel` shipped: a stop of a parked run became a documented first-class
   // operation, so an operator reaching this window went from uncommon to expected.
   //
-  // WHICH PRIOR RUN, NOT JUST "A DUPLICATE". A sentence saying "duplicate" without saying WHICH one
-  // satisfies the letter and leaves the submitter where they were: they cannot tell whether the thing
-  // they are waiting for exists. The prior message id and when it was recorded are what turn this from
-  // a refusal into an answer, and both are already in hand — the park computed them to decide.
-  //
-  // THE FORCE-RUN ROUTE TRAVELS WITH IT. This refusal is the one place a person meets the dedup window,
-  // so it is where the override belongs; `--dup-override` on the CLI, `dupOverride` on `start_run` and
-  // the cockpit's checkbox are the product paths, and naming one here is what stops a hand edit to the
-  // ledger being the only route anybody finds.
-  // THE EARLIER ORDER IS NAMED ONLY TO ITS OWN ACCOUNT (design, 2026-11-26): its reference, when it was recorded and
-  // the matter's signature are told to a requester who may see that order, and to nobody else.
+  // THE NOTICE IS THE APPROVED WORDS AND THIS ORDER'S REFERENCE (design, 2026-11-27): no person is given an override
+  // flag or the matter's signature (`sig`, which the dedup ledger keeps), whoever placed the order. The force-run route
+  // stays where an operator finds it, in the intake guide and `--help`. THE EARLIER ORDER IS NAMED ONLY TO ITS OWN
+  // ACCOUNT (design, 2026-11-26), and only as fields: its reference and when it was recorded go to a requester who may
+  // see that order, and to nobody else.
   const when = shown && prior?.ts ? new Date(prior.ts).toISOString() : null;
-  const which = shown && prior?.msgId
-    ? ` The run already under way was submitted as ${prior.msgId}${when ? ` at ${when}` : ""} — that is the one that will deliver.`
-    : " The earlier run will deliver.";
-  const text = `⚠️ Clearotron request "${mark}" matches a matter already in progress or just delivered, so it was `
-    + `NOT run — a second search would spend twice for one answer.${which}`
-    + ` If you genuinely need a fresh run of the same matter, re-submit it with dupOverride (\`--dup-override\` on the`
-    + ` command line) and it will go through.`;
+  const text = `This order was flagged as a duplicate. Order reference: ${base}`;
   const p = writeOutboxPacket(`intake-${base}.duplicate`, {
     kind: "duplicate-skipped", base, agent: agentId,
     ...noticeAccount(job),
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
-    // THE COLLIDING SIGNATURE AND THE PRIOR RUN, AS FIELDS. The sentence is for a person; these are for
-    // whatever reads the packet — and a field is what lets a surface show which run without re-deriving
-    // a signature it would compute differently.
-    matterSignature: shown ? (sig ?? null) : null,
+    // THE PRIOR ORDER, AS FIELDS, for a requester who may see it. The matter's signature and how it matched are the
+    // dedup ledger's, kept there.
     priorMsgId: shown ? (prior?.msgId ?? null) : null,
     priorJobId: shown ? (prior?.id ?? null) : null,
     priorRecordedAt: when,
-    matchedBy: prior?.conversationId && prior.conversationId === String(job?.conversationId ?? "").trim()
-      ? "thread" : "matter-signature",
     text,
   });
   return p ? `packet ${p}` : "packet-failed";
@@ -745,17 +722,10 @@ async function parkDuplicate(procPath, qdir, base, agentId, job, prior, sig, own
 // NEVER throws; the .failed markers are written before this runs. Returns true when a packet landed.
 function preRunFailNotify(agentId, base, job, reason) {
   const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
-  // — the ONE capping function, not a second private copy. Its only caller already hands over a
-  // terminalReasonFields `reason`, so this cut is a no-op today — which is exactly why it survived: a
-  // latent second cap, unmarked, waiting for the next caller to pass a raw reason. It collapses and
-  // trims identically, so this is the same string with the cut made visible when there is one.
-  // A CLIENT'S ORDER IS TOLD IN THE CLIENT'S WORDS. Once a courier scoped to the client's company can see
-  // this notice, `text` can reach the client, and the staff line quotes the machine reason and the queue.
-  // The client gets the shipped not-started sentence the failure email uses; the reason stays a field.
-  const text = job?.clientPrincipal === true
-    ? clientNotStartedText(job, mark)
-    : `❌ Clearotron request "${mark}" FAILED before the run could start: ${terminalReasonFields(reason).reason} — ` +
-      `nothing has been searched or delivered. Job parked as ${base}.failed in the ${agentId} queue.`;
+  // EVERY ORDER IS TOLD IN PRODUCT WORDS (design, 2026-11-27). The machine reason can name a path, a program or the
+  // queue, so no person is given it, in the sentence or as a field: the notice carries the shipped not-started sentence
+  // the failure email uses. The reason stays in the queue's `<base>.failed.result`, written before this runs.
+  const text = clientNotStartedText(job, mark);
   // `intake-${base}.` PREFIX, not a third scheme: scripts/e2e.mjs's outboxPackets matches by runId
   // first and by that prefix second, so a name outside it is a notice the harness reports as
   // never sent. The queue base is the routing key; `kind` carries what actually happened.
@@ -766,7 +736,7 @@ function preRunFailNotify(agentId, base, job, reason) {
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
     ...whatsappRouting(job, agentId),   // to whoever asked, as every other notice (the-notice-goes-to-whoever-asked)
-    reason: terminalReasonFields(reason).reason, text,
+    text,
   });
   note(`[runner] pre-run failure ${p ? `packet \u2192 ${p}` : "packet write FAILED"} for ${base}`);
   return Boolean(p);

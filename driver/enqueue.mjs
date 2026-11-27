@@ -355,7 +355,7 @@ async function main(argv) {
   // Collision = the id is already queued or claimed. Job ids are dedup keys (a re-delivered request
   // re-uses its id); refusing here mirrors start_run and keeps a double-submit from racing the claim.
   if (existsSync(dest) || existsSync(join(qdir, `${job.id}.processing`)))
-    fail(`a job with id "${job.id}" is already queued/processing in ${qdir}`, 3);
+    fail(`a job with id "${job.id}" is already queued/processing`, 3);   // the queue's folder is the install's, never printed
   // AN ID IN ANY STATE IS THAT ORDER, not room for a second one. The check above saw only a waiting or claimed job, so
   // the same submission retried after it was refused, parked or finished wrote a second order under the same reference.
   // Same exit, and the answer carries what became of the first.

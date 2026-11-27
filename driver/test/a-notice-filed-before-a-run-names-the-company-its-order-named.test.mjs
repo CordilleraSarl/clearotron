@@ -3,8 +3,8 @@
 // A notice filed before any run exists — a failure before start, an intake refusal, a duplicate park —
 // has no run to read an account from. It carries the account its order named, so a courier whose token
 // is scoped to that company can see it; an order that named none carries null, which only a full grant
-// sees. A client's own order is told in the shipped not-started sentence, never the staff line with the
-// machine reason and the queue.
+// sees. Every order, however it was placed, is told in the shipped not-started sentence: nobody is given the machine
+// reason, the check's words or the queue (design, 2026-11-27).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, readdirSync } from "node:fs";
@@ -34,7 +34,8 @@ test("a failure before start carries the account its order named, and no organis
   assert.equal(p.kind, "pre-run-failed");
   assert.equal(p.account, "demo-brand-owner");
   assert.equal(p.organisation, null);
-  assert.match(p.text, /FAILED before the run could start: engine sign-in check failed/, "staff keep the reason in the line");
+  assert.equal(p.text, clientNotStartedText(order(), "VELLOQUIN"), "an order nobody stamped is told in the same words");
+  assert.equal(p.reason, undefined, "the reason stays in the queue's record");
 });
 
 test("a Generic order carries its organisation; an order that named no account carries null", () => {
@@ -45,17 +46,17 @@ test("a Generic order carries its organisation; an order that named no account c
     "no named account, so no organisation either: the runner may still resolve it by the sender's domain");
 });
 
-test("a client's own order is told it was not started, in the shipped words, with no reason and no queue", () => {
+test("an order placed from a company's door is told it was not started, in the shipped words, with no reason and no queue", () => {
   const job = order({ profileKey: "demo-brand-owner", clientPrincipal: true });
   preRunFailNotify("intake-agent", "job-d", job, "codex login refused: token expired at /home/invented");
   const p = packet("intake-job-d.");
   assert.equal(p.text, clientNotStartedText(job, "VELLOQUIN"));
   assert.ok(p.text.endsWith(`was not started, and nothing was delivered. ${CLIENT_ACTION}`), p.text);
   assert.doesNotMatch(p.text, /codex|token|\/home|job-d|queue|FAILED/);
-  assert.match(p.reason, /token expired/, "the reason stays on the packet as a field for staff");
+  assert.doesNotMatch(JSON.stringify(p), /codex|token expired|\/home/, "no field carries the reason either");
 });
 
-test("a client's order refused at intake is told it was not started, with its kind and none of the check's words", async () => {
+test("every order refused at intake is told it was not started, with its kind and none of the check's words", async () => {
   const job = order({ profileKey: "demo-brand-owner", clientPrincipal: true });
   await intakeNotify("intake-agent", "job-h", job, { classify: "clarify", errors: ["runCaps.dailyRuns=3 for demo-brand-owner"] }, "run-cap");
   const p = packet("intake-job-h.failed");
@@ -64,8 +65,9 @@ test("a client's order refused at intake is told it was not started, with its ki
   assert.doesNotMatch(JSON.stringify(p), /runCaps|dailyRuns|job-h\.failed|queue/);
   await intakeNotify("intake-agent", "job-i", order({ profileKey: "demo-brand-owner" }), { classify: "clarify", errors: ["no goods"] }, "details");
   const staff = packet("intake-job-i.failed");
-  assert.match(staff.text, /needs clarification before it can run: no goods/, "an order staff placed keeps the check's words");
-  assert.deepEqual([staff.reasonKind, staff.errors], ["details", ["no goods"]]);
+  assert.equal(staff.text, clientNotStartedText(order({ profileKey: "demo-brand-owner" }), "VELLOQUIN"), "an order staff placed is told the same");
+  assert.deepEqual([staff.reasonKind, staff.errors], ["details", []]);
+  assert.doesNotMatch(JSON.stringify(staff), /no goods|job-i\.failed|queue/);
 });
 
 test("an intake refusal and a duplicate park carry the account too; an unreadable order carries none", async () => {
