@@ -56,6 +56,32 @@ export function noticeRoute(env = process.env) {
   };
 }
 
+// ── WHAT DOCTOR SAYS OF THE ROUTE ───────────────────────────────────────────────────────────────────────────────
+//
+// One line per state, in the words approved for doctor (2026-11-27). The receiver is named by its origin only
+// (scheme, host and port), never its path or query, and not at all when the route is refused.
+
+/**
+ * Doctor's line for the route: `{ level: "ok" | "info" | "warn", text }`. PURE. `info` is the install with no route,
+ * which behaves exactly as before; `warn` is a route named but unusable, so nothing is sent.
+ */
+export function noticeRouteLine(route) {
+  if (!route?.configured) return { level: "info", text: "Failure notices use the courier, if configured." };
+  if (!route.ok) {
+    const text = {
+      "url-not-loopback": "Failure notice receiver must be on this machine.",
+      "no-audience": "Choose who gets failure notices. Set CLEAROTRON_NOTICE_AUDIENCES to submitter, operator, or submitter,operator.",
+      "audience-unknown": "Unknown failure notice audience. Use submitter, operator, or submitter,operator.",
+    }[route.problem] ?? "Enter a valid local HTTP or HTTPS address for failure notices.";
+    return { level: "warn", text };
+  }
+  const origin = new URL(route.url).origin;
+  const both = route.audiences.includes("submitter") && route.audiences.includes("operator");
+  if (both) return { level: "ok", text: `Failure notices for submitters and operators use ${origin}.` };
+  if (route.audiences.includes("operator")) return { level: "ok", text: `Operator notices use ${origin}. Submitter notices use the courier, if configured.` };
+  return { level: "ok", text: `Submitter notices use ${origin}. Operator notices use the courier, if configured.` };
+}
+
 /**
  * Send one notice to the receiver. Never throws. Resolves one of:
  *   { outcome: "confirmed", status, sent }    the receiver answered 2xx: it holds the notice. `sent` is its downstream

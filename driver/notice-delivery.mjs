@@ -419,6 +419,28 @@ export function reconcileNotice(id, answer, { now = Date.now() } = {}) {
   } finally { release(); }
 }
 
+// ── WHAT STATUS SAYS OF THE NOTICES ─────────────────────────────────────────────────────────────────────────────
+//
+// In the words approved for status (2026-11-27), counted and worded for the state the install is in. A notice a later event
+// superseded asks nothing and is not shown; a confirmed one is not listed at all.
+
+/**
+ * Status's lines for the notices not yet confirmed. PURE. `listed` is undeliveredNotices(); `command` is how this
+ * install's operator runs the notices command (`clearotron notices` on a packaged install). No lines when nothing waits.
+ */
+export function noticeStatusLines(listed, command) {
+  const rows = (Array.isArray(listed) ? listed : []).filter((n) => !n.superseded);
+  const retrying = rows.filter((n) => n.retriesByItself).length;
+  const lines = [];
+  if (retrying) lines.push(`${retrying} failure ${retrying === 1 ? "notice awaits" : "notices await"} automatic retry.`);
+  for (const n of rows.filter((x) => x.nextAction === NEXT_ACTIONS["settle-with-receiver"])) {
+    lines.push(`Check whether the receiver accepted notice ${n.id}.`,
+      `  If received: ${command} received ${n.id}`,
+      `  If absent:   ${command} absent ${n.id}`);
+  }
+  return lines;
+}
+
 // THE OPERATOR'S COMMAND LINE. `list` prints every notice not confirmed; `received <id>` and `absent <id>` give the
 // receiver's answer for one. Every answer is JSON, and a refusal exits 4 with its reason code.
 if (isEntrypoint(import.meta.url)) {
