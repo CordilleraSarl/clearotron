@@ -358,8 +358,8 @@ export function credentialState(tokenFile) {
     // a could-not-look, not an absence.
     if (statSync(tokenFile).isDirectory()) return { state: "unusable", why: "it is a directory, not a credential file" };
     raw = readFileSync(tokenFile, "utf8");
-  } catch (e) {
-    return { state: "unreadable", why: `it could not be read (${e.code || e.message})` };
+  } catch {
+    return { state: "unreadable", why: "it could not be read" };
   }
   if (raw.trim() === "") return { state: "unusable", why: "the file is empty" };
   let parsed;

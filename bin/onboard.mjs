@@ -1661,8 +1661,8 @@ export async function runCheck() {
   const ctx = await readCheckContext();
   const { leadIsTheRefusal, refusal, turnLeads } = await sayOpening(ctx);
 
-  // The path this command runs from, with the build it names below it.
-  say(`\n  repo: ${REPO}`);
+  // NO `repo:` LINE (design, 2026-11-27): the folder this command runs from is an incidental path, never a thing to act
+  // on. A path is printed where the reader edits, creates or fixes it.
 
   await sayDeployment(ctx);
   await sayNode();
@@ -2589,7 +2589,8 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
     if (!unjudged("CLEAROTRON_CUSTOMERS_DIR")) try {
       const mod = await import(`../driver/profiles.mjs?doctor=${Date.now()}`);
       const r = mod.profileStoreResolution();
-      const where = `profiles resolve from ${r.store}`;
+      // The bundled roster's folder is part of the product, not a place to act on, so it is named, not shown.
+      const where = r.situation === "bundled-fallback" ? "profiles resolve from THE BUNDLED DEMO ROSTER" : `profiles resolve from ${r.store}`;
       // ── ON A HOSTED BOX THE SERVICES' ANSWER COMES FIRST ────────────────────────────────────────────
       //
       // One run of this command reported the SAME variable as both set and unset, and concluded a
@@ -2634,7 +2635,7 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
           + `design and is not what \`${invoke("start")}\` hands the services`);
       } else {
         if (r.situation === "overlay" && !r.findings.length) ok(`${where} — the configured store`);
-        else if (r.situation === "bundled-fallback") info(`${where} — THE BUNDLED DEMO ROSTER, because CLEAROTRON_CUSTOMERS_DIR is unset. Legitimate on a generic-defaults install; a fallback either way, and it is what a misconfigured deployment also looks like`);
+        else if (r.situation === "bundled-fallback") info(`${where}, because CLEAROTRON_CUSTOMERS_DIR is unset. Legitimate on a generic-defaults install; a fallback either way, and it is what a misconfigured deployment also looks like`);
         else if (r.situation === "env-arrived-late") problem(`CLEAROTRON_CUSTOMERS_DIR is set in this environment but was not set when the profile module loaded, so it is NOT in force — ${where}. Export it before the process starts`);
         else problem(`${where} — ${r.detail}`);
       }
@@ -2819,7 +2820,7 @@ async function sayConfigurationStore({ startPaths, hosted, unitEnv, effective, s
               + "recorded until it is");
           }
         } else {
-          info(`could not ask git where saves to ${storeDir} go (${w.why}) — a failure to look, not a finding`);
+          info(`could not ask git where saves to ${storeDir} go — a failure to look, not a finding`);
         }
       }
     }
@@ -3103,12 +3104,12 @@ async function sayPortalBundle() {
       // A MISCONFIGURATION, NOT AN ABSENCE, and rc 1 for the same reason the .env branch above gives:
       // nothing is missing here. What is present is WRONG, the product will serve it without complaint,
       // and the reader has no other surface that would tell them — /portal/health reads "built".
-      problem(`the bundle at ${distDir} is OLDER than the sources it was built from (${srcDir})`);
+      problem("the bundle at portal-ui/dist is OLDER than the sources it was built from (portal-ui/src)");
       info("`git pull` cannot update it — the bundle is not tracked here, so an upgrade moves the sources "
         + "and leaves the build behind, and /portal serves the previous screen and reports itself healthy");
       info("rebuild it: `npm run build:ui`");
     } else if (verdict === "unbuilt") {
-      blocking(`no UI bundle at ${distDir} — /portal answers 503 until one is built. Build it: \`npm run build:ui\``);
+      blocking(`no UI bundle at portal-ui/dist — /portal answers 503 until one is built. Build it: \`npm run build:ui\``);
     } else if (verdict === "no-sources") {
       // The tarball. The bundle ships inside it and portal-ui/src does not, so there is nothing to be
       // stale against and an upgrade replaces both together. Said, rather than left as a silent pass.
@@ -3116,17 +3117,17 @@ async function sayPortalBundle() {
     } else if (verdict === "tracked-unguarded") {
       // Reported, rc 0: nothing is misconfigured and nothing is known to be stale. What is missing is the
       // check, and a reader who committed the bundle has every reason to believe committing was enough.
-      blocking(`portal-ui/dist is committed here, but nothing in this tree rebuilds it to check it still matches ${srcDir}`);
+      blocking(`portal-ui/dist is committed here, but nothing in this tree rebuilds it to check it still matches portal-ui/src`);
       info("a pull that changes the sources will not show up here — rebuild after one: `npm run build:ui`");
     } else if (verdict === "unmeasured") {
-      blocking(`portal-ui/dist is present, but its age could not be read against ${srcDir} — whether it is current is unknown`);
+      blocking(`portal-ui/dist is present, but its age could not be read against portal-ui/src — whether it is current is unknown`);
       info("if /portal is serving a screen you do not recognise, rebuild before looking further: `npm run build:ui`");
     } else if (verdict === "unversioned") {
       ok(`portal-ui/dist is present — this tree is not a git checkout, so no pull can have left it behind`);
     } else if (verdict === "guarded") {
-      ok(`portal-ui/dist is present and tracked here — CI rebuilds it and fails on any difference, so it matches ${srcDir}`);
+      ok(`portal-ui/dist is present and tracked here — CI rebuilds it and fails on any difference, so it matches portal-ui/src`);
     } else {
-      ok(`portal-ui/dist is present and newer than ${srcDir} — /portal has the current screen to serve`);
+      ok(`portal-ui/dist is present and newer than portal-ui/src — /portal has the current screen to serve`);
     }
   } catch (e) {
     // A could-not-look, and it is NOT a pass: the reader learns nothing about whether the portal can
@@ -3467,7 +3468,7 @@ async function sayProvenProviders({ effective }) {
       say("  Spending one cheap search…");
       const v = await validatePerplexity(pxKey.v);
       if (v.ok) ok("PERPLEXITY_API_KEY ANSWERED a real request — the credential works");
-      else problem(`PERPLEXITY_API_KEY did not answer: ${v.error}`);
+      else problem("PERPLEXITY_API_KEY did not answer");
     }
   }
 }
@@ -3637,7 +3638,10 @@ async function sayStartButtonPath({ hosted, unitEnv }) {
 }
 
 async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effective, serviceFileEnv,
-  effectiveForService }) {
+  effectiveForService, serviceKnown }) {
+  // With no units, the door reads the settings file this command could not, so its port, lists, log and address are
+  // not known; the opening says why.
+  if (!hosted && !serviceKnown) return;
   say("\n  Client connector");
   // THE REVOCATION LIST, REPORTED (found in review). `isRevoked` used to read an unreadable denylist as
   // "not revoked", so a named-but-absent file made every revocation silently ineffective: measured on a

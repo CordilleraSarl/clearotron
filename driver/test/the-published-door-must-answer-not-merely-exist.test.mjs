@@ -23,12 +23,12 @@ test("SET IS NOT REACHABLE — an unprobed address is reported as unprobed, neve
   assert.match(v.message, /NOBODY ASKED/, "and it says which half did not run");
 });
 
-test("a configured address that does not answer is a FAULT that names the reason", () => {
+test("a configured address that does not answer is a FAULT that names the address, not the error", () => {
   const refused = clientDoorReachability({ url: "https://mcp.example.com/mcp", probe: { ok: false, error: "ENOTFOUND" } });
   assert.equal(refused.state, "fail");
-  // The reason travels as `detail`, for a local diagnosis; the sentence a person reads says what failed (design,
-  // 2026-11-27).
-  assert.equal(refused.detail, "ENOTFOUND", "the reason travels — a reader must know what to fix");
+  // The sentence a person reads says what failed and names the address to fix; the connection's own error is the
+  // machine's words and stays out of it (design, 2026-11-27).
+  assert.match(refused.message, /^https:\/\/mcp\.example\.com\/mcp is configured and DOES NOT ANSWER\./, "the failure is not named");
   assert.doesNotMatch(refused.message, /ENOTFOUND/, "the machine's own words reached the sentence a person reads");
 
   // A SERVER THAT ANSWERS THE WRONG THING IS ALSO NOT REACHABLE. A 502 from an ingress that exists but

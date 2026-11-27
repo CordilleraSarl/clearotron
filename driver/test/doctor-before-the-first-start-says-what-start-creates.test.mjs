@@ -94,7 +94,7 @@ test("the control: a revocation list the settings name, and cannot be read, stil
   try {
     const out = doctor(home);
     assert.match(out, /! the revocation list at \/nonexistent\/a-named-revocation-list cannot be read — /, out);
-    assert.doesNotMatch(out, /ENOENT/, "the machine's own words reached doctor's output without --detail");
+    assert.doesNotMatch(out, /ENOENT/, "the machine's own words reached doctor's output");
     // What the key check does then, in the door's own words: it refuses every key, and doctor used to say the opposite.
     const said = "this install cannot check whether keys have been revoked, so it is refusing all of them";
     assert.ok(out.replace(/\s+/g, " ").includes(said), `doctor does not say what the door does:\n${out}`);

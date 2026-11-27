@@ -115,9 +115,10 @@ export function makeLaneProbe(deps) {
       try {
         const r = await countHits({ name: control.mark, matchMode, classes, regions }, ctx);
         return { mark: control.mark, ok: !!r?.ok, total: r?.total ?? null, reason: r?.reason ?? null };
-      } catch (e) {
-        // The kernel guards its own transport, so reaching here means something outside it threw.
-        return { mark: control.mark, ok: false, total: null, reason: String(e?.message ?? e) };
+      } catch {
+        // The kernel guards its own transport, so reaching here means something outside it threw. What it threw is the
+        // machine's own words, so it is not the reason a person reads (design, 2026-11-27); a provider's own reason is.
+        return { mark: control.mark, ok: false, total: null, reason: null };
       }
     };
 
