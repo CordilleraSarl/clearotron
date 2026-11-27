@@ -9676,8 +9676,8 @@
           "todos": 0
         },
         "what-an-order-states-is-kept-with-its-source.test.mjs": {
-          "tests": 9,
-          "asserts": 22,
+          "tests": 10,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
