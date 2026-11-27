@@ -424,10 +424,11 @@ serve({
   tools: [{
     name: "perplexity_research",
     // On a run whose search sets the tier, the tool says so and offers no depth: a depth the model chose
-    // would be ignored, and a parameter that is ignored is one the model spends a thought on for nothing.
+    // would be ignored, and a parameter that is ignored is one the model spends a thought on for nothing. It names no
+    // service: the order's own selection answers (design's words, 1521), which on own search is the run's AI program.
     description: PINNED_QUESTION_PRESET
-      ? "Web/marketplace research via Perplexity's agent API, at the depth this search is set to. For deterministic marketplace grids, pass `grid_spec_path` (absolute, the driver writes it) — the tool runs every (term × platform) cell and saves the verbatim ledger to the spec's output_path; you get back only candidates needing judgment (never write the grid yourself)."
-      : "Web/marketplace research via Perplexity's agent API. For deterministic marketplace grids, pass `grid_spec_path` (absolute, the driver writes it) — the tool runs every (term × platform) cell and saves the verbatim ledger to the spec's output_path; you get back only candidates needing judgment (never write the grid yourself).",
+      ? "Research this question using the web research service selected for this order, at the depth this search is set to. Return the answer and its sources. For deterministic marketplace grids, pass `grid_spec_path` (absolute, the driver writes it) — the tool runs every (term × platform) cell and saves the verbatim ledger to the spec's output_path; you get back only candidates needing judgment (never write the grid yourself)."
+      : "Research this question using the web research service selected for this order. Return the answer and its sources. For deterministic marketplace grids, pass `grid_spec_path` (absolute, the driver writes it) — the tool runs every (term × platform) cell and saves the verbatim ledger to the spec's output_path; you get back only candidates needing judgment (never write the grid yourself).",
     // NO FIELD IS REQUIRED BY THE SCHEMA: a grid's first page takes `grid_spec_path`, a later page that and `part`, and
     // research a nonblank `task`. The handler checks the route before anything is sent.
     inputSchema: { type: "object", properties: {

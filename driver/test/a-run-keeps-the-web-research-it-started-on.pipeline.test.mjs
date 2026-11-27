@@ -121,8 +121,21 @@ test("an installation that names no service is refused a new clearance before an
     const root = mkdtempSync(join(tmpdir(), "clearotron-web-research-"));
     TEMP_DIRS.push(root);
     await assert.rejects(segment(root, { research: undefined, job, env: { PERPLEXITY_API_KEY: "test-offline" } }),
-      /CLEAROTRON_WEB_RESEARCH is not set, so this installation has chosen no web-research service.*npx clearotron install/s,
+      /Choose a web research service before starting this clearance\. Run npx clearotron install\./,
       `${job.product ?? "an order whose product its profile settles"}: a key present chose nothing`);
     assert.equal(existsSync(join(root, "pool")), false, "nothing was delivered");
   }
+});
+
+test("a Knockout on an installation that names no service is not refused for it, and records that none was chosen", async () => {
+  const root = mkdtempSync(join(tmpdir(), "clearotron-web-research-"));
+  TEMP_DIRS.push(root);
+  let res, err = null;
+  try { res = await segment(root, { research: undefined, job: { ...JOB, product: "knockout-search" }, env: { PERPLEXITY_API_KEY: "test-offline" } }); }
+  catch (e) { err = e; }
+  assert.doesNotMatch(String(err?.message ?? ""), /Choose a web research service/, "a Knockout was refused for want of a web-research service");
+  const runDir = res?.runDir ?? err?.run?.runDir ?? null;
+  assert.ok(runDir, `the Knockout opened no run: ${String(err?.message ?? JSON.stringify(res)).slice(0, 300)}`);
+  const rec = recordOf(runDir);
+  assert.ok(Object.hasOwn(rec, "research") && rec.research === null, "the run records that no service was chosen, so a key set chooses nothing");
 });

@@ -88,9 +88,9 @@ export function webResearchCapability({ service, engine = null, env = process.en
  * THE RUN DOOR FOR WEB RESEARCH: the run's service (`service`; a resumed run's recorded one, or null for a run recorded
  * as having none) or, where `service` is not given, the installation's, checked on the engine the run uses. Throws, as
  * the configuration's door does, before anything is spent. A setting that names no service is refused by name, never
- * read as either service. No service at all passes only a product whose answer stands without the web half, which is
- * known only where the order names it: an order whose product its profile settles later is refused. IMPURE only
- * through `env`.
+ * read as either service. No service at all is refused for a clearance, whose answer needs the web half; a product
+ * not yet known, which its profile settles later, is not refused here, and `refuseUnchosenResearch` asks again once
+ * it is (design's ruling, 2026-11-27). IMPURE only through `env`.
  */
 export function researchDoor(policy, env = process.env, { service, engine = null } = {}) {
   const install = service === undefined ? installWebResearch(env) : { service };
@@ -98,17 +98,23 @@ export function researchDoor(policy, env = process.env, { service, engine = null
     throw new Error(`[preflight] ${WEB_RESEARCH_SETTING}=${install.invalid} names no web-research service on product "${policy?.product}" `
       + `— one of: own (the AI program's own web search) or perplexity; refusing rather than guess which one searches`);
   if (!install.service) {
-    if (policy?.components?.commonLawGrid === false) return { checked: false, component: "commonLawGrid", service: null, credEnv: null, missing: [] };
+    if (policy?.components?.commonLawGrid !== true) return { checked: false, component: "commonLawGrid", service: null, credEnv: null, missing: [], ...(policy ? {} : { deferred: true }) };
     throw new Error(notChosenRefusal(policy));
   }
   return preflightResearchCredential(policy, env, { service: install.service,
     own: install.service === "own" ? webResearchCapability({ service: "own", engine, env }) : null });
 }
 
+/**
+ * THE SAME REFUSAL, ONCE THE RUN'S PRODUCT IS KNOWN: a run with no web-research service whose product needs the web half
+ * is refused before its first stage; a Knockout, which runs its register half without one, passes. IMPURE only by
+ * throwing.
+ */
+export function refuseUnchosenResearch(policy) {
+  if (policy?.components?.commonLawGrid === true) throw new Error(notChosenRefusal(policy));
+}
+
 /** The door's words for an installation that has chosen no web-research service. PURE. */
-export function notChosenRefusal(policy) {
-  return `[preflight] ${WEB_RESEARCH_SETTING} is not set, so this installation has chosen no web-research service for the `
-    + `common-law / marketplace sweep${policy?.product ? ` on product "${policy.product}"` : ""}; refusing rather than choose one for it. `
-    + `Run \`npx clearotron install\` to choose, or set ${WEB_RESEARCH_SETTING}=perplexity with ${PERPLEXITY_KEY} in the installation's `
-    + "settings and restart (a Knockout search names its product and runs without it, saying its web half did not run)";
+export function notChosenRefusal() {
+  return "[preflight] Choose a web research service before starting this clearance. Run npx clearotron install.";
 }

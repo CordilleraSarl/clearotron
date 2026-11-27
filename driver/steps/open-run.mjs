@@ -15,7 +15,7 @@ import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
 import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerDoor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { urgentDecision } from "../engine/speed.mjs";
-import { installWebResearch, researchDoor, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
+import { installWebResearch, refuseUnchosenResearch, researchDoor, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
 import { serveOwnQuestions } from "../own-search-questions.mjs";   // a run on its own search has its stages' questions answered here
 import { resolveAuthMode } from "../engine/auth.mjs";
 import { note, runLog } from "../log.mjs";
@@ -410,6 +410,9 @@ export async function openRun({ job, opts }) {
     attachProfile(ctx, job);
     attachSearchPolicy(ctx, job);
   }
+  // A RUN WITH NO WEB-RESEARCH SERVICE, NOW THAT ITS PRODUCT IS KNOWN: a clearance is refused before its first stage, as
+  // the research door refuses one its order names; a Knockout, its profile's default included, runs its register half.
+  if (runResearch == null && !opts.recordFetcher) refuseUnchosenResearch(ctx.searchPolicy);
   // acceptance 5 — recorded on EVERY run, ungraded included: "which ladder applied" must be a
   // read, never an inference from which product the job asked for.
   runLog(run.runDir, depthLadderEvent(ctx));

@@ -307,7 +307,7 @@ export function runRequirements(env = {}, { registers = [], engines = {}, defaul
   about = "research";
   // WHO RUNS THE WEB RESEARCH, NARROWING FOR THE SAME REASON AS THE KEY: without it the three clearance searches refuse at
   // the research door, and a Knockout search still runs. Carried like the key, so the services' file holds the choice.
-  push(WEB_RESEARCH_SETTING, false, "names who runs a clearance's web research (own or perplexity); without it the three clearance searches refuse at preflight, and a Knockout search still runs and discloses the half it skipped");
+  push(WEB_RESEARCH_SETTING, false, "Web research service: own or perplexity. Required for clearances. Knockout can run a register-only search.");
   push(RESEARCH_ENV, false, "the three clearance searches carry the common-law grid and refuse at preflight without it; a Knockout search still runs and discloses the half it skipped");
 
   return out;

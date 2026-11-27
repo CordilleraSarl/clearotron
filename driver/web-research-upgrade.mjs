@@ -73,4 +73,4 @@ export function installationRunDirs(workspaceRoot) {
 }
 
 /** The line written above the setting, so a reader of the settings file sees where it came from. */
-export const UPGRADE_NOTE = "Who runs a clearance's web research: perplexity, as every clearance on this installation did before the setting existed. Added once on upgrade; change it with `npx clearotron install`.";
+export const UPGRADE_NOTE = "Perplexity was used on this installation before upgrade. To change it, run npx clearotron install.";

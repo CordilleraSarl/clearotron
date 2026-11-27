@@ -74,7 +74,7 @@ test("an installation whose runs show Perplexity research, and nothing else, is 
   const dirs = installationRunDirs(root);
   assert.equal(dirs.length, 3, "live and archived runs are both read");
   assert.deepEqual(webResearchToAdd({ PERPLEXITY_API_KEY: "k" }, dirs), { add: { CLEAROTRON_WEB_RESEARCH: "perplexity" }, runs: 2 });
-  assert.match(UPGRADE_NOTE, /^Who runs a clearance's web research: perplexity/);
+  assert.equal(UPGRADE_NOTE, "Perplexity was used on this installation before upgrade. To change it, run npx clearotron install.");
 });
 
 test("a choice already named stands, valid or not, and a record that cannot settle it writes nothing", () => {

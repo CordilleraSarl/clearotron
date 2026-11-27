@@ -107,8 +107,10 @@ test("a run whose installation chose no web-research service searches the web wi
     const r = resolveSweepExecutor({}, { runDir });
     assert.deepEqual({ source: r.source, grid: r.grid, exec: r.exec, skipped: r.skipped },
       { source: "none", grid: null, exec: null, skipped: "web-research-not-chosen" }, "nobody chose Perplexity for it, so a key does not send its searches there");
-    // Neither a missing key nor a route that cannot search: its own cause, whose sentence is the owner's to give.
-    assert.equal(CAPABILITY_SKIPPED_NOTE["web-research-not-chosen"], undefined);
+    // Neither a missing key nor a route that cannot search: its own cause, with design's sentence for the reader.
+    assert.equal(CAPABILITY_SKIPPED_NOTE["web-research-not-chosen"],
+      "No web research service was selected. Only register filings were screened. Unregistered use remains unchecked for every name.");
+    assert.ok(CAPABILITY_SKIPPED_CAUSE["web-research-not-chosen"], "the assessment reads a cause for it");
     rmSync(join(runDir, "_driver", "run-choices.json"));
     assert.equal(resolveSweepExecutor({}, { runDir }).source, "perplexity", "a run with no record meets the route it always had");
   } finally { pinEnv(process.env, "PERPLEXITY_API_KEY", saved); rmSync(runDir, { recursive: true, force: true }); }

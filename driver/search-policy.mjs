@@ -834,11 +834,17 @@ export const CAPABILITY_SKIPPED_NOTE = {
     "The open-web and marketplace search did not run on this screen — this deployment holds no research "
     + "credential for it. The register filing counts are unaffected. Treat every name here as unscreened "
     + "for unregistered use.",
+  // The installation chose no web-research service (driver/web-research.mjs): design's words, awaiting the owner's yes.
+  "web-research-not-chosen":
+    "No web research service was selected. Only register filings were screened. Unregistered use remains unchecked for "
+    + "every name.",
 };
 
 /** The short internal cause a skipped capability records per mark, for the assess stage and the ledger. */
 export const CAPABILITY_SKIPPED_CAUSE = {
   "common-law-no-credential": "open-web research did not run — no research credential on this deployment",
+  // Proposed to design (1521), not yet approved: the assessment stage reads it.
+  "web-research-not-chosen": "open-web research did not run — no web research service was chosen on this installation",
 };
 
 /**
