@@ -211,7 +211,7 @@ test("a question the program refused carries the program's own reason, never onl
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
-// Izar's counterexample (1521, c.7206990753), with invented names: a search returned page A, and the answer cites only page B.
+// Design's counterexample (2026-11-27), with invented names: a search returned page A, and the answer cites only page B.
 const A = "https://pages.example.com/a", B = "https://elsewhere.example.org/b";
 const searchOf = (urls) => ({ type: "item.completed", item: { type: "web_search", action: { type: "search", queries: ["q"] }, results: urls.map((url) => ({ url })) } });
 const readOf = (urls) => ({ type: "item.completed", item: { type: "web_search", action: { type: "other" }, results: urls.map((url) => ({ url, ref_id: "turn1view0" })) } });
@@ -241,7 +241,7 @@ test("each answer has one outcome; a page the program opened counts as read, nev
     { searches: 1, searched: [A], read: [B], failed: 1 });
   assert.equal(questionAnswer("codex", { events: [searchOf([A])], text: `Yes.\n${A.replace("pages.example.com", "PAGES.example.com")}#top` }).outcome, "supported", "the same page, written another way");
   assert.equal(questionAnswer("codex", { events: [searchOf([A])], text: "Yes.\nhttps://pages.example.com/other" }).outcome, "unsupported-cited", "the same host is not the same page");
-  // The negative reply waits on design's ruling (1521, c.7208961543); handed one, it is read only as the whole first line.
+  // The negative reply waits on design's ruling; handed one, it is read only as the whole first line.
   assert.equal(questionAnswer("codex", { events: [searchOf([])], text: "Nothing found" }, { negative: "Nothing found" }).outcome, "negative");
   assert.equal(questionAnswer("codex", { events: [searchOf([])], text: "Nothing found" }).outcome, "no-source", "no negative is read until one is approved");
   assert.equal(questionAnswer("codex", { events: [searchOf([])], text: "Nothing found for Northwind, but Lakeside sells toys." }, { negative: "Nothing found" }).outcome, "no-source");
