@@ -213,7 +213,8 @@ pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", customersDir);
   for (const base of ["nosubject", "brokenman"]) {
     const packet = JSON.parse(readFileSync(join(outbox, `intake-${base}.failed.pending`), "utf8"));
     assert.equal(packet.kind, "intake-rejected");
-    assert.match(packet.text, /Nothing has been searched or delivered/);
+    assert.match(packet.text, /was not started, and nothing was delivered/);
+    assert.deepEqual(packet.errors, [], "the check's own words stay in the queue's .failed.reason");
   }
   for (const base of ["tonica", "legacy", "partial"]) {
     assert.ok(!existsSync(join(outbox, `intake-${base}.failed.pending`)), `${base} ran — no intake packet`);

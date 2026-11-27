@@ -34,16 +34,18 @@ const status = (qdir, reference) => {
   return { code: r.status, out, stderr: r.stderr };
 };
 
-test("the command line answers what became of an order, and says why when it finds none", () => {
+test("the command line answers what became of an order as order_status does, and says why when it finds none", () => {
   const qdir = queueOfOrders();
   const refused = status(qdir, "portal-a-refused");
   assert.equal(refused.code, 0, refused.stderr);
-  assert.equal(refused.out.receipt.state, "refused");
-  assert.equal(refused.out.receipt.reason, "demo-brand-owner is demo data and cannot run a real clearance.");
+  // The kind of the refusal and whose order it is; never the reason as the runner recorded it (design, 2026-11-27).
+  assert.deepEqual([refused.out.found, refused.out.state, refused.out.reason, refused.out.reasonKind, refused.out.account],
+    [true, "refused", null, "other", "demo-brand-owner"]);
+  assert.doesNotMatch(refused.out && JSON.stringify(refused.out), /demo data|notify/, "nothing of the runner's text is printed");
   const running = status(qdir, "portal-a-running");
-  assert.equal(running.out.receipt.state, "running");
-  assert.equal(running.out.receipt.runId, "tmp41-found-probe-2026-11-26-quiet-heron");
-  assert.equal(status(qdir, "portal-b-waiting").out.receipt.state, "waiting");
+  assert.equal(running.out.state, "running");
+  assert.equal(running.out.runId, "tmp41-found-probe-2026-11-26-quiet-heron");
+  assert.equal(status(qdir, "portal-b-waiting").out.state, "waiting");
   const none = status(qdir, "portal-nothing");
   assert.deepEqual([none.code, none.out], [4, { found: false, basis: "not-found" }]);
   const bad = status(qdir, "../escape");
@@ -83,7 +85,7 @@ test("the portal answers each person for their own company's orders only", async
   const staff = await get(STAFF, "portal-b-waiting");
   assert.deepEqual([staff.status, staff.json.state, staff.json.account], [200, "waiting", "zephyr"]);
   const staffRefused = await get(STAFF, "portal-a-refused");
-  assert.equal(staffRefused.json.reason, "demo-brand-owner is demo data and cannot run a real clearance.", "staff read the reason as written");
+  assert.deepEqual([staffRefused.json.reason, staffRefused.json.reasonKind], [null, "other"], "nobody reads the reason as written");
 });
 
 test("a queue that would not open is not a missing order, for a company's person as for staff", async () => {

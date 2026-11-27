@@ -26,7 +26,7 @@
 
 import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
 import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, readdirSync } from "node:fs";
-import { receiptIn, orderReceipt, RECEIPT_STATES } from "./order-receipt.mjs";   // an id in ANY state is the same order, not a new one
+import { receiptIn, orderReceipt, orderAnswer, RECEIPT_STATES } from "./order-receipt.mjs";   // an id in ANY state is the same order, not a new one
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
@@ -247,13 +247,15 @@ async function main(argv) {
   try { flags = parseArgs(argv); } catch (e) { process.stderr.write(USAGE); fail(e.message); }
   if (flags.help) { process.stdout.write(USAGE); return; }
   // WHAT BECAME OF AN ORDER. The command line is the operator's tool, run on the install itself, so it sees every
-  // account's orders, as start_run does for a session that sees every account. Found: the receipt, exit 0. Not found,
-  // not a reference, ambiguous, or a queue that would not open: the answer says which, exit 4.
+  // account's orders, as start_run does for a session that sees every account, and prints the answer order_status gives
+  // that session, from the same builder: never the reason as the runner recorded it (design, 2026-11-27).
+  // Found: exit 0. Not found, not a reference, ambiguous, or a queue that would not open: `basis` says which, exit 4.
   if (flags.status != null) {
     const dirs = [...new Set([resolveQueueDir(flags), ...(config.queueDirs ?? [])].filter(Boolean))];
     const answer = orderReceipt({ queueDirs: dirs, reference: flags.status, scope: { everything: true } });
-    process.stdout.write(JSON.stringify(answer, null, 2) + "\n");
-    if (!answer.found) fail(`no order with reference "${flags.status}": ${answer.basis}`, 4);
+    const shown = answer.found ? { found: true, ...orderAnswer(answer.receipt, { withAccount: true }) } : { found: false, basis: answer.basis, ...(answer.unreadable ? { unreadable: answer.unreadable } : {}) };
+    process.stdout.write(JSON.stringify(shown, null, 2) + "\n");
+    if (!answer.found) process.exitCode = 4;
     return;
   }
   let job;
@@ -353,7 +355,7 @@ async function main(argv) {
   // Collision = the id is already queued or claimed. Job ids are dedup keys (a re-delivered request
   // re-uses its id); refusing here mirrors start_run and keeps a double-submit from racing the claim.
   if (existsSync(dest) || existsSync(join(qdir, `${job.id}.processing`)))
-    fail(`a job with id "${job.id}" is already queued/processing in ${qdir}`, 3);
+    fail(`a job with id "${job.id}" is already queued/processing`, 3);   // the queue's folder is the install's, never printed
   // AN ID IN ANY STATE IS THAT ORDER, not room for a second one. The check above saw only a waiting or claimed job, so
   // the same submission retried after it was refused, parked or finished wrote a second order under the same reference.
   // Same exit, and the answer carries what became of the first.
@@ -362,8 +364,8 @@ async function main(argv) {
   const existing = receiptIn(qdir, job.id, names);
   if (existing) {
     process.stdout.write(JSON.stringify({ ok: false, id: job.id, existing: { state: existing.state, stateText: RECEIPT_STATES[existing.state],
-      reason: existing.reason ?? null, runId: existing.runId ?? null } }, null, 2) + "\n");
-    fail(`a job with id "${job.id}" already exists in ${qdir}: ${RECEIPT_STATES[existing.state]}`, 3);
+      reason: null, reasonKind: existing.state === "refused" ? (existing.reasonKind ?? "other") : null, runId: existing.runId ?? null } }, null, 2) + "\n");
+    fail(`a job with id "${job.id}" already exists: ${RECEIPT_STATES[existing.state]}`, 3);
   }
   const tmp = `${dest}.tmp`;
   writeFileSync(tmp, JSON.stringify(job, null, 2) + "\n");

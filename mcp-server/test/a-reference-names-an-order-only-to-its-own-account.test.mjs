@@ -141,15 +141,21 @@ test("a retry of an order refused before it ran is that refusal, with its kind a
   assert.equal(files().length, count - 1, "nothing queued again");
 });
 
-test("order_status tells a company which check refused its order, and the operator the reason as written", async () => {
+test("order_status tells every session which check refused an order, and none of them the reason as written", async () => {
   const first = await start(A, { id: "ORDER-9", profileKey: "demo-brand-owner" });
   renameSync(join(QUEUE, `${first.id}.json`), join(QUEUE, `${first.id}.failed`));
   writeFileSync(join(QUEUE, `${first.id}.failed.reason`), "account demo-brand-owner: run cap 3 of 3\nnotify: sent\n");
   writeFileSync(join(QUEUE, `${first.id}.failed.kind`), "run-cap\n");
   const own = await status(A, first.id);
   assert.deepEqual([own.state, own.reason, own.reasonKind], ["refused", null, "run-cap"]);
+  // A session that sees every account is told whose order it is, and the kind; the runner's text stays in the queue's
+  // record for everyone (design, 2026-11-27). A retry of the reference answers the same.
   const staff = await status(STAFF, first.id);
-  assert.deepEqual([staff.reasonKind, staff.reason], ["run-cap", "account demo-brand-owner: run cap 3 of 3"]);
+  assert.deepEqual([staff.reasonKind, staff.reason, staff.account], ["run-cap", null, "demo-brand-owner"]);
+  assert.doesNotMatch(JSON.stringify(staff), /run cap 3 of 3|notify/);
+  const staffRetry = await start(STAFF, { id: first.id, profileKey: "demo-brand-owner" });
+  assert.deepEqual([staffRetry.outcome, staffRetry.reason, staffRetry.reasonKind], ["already-filed", null, "run-cap"]);
+  assert.doesNotMatch(JSON.stringify(staffRetry), /run cap 3 of 3|notify/);
   // An order refused before kinds were recorded is `other`, and a waiting one has no kind.
   const old = await start(A, { id: "ORDER-10", profileKey: "demo-brand-owner" });
   renameSync(join(QUEUE, `${old.id}.json`), join(QUEUE, `${old.id}.failed`));

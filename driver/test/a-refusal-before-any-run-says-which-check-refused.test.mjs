@@ -9,7 +9,7 @@
 //   - every kind the runner writes is one the receipt knows;
 //   - the receipt reads the kind back; an order refused before kinds were written, or one with a kind it does not know,
 //     is `other`; a same-matter park is `duplicate`;
-//   - the portal gives a company the kind and never the reason as written; someone who sees everything gets both.
+//   - the portal gives every person the kind and never the reason as written, someone who sees everything included.
 // Every name is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -55,7 +55,7 @@ test("the receipt reads the kind back, and anything it cannot read is other", ()
   assert.equal(kindOf("kind-dup"), "duplicate");
 });
 
-test("the portal gives a company the kind and never the reason as written; staff read both", async () => {
+test("the portal gives every person the kind and never the reason as written, whoever they are", async () => {
   const qdir = queue({ "portal-cap": { ".failed": null, ".failed.reason": "account demo-brand-owner: run cap 3 of 3 this month\nnotify: sent\n", ".failed.kind": "run-cap\n" } });
   const CLIENT = { email: "orders@alpha.example" }, STAFF = { email: "staff@firm.example" };
   const grants = {
@@ -66,7 +66,8 @@ test("the portal gives a company the kind and never the reason as written; staff
   const own = await svc.route("GET", "/portal/api/orders/portal-cap", CLIENT, {}, { account: "demo-brand-owner" });
   assert.deepEqual([own.status, own.json.state, own.json.reasonKind, own.json.reason], [200, "refused", "run-cap", null]);
   assert.doesNotMatch(JSON.stringify(own.json), /run cap 3 of 3|notify/, "nothing of the operator's text reaches the company");
+  // Someone who sees everything is told whose order it is, and the kind, and nothing of the text either (design, 2026-11-27).
   const staff = await svc.route("GET", "/portal/api/orders/portal-cap", STAFF, {}, {});
-  assert.equal(staff.json.reasonKind, "run-cap");
-  assert.match(staff.json.reason, /run cap 3 of 3/);
+  assert.deepEqual([staff.status, staff.json.reasonKind, staff.json.reason, staff.json.account], [200, "run-cap", null, "demo-brand-owner"]);
+  assert.doesNotMatch(JSON.stringify(staff.json), /run cap 3 of 3|notify/, "nothing of the runner's text reaches staff either");
 });

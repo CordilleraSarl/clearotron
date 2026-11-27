@@ -1835,7 +1835,7 @@
         },
         "a-notice-filed-before-a-run-names-the-company-its-order-named.test.mjs": {
           "tests": 5,
-          "asserts": 20,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -5513,7 +5513,7 @@
         },
         "intake-reject.test.mjs": {
           "tests": 1,
-          "asserts": 22,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -5793,9 +5793,21 @@
           "skips": 0,
           "todos": 0
         },
+        "no-door-gives-a-person-the-runners-words-for-an-order.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "no-internal-hostname-ships-in-the-package.test.mjs": {
           "tests": 1,
           "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
+        "no-notice-gives-a-person-the-runners-words.test.mjs": {
+          "tests": 2,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -7085,7 +7097,7 @@
         },
         "runner.promptparts.test.mjs": {
           "tests": 1,
-          "asserts": 30,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -9856,7 +9868,7 @@
         },
         "a-reference-names-an-order-only-to-its-own-account.test.mjs": {
           "tests": 11,
-          "asserts": 54,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -10104,6 +10116,12 @@
           "tests": 13,
           "asserts": 36,
           "skips": 3,
+          "todos": 0
+        },
+        "no-session-is-given-the-runners-words-for-an-order.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
           "todos": 0
         },
         "ops-token.test.mjs": {

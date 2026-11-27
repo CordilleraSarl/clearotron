@@ -33,7 +33,7 @@ backstop (the markers are edge-triggers, **not** the source of truth — see Wri
 | **run-failed** | `<runId>.failed.pending` | JSON packet (self-contained) | `_driver/failure.json` in the run dir |
 | **intake-rejected** | `intake-<base>.failed.pending` | JSON packet | `<base>.failed` + `.reason` in the queue |
 | **duplicate-skipped** | `intake-<base>.duplicate.pending` | JSON packet | `<base>.duplicate` + `.reason` in the queue |
-| **pre-run-failed** | `intake-<base>.prerun-failed.pending` | JSON packet | `<base>.failed` + `.reason` in the queue |
+| **pre-run-failed** | `intake-<base>.prerun-failed.pending` | JSON packet | `<base>.failed` + `.result` in the queue |
 | **late-bind-ack** | `<runId>.bindack.pending` | JSON packet | `customer-late-bind-ack` event in `_driver/run.jsonl` |
 | **engine-check-failed** | `engine-check-<engine>.failed.pending` | JSON packet for the operator: no run, no requester | `<CLEAROTRON_WORK_DIR>/engine-check/<engine>.check.json` |
 
@@ -110,28 +110,27 @@ field, never "this was not a refusal".
 jobId, msgId, forwarder, forwarderEmail, markName, errors[], text }` — `classify: "clarify"` means the fix
 is a question back to the requester (see [INTAKE.md](INTAKE.md)); `"reject"` means the job was
 malformed. `reasonKind` names the check that refused it: `run-cap`, `details`, `policy`, `setup`,
-`duplicate` or `other`. `text` is ready to send ("… Nothing has been searched or delivered. Job parked as
-<base>.failed …").
-
-An order placed from the portal, or through a company's own connector, gets the not-started sentence
-instead: `text` is the one `pre-run-failed` also uses, and `errors` is empty. The check's own words stay
-in the queue's `<base>.failed.reason`, which an operator reads.
+`duplicate` or `other`. `text` is ready to send, and it is the not-started sentence `pre-run-failed` also
+uses, for every order however it was placed. `errors` is empty. Nobody is sent the check's own words,
+which can name the installation's setup, a queue or a flag: they stay in the queue's `<base>.failed.reason`.
 
 ### `duplicate-skipped` — `intake-<base>.duplicate.pending`
 
 `{ ts, kind: "duplicate-skipped", base, agent, account, organisation, jobId, msgId, forwarder,
-forwarderEmail, markName, text }` — the matter-dedup gate parked the request instead of running a
-second paid search. The queue-side `.duplicate.reason` explains the match and the `dupOverride` force-run.
+forwarderEmail, markName, priorMsgId, priorJobId, priorRecordedAt, text }` — the matter-dedup gate parked
+the request instead of running a second paid search. `text` is "This order was flagged as a duplicate.
+Order reference: <base>". The `prior…` fields name the earlier order only to a requester whose company
+holds it, and are null otherwise. The queue-side `.duplicate.reason` keeps the match; the `dupOverride`
+force-run is in [INTAKE.md](INTAKE.md).
 
 ### `pre-run-failed` — `intake-<base>.prerun-failed.pending`
 
 `{ ts, kind: "pre-run-failed", base, agent, account, organisation, jobId, msgId, forwarder,
-forwarderEmail, markName, reason, text }` plus the chat routing fields — the request failed before its
-run could start, for example on the engine's sign-in check, so nothing was searched or delivered.
-`text` is ready to send. For an order placed by the person it is for (`clientPrincipal`) it is the
-not-started sentence of the failure email ("The <search ordered> for <mark> was not started, and nothing
-was delivered. Please tell whoever administers this installation."); otherwise it is the staff line with
-the reason. `reason` is always on the packet.
+forwarderEmail, markName, text }` plus the chat routing fields — the request failed before its run
+could start, for example on the engine's sign-in check, so nothing was searched or delivered. `text` is
+ready to send, for every order: the not-started sentence of the failure email ("The <search ordered> for
+<mark> was not started, and nothing was delivered. Please tell whoever administers this installation.").
+The reason stays in the queue's `<base>.failed.result`.
 
 ### Whose notice it is, when there is no run
 
@@ -258,7 +257,7 @@ in `<outbox>/deliveries/route-since.json`, and an audience the route stops servi
 
 - for the person who placed the order, `order`: the receipt as `order_status` gives it to a company
   (`reference`, `state`, `terminal`, `runId`, `reason`, which is always empty, and for an order refused
-  before it ran `reasonKind`, the kind of check that refused it; the reason as recorded is the operator's),
+  before it ran `reasonKind`, the kind of check that refused it),
   with `recipient` naming the company, its organisation for Generic, and the `forwarder`,
   `forwarderEmail` and `msgId` the order carried;
 - for the operator, `fault`: the kind, the order or run it concerns, and `nextAction`, a code
