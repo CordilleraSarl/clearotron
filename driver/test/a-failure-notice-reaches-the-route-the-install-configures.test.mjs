@@ -165,7 +165,9 @@ test("the worker tells each company's submitter, and the operator, through the c
     assert.deepEqual([stopped.notice.recipient.account, stopped.notice.recipient.forwarderEmail], ["zephyr", "desk@zephyr.example"]);
     const [fault] = byKind("run-stopped", "operator");
     assert.deepEqual([fault.notice.recipient, fault.notice.fault.nextAction, fault.notice.fault.runId], [{ role: "operator" }, "read-the-run", stopped.notice.order.runId]);
-    assert.ok(fault.notice.fault.reason, "the operator is told why");
+    // The runner's recorded reason is internal text: the notice carries codes only, and the install's own record keeps it.
+    assert.equal("reason" in fault.notice.fault, false, "the operator's notice carries the runner's recorded reason");
+    assert.ok(deliveries(box).find((d) => d.id === fault.key)?.diagnostic?.reason, "the install's own record lost the reason");
 
     // Neither company's notice carries anything of the other's.
     for (const r of rx.records.filter((x) => x.notice.audience === "submitter")) {
@@ -436,8 +438,21 @@ test("a finished report the courier cannot send: the operator is alerted once, t
 
 // ── THE OPERATOR SETTLES AN UNCERTAIN NOTICE BY ITS DELIVERY ID ──────────────────────────────────────────────────────
 
-const operatorSays = (box, ...args) => {
-  const r = spawnSync(process.execPath, [join(HERE, "..", "notice-delivery.mjs"), ...args], { env: { ...process.env, ...box.env }, encoding: "utf8" });
+/**
+ * The operator's answers, each in a process of its own as the command is, read as the record answers them. The command
+ * itself prints only the approved status lines (the-operator-is-told-where-failure-notices-go.test.mjs); this reads the
+ * same functions it calls, so the record's own fields can be checked.
+ */
+const operatorSays = (box, verb, id) => {
+  if (verb !== "list" && verb !== "received" && verb !== "absent") {
+    const r = spawnSync(process.execPath, [join(HERE, "..", "notice-delivery.mjs"), verb, ...(id ? [id] : [])], { env: { ...process.env, ...box.env }, encoding: "utf8" });
+    return { code: r.status, out: null, stderr: r.stderr };
+  }
+  const mod = JSON.stringify(pathToFileURL(join(HERE, "..", "notice-delivery.mjs")).href);
+  const script = verb === "list"
+    ? `const m = await import(${mod}); process.stdout.write(JSON.stringify(m.undeliveredNotices()));`
+    : `const m = await import(${mod}); const r = m.reconcileNotice(${JSON.stringify(id)}, ${JSON.stringify(verb)}); process.stdout.write(JSON.stringify(r)); process.exitCode = r.ok ? 0 : 4;`;
+  const r = spawnSync(process.execPath, ["--input-type=module", "-e", script], { env: { ...process.env, ...box.env }, encoding: "utf8" });
   let out = null; try { out = JSON.parse(r.stdout); } catch { /* reported below */ }
   return { code: r.status, out, stderr: r.stderr };
 };

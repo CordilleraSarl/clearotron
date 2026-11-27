@@ -261,9 +261,10 @@ in `<outbox>/deliveries/route-since.json`, and an audience the route stops servi
   before it ran `reasonKind`, the kind of check that refused it; the reason as recorded is the operator's),
   with `recipient` naming the company, its organisation for Generic, and the `forwarder`,
   `forwarderEmail` and `msgId` the order carried;
-- for the operator, `fault`: the kind, the order or run it concerns, the stage and recorded reason
-  where there are ones, and `nextAction`, a code (`check-engine`, `read-the-run`, and for a stuck send
-  `release-the-delivery`, with the outbox's own recovery step in `recover`).
+- for the operator, `fault`: the kind, the order or run it concerns, and `nextAction`, a code
+  (`check-engine`, `read-the-run`, and for a stuck send `release-the-delivery`). The recorded reason, the
+  stage, the engine check's own lines and the outbox's marker and recovery step are kept in the install's
+  own delivery record (`diagnostic`), never in a notice.
 
 Neither carries a sentence for the recipient: the words are the receiver's to choose. Nothing sent for
 one company names another company or its orders.
@@ -284,19 +285,18 @@ otherwise it waits for the operator to settle it with the receiver.
 **Settling an uncertain notice.** The operator checks the receiver for the notice's delivery id, then says what it
 found:
 
-    node driver/notice-delivery.mjs list               # every notice not confirmed: its id, state and next action
-    node driver/notice-delivery.mjs received <id>      # the receiver holds it: that notice alone is confirmed, nothing settled
-    node driver/notice-delivery.mjs absent <id>        # it does not: that notice alone is sent again, under the same id
+    clearotron notices list               # what waits: notices awaiting an automatic retry, and each to check
+    clearotron notices received <id>      # the receiver holds it: that notice alone is confirmed, nothing settled
+    clearotron notices absent <id>        # it does not: that notice alone is sent again, under the same id
 
-Where the answer stays unknown, nothing is given and the notice stays ambiguous. Each answer prints JSON; a refusal
-exits 4 with its reason code (`no-such-notice`, `not-reconcilable:<state>`, `superseded-no-retry`). `list` gives each
-notice `retriesByItself`, true for one the worker sends again by itself, and `nextAction: settle-with-receiver` for
-one that waits on the operator.
+Where the answer stays unknown, nothing is given and the notice stays ambiguous. Every command prints the lines
+`clearotron status` prints for what still waits, and nothing of the record: no recorded reason, delivery detail or
+code. An answer the record does not take (an unknown id, a notice already confirmed, a superseded one) exits 4.
 
-A stopped run's notice that a later event has taken over stays listed with its own outcome, for the record, and
-carries `superseded`: `later-failure` when the run stopped again, or `report` when it recovered and owes its report.
-Such a notice is sent again by nothing, so it has `retriesByItself: false` and no next action, and `absent` on it is
-refused with `superseded-no-retry`. Only the current event's notice asks anything of the operator. A notice whose
+A stopped run's notice that a later event has taken over keeps its own outcome in the install's record, marked
+`superseded`: `later-failure` when the run stopped again, or `report` when it recovered and owes its report.
+Such a notice is sent again by nothing, so it is not among the lines that wait, and `absent` on it is not taken. Only
+the current event's notice asks anything of the operator. A notice whose
 failure carries no `failureId` is never taken for superseded.
 
 **Settling the send.** A stopped run's owed send is settled only by a downstream send receipt for the person

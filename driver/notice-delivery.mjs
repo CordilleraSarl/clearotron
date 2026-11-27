@@ -147,7 +147,8 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
         if (reachable(submitter)) owed.push({ eventKey, kind, audience: "submitter", recipient: submitter, at: r.updatedAt, body: { order: clientView(r) } });
         if (r.kind === "pre-run")
           owed.push({ eventKey, kind, audience: "operator", recipient: OPERATOR, at: r.updatedAt,
-            body: { fault: { kind, cause: "pre-run", ...fault, reason: r.reason ?? null, nextAction: NEXT_ACTIONS["check-engine"] } } });
+            body: { fault: { kind, cause: "pre-run", ...fault, nextAction: NEXT_ACTIONS["check-engine"] } },
+            diagnostic: { reason: r.reason ?? null } });
       } else if (r.state === "failed") {
         const result = readJsonSafe(join(qdir, `${ref}.failed.result`));
         const runDir = result?.runDir ?? null;
@@ -168,7 +169,8 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
             // is never it. A failure without an id is settled by no receipt.
             ...(runDir ? { settle: { runDir, runId: r.runId, failureId, recipient: submitterKey(submitter) } } : {}) });
         owed.push({ eventKey, kind, audience: "operator", recipient: OPERATOR, at: r.updatedAt, ...occurrence,
-          body: { fault: { kind, ...fault, failedStage: result?.failedStage ?? null, reason: r.reason ?? null, nextAction: NEXT_ACTIONS["read-the-run"] } } });
+          body: { fault: { kind, ...fault, nextAction: NEXT_ACTIONS["read-the-run"] } },
+          diagnostic: { failedStage: result?.failedStage ?? null, reason: r.reason ?? null } });
       }
     }
   }
@@ -179,8 +181,8 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
     const runDir = runId ? runDirFor(runId) : null;
     if (runDir && sendSettled(runDir)) continue;
     owed.push({ eventKey: `stuck\u0000${rec.marker}\u0000${rec.ts}`, kind: "delivery-stuck", audience: "operator", recipient: OPERATOR, at: rec.ts,
-      body: { fault: { kind: "delivery-stuck", runId: runId || null, marker: rec.marker ?? null, packet: rec.kind ?? null, strikes: rec.strikes ?? null,
-        recover: rec.recover ?? null, nextAction: NEXT_ACTIONS["release-the-delivery"] } } });
+      body: { fault: { kind: "delivery-stuck", runId: runId || null, strikes: rec.strikes ?? null, nextAction: NEXT_ACTIONS["release-the-delivery"] } },
+      diagnostic: { marker: rec.marker ?? null, packet: rec.kind ?? null, recover: rec.recover ?? null } });
   }
   // The engine check: one notice per failing episode, the alert the check itself raised.
   let checks = [];
@@ -190,7 +192,8 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
     if (!rec || rec.ok !== false || rec.lane !== "configuration" || !rec.alertedAt) continue;
     const engine = name.replace(/\.check\.json$/, "");
     owed.push({ eventKey: `engine\u0000${engine}\u0000${rec.alertedAt}`, kind: "engine-check-failed", audience: "operator", recipient: OPERATOR, at: rec.alertedAt,
-      body: { fault: { kind: "engine-check-failed", engine, mode: rec.mode ?? null, basis: rec.basis ?? null, headline: rec.headline ?? null, fix: rec.fix ?? null, nextAction: NEXT_ACTIONS["check-engine"] } } });
+      body: { fault: { kind: "engine-check-failed", engine, nextAction: NEXT_ACTIONS["check-engine"] } },
+      diagnostic: { mode: rec.mode ?? null, basis: rec.basis ?? null, headline: rec.headline ?? null, fix: rec.fix ?? null } });
   }
   return owed.filter((n) => owedTo(n.audience, n.at))
     .map((n) => ({ ...n, id: deliveryId(n.eventKey, n.audience, n.audience === "operator" ? "operator" : submitterKey(n.recipient)) }));
@@ -283,6 +286,8 @@ export async function deliverNotices({ env = process.env, now = () => Date.now()
       if (!rec) {
         rec = { id: n.id, kind: n.kind, audience: n.audience, recipient: n.recipient, eventAt: n.at, state: "pending",
           ...(n.settle ? { settle: n.settle } : {}), ...(n.occurrence ? { occurrence: n.occurrence } : {}),
+          // What only the install's own record keeps: the recorded reason, the stage, the marker. No notice carries it.
+          ...(n.diagnostic ? { diagnostic: n.diagnostic } : {}),
           attempts: [], createdAt: new Date(now()).toISOString(), updatedAt: new Date(now()).toISOString() };
         writeAtomic(path, rec);
       }
@@ -445,18 +450,23 @@ export function noticeStatusLines(listed, command) {
   return lines;
 }
 
-// THE OPERATOR'S COMMAND LINE. `list` prints every notice not confirmed; `received <id>` and `absent <id>` give the
-// receiver's answer for one. Every answer is JSON, and a refusal exits 4 with its reason code.
+// THE OPERATOR'S COMMAND LINE: `clearotron notices list | received <id> | absent <id>`. Every answer is the status
+// lines for what still waits, in their approved words, and nothing else: no record field, reason or code reaches the person
+// running it. An answer that was not taken exits 4; a command that is not one of the three exits 2 with the usage alone.
 if (isEntrypoint(import.meta.url)) {
   const [verb, id] = process.argv.slice(2);
-  const out = (v) => process.stdout.write(JSON.stringify(v, null, 2) + "\n");
-  if (verb === "list" && !id) out(undeliveredNotices());
+  const { invoke } = await import("../shared/invocation.mjs");
+  const waiting = () => {
+    const lines = noticeStatusLines(undeliveredNotices(), invoke("notices"));
+    if (lines.length) process.stdout.write(lines.join("\n") + "\n");
+  };
+  if (verb === "list" && !id) waiting();
   else if ((verb === "received" || verb === "absent") && id) {
     const r = reconcileNotice(id, verb);
-    out(r);
+    waiting();
     if (!r.ok) process.exitCode = 4;
   } else {
-    process.stderr.write("usage: node driver/notice-delivery.mjs list | received <delivery id> | absent <delivery id>\n");
+    process.stderr.write(`${invoke("notices")} list | received <id> | absent <id>\n`);
     process.exitCode = 2;
   }
 }
