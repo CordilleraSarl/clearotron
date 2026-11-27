@@ -1376,9 +1376,10 @@ test("the config surface checks the DOOR before the method — and a wrong shape
 });
 
 // A failure `reason` is a truncated stack trace (pipeline.mjs — `String(e?.stack ?? e)`), so it
-// carries absolute paths, module names and provider error text. Staff need it; a client must not get it,
-// and redacting only in the UI would be theatre — the field travels over the wire either way.
-test('a failure reason reaches staff verbatim and never reaches a client', async () => {
+// carries absolute paths, module names and provider error text. No person is given it, whoever they are (design,
+// 2026-11-27): it stays in the run's own record. Redacting only in the UI would be theatre — the field travels over
+// the wire either way.
+test('a failure reason reaches no person, a person who sees everything included', async () => {
   const poolRoot = tempDir("portal-redact-");
   const workspaceRoot = tempDir("portal-redactws-");
   const dir = join(workspaceRoot, "workspace-t", "studio", "clearance-search", "s", "r");
@@ -1392,7 +1393,9 @@ test('a failure reason reaches staff verbatim and never reaches a client', async
     grants: GRANTS });
 
   const asStaff = await service.route("GET", "/portal/api/runs", STAFF, {}, { account: "demo-brand-owner" });
-  assert.equal(asStaff.json.runs[0].reason, TRACE, "staff get the engine's own words");
+  assert.equal(asStaff.json.runs[0].state, "failed", "the failure stays visible to someone who sees everything");
+  assert.doesNotMatch(JSON.stringify(asStaff.json), /TypeError|pipeline\.mjs|\/srv\/app/, "nor the engine's own words");
+  assert.equal(asStaff.json.runs[0].reasonRedacted, true);
 
   const asClient = await service.route("GET", "/portal/api/runs", CLIENT, {}, {});
   const row = asClient.json.runs[0];

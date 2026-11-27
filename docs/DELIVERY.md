@@ -91,16 +91,25 @@ layer sends.
 
 ### `run-failed` — `_driver/failure.json` + `<runId>.failed.pending`
 
-`{ ts, kind: "run-failed", runId, agent, forwarder, forwarderEmail, msgId, markName,
-failedStage, reason, terminalKind, refused, whatsappTo, text }` — `text` is the ready-to-send human
-line ("… failed at <stage> — <reason>. Nothing has been delivered."). Written from the pipeline's
-failure path; a rate-limit **postpone is not a failure** (the run parks resumable and no
-failure event fires).
+`list_outbox_events` and `get_delivery_packet` hand it on as `{ kind: "run-failed", file, runId, agent, failed,
+refused, forwarder, forwarderEmail, msgId, conversationId, whatsappTo, whatsappChannel, whatsappCcOperator, markName,
+failureId, subject, emailBodyHtml, whatsappText, text }`. `text` and `whatsappText` are the same ready-to-send notice,
+and `emailBodyHtml` carries it as HTML: "The <what was ordered> for <mark> stopped before it finished, and nothing was
+delivered." followed by one recovery action. That action is "Please tell whoever administers this installation.", or,
+when the run waited out a provider's usage cap and stopped for it, the cap sentence, which ends "Re-trigger once the cap
+has reset." Every person is told the same words, whoever placed the order. Written from the pipeline's failure path; a
+rate-limit **postpone is not a failure** (the run parks resumable and no failure event fires).
+
+The files themselves keep the run's own record for whoever diagnoses it: `failedStage`, `reason`, `reasonVerbatim`,
+`terminalKind`, `repairs`, the payload fields and `diagnostic`, the copy that names the stage and quotes the reason.
+Neither door hands any of it on: each composes the notice again from the packet's fields, so a packet an earlier
+version wrote is told in the same words. Nor do they hand on `whatsappToReason`, which names the setting that holds
+chat numbers.
 
 `refused: true` means this run was **declined by the product**, not broken by the engine —
 `terminalKind: "designed-refusal"`, raised when a preflight finds that this deployment cannot serve
 the search that was ordered. The packet still routes as a no-delivery notice (`kind` and `failed` are
-unchanged, so no relay needs teaching); only its copy differs, saying REFUSED rather than FAILED. The
+unchanged, so no relay needs teaching); only its notice differs, saying the search was not started. The
 field is written `true` or `false` on every packet — an absent key means a packet older than the
 field, never "this was not a refusal".
 

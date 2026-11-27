@@ -25,6 +25,7 @@ import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENE
 import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one marker shape, shared with the engine
 import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver/engine/child-record.mjs";   //
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
+import { userFailurePacket } from "../../driver/run-outcome.mjs";   // a failure packet leaves only as its notice and routing
 import { stopReason } from "../../shared/stop-reason.mjs";   //
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { driverDir, paths, readJson } from "../../driver/run-record.mjs";   // — one definition of where `_driver/` is
@@ -609,8 +610,21 @@ export function listOutboxEvents() {
     try { raw = readFileSync(join(config.outboxDir, file), "utf8"); } catch { return null; } // raced an ack — skip
     try { return { file, ...JSON.parse(raw) }; }
     catch { return { file, kind: "delivered", runId: file.replace(/\.pending$/, ""), agent: raw.trim() || null }; }
-  }).filter(Boolean);
+  }).filter(Boolean)
+    // A stopped run's packet is handed on as the notice a person reads and the routing a courier sends by, composed
+    // again from its fields, whoever reads the outbox and whichever version wrote it (design, 2026-11-27). Its stage,
+    // reason and repairs stay in the file and in the run's own record.
+    .map((ev) => (ev.kind === "run-failed" ? userFailurePacket(ev) : withoutSetupHint(ev)));
   return { ok: true, count: events.length, events };
+}
+
+// `whatsappToReason` tells an install how to give a requester a chat number: it names the requester's address and the
+// setting that holds the numbers. That is the install's own setup, never a person's to be handed (design, 2026-11-27);
+// a courier routes by `whatsappTo`, which stays. The packet on disk keeps it.
+function withoutSetupHint(p) {
+  if (!p || typeof p !== "object" || !("whatsappToReason" in p)) return p;
+  const { whatsappToReason: _hint, ...rest } = p;
+  return rest;
 }
 
 // get_delivery_packet — the run's send payload(s): _driver/delivery.json (success) and/or
@@ -628,7 +642,9 @@ export function getDeliveryPacket(args = {}) {
   return {
     ok: true, runId: run.runId, state: run.state,
     sendPending: run.status?.sendPending ?? null, sent: existsSync(join(run.runDir, ".sent")),
-    delivery, failure,
+    // `failure` is the notice and its routing, never `_driver/failure.json` as written: the stage, the reason and the
+    // repairs stay in that file, the run's own record (design, 2026-11-27).
+    delivery: withoutSetupHint(delivery), failure: failure ? userFailurePacket(failure) : null,
   };
 }
 

@@ -1107,7 +1107,7 @@ export class UndeclaredPresentation extends Error {
 }
 
 export function presentForPrincipal(scope, name, result) {
-  if (!CLIENT_KINDS.has(scope?.kind)) return result;
+  if (!CLIENT_KINDS.has(scope?.kind)) return presentForEveryone(name, result);
 
   // — DEFAULT DENY, and it is the SHAPE that enforces it, not a longer if-chain.
   //
@@ -1174,6 +1174,21 @@ export function presentForPrincipal(scope, name, result) {
   // Not reachable: `declared === "scrub"` and every scrub tool is handled above, which the registry test
   // asserts in both directions. Refusing rather than returning keeps the property true if that ever slips.
   throw new UndeclaredPresentation(name);
+}
+
+// A SESSION THAT SEES EVERY COMPANY IS A PERSON TOO (design, 2026-11-27): what a connector returns to a person or their
+// assistant is user output, with full access as without. So a run's mechanics and its failure reason leave these
+// doors as they leave a company's: get_run and decision_timeline through the same projection, and a failed run in
+// list_runs with the same sentence. What it does not change is whose runs a session sees, and it keeps what an
+// operator's assistant routes by: a run's `agent` and its report's `url`. The full diagnostic stays in the run's own
+// record. The other tools a full-access session reads are unchanged here.
+function presentForEveryone(name, result) {
+  if (name === "get_run") return accountRun(result, { brandName: BRAND.name });
+  if (name === "decision_timeline") return accountTimeline(result, { brandName: BRAND.name });
+  if (name === "list_runs" && Array.isArray(result))
+    return result.map((r) => (r && typeof r === "object" && r.state === "failed"
+      ? { ...r, reason: CLIENT_FAILURE_NOTE, reasonRedacted: true } : r));
+  return result;
 }
 
 // ONE sentence, composed in lib/audit-view.mjs — get_run and decision_timeline hand a client the same

@@ -90,7 +90,8 @@ const runRowProps = {
 const RUN_ROW_REQUIRED = ["runId", "slug", "codename", "date", "agent", "client", "project", "product", "state", "location", "tier", "caption",
   "url", "markName", "ref", "classes", "step", "startedAt", "updatedAt", "deliveredAt", "failedStage", "reason", "resetsAt",
   "recoveryResumesAt", "parkedKind", "terminalKind", "sendPending", "sent", "channels"];
-const staffRunRow = closed(RUN_ROW_REQUIRED, runRowProps);
+// A failed run's reason is the same note for every session (server.mjs presentForEveryone), flagged as a company's is.
+const staffRunRow = closed(RUN_ROW_REQUIRED, { ...runRowProps, reasonRedacted: { const: true } });
 // The client cut (server.mjs sanitizeRunForClient): no `url`, no `agent`; a failed run's reason is the firm's note.
 const { url: _u, agent: _a, ...clientRowProps } = runRowProps;
 const clientRunRow = closed(RUN_ROW_REQUIRED.filter((k) => !["url", "agent", "reason"].includes(k)), { ...clientRowProps, reason: S, reasonRedacted: { const: true } });
@@ -108,9 +109,10 @@ const reads = {
   order_status: { staff: { type: "object", anyOf: [orderFound({ account: SN, organisation: SN }), orderNotFound] },
     client: { type: "object", anyOf: [orderFound({}), orderNotFound] } },
   list_profiles: { all: closed(["_note", "clients", "genericFallback"], { _note: S, clients: { type: "array", items: O }, genericFallback: S, storeUnreadable: S, unreadable: A }) },
+  // get_run and decision_timeline give every session the same projection (mcp-server/lib/audit-view.mjs): a session that
+  // sees every company is told of a run as a company's is (design, 2026-11-27), so each declares one shape.
   get_run: {
-    staff: closed(["run", "stages", "failover", "artifacts", "coverageSummary"], { run: staffRunRow, product: { const: "knockout" }, stages: A, failover: A, artifacts: A, coverageSummary: O }),
-    client: closed(["run", "stages", "failover", "artifacts", "coverageSummary"], { run: O, stages: A, failover: A, artifacts: A, coverageSummary: N("object") }),
+    all: closed(["run", "stages", "failover", "artifacts", "coverageSummary"], { run: O, stages: A, failover: A, artifacts: A, coverageSummary: N("object") }),
   },
   read_artifact: { all: open(["name"], { _note: S, name: S, file: S, text: S, frontMatter: O, exists: B }) },
   trace: { all: open(["runId", "target"], { runId: S, target: S }) },
@@ -121,9 +123,7 @@ const reads = {
     { coverageLedgerPresent: B, registerAxes: A, findings: NUM, negativeResults: NUM, artifacts: A, complete: B, note: S }) },
   search: { all: closed(["runId", "query", "mode", "hits", "truncated"], { runId: S, query: S, mode: S, hits: A, truncated: B }) },
   decision_timeline: {
-    staff: closed(["runId", "state", "tier", "verdictHistory", "timeline", "riskLadderAvailable", "note"],
-      { runId: S, state: SN, tier: SN, verdictHistory: A, timeline: A, riskLadderAvailable: B, note: S }),
-    client: open(["runId", "timeline"], { runId: S, state: SN, tier: SN, timeline: A, verdictHistory: A }),
+    all: open(["runId", "timeline"], { runId: S, state: SN, tier: SN, timeline: A, verdictHistory: A }),
   },
   run_changes: { all: closed(["runId", "state", "tier", "since", "cursor", "count", "changes", "note"],
     { runId: S, state: SN, tier: SN, since: SN, cursor: ANY, count: NUM, changes: A, note: S }) },
