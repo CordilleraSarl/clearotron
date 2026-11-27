@@ -3645,6 +3645,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-outbox-file-holds-only-the-notice-and-its-routing.test.mjs": {
+          "tests": 2,
+          "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
         "an-owner-lookup-that-did-not-answer-is-read-as-one.test.mjs": {
           "tests": 1,
           "asserts": 6,
@@ -5975,7 +5981,7 @@
         },
         "operability.test.mjs": {
           "tests": 31,
-          "asserts": 181,
+          "asserts": 184,
           "skips": 0,
           "todos": 0
         },
@@ -10119,8 +10125,8 @@
           "todos": 0
         },
         "no-session-is-given-the-runners-words-for-a-stopped-run.test.mjs": {
-          "tests": 2,
-          "asserts": 22,
+          "tests": 3,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -10138,7 +10144,7 @@
         },
         "ops.test.mjs": {
           "tests": 41,
-          "asserts": 174,
+          "asserts": 176,
           "skips": 0,
           "todos": 0
         },
