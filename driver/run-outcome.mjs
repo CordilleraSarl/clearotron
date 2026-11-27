@@ -6,6 +6,7 @@
 //
 // Moved out of pipeline.mjs unchanged, so the Knockout pipeline can import them without importing the clearance
 // pipeline, which imports it back. pipeline.mjs exports them again for every importer that reads them there.
+import { randomUUID } from "node:crypto";
 import { CLIENT_ACTION } from "../shared/client-failure-note.mjs";
 import { batchMarkName } from "./mark-name.mjs";
 import { abbrev } from "./repair-contract.mjs";
@@ -120,7 +121,12 @@ export function clientNotStartedText(job, mark) {
 // every terminal failure to preserve. And per the payload stays OUT of the sentence — `whatsappText`
 // and the CLIENT body are untouched; the staff body gets it in its own <pre>, beside the verbatim reason
 // that body already quotes.
-export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, reasonDetail = null, reasonQuantity = null, capWait = null }) {
+//
+// `failureId` names THIS failure, minted when its packet is built: a run that is resumed and stops again writes a new
+// packet with a new id, and a writer that rewrites the same failure's packet passes the id it already holds. A notice
+// about a failure, and the record that its person was told, are bound to this id (notice-delivery.mjs), so word of
+// one failure never settles another.
+export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortReason, reasonVerbatim, sig, failClass, terminalKind, repairs = [], priorAttempts = 0, reasonDetail = null, reasonQuantity = null, capWait = null, failureId = null }) {
   const esc = escapeText;
   const detail = typeof reasonDetail === "string" && reasonDetail.trim() ? reasonDetail.trim() : null;
   const quantity = Number.isFinite(reasonQuantity) ? reasonQuantity : null;
@@ -249,6 +255,7 @@ export function buildFailurePacket({ runId, agent, job = {}, failedStage, shortR
     markName: job.markName ?? job.name ?? null, failedStage, reason: shortReason,
     reasonVerbatim, failureSignature: sig, failClass, terminalKind, repairs, recoveryAttempts: priorAttempts,
     reasonDetail: detail, reasonQuantity: quantity,
+    failureId: failureId ?? randomUUID(),
   };
 }
 
