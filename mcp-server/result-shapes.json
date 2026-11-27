@@ -747,7 +747,6 @@
               "reason",
               "resetsAt",
               "recoveryResumesAt",
-              "parkedKind",
               "sendPending",
               "sent",
               "channels"
@@ -913,12 +912,6 @@
                   "null"
                 ]
               },
-              "parkedKind": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
               "sendPending": {
                 "type": "boolean"
               },
@@ -1027,7 +1020,6 @@
               "deliveredAt",
               "resetsAt",
               "recoveryResumesAt",
-              "parkedKind",
               "sendPending",
               "sent",
               "channels"
@@ -1178,12 +1170,6 @@
                 ]
               },
               "recoveryResumesAt": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "parkedKind": {
                 "type": [
                   "string",
                   "null"

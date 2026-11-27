@@ -59,6 +59,7 @@ function stoppedRun(slug, packet) {
     { ts: "2026-11-27T07:00:00Z", event: "profile-store", detail: "profiles resolve from the configured store /srv/invented/config/profiles", store: "/srv/invented/config/profiles" },
     { ts: "2026-11-27T07:10:00Z", event: "stage", stage: "matter-frame", ok: true, attempts: 1, model: "invented-model", tokens: { input: 900, output: 200 }, wall: 41 },
     { ts: "2026-11-27T08:00:00Z", event: "attempt", stage: "register-probe", attempt: 1, ok: false, fail: `invalid_file:/srv/invented/run/report.md:missing:front-matter ${RECORDED}`, wall: 12 },
+    { ts: "2026-11-27T08:01:00Z", event: "failover", stage: "register-probe", attempt: 2 },
     { ts: "2026-11-27T09:00:00Z", event: "failed", stage: "register-probe", reason: RECORDED, terminalKind: "deterministic" },
   ].map((e) => JSON.stringify(e)).join("\n") + "\n");
   writeFileSync(driverDir(runDir, "register-probe.jsonl"), `${JSON.stringify({ attempt: 1, ok: false, fail: RECORDED, model: "invented-model", wall: 12, dispatch: "/srv/invented/run/_driver/register-probe.attempt1.dispatch.txt" })}\n`);
@@ -117,6 +118,7 @@ test("a session that sees every company reads a stopped run without the runner's
     assert.equal(row.state, "failed", "the failure stays visible");
     assert.equal(row.reasonRedacted, true);
     assert.equal(row.agent, config.defaultAgent, "the courier's routing stays");
+    assert.ok(!("terminalKind" in row) && !("failedStage" in row) && !("parkedKind" in row), "no row carries the engine's own classification");
   }
   assert.doesNotMatch(wire(runs), INTERNAL, "list_runs");
   assert.doesNotMatch(wire(runs), STOPPED_AT, "list_runs");
@@ -160,9 +162,14 @@ test("a stopped run's notice leaves the outbox doors in the approved words, whic
 test("a session that sees every company reads a stopped run's own logs as measured, and is not served the private record", async () => {
   const telemetry = await call("get_telemetry", { runId: OLDER, stage: "register-probe" });
   assert.doesNotMatch(wire(telemetry), INTERNAL, "get_telemetry");
+  // What its description promises (design, 2026-11-27): models, tokens, wall, failovers, and which attempts failed.
   const events = (await call("get_telemetry", { runId: OLDER })).structuredContent.runEvents;
-  assert.deepEqual(events.find((e) => e.event === "stage")?.tokens, { input: 900, output: 200 }, "the tokens a step spent stay");
-  assert.equal(events.find((e) => e.event === "attempt")?.failed, true, "a failed attempt keeps the fact");
+  const step = events.find((e) => e.event === "stage");
+  assert.equal(step?.model, "invented-model", "the model a step ran on");
+  assert.deepEqual(step?.tokens, { input: 900, output: 200 }, "the tokens a step spent");
+  assert.equal(step?.wall, 41, "the wall time a step took");
+  assert.deepEqual(events.find((e) => e.event === "failover"), { ts: "2026-11-27T08:01:00Z", event: "failover", stage: "register-probe", attempt: 2 }, "a failover");
+  assert.equal(events.find((e) => e.event === "attempt")?.failed, true, "which attempt failed");
   assert.equal(telemetry.structuredContent.attempts[0].wall, 12, "an attempt's measured time stays");
   for (const [name, args] of [["get_coverage", {}], ["trace", { target: "verdict" }], ["run_changes", {}],
     ["read_artifact", { name: "status.json" }], ["read_artifact", { name: "run.jsonl" }]]) {
