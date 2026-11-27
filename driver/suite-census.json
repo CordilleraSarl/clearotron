@@ -953,7 +953,7 @@
         },
         "a-failure-notice-reaches-the-route-the-install-configures.test.mjs": {
           "tests": 19,
-          "asserts": 129,
+          "asserts": 130,
           "skips": 7,
           "todos": 0
         },
@@ -8482,8 +8482,8 @@
           "todos": 0
         },
         "the-operator-is-told-where-failure-notices-go.test.mjs": {
-          "tests": 4,
-          "asserts": 23,
+          "tests": 5,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },

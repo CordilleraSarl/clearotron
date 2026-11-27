@@ -91,14 +91,47 @@ test("status, run as the person running the install, reads the install's own rec
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("the notices command answers from a packaged install's own launcher, reading the record status pointed at", () => {
+// The packaged command, as the person running the install meets it: no record field, recorded reason or code reaches them.
+const notices = (home, ...args) => spawnSync(process.execPath, [join(REPO, "bin", "clearotron.mjs"), "notices", ...args],
+  { env: { ...cleanEnv(home), CLEAROTRON_OUTBOX_DIR: join(home, "trademark", "outbox") }, encoding: "utf8" });
+const INTERNAL = /ETIMEDOUT|ECONNREFUSED|lastDetail|retriesByItself|nextAction|not-a-delivery-id|no-such-notice|not-reconcilable|superseded-no-retry|a-pass-is-running|"state"|\{/;
+
+test("notices list, from the packaged launcher, after a receiver timeout: the approved lines and nothing of the record", () => {
   const home = install();
   try {
-    const env = { ...cleanEnv(home), CLEAROTRON_OUTBOX_DIR: join(home, "trademark", "outbox") };
-    const list = spawnSync(process.execPath, [join(REPO, "bin", "clearotron.mjs"), "notices", "list"], { env, encoding: "utf8" });
-    assert.equal(list.status, 0, list.stderr);
-    assert.deepEqual(JSON.parse(list.stdout).map((n) => n.id).sort(), ["aaaaaaaaaaaaaaaaaaaaaaaa", "bbbbbbbbbbbbbbbbbbbbbbbb"]);
-    const absent = spawnSync(process.execPath, [join(REPO, "bin", "clearotron.mjs"), "notices", "absent", "bbbbbbbbbbbbbbbbbbbbbbbb"], { env, encoding: "utf8" });
-    assert.deepEqual([absent.status, JSON.parse(absent.stdout).state], [0, "failed"]);
+    // The retried notice's last attempt was a receiver timeout, kept in the install's own record.
+    const recFile = join(home, "trademark", "outbox", "deliveries", "aaaaaaaaaaaaaaaaaaaaaaaa.json");
+    writeFileSync(recFile, JSON.stringify({ id: "aaaaaaaaaaaaaaaaaaaaaaaa", kind: "run-stopped", audience: "operator", recipient: { role: "operator" },
+      state: "failed", attempts: [{ at: "2026-11-27T05:00:00Z", outcome: "failed", detail: "ETIMEDOUT" }], updatedAt: "2026-11-27T05:00:00Z", nextAttemptAt: null,
+      diagnostic: { reason: "an invented recorded reason naming the queue" } }));
+    const r = notices(home, "list");
+    assert.equal(r.status, 0, r.stderr);
+    // The command in the install's own form: a bare `clearotron` packaged, or the checkout's `cd … && npx clearotron`.
+    assert.deepEqual(r.stdout.trim().split("\n").map((l) => l.replace(/(If (?:received|absent): +).*?clearotron notices/, "$1clearotron notices")), [
+      "1 failure notice awaits automatic retry.",
+      "Check whether the receiver accepted notice bbbbbbbbbbbbbbbbbbbbbbbb.",
+      "  If received: clearotron notices received bbbbbbbbbbbbbbbbbbbbbbbb",
+      "  If absent:   clearotron notices absent bbbbbbbbbbbbbbbbbbbbbbbb"]);
+    assert.doesNotMatch(r.stdout + r.stderr, INTERNAL);
+    assert.doesNotMatch(r.stdout + r.stderr, /invented recorded reason/);
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
+test("an answer the record does not take exits 4 and shows only what still waits; an answer it takes changes what waits", () => {
+  const home = install();
+  try {
+    for (const [verb, id] of [["received", "cccccccccccccccccccccccc"], ["absent", "0".repeat(24)], ["absent", "not-an-id"]]) {
+      const r = notices(home, verb, id);
+      assert.equal(r.status, 4, `${verb} ${id} was taken`);
+      assert.doesNotMatch(r.stdout + r.stderr, INTERNAL, `${verb} ${id} showed internal text`);
+      assert.match(r.stdout, /Check whether the receiver accepted notice bbbbbbbbbbbbbbbbbbbbbbbb\./);
+    }
+    const taken = notices(home, "absent", "bbbbbbbbbbbbbbbbbbbbbbbb");
+    assert.equal(taken.status, 0, taken.stderr);
+    assert.match(taken.stdout, /^2 failure notices await automatic retry\.$/m, "the released notice did not join the automatic retries");
+    assert.doesNotMatch(taken.stdout + taken.stderr, INTERNAL);
+    const usage = notices(home, "unknown");
+    assert.equal(usage.status, 2);
+    assert.match(usage.stderr.trim(), /clearotron notices list \| received <id> \| absent <id>$/);
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
