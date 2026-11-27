@@ -262,8 +262,12 @@ test("pure-MCP integrator loop: list_outbox_events -> get_delivery_packet -> ack
     const kinds = Object.fromEntries(l.events.map((e) => [e.file, e.kind]));
     assert.equal(kinds["tmpx-loop-jade-z.pending"], "delivered", "legacy marker normalized");
     assert.equal(kinds["intake-badjob.failed.pending"], "intake-rejected", "JSON packet passthrough");
+    // An earlier version wrote the check's own words into the packet; the door hands it on in today's (design,
+    // 2026-11-27): the not-started notice, with the routing it came with.
     const intake = l.events.find((e) => e.kind === "intake-rejected");
-    assert.deepEqual(intake.errors, ["missing mark name(s)"], "packet content is self-contained");
+    assert.deepEqual(intake.errors, [], "the check's words stay in the queue's record");
+    assert.match(intake.text, /^The search for badjob was not started, and nothing was delivered\./);
+    assert.equal(intake.forwarder, "jordan", "the routing a courier sends by stays");
 
     // get_delivery_packet: full payload + send-state for a delivered run
     const { runDir, runId } = makeRun({ slug: "tmpx-loop", codename: "2026-07-16-jade-z", state: "delivered" });

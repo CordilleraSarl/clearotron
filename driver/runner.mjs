@@ -52,7 +52,8 @@ import { writeOutboxPacket } from "./outbox.mjs";
 import { deliverNotices, markRouteSeen } from "./notice-delivery.mjs";   // failure notices through the route an install configures
 import { maybeCheckEngine } from "./engine/health.mjs";   // the engine proven between jobs, on a tick with nothing to run
 import { engineCommit } from "./engine-build.mjs";
-import { clientNotStartedText } from "./run-outcome.mjs";
+import { clientNotStartedText, duplicateNoticeText } from "./run-outcome.mjs";
+import { plainOlderOutboxPackets } from "./outbox-notices.mjs";   // an earlier version's packets, rewritten before delivery
 import { writeRunStatus, terminalRunState } from "./progress.mjs";   // A5 — grace-exit park + reclaim-bound terminal go through the guarded status writer; terminalRunState is the run record's own terminal vocabulary (2155)
 import { identitySeed } from "./progress.mjs";   // — the same stamp a run seeds, for the process that runs them
 import { writeDrainerStamp } from "./drainer-identity.mjs";   // — deploy health cannot interrogate a running process; it says so itself
@@ -661,7 +662,7 @@ async function duplicateNotify(agentId, base, job, prior = null, sig = null, sho
   // ACCOUNT (design, 2026-11-26), and only as fields: its reference and when it was recorded go to a requester who may
   // see that order, and to nobody else.
   const when = shown && prior?.ts ? new Date(prior.ts).toISOString() : null;
-  const text = `This order was flagged as a duplicate. Order reference: ${base}`;
+  const text = duplicateNoticeText(base);
   const p = writeOutboxPacket(`intake-${base}.duplicate`, {
     kind: "duplicate-skipped", base, agent: agentId,
     ...noticeAccount(job),
@@ -2584,6 +2585,9 @@ if (isEntrypoint(import.meta.url)) {
     argv: process.argv.slice(1).join(" "),
   });
 
+  // An earlier version's outbox files hold only their notice and routing before anything is delivered (design,
+  // 2026-11-27): the file leaves the engine, and an upgrade must not hand on the words it would no longer write.
+  plainOlderOutboxPackets();
   markRouteSeen();   // before the drain, so a failure in it is owed its notice
   await main({ once: !watching });
   // A single drain ends with one notice pass, idle or not: the systemd timer is this deployment's only clock, and a

@@ -27,7 +27,7 @@ import {
   ListPromptsRequestSchema, GetPromptRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { existsSync, readdirSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join, basename, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { enumerateRuns, queuedOrders, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor, unreadableRunsReason } from "./lib/runs.mjs";
@@ -80,6 +80,7 @@ import { authorize, visibleTools, USER_ARTIFACTS, ACCOUNT_ARTIFACTS, accountMayR
 // this file already loads, so there is nothing here for a lazy import to save.
 import { accountRun, accountTrace, accountTimeline, accountFinding, accountFindingList,
   accountWhatIfPlan, accountWhatIfQueued, accountWhatIfResult, CLIENT_FAILURE_NOTE as clientFailureNote } from "./lib/audit-view.mjs";
+import { coverageView, measuredRow, recordText, traceView } from "./lib/run-record-view.mjs";   // the run's own record, as a connector may hand it on
 import { outputSchemaFor, structuredResult, structuredRefusal } from "./lib/result-shapes.mjs";
 import { withDocumentReads } from "./lib/document-reads.mjs";   // which report document version a call read   // each tool's declared result (mcp-server/result-shapes.json)
 import { scrubMarkdown, scrubBody, scrubFrontMatter, scrubCards } from "./lib/scrub.mjs";
@@ -117,7 +118,29 @@ function mustRun(runId) {
   return run;
 }
 
+// THE RUN'S PRIVATE RECORD IS NOT ONE OF ITS DOCUMENTS (design, 2026-11-27). Under `_driver/` the engine keeps its own
+// record of the run: the failure packet, the repairs it tried, the checks that refused, the delivery routing and the
+// per-attempt logs. What a connector returns is user output, with full access as without, so it serves from there only
+// what a reader asks for by name and can use: the event log, as measured (lib/run-record-view.mjs), and the register
+// counts and the filings behind them. Default deny, so a file the engine adds there later is served by no door.
+// Every document at the run's root is served as before; `status.json` is handed on as measured too.
+function servable(run, path) {
+  if (!path) return null;
+  const P = paths(run.runDir);
+  if (!path.startsWith(driverDir(run.runDir) + sep)) return path;
+  return [P.run, P.registerCounts, P.registerRecords].includes(path) ? path : null;
+}
+/** A served file's text: the run's own record as measured, every document as written. */
+function servedText(run, path) {
+  const text = readCapped(path);
+  if (path === paths(run.runDir).run) return recordText("run.jsonl", text);
+  if (path === join(run.runDir, "status.json")) return recordText("status.json", text);
+  return text;
+}
 function artifactPath(run, name) {
+  return servable(run, resolveArtifactPath(run, name));
+}
+function resolveArtifactPath(run, name) {
   const { P, runDir } = run;
   if (name === "status.json") return join(runDir, "status.json");
   // THE KNOCKOUT TABLE IS TERMINAL ON A KNOCKOUT, and both halves of that matter.
@@ -146,9 +169,10 @@ function listArtifacts(run) {
   // The error message a caller sees when a name does not resolve is built from this list, so on a knockout
   // it has to name the knockout's own artifacts — otherwise the tool refuses a name and then suggests
   // eleven documents this product does not write.
-  if (isKnockoutRun(run)) return knockoutArtifacts(run).filter((a) => a.exists).map(({ name, file }) => ({ name, file }));
+  if (isKnockoutRun(run)) return knockoutArtifacts(run).filter((a) => a.exists && (!resolveArtifactPath(run, a.name) || artifactPath(run, a.name)))
+    .map(({ name, file }) => ({ name, file }));
   const { P } = run; const out = [];
-  for (const [k, v] of Object.entries(P)) { if (k === "runDir" || typeof v === "function") continue; if (existsSync(v)) out.push({ name: k, file: basename(v) }); }
+  for (const [k, v] of Object.entries(P)) { if (k === "runDir" || typeof v === "function" || !servable(run, v)) continue; if (existsSync(v)) out.push({ name: k, file: basename(v) }); }
   for (const ax of REGISTER_AXES) { const p = P.registerUnit(ax); if (existsSync(p)) out.push({ name: `registerUnit:${ax}`, file: basename(p) }); }
   if (existsSync(join(run.runDir, "status.json"))) out.push({ name: "status.json", file: "status.json" });
   if (existsSync(paths(run.runDir).run)) out.push({ name: "run.jsonl", file: "_driver/run.jsonl" });
@@ -230,11 +254,13 @@ function runSummary(run) {
     markName: run.markName, ref: run.ref, classes: run.classes,
     step: s.stepN ? `${s.stepN}/${s.stepTotal} ${s.stepLabel ?? ""}`.trim() : null,
     startedAt: run.startedAt, updatedAt: run.updatedAt, deliveredAt: run.deliveredAt,
-    failedStage: run.failedStage, reason: run.reason,
+    // A failed run's stage and the kind it ended on are the run's own record, never a row (design, 2026-11-27): the
+    // state says it failed, and `reason` is one sentence for every session (presentForPrincipal).
+    reason: run.reason,
     resetsAt: run.resetsAt ?? s.resetsAt ?? null,   // when state === "postponed": the cap-reset / auto-resume time
     recoveryResumesAt: run.recoveryResumesAt ?? s.recoveryResumesAt ?? null,   // when state === "recovering": the backoff clock (A4 split)
-    parkedKind: run.parkedKind ?? s.parkedKind ?? null,     // when state === "parked-for-human": why (grace-exit)
-    terminalKind: run.terminalKind ?? s.terminalKind ?? null,   // when state === "failed": why it ended (invalid-artifact-loop | reclaim-exhausted | …)
+    // Why a parked run was parked is the engine's own classification, kept in its record (design, 2026-11-27): the
+    // state says it is parked and resumes on the next activation.
     // Handoff-mode delivery state (2026-07-10 fix): the driver has no gateway tools, so an agent turn sends
     // the packet and marks it here. This is the ONE place that state should be checked from. Previously this
     // summary omitted sendPending entirely, so callers fell back to guessing a run-dir path from prose and
@@ -268,7 +294,7 @@ function queuedSummary(o) {
     markName: o.markName, ref: o.ref, classes: o.classes,
     step: o.step,
     startedAt: null, updatedAt: o.queuedAt, deliveredAt: null,
-    failedStage: null, reason: null, resetsAt: null, recoveryResumesAt: null, parkedKind: null, terminalKind: null,
+    reason: null, resetsAt: null, recoveryResumesAt: null,
     sendPending: false, sent: false,
     channels: { email: none, whatsapp: none },
   };
@@ -430,7 +456,7 @@ const tools = {
     const path = artifactPath(run, name);
     if (!path) throw new Error(`artifact "${name}" not recognized for ${runId}. Known: ${listArtifacts(run).map((a) => a.name).join(", ")}`);
     if (!existsSync(path)) return { name, file: basename(path), exists: false };
-    const text = readCapped(path);
+    const text = servedText(run, path);   // the run's own record is handed on as measured (lib/run-record-view.mjs)
     const hint = name === "report" ? { _note: BRIEFING_NOTE } : {};   // one report — the plain-language layer
     if (frontMatterOnly) return { ...hint, name, frontMatter: parseFront(text).fm };
     if (section) { const secs = parseSections(parseFront(text).body); return { ...hint, name, section, text: secs[section] ?? `(section "${section}" not found; available: ${Object.keys(secs).join(", ")})` }; }
@@ -539,7 +565,7 @@ const tools = {
     for (const name of names) {
       const path = artifactPath(run, name);
       if (!path || !existsSync(path)) continue;
-      let text; try { text = readCapped(path); } catch { continue; }
+      let text; try { text = servedText(run, path); } catch { continue; }
       const lines = text.split("\n");
       for (let i = 0; i < lines.length; i++) {
         const score = scoreLine(lines[i].toLowerCase(), tokens, mode, rawLower);
@@ -633,7 +659,7 @@ const tools = {
         for (const name of names) {
           const path = artifactPath(run, name);
           if (!path || !existsSync(path)) continue;
-          let text; try { text = readCapped(path); } catch { continue; }
+          let text; try { text = servedText(run, path); } catch { continue; }
           const lines = text.split("\n");
           for (let i = 0; i < lines.length; i++) {
             const score = scoreLine(lines[i].toLowerCase(), tokens, mode, rawLower);
@@ -718,7 +744,7 @@ const TOOL_DEFS = [
   { name: "brief", description: "START HERE for any 'what do you have on X / what did the search find' question — ONE plain-language briefing of a run, in the client-voiced wording (which search product this run was, overall risk in plain words, each conflict in 1–2 plain sentences, any conditions on the result). Facts, never advice. No internal stage names, no risk-formula codes, no model names. Reach for the audit tools (get_run, trace, decision_timeline, get_telemetry) only when the user asks HOW the system reached a conclusion.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },
   { name: "list_runs", description: "List the searches this session can see (in progress and finished), newest first. A session may hold more than one client, so the list is NOT one client's: every row names the client it was run for, and the project where there is one. TO FIND ONE CLIENT'S SEARCHES, pass `mark` with the client's name — the same name-shaped filter reads the client and the project as well as the mark. TO FIND A SEARCH BY THE NAME IT CLEARED, pass `mark` — the stored identifier is a longer prefixed slug a client has never seen, so a bare mark name will not match `slug`. If a filtered call comes back empty, list unfiltered and read down the mark names before telling anyone there is nothing there. States: 'postponed' = paused on a provider cap and resuming by itself (resetsAt); 'recovering' = backing off and retrying (recoveryResumesAt); 'parked-for-human' = interrupted mid-search, resumes on the next activation. sendPending:true is the authoritative list of finished searches still owed their delivery notification. Follow up with brief for a plain-language summary of one search.", inputSchema: { type: "object", properties: { agent: { type: "string" }, state: { type: "string", enum: [...RUN_STATES] }, mark: { type: "string", description: "Find a search by NAME: the mark it cleared, the client it was run for, the project it was run under, or the identifier — case-insensitively, on part of the word. This is the parameter a name-shaped question wants, whichever of those names the asker holds." }, slug: { type: "string", description: "EXACT identifier match, for a caller that already holds one. A mark name is not a slug — use `mark`." }, sendPending: { type: "boolean", description: "true = only searches still owed a delivery notification; false = only already-settled ones." }, limit: { type: "number" } } } },
   { name: "list_profiles", description: "List the customer ACCOUNTS the firm runs clearotron clearances for (key + name + industry + their PROJECTS) — the roster the intake step resolves a job's profileKey (and optional projectKey) against. profileKey selects that customer's marketplaces, default classes/jurisdictions, report format and risk posture; a project (spec 62) is an engagement UNDER a customer that overlays its own marketplaces/classes/sector/posture. Resolve by JUDGMENT (explicit name, misspelling, or implicit reference); OMIT profileKey for a new/unknown customer (uses the neutral generic profile — a customer who does not exist here yet never blocks a search; tell the requester it is running under the neutral profile, and that their own company can be set up in the portal if they want its framework, territories and marketplaces applied instead); set projectKey only when the request names a specific project in that customer's projects[], else OMIT it (runs on the customer profile); never pick a profile from the sender's email domain. Read-only.", inputSchema: { type: "object", properties: {} } },
-  { name: "get_run", description: "ENGINEERING/AUDIT view — full run mechanics: status, every pipeline stage (trigger/outcome), failover facts, artifact validity, and a coverage summary. Use when the user asks how the run executed; for 'what did it find', call brief instead.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },
+  { name: "get_run", description: "What actually happened during this search: which steps ran, in what order, what each produced, whether anything was retried, and where it stands now. Use it when the user asks how the search was carried out; for what it found, call brief instead.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },
   { name: "read_artifact", description: "Read a run artifact's raw text (or one '# Section', or its front-matter). For briefing a person, the report is the plain-language layer; the rest are internal working documents. Names: report, audit, narrative, registerFindings, commonLaw, placement, matterContext, variantManifest, skepticFlags, seniorEyeReview, caseLaw, clientSummary (internal cover-note source; ops only), a register axis (e.g. primary-sweep), status.json, run.jsonl.", inputSchema: { type: "object", properties: { ...runIdProp, name: { type: "string" }, section: { type: "string", description: "Return only this '# Section'." }, frontMatterOnly: { type: "boolean" } }, required: ["runId", "name"] } },
   { name: "list_evidence", description: "The records this search considered — every register and common-law entry, including ones the report does not name individually. Each carries the mark, owner and country, the classes, the register status, the source link, whether the provider record was actually retrieved (`retrieved`), and `superseded: true` if a later pass withdrew it. Use this to answer 'what exactly did you find, and who owns it?'. Filter with layer: register | common-law.", inputSchema: { type: "object", properties: { ...runIdProp, layer: { type: "string", enum: ["register", "common-law"] } }, required: ["runId"] } },
   { name: "list_searches", description: "What the search looked for and where — the searches that came back empty as well as the ones that surfaced something. Each row carries the term, the match shapes tried (exact, fuzzy, phonetic, transliteration…), the classes and jurisdictions, the register office where one was named, and the outcome (no-hit | found | out-of-scope | screened-out | excluded-own-rights | negligible). This is the defensibility record: proof of where the search looked and found nothing. Filter by outcome.", inputSchema: { type: "object", properties: { ...runIdProp, outcome: { type: "string", enum: ["no-hit", "found", "out-of-scope", "screened-out", "excluded-own-rights", "negligible", "recorded"] } }, required: ["runId"] } },
@@ -726,11 +752,11 @@ const TOOL_DEFS = [
   { name: "list_findings", description: "Structured findings from the deterministic audit. kind: findings (default) | negatives | audit (audit-trail). Filter by sourceLayer (Register/Common-law). Pass group (on-field/off-field/out-of-scope) to get the curated report cards instead — the cards' one-liners are already plain-language.", inputSchema: { type: "object", properties: { ...runIdProp, kind: { type: "string", enum: ["findings", "negatives", "audit"] }, sourceLayer: { type: "string" }, group: { type: "string", enum: ["on-field", "off-field", "out-of-scope"] } }, required: ["runId"] } },
   { name: "get_finding", description: "One finding/negative/audit-trail record by id (F#, NR#, AT#). When a cited register record has saved goods or services, `goodsAsRegistered` gives the register’s wording in its original language, with the provider’s English translation where available.", inputSchema: { type: "object", properties: { ...runIdProp, id: { type: "string" } }, required: ["runId", "id"] } },
   { name: "trace", description: "ENGINEERING/AUDIT view — HOW a conclusion was reached; use only when the user asks how/why, not for briefing findings. Walks the full logic flow from any target (a stage, an artifact name, a finding id, or 'verdict') back through the stage that emitted it (and whether a failover occurred), its inputs (with sha-at-consumption vs now), the audit-trail rationale, search terms + record URL, skeptic escalations, and the refutation verdict. Pass shallow:true for a fast skeleton (stage→input lineage + verdict only; skips the findings rebuild and the live provider-usage tally).", inputSchema: { type: "object", properties: { ...runIdProp, target: { type: "string", description: "stage | artifact | finding id (F#/NR#/AT#) | 'verdict' | a mark/owner substring" }, depth: { type: "number", description: "upstream recursion depth (default 2)" }, shallow: { type: "boolean", description: "Fast skeleton: lineage + verdict only, skipping the slow enrichments. Use when a full trace is slow or you only need the chain." } }, required: ["runId", "target"] } },
-  { name: "get_telemetry", description: "ENGINEERING/AUDIT view — per-run + per-stage execution telemetry (models, tokens, wall, failovers, fail reasons) from run.jsonl + the per-attempt logs. The ONLY tool that reports model identity — keep model names out of answers unless explicitly asked. Pass stage (+axis) to focus.", inputSchema: { type: "object", properties: { ...runIdProp, stage: { type: "string" }, axis: { type: "string" } }, required: ["runId"] } },
+  { name: "get_telemetry", description: "ENGINEERING/AUDIT view — per-run + per-stage execution telemetry (models, tokens, wall, failovers, and which attempts failed) from run.jsonl + the per-attempt logs. The ONLY tool that reports model identity — keep model names out of answers unless explicitly asked. Pass stage (+axis) to focus.", inputSchema: { type: "object", properties: { ...runIdProp, stage: { type: "string" }, axis: { type: "string" } }, required: ["runId"] } },
   { name: "get_provider_usage", description: "ENGINEERING/AUDIT view — billed register-search provider call counts for the run, RECOMPUTED live from the ledger (more correct than the cached value) with a drift/low-confidence flag.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },
   { name: "get_coverage", description: "What was searched vs what's a gap: per-register-axis presence/validity, the coverage-ledger marker, negative-results count, and per-artifact validity.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },
   { name: "search", description: "Keyword search across one run's artifacts (single-run scope), ranked. mode 'all' (default) = every query word must appear on the line, any order (so 'MYRKUR similar mark conflict' matches a line about all four); 'any' = ≥1 word, ranked by how many; 'phrase' = the exact substring (old behaviour). Returns {artifact, line, score, snippet}. Optional kind to scope to one artifact.", inputSchema: { type: "object", properties: { ...runIdProp, query: { type: "string" }, kind: { type: "string" }, mode: { type: "string", enum: ["all", "any", "phrase"] }, limit: { type: "number" } }, required: ["runId", "query"] } },
-  { name: "decision_timeline", description: "ENGINEERING/AUDIT view — the run's DECISION timeline: an ordered milestone list projected from the event log — stages (with trigger and a 'changedFromPrevious' marker when a stage was recomputed), skeptic escalations (with the reason), the verdict(s) (with the reviewer's head note), screen-gates, and the terminal outcome. Answers 'how did the verdict evolve?' in one call; for 'what did it find', call brief instead.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },
+  { name: "decision_timeline", description: "The search's decisions as a dated list: steps completed and recomputed, escalations and why, the verdict as it evolved, the screening gate, and the outcome. Answers 'how did the verdict change?' in one call; for what it found, call brief instead.", inputSchema: { type: "object", properties: { ...runIdProp }, required: ["runId"] } },
   { name: "run_changes", description: "Change-feed for monitoring a live run: the timeline events since a timestamp, plus a cursor to poll with. MCP has no push, so poll again with since=cursor. Optional kinds[] to filter event kinds (e.g. ['verdict','skeptic-escalation','failed']).", inputSchema: { type: "object", properties: { ...runIdProp, since: { type: "string", description: "Poll cursor — a stable sequence number from a prior call's `cursor` (preferred), OR an ISO timestamp for the first call. Returns only newer events; omit for the full timeline." }, kinds: { type: "array", items: { type: "string" }, description: "Optional event-kind filter." } }, required: ["runId"] } },
   { name: "diff_artifact", description: "Diff two versions of an artifact (what actually changed between them). Versions exist only when something snapshotted them — an in-place re-dispatch (_history) or a what-if experiment (_experiments); the automated escalation/correction overwrites in place, so a normal run has only 'canonical' and there's nothing to diff (reported honestly). Defaults: a=canonical, b=newest snapshot.", inputSchema: { type: "object", properties: { ...runIdProp, name: { type: "string", description: "Artifact: registerFindings, narrative, report, placement, a register axis (e.g. primary-sweep), …" }, a: { type: "string", description: "ref for THIS run: canonical | _history/<dir> | _experiments/<dir> (must be a real snapshot of this artifact; absolute/`..` paths are rejected). Default canonical." }, b: { type: "string", description: "ref (same grammar as a). Default = newest _history snapshot for this artifact." }, axis: { type: "string", description: "Required (and validated against the known axes) only if name is a bare 'register-unit'." } }, required: ["runId", "name"] } },
   { name: "search_runs", description: "Cross-run search across ALL runs (in-flight + archived) — e.g. 'has the MYRK- root shown up in prior clearances?'. scope: findings (default; the mark/owner/search-term columns — cheapest), audit, key-artifacts (report+registerFindings+commonLaw+narrative), or all-artifacts (full text, most expensive). Same ranked all|any|phrase modes as search. Capped by maxRuns.", inputSchema: { type: "object", properties: { query: { type: "string" }, mode: { type: "string", enum: ["all", "any", "phrase"] }, scope: { type: "string", enum: ["findings", "audit", "key-artifacts", "all-artifacts"] }, agent: { type: "string" }, state: { type: "string", enum: ["running", "delivered", "failed", "postponed", "recovering", "parked-for-human", "cancelled"] }, slug: { type: "string" }, maxRuns: { type: "number" }, limit: { type: "number" } }, required: ["query"] } },
@@ -747,7 +773,7 @@ const TOOL_DEFS = [
   { name: "stop_run", description: "OPS-ONLY. Cancel a run. Pass id to remove a not-yet-claimed queued job (a real cancel, no spend). Pass runId to file a cancel request on a started run. By default the cancel is COOPERATIVE — the sentinel is written and a turn already in flight is allowed to finish, which has no deadline: a reasoning turn can run for tens of minutes. Add immediate:true to also end that turn: it is sent a stop, anything of it still running a few seconds later is killed, and the answer says the turn ended only once it has seen it end. If it could not be ended, the run ends at its next step boundary, and the answer says that instead.", inputSchema: { type: "object", properties: { agent: { type: "string" }, id: { type: "string", description: "A queued job id (from start_run) — dequeues before the runner claims it." }, runId: { type: "string", description: "A started run's runId — files a cancel sentinel." }, immediate: { type: "boolean", description: "Stop NOW instead of at the next step boundary. The cancel sentinel is written FIRST and then the run's own recorded engine turn is stopped, in that order — the sentinel is what makes the record clean, so the terminal names the stage, the actor and the request time instead of leaving a run that reads as still running. The turn is sent SIGTERM (to its whole process group when it leads one, as both engines spawn it, so the tools it started are reached too), watched, and sent SIGKILL if anything of it is still running when the grace runs out; the answer waits for that, which takes seconds. A turn that is stopped loses its step's work; everything already recorded is kept. Sending the stop is not the same as the turn ending, and the answer claims the second only when it has seen it (immediate.ended). Falls back to the boundary stop, and SAYS SO in the answer, when there is no live turn to signal — a run between steps, or one whose turn has already exited — or when the turn was still there after the SIGKILL. The answer states which of the two actually happened."}, onBehalfOf: { type: "string", description: "The identifier of a human this caller has itself verified. RECORDED BESIDE the token's own principal, never instead of it — a stop by the portal for alice@x is written `portal:alice@x`, so an asserted name is never mistaken for a proved one. Bare identifiers only; anything else is dropped." } } } },
   { name: "server_info", description: "The AGPL §13 source offer: this server's name, version, licence, source repository and the COMMIT IT IS RUNNING. Callable by every session kind — the offer is owed to whoever interacts with the service. Reads no run and no account data.", inputSchema: { type: "object", properties: {} } },
   { name: "list_outbox_events", description: "Integrator discovery read (docs/DELIVERY.md): every pending outbox event — delivered markers plus the self-contained run-failed / intake-rejected / duplicate-skipped / late-bind-ack packets. Route each, then settle delivered and run-failed events with mark_sent, and every other kind with ack_event.", inputSchema: { type: "object", properties: {} } },
-  { name: "get_delivery_packet", description: "The run's send payload: _driver/delivery.json (subject, recipient routing, verbatim emailBodyHtml, whatsapp line) and/or failure.json, plus sendPending/.sent state. NOT exposed to client tokens.", inputSchema: { type: "object", properties: { runId: { type: "string" } }, required: ["runId"] } },
+  { name: "get_delivery_packet", description: "Returns the delivery message, the failure notice, or both, with the subject, recipient routing, email and messaging text, and whether sending is pending or complete. Requires delivery access.", inputSchema: { type: "object", properties: { runId: { type: "string" } }, required: ["runId"] } },
   { name: "ack_event", description: "OPS-ONLY. Consume ONE routed outbox event by its file name (from list_outbox_events). Idempotent (ok+alreadyGone). Delivered and run-failed events are settled by mark_sent instead.", inputSchema: { type: "object", properties: { file: { type: "string" } }, required: ["file"] } },
   { name: "mark_sent", description: "OPS-ONLY. Integrator write-back after sending a delivered run's packet (docs/DELIVERY.md step 3): writes the .sent idempotency guard, clears status.sendPending, removes the outbox marker. Idempotent — an already-sent run returns ok+alreadySent. SETTLING REQUIRES EVIDENCE: pass messageId or attestation, or the call refuses. Never call this for a send that was blocked or failed — leave the marker so the send stays owed.", inputSchema: { type: "object", properties: { runId: { type: "string" }, messageId: { type: "string", description: "The sent email's messageId — the send receipt." }, attestation: { type: "string", description: "Out-of-band evidence when there is no messageId: an explicit statement of how the packet actually reached the reader (channel + when), recorded VERBATIM in .sent." } }, required: ["runId"] } },
   { name: "feed_context", description: "OPS-ONLY. Late-bind context onto a run: the applicant + exclusions (written as customer-bind.json, the pipeline's pre-start applicant bind). Use to resolve a customer-unknown run.", inputSchema: { type: "object", properties: { runId: { type: "string" }, customer: { type: "string" }, exclusions: { type: "array", items: { type: "string" } } }, required: ["runId"] } },
@@ -850,6 +876,8 @@ export function promptText(kind, name) {
 //
 // The readable-artifact lists are COMPUTED from the same sets authorize() enforces, never re-typed: a
 // hand-written list is how a description comes to advertise an artifact the gate refuses by name.
+// get_run and decision_timeline have no entry: every session reads them through the same projection and is told so in
+// the same words (design, 2026-11-27).
 const CLIENT_TOOL_TEXT = {
   read_artifact: (kind) =>
     `Read one of this search's documents, or a single "# Section" of one. "report" is the report itself — the plain-language layer, and the right answer to almost every question about what the search concluded. Readable here: ${[...(kind === "user" ? USER_ARTIFACTS : ACCOUNT_ARTIFACTS)].join(", ")}${kind === "user" ? "" : ', or one register pass as "registerUnit:<axis>". "commonLaw" carries the off-register use layer AND the meaning-and-connotation reading — read it before saying a search did not look at what a name means'}. Anything else on the search is internal and refused by name.`,
@@ -860,12 +888,8 @@ const CLIENT_TOOL_TEXT = {
   // rows carry their own, which is true whatever this session happens to hold.
   list_runs: () =>
     "Every search this session can see, newest first, in progress and finished. Each row says which client the search was run for, and which project where there is one — so a session acting for several clients can tell them apart without asking again. To find one client's searches, pass `mark` with that client's name; the same filter also matches the mark and the project, on part of the word, case-insensitively. If a filtered call comes back empty, list unfiltered and read down the rows before telling anyone there is nothing there. Follow up with brief for a plain-language summary of one search.",
-  get_run: () =>
-    "What actually happened during this search: which steps ran, in what order, what each produced, whether anything was retried, and where it stands now. Use it when the user asks how the search was carried out; for what it found, call brief instead.",
   trace: () =>
     "How a conclusion was reached. Give it a finding id, a document name or 'verdict' and it walks back through the step that produced it, the inputs that step read, the recorded rationale, the search terms and record link, any escalation, and the review that gated delivery. This is the drill-through for a conclusion being questioned — not for briefing findings. Pass shallow:true for the chain and verdict alone.",
-  decision_timeline: () =>
-    "The search's decisions as a dated list: steps completed and recomputed, escalations and why, the verdict as it evolved, the screening gate, and the outcome. Answers 'how did the verdict change?' in one call; for what it found, call brief instead.",
   plan_run: () =>
     "FREE PREVIEW — what a search WOULD do, spending nothing and starting nothing. Takes the SAME arguments as start_run and reports the search that resolved and where that came from (the request, the account default, a saved search, or the territories themselves), the territories and marketplaces that would actually be searched, the turnaround, and any blockers to put back to the requester. Show the result to them, then call start_run with the SAME arguments.",
   start_run: () =>
@@ -1081,7 +1105,7 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     if (!path || !existsSync(path)) throw new Error(`artifact not found: ${m[2]}`);
     // CLIENT VIEW ( R1): the Resources surface is a second door to the same bytes — it applies the
     // same client cut the read_artifact tool does, so a client cannot route around the scrub via a URI.
-    const text = readCapped(path);
+    const text = servedText(run, path);
     return { contents: [{ uri: req.params.uri, mimeType: mimeFor(path), text: CLIENT_KINDS.has(scope.kind) ? scrubMarkdown(text) : text }] };
   });
   return server;
@@ -1107,7 +1131,7 @@ export class UndeclaredPresentation extends Error {
 }
 
 export function presentForPrincipal(scope, name, result) {
-  if (!CLIENT_KINDS.has(scope?.kind)) return result;
+  if (!CLIENT_KINDS.has(scope?.kind)) return presentForEveryone(name, result);
 
   // — DEFAULT DENY, and it is the SHAPE that enforces it, not a longer if-chain.
   //
@@ -1162,8 +1186,8 @@ export function presentForPrincipal(scope, name, result) {
   // Run listings: a failure `reason` is the engine's raw stack (absolute paths, module names, provider
   // error text — pipeline writes String(e?.stack ?? e)). The portal already refuses to hand that to a
   // client browser; the MCP must refuse for the same reason, or the connector becomes the softer door to
-  // the same string. The client keeps what tells them something true — state, failedStage in product
-  // vocabulary, and a stable sentence — and loses the trace. `url` and `agent` are internal routing.
+  // the same string. The client keeps what tells them something true — the state and a stable sentence — and loses the
+  // trace and the stage it stopped at. `url` and `agent` are internal routing.
   // search_runs was in this branch and could never fire: it is neither clientSafe nor accountSafe, so
   // authorize() refuses it for both CLIENT_KINDS before dispatch ever reaches here. A dead branch inside
   // a security chokepoint reads as coverage that is not there, so it is gone rather than kept "just in
@@ -1174,6 +1198,32 @@ export function presentForPrincipal(scope, name, result) {
   // Not reachable: `declared === "scrub"` and every scrub tool is handled above, which the registry test
   // asserts in both directions. Refusing rather than returning keeps the property true if that ever slips.
   throw new UndeclaredPresentation(name);
+}
+
+// A SESSION THAT SEES EVERY COMPANY IS A PERSON TOO (design, 2026-11-27): what a connector returns to a person or their
+// assistant is user output, with full access as without. So a run's mechanics and its failure reason leave these
+// doors as they leave a company's: get_run and decision_timeline through the same projection, and a failed run in
+// list_runs with the same sentence. What it does not change is whose runs a session sees, and it keeps what an
+// operator's assistant routes by: a run's `agent` and its report's `url`. The full diagnostic stays in the run's own
+// record: the engineering doors only a full-access session reads hand on what it measured, not what it wrote.
+function presentForEveryone(name, result) {
+  if (name === "get_run") return accountRun(result, { brandName: BRAND.name });
+  if (name === "decision_timeline") return accountTimeline(result, { brandName: BRAND.name });
+  // The run's own record, read by the engineering doors: what was measured and what it belongs to, never the prose it was
+  // written in (lib/run-record-view.mjs). run_changes is decision_timeline polled, so it is told in the same rows.
+  if (name === "run_changes" && Array.isArray(result?.changes)) {
+    const changes = accountTimeline({ timeline: result.changes }, { brandName: BRAND.name }).timeline;
+    return { ...result, count: changes.length, changes };
+  }
+  if (name === "get_telemetry" && result && typeof result === "object")
+    return { ...result, runEvents: (result.runEvents ?? []).map(measuredRow), attempts: (result.attempts ?? []).map(measuredRow),
+      providerUsage: result.providerUsage ? measuredRow(result.providerUsage) : null };
+  if (name === "get_coverage") return coverageView(result);
+  if (name === "trace") return traceView(result);
+  if (name === "list_runs" && Array.isArray(result))
+    return result.map((r) => (r && typeof r === "object" && r.state === "failed"
+      ? { ...r, reason: CLIENT_FAILURE_NOTE, reasonRedacted: true } : r));
+  return result;
 }
 
 // ONE sentence, composed in lib/audit-view.mjs — get_run and decision_timeline hand a client the same

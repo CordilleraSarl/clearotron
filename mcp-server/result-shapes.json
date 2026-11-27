@@ -744,12 +744,9 @@
               "startedAt",
               "updatedAt",
               "deliveredAt",
-              "failedStage",
               "reason",
               "resetsAt",
               "recoveryResumesAt",
-              "parkedKind",
-              "terminalKind",
               "sendPending",
               "sent",
               "channels"
@@ -902,12 +899,6 @@
                   "null"
                 ]
               },
-              "failedStage": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
               "reason": {},
               "resetsAt": {
                 "type": [
@@ -916,18 +907,6 @@
                 ]
               },
               "recoveryResumesAt": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "parkedKind": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "terminalKind": {
                 "type": [
                   "string",
                   "null"
@@ -1000,6 +979,9 @@
                     }
                   }
                 }
+              },
+              "reasonRedacted": {
+                "const": true
               }
             }
           }
@@ -1036,11 +1018,8 @@
               "startedAt",
               "updatedAt",
               "deliveredAt",
-              "failedStage",
               "resetsAt",
               "recoveryResumesAt",
-              "parkedKind",
-              "terminalKind",
               "sendPending",
               "sent",
               "channels"
@@ -1181,12 +1160,6 @@
                   "null"
                 ]
               },
-              "failedStage": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
               "reason": {
                 "type": "string"
               },
@@ -1197,18 +1170,6 @@
                 ]
               },
               "recoveryResumesAt": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "parkedKind": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              },
-              "terminalKind": {
                 "type": [
                   "string",
                   "null"
@@ -1531,317 +1492,7 @@
     }
   },
   "get_run": {
-    "staff": {
-      "type": "object",
-      "required": [
-        "run",
-        "stages",
-        "failover",
-        "artifacts",
-        "coverageSummary"
-      ],
-      "additionalProperties": false,
-      "properties": {
-        "run": {
-          "type": "object",
-          "required": [
-            "runId",
-            "slug",
-            "codename",
-            "date",
-            "agent",
-            "client",
-            "project",
-            "product",
-            "state",
-            "location",
-            "tier",
-            "caption",
-            "url",
-            "markName",
-            "ref",
-            "classes",
-            "step",
-            "startedAt",
-            "updatedAt",
-            "deliveredAt",
-            "failedStage",
-            "reason",
-            "resetsAt",
-            "recoveryResumesAt",
-            "parkedKind",
-            "terminalKind",
-            "sendPending",
-            "sent",
-            "channels"
-          ],
-          "additionalProperties": false,
-          "properties": {
-            "demo": {
-              "type": "string"
-            },
-            "runId": {
-              "type": "string"
-            },
-            "slug": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "codename": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "date": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "agent": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "client": {
-              "type": "object",
-              "required": [
-                "key",
-                "name"
-              ],
-              "additionalProperties": false,
-              "properties": {
-                "key": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
-                },
-                "name": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
-                },
-                "known": {
-                  "const": false
-                },
-                "note": {
-                  "type": "string"
-                }
-              }
-            },
-            "project": {
-              "anyOf": [
-                {
-                  "type": "null"
-                },
-                {
-                  "type": "object",
-                  "required": [
-                    "key",
-                    "name"
-                  ],
-                  "additionalProperties": false,
-                  "properties": {
-                    "key": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    }
-                  }
-                }
-              ]
-            },
-            "product": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "state": {
-              "type": "string"
-            },
-            "location": {
-              "type": "string"
-            },
-            "tier": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "caption": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "url": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "markName": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "ref": {},
-            "classes": {},
-            "step": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "startedAt": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "updatedAt": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "deliveredAt": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "failedStage": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "reason": {},
-            "resetsAt": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "recoveryResumesAt": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "parkedKind": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "terminalKind": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "sendPending": {
-              "type": "boolean"
-            },
-            "sent": {
-              "type": "boolean"
-            },
-            "channels": {
-              "type": "object",
-              "required": [
-                "email",
-                "whatsapp"
-              ],
-              "additionalProperties": false,
-              "properties": {
-                "email": {
-                  "type": "object",
-                  "required": [
-                    "sent",
-                    "messageId",
-                    "sentAt"
-                  ],
-                  "additionalProperties": false,
-                  "properties": {
-                    "sent": {
-                      "type": "boolean"
-                    },
-                    "messageId": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "sentAt": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    }
-                  }
-                },
-                "whatsapp": {
-                  "type": "object",
-                  "required": [
-                    "sent",
-                    "messageId",
-                    "sentAt"
-                  ],
-                  "additionalProperties": false,
-                  "properties": {
-                    "sent": {
-                      "type": "boolean"
-                    },
-                    "messageId": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "sentAt": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "product": {
-          "const": "knockout"
-        },
-        "stages": {
-          "type": "array"
-        },
-        "failover": {
-          "type": "array"
-        },
-        "artifacts": {
-          "type": "array"
-        },
-        "coverageSummary": {
-          "type": "object"
-        }
-      }
-    },
-    "client": {
+    "all": {
       "type": "object",
       "required": [
         "run",
@@ -2079,49 +1730,7 @@
     }
   },
   "decision_timeline": {
-    "staff": {
-      "type": "object",
-      "required": [
-        "runId",
-        "state",
-        "tier",
-        "verdictHistory",
-        "timeline",
-        "riskLadderAvailable",
-        "note"
-      ],
-      "additionalProperties": false,
-      "properties": {
-        "runId": {
-          "type": "string"
-        },
-        "state": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "tier": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "verdictHistory": {
-          "type": "array"
-        },
-        "timeline": {
-          "type": "array"
-        },
-        "riskLadderAvailable": {
-          "type": "boolean"
-        },
-        "note": {
-          "type": "string"
-        }
-      }
-    },
-    "client": {
+    "all": {
       "type": "object",
       "required": [
         "runId",

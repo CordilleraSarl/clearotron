@@ -9,7 +9,6 @@ import { clientFailureNote } from "../shared/client-failure-note.mjs";
 import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { batchMarkName } from "./mark-name.mjs";
 import { resolveNumericSetting } from "./numeric-setting.mjs";
-import { seesEverything } from "./portal-access.mjs";
 import { reportsOf } from "./portal-report.mjs";
 import { stageNow } from "./progress.mjs";
 import { readArchivedSet } from "./publish/archive-tags.mjs";
@@ -589,15 +588,18 @@ export const concurrentRunsCap = () => {
 };
 
 export function forRole(runs, principal) {
-  // A person who sees everything reads failure reasons verbatim; everyone else gets the plain note. That redaction is the ONLY
-  // role-shaping left: the held-run suppression is retired (one report — a run you
-  // have rights to is always listed; the machine-QC record lives on the audit workbook).
-  if (seesEverything(principal)) return runs;
+  // EVERY PERSON GETS THE PLAIN NOTE, a person who sees everything included (design, 2026-11-27): a failed run's reason
+  // as the engine wrote it stays in the run's own record, and what this list returns is user output whoever reads it.
+  // `principal` still decides which runs are listed, upstream; it no longer decides what a failure says. The held-run
+  // suppression is retired too (one report — a run you have rights to is always listed; the machine-QC record lives on
+  // the audit workbook).
+  void principal;
   return runs.map((r) => {
     let out = r;
     // — the redaction must take `reasonDetail` with it. `reason` is replaced by a fixed note for a
     // client session; a second field carrying the engine's raw words would walk straight past that.
-    if (r.state === "failed") out = { ...out, reason: CLIENT_FAILURE_NOTE, reasonDetail: null, reasonRedacted: true };
+    // The stage it stopped at goes with them: the run's own record keeps it, and the screen says the run is not finished.
+    if (r.state === "failed") out = { ...out, reason: CLIENT_FAILURE_NOTE, reasonDetail: null, failedStage: null, reasonRedacted: true };
     return out;
   });
 }

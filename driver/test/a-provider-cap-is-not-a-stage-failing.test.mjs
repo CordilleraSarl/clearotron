@@ -184,16 +184,33 @@ test("the provider stating its own reset is said so, because a told time is not 
 // THE OTHER MEMBER, and the one that proves the branch did not simply replace the sentence: a REAL
 // outage still gets the outage words. capWaitFrom returns null for it by construction.
 test("a weather death with no cap park still reads as the outage it is", () => {
-  const body = packetFor({ capWait: null }).emailBodyHtml;
-  assert.match(body, /overloaded or unreachable/i);
-  assert.doesNotMatch(body, /usage cap/i);
-  assert.doesNotMatch(body, /subscription outcome/i);
+  const p = packetFor({ capWait: null });
+  // The notice a person reads claims no cap: it is the stopped sentence and the administrator sentence.
+  assert.doesNotMatch(p.emailBodyHtml + p.whatsappText, /usage cap|subscription outcome/i);
+  assert.match(p.whatsappText, /stopped before it finished, and nothing was delivered\. Please tell whoever administers this installation\.$/);
+  // The run's own record still names the outage.
+  assert.match(p.diagnostic.emailBodyHtml, /overloaded or unreachable/i);
+  assert.doesNotMatch(p.diagnostic.emailBodyHtml, /usage cap/i);
+  assert.equal(p.capWait, null, "no cap wait is recorded for a door to compose one from");
 });
 
 // AND A THIRD: the cap sentence is scoped to the weather terminal. A defect-lane death that somehow
 // carried a capWait must not be relabelled a subscription outcome — that would excuse a real defect.
 test("the cap sentence does not escape onto a defect-lane terminal", () => {
-  const body = packetFor({ terminalKind: "exhausted", capWait: { parks: 4, waitedMin: 300, statedResets: 0 } }).emailBodyHtml;
-  assert.doesNotMatch(body, /subscription outcome/i);
-  assert.match(body, /Automatic recovery is exhausted/i);
+  const p = packetFor({ terminalKind: "exhausted", capWait: { parks: 4, waitedMin: 300, statedResets: 0 } });
+  assert.doesNotMatch(p.emailBodyHtml + p.whatsappText, /subscription outcome/i);
+  assert.match(p.whatsappText, /Please tell whoever administers this installation\.$/);
+  assert.match(p.diagnostic.emailBodyHtml, /Automatic recovery is exhausted/i);
+  assert.equal(p.capWait, null, "a defect-lane packet records no cap wait for a door to compose one from");
+});
+
+// THE CAP SENTENCE IS THE NOTICE'S ONE RECOVERY ACTION when it applies (design, 2026-11-27): it ends "Re-trigger once
+// the cap has reset.", so the administrator sentence is not added, and the messaging line carries the same words.
+test("a cap death tells every person the same words on every lane, with one recovery action", () => {
+  const p = packetFor({ capWait: { parks: 5, waitedMin: 645, statedResets: 0 } });
+  const company = packetFor({ capWait: { parks: 5, waitedMin: 645, statedResets: 0 }, job: { markName: "ZEPHYR", clientPrincipal: true } });
+  assert.deepEqual([p.subject, p.emailBodyHtml, p.whatsappText], [company.subject, company.emailBodyHtml, company.whatsappText]);
+  assert.match(p.whatsappText, /^The search for ZEPHYR stopped before it finished, and nothing was delivered\. A provider's usage cap was still in force after 10h 45m/);
+  assert.match(p.whatsappText, /Re-trigger once the cap has reset\.$/);
+  assert.doesNotMatch(p.emailBodyHtml + p.whatsappText, /whoever administers|synthesis|usage limit reached|weather-exhausted/);
 });

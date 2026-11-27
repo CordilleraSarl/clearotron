@@ -137,8 +137,12 @@ test("WS1b-core: a run that ends with nothing delivered hands its terminal kind 
   assert.equal(failPacket.kind, "run-failed");
   assert.equal(failPacket.failedStage, "matter-frame");
   assert.match(failPacket.text, /nothing was delivered/i);
+  // The outbox copy leaves the engine (design, 2026-11-27): the same notice and routing, and no word of the stage.
   const outboxCopy = JSON.parse(readFileSync(join(ROOT, "clearance-outbox", `${failPacket.runId}.failed.pending`), "utf8"));
-  assert.equal(outboxCopy.failedStage, "matter-frame");
+  assert.equal(outboxCopy.runId, failPacket.runId);
+  assert.equal(outboxCopy.text, failPacket.text, "the notice the run's record holds is the one the outbox carries");
+  assert.ok(!("failedStage" in outboxCopy) && !("diagnostic" in outboxCopy), "the stage and the staff copy stay in the run's record");
+  assert.doesNotMatch(JSON.stringify(outboxCopy), /matter-frame/);
 });
 
 // ── post-merge audit, N2 — the contract the babysit surface STATES, on a real resume ─────────
