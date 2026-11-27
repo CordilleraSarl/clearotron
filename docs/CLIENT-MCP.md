@@ -228,7 +228,7 @@ long-lived credential pointed at it can spend without limit.
    its own `CLIENT_MCP_HTTP_PORT`, set `CLIENT_MCP_ALLOWED_HOSTS` to the hostname from step 1, keep
    `CLIENT_MCP_ACCOUNT_ACCESS=1` + `CLEAROTRON_ACCESS_FILE`, and drop the CF AUD lines (unused here).
 3. Verify before exposing: `curl 127.0.0.1:<port>/healthz`; the boot log says `API-KEY door — no auth
-   proxy in front`; an MCP `initialize` **without** a key is a 401.
+   proxy in front`; an MCP request **without** a key is a 401.
 4. Mint a key, hand it over with the address. `tools/list` must be exactly the eleven `account` tools
    above — anything more means the door resolved a wider principal than `account`.
 
@@ -259,7 +259,8 @@ serve time.
 
 ## What briefs a company's assistant
 
-`skills/clearotron-client/SKILL.md`, served as the MCP `instructions` field on initialize — MCP clients surface
+`skills/clearotron-client/SKILL.md`, served as the MCP `instructions` field (on `initialize` in the protocol's older
+revision, on `server/discover` in its 2026-07-28 revision) — MCP clients surface
 it to their model on connect. It sets voice (plain language, no codes), the tool ladder, the verdict
 vocabulary, evidence drill-through, and the three "never"s.
 
