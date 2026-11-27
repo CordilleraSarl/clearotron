@@ -113,9 +113,9 @@ malformed. `reasonKind` names the check that refused it: `run-cap`, `details`, `
 `duplicate` or `other`. `text` is ready to send ("… Nothing has been searched or delivered. Job parked as
 <base>.failed …").
 
-An order a client placed is told in the client's words instead: `text` is the shipped not-started sentence
-that `pre-run-failed` also uses, and `errors` is empty. The check's own words stay in the queue's
-`<base>.failed.reason`, which an operator reads.
+An order placed from the portal, or through a company's own connector, gets the not-started sentence
+instead: `text` is the one `pre-run-failed` also uses, and `errors` is empty. The check's own words stay
+in the queue's `<base>.failed.reason`, which an operator reads.
 
 ### `duplicate-skipped` — `intake-<base>.duplicate.pending`
 

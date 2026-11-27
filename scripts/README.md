@@ -17,6 +17,7 @@ The axis is *what the script assumes exists*, not where it happens to be run.
 | `home-render-check.mjs` | Draws the portal Home in a real browser, every state, both themes. Run by CI. |
 | `composer-render-check.mjs` | Lays out the New Clearance composer and checks the levers reach the wire. Run by CI. |
 | `clearances-render-check.mjs` | Checks the `/portal/clearances` columns hold together. Run by CI. |
+| `order-receipt-render-check.mjs` | Draws an order's receipt in a real browser in every state it can reach, and the Clearances list with an order among the names by time. `--shots <dir>` keeps the pictures. Run by CI. |
 | `report-print-check.mjs` | Shows what the exported PDF actually renders under print media. Run by CI. |
 | `report-offline-render-check.mjs` | Opens every demo report, from disk and served under the portal's report policy, and every pool index, and fails on any request to another machine or an embedded font that did not load. Run by CI. |
 | `report-overflow-check.mjs` | Checks the same two kinds of report for sideways overflow on screen — the print check cannot see a width, because print sets the watermark to `display:none` and the watermark was the overflow. Kept outside this repository. |
@@ -150,6 +151,7 @@ row that names a file this folder does not hold.
 | `citation-drift-report.mjs` | by hand |
 | `citation-line-check.mjs` | CI |
 | `clearances-render-check.mjs` | CI |
+| `order-receipt-render-check.mjs` | CI |
 | `clone-recipe-check.mjs` | CI |
 | `compare.mjs` | by hand |
 | `composer-render-check.mjs` | CI |
