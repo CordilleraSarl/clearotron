@@ -17,12 +17,7 @@ import { invoke } from "../shared/invocation.mjs";   // — name a command the r
 import { sepClass, notSepClass, hasSep } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
 import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none
 import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs"; import { STUDIO_SEGMENTS, STUDIO_SEGMENT_RE, studioSegmentFor } from "../shared/pre-rename-spellings.mjs"; export { STUDIO_SEGMENTS, STUDIO_SEGMENT_RE, studioSegmentFor };   // the studio segment an install keeps its runs under   // — a number, or a refusal that names the variable; never NaN
-import { adapter as corsearchAdapter } from "../providers/corsearch/src/adapter.js";
-import { adapter as clarivateAdapter } from "../providers/clarivate/src/adapter.js";
-import { adapter as signaAdapter } from "../providers/signa/src/adapter.js";
-import { adapter as euipoAdapter } from "../providers/euipo/src/adapter.js";
-import { adapter as usptoLocalAdapter } from "../providers/uspto-local/src/adapter.js";
-import { adapter as freeTierAdapter } from "../providers/free-tier/src/adapter.js";
+import { byRegister, registerLadder } from "../providers/registers.mjs";   // every register provider, named once
 import { readJson } from "./run-record.mjs";
 import { WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";   // the services' names only: no tool server is handed the setting itself
 import { program as anthropicAgentProgram } from "./engine/anthropic-agent-program.mjs";   // each engine's program row, kept beside its adapter
@@ -885,7 +880,7 @@ export const REGISTER_PROVIDER = (() => {
 // item 11 — ADR-0001's ladder order: the recommended register first, then the free tier, then the
 // rest. This is what the preflight refusal PRINTS, so a reader who hits it is shown the same order the
 // wizard offers rather than a second, older opinion about which register to buy.
-export const KNOWN_REGISTER_PROVIDERS = ["signa", "free-tier", "euipo", "uspto-local", "corsearch", "clarivate"];
+export const KNOWN_REGISTER_PROVIDERS = registerLadder();   // providers/registers.mjs, each row's `ladder`
 
 /**
  * The provider id, or a loud refusal. Every consumer that needs a provider calls this rather than
@@ -942,14 +937,8 @@ export const UNREACHABLE_SENIOR_POLICY = (process.env.CLEAROTRON_UNREACHABLE_SEN
 // Omission is still CAUGHT rather than trusted: registry-fidelity's `fetchedWithoutRecord` compares the
 // run's record set against the record_fetch rows in the (still global) call ledger, so bodies that went
 // to the wrong address surface as a failure, not as a clean zero.
-export const PROVIDERS = {
-  corsearch: corsearchAdapter,
-  clarivate: clarivateAdapter,
-  signa: signaAdapter,
-  euipo: euipoAdapter,
-  "uspto-local": usptoLocalAdapter,
-  "free-tier": freeTierAdapter,
-};
+// The adapters are listed once, in providers/registers.mjs, and this map is built from that list in its order.
+export const PROVIDERS = byRegister("adapter");
 
 // — AN ENVIRONMENT MAY BE PASSED, AND THEN IT IS THE ONE THAT DECIDES.
 //
