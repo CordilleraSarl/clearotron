@@ -1017,11 +1017,12 @@ export const RESEARCH_PROVIDERS = {
         const body = core.buildRequestBody({ task, preset });
         const data = await core.callAgentAPI(process.env.PERPLEXITY_API_KEY, body, { retries: core.retriesForPreset(preset) });
         const text = core.formatResponse(data, preset);
+        const served = core.servedBy(body, data);   // the model asked for and the one the response names, apart from the preset
         // The searches behind the answer, kept for the caller to write into the run: the answer alone
         // cannot say which pages were retrieved.
         const raw = core.rawResultItems(data);
-        if (!text || !String(text).trim()) return { ok: false, cause: "empty research response", raw };
-        return { ok: true, text: String(text), bytes: Buffer.byteLength(String(text)), tookMs: Date.now() - started, raw };
+        if (!text || !String(text).trim()) return { ok: false, cause: "empty research response", raw, ...served };
+        return { ok: true, text: String(text), bytes: Buffer.byteLength(String(text)), tookMs: Date.now() - started, raw, ...served };
       } catch (e) {
         // OUTAGE-SHAPED OR NOT — the caller cannot tell from prose, so say it here.
         //
@@ -1064,10 +1065,11 @@ export const RESEARCH_PROVIDERS = {
         const body = core.buildRequestBody({ task: core.buildGridProgramTask(spec), preset, enableSandbox: true, reasoning });
         const data = await core.callAgentAPI(process.env.PERPLEXITY_API_KEY, body, { retries: core.retriesForPreset(preset) });
         const raw = core.rawResultItems(data);
+        const served = core.servedBy(body, data);   // the model asked for and the one the response names, apart from the preset
         const cap = core.captureGridFromResponse(data, spec);
-        if (!cap.ok) return { ok: false, cause: `grid: ${String(cap.error ?? "capture failed").slice(0, 200)}`, raw, tookMs: Date.now() - started };
+        if (!cap.ok) return { ok: false, cause: `grid: ${String(cap.error ?? "capture failed").slice(0, 200)}`, raw, tookMs: Date.now() - started, ...served };
         return { ok: true, ledgerJson: cap.ledgerJson, present: cap.present, requested: cap.requested, missing: cap.missing.length,
-          bytes: Buffer.byteLength(cap.ledgerJson), tookMs: Date.now() - started, raw };
+          bytes: Buffer.byteLength(cap.ledgerJson), tookMs: Date.now() - started, raw, ...served };
       } catch (e) {
         const status = Number.isInteger(e?.status) ? e.status : null;
         return {

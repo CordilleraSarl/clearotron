@@ -44,6 +44,7 @@
 // printed it: neither shows a search that found nothing. A row now keeps the link it has and nothing in its place, and
 // its `ok` says whether the lookup answered. The card's words for the two are the owner's (render-knockout.mjs). A
 // reply the formatter could not read is a lookup that did not answer.
+import { servedFields } from "../providers/perplexity/src/core.js";   // what served a lookup, apart from its preset
 import { writeFileSync, appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
@@ -199,6 +200,8 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
         query, preset, ok, source, payloadFile,
         ...(ok ? {} : { cause: String(r?.cause ?? "no result").slice(0, 300) }),
         ...(r?.outage === true ? { outage: true } : {}),
+        // What served the lookup, apart from its preset, where the executor reports it.
+        ...servedFields(r),
         ...(k > 0 ? { sharedQuestion: true } : {}),
         ts, took_ms: took,
       };

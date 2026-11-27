@@ -20,6 +20,7 @@
 //     the ladder can only guess from the reason text, and the guess for anything the regexes do not
 //     recognise is UNKNOWN — which buys a park. Every throw in this file was written while the lane had
 //     no ladder and stamping was therefore free to skip; that is no longer true.
+import { servedFields } from "../providers/perplexity/src/core.js";   // what served a research call, apart from its preset
 import { atomicWrite, paths } from "./run-record.mjs";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync, readdirSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
@@ -1217,6 +1218,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
               present: r?.present ?? 0, attempts, took_ms: Date.now() - started,
               bytes: r?.bytes ?? (r?.ledgerJson ? Buffer.byteLength(r.ledgerJson) : 0),
               ok: Boolean(r?.ok && r?.ledgerJson), ...(r?.ok && r?.ledgerJson ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }),
+              // What served the call, apart from the preset: the model the request named, the one the response named, and
+              // the effort version that ran it, where the executor reports them.
+              ...servedFields(r),
             };
             try { appendFileSync(K.sweepLedger, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort, never fatal */ }
             if (row.ok) {

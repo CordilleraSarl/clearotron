@@ -12,7 +12,7 @@ import { underStudioSegment } from "../../../shared/path-seps.mjs";   // Windows
 import { serve } from "./stdio-server.mjs";
 import { answerBudget } from "../../../shared/answer-parts.mjs";
 import {
-  isKnownPreset, questionPresetFor, buildRequestBody, callAgentAPI, formatResponse, formatSandboxResponse,
+  isKnownPreset, questionPresetFor, buildRequestBody, callAgentAPI, formatResponse, formatSandboxResponse, servedBy,
   validateGridSpec, buildGridProgramTask, captureGridFromResponse, requiredLedgerRefusal,
   reconcileGridLedger, findUnrecordedConnotationQueries, candidatesForJudgment, candidateParts, rawResultItems, withoutProviderCharge,
 } from "../../../providers/perplexity/src/core.js";
@@ -292,13 +292,16 @@ async function research(params) {
     }
     const gridTask = buildGridProgramTask(spec);
     try {
-      const data = await callAgentAPI(API_KEY, buildRequestBody({ task: gridTask, preset: "pro-search", modelOverride, enableSandbox: true }));
+      const gridBody = buildRequestBody({ task: gridTask, preset: "pro-search", modelOverride, enableSandbox: true });
+      const data = await callAgentAPI(API_KEY, gridBody);
+      const served = servedBy(gridBody, data);
       keepRaw("grid", { output_path: spec.output_path }, data);
       const cap = captureGridFromResponse(data, spec);
       if (!cap.ok) return requiredLedgerRefusal(`ERROR: grid run failed — ${cap.error}.${cap.stderrTail ? ` stderr: ${cap.stderrTail}` : ""} Retry the call.`, { spec, gridSpecPath: grid_spec_path });
       mkdirSync(dirname(spec.output_path), { recursive: true });
       writeFileSync(spec.output_path, cap.ledgerJson + "\n");
-      writeGridProvenance(spec, { ran: true, present: cap.present, requested: cap.requested, model: modelOverride });
+      writeGridProvenance(spec, { ran: true, present: cap.present, requested: cap.requested, model: served.modelRequested,
+        modelServed: served.modelServed, effortServed: served.effortServed });
       const note = cap.missing.length ? ` ${cap.missing.length} cell(s) the program did not return were recorded as honest gaps (coverage-limited).` : "";
       const judge = judgeBlock(cap.candidates, 1, grid_spec_path, obligationsReserve(spec, cap.ledgerJson));
       // The meaning-receipt obligations, from the ledger THIS call just wrote. Empty string when the seat
@@ -344,20 +347,21 @@ async function research(params) {
   }
   try {
     const data = await callAgentAPI(API_KEY, body);
+    const served = servedBy(body, data);
     keepRaw("question", { task, preset }, data);
     const text = enable_sandbox ? formatSandboxResponse(data, preset) : formatResponse(data, preset);
     // A REPLY THE FORMATTER COULD NOT READ IS NO ANSWER, and is logged as a failure: it was logged as answered, beside
     // completed searches, though it is not kept and is asked again (research-answers.mjs).
     logCall("perplexity_research", asked, isResearchAnswer(text)
-      ? { ok: true, bytes: String(text ?? "").length, citations: citationCount(data) }
-      : { ok: false, error: String(text ?? "").slice(0, 200) });
+      ? { ok: true, bytes: String(text ?? "").length, citations: citationCount(data), ...served }
+      : { ok: false, error: String(text ?? "").slice(0, 200), ...served });
     keepResearchAnswer(RUN_DIR, { session: SESSION, agent: AGENT, task, preset, request, text });
     return text;
   } catch (err) {
     // A FAILED LOOKUP IS LOGGED TOO, and that is the half that matters most: without it, "the search
     // ran and found nothing" and "the search errored" leave the same trace, which is the exact
     // ambiguity this whole issue is about.
-    logCall("perplexity_research", asked, { ok: false, error: String(err?.message ?? err).slice(0, 200) });
+    logCall("perplexity_research", asked, { ok: false, error: String(err?.message ?? err).slice(0, 200), ...servedBy(body, null) });
     return `ERROR: Research failed — ${err.message}${err?.cause ? ` (${err.cause.code || err.cause.name || err.cause})` : ""}`;
   }
 }

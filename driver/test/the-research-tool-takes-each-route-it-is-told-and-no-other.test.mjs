@@ -33,7 +33,7 @@ import { appendFileSync } from "node:fs";
 globalThis.fetch = async (url, init) => {
   appendFileSync(process.env.STUB_SENT, JSON.stringify(JSON.parse(init?.body ?? "{}")) + "\\n");
   const text = "The invented owner sells QZORVEL toys online for $40 each.";
-  return new Response(JSON.stringify({ status: "completed", output: [{ type: "message", content: [{ type: "output_text", text }] }] }),
+  return new Response(JSON.stringify({ status: "completed", model: "openai/gpt-6.2-sol", effort: "medium@2026-10-22.1", output: [{ type: "message", content: [{ type: "output_text", text }] }] }),
     { status: 200, headers: { "content-type": "application/json" } });
 };`;
 const PRELOAD = `data:text/javascript,${encodeURIComponent(STUB)}`;
@@ -125,6 +125,10 @@ test("on a run whose product pins its effort, a question and a grid each name th
     await call(r, { task: "Does the invented owner sell QZORVEL toys?" });
     await call(r, { grid_spec_path: r.specPath });
     const [question, grid] = sent(r);
+    const row = readFileSync(driverDir(r.runDir, "reading-log.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)).find((x) => x.args?.task);
+    assert.deepEqual({ preset: row.args.preset, modelRequested: row.modelRequested, modelServed: row.modelServed, effortServed: row.effortServed },
+      { preset: "medium", modelRequested: "openai/gpt-6.2-sol", modelServed: "openai/gpt-6.2-sol", effortServed: "medium@2026-10-22.1" },
+      "the call's record keeps the model asked for, the one the response names and the effort that ran, apart from the preset");
     assert.deepEqual({ preset: question.preset, model: question.model, tools: question.tools.map((t) => t.type) },
       { preset: "medium", model: "openai/gpt-6.2-sol", tools: ["web_search"] }, "Global's question keeps its pinned effort and names the model");
     assert.deepEqual({ preset: grid.preset, model: grid.model, tools: grid.tools.map((t) => t.type) },

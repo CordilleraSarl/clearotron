@@ -5,6 +5,7 @@
 //
 // One phase of a run, moved out of pipelineInner unchanged. It must not import pipeline.mjs back, so what it shares with
 // that module lives in the modules beside it, which it imports.
+import { servedFields } from "../../providers/perplexity/src/core.js";   // what served a research call, apart from its preset
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
 import { recordSpan } from "../attributed-span.mjs";
 import { recordStatusesFromFindings } from "../common-law-coverage-status.mjs";
@@ -261,7 +262,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
         clConnotationReissueSpent = true;
         const reissuer = stopsWithTheRun(run.runDir, "connotation-reissue", opts.connotationReissuer ?? defaultConnotationReissuer);
         const r = await reissuer(short, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${h}-${Date.now()}.json`) });
-        runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
+        runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok, ...servedFields(r),
           recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
           cause: r?.ok ? null : String(r?.cause ?? "").slice(0, 160) });
         const rows = (r?.ok && Array.isArray(r.rows)) ? r.rows : [];
@@ -591,7 +592,7 @@ export async function runRegisterSweep({ P, agent, axes, ctx, job, opts, run, ru
             + "model's one repair turn — the engine re-issues them itself through the same tool");
           const reissuer = stopsWithTheRun(run.runDir, "connotation-reissue", opts.connotationReissuer ?? defaultConnotationReissuer);
           const r = await reissuer(missing, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${Date.now()}.json`) });
-          runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
+          runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok, ...servedFields(r),
             recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
             cause: r?.ok ? null : String(r?.cause ?? "").slice(0, 160) });
           if (r?.ok && r.rows?.length) {

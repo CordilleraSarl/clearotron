@@ -118,6 +118,23 @@ const NAMES_THE_MODEL = new Set(["pro-search", "deep-research", "advanced-deep-r
 /** The model a request on `preset` names, or null where the effort's own default stands. PURE. */
 export const researchModelFor = (preset) => (NAMES_THE_MODEL.has(preset) ? RESEARCH_MODEL : null);
 
+/**
+ * WHAT SERVED A CALL, kept apart from the preset it asked for: the model the request named (null where it left the
+ * effort's default), the model the response itself names, and the effort version that ran it (the response's `effort`,
+ * such as `medium@2026-10-22.1`). The response's `model` is not described on the vendor's pages; it is read where it is
+ * present and is null where it is not, never taken from the request. PURE.
+ */
+export function servedBy(body, data) {
+  return {
+    modelRequested: typeof body?.model === "string" ? body.model : null,
+    modelServed: typeof data?.model === "string" ? data.model : null,
+    effortServed: typeof data?.effort === "string" ? data.effort : null,
+  };
+}
+
+/** Those three fields from an executor's answer, only where it reported them, for a record to carry. PURE. */
+export const servedFields = (r) => Object.fromEntries(["modelRequested", "modelServed", "effortServed"].filter((k) => r && typeof r === "object" && k in r).map((k) => [k, r[k] ?? null]));
+
 export function buildRequestBody({
   task,
   preset,

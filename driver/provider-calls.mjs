@@ -63,8 +63,9 @@ export async function defaultConnotationReissuer(queries, { spec, modelOverride 
   const narrow = { ...spec, connotation: { ...(spec.connotation ?? {}), queries: queries.slice() } };
   try {
     const task = core.buildGridProgramTask(narrow);
-    const data = await core.callAgentAPI(apiKey,
-      core.buildRequestBody({ task, preset: "pro-search", modelOverride, enableSandbox: true }));
+    const body = core.buildRequestBody({ task, preset: "pro-search", modelOverride, enableSandbox: true });
+    const data = await core.callAgentAPI(apiKey, body);
+    const served = core.servedBy(body, data);   // the model asked for and the one the response names, apart from the preset
     // WHAT CAME BACK, KEPT IN THE RUN like every other web call's: the capture keeps the receipts only.
     if (rawPath) {
       try {
@@ -73,9 +74,9 @@ export async function defaultConnotationReissuer(queries, { spec, modelOverride 
       } catch { /* best-effort: the receipts below are the record */ }
     }
     const cap = core.captureGridFromResponse(data, narrow);
-    if (!cap?.ok) return { ok: false, cause: String(cap?.error ?? "capture failed").slice(0, 160), rows: [] };
+    if (!cap?.ok) return { ok: false, cause: String(cap?.error ?? "capture failed").slice(0, 160), rows: [], ...served };
     const rows = parsePrRiskResults(cap.ledgerJson).filter((r) => queries.includes(r.query));
-    return { ok: true, rows, requested: queries.length };
+    return { ok: true, rows, requested: queries.length, ...served };
   } catch (e) {
     return { ok: false, cause: String(e?.message ?? e).slice(0, 160), rows: [] };
   }

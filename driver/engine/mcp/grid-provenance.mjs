@@ -26,7 +26,7 @@ export function gridProvenancePath(outputPath) {
  * number here would be one this code invented. `cells` is a count of what was asked and what came
  * back, and it says so in its own note, because "cells" beside a provider name reads as a bill.
  */
-export function gridProvenanceRecord({ ran, present, requested, model = null }) {
+export function gridProvenanceRecord({ ran, present, requested, model = null, modelServed = null, effortServed = null }) {
   return {
     _what: "which provider served common-law-grid.json, written beside it because the ledger itself is saved verbatim.",
     provider: "perplexity",
@@ -34,6 +34,10 @@ export function gridProvenanceRecord({ ran, present, requested, model = null }) 
     tool: "perplexity_research",
     preset: "pro-search",
     model: model ?? "(provider default for the preset)",
+    // What the response itself named: the model that served the grid and the effort version that ran it, apart from
+    // the preset and the model the request named. Null where this call bought nothing, or the response named neither.
+    modelServed,
+    effortServed,
     ran,
     _ran: ran
       ? "this call executed the grid"
