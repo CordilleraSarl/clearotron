@@ -41,7 +41,7 @@ export async function runsRoutes({ poolRoot, workspaceRoot, queueDirs }, { metho
       // out across the roster — would spend a roster-sized chunk of the 120/min rate limit on every
       // poll, which is exactly what the limiter is there to stop.
       return { status: 200, json: { account: "*", runs: mine(forRole(scanAllRuns({ poolRoot, workspaceRoot, queueDirs: queueDirs() }), principal)),
-        orders: preRunOrders({ workspaceRoot, queueDirs: queueDirs(), everything: true }) } };
+        orders: preRunOrders({ poolRoot, workspaceRoot, queueDirs: queueDirs(), everything: true }) } };
     }
 
     // ?scope=mine — EVERY BRAND OWNER THIS IDENTITY HOLDS, in one call.
@@ -63,7 +63,7 @@ export async function runsRoutes({ poolRoot, workspaceRoot, queueDirs }, { metho
       assertPrincipal(principal, { door: true });
       if (seesEverything(principal)) {
         return { status: 200, json: { account: "*", runs: mine(forRole(scanAllRuns({ poolRoot, workspaceRoot, queueDirs: queueDirs() }), principal)),
-          orders: preRunOrders({ workspaceRoot, queueDirs: queueDirs(), everything: true }) } };
+          orders: preRunOrders({ poolRoot, workspaceRoot, queueDirs: queueDirs(), everything: true }) } };
       }
       // Resolved from `principal.accounts`, NEVER from the query — this is the same set
       // assertPrincipal hands back one key at a time, so it widens no boundary.
@@ -75,7 +75,7 @@ export async function runsRoutes({ poolRoot, workspaceRoot, queueDirs }, { metho
       if (Array.isArray(principal.accounts) && (principal.accounts.length || principal.genericOrgs?.length)) {
         return { status: 200, json: { account: "*", runs: mine(forRole(scanAccountRuns({ poolRoot, workspaceRoot, account: principal.accounts,
           generic: { orgs: principal.genericOrgs ?? [] }, queueDirs: queueDirs() }), principal)),
-          orders: preRunOrders({ workspaceRoot, queueDirs: queueDirs(), scopes: [...principal.accounts.map((a) => ({ account: a })),
+          orders: preRunOrders({ poolRoot, workspaceRoot, queueDirs: queueDirs(), scopes: [...principal.accounts.map((a) => ({ account: a })),
             ...(principal.genericOrgs ?? []).map((o) => ({ account: "generic", organisation: o }))] }) } };
       }
       return { status: 404, json: { error: "not_found" } };
@@ -92,11 +92,11 @@ export async function runsRoutes({ poolRoot, workspaceRoot, queueDirs }, { metho
       const generic = org == null ? { all: true } : { orgs: [org], unfiled: seesEverything(principal) };
       return { status: 200, json: { account, tenant: org, runs: mine(forRole(scanAccountRuns({ poolRoot, workspaceRoot, account: [], generic, queueDirs: queueDirs() }), principal)),
         // Unnamed, with several organisations, only someone who sees everything reaches here: every Generic order.
-        orders: org == null ? preRunOrders({ workspaceRoot, queueDirs: queueDirs(), everything: true }).filter((o) => o.account === "generic")
-          : preRunOrders({ workspaceRoot, queueDirs: queueDirs(), scopes: [{ account: "generic", organisation: org }] }) } };
+        orders: org == null ? preRunOrders({ poolRoot, workspaceRoot, queueDirs: queueDirs(), everything: true }).filter((o) => o.account === "generic")
+          : preRunOrders({ poolRoot, workspaceRoot, queueDirs: queueDirs(), scopes: [{ account: "generic", organisation: org }] }) } };
     }
     return { status: 200, json: { account, runs: mine(forRole(scanAccountRuns({ poolRoot, workspaceRoot, account, queueDirs: queueDirs() }), principal)),
-      orders: preRunOrders({ workspaceRoot, queueDirs: queueDirs(), scopes: [{ account }] }) } };
+      orders: preRunOrders({ poolRoot, workspaceRoot, queueDirs: queueDirs(), scopes: [{ account }] }) } };
   }
   // ── /portal/api/ack — "I have seen that one" ─────────────────────────────────────────────
   //
