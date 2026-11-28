@@ -358,6 +358,11 @@ export const DEPLOYMENT_NAMES = new Set([
   // spelling, so unlisted it falls through to `tuning`, the bucket step 3 deletes from — where nothing
   // records a set-site for it and nothing would object to its removal.
   "CLEAROTRON_ADMINISTRATOR_CONTACT",
+  // Whether the install's own notice receiver drops a repeated Idempotency-Key: a fact about the receiver this
+  // deployment runs, beside CLEAROTRON_NOTICE_URL and CLEAROTRON_NOTICE_AUDIENCES, and its catalogue row declares
+  // `deployment`. Those two match a shape here (_URL, AUDIENCE); this one does not, so unlisted it fell through to
+  // `tuning`, the bucket step 3 deletes from (measured in the private control, 2026-11-28).
+  "CLEAROTRON_NOTICE_DEDUPE",
   // — `CLEAROTRON_DEMO`, which is `PORTAL_DEMO` renamed. It is listed here for
   // the exact reason this list exists: the old name was `deployment` because of its `PORTAL_` prefix and
   // by nothing else, so moving it to the house prefix dropped it through to `tuning` — the bucket step 3
