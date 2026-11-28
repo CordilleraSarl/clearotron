@@ -232,6 +232,21 @@ test("a client connector address with a user or a password in it is the failed c
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
+test("a local install that publishes no client address, or one doctor did not ask, says nothing about an edge", async () => {
+  // A stranger's install of 0.8's line printed "the edge could not be reached" with nothing published (2026-11-28).
+  const EDGE = /the edge could not be reached/;
+  const { home } = setUpHome();
+  try {
+    assert.doesNotMatch(doctor(home).out, EDGE, "a local install that publishes nothing was told about an edge");
+    const port = await closedPort();
+    assert.doesNotMatch(doctor(home, { CLEAROTRON_CLIENT_MCP_URL: `https://u:p@127.0.0.1:${port}/mcp` }).out, EDGE,
+      "an address the check refused without asking was reported as an edge that could not be reached");
+    // The control: an audience this install is configured to check is still said to be unread.
+    assert.match(flat(doctor(home, { CLEAROTRON_OIDC_AUDIENCE: "an-invented-audience" }).out), EDGE,
+      "a configured audience that nothing could read was dropped with the rest");
+  } finally { rmSync(home, { recursive: true, force: true }); }
+});
+
 test("a user alone, a password alone, or both: the same failure, whatever a probe said, and a plain address is still asked", () => {
   // Judged before the unprobed branch, so an address doctor did not ask fails rather than reading as not yet asked.
   for (const url of ["https://u@mcp.example.com/mcp", "https://:p@mcp.example.com/mcp", "https://u:p@mcp.example.com/mcp", "http://u:p@mcp.example.com/mcp"]) {
