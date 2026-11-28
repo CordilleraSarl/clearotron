@@ -48,11 +48,9 @@ test("a failed test turn's first line names the AI as setup's questions do, and 
   assert.match(probeFailureText(signedOut), /^anthropic-agent is not signed in — /);
 });
 
-test("the line under the program's words says, in plain words, that setup read the failure from them", () => {
-  assert.equal(onboard.proofEvidence(signedOut)[1], "(setup's reading of the words above, not a status the program reported)");
-  // Every other way of reading a failure keeps today's line.
-  const silent = classifyProbe({ engine: "anthropic-agent", tuple: { code: 1, stdout: "", stderr: "", json: {}, signals: { noStreamEvents: true } } });
-  assert.equal(onboard.proofEvidence(silent)[1], `(that reading is ${silent.basis})`);
+test("setup shows none of the program's own words under a failed test turn, so it explains none", () => {
+  // The program's output is the machine's, and setup no longer prints it, nor a line reading it (design, 2026-11-28).
+  assert.equal(onboard.proofEvidence, undefined, "setup still composes lines from the program's own output");
 });
 
 test("Codex's subscription answer says how to sign in, and nothing about the adapter", () => {

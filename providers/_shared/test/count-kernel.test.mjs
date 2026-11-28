@@ -54,7 +54,7 @@ test("every failure path returns null — a provider error can never be read as 
     count: async () => ({ ok: false, reason: "HTTP 502" }),
     capabilities: { countProbe: "endpoint" },
   });
-  assert.deepEqual(await endpointFailed({}, {}, {}), { ok: false, total: null, probe: "endpoint", reason: "HTTP 502" });
+  assert.deepEqual(await endpointFailed({}, {}, {}), { ok: false, total: null, probe: "endpoint", failure: "provider-error", reason: "HTTP 502" });
 
   const cheapErrored = makeCountProbe({
     search: async () => ({ type: "text", text: "ERROR: corsearch_search HTTP 500" }),

@@ -94,11 +94,14 @@ export function makeCountProbe(deps) {
       const c = await count(auth, params, tctx);
       if (c && c.ok === true && Number.isFinite(c.total))
         return { ok: true, total: c.total, probe: "endpoint", reason: null, ...(c.per_office ? { per_office: c.per_office } : {}) };
-      return { ok: false, total: null, probe: "endpoint", reason: String(c?.reason ?? "count unavailable") };
+      // WHICH FAILURE, by structure rather than by reading the text: no answer at all (the transport guard's), or an
+      // answer that was an error. A reader that shows a person the failure says it in its own words (design, 2026-11-28).
+      return { ok: false, total: null, probe: "endpoint", failure: c?.transport ? "no-answer" : "provider-error", reason: String(c?.reason ?? "count unavailable") };
     }
     // "cheap": page 0 of a normal search IS the count — one billable call, smallest response.
     const r = await search(auth, { ...params, ...cheapCountParams }, tctx);
-    if (isToolError(r)) return { ok: false, total: null, probe: "cheap", reason: clipProviderText(r?.text ?? "provider error", 240) };
+    if (isToolError(r)) return { ok: false, total: null, probe: "cheap", failure: r?.transport ? "no-answer" : "provider-error",
+      reason: clipProviderText(r?.text ?? "provider error", 240) };
     const parsed = parseToolText(r);
     if (!parsed) return { ok: false, total: null, probe: "cheap", reason: "unparseable search response on the count probe" };
     // ── THERE IS NO PATH HERE WHERE A MISSING NUMBER BECOMES 0 ────────────────────────────────────

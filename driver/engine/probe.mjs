@@ -397,7 +397,18 @@ export function classifyProbe(args = {}) {
 }
 
 /** The failed-turn verdicts a footing fault explains better: the minimal mode never reads a subscription's sign-in. */
-const FOOTING_EXPLAINS = new Set(["signed-out", "failed"]);
+const FOOTING_EXPLAINS = new Set(["signed-out", "stopped-early", "failed"]);
+
+// THE ADMINISTRATOR'S REMEDIES, in the approved words (design, 2026-11-28). They point at nothing the engine said: its
+// own output stays in the private records that already hold it (the run's log and the engine check's log line), and a
+// line a person is shown no longer refers to it.
+/** The program stopped before it produced anything. */
+export const STOPPED_EARLY = "The check stopped before the engine returned a result. Try again. If it stops again, run the "
+  + "engine from your terminal to see whether it needs input.";
+/** A turn started and failed for a reason this check cannot name. */
+export const RAN_AND_FAILED = "The engine started, but the check failed. Run the check again.";
+/** Claude refused tool calls, a file write or a command, after the capability is named. */
+export const CLAUDE_REFUSES = "Run Claude Code from your terminal to check which action it refuses.";
 
 function classifyTurn({ engine, tuple = null, error = null, timeoutSec = PROBE_TIMEOUT_SEC, auth = null, program = null, expect = null } = {}) {
   const id = String(engine ?? "").trim().toLowerCase();
@@ -520,8 +531,7 @@ function classifyTurn({ engine, tuple = null, error = null, timeoutSec = PROBE_T
 
   // A turn that ran and failed, in words that claim nothing they cannot see: the last answer below, and the
   // locked refresh, whose explanation is the engine's own and rides in `detail`.
-  const ranAndFailed = (mode, basis) => v(mode, basis, `${id} ran but the turn failed (exit ${tuple.code})`,
-    "The engine's stderr below is the whole story; a turn that starts and fails is not a configuration this check can name.", { detail });
+  const ranAndFailed = (mode, basis) => v(mode, basis, `${id} ran but the turn failed (exit ${tuple.code})`, RAN_AND_FAILED, { detail });
 
   // A SIGN-IN REFRESH ANOTHER COPY IS HOLDING, before the pattern that would read it as a sign-out. It answers
   // as a turn that ran and failed, with the program's "retry in a minute" beneath, under a mode of its own:
@@ -554,11 +564,12 @@ function classifyTurn({ engine, tuple = null, error = null, timeoutSec = PROBE_T
   // The anthropic adapter's own diagnosis: the CLI exited without emitting a single stream event, i.e.
   // it died at startup (args/auth/MCP). That is the signed-out shape, and the basis says it was inferred
   // from the shape rather than read from a message.
+  //
+  // NOT A SIGN-OUT. A program that stopped before it produced anything has said nothing about its sign-in, and the
+  // remedy no longer diagnoses one from that silence, whatever the billing mode (design, 2026-11-28). The basis still
+  // says the verdict is an inference, so the run door proceeds past it with its warning, as it always has.
   if (s.noStreamEvents)
-    return v("signed-out", "startup-class", `${id} exited before it produced anything`,
-      refused
-        ? `That is what refused credentials look like, so start there: check ${refused.check}, then run this again. The engine's stderr below is the diagnosis if it is something else.`
-        : `That is the signed-out shape, so start there: ${signInLine(id, program)}, then run this again. The engine's stderr below is the diagnosis if it is something else.`, { detail });
+    return v("stopped-early", "startup-class", `${id} exited before it produced anything`, STOPPED_EARLY, { detail });
 
   return ranAndFailed("failed", "nonzero-exit");
 }
@@ -568,7 +579,7 @@ function toolsRefusedFix(engine) {
   if (engine === "openai-agent")
     return "Every search stage calls tools, so no search can finish here. codex's own sandbox refuses them on this machine: "
       + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
-  return "Every search stage calls tools, so no search can finish here. The engine's stderr below is the place to start.";
+  return `Every search stage calls tools, so no search can finish here. ${CLAUDE_REFUSES}`;
 }
 
 /** What fixes a host where the engine cannot write in a run folder. On codex it is its own sandbox, and the setting is named. */
@@ -576,7 +587,7 @@ function cannotWriteFix(engine) {
   if (engine === "openai-agent")
     return "Every search stage writes its results to a file, so no search can finish here. codex's own sandbox cannot write on this machine: "
       + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
-  return "Every search stage writes its results to a file, so no search can finish here. The engine's stderr below is the place to start.";
+  return `Every search stage writes its results to a file, so no search can finish here. ${CLAUDE_REFUSES}`;
 }
 
 /**
@@ -597,7 +608,7 @@ function cannotRunFix(engine) {
   if (engine === "openai-agent")
     return "Every search stage reads its instructions through commands, so no search can finish here. codex's own sandbox cannot run commands on this machine: "
       + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
-  return "Every search stage reads its instructions through commands, so no search can finish here. The engine's stderr below is the place to start.";
+  return `Every search stage reads its instructions through commands, so no search can finish here. ${CLAUDE_REFUSES}`;
 }
 
 /** The one place the tier doctrine is POINTED AT rather than re-authored. */
@@ -905,8 +916,11 @@ export async function preflightEngineTurn(opts = {}) {
   const verdict = await judgeEngineTurn(opts);
   if (verdict.ok) return verdict;
   if (probeVerdictLane(verdict) !== "configuration") return { ...verdict, warning: probeWeatherWarning(verdict) };
-  const detail = verdict.detail ? `\n  engine said: ${verdict.detail}` : "";
-  throw new Error(`[preflight] ${probeFailureText(verdict)}${detail}`);
+  // THE REFUSAL IS THE RUN'S ANSWER, so it carries the product's words and never the engine's: a refused run's reason
+  // reaches the run response and the park record a person reads (design, 2026-11-27). The engine's own words go to
+  // this process's log, the private record a run already keeps, and ride the error for a caller that records them.
+  if (verdict.detail) console.error(`[preflight] ${verdict.engine ?? "the engine"} refused the run's check; engine said: ${verdict.detail}`);
+  throw Object.assign(new Error(`[preflight] ${probeFailureText(verdict)}`), { engineSaid: verdict.detail ?? null });
 }
 
 /**
