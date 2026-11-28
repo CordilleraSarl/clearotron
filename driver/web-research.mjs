@@ -26,25 +26,14 @@
 // handed. The names alone live in web-research-names.mjs, for the modules tool servers do import.
 import { resolveAuthMode } from "./engine/auth.mjs";
 
-import { OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";
+import { installWebResearch, OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";
 import { preflightResearchCredential } from "./driver.config.mjs";
-export { OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING };
+export { installWebResearch, OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING };
 
 const ENGINE_SEARCH = Object.freeze({ "anthropic-agent": "Claude", "openai-agent": "Codex" });
 
 const DEFAULT_ENGINE = "anthropic-agent";
 
-/**
- * The installation's web-research service: `{ service, chosen: true }`; `{ service: null, chosen: false, unset: true }`
- * for an installation that names none; `{ service: null, chosen: true, invalid }` for a value that names no service.
- * Neither null is ever read as a service: the door refuses each by name. PURE.
- */
-export function installWebResearch(env = process.env) {
-  const raw = String(env?.[WEB_RESEARCH_SETTING] ?? "").trim().toLowerCase();
-  if (!raw) return { service: null, chosen: false, unset: true };
-  if (WEB_RESEARCH_SERVICES.includes(raw)) return { service: raw, chosen: true };
-  return { service: null, chosen: true, invalid: raw };
-}
 
 /**
  * Whether this installation can run `service`'s web research: `{ ok, service, missing, why }`. `missing` names the

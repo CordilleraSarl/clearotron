@@ -46,6 +46,7 @@ import { dirname, join } from "node:path";
 import { BUILT } from "./search-policy.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { readJson } from "./run-record.mjs";
+import { installWebResearch } from "./web-research-names.mjs";   // the setting, read as the run door reads it
 
 /**
  * How a flag's absence is felt by a user. This field is what stops the staff screen lying.
@@ -161,8 +162,14 @@ export function buildFlagSnapshot(env, { capturedAt, registerProvider = null, re
   const built = { ...BUILT };
   if (built.registerProbe && registerCanCount === false) built.registerProbe = false;
 
+  // WHO RUNS THE INSTALLATION'S WEB RESEARCH, read as the run door reads it. A service outside the engine environment
+  // (the portal, the connector) cannot read the engine's setting, so it reads this. `invalid` is a yes or no and never
+  // the value written: an operator's mistyped line may hold anything, a pasted key included, and this file is read by a
+  // web service.
+  const research = installWebResearch(env ?? {});
   return {
     capturedAt,
+    webResearch: { service: research.service, chosen: research.chosen, invalid: Boolean(research.invalid) },
     // The build map. Env is meaningless without it: a level can be switched ON and still not exist,
     // and the two produce completely different conversations with a user.
     built,
@@ -408,6 +415,19 @@ export function readFlagSnapshot(poolRoot) {
  * only one that knows whether the deployment's register can count (see buildFlagSnapshot) — a service
  * outside the engine environment cannot work that out from its own import.
  */
+/**
+ * Who runs the installation's web research, as the snapshot saw it: `{ service, chosen, invalid }`. `service` is "own",
+ * "perplexity" or null; null with `chosen: false` is an installation that names no service, and null with `invalid: true`
+ * one whose setting names none. Every search is refused in both. NULL FOR A SNAPSHOT TAKEN BEFORE THE FIELD EXISTED:
+ * not known, and never read as "no service".
+ */
+export function webResearchFor(snapshot) {
+  const w = snapshot?.webResearch;
+  if (!w || typeof w !== "object" || Array.isArray(w)) return null;
+  const service = w.service === "own" || w.service === "perplexity" ? w.service : null;
+  return { service, chosen: w.chosen === true, invalid: w.invalid === true };
+}
+
 /** Whether the register wired to THIS deployment can take a filing count. Null = unknown, and unknown
  *  must not be read as "cannot": productAvailability only splits the cause on an explicit false. */
 export function registerCanCountFor(snapshot) {
