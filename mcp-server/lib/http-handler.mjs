@@ -64,6 +64,9 @@ async function readJsonBody(req, maxBody) {
  * Auth runs BEFORE any body read, tool, or data, and the scope is resolved from THIS request's own key: there
  * is no session for another identity to present, so a second key on one connection gets its own scope.
  */
+/** What a person taken off the guest list is told, on either revision of the protocol. */
+export const ACCESS_WITHDRAWN = "Your access to this installation has been withdrawn. Ask the administrator to restore it, then try again.";
+
 export function makeHttpHandler({ verify, limiter, opsLimiter = null, serve, allowedHosts = [], ns = "trademark-artifacts", maxBody = 4 * 1024 * 1024, authHeader = "cf-access-jwt-assertion", firmDomains = [], clientSurface = false, door: doorName = null, devMode = false, tokenOnly = false, keyDoorPath = null,
   // Is this identity still on the guest list? ASKED PER REQUEST for an ACCOUNT principal, cached on the
   // grants file's mtime, so it costs a stat between edits. Injected so an arm can move the answer
@@ -136,7 +139,9 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, serve, all
     if (!clientSurface || entry?.kind !== "account" || !entry?.sub) return null;
     if (stillEnrolled(entry.sub)) return null;
     log(`access withdrawn: ${entry.sub} is no longer on this installation's guest list`);
-    return { error: "your access to this installation has been withdrawn — ask whoever manages it, then start a new session" };
+    // The owner's approved words (2026-11-28): restoring access is what the holder can ask for, and "a new session" named
+    // nothing once the doors stopped keeping sessions.
+    return { error: ACCESS_WITHDRAWN };
   };
 
   return async (req, res) => {
