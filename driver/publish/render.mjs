@@ -2503,6 +2503,12 @@ const CLEARANCE_PRINT = readFileSync(join(HERE, 'templates', 'clearance-print.cs
 // translation notes inside the register records among them, so a search of the page missed them and the PDF printed
 // a header with nothing under it. It reads every fold on the page, so a kind added later cannot fall behind it.
 const REP_OVERRIDE = '.rep-stickyhead .sitenav{position:static;box-shadow:none;border-bottom:none;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}';
+// WHERE THE CONFLICT PANEL OPENS (design, 2026-11-28): beside the number the reader activated, with its heading and close
+// control in the part of the page they can see, below the report's own pinned header or, inside the portal, below the
+// portal's. The portal says which band of the frame is in view (the bridge hands it on as rep-view), because the frame
+// itself does not scroll. The panel's heading lines up with the number; the panel moves up only as far as it must to show
+// more of itself, never above that band, and then keeps its offset from the number through reflow and resize. A frame
+// that was not told its band anchors the panel on the number alone.
 const PAGE_JS = `var _hidden=[];
 function exportPDF(){_hidden=[];document.querySelectorAll('.card').forEach(function(card){var cb=card.querySelector('input.pickbox');if(cb&&!cb.checked){card.classList.add('print-hidden');_hidden.push(card);}});document.querySelectorAll('details.lowerband').forEach(function(d){if(!d.querySelector('.card:not(.print-hidden)')){d.classList.add('print-hidden');_hidden.push(d);}});document.querySelectorAll('details.lowerband:not(.print-hidden)>summary>.gname').forEach(function(g){var n=g.closest('details').querySelectorAll('.card:not(.print-hidden)').length;if(!g.dataset.printOne||!g.dataset.printMany)return;g.dataset.screen=g.textContent;g.textContent=n===1?g.dataset.printOne:n.toLocaleString('en-GB')+g.dataset.printMany;});window.print();}
 function pickAll(v){document.querySelectorAll('input.pickbox').forEach(function(cb){cb.checked=v;});}
@@ -2546,15 +2552,21 @@ tip.addEventListener('pointerleave',soon);
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!tip.hidden){hide();e.preventDefault();}});
 window.addEventListener('beforeprint',hide);})();
 (function(){var wrap=document.querySelector('.wrap'),words=document.getElementById('cpanel-words');if(!wrap||!words)return;
-var root=document.documentElement,panel=null,opener=null,WIDE=500,NARROW=452,GW=30,GN=22,EDGE=16,MINCOL=600,FULL=parseFloat(getComputedStyle(wrap).maxWidth)||1120;
+var root=document.documentElement,panel=null,opener=null,band=null,WIDE=500,NARROW=452,GW=30,GN=22,EDGE=16,GAP=10,MINCOL=600,FULL=parseFloat(getComputedStyle(wrap).maxWidth)||1120;
 function roomFor(){var vw=root.clientWidth;if(!root.classList.contains('rep-narrow')&&vw-wrap.getBoundingClientRect().right>=GW+WIDE+EDGE)return {mode:'wide',w:WIDE};
 var col=Math.min(vw-EDGE-GN-NARROW-EDGE,FULL);if(col<MINCOL)return null;return {mode:'narrow',col:col,w:Math.min(WIDE,vw-EDGE-col-GN-EDGE)};}
 function keepPlace(el,change){var before=el.getBoundingClientRect().top;change();var dy=Math.round(el.getBoundingClientRect().top-before);if(!dy)return;
 var ev=null;try{ev=new CustomEvent('rep-shift',{detail:{dy:dy},cancelable:true});}catch(e){}if(!ev||document.dispatchEvent(ev))window.scrollBy({top:dy,left:0,behavior:'instant'});}
 function reflowed(){try{document.dispatchEvent(new CustomEvent('rep-reflow'));}catch(e){}}
-function place(){if(!panel||!opener)return;var r=wrap.getBoundingClientRect(),blk=opener.closest('.panel')||opener.parentElement;
+document.addEventListener('rep-view',function(e){var d=e.detail;band=d&&isFinite(d.top)&&isFinite(d.bottom)&&d.bottom>d.top?{top:d.top,bottom:d.bottom}:null;});
+function seen(){if(root.classList.contains('rep-portal'))return band;var h=document.querySelector('.rep-stickyhead'),top=0;
+if(h){var p=getComputedStyle(h).position;if(p==='sticky'||p==='fixed')top=Math.max(0,h.getBoundingClientRect().bottom);}return {top:top+window.scrollY,bottom:window.innerHeight+window.scrollY};}
+function at(a){return a.getBoundingClientRect().top+window.scrollY;}
+function aim(view){var n=at(opener),h=panel.offsetHeight,hd=panel.querySelector('.cardhead'),top=n-(hd?hd.getBoundingClientRect().top-panel.getBoundingClientRect().top:0);
+if(view){var vt=n-view.above+GAP,vb=n+view.below-GAP;if(top+h>vb)top=vb-h;if(top<vt)top=vt;}panel._off=Math.round(Math.max(0,top)-n);}
+function place(){if(!panel||!opener)return;var r=wrap.getBoundingClientRect();
 panel.style.width=panel._w+'px';panel.style.left=Math.round(r.right+window.scrollX+(panel._mode==='wide'?GW:GN))+'px';
-panel.style.top=Math.round(blk.getBoundingClientRect().top+window.scrollY)+'px';}
+panel.style.top=Math.round(at(opener)+panel._off)+'px';}
 function fill(n){var card=document.getElementById('c'+n);if(!card)return false;var c=card.cloneNode(true);c.removeAttribute('id');c.setAttribute('data-card-of','c'+n);
 [].forEach.call(c.querySelectorAll('[id]'),function(e){e.removeAttribute('id');});[].forEach.call(c.querySelectorAll('label.pick'),function(e){e.parentNode.removeChild(e);});
 if(!c.querySelector('.copy-fi')&&words.content){var ask=c.querySelector('.ask-fi'),cp=words.content.querySelector('.copy-fi');if(ask&&cp)ask.parentNode.insertBefore(cp.cloneNode(true),ask);}
@@ -2565,9 +2577,10 @@ var x=panel.querySelector('.cp-close');x.setAttribute('aria-label',words.getAttr
 panel.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.ask-fi'),of=b&&b.closest('[data-card-of]'),o=of&&document.getElementById(of.getAttribute('data-card-of')),ob=o&&o.querySelector('.ask-fi');if(!ob)return;e.stopPropagation();ob.click();},true);
 document.body.appendChild(panel);}
 function open(a,room){var n=(a.getAttribute('href')||'').slice(2);if(!document.getElementById('c'+n))return false;if(!panel)build();fill(n);
+var v=seen(),r=a.getBoundingClientRect(),y=r.top+window.scrollY,view=v&&y+r.height>v.top&&y<v.bottom?{above:y-v.top,below:v.bottom-y}:null;
 if(opener&&opener!==a)opener.classList.remove('cite-on');opener=a;a.classList.add('cite-on');panel._mode=room.mode;panel._w=room.w;
 if(room.mode==='narrow'&&!root.classList.contains('rep-narrow'))keepPlace(a,function(){root.style.setProperty('--rep-col',room.col+'px');root.style.setProperty('--rep-left',EDGE+'px');root.classList.add('rep-narrow');});
-place();try{panel.focus({preventScroll:true});}catch(e){panel.focus();}reflowed();return true;}
+panel._off=0;place();aim(view);place();try{panel.focus({preventScroll:true});}catch(e){panel.focus();}reflowed();return true;}
 function shut(){if(!panel)return;var a=opener;panel.parentNode.removeChild(panel);panel=null;opener=null;
 if(root.classList.contains('rep-narrow'))keepPlace(a,function(){root.classList.remove('rep-narrow');root.style.removeProperty('--rep-col');root.style.removeProperty('--rep-left');});
 if(a){a.classList.remove('cite-on');try{a.focus({preventScroll:true});}catch(e){a.focus();}}reflowed();}
