@@ -46,7 +46,7 @@ import { dirname, join } from "node:path";
 import { BUILT } from "./search-policy.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 import { readJson } from "./run-record.mjs";
-import { installWebResearch } from "./web-research-names.mjs";   // the setting, read as the run door reads it
+import { installWebResearch } from "./web-research-install.mjs";   // the setting, read as the run door reads it
 
 /**
  * How a flag's absence is felt by a user. This field is what stops the staff screen lying.

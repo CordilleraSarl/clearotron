@@ -26,7 +26,8 @@
 // handed. The names alone live in web-research-names.mjs, for the modules tool servers do import.
 import { resolveAuthMode } from "./engine/auth.mjs";
 
-import { installWebResearch, OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";
+import { installWebResearch } from "./web-research-install.mjs";
+import { OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";
 import { preflightResearchCredential } from "./driver.config.mjs";
 export { installWebResearch, OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING };
 

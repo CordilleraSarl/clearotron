@@ -38,7 +38,8 @@ test("the snapshot and the run door read the setting the same way, for every val
 });
 
 test("a mistyped value is recorded as a yes or no, never as what was written", () => {
-  const written = "pplx-0123456789abcdef0123456789abcdef0123456789abcdef";
+  // Not key-shaped, so the tree's secret scan has nothing to flag; what is checked is that the value is never copied.
+  const written = "mistyped-QZORVAK-line";
   const s = snap({ [WEB_RESEARCH_SETTING]: written });
   assert.equal(s.webResearch.invalid, true);
   assert.ok(!JSON.stringify(s).includes(written.toLowerCase()) && !JSON.stringify(s).includes(written),

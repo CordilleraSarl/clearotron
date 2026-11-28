@@ -18,16 +18,3 @@ export const PERPLEXITY_KEY = "PERPLEXITY_API_KEY";
 // is refused, which a report reads as "no result". Each part leaves the list when own search runs it. None is listed:
 // own search runs the dictated searches, the meaning re-asks, a Knockout's owner lookups and every stage's questions.
 export const OWN_SEARCH_STILL_PERPLEXITY = Object.freeze([]);
-
-/**
- * The installation's web-research service: `{ service, chosen: true }`; `{ service: null, chosen: false, unset: true }`
- * for an installation that names none; `{ service: null, chosen: true, invalid }` for a value that names no service.
- * Neither null is ever read as a service: the door refuses each by name. PURE: it reads only the
- * environment it is handed, so the flag snapshot and the run door read the setting the same way.
- */
-export function installWebResearch(env = process.env) {
-  const raw = String(env?.[WEB_RESEARCH_SETTING] ?? "").trim().toLowerCase();
-  if (!raw) return { service: null, chosen: false, unset: true };
-  if (WEB_RESEARCH_SERVICES.includes(raw)) return { service: raw, chosen: true };
-  return { service: null, chosen: true, invalid: raw };
-}
