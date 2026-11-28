@@ -905,8 +905,11 @@ export async function preflightEngineTurn(opts = {}) {
   const verdict = await judgeEngineTurn(opts);
   if (verdict.ok) return verdict;
   if (probeVerdictLane(verdict) !== "configuration") return { ...verdict, warning: probeWeatherWarning(verdict) };
-  const detail = verdict.detail ? `\n  engine said: ${verdict.detail}` : "";
-  throw new Error(`[preflight] ${probeFailureText(verdict)}${detail}`);
+  // THE REFUSAL IS THE RUN'S ANSWER, so it carries the product's words and never the engine's: a refused run's reason
+  // reaches the run response and the park record a person reads (design, 2026-11-27). The engine's own words go to
+  // this process's log, the private record a run already keeps, and ride the error for a caller that records them.
+  if (verdict.detail) console.error(`[preflight] ${verdict.engine ?? "the engine"} refused the run's check; engine said: ${verdict.detail}`);
+  throw Object.assign(new Error(`[preflight] ${probeFailureText(verdict)}`), { engineSaid: verdict.detail ?? null });
 }
 
 /**

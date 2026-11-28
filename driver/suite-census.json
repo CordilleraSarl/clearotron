@@ -2530,8 +2530,8 @@
           "todos": 0
         },
         "a-resumed-run-keeps-the-engine-it-started-on.pipeline.test.mjs": {
-          "tests": 8,
-          "asserts": 43,
+          "tests": 9,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -4942,8 +4942,8 @@
           "todos": 0
         },
         "engine-probe.test.mjs": {
-          "tests": 55,
-          "asserts": 291,
+          "tests": 56,
+          "asserts": 296,
           "skips": 0,
           "todos": 0
         },
