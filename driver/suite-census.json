@@ -9892,7 +9892,7 @@
         },
         "a-removed-person-loses-their-assistant-too.test.mjs": {
           "tests": 4,
-          "asserts": 15,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
