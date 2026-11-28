@@ -3970,7 +3970,10 @@ async function sayClientConnector({ unitDir, startPaths, hosted, unitEnv, effect
       // NOTHING IS CLAIMED ABOUT A BOX THAT USES NO EDGE. With no audience configured AND no Access
       // challenge in front of the address, there is no question here — a local install is not a
       // misconfigured hosted one, and saying so every time is how a reader learns to skim this.
-      if (configuredAud || read.kind !== "not-fronted") {
+      // AN ADDRESS NOBODY ASKED IS NOT AN EDGE THAT COULD NOT BE REACHED: with nothing published, or an address the check
+      // above refused without asking, the stand-in read is "unreachable", and on a local install that said "the edge
+      // could not be reached" about an edge it does not have (measured on a stranger's install, 2026-11-28).
+      if (configuredAud || (probe && read.kind !== "not-fronted")) {
         const v = audienceVerdict({ configured: configuredAud, read });
         if (v.ok) ok(v.message);
         // A COULD-NOT-LOOK IS SAID, NOT RAISED. The line above has already reported the address as
