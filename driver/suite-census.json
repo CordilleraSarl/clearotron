@@ -9243,6 +9243,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-snapshot-says-who-runs-web-research.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "the-source-offer-names-a-commit-on-a-packaged-install.test.mjs": {
           "tests": 4,
           "asserts": 10,
