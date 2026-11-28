@@ -33,7 +33,7 @@ import { createServer } from "node:http";
 import { pinEnv } from "../../shared/env-aliases.mjs";
 
 const { buildFixture, RUN_ID } = await import("./_fixture.mjs");
-const { makeHttpHandler } = await import("../lib/http-handler.mjs");
+const { makeHttpHandler, ACCESS_WITHDRAWN } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
 const { mcpServe } = await import("../lib/mcp-serve.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
@@ -100,7 +100,10 @@ test("the request AFTER the removal is refused, and says why in words the holder
   const said = await refusal(token);
   assert.ok(said, "a removed person's next request went through — the key held its reach");
   assert.match(said, /403/);
-  assert.match(said, /withdrawn/);
+  // The owner's approved words, character for character (2026-11-28).
+  assert.equal(ACCESS_WITHDRAWN, "Your access to this installation has been withdrawn. Ask the administrator to restore it, then try again.");
+  assert.ok(said.includes(ACCESS_WITHDRAWN), `the refusal is not the approved sentence: ${said}`);
+  assert.doesNotMatch(said, /session/i, "the refusal still sends the holder to a session the door no longer keeps");
   // NOT "expired", NOT "invalid key". Somebody reading this in their assistant has to know that the
   // answer is to ask whoever manages the installation, not to reconnect.
   assert.doesNotMatch(said, /expired|invalid/i);
