@@ -9,10 +9,12 @@
 // is told the answers are missing, in the approved words; with no other writer repair the run keeps the check's flag
 // for the reviewer and delivers; and a grounded partial block satisfies the check, an unsupported answer being omitted
 // honestly. Here the writer's first record has no answers, once beside a narrative fault that owes it a repair and once
-// alone. The engine is the mock; every name is invented.
+// alone. Against the same run with its block present, asking for it in the owed repair starts no writer turn and no
+// engine session, and the published page draws exactly the answers the record carries. The engine is the mock; every
+// name is invented.
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, chmodSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, chmodSync, readdirSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -58,8 +60,18 @@ async function runPipeline(engine, knobs) {
   const events = readFileSync(driverDir(res.runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
   let prompts = [];
   try { prompts = readFileSync(calls, "utf8").trim().split("\n").map((l) => String(JSON.parse(l).prompt ?? "")); } catch { /* no call logged */ }
-  return { res, events, prompts };
+  // The page the run published: one report folder under the pool, its report.html.
+  const pool = join(root, "pool");
+  const pages = readdirSync(pool, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => join(pool, e.name, "report.html"))
+    .filter((f) => existsSync(f));
+  assert.equal(pages.length, 1, `premise: the run published one report, found ${pages.length}`);
+  return { res, events, prompts, page: readFileSync(pages[0], "utf8") };
 }
+/** Every writer session the run started, by its trigger: the fresh turn and each repair. */
+const writerTurns = (events) => events.filter((e) => e.event === "stage" && e.stage === "synthesis").map((e) => e.trigger ?? "fresh");
+/** The four-answer rows the page draws, label and text, in the order the page shows them. */
+const answerRows = (page) => [...page.matchAll(/<div class="fa-row"><span class="fa-k">([^<]*)<\/span><span class="fa-v">([\s\S]*?)<\/span><\/div>/g)]
+  .map((m) => ({ label: m[1], text: m[2].replace(/<[^>]+>/g, "") }));
 const writerRepairs = (events) => events.filter((e) => e.event === "stage" && e.stage === "synthesis" && e.trigger === "lint-repair");
 const answersOf = (runDir) => JSON.parse(readFileSync(join(runDir, "findings.json"), "utf8")).four_answers ?? null;
 
@@ -84,13 +96,36 @@ for (const engine of Object.keys(ENGINES)) {
     assert.equal(res.ok, true, JSON.stringify(res));
   });
 
+  test(`${engine}: the block asked for in that repair adds no writer turn, and the page shows the one answer it grounded`, async () => {
+    // The same run with its block present owes the same one repair for the narrative fault: the comparison that says
+    // whether asking for the block cost a turn.
+    const owed = await runPipeline(engine, { MOCK_NARRATIVE_OVER_CAP: "1" });
+    const asked = await runPipeline(engine, { MOCK_NO_FOUR_ANSWERS: "1", MOCK_NARRATIVE_OVER_CAP: "1" });
+    assert.deepEqual(writerTurns(owed.events), ["fresh", "lint-repair"], "premise: the narrative fault owes one writer repair");
+    assert.deepEqual(writerTurns(asked.events), writerTurns(owed.events), "asking for the block started a writer turn of its own");
+    assert.equal(asked.prompts.length, owed.prompts.length, "asking for the block started an engine session the run did not otherwise start");
+    // The page: the answer the repair grounded, with its token and its basis, and no row for the three it left out.
+    const rows = answerRows(asked.page);
+    assert.deepEqual(rows.map((r) => r.label), ["Registrability"], "the page does not show exactly the one answer the repair grounded");
+    assert.match(rows[0].text, /^Registrable — The coined mark is inherently distinctive for the filed goods\./);
+    assert.match(rows[0].text, /the assessment of the mark and the register coverage/, "the answer's basis is not on the page");
+    // And the run whose block was there all along shows its own answer, so the reading above reads the page's rows.
+    assert.deepEqual(answerRows(owed.page).map((r) => r.label), ["Third-party rights"]);
+  });
+
   test(`${engine}: with no other writer repair, the run keeps the check's flag and delivers, and sends no repair for it`, async () => {
-    const { res, events, prompts } = await runPipeline(engine, { MOCK_NO_FOUR_ANSWERS: "1" });
+    const { res, events, prompts, page } = await runPipeline(engine, { MOCK_NO_FOUR_ANSWERS: "1" });
     assert.equal(writerRepairs(events).length, 0, "a writer repair was started for the missing block alone");
     assert.ok(!prompts.some((p) => p.includes(FOUR_ANSWERS_REPAIR_LINE)));
     const lint = events.filter((e) => e.event === "predelivery-lint-failed").at(-1);
     assert.ok(lint?.failures?.includes(FOUR_ANSWERS_CHECK), "the flag for the reviewer is gone");
     assert.equal(answersOf(res.runDir), null);
     assert.equal(res.ok, true, JSON.stringify(res));
+    // No writer turn beyond a clean run's, and a page that invents no answer.
+    const clean = await runPipeline(engine, {});
+    assert.deepEqual(writerTurns(events), ["fresh"]);
+    assert.equal(prompts.length, clean.prompts.length, "the missing block alone started an engine session a clean run does not");
+    assert.deepEqual(answerRows(page), [], "the page shows an answer the writer never gave");
+    assert.ok(answerRows(clean.page).length > 0, "premise: a clean run's page draws its answer rows");
   });
 }
