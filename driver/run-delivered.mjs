@@ -17,6 +17,7 @@ import { config } from "./driver.config.mjs";
 import { registerAdapter } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { note, runLog } from "./log.mjs";
 import { markLogos, logosStep } from "./mark-logos.mjs";
+import { freezePictures, clearancePages } from "./web-pictures.mjs";
 import { NOT_COMPLETED_DIR } from "./parts-not-completed.mjs";
 import { deliveryForRun } from "./profiles.mjs";
 import { finalStepFields, readRunStatus, recordTransition, signoffPatch, writeRunStatus } from "./progress.mjs";
@@ -74,6 +75,13 @@ export async function deliveryEndState({ P, agent, ctx, job, run, opts = {} }) {
       // cited registration whose record carries a logo, from this run's own register. It never stops the publish.
       logosStep(run.runDir, await markLogos(run.runDir, { findingsPath: P.findings, provider: (() => { try { return registerAdapter(ctx.register ?? null); } catch { return null; } })(),
         injectedFetcher: Boolean(opts.recordFetcher), agentId: agent }));
+      // THE WEB PICTURES the step beside the writer has finished, for the cards as published (web-pictures.mjs). It
+      // waits for nothing: what is not ready now is not in the report, and nothing republishes it later.
+      try {
+        const final = JSON.parse(readFileSync(P.findings, "utf8"));
+        const { counts } = freezePictures(run.runDir, ctx.pictureStep ?? null, clearancePages(final.findings ?? []));
+        runLog(run.runDir, { event: "web-pictures", ...(counts ?? {}) });
+      } catch (e) { runLog(run.runDir, { event: "web-pictures-failed", cause: String(e?.message ?? e).slice(0, 200) }); }
       published = await publishReport({
         runId: `${run.slug}-${run.date}-${run.codename}`, codename: run.codename,
         reportMd: P.report, auditMd: P.audit, findingsJson: P.findings, poolRoot: config.poolRoot, poolUrl: config.poolUrl,
