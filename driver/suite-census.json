@@ -23,7 +23,7 @@
       "perFile": {
         "a-backgrounded-install-can-actually-run-a-clearance.test.mjs": {
           "tests": 10,
-          "asserts": 51,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
@@ -1534,8 +1534,8 @@
           "todos": 0
         },
         "a-knockout-sweeps-through-the-runs-own-search.test.mjs": {
-          "tests": 14,
-          "asserts": 70,
+          "tests": 13,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
@@ -2626,8 +2626,8 @@
           "todos": 0
         },
         "a-run-keeps-the-web-research-it-started-on.pipeline.test.mjs": {
-          "tests": 6,
-          "asserts": 25,
+          "tests": 5,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -2704,8 +2704,8 @@
           "todos": 0
         },
         "a-run-whose-searches-are-its-own-keeps-one-search-service.test.mjs": {
-          "tests": 10,
-          "asserts": 33,
+          "tests": 9,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
@@ -3725,7 +3725,7 @@
         },
         "an-upgraded-install-keeps-perplexity-only-where-its-runs-show-it.test.mjs": {
           "tests": 4,
-          "asserts": 16,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -9742,8 +9742,8 @@
           "todos": 0
         },
         "web-research-is-one-setting-read-in-one-place.test.mjs": {
-          "tests": 12,
-          "asserts": 84,
+          "tests": 9,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
