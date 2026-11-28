@@ -8,6 +8,7 @@ import { writePark } from "./run-park.mjs";
 import { CLEARANCE_ENDING } from "./run-failed.mjs";
 import { runShell } from "./run-shell.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
+import { startPictureStep, clearancePages, CLEARANCE_PICTURE_SECONDS } from "./web-pictures.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
 import { correctionReading, correctionRows, correctionsExtra, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass } from "./steps/corrections.mjs";
 import { assembleReportMd, buildAskAnswersSection, buildOnlyYouSection, buildReasonedNegativesSection, buildReviewerOpenPointsSection, CODE_BUILT_SECTIONS, reassembleFromTheRecord, recordCorrectionsDelivered } from "./report-assembly.mjs";
@@ -1012,6 +1013,13 @@ async function pipelineInner(job, opts = {}) {
         // point has report.md + senior-eye-review.md on disk too, so the single writer carries all three signals.
     } },
     { name: "overview-and-cards", run: async () => {
+        // THE WEB PICTURES, beside the writer's turns (web-pictures.mjs): from the cards as they stand now. Publication
+        // takes what is ready and waits for nothing; a resume in a new process has no step and records that it ran none.
+        try {
+          const now = JSON.parse(readFileSync(P.findings, "utf8"));
+          ctx.pictureStep = startPictureStep({ cards: clearancePages(now.findings ?? []), seconds: CLEARANCE_PICTURE_SECONDS, compareFrontPages: true,
+            ...(opts.pictureFetcher ? { fetcher: opts.pictureFetcher } : {}) });
+        } catch { ctx.pictureStep = null; }
         // The report's overview and its cards (steps/overview-and-cards.mjs).
         ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }));
     } },
