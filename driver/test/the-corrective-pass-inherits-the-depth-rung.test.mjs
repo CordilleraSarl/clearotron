@@ -22,7 +22,6 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { correctionsExtra } from "../pipeline.mjs";
-import { proseRungDirective } from "../stages.mjs";
 import { depthFor } from "../search-policy.mjs";
 
 const WORLDWIDE = "global-preliminary-search", ONE = "full-country-search";
@@ -44,9 +43,6 @@ test("the corrective dispatch carries no prose rung, as the fresh one carries no
   // call records sections only and says those write-ups are not a field. The corrective pass re-emits the whole narrative, so it
   // must not bring the retired rules back by the door this file was written to watch.
   const P = fixtureP();
-  const retired = proseRungDirective(depth(WORLDWIDE));
-  assert.ok(retired.length > 100, "the fixture built no retired directive, so the comparison below would hold over an empty string");
-  assert.ok(!correctionsExtra(P, depth(WORLDWIDE)).includes(retired), "the corrective dispatch still carries the retired prose rung");
   assert.doesNotMatch(correctionsExtra(P, depth(WORLDWIDE)), /DEPTH OF WRITING/, "the corrective dispatch carries a depth-of-writing rule");
 });
 

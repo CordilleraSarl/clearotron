@@ -3,7 +3,7 @@
 //
 // A RETRIED START_RUN IS THE ORDER IT RETRIED. The id a caller sends is the order's reference and its queue file's name.
 // Sent again while the order waits, after it was refused before starting, or after it finished, it never writes a
-// second order under the same reference; it says what became of the first.
+// second order under the same reference; it answers with the first (already-filed), as it stands.
 import { mkdtempSync, existsSync, renameSync, writeFileSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -39,20 +39,24 @@ test("sent again while it waits, after a refusal before starting, or after it fi
   const first = await call("start_run", order("retry-1"));
   assert.equal(first.structuredContent?.outcome, "queued", text(first));
 
+  const filed = (r) => { const s = r.structuredContent ?? {}; return [r.isError ?? false, s.outcome, s.id, s.state, s.reason]; };
   const whileWaiting = await call("start_run", order("retry-1"));
-  assert.equal(whileWaiting.isError, true);
-  assert.match(text(whileWaiting), /already queued\/processing/);
+  assert.deepEqual(filed(whileWaiting), [false, "already-filed", "retry-1", "waiting", null], text(whileWaiting));
+  assert.deepEqual(jsonFiles(), ["retry-1.json"], "the first order, and no second beside it");
 
-  // The runner refused it at the claim: the marker it leaves, and the reason beside it.
+  // The runner refused it at the claim: the marker it leaves, and the reason beside it. The reason stays in the queue's
+  // record; the answer gives the kind of refusal only.
   renameSync(join(QUEUE, "retry-1.json"), join(QUEUE, "retry-1.failed"));
   writeFileSync(join(QUEUE, "retry-1.failed.reason"), "demo-brand-owner is demo data and cannot run a real clearance.\nnotify: sent\n");
   const afterRefusal = await call("start_run", order("retry-1"));
-  assert.equal(afterRefusal.isError, true);
-  assert.match(text(afterRefusal), /already exists: refused before a run started/);
+  assert.deepEqual(filed(afterRefusal), [false, "already-filed", "retry-1", "refused", null]);
+  assert.equal(afterRefusal.structuredContent.reasonKind, "other", text(afterRefusal));
+  assert.doesNotMatch(JSON.stringify(afterRefusal), /demo data and cannot run/, "the recorded reason is not given");
   assert.ok(!existsSync(join(QUEUE, "retry-1.json")), "no second order was queued");
 
   renameSync(join(QUEUE, "retry-1.failed"), join(QUEUE, "retry-1.done"));
   const afterDelivery = await call("start_run", order("retry-1"));
-  assert.match(text(afterDelivery), /already exists: its run finished/);
+  assert.deepEqual(filed(afterDelivery).slice(0, 4), [false, "already-filed", "retry-1", "delivered"]);
+  assert.equal(afterDelivery.structuredContent.terminal, true, "a delivered order is finished");
   assert.deepEqual(jsonFiles(), [], "nothing new in the queue at any point");
 });

@@ -233,29 +233,25 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   // handoff default: the duplicate-skip notice is a self-contained outbox event packet, not a gateway ping.
   const dupPacket = JSON.parse(readFileSync(join(root, "clearance-outbox", `intake-${velDup[0]}.duplicate.pending`), "utf8"));
   assert.equal(dupPacket.kind, "duplicate-skipped");
-  // ── THE PARK NAMES ITSELF, AND NAMES WHICH PRIOR RUN ──────────────────────────
+  // ── THE PARK NAMES ITSELF, IN PRODUCT WORDS ───────────────────────────────────
   //
   // A dedup park was delivered as silence: an empty queue and no run, which is exactly what an enqueue
   // that vanished looks like. The two want completely different next actions, and the submitter had no
   // way to tell them apart. `clearotron cancel` made this a path operators actually walk.
   //
-  // ASSERTED ON THE SURFACE CLOSEST TO THE SUBMITTER, which is this packet — the issue names it. The
-  // `.reason` sidecar above is the operator's copy and was never the gap.
-  assert.match(dupPacket.text, /matches a matter already in progress|NOT run/i,
-    `the park still reads as silence rather than as a refusal: ${dupPacket.text}`);
-  // WHICH PRIOR RUN. "Duplicate" without "which one" leaves the submitter unable to tell whether the
-  // thing they are waiting for exists — the letter of the criterion with none of its value.
+  // ASSERTED ON THE SURFACE CLOSEST TO THE SUBMITTER, which is this packet. Nobody is given an override
+  // flag or the matter's signature (design, 2026-11-27): the sentence is the approved one with this order's
+  // reference, the earlier order is named only as fields, to a requester whose account holds it, and how
+  // the match was made stays in the `.duplicate.reason` sidecar (asserted below, "matched by: thread").
+  assert.equal(dupPacket.text, `This order was flagged as a duplicate. Order reference: ${velDup[0]}`);
   assert.ok(dupPacket.priorMsgId, "the packet does not say WHICH prior run this collided with");
-  assert.match(dupPacket.text, new RegExp(dupPacket.priorMsgId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
-    `the prior run is a field but not a sentence — the person reading this cannot see it: ${dupPacket.text}`);
-  assert.ok(dupPacket.matterSignature, "the colliding signature is not on the packet");
   assert.ok(dupPacket.priorRecordedAt, "the packet does not say WHEN the prior run was recorded");
-  assert.ok(["thread", "matter-signature"].includes(dupPacket.matchedBy),
-    `the packet does not say which dimension matched: ${dupPacket.matchedBy}`);
-  // THE OVERRIDE IS ON THE PRODUCT PATH AND THIS IS WHERE A PERSON MEETS THE WINDOW, so it is named
-  // here. Without it a hand edit to the ledger is the only route anybody finds.
-  assert.match(dupPacket.text, /dup-override|dupOverride/,
-    `the refusal offers no way through: ${dupPacket.text}`);
+  assert.deepEqual([dupPacket.matterSignature, dupPacket.matchedBy], [undefined, undefined], "the dedup ledger's keys stay in the ledger");
+  assert.doesNotMatch(JSON.stringify(dupPacket), /dup-override|dupOverride/, "no person is given the override flag");
+  // What the notice no longer says, the queue's record still keeps: which earlier order, and how it matched.
+  const velRecord = readFileSync(join(q, `${velDup[0]}.duplicate.reason`), "utf8");
+  assert.match(velRecord, new RegExp(`matches prior msgId ${dupPacket.priorMsgId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`));
+  assert.match(velRecord, /matched by: /);
   // AND IT DOES NOT PROMISE WHAT IT CANNOT KNOW. "The original run will deliver" was true of the happy
   // case and a guess in every other; the packet names the run instead and lets the reader look.
   assert.doesNotMatch(dupPacket.text, /has been notified|will follow up/i,
@@ -282,7 +278,7 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   assert.ok(!existsSync(join(q, "ovr-force.duplicate")), "a dupOverride job is never parked as a duplicate");
 
   // (5) and (6): each company and each Generic organisation ran its matter once; only the same owner's re-send parked,
-  // and it named its own owner's earlier order. Nothing anywhere names the other owner's order.
+  // and its notice names its own owner's earlier order, as a field. Nothing anywhere names the other owner's order.
   const reasonOf = (b) => readFileSync(join(q, `${b}.duplicate.reason`), "utf8");
   const packetOf = (b) => readFileSync(join(root, "clearance-outbox", `intake-${b}.duplicate.pending`), "utf8");
   for (const [pair, other, otherMsg] of [[["own-a", "own-a2"], "own-b", "<own-b@x>"], [["gen-1", "gen-1b"], "gen-2", "<gen-2@x>"]]) {
@@ -293,7 +289,7 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
     assert.equal(ran.length, 1, `${pair}: the same owner's matter did not run exactly once (ran ${ran})`);
     const ownMsg = `<${ran[0]}@x>`;
     assert.match(reasonOf(parked[0]), new RegExp(`matches prior msgId ${ownMsg}`), "the re-send's reason does not name its own earlier order");
-    assert.ok(JSON.parse(packetOf(parked[0])).text.includes(ownMsg), "the re-send's notice does not name its own earlier order");
+    assert.equal(JSON.parse(packetOf(parked[0])).priorMsgId, ownMsg, "the re-send's notice does not name its own earlier order");
     for (const b of pair) {
       for (const text of [existsSync(join(q, `${b}.duplicate.reason`)) ? reasonOf(b) : "", existsSync(join(q, `${b}.duplicate`)) ? packetOf(b) : ""]) {
         assert.ok(!text.includes(otherMsg), `${b}: a reason or notice names another owner's order`);
@@ -316,12 +312,10 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   for (const f of dupPackets) {
     const pk = JSON.parse(readFileSync(join(outbox, f), "utf8"));
     assert.equal(pk.kind, "duplicate-skipped");
-    // This was reworded: it named no prior run, so a submitter could not tell a refusal
-    // from a lost job. Asserted on the property rather than on the old phrase.
-    assert.match(pk.text, /matches a matter already in progress|NOT run/i,
-      `the park reads as silence rather than as a refusal: ${pk.text}`);
-    assert.ok(pk.priorMsgId && pk.text.includes(pk.priorMsgId),
-      `every parked duplicate must name WHICH prior run it collided with: ${pk.text}`);
+    // It says it is a refusal, in the approved words with its own reference, so a submitter can tell it from a lost
+    // job; the earlier order it collided with is a field, for a requester whose account holds it.
+    assert.equal(pk.text, `This order was flagged as a duplicate. Order reference: ${pk.base}`);
+    assert.ok(pk.priorMsgId, `every parked duplicate must name WHICH prior run it collided with: ${JSON.stringify(pk)}`);
   }
   assert.equal(readdirSync(outbox).filter((f) => f.endsWith(".failed.pending") && f.startsWith("intake-")).length, 0,
     "no intake-rejected packets");

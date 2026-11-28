@@ -29,26 +29,17 @@ process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "audit-chain-test-secret";
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 
 const { buildFixture, buildRichRun, RUN_ID, RUN_ID2 } = await import("./_fixture.mjs");
 const { makeHttpHandler } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
+const { mcpServe } = await import("../lib/mcp-serve.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
 const { mintToken } = await import("../../shared/scope.mjs");
 const { mcpToolCall } = await import("../../driver/portal-mcp-client.mjs");
 
-async function createSession(sessions, scope, owner = null) {
-  const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-  const server = makeServer({ scope, local: false });
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
-    onsessioninitialized: (id) => sessions.set(id, { server, transport, lastSeen: Date.now(), email: owner, sub: scope?.sub ?? null, kind: scope?.kind ?? null }),
-  });
-  transport.onclose = () => { if (transport.sessionId) sessions.delete(transport.sessionId); };
-  await server.connect(transport);
-  return transport;
-}
+// The doors' own composition: each request is answered by a server built from that request's scope.
+const serve = mcpServe((scope) => makeServer({ scope, local: false }));
 
 // THE PLANT. The fixture's audit trail is clean prose, so an assertion that no internal marker reaches a
 // client would pass on it vacuously. These two lines are the specimen: `[internal]` is the form the MCP
@@ -82,14 +73,14 @@ before(async () => {
 
   const mk = async (opts, ns) => {
     const srv = createServer(makeHttpHandler({ verify: null, devMode: true, limiter: new RateLimiter({ perMinute: 500 }),
-      sessions: new Map(), createSession, ns, ...opts }));
+      serve, ns, ...opts }));
     await new Promise((r) => srv.listen(0, "127.0.0.1", r));
     return [srv, `http://127.0.0.1:${srv.address().port}`];
   };
   [clientSrv, clientUrl] = await mk({ clientSurface: true, tokenOnly: false }, "audit-chain-client");
   [staffSrv, staffUrl] = await mk({}, "audit-chain-staff");
 });
-after(() => { for (const s of [clientSrv, staffSrv]) { try { s?.close(); } catch { /* best-effort */ } } });
+after(() => { for (const s of [clientSrv, staffSrv]) { try { s?.closeAllConnections?.(); s?.close(); } catch { /* best-effort */ } } });
 
 const ACME = () => mintToken({ scope: "account", sub: "lawyer@acme.example", accounts: ["acme"], ttlSec: 3600 });
 const MYRKUR = () => mintToken({ scope: "account", sub: "counsel@myrkur.example", accounts: ["myrkur"], ttlSec: 3600 });
@@ -251,17 +242,23 @@ test("a forwardable report-link token still reads the report and nothing of the 
 // ---- 5. THE OTHER DOOR TO THE SAME BYTES --------------------------------------------------------
 
 // A test-local transport driver, because portal-mcp-client exports only mcpToolCall and the product has
-// no reason to grow a Resources client for a test. It duplicates the SDK handshake, never a policy rule —
-// every gate this exercises still lives in server.mjs.
-async function mcpRaw(token, method, params) {
-  const endpoint = `${clientUrl}/mcp`;
-  const h = (extra = {}) => ({ "content-type": "application/json", accept: "application/json, text/event-stream", "x-trademark-token": token, ...extra });
-  const init = await fetch(endpoint, { method: "POST", headers: h(), body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-03-26", capabilities: {}, clientInfo: { name: "audit-chain-test", version: "1" } } }) });
-  const sid = init.headers.get("mcp-session-id");
-  await init.text();
-  const res = await fetch(endpoint, { method: "POST", headers: h({ "mcp-session-id": sid }), body: JSON.stringify({ jsonrpc: "2.0", id: 2, method, params }) });
-  return await res.text();
+// no reason to grow a Resources client for a test. It sends ONE request in the protocol's newer revision, which has no
+// handshake and no session (design, 2026-11-27): the revision, method and name ride the headers, and what the
+// handshake carried rides `_meta`. It duplicates the wire shape, never a policy rule — every gate this exercises still
+// lives in server.mjs.
+const PROTOCOL_VERSION = "2026-07-28";
+const NAMED_BY = { "tools/call": "name", "resources/read": "uri", "prompts/get": "name" };   // what `Mcp-Name` must repeat
+function mcpRawResponse(token, method, params, extraHeaders = {}) {
+  const name = NAMED_BY[method] ? params?.[NAMED_BY[method]] : undefined;
+  return fetch(`${clientUrl}/mcp`, { method: "POST",
+    headers: { "content-type": "application/json", accept: "application/json, text/event-stream", "x-trademark-token": token,
+      "mcp-protocol-version": PROTOCOL_VERSION, "mcp-method": method, ...(name !== undefined ? { "mcp-name": name } : {}), ...extraHeaders },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 2, method, params: { ...params, _meta: {
+      "io.modelcontextprotocol/protocolVersion": PROTOCOL_VERSION,
+      "io.modelcontextprotocol/clientInfo": { name: "audit-chain-test", version: "1" },
+      "io.modelcontextprotocol/clientCapabilities": {} } } }) });
 }
+const mcpRaw = async (token, method, params) => (await mcpRawResponse(token, method, params)).text();
 
 test("the Resources surface agrees with the tool surface, kind for kind", async () => {
   // Two surfaces disagreeing about one grant is the defect shared/scope.mjs cites twice. read_artifact
@@ -281,6 +278,28 @@ test("the Resources surface agrees with the tool surface, kind for kind", async 
   assert.match(denied, /may only read the report/, "a report link read the audit trail as a resource");
   const sealed = await mcpRaw(acme, "resources/read", { uri: `trademark://run/${RUN_ID}/status.json` });
   assert.match(sealed, /not readable by a client account/, "a sealed artifact was served as a resource");
+});
+
+test("a session id carries no reach: each request is served from its own key, in either revision, and none is handed out", async () => {
+  // The door used to refuse a session id it did not know (404) and a first request that was not `initialize` (400).
+  // There are no sessions now (design, 2026-11-27): a stale id must be ignored, never honoured, and the key on the
+  // request decides what it reaches. Driven through the real handler, because that is where the header is read.
+  const uri = `trademark://run/${RUN_ID}/audit`;
+  const stale = { "mcp-session-id": "stale-3f9c1d2e-0000-4000-8000-000000000000" };
+  const fresh = await mcpRawResponse(ACME(), "resources/read", { uri }, stale);
+  assert.equal(fresh.status, 200, "a request carrying a stale session id was refused");
+  assert.equal(fresh.headers.get("mcp-session-id"), null, "the door handed out a session id");
+  assert.ok((await fresh.text()).includes("Audit Trail"), "acme's key, sent with a stale session id, did not read its own audit trail");
+  const link = mintToken({ scope: "user", runId: RUN_ID, ttlSec: 3600 });
+  assert.match(await (await mcpRawResponse(link, "resources/read", { uri }, stale)).text(), /may only read the report/,
+    "a report link sent with the same stale session id was answered with more than its own reach");
+  // The older revision, with no handshake before it and the same stale id: served statelessly, from its own key.
+  const old = await fetch(`${clientUrl}/mcp`, { method: "POST",
+    headers: { "content-type": "application/json", accept: "application/json, text/event-stream", "x-trademark-token": ACME(), ...stale },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 3, method: "resources/read", params: { uri } }) });
+  assert.equal(old.status, 200, "an older-revision request with no handshake before it was refused");
+  assert.equal(old.headers.get("mcp-session-id"), null, "the door handed an older-revision client a session id");
+  assert.ok((await old.text()).includes("Audit Trail"), "the older revision's request was not served from its own key");
 });
 
 // ---- 6. A CITED RECORD'S GOODS, AS THE REGISTER HOLDS THEM ------------------------------------------

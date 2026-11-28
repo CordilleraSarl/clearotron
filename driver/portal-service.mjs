@@ -2446,11 +2446,11 @@ const PORT = PORT_CHOICE.port;
   // drift. This asks the same function and prints what it says.
   if (laneWired) {
     try {
-      const { triggerLaneVerdict, HOSTED, BOOT_PROBE_HEADER } = await import("../shared/trigger-lane.mjs");
+      const { triggerLaneVerdict, laneProbeUrl, HOSTED, BOOT_PROBE_HEADER } = await import("../shared/trigger-lane.mjs");
       let probe = null;
       try {
         // NAMED AS THE PROBE, so the door does not log this expected 401 as a rejection on every start.
-        const res = await fetch(new URL("/mcp", MCP_URL), { method: "GET", redirect: "manual",
+        const res = await fetch(laneProbeUrl(MCP_URL), { method: "GET", redirect: "manual",
           headers: { [BOOT_PROBE_HEADER]: "1" }, signal: AbortSignal.timeout(2500) });
         // THE BODY IS READ BECAUSE THE HEADER DOES NOT SEPARATE THE TWO DOORS. A proxy-fronted door and
         // a key door both refuse with 401 and no `www-authenticate`; each names the credential it wants
@@ -2478,13 +2478,15 @@ const PORT = PORT_CHOICE.port;
       // So the two unambiguous states pass straight through, and the ambiguous one is REPORTED rather
       // than judged — with the mechanism, so a reader knows what to look at. Claiming more than was
       // measured is how a check starts refusing deployments that work.
-      if (lane.state === "fail") log(`WARNING: trigger lane — ${lane.message}`);
+      // The operator's own log keeps the connection's error beside the verdict, for diagnosing it on this box.
+      const laneDetail = lane.detail ? ` (${lane.detail})` : "";
+      if (lane.state === "fail") log(`WARNING: trigger lane — ${lane.message}${laneDetail}`);
       // NOT `WARNING:`. A connection nothing answered at boot is a startup race far
       // more often than an outage — the units carry no ordering, so the portal routinely binds first —
       // and the old text stated an outage in the present tense with a 502 attached to it. It printed on
       // every reboot, on boxes that were fine. Reserving `WARNING:` for what did answer wrongly is what
       // keeps the word meaning something on the day the lane is genuinely down.
-      else if (lane.state === "unsettled" || lane.state === "unprobed") log(`trigger lane: ${lane.message}`);
+      else if (lane.state === "unsettled" || lane.state === "unprobed") log(`trigger lane: ${lane.message}${laneDetail}`);
       else if (probe?.challenge && /bearer/i.test(probe.challenge)) {
         log(`trigger lane: the engine door answered ${probe.status} with an OAuth challenge, so an identity `
           + "proxy is in front of it. This portal presents an ACCESS KEY, not a proxy identity, and whether "

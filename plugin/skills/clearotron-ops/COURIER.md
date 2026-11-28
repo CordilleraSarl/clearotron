@@ -31,12 +31,12 @@ You are the courier, not the author.
    is owed this notice as they are owed a report, and only `mark_sent` settles it. An `ack_event` leaves it
    owed, and the notice goes out again on the next sweep.
 
-4. **`kind: "intake-rejected"`** — a request died at validation; `text` says why. For a `clarify`,
-   the fix is a question back to the requester — thread it on the packet's `msgId`. Then
-   **`ack_event { file }`**.
+4. **`kind: "intake-rejected"`** — a request died at validation. Send the packet’s not-started text. Its errors
+   list is empty and reasonKind identifies the check. For a `clarify`, the fix is a question back to the
+   requester — thread it on the packet's `msgId`. Then **`ack_event { file }`**.
 
 5. **`kind: "duplicate-skipped"`** — the dedup gate parked a re-submission (no second spend).
-   Relay `text` (it explains the confirmed-re-run path). Then **`ack_event { file }`**.
+   Relay `text`. Then **`ack_event { file }`**.
 
 6. **`kind: "late-bind-ack"`** — a mid-run context binding was folded in; relay the one-liner.
    Then **`ack_event { file }`**.

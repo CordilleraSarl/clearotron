@@ -131,7 +131,7 @@ export function accountFindingList(result) {
 // surface"), so what has to go is the run's INTERNAL ROUTING — `agent` (which workspace ran it), `url`
 // (the staff-side link) — and the raw failure string.
 const RUN_FIELDS = ["runId", "codename", "slug", "state", "product", "markName", "classes", "created",
-  "updated", "delivered", "sendPending", "failedStage", "location"];
+  "updated", "delivered", "sendPending", "location"];
 const STAGE_FIELDS = ["stage", "trigger", "ok", "attempts", "outputWritten", "summary"];
 
 export function accountRun(result, { brandName = "The firm" } = {}) {
@@ -311,7 +311,8 @@ export function accountTimeline(result, { brandName = "The firm" } = {}) {
     const out = pick(t, TIMELINE_FIELDS);
     // A failed ATTEMPT keeps the fact and loses the cause string; a failed RUN gets the client sentence.
     if (t.kind === "attempt" && t.fail != null) out.failed = true;
-    if (t.decision === "run-failed") { out.reason = CLIENT_FAILURE_NOTE(brandName); out.reasonRedacted = true; }
+    // The stage it stopped at stays in the run's record with the reason (design, 2026-11-27).
+    if (t.decision === "run-failed") { delete out.stage; out.reason = CLIENT_FAILURE_NOTE(brandName); out.reasonRedacted = true; }
     return out;
   };
   return {

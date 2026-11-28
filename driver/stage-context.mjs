@@ -228,6 +228,10 @@ const UNDECLARED = {
   "matter-frame": (P) => [
     { path: P.inboundRequest, kind: "conditional",
       why: "the prompt names it only when job.rawRequest exists; undeclared because matter-frame has no upstream to go stale against" },
+    // An order that names no goods of its own has its goods and use lines, and the frame's instructed scope, filled from
+    // what its request states. Without it an arm frames such an order as if its request stated nothing.
+    { path: paths(P.runDir).statedFacts, kind: "driver-side",
+      why: "statedSlot and the frame record fill a goods-less order's goods and use from it (stated-facts.mjs); written at intake" },
   ],
   // The half-grid spec sidecar the message hands the plugin as grid_spec_path. Undeclared, derived in
   // pipeline() — which is precisely why `--experiment common-law-half` could not run at all.

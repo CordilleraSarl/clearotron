@@ -16,8 +16,7 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { buildFixture, buildRichRun, RUN_ID2 } from "./test/_fixture.mjs";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT || 18799);
@@ -34,7 +33,8 @@ buildRichRun();
 // everything — the read-all this smoke has always assumed, now stated out loud instead of relied on by
 // omission.
 const grantsFile = join(tmpdir(), `http-smoke-grants-${process.pid}.json`);
-writeFileSync(grantsFile, JSON.stringify({ tenants: { smoke: { accounts: "*", users: { "*@disabled": "*" } } } }));
+// A whole organisation is no longer `accounts: "*"` (the grants file refuses it); a person who sees everything is.
+writeFileSync(grantsFile, JSON.stringify({ tenants: {}, people: { "local-test@disabled": { everything: true } } }));
 
 const child = spawn("node", [join(here, "http-server.mjs")], {
   env: { ...process.env, TRADEMARK_MCP_AUTH_DISABLED: "1", TRADEMARK_MCP_DEV: "1", TRADEMARK_MCP_HTTP_PORT: String(PORT), TRADEMARK_MCP_HTTP_HOST: "127.0.0.1", CLEAROTRON_ACCESS_FILE: grantsFile },
@@ -53,7 +53,7 @@ await new Promise((resolve, reject) => {
   child.on("exit", (c) => { clearTimeout(to); reject(new Error(`http-server exited early (${c})`)); });
 });
 
-const client = new Client({ name: "http-smoke", version: "0" }, { capabilities: {} });
+const client = new Client({ name: "http-smoke", version: "0" }, { capabilities: {}, versionNegotiation: { mode: "auto" } });
 await client.connect(new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${PORT}/mcp`)));
 
 const { tools } = await client.listTools();

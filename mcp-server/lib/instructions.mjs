@@ -10,9 +10,10 @@
 // the endpoint never saw it, so none of it reached the assistant actually talking to them — the only steer
 // that travelled was the `_note` riding on tool output.
 //
-// MCP has a field for exactly this: `instructions` on the initialize result, which the client surfaces to
-// its model on connect. Verified present in the SDK we ship (@modelcontextprotocol/sdk 1.29.0 —
-// `ServerOptions.instructions`, and `instructions` on InitializeResult in the protocol types).
+// MCP has a field for exactly this: `instructions`, which the client surfaces to its model on connect. In the
+// protocol's older revision it rides the initialize result; in the 2026-07-28 revision, the `server/discover` result.
+// The SDK we ship (`@modelcontextprotocol/server` 2.4.0, `ServerOptions.instructions`) puts it on both: measured on the
+// local door's `server/discover` answer, 2026-11-27.
 //
 // A NOTE ON A COMMENT YOU WILL FIND NEARBY. server.mjs says some clients "do not forward MCP
 // server-level instructions", which is true and was correctly verified — but it is a statement about ONE

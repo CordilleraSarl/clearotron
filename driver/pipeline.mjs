@@ -8,6 +8,7 @@ import { writePark } from "./run-park.mjs";
 import { CLEARANCE_ENDING } from "./run-failed.mjs";
 import { runShell } from "./run-shell.mjs";
 import { deliveryEndState } from "./run-delivered.mjs";
+import { startPictureStep, clearancePages, CLEARANCE_PICTURE_SECONDS } from "./web-pictures.mjs";
 import { StageFailure, buildFailurePacket, isDesignedRefusal, stageWallFields, terminalReasonFields } from "./run-outcome.mjs";
 import { correctionReading, correctionRows, correctionsExtra, flagOrdinals, recordCorrectionsBasis, repairUnnamedRemovals, rollbackCorrectivePass } from "./steps/corrections.mjs";
 import { assembleReportMd, buildAskAnswersSection, buildOnlyYouSection, buildReasonedNegativesSection, buildReviewerOpenPointsSection, CODE_BUILT_SECTIONS, reassembleFromTheRecord, recordCorrectionsDelivered } from "./report-assembly.mjs";
@@ -781,7 +782,7 @@ async function pipelineInner(job, opts = {}) {
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
   // paraphrase drift between the request and the frame is a defect, not a style choice.
   try {
-    const scope = instructedScopeToWrite(job, { jobRebuiltFromStatus: opts.jobRebuiltFromStatus, scopeOnDisk: existsSync(P.instructedScope) }); if (scope) writeFileSync(P.instructedScope, JSON.stringify(scope, null, 2) + "\n");
+    const scope = instructedScopeToWrite(job, { jobRebuiltFromStatus: opts.jobRebuiltFromStatus, scopeOnDisk: existsSync(P.instructedScope) }); if (scope) { writeFileSync(P.instructedScope, JSON.stringify(scope, null, 2) + "\n"); writeStatedFacts(P, job); }   // what the order states, kept with its source (stated-facts.mjs)
   } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
   // THE STORED DEFAULTS THE ENGINE CANNOT SEARCH — recorded by the run, not only by the plan preview.
   //
@@ -1012,6 +1013,13 @@ async function pipelineInner(job, opts = {}) {
         // point has report.md + senior-eye-review.md on disk too, so the single writer carries all three signals.
     } },
     { name: "overview-and-cards", run: async () => {
+        // THE WEB PICTURES, beside the writer's turns (web-pictures.mjs): from the cards as they stand now. Publication
+        // takes what is ready and waits for nothing; a resume in a new process has no step and records that it ran none.
+        try {
+          const now = JSON.parse(readFileSync(P.findings, "utf8"));
+          ctx.pictureStep = startPictureStep({ cards: clearancePages(now.findings ?? []), seconds: CLEARANCE_PICTURE_SECONDS, compareFrontPages: true,
+            ...(opts.pictureFetcher ? { fetcher: opts.pictureFetcher } : {}) });
+        } catch { ctx.pictureStep = null; }
         // The report's overview and its cards (steps/overview-and-cards.mjs).
         ({ applyRatedUnderFrontMatter, applyScopeFrontMatter, applyVerdictFrontMatter, assembledOrdinals, byRight, cardOrdinals, findingsForCards, groupedMembers, overviewOpen, rebuildTheDeliveredRecord, restoreTheBrokenRecord, rov, writeScopeFacts, writeUps } = await runOverviewAndCards({ P, applyCoverageFloor, clampOnTheWritersDuty, ctx, followTheRecordsActions, job, run, runState, saveTheLabel, writeVerdictSidecar }));
     } },
@@ -1774,6 +1782,11 @@ const RETIRED_ENV = {
   CLEAROTRON_NATIVE_LANGUAGE_JA: ["2026-11-11", "a native-language lane runs wherever the run's frozen lane decision carries it; there is no per-language off switch"],
   CLEAROTRON_NATIVE_LANGUAGE_KO: ["2026-11-11", "a native-language lane runs wherever the run's frozen lane decision carries it; there is no per-language off switch"],
   CLEAROTRON_RECIPES_MODE: ["2026-07-27", "a saved search is honoured wherever it resolves"],
+  // The two HTTP doors' session settings, deleted with their sessions.
+  TRADEMARK_MCP_SESSION_TTL_MS: ["2026-11-27", "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set, and the setting does nothing: delete the line"],
+  TRADEMARK_MCP_SESSION_MAX: ["2026-11-27", "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set, and the setting does nothing: delete the line"],
+  CLIENT_MCP_SESSION_TTL_MS: ["2026-11-27", "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set, and the setting does nothing: delete the line"],
+  CLIENT_MCP_SESSION_MAX: ["2026-11-27", "the MCP doors keep no sessions: since the protocol's 2026-07-28 revision every request is authenticated, scoped and answered on its own, so there is no session lifetime or session cap to set, and the setting does nothing: delete the line"],
 
   // ── ─────────────────────────────────────────────────────────────────────────────────────
   // THE DELIVERY ONE IS THE REASON THIS TABLE GREW, and it is the only entry here that a deployment
@@ -2175,3 +2188,4 @@ export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scop
 // Hoisted, so placed last: an import at the top would move every line citation into this file.
 import { commandLineRefusal } from "./run-requirements.mjs";
 import { runTables } from "./order-tables.mjs";
+import { writeStatedFacts } from "./stated-facts.mjs";

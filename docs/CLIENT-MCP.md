@@ -39,7 +39,8 @@ shows in a diff of that file.
   API-key door, whose answers are the scrubbed cut, and `staff` for every other session.
 - The six tools that change something (`start_run`, `stop_run`, `feed_context`, `what_if_run`,
   `mark_sent`, `ack_event`) add an `outcome` field that says whether it happened. A refusal answers
-  `outcome: "refused"`, with the refusal's sentence in `reason`.
+  `outcome: "refused"`, with the refusal's sentence in `reason`. `start_run` sent the reference of an order the
+  same company already placed answers `outcome: "already-filed"` with that order's state, and queues nothing.
 - The six report readers (`brief`, `list_findings`, `get_finding`, `list_evidence`, `list_searches`,
   `get_search_coverage`) add a `document` field naming the report document version they read, such as
   `report-document/clearance-1`, or null where they read the run's own files.
@@ -80,7 +81,7 @@ ids to the denylist and strikes them from the record; it does not stop the unit 
 `clearotron disconnect --everyone`, which states how many keys and how many people that is before
 acting — and does not stop the service either.
 
-An `account` principal reaches **eighteen** tools, for its own companies only — everything carrying
+An `account` principal reaches **twenty** tools, for its own companies only — everything carrying
 `accountSafe: true` in `TOOL_SCOPES` (`shared/scope.mjs`), and nothing else:
 
 | Layer | Tools |
@@ -88,8 +89,9 @@ An `account` principal reaches **eighteen** tools, for its own companies only �
 | the report | `brief`, `read_artifact` (the report; `clientSummary` is retired from this face and stays an ops-only internal source), `list_findings` (curated cards) |
 | the evidence behind it | `list_evidence`, `list_searches`, `get_search_coverage` |
 | the audit chain | `read_artifact` over `audit`, `narrative`, `registerFindings`, `commonLaw`, `caseLaw`, `matterContext` and `registerUnit:<axis>`; `list_findings` on the raw `kind` path; `get_finding`, `get_run`, `trace`, `decision_timeline` |
-| the run lifecycle | `list_runs`, `describe_options`, `plan_run`, `start_run`, `stop_run` |
+| the run lifecycle | `list_runs`, `describe_options`, `plan_run`, `start_run`, `order_status`, `stop_run` |
 | what-if | `what_if_plan` (free), `what_if_run` (queues a sandbox job), `what_if_result` (collects it) |
+| the source offer | `server_info` (this server's name, version, licence, source repository and the commit it runs; it reads no run) |
 
 The evidence layer exists because a lawyer defending a filing decision needs the records
 under the report, not just its prose. It projects named structured fields and enums derived from
@@ -227,8 +229,8 @@ long-lived credential pointed at it can spend without limit.
    its own `CLIENT_MCP_HTTP_PORT`, set `CLIENT_MCP_ALLOWED_HOSTS` to the hostname from step 1, keep
    `CLIENT_MCP_ACCOUNT_ACCESS=1` + `CLEAROTRON_ACCESS_FILE`, and drop the CF AUD lines (unused here).
 3. Verify before exposing: `curl 127.0.0.1:<port>/healthz`; the boot log says `API-KEY door — no auth
-   proxy in front`; an MCP `initialize` **without** a key is a 401.
-4. Mint a key, hand it over with the address. `tools/list` must be exactly the eleven `account` tools
+   proxy in front`; an MCP request **without** a key is a 401.
+4. Mint a key, hand it over with the address. `tools/list` must be exactly the twenty `account` tools
    above — anything more means the door resolved a wider principal than `account`.
 
 ## Turning it on
@@ -258,7 +260,8 @@ serve time.
 
 ## What briefs a company's assistant
 
-`skills/clearotron-client/SKILL.md`, served as the MCP `instructions` field on initialize — MCP clients surface
+`skills/clearotron-client/SKILL.md`, served as the MCP `instructions` field (on `initialize` in the protocol's older
+revision, on `server/discover` in its 2026-07-28 revision) — MCP clients surface
 it to their model on connect. It sets voice (plain language, no codes), the tool ladder, the verdict
 vocabulary, evidence drill-through, and the three "never"s.
 

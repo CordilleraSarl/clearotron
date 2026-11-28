@@ -191,7 +191,7 @@ test("the row states the DENOMINATOR it expected and that it recognised nothing"
 
 test("the row never sends a seat to fix an uninstructed rule", () => {
   // THE CALL AT THE MECHANISM, and it rests on reading the directive rather than on taste.
-  // `proseRungDirective` tells the seat WHICH findings get a prose write-up and HOW LONG it may be. It
+  // The retired prose rung told the seat WHICH findings get a prose write-up and HOW LONG it may be. It
   // never asks for the `Finding N — <mark>` heading this check keys on. So a narrative without one
   // breaks no rule the seat was given, and a warm redo would hand it a correction no directive lets it
   // satisfy. A passing row orders no redo and puts no line on the delivery.

@@ -24,12 +24,14 @@
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Result, Run } from '../contract/api.ts'
-import { api, saveFailureText } from '../contract/api.ts'
+import { api, saveFailureText, lastSeenOrders, lastSeenRetiredOrders } from '../contract/api.ts'
+import { receiptPath, type PreRunOrder } from '../contract/orderReceipt.ts'
 import { bandRank } from '../contract/tone.ts'
 import { displayName, newestFirst, readLabel, readLabelParts, readTime, sameDateAsAnother } from '../contract/reads.ts'
 import { marksOf, nameCount, rowsOf, NO_FAMILIES } from '../contract/grouping.ts'
 import type { Families, MarkGroup, Row } from '../contract/grouping.ts'
 import { BOARD_SHARES_FROM, clearancesColumns, pageWindow } from '../contract/listView.ts'
+import { entryKey, ordersInView, withOrders } from '../contract/orderRows.ts'
 import {
   familyLine,
   hasReport,
@@ -168,6 +170,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // identical call, so whichever of the two mounts consumes it; the other asks for itself.
   const { result, reload } = useLoad(() => api.runsMine(), [], 'runs:mine')
   const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
+  // THE ORDERS WITH NO RUN YET, from the same answer as the runs (contract/orderReceipt.ts): being checked, or refused
+  // before any run. Each opens its receipt, the one its Start showed.
+  const allOrders: readonly PreRunOrder[] = result?.kind === 'ok' ? lastSeenOrders() : []
 
   // THE COMPANY FILTER IS THE SIDEBAR SWITCHER. There is one control, and it is in the nav.
   //
@@ -242,6 +247,8 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
     [account, canGroup],
   )
   const retired: readonly Run[] = retiredResult?.kind === 'ok' ? retiredResult.value : []
+  // An order refused before any run, retired, comes back the way a run does: from this tab (design, 2026-11-27).
+  const retiredOrders: readonly PreRunOrder[] = retiredResult?.kind === 'ok' ? lastSeenRetiredOrders() : []
 
   // The comment above is a promise the code has to keep: switching company replaces every row,
   // so a selection made under the previous owner is ticks over rows that no longer exist — the
@@ -360,7 +367,11 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
 
   // Paging and cross-owner disambiguation are decided in contract/listView.ts, where they can be
   // tested — this screen has no DOM harness, so logic left inline here is logic nothing checks.
-  const { current, pageCount, visible, from, to } = pageWindow(rows, page, PAGE)
+  // ONE ROW PER ORDER WITH NO RUN, among the names where its time puts it, on the unfiltered view, and paged with them:
+  // contract/orderRows.ts, where the placing is tested.
+  const orderRows = ordersInView(allOrders, { filter, owner: ownerFilter, level, query })
+  const entries = withOrders(rows, orderRows, { sortBy, grouped })
+  const { current, pageCount, visible, from, to } = pageWindow(entries, page, PAGE)
   const resetPage = () => setPage(0)
   // removed the cross-owner disambiguation chip, and with it the only consumer of ambiguousTitles
   // on this screen. The helper stays in contract/listView.ts with its own tests: introduces an
@@ -412,7 +423,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   //
   // The full-screen first-run stays for an account that genuinely has nothing: there is no filter to
   // undo and nothing to keep on screen. An empty FILTER renders inside the list instead, below.
-  if (!allRuns.length) return <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
+  if (!allRuns.length && !allOrders.length) return <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
 
   // A family is asserted over RUNS, because a mark is a grouping the browser derives rather than
   // anything the pool stores. Ticking a name therefore files every read of it.
@@ -479,6 +490,27 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       after: () => { reload(); reloadRetired() },
     })
   }
+  // AN ORDER THAT NEVER STARTED IS RETIRED BY ITS REFERENCE, and its words say what it is: never a search, so never
+  // "search" (design, 2026-11-27). Its receipt stays at its link, as a retired run's report does.
+  const retireOrder = (o: PreRunOrder) => {
+    const name = o.markName ?? o.reference
+    setAsk({
+      title: 'Retire this order?',
+      body: `The order for ${name}${o.updatedAt ? ` · ${o.updatedAt.slice(0, 10)}` : ''} did not start. It will move to Retired for everyone. Its receipt stays at its link. You can restore it there.`,
+      confirm: 'Retire order',
+      returnTo: `More actions for ${name}`,
+      act: () => api.setRetired({ action: 'retire', runIds: [o.reference] }),
+      done: 'Moved 1 order to Retired.',
+      after: () => { reload(); reloadRetired() },
+    })
+  }
+  const restoreOrder = async (o: PreRunOrder) => {
+    const r = await api.setRetired({ action: 'restore', runIds: [o.reference] })
+    if (r.kind !== 'ok') { setNote(saveFailureText(r)); return }
+    setNote(`Restored the order for ${o.markName ?? o.reference}.`)
+    reload()
+    reloadRetired()
+  }
   const restoreRun = async (run: Run) => {
     const r = await api.setRetired({ action: 'restore', runIds: [run.runId] })
     if (r.kind !== 'ok') { setNote(saveFailureText(r)); return }
@@ -539,12 +571,14 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // The Retired tab follows the same company and search-type narrowing, and the same name search.
   const retiredShown = retired.filter((r) => (!ownerFilter || runKey(r) === ownerFilter) && atLevel(r, level)
     && (!query.trim() || displayName(r).toLowerCase().includes(query.trim().toLowerCase())))
+  // Narrowed as Clearances narrows its order rows (contract/orderRows.ts), by company, search type and name.
+  const retiredOrdersShown = ordersInView(retiredOrders, { filter: 'all', owner: ownerFilter, level, query })
   const tabs: readonly { readonly key: Filter; readonly label: string; readonly count: number }[] = [
     { key: 'all', label: 'All', count: 0 },
     { key: 'progress', label: 'In progress', count: 0 },
     { key: 'finished', label: 'Finished', count: 0 },
     { key: 'failed', label: 'Failed', count: failedCount },
-    ...(canGroup ? [{ key: 'retired' as const, label: 'Retired', count: retired.length }] : []),
+    ...(canGroup ? [{ key: 'retired' as const, label: 'Retired', count: retired.length + retiredOrders.length }] : []),
   ]
 
   return (
@@ -552,7 +586,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       {/* THE TITLE NAMES THE SCREEN AND COUNTS ITS NAMES; "Group names" sits at its right (board Clearances,
           approved 2026-11-25). The lede names the company in view and the allowance, as before. */}
       <PageHeader
-        title={<>Clearances <span className="clr-title-count">{namesLabel(nameCount(rows))}</span></>}
+        title={<>Clearances <span className="clr-title-count">{namesLabel(nameCount(rows) + orderRows.length)}</span></>}
         lede={<>
           {/* No separator after the company: the allowance line is a block of its own beneath it, and
               renders nothing at all above five searches left — a trailing "·" would then point at
@@ -733,7 +767,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                 </td>
               </tr>
             ) : null}
-            {visible.map((r, i) => {
+            {visible.map((e, i) => {
               // A heading row whenever the owner changes. The rows are already sorted, so this needs no
               // separate grouping pass — and it keeps the user's chosen sort intact WITHIN each group
               // rather than silently re-sorting by owner.
@@ -743,24 +777,54 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
               // rows of page 2 sit under no owner at all, which is precisely the confusion — two brand
               // owners' identically-named marks reading as one — that grouping exists to prevent.
               const before = visible[i - 1]
-              const newGroup = grouped && (!before || runKey(r) !== runKey(before))
-              return (
-                <Fragment key={r.id}>
-                  {newGroup ? (
-                    // — A SECTION HEADER, not a decorative divider. This was the smallest,
-                    // lowest-contrast, most letterspaced type on the page, which read as a rule between
-                    // rows rather than as "everything below this belongs to Foxglade Interactive".
-                    <tr className="group-head">
-                      <td colSpan={5 + (showOwnerColumn ? 1 : 0)}>
-                        <span className="owner-name" data-anon="mark">
-                          {ctx.ownerName(runKey(r))}
-                        </span>
-                        <span className="owner-count">
-                          {namesLabel(nameCount(rows.filter((x) => runKey(x) === runKey(r))))}
-                        </span>
+              const key = entryKey(e)
+              const newGroup = grouped && (!before || key !== entryKey(before))
+              // — A SECTION HEADER, not a decorative divider. This was the smallest,
+              // lowest-contrast, most letterspaced type on the page, which read as a rule between
+              // rows rather than as "everything below this belongs to Foxglade Interactive".
+              const heading = newGroup ? (
+                <tr className="group-head">
+                  <td colSpan={5 + (showOwnerColumn ? 1 : 0)}>
+                    <span className="owner-name" data-anon="mark">
+                      {ctx.ownerName(key)}
+                    </span>
+                    <span className="owner-count">
+                      {namesLabel(nameCount(rows.filter((x) => runKey(x) === key)) + orderRows.filter((o) => runKey(o) === key).length)}
+                    </span>
+                  </td>
+                </tr>
+              ) : null
+              if (e.kind === 'order') {
+                const o = e.order
+                return (
+                  <Fragment key={`order-${o.reference}`}>
+                    {heading}
+                    <tr className="read-row openable" onClick={() => ctx.go(receiptPath(o.reference, key))}>
+                      <td className="clr-td-twisty nest-1" />
+                      <td className="clr-td-name">
+                        <b className="clr-search-name"><span data-anon="mark">{o.markName ?? o.reference}</span></b>
+                        {o.updatedAt ? <span className="sub mono" style={{ fontSize: 12.5 }}><span className="nowrap-date">{o.updatedAt.slice(0, 10)}</span></span> : null}
+                      </td>
+                      {showOwnerColumn ? <td>{ctx.ownerName(key)}</td> : null}
+                      <td className="clr-td-status">{o.state === 'refused' ? 'Order did not start' : 'Waiting to start'}</td>
+                      <td className="clr-td-risk"><span style={{ color: 'var(--text-faint)' }}>—</span></td>
+                      <td className="col-actions">
+                        {canGroup && o.state === 'refused' ? (
+                          <RowActions open={null} ask={null} menu={(
+                            <RowMenu label={`More actions for ${o.markName ?? o.reference}`}>
+                              <MenuItem onSelect={() => retireOrder(o)}>Retire this order…</MenuItem>
+                            </RowMenu>
+                          )} />
+                        ) : null}
                       </td>
                     </tr>
-                  ) : null}
+                  </Fragment>
+                )
+              }
+              const r = e.row
+              return (
+                <Fragment key={r.id}>
+                  {heading}
                   {r.kind === 'family' ? (
                     <FamilyRows
                       family={r}
@@ -816,7 +880,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
               </tr>
             </thead>
             <tbody>
-              {!retiredShown.length ? (
+              {!retiredShown.length && !retiredOrdersShown.length ? (
                 <tr><td colSpan={3} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
                   <span className="list-empty">No retired searches in this view.</span>
                 </td></tr>
@@ -838,6 +902,18 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                   </td>
                 </tr>
               ))}
+              {retiredOrdersShown.map((o) => (
+                <tr key={`order-${o.reference}`} className="row">
+                  <td className="clr-td-name">
+                    <b data-anon="mark" style={{ color: 'var(--text-strong)' }}>{o.markName ?? o.reference}</b>
+                    {o.updatedAt ? <div className="sub" style={{ color: 'var(--text-muted)', fontSize: 12.5 }}><span className="nowrap-date">{o.updatedAt.slice(0, 10)}</span></div> : null}
+                  </td>
+                  <td className="clr-td-status">Order did not start</td>
+                  <td className="col-actions" style={{ textAlign: 'right' }}>
+                    <button type="button" className="btn-ghost clr-open" onClick={() => void restoreOrder(o)}>Restore</button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -851,7 +927,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             goes wrong when a filter narrows the list under a page that has scrolled past its end.
           */}
           <span className="mono" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
-            {from}–{to} of {rows.length}
+            {from}–{to} of {entries.length}
           </span>
           <span style={{ flex: 1 }} />
           <button type="button" disabled={current === 0} onClick={() => setPage(current - 1)}>

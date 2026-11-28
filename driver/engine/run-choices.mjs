@@ -107,7 +107,9 @@ export class RunChoiceUnavailable extends Error {
       : kind === "engine" ? "this driver has no adapter for it"
       : kind === "engine-program" ? "its program is not installed here"
       : "it cannot take a turn here";
-    super(`run ${run?.codename ?? "(unnamed)"} started on ${what}, and ${why}${detail ? ` (${String(detail).slice(0, 300)})` : ""}. It is parked with its work kept, and resumes on ${what}.`);
+    // THE PLAIN STATUS AND HOW IT RESUMES, AND NOTHING ELSE (design, 2026-11-28). The door's own words, which can carry an
+    // administrator's command such as a sign-in, stay in `dependency.detail`: the park's marker and the run's log.
+    super(`run ${run?.codename ?? "(unnamed)"} started on ${what}, and ${why}. It is parked with its work kept, and resumes on ${what}.`);
     this.name = "RunChoiceUnavailable";
     this.dependency = { kind, recorded, machine, detail: detail == null ? null : String(detail).slice(0, 300) };
     this.run = run;

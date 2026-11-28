@@ -159,3 +159,24 @@ test("start_run with one search left: an Urgent order is refused in the screen's
   } finally { used(0); }
 });
 
+
+// A RETRY AT THE LIMIT IS THE ORDER IT REPEATS. The order already filed under its reference was counted when it was
+// placed; sent again with one search left, it is answered with that order, never refused as a new Urgent one.
+test("start_run with one search left: an Urgent order sent again is the order already filed, not a refusal", async () => {
+  installation(CAN);
+  const company = { kind: "account", accounts: ["demo-brand-owner"], sub: "orders@company.example", permissions: { run: true, manage: false } };
+  const caps = resolveEffectiveProfile({ profileKey: "demo-brand-owner" }).profile?.runCaps;
+  const LIMIT = Number.isInteger(caps?.dailyRuns) ? caps.dailyRuns : DEFAULT_CLIENT_DAILY_RUNS;
+  const used = (n) => config.queueDirs.forEach((qd, i) => { mkdirSync(qd, { recursive: true });
+    writeFileSync(matterLedgerPath(qd), i ? "" : Array.from({ length: n }, () => JSON.stringify({ profileKey: "demo-brand-owner", ts: Date.now(), clientPrincipal: true })).join("\n") + (n ? "\n" : "")); });
+  try {
+    used(LIMIT - 2);
+    const sent = order({ urgent: true, id: `urgent-retry-${Math.random().toString(36).slice(2, 8)}` });
+    const first = await call("start_run", sent, company);
+    assert.equal(first.structuredContent?.outcome, "queued", JSON.stringify(first.content));
+    used(LIMIT - 1);
+    const again = await call("start_run", sent, company);
+    assert.deepEqual([again.structuredContent?.outcome, again.structuredContent?.id, again.structuredContent?.state],
+      ["already-filed", first.structuredContent.id, "waiting"], JSON.stringify(again.content));
+  } finally { used(0); }
+});

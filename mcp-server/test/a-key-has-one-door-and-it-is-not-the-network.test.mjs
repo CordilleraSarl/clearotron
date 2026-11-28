@@ -26,6 +26,9 @@ import { join } from "node:path";
 import { request } from "node:http";
 
 process.env.TRADEMARK_MCP_TOKEN_SECRET = "a-secret-for-this-test-only";
+// A served call writes an audit line, and the default log is shared by every test file a suite runs under one home:
+// pinned here, before the audit module reads it at import, so this file's calls never land inside another file's count.
+process.env.TRADEMARK_MCP_AUDIT_LOG = join(mkdtempSync(join(tmpdir(), "keydoor-audit-")), "audit.jsonl");
 
 const { mintToken } = await import("../../shared/scope.mjs");
 const { makeHttpHandler } = await import("../lib/http-handler.mjs");
@@ -34,9 +37,12 @@ const { keyDoorRefusal, openKeyDoor, probeSocket, KEY_SOCKET_MODE } = await impo
 let dir, sockPath, keyDoor, netServer, netPort;
 const REAL_KEY = () => mintToken({ scope: "ops", sub: "portal", ttlSec: 3600 });
 
+// WHAT ANSWERED, recorded rather than built: no MCP server runs in this file. A request that reaches `serve` has passed
+// authentication and been scoped from its own key, so the scope kind it carried is the door's verdict on the key.
+const served = [];
 const deps = () => ({
   limiter: { take: () => true }, opsLimiter: { take: () => true },
-  sessions: new Map(), createSession: async () => { throw new Error("no transport in this test"); },
+  serve: async (_req, res, { scope }) => { served.push(scope?.kind ?? null); res.writeHead(200, { "content-type": "application/json" }); res.end("{}"); },
   ns: "trademark-artifacts", log: () => {},
 });
 
@@ -86,16 +92,20 @@ test("a REAL access key presented on the network door is refused", async () => {
   assert.ok(key && key.length > 20, "premise: this is a real minted key, not a placeholder");
 
   // The same key is accepted on the socket below, so a refusal here cannot be about the key.
+  const before = served.length;
   const r = await post(netPort, key);
   assert.equal(r.status, 401, `the network door must not honour a key, got ${r.status}: ${r.body.slice(0, 200)}`);
+  assert.equal(served.length, before, "the refused key reached the server that answers requests");
   assert.doesNotMatch(r.body, /malformed|invalid signature|expired/i,
     "and it must be refused for arriving at this door — not for being a bad key, which would mean this arm never tested the transport rule");
 });
 
 test("the SAME real key is accepted on the socket", async () => {
   const key = REAL_KEY();
+  const before = served.length;
   const r = await post(sockPath, key);
-  assert.notEqual(r.status, 401, `the key door refused a valid key: ${r.body.slice(0, 300)}`);
+  assert.equal(r.status, 200, `the key door refused a valid key: ${r.body.slice(0, 300)}`);
+  assert.deepEqual(served.slice(before), ["ops"], "the key was served in its own ops scope");
   // Proves the two outcomes above differ ONLY in the transport: one key, one process, two answers.
 });
 

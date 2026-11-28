@@ -543,6 +543,11 @@ jobs:
       # gap the two known defects came out of.
       - run: node scripts/clearances-render-check.mjs --width 700
       - run: node scripts/composer-render-check.mjs
+      # An order's receipt, in each state it can be in, from its own address: waiting, started, each kind of refusal,
+      # a look that failed after one that answered, and a reference this reader may not see.
+      - run: node scripts/order-receipt-render-check.mjs
+      # An order refused before any run: its row's Retire, the dialog in the order's own words, the Retired tab and Restore.
+      - run: node scripts/retire-order-render-check.mjs
       - run: node scripts/ai-page-render-check.mjs
       - run: node scripts/ask-ai-render-check.mjs
       # The report inside the portal follows the portal's theme: the portal's own switch pressed, the report

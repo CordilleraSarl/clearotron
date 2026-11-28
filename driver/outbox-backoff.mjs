@@ -222,6 +222,21 @@ function* eachRunDir() {
   }
 }
 
+/**
+ * The run folder a run id names, live or archived, by its dated or its legacy dateless form; null when no run holds it.
+ * The same walk and the same match `runIsSent` reads.
+ */
+export function runDirFor(runId) {
+  for (const runDir of eachRunDir()) {
+    let status = null;
+    try { status = readJson(join(runDir, "status.json")); } catch { continue; }
+    const dated = String(status?.runId ?? basename(runDir));
+    const legacy = status?.slug && status?.codename ? `${status.slug}-${status.codename}` : null;
+    if (runId === dated || (legacy && runId === legacy)) return runDir;
+  }
+  return null;
+}
+
 // Is the run behind this <runId>.pending marker already .sent (a successful delivery)? Resolves the run
 // dir by status.json.runId — the id mark_sent names the marker with. Unknown run ⇒ false (never silently
 // drop a marker we can't positively tie to a completed send).

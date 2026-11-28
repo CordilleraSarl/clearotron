@@ -15,6 +15,8 @@ import { assertPrincipal, mayRun, reachCovers, seesEverything } from "../portal-
 import { accessView, authView, flagView, observedView } from "../portal-config-view.mjs";
 import { familiesView, groupRuns, ungroupRuns } from "../portal-families.mjs";
 import { forRole, resolveRunAccount, scanAccountRuns } from "../portal-runs.mjs";
+import { preRunOrders, retiredPreRunOrders } from "../portal-orders.mjs";   // orders refused before any run: retired and restored as runs are
+import { ORDER_REF_RE } from "../order-receipt.mjs";   // an order's reference may carry its account's mark after an @
 import { updateArchived } from "../publish/archive-tags.mjs";
 import { readJson } from "../run-record.mjs";
 
@@ -37,9 +39,12 @@ export async function adminRoutes({ poolRoot, workspaceRoot, grants, localSignIn
       // who signed in. Dynamic import deliberately: `profiles.mjs` captures the store directory at
       // MODULE LOAD (see this file's note above), so it is never pulled in at our own load time.
       const { companyFactsOf } = await import("../profiles.mjs");
-      // A company whose file would not load is named with its reason (staff-only route), never left out
-      // in silence: a switcher with one company where there were twenty-five reads as deleted work.
-      const unreadable = Array.isArray(profiles?.unreadable) ? profiles.unreadable.map((u) => ({ key: u.key, reason: u.reason })) : [];
+      // A company whose file would not load is named (staff-only route), never left out in silence: a switcher with one
+      // company where there were twenty-five reads as deleted work. Its key and the screen's shipped sentences say so;
+      // why it would not load is the loader's own message, which can name the file's path, so no person is handed it,
+      // a person who sees everything included (design, 2026-11-27). An order for that company is refused with it, in the
+      // run's own record (profiles.mjs resolveProfile).
+      const unreadable = Array.isArray(profiles?.unreadable) ? profiles.unreadable.map((u) => ({ key: u.key })) : [];
       return { status: 200, json: { customers: [...profiles.values()].map((p) => ({ key: p.key, name: p.name, ...companyFactsOf(p) })), ...(unreadable.length ? { unreadable } : {}) } };
     }
     // /portal/admin/config — what this deployment actually has switched on. Read from the SNAPSHOT,
@@ -150,8 +155,10 @@ export async function adminRoutes({ poolRoot, workspaceRoot, grants, localSignIn
       const acct = query.account ?? null;
       const scoped = acct && acct !== "*" ? acct : null;
       if (method === "GET") {
+        const orderScope = scoped ? { scopes: [{ account: scoped }] } : { everything: true };
         return { status: 200, json: { account: acct ?? "*",
-          runs: forRole(scanAccountRuns({ poolRoot, workspaceRoot, account: scoped, includeRetired: true, queueDirs: queueDirs() }), principal) } };
+          runs: forRole(scanAccountRuns({ poolRoot, workspaceRoot, account: scoped, includeRetired: true, queueDirs: queueDirs() }), principal),
+          orders: retiredPreRunOrders({ poolRoot, workspaceRoot, queueDirs: queueDirs(), ...orderScope }) } };
       }
       if (method === "POST") {
         const runIds = Array.isArray(body?.runIds) ? body.runIds.map(String) : [];
@@ -179,11 +186,16 @@ export async function adminRoutes({ poolRoot, workspaceRoot, grants, localSignIn
         // run, never from the body.
         const owners = new Set();
         for (const runId of runIds) {
-          if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,180}$/.test(runId) || runId.includes("..")) {
+          if (!(/^[A-Za-z0-9][A-Za-z0-9._-]{0,180}$/.test(runId) || ORDER_REF_RE.test(runId)) || runId.includes("..")) {
             return { status: 400, json: { error: "unknown run" } };
           }
           const found = resolveRunAccount({ poolRoot, workspaceRoot, queueDirs: queueDirs(), runId });
+          // AN ORDER REFUSED BEFORE ANY RUN IS RETIRED BY ITS REFERENCE (design, 2026-11-27). It was never a run, so the
+          // run resolver knows nothing of it; the portal recorded its Start, and the order itself names its company.
+          const order = found ? null : preRunOrders({ workspaceRoot, queueDirs: queueDirs(), everything: true })
+            .find((o) => o.reference === runId && o.state === "refused");
           if (found) owners.add(found.account);
+          else if (order) owners.add(order.account);
           // A RESTORE MUST NOT REQUIRE A RESOLVABLE RUN — it is the way back, and the case you most
           // want it in is the run whose directory has gone strange. Unchanged from what shipped.
           else if (!restore) return { status: 400, json: { error: "unknown run" } };

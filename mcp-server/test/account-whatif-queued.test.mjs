@@ -33,11 +33,11 @@ process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "whatif-queued-test-secret";
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 
 const { buildFixture, buildRichRun, RUN_ID, RUN_ID2 } = await import("./_fixture.mjs");
 const { makeHttpHandler } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
+const { mcpServe } = await import("../lib/mcp-serve.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
 const { mintToken } = await import("../../shared/scope.mjs");
 const { mcpToolCall } = await import("../../driver/portal-mcp-client.mjs");
@@ -45,17 +45,8 @@ const { drainWhatIfQueues } = await import("../../driver/whatif-worker.mjs");
 const { listWhatIf } = await import("../../driver/whatif-queue.mjs");
 const { WHAT_IF_NOTE } = await import("../lib/whatif.mjs");   
 
-async function createSession(sessions, scope, owner = null) {
-  const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-  const server = makeServer({ scope, local: false });
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
-    onsessioninitialized: (id) => sessions.set(id, { server, transport, lastSeen: Date.now(), email: owner, sub: scope?.sub ?? null, kind: scope?.kind ?? null }),
-  });
-  transport.onclose = () => { if (transport.sessionId) sessions.delete(transport.sessionId); };
-  await server.connect(transport);
-  return transport;
-}
+// The client door's own composition: each request is answered by a server built from that request's scope.
+const serve = mcpServe((scope) => makeServer({ scope, local: false }));
 
 // A sha manifest of every file under a directory — the measurement behind "the original run is untouched".
 // The what-if queue itself lives under _experiments/, which is where an experiment is SUPPOSED to write,
@@ -101,9 +92,8 @@ before(async () => {
   writeFileSync(driverDir(richDir, "profile.json"), JSON.stringify({ profileKey: "myrkur" }));
   studioRoots = [join(ROOT, "workspace-test", "studio", "clearance-search")];
 
-  const sessions = new Map();
   clientSrv = createServer(makeHttpHandler({ verify: null, devMode: true, clientSurface: true, tokenOnly: false,
-    limiter: new RateLimiter({ perMinute: 500 }), sessions, createSession, ns: "whatif-queued-test" }));
+    limiter: new RateLimiter({ perMinute: 500 }), serve, ns: "whatif-queued-test" }));
   await new Promise((r) => clientSrv.listen(0, "127.0.0.1", r));
   clientUrl = `http://127.0.0.1:${clientSrv.address().port}`;
 });

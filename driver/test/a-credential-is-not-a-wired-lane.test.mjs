@@ -73,7 +73,10 @@ test("a configured lane whose door does not answer names the reason, whichever w
   // than saying something went wrong, is asserted on both halves instead of one.
   const refused = triggerLaneVerdict({ url: ORIGIN, hasToken: true, posture: HOSTED, probe: { ok: false, error: "ECONNREFUSED" } });
   assert.equal(refused.state, "unsettled", "a connection nothing answered is reported as an outage again");
-  assert.match(refused.message, /ECONNREFUSED/, "the reason is gone, which was this arm's whole point");
+  // The connection's own error is the machine's words: it rides as `detail` for a local diagnosis, and the sentence a
+  // person reads says what failed (design, 2026-11-27).
+  assert.equal(refused.detail, "ECONNREFUSED", "the reason is gone, which was this arm's whole point");
+  assert.doesNotMatch(refused.message, /ECONNREFUSED/, "the machine's own words reached the sentence a person reads");
 
   // A DOOR THAT ANSWERED WRONGLY IS STILL THE FAULT IT ALWAYS WAS, with the sentence that explains why
   // the other surfaces disagree. Waiting does not repair a 500, so nothing about it is unsettled.

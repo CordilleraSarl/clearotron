@@ -47,6 +47,7 @@ import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor }
 import { recordsPreflight, listedMarks } from "./register-records.mjs";
 import { knockoutQuestionPlan, knockoutBandPath, knockoutBandBlocks, knockoutProposals, knockoutRecordsDoc, knockoutAxis, questionPlanPath,
   readingTableLines, appendQuestionReceipts, resolveQuestionExecutor, writeFixtureMarker, addedClassQuestions, formsOfName, formQid, countRowsOf, foldFormCounts, unfoldFormCounts, withCitedFilings, withHeldGoods } from "./knockout-register-read.mjs";
+import { KNOCKOUT_PREVIEW_CHARS } from "./filing-goods.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
@@ -717,7 +718,8 @@ async function readTheRegister({ ctx, job, K, run, agent, markRows, plan, counts
     reading = settledKnockoutReading(run.runDir);
   }
   try {
-    const doc = withHeldGoods(build(reading), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}` });
+    // The filings the assessment reads whole on every group carry the shorter preview (filing-goods.mjs KNOCKOUT_PREVIEW_CHARS).
+    const doc = withHeldGoods(build(reading), run.runDir, { runPrefix: `clearance-${run.slug}-${run.codename}`, limit: KNOCKOUT_PREVIEW_CHARS });
     atomicWrite(K.registerRecords, JSON.stringify(doc, null, 2) + "\n");
     writeRecordImages(run.runDir, images);
     appendQuestionReceipts(K.countLedger, doc, { provider: register });
@@ -1076,7 +1078,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
             // per-mark detail (classes/ref from the request, e.g. the cockpit's "NAME [9, 42]" rows) — the
             // frame reads THIS file, so without it those classes silently vanished (review 2026-07-17)
             marksDetailed: markRows.map((m) => ({ name: String(m.name), ...(Array.isArray(m.classes) && m.classes.length ? { classes: m.classes } : {}), ...(m.ref ? { ref: m.ref } : {}) })),
-          }, null, 2) + "\n");
+          }, null, 2) + "\n"); writeStatedFacts(paths(run.runDir), job);   // what the order states, kept with its source (stated-facts.mjs)
         } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
         // The stored defaults the engine cannot search — the clearance lane's record, on this lane too. A
         // knockout reads the same account profile and dropped the same entries in the same silence.
@@ -1747,3 +1749,4 @@ export async function knockoutInner(ctx, job, opts = {}) {
     } },
   ] });
 }
+import { writeStatedFacts } from "./stated-facts.mjs";

@@ -17,6 +17,7 @@
 //   0 queued (or --dry-run and the job classifies "run")
 //   2 validation refused it (classify "clarify"/"reject" — errors listed; fix the request, don't force it)
 //   3 id collision (a job with this id already exists, in any state — a re-delivery or a retry resolves to that order)
+//   4 --status found no order by that reference (the answer says why: not found, not a reference, ambiguous, could not look)
 //   1 anything else (bad flags, unreadable --job file, fs errors)
 //
 // The CLI serializes proper JSON, so prose fields (brief, goods, instructions…) ride INLINE — the
@@ -25,7 +26,7 @@
 
 import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
 import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, readdirSync } from "node:fs";
-import { receiptIn, RECEIPT_STATES } from "./order-receipt.mjs";   // an id in ANY state is the same order, not a new one
+import { receiptIn, orderReceipt, orderAnswer, RECEIPT_STATES } from "./order-receipt.mjs";   // an id in ANY state is the same order, not a new one
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
@@ -46,6 +47,7 @@ const PRODUCT_MENU = PRODUCTS.map((p) =>
 ).join("\n");
 
 const USAGE = `usage: node enqueue.mjs [--job <file.json>|-] [field flags] [--queue-dir <dir>] [--dry-run]
+       node enqueue.mjs --status <reference> [--queue-dir <dir>]   what became of an order; queues nothing
   field flags (compose a job without a file; a flag OVERRIDES the same field from --job):
     --mark <name>            the mark to clear (required unless --job supplies it)
     --marks <text>           a BATCH, one name per line, optional "[9, 42]" classes per line. A
@@ -107,7 +109,9 @@ export function parseArgs(argv) {
     // and a field read but reachable from no flag is a field only --job can name — which is how --marks
     // died. "portal" is refused by name at every door until the lane ships; "email" is today's default.
     "--delivery-route": "deliveryRoute",
-    "--queue-dir": "queueDir" };
+    "--queue-dir": "queueDir",
+    // What became of an order: its receipt, by the reference a door returned. Reads only; queues nothing.
+    "--status": "status" };
   const bool = { "--dry-run": "dryRun", "--dup-override": "dupOverride", "--help": "help", "-h": "help",
     // Two BOOLEAN flags where the job field is not a boolean the CLI can pass through: --worldwide is
     // the geography MODE (an absent --jurisdictions means "the account's", which is a different search),
@@ -242,6 +246,18 @@ async function main(argv) {
   let flags;
   try { flags = parseArgs(argv); } catch (e) { process.stderr.write(USAGE); fail(e.message); }
   if (flags.help) { process.stdout.write(USAGE); return; }
+  // WHAT BECAME OF AN ORDER. The command line is the operator's tool, run on the install itself, so it sees every
+  // account's orders, as start_run does for a session that sees every account, and prints the answer order_status gives
+  // that session, from the same builder: never the reason as the runner recorded it (design, 2026-11-27).
+  // Found: exit 0. Not found, not a reference, ambiguous, or a queue that would not open: `basis` says which, exit 4.
+  if (flags.status != null) {
+    const dirs = [...new Set([resolveQueueDir(flags), ...(config.queueDirs ?? [])].filter(Boolean))];
+    const answer = orderReceipt({ queueDirs: dirs, reference: flags.status, scope: { everything: true } });
+    const shown = answer.found ? { found: true, ...orderAnswer(answer.receipt, { withAccount: true }) } : { found: false, basis: answer.basis, ...(answer.unreadable ? { unreadable: answer.unreadable } : {}) };
+    process.stdout.write(JSON.stringify(shown, null, 2) + "\n");
+    if (!answer.found) process.exitCode = 4;
+    return;
+  }
   let job;
   try { job = assembleFromFlags(flags); } catch (e) { fail(`could not assemble the job: ${e.message}`); }
   if (!job.forwarder) fail("missing --forwarder — the requester/reply-routing key; the delivery packet needs it to route the report (there is deliberately no default)", 2);
@@ -339,7 +355,7 @@ async function main(argv) {
   // Collision = the id is already queued or claimed. Job ids are dedup keys (a re-delivered request
   // re-uses its id); refusing here mirrors start_run and keeps a double-submit from racing the claim.
   if (existsSync(dest) || existsSync(join(qdir, `${job.id}.processing`)))
-    fail(`a job with id "${job.id}" is already queued/processing in ${qdir}`, 3);
+    fail(`a job with id "${job.id}" is already queued/processing`, 3);   // the queue's folder is the install's, never printed
   // AN ID IN ANY STATE IS THAT ORDER, not room for a second one. The check above saw only a waiting or claimed job, so
   // the same submission retried after it was refused, parked or finished wrote a second order under the same reference.
   // Same exit, and the answer carries what became of the first.
@@ -348,8 +364,8 @@ async function main(argv) {
   const existing = receiptIn(qdir, job.id, names);
   if (existing) {
     process.stdout.write(JSON.stringify({ ok: false, id: job.id, existing: { state: existing.state, stateText: RECEIPT_STATES[existing.state],
-      reason: existing.reason ?? null, runId: existing.runId ?? null } }, null, 2) + "\n");
-    fail(`a job with id "${job.id}" already exists in ${qdir}: ${RECEIPT_STATES[existing.state]}`, 3);
+      reason: null, reasonKind: existing.state === "refused" ? (existing.reasonKind ?? "other") : null, runId: existing.runId ?? null } }, null, 2) + "\n");
+    fail(`a job with id "${job.id}" already exists: ${RECEIPT_STATES[existing.state]}`, 3);
   }
   const tmp = `${dest}.tmp`;
   writeFileSync(tmp, JSON.stringify(job, null, 2) + "\n");

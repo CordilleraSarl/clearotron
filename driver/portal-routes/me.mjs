@@ -8,7 +8,7 @@
 import { ADMINISTRATOR_CONTACT, ORGANISATION_NAME, BRAND } from "../../shared/brand.mjs";
 import { browserCommand, installRoute } from "../../shared/invocation.mjs";
 import { productIdentity } from "../../shared/product-identity.mjs";
-import { assertPrincipal, principalView, seesEverything } from "../portal-access.mjs";
+import { assertPrincipal, principalView } from "../portal-access.mjs";
 import { flagView } from "../portal-config-view.mjs";
 import { concurrentRunsCap } from "../portal-runs.mjs";
 
@@ -138,10 +138,10 @@ export async function meRoutes({ poolRoot, stopControl, demo, orderRefusal, load
       // `browserCommand`'s rule: no path on this machine, and from npx's cache the published version
       // rather than a bare name that reader does not have.
       organisationCommand: browserCommand('start --organisation "<name>"'),
-      // — a button that always fails must not render as available. The reason is
-      // operator-shaped and staff-only; a client reads the generic sentence the button carries.
-      controls: { stop: { available: stopControl.available !== false,
-        reason: seesEverything(principal) ? (stopControl.reason ?? null) : null } } } };
+      // — a button that always fails must not render as available. Why it cannot names the install's own settings,
+      // so no person is handed it, a person who sees everything included (design, 2026-11-27): the screen carries its
+      // shipped sentence, and the operator is given the remedy at boot (portal-service.mjs).
+      controls: { stop: { available: stopControl.available !== false, reason: null } } } };
   }
   // /portal/api/about — the AGPL §13 source offer ()
   //

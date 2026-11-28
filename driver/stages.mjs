@@ -416,30 +416,10 @@ export function variantRungDirective(depth) {
 // whichever framework the run read ("High", "Manageable", "Very High", …) and gateway.mjs forbids
 // numbering it: "no numbers, no codes, no words from any other scale". An instruction naming "band 1"
 // would name nothing the stage can act on, and would vary by framework where it did.
-// — RETIRED, and kept as a tombstone rather than deleted. This graded grounded profiles by asking
-// the seat to classify findings by disposition at review time. The band is on findings.json BEFORE this
-// stage is dispatched, so the architecture's rule applies: prefer driver selection where the key
-// precedes the dispatch. `profile-selection.mjs` lists the ordinals; nothing calls this.
-//
-// Left in place because the NEXT lever to be converted will look for what the directive form looked
-// like, and a deleted function teaches nothing about why it stopped being the right shape.
-export function profileRungDirective(depth) {
-  const rung = String(depth?.groundedProfiles ?? "every-finding");
-  if (rung !== "adversarial" && rung !== "adversarial+partner") return "";
-  const kept = rung === "adversarial"
-    ? "the `adversarial` findings — the ones genuinely in the way"
-    : "the `adversarial` findings, and the `coexistence-partner` and `distinguished` ones";
-  const breadth = rung === "adversarial"
-    ? "This is a WORLDWIDE search, and its bar is the higher one."
-    : "This is a MULTI-COUNTRY search.";
-  return `DEPTH OF WRITING — ${breadth}\n`
-    + "FIRST, WHAT DOES NOT CHANGE: you still read the WHOLE narrative and you still reach your verdict "
-    + "over all of it. Every finding is still refuted or allowed to stand on its own terms. This is about "
-    + "which findings you write a grounded profile against, never about which you examine.\n"
-    + `Write the grounded profile for ${kept}. For the rest, your read stands without one. If you are `
-    + "unsure whether a finding needs a profile, write it — a conflict examined thinly is the cost this "
-    + "cannot pay.";
-}
+// WHICH FINDINGS GET ONE IS CHOSEN BY THE DRIVER, not asked of the seat: the band is on findings.json before this stage is
+// dispatched, so the architecture's rule applies (prefer driver selection where the key precedes the dispatch) and
+// `profile-selection.mjs` lists the ordinals. The directive that asked the seat to classify findings by disposition at review
+// time is retired.
 
 export function inquiryRungDirective(depth) {
   const rung = String(depth?.inquiryTrace ?? "full");
@@ -458,46 +438,10 @@ export function inquiryRungDirective(depth) {
     + "mark that mattered stays thin through everything downstream.";
 }
 
-/**
- * — the narrative depth directive, owner-ruled and written verbatim.
- *
- * FIVE NUMBERED RULES, TWO SLOTS, AND NO INTERPRETIVE PHRASE. The directive this replaces asked the seat
- * to judge at write time which marks were "genuinely in the way" — a second judgment, on top of one it
- * had already made. Rule 2 is now a LOOKUP of a decision the seat records anyway: the band it assigns
- * each finding in the same pass, in the same file.
- *
- * KEYED TO BAND RANK, ORDINAL AGAINST THE RUN'S OWN MANIFEST. Frameworks carry different band
- * vocabularies and different lengths, so the rank is the only portable key — a list of band names would
- * select nothing on a framework that spells them differently, and a cut that keeps everything reads
- * exactly like a cut that works.
- *
- * ABSENT PARAMETERS MEAN NO DIRECTIVE, which is what byte-identical means for the ungraded product: it
- * is told nothing new, rather than told a permissive version of the rule.
- */
-// — RETIRED FROM THE SYNTHESIS DISPATCH, and kept as a tombstone like profileRungDirective above (design, 2026-11-06). The
-// synthesis call records sections only, and its own message says per-finding write-ups are not a field, so this directive's rules
-// for those write-ups contradicted the message it rode in. Nothing calls it. The depth fields it read stay, because the narrative's
-// depth check still reads them for an older narrative that does carry per-finding prose.
-export function proseRungDirective(depth, bandOrder = null) {
-  const rank = Number(depth?.narrativeKeptBandRank);
-  const maxWords = Number(depth?.narrativeWriteUpWords);
-  const bands = Array.isArray(bandOrder) ? bandOrder : null;
-  if (!Number.isFinite(rank) || rank < 1 || !Number.isFinite(maxWords) || maxWords < 1) return "";
-  // The kept list is stated as the BAND NAMES this run's manifest carries at those ranks when the driver
-  // knows them, and as the rank otherwise. The seat is told a set of values it holds, never a concept.
-  const keptList = bands && bands.length
-    ? bands.slice(0, rank).map((b) => `\`${String(b?.label ?? b)}\``).join(", ")
-    : `the top ${rank} bands of this run's risk framework, in the order the framework lists them`;
-  return [
-    "DEPTH OF WRITING — rules for prose write-ups in narrative.md on this run.",
-    "1. Every finding gets its complete typed record in findings.json. No exceptions. The rules below are about prose in narrative.md only.",
-    `2. Write a prose write-up for a finding only if its band is one of: ${keptList}.`,
-    "3. For every other finding, write no prose write-up. Its typed record is its write-up.",
-    `4. Each prose write-up is at most ${maxWords} words.`,
-    "5. These rules never change what you conclude, what disposition you assign, or which marks appear in the report.",
-  ].join("\n");
-}
-
+// THE NARRATIVE'S PER-FINDING PROSE RULES LEFT THE SYNTHESIS DISPATCH (design, 2026-11-06): the synthesis call records
+// sections only, and its own message says per-finding write-ups are not a field, so rules for those write-ups contradicted the
+// message they rode in. The depth fields they read (`narrativeKeptBandRank`, `narrativeWriteUpWords`) stay, because the
+// narrative's depth check (`narrativeWriteUpChecks`) still reads them for an older narrative that does carry per-finding prose.
 
 // ION/copper-foundry 2026-07-22 — the supplemental lane's two load-bearing facts, in ONE place:
 // WHICH tool the lane removes, and WHAT the model is told about its absence.
@@ -1192,7 +1136,7 @@ export const STAGES = {
       reads(["skills/matter-frame/SKILL.md"]),
       `Build the strategic matter frame for this trademark search request${productName(searchPolicy?.level) ? `: a ${productName(searchPolicy.level)}` : ""}.`,   // the product the run resolved, never "preliminary" for every clearance (design, 2026-11-24)
       `Request: ${JSON.stringify(job.marks ?? job.markName ?? job.name)}; classes ${JSON.stringify(job.classes ?? "")}.`,
-      job.goods ? `Goods/services (verbatim): ${job.goods}` : "",
+      job.goods ? `Goods/services (verbatim): ${job.goods}` : (statedSlot(P, "goods") ? `Goods/services (verbatim, as stated in the request): ${statedSlot(P, "goods")}` : ""),
       // Round 2 Change 1a — the instructed territories are the AUTHORITATIVE scope; matter-frame derives scope
       // from them (+ rights effective in them), never widening on "the sector is global". See SKILL "Scope jurisdictions".
       job.jurisdictions ? `Instructed territories (AUTHORITATIVE scope — do NOT widen to "major markets"): ${Array.isArray(job.jurisdictions) ? job.jurisdictions.join(", ") : job.jurisdictions}` : "",
@@ -1210,7 +1154,7 @@ export const STAGES = {
         && !(Array.isArray(job.marks) && job.marks.some((m) => Array.isArray(m?.classes) && m.classes.length))
         ? `Customer-default classes (the request names none — apply these): ${profile.defaultClasses.join(", ")}.` : "",
       ...defaultJurisdictionsLine(job, profile),   // — fills an ABSENT scope, never widens a stated one; vocabulary-checked (helper above STAGES)
-      job.priorUse ? `Stated prior/intended use: ${job.priorUse}` : "",
+      !job.goods && statedSlot(P, "use") ? `Stated prior/intended use: ${statedSlot(P, "use")}` : job.priorUse ? `Stated prior/intended use: ${job.priorUse}` : "",
       // P2-C (Round-2 §8a) — campaign-shape FACTS ride the job like priorUse (verbatim sidecar prose, never
       // structured). Stated ⇒ the frame carries them as fact; absent ⇒ the frame may only INFER a campaign
       // shape with an explicit inference label (see the skill's Product description rules). Context, never
@@ -4749,3 +4693,4 @@ export const USE_CHECK_ANSWERS_HELD = "Apply the existing triggers for actual-us
 // next try continues from them. Exclusions already go through record_declination in batches; record_synthesis takes
 // a part of the findings before the whole document exists.
 export const WRITER_RECORDS_AS_IT_GOES = "Record completed findings (`record_synthesis`) and exclusions (`record_declination`) as you complete them, individually or in small groups; do not wait for the whole report. On a resumed attempt, continue from this run's accepted work and complete what remains. Revise accepted work only for identified contrary evidence, a reasoning error, or an applicable change in the instructions. Finish the overall conclusions against the complete set before declaring the assessment complete.";
+import { statedSlot } from "./stated-facts.mjs";   // last, so no line citation into this file moves

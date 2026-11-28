@@ -75,8 +75,10 @@ with access to everything.
   handler refuses to BUILD without a verifier unless dev mode or the access-key door; dev mode itself
   requires two explicit flags AND a loopback listener.
 - DNS-rebinding protection via `TRADEMARK_MCP_ALLOWED_HOSTS` (required when auth is on).
-- **Sessions are owner-bound**: a session id presented by a different authenticated identity is
-  refused (403) — a leaked session id never transfers an inner token's authority.
+- **No sessions, so no session to steal**: since the protocol's 2026-07-28 revision, each door
+  authenticates and scopes every request from that request's own credentials, in both revisions of
+  the protocol, and hands out no session id. Another key on the same connection is answered in its
+  own scope, and a person taken off the guest list is refused on their next request.
 
 ## Authorization (the inner gate — both faces; `shared/scope.mjs`, enforced at ONE chokepoint)
 

@@ -63,7 +63,7 @@ burned it.
   spends here.
 - `POST /portal/api/run` — re-runs the plan gates, verifies the token (a mutated request, another
   sign-in's token, or a replay all 409) then triggers via **real MCP JSON-RPC over the ops face's
-  `/mcp`** (`driver/portal-mcp-client.mjs`: initialize → tools/call with the company-scoped
+  `/mcp`** (`driver/portal-mcp-client.mjs`: one `tools/call` in the protocol's 2026-07-28 revision, with the company-scoped
   `PORTAL_OPS_TOKEN`; wire shape test-pinned against the face's own handler) — the portal's blast
   radius is that token's grant, enqueue-only, and scoped tokens must name `profileKey` explicitly.
   Job identity (profileKey, forwarder, forwarderEmail) is SERVER-stamped from the verified principal;
