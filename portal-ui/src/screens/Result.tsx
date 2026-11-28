@@ -18,7 +18,7 @@ import { readsFor, hasThread, readLabel, readLabelParts, displayName, openDocume
 import { inlineSpans } from '../contract/inlineMd.ts'
 import { parseSummaryBlocks, SUMMARY_BLOCK_LINE } from '../contract/summaryBlocks.ts'
 import { runProductLabel } from '../contract/home.ts'
-import { FIRST_PAINT, frameCommand, readFrameHeight, readFrameScroll, readFrameScrollBy, readCopyLink, cardAddress, cardFromSearch, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
+import { FIRST_PAINT, frameCommand, frameView, readFrameHeight, readFrameScroll, readFrameScrollBy, readCopyLink, cardAddress, cardFromSearch, readCommandFailure, readFrameControls, readFrameSections, readFrameTheme, readAskAi, exportMenu, exportAffordance, sectionsReached } from '../contract/reportFrame.ts'
 import type { FrameCommand, FrameSection, FrameTheme, FrameVerb } from '../contract/reportFrame.ts'
 import { RiskDot } from '../components/RiskDot.tsx'
 import { Icon } from '../components/Icon.tsx'
@@ -266,6 +266,33 @@ function useReportFrame() {
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
   }, [])
+
+  // WHERE THE READER CAN SEE THE REPORT. The page scrolls and the frame does not, so only this side knows which band of
+  // the document is on screen: from the foot of the pinned header (the same line the section strip reads) to the foot of
+  // the window. The document's conflict panel opens inside it. Said again on every scroll, resize and change of the
+  // header, once a frame at most, and on every load of the document.
+  useEffect(() => {
+    let queued = false
+    const post = () => {
+      queued = false
+      const frame = ref.current
+      if (!frame?.contentWindow) return
+      const head = document.querySelector('.report-head')
+      const cover = Math.max(TOPBAR_PX, head instanceof HTMLElement ? head.getBoundingClientRect().bottom : TOPBAR_PX)
+      const top = frame.getBoundingClientRect().top
+      const view = frameView(cover - top, window.innerHeight - top)
+      if (view) frame.contentWindow.postMessage(view, '*')
+    }
+    const later = () => { if (!queued) { queued = true; requestAnimationFrame(post) } }
+    post()
+    window.addEventListener('scroll', later, { passive: true })
+    window.addEventListener('resize', later)
+    const head = document.querySelector('.report-head')
+    const ro = head instanceof HTMLElement ? new ResizeObserver(later) : null
+    const mo = head instanceof HTMLElement ? new MutationObserver(later) : null
+    if (head instanceof HTMLElement) { ro?.observe(head); mo?.observe(head, { attributes: true, attributeFilter: ['class', 'style'] }) }
+    return () => { window.removeEventListener('scroll', later); window.removeEventListener('resize', later); ro?.disconnect(); mo?.disconnect() }
+  }, [hello])
 
   // targetOrigin has to be '*': the frame's origin is "null" and cannot be addressed. That is safe here
   // because the payload is a command verb with no secret in it — the sandbox is what protects the

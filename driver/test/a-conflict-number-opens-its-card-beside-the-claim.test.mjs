@@ -62,7 +62,7 @@ const html = renderHtml(REPORT, [{ ordinal: 1, mark: "SKARVEL", band: "Moderate"
 test("the page carries the panel's words from the catalogue, and its script opens only from the verdict's numbers", () => {
   assert.match(html, /<template id="cpanel-words" data-name="Conflict \{n\}" data-close="Close"><button type="button" class="copy-fi no-print"/,
     "the panel's two names or the Copy link a compact card gains are not on the page");
-  const js = html.match(/\(function\(\)\{var wrap=document\.querySelector\('\.wrap'\),words=[^\n]*(?:\n[^\n]*){0,30}?\}\)\(\);/)?.[0] ?? "";
+  const js = html.match(/\(function\(\)\{var wrap=document\.querySelector\('\.wrap'\),words=[^\n]*(?:\n[^\n]*){0,40}?\}\)\(\);/)?.[0] ?? "";
   assert.ok(js, "the conflict panel's script is missing");
   assert.match(js, /closest\('\.fa-ords a\[href\^="#c"\]'\)[\s\S]*?\},true\);/, "the panel opens from links other than the verdict's numbers, or not before the jump");
   assert.match(js, /e\.preventDefault\(\);e\.stopImmediatePropagation\(\);/, "the jump to the card still runs when the panel opens");
@@ -70,6 +70,13 @@ test("the page carries the panel's words from the catalogue, and its script open
   assert.match(js, /c\.removeAttribute\('id'\);c\.setAttribute\('data-card-of','c'\+n\)/, "the panel's card duplicates the card's id");
   assert.match(js, /new CustomEvent\('rep-shift',\{detail:\{dy:dy\},cancelable:true\}\)/, "the reflow does not ask to keep the number's place");
   assert.match(js, /a\.focus\(\{preventScroll:true\}\)/, "focus does not return to the number that opened the panel");
+  // It opens beside the number the reader activated and in view (design, 2026-11-28), not at the top of the block that
+  // holds the number: on a long verdict that put the whole card above the visible page.
+  assert.doesNotMatch(js, /closest\('\.panel'\)/, "the panel is still placed by the block that holds the number");
+  assert.match(js, /panel\.style\.top=Math\.round\(at\(opener\)\+panel\._off\)\+'px'/, "the panel's top is not kept relative to the activated number");
+  assert.match(js, /if\(top\+h>vb\)top=vb-h;if\(top<vt\)top=vt;/, "the panel is not kept inside the visible band, heading first");
+  assert.match(js, /addEventListener\('rep-view',/, "the page does not hear the portal's visible band");
+  assert.match(js, /querySelector\('\.rep-stickyhead'\)/, "standalone, the report's own pinned header is not taken off the visible band");
   // An Ask AI press on the panel's copy is handed to the card's own button, which every portal's bridge reads by its id,
   // the bridge of a portal rolled back to an earlier version included.
   assert.match(js, /panel\.addEventListener\('click',function\(e\)\{var b=e\.target\.closest&&e\.target\.closest\('\.ask-fi'\),of=b&&b\.closest\('\[data-card-of\]'\),o=of&&document\.getElementById\(of\.getAttribute\('data-card-of'\)\),ob=o&&o\.querySelector\('\.ask-fi'\);if\(!ob\)return;e\.stopPropagation\(\);ob\.click\(\);\},true\);/,
@@ -83,6 +90,8 @@ test("in the portal the bridge scrolls the portal for the page, re-posts its hei
     "the page's shift is not handed to the portal");
   assert.match(page, /addEventListener\('rep-reflow',function\(\)\{schedule\(\);\}\)/, "a reflow does not re-post the height and the section tops");
   assert.match(page, /var cid=card\?\(card\.id\|\|card\.getAttribute\('data-card-of'\)\|\|''\):'';/, "Ask AI on the panel's card loses its finding");
+  assert.match(page, /if\(d\.command==='view'\)\{[\s\S]*?vb>vt\)\s*document\.dispatchEvent\(new CustomEvent\('rep-view',\{detail:\{top:vt,bottom:vb\}\}\)\);/,
+    "the portal's visible band is not handed to the page, or is handed on unchecked");
 });
 
 // AT THE BOARD'S WIDTH THE COLUMN DOES NOT MOVE (design, 2026-11-26). Where the window holds the full column and the panel,
