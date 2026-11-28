@@ -5764,8 +5764,8 @@
           "todos": 0
         },
         "missing-four-answers-ride-a-writer-repair-already-owed.test.mjs": {
-          "tests": 3,
-          "asserts": 15,
+          "tests": 4,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
