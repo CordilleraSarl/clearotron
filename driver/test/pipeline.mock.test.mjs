@@ -650,9 +650,12 @@ test("hard stage failure → .failed sentinel, pipeline returns ok:false, and th
   assert.equal(packet.kind, "run-failed");
   assert.equal(packet.failed, true);
   assert.equal(packet.failedStage, "matter-frame");
-  assert.match(packet.subject, /run FAILED, nothing delivered/);
-  assert.match(packet.emailBodyHtml, /FAILED at stage <b>matter-frame<\/b>/);
+  assert.match(packet.subject, /search stopped, nothing delivered/);
+  assert.match(packet.diagnostic.subject, /run FAILED, nothing delivered/);
+  assert.match(packet.diagnostic.emailBodyHtml, /FAILED at stage <b>matter-frame<\/b>/);
   assert.ok(packet.text && packet.whatsappText, "short relay text + full notice both ride the packet");
+  assert.equal(packet.text, packet.whatsappText, "the relayed text is the notice, the same words as the messaging line");
+  assert.doesNotMatch(packet.text + packet.emailBodyHtml, /matter-frame|FAILED/, "no stage reaches the person");
   const status = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
   assert.equal(status.state, "failed");
   const { config: obCfg } = await import("../driver.config.mjs");

@@ -49,9 +49,11 @@ import { orderedQueueFiles } from "./queue-order.mjs";   // the order jobs are a
 import { isCancelled } from "./cancel.mjs";   // a stopped run must not come back through any resume path
 import { whatsappRouting } from "./stages.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
+import { deliverNotices, markRouteSeen } from "./notice-delivery.mjs";   // failure notices through the route an install configures
 import { maybeCheckEngine } from "./engine/health.mjs";   // the engine proven between jobs, on a tick with nothing to run
 import { engineCommit } from "./engine-build.mjs";
-import { clientNotStartedText } from "./run-outcome.mjs";
+import { clientNotStartedText, duplicateNoticeText } from "./run-outcome.mjs";
+import { plainOlderOutboxPackets } from "./outbox-notices.mjs";   // an earlier version's packets, rewritten before delivery
 import { writeRunStatus, terminalRunState } from "./progress.mjs";   // A5 — grace-exit park + reclaim-bound terminal go through the guarded status writer; terminalRunState is the run record's own terminal vocabulary (2155)
 import { identitySeed } from "./progress.mjs";   // — the same stamp a run seeds, for the process that runs them
 import { writeDrainerStamp } from "./drainer-identity.mjs";   // — deploy health cannot interrogate a running process; it says so itself
@@ -386,22 +388,22 @@ function noticeAccount(job) {
 // self-contained event packet — no gateway, no messaging binary, no run dir needed. NEVER throws; the
 // .failed markers are written BEFORE this runs, so a notify failure can never lose the rejection
 // record. Returns the audit-trail outcome string appended to the .reason file (`notify: <outcome>`).
-async function intakeNotify(agentId, base, job, v) {
+async function intakeNotify(agentId, base, job, v, reasonKind = "other") {
   // plain optional chaining throughout: `Array.isArray(x) && ...` yields boolean false (NOT nullish) when
   // marks is absent, which would swallow the `?? base` fallback in exactly the null-job case it exists for.
   const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
-  const what = v?.classify === "clarify"
-    ? `needs clarification before it can run: ${v.errors.join("; ")}`
-    : `was rejected at intake: ${(v?.errors ?? ["unparseable job file"]).join("; ")}`;
-  const text = `⚠️ Clearotron request "${mark}" ${what}. Nothing has been searched or delivered. ` +
-    `Job parked as ${base}.failed in the ${agentId} queue.`;
+  // EVERY ORDER IS TOLD IN PRODUCT WORDS (design, 2026-11-27): whoever placed it and however it came in. The check's own
+  // words can name the installation's setup, a queue or a flag, so no person is given them: the notice carries the
+  // shipped not-started sentence, `reasonKind` says which check refused it, and `errors` is empty. The words stay in the
+  // queue's `<base>.failed.reason`, the record failAtIntake wrote before this ran.
+  const text = clientNotStartedText(job, mark);
   const p = writeOutboxPacket(`intake-${base}.failed`, {
-    kind: "intake-rejected", classify: v?.classify ?? "reject", base, agent: agentId,
+    kind: "intake-rejected", classify: v?.classify ?? "reject", reasonKind, base, agent: agentId,
     ...noticeAccount(job),
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
-    errors: v?.errors ?? ["unparseable job file"], text,
+    errors: [], text,
   });
   return p ? `packet ${p}` : "packet-failed";
 }
@@ -630,19 +632,23 @@ export function claimLockPath(procPath, token, platform = process.platform) {
 // Park a claimed job as terminally failed-at-intake: consume the .processing claim (else drainQueue re-claims
 // it as .json on the next 90s tick and it re-fails FOREVER — the leak the unparseable branch used to have),
 // record the reason, ping the requester, and append the ping outcome to the reason file for the audit trail.
-async function failAtIntake(procPath, qdir, base, agentId, job, v, reasons) {
+//
+// AND WHICH CHECK REFUSED IT, in `.failed.kind` beside the reason (driver/order-receipt.mjs REFUSAL_KINDS). The reason is
+// the operator's text; the kind is what a door may tell the person who placed the order, decided here, where the check
+// that refused is known, rather than guessed later from the words.
+async function failAtIntake(procPath, qdir, base, agentId, job, v, reasons, kind = "other") {
   retireMarker(procPath, join(qdir, `${base}.failed`), "failed at intake");
   cleanupClaimSidecars(procPath);
   cleanupProseParts(qdir, base);
   writeFileSync(join(qdir, `${base}.failed.reason`), reasons.join("\n") + "\n");
-  const notified = await intakeNotify(agentId, base, job, v);
+  try { writeFileSync(join(qdir, `${base}.failed.kind`), `${kind}\n`); } catch { /* best-effort: an absent kind reads as other */ }
+  const notified = await intakeNotify(agentId, base, job, v, kind);
   try { appendFileSync(join(qdir, `${base}.failed.reason`), `notify: ${notified}\n`); } catch { /* best-effort */ }
 }
 
 // Best-effort duplicate-skip notice (mirrors intakeNotify: one outbox packet). Returns the audit-trail
 // outcome string for the .reason file.
 async function duplicateNotify(agentId, base, job, prior = null, sig = null, shown = true) {
-  const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
   // ── A REFUSAL DELIVERED AS SILENCE IS INDISTINGUISHABLE FROM A LOST JOB ────────
   //
   // The observable outcome of a dedup park was an empty queue and no run, which is exactly what an
@@ -650,40 +656,24 @@ async function duplicateNotify(agentId, base, job, prior = null, sig = null, sho
   // sharper when `clearotron cancel` shipped: a stop of a parked run became a documented first-class
   // operation, so an operator reaching this window went from uncommon to expected.
   //
-  // WHICH PRIOR RUN, NOT JUST "A DUPLICATE". A sentence saying "duplicate" without saying WHICH one
-  // satisfies the letter and leaves the submitter where they were: they cannot tell whether the thing
-  // they are waiting for exists. The prior message id and when it was recorded are what turn this from
-  // a refusal into an answer, and both are already in hand — the park computed them to decide.
-  //
-  // THE FORCE-RUN ROUTE TRAVELS WITH IT. This refusal is the one place a person meets the dedup window,
-  // so it is where the override belongs; `--dup-override` on the CLI, `dupOverride` on `start_run` and
-  // the cockpit's checkbox are the product paths, and naming one here is what stops a hand edit to the
-  // ledger being the only route anybody finds.
-  // THE EARLIER ORDER IS NAMED ONLY TO ITS OWN ACCOUNT (design, 2026-11-26): its reference, when it was recorded and
-  // the matter's signature are told to a requester who may see that order, and to nobody else.
+  // THE NOTICE IS THE APPROVED WORDS AND THIS ORDER'S REFERENCE (design, 2026-11-27): no person is given an override
+  // flag or the matter's signature (`sig`, which the dedup ledger keeps), whoever placed the order. The force-run route
+  // stays where an operator finds it, in the intake guide and `--help`. THE EARLIER ORDER IS NAMED ONLY TO ITS OWN
+  // ACCOUNT (design, 2026-11-26), and only as fields: its reference and when it was recorded go to a requester who may
+  // see that order, and to nobody else.
   const when = shown && prior?.ts ? new Date(prior.ts).toISOString() : null;
-  const which = shown && prior?.msgId
-    ? ` The run already under way was submitted as ${prior.msgId}${when ? ` at ${when}` : ""} — that is the one that will deliver.`
-    : " The earlier run will deliver.";
-  const text = `⚠️ Clearotron request "${mark}" matches a matter already in progress or just delivered, so it was `
-    + `NOT run — a second search would spend twice for one answer.${which}`
-    + ` If you genuinely need a fresh run of the same matter, re-submit it with dupOverride (\`--dup-override\` on the`
-    + ` command line) and it will go through.`;
+  const text = duplicateNoticeText(base);
   const p = writeOutboxPacket(`intake-${base}.duplicate`, {
     kind: "duplicate-skipped", base, agent: agentId,
     ...noticeAccount(job),
     jobId: job?.id ?? null, msgId: job?.msgId ?? null,
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
-    // THE COLLIDING SIGNATURE AND THE PRIOR RUN, AS FIELDS. The sentence is for a person; these are for
-    // whatever reads the packet — and a field is what lets a surface show which run without re-deriving
-    // a signature it would compute differently.
-    matterSignature: shown ? (sig ?? null) : null,
+    // THE PRIOR ORDER, AS FIELDS, for a requester who may see it. The matter's signature and how it matched are the
+    // dedup ledger's, kept there.
     priorMsgId: shown ? (prior?.msgId ?? null) : null,
     priorJobId: shown ? (prior?.id ?? null) : null,
     priorRecordedAt: when,
-    matchedBy: prior?.conversationId && prior.conversationId === String(job?.conversationId ?? "").trim()
-      ? "thread" : "matter-signature",
     text,
   });
   return p ? `packet ${p}` : "packet-failed";
@@ -733,17 +723,10 @@ async function parkDuplicate(procPath, qdir, base, agentId, job, prior, sig, own
 // NEVER throws; the .failed markers are written before this runs. Returns true when a packet landed.
 function preRunFailNotify(agentId, base, job, reason) {
   const mark = job?.markName ?? job?.name ?? job?.marks?.[0]?.name ?? base;
-  // — the ONE capping function, not a second private copy. Its only caller already hands over a
-  // terminalReasonFields `reason`, so this cut is a no-op today — which is exactly why it survived: a
-  // latent second cap, unmarked, waiting for the next caller to pass a raw reason. It collapses and
-  // trims identically, so this is the same string with the cut made visible when there is one.
-  // A CLIENT'S ORDER IS TOLD IN THE CLIENT'S WORDS. Once a courier scoped to the client's company can see
-  // this notice, `text` can reach the client, and the staff line quotes the machine reason and the queue.
-  // The client gets the shipped not-started sentence the failure email uses; the reason stays a field.
-  const text = job?.clientPrincipal === true
-    ? clientNotStartedText(job, mark)
-    : `❌ Clearotron request "${mark}" FAILED before the run could start: ${terminalReasonFields(reason).reason} — ` +
-      `nothing has been searched or delivered. Job parked as ${base}.failed in the ${agentId} queue.`;
+  // EVERY ORDER IS TOLD IN PRODUCT WORDS (design, 2026-11-27). The machine reason can name a path, a program or the
+  // queue, so no person is given it, in the sentence or as a field: the notice carries the shipped not-started sentence
+  // the failure email uses. The reason stays in the queue's `<base>.failed.result`, written before this runs.
+  const text = clientNotStartedText(job, mark);
   // `intake-${base}.` PREFIX, not a third scheme: scripts/e2e.mjs's outboxPackets matches by runId
   // first and by that prefix second, so a name outside it is a notice the harness reports as
   // never sent. The queue base is the routing key; `kind` carries what actually happened.
@@ -754,7 +737,7 @@ function preRunFailNotify(agentId, base, job, reason) {
     forwarder: job?.forwarder ?? null, forwarderEmail: job?.forwarderEmail ?? null,
     markName: (job?.markName ?? job?.name ?? job?.marks?.[0]?.name) || null,
     ...whatsappRouting(job, agentId),   // to whoever asked, as every other notice (the-notice-goes-to-whoever-asked)
-    reason: terminalReasonFields(reason).reason, text,
+    text,
   });
   note(`[runner] pre-run failure ${p ? `packet \u2192 ${p}` : "packet write FAILED"} for ${base}`);
   return Boolean(p);
@@ -916,7 +899,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   if (v.warnings?.length) note(`[runner] ${base} proceeding, with warnings: ${v.warnings.join("; ")}`);
   if (!v.ok) {
     note(`[runner] invalid job ${base} (${v.classify}): ${v.errors.join("; ")}`);
-    await failAtIntake(procPath, qdir, base, agentId, job, v, v.errors);
+    await failAtIntake(procPath, qdir, base, agentId, job, v, v.errors, "details");
     return null;
   }
   // ── IS THIS BOX CONFIGURED TO SEARCH AT ALL? See the header above claimAndPrep.
@@ -927,7 +910,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     if (refusal) {
       note(`[runner] ${base} REFUSED at order time — this install is not configured to run a search: ${refusal.names.join(", ")}`);
       await failAtIntake(procPath, qdir, base, agentId, job,
-        { classify: "reject", errors: [refusal.client] }, [refusal.operator]);
+        { classify: "reject", errors: [refusal.client] }, [refusal.operator], "setup");
       return null;
     }
   }
@@ -1006,7 +989,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   if (gateMsg) {
     note(`[runner] ${base} search-policy ${rejectMsg ? "reject" : "clarify"}: ${gateMsg}`);
     await failAtIntake(procPath, qdir, base, agentId, job,
-      { classify: rejectMsg ? "reject" : "clarify", errors: [gateMsg] }, [gateMsg]);
+      { classify: rejectMsg ? "reject" : "clarify", errors: [gateMsg] }, [gateMsg], "policy");
     return null;
   }
   // EVERY RULE THAT NEEDS THE RESOLVED PRODUCT — THE WALL. The name count, the scope-vs-machinery fit
@@ -1033,7 +1016,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     // to know whether this was the budget or the geography, and a joined list of sentences does not say.
     const which = Object.entries(resolvedGates.byCheck).filter(([, e]) => e.length).map(([n]) => n).join("+");
     note(`[runner] ${base} ${which} clarify: ${resolvedGates.errors.join("; ")}`);
-    await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: resolvedGates.errors }, resolvedGates.errors);
+    await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: resolvedGates.errors }, resolvedGates.errors, "details");
     return null;
   }
   // Non-blocking by design: a deepening whose lane the account switched off, or a routing territory that
@@ -1056,7 +1039,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
     organisation: typeof job.tenant === "string" && job.tenant ? job.tenant : null, searches });
   if (capMsg) {
     note(`[runner] ${base} ${capMsg}`);
-    await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: [capMsg] }, [capMsg]);
+    await failAtIntake(procPath, qdir, base, agentId, job, { classify: "clarify", errors: [capMsg] }, [capMsg], "run-cap");
     return null;
   }
   // Matter-dedup gate (the observed double-enqueue): a prior run of THIS matter from another message — e.g.
@@ -2426,6 +2409,7 @@ export async function main({ once = true } = {}) {
 const WATCH_TICK_MS = 90_000;    // mirrors prelim-driver.timer's OnUnitActiveSec — one cadence, two deployments
 const WATCH_SLICE_MS = 5_000;    // the longest we ever sleep in one go: the suspend detector's resolution
 const WATCH_WAKE_JUMP_MS = 15_000;   // wall clock outrunning a slice by this much means the machine was asleep
+const NOTICE_TICK_MS = 60_000;       // how often owed notices are looked for and sent, while the loop runs
 
 // A REF'D timer, deliberately not the shared `delay()` above: delay() unrefs, and between ticks this sleep
 // is the ONLY thing on the event loop, so an unref'd one would let node exit 0 after the first tick — the
@@ -2495,8 +2479,23 @@ export async function watch({
   // A job file arriving ends the wait early (see watchQueueFolders). Injectable so the arms can watch a folder
   // of their own, or none.
   queueWatch = (onJob) => watchQueueFolders(onJob), settleMs = WATCH_SETTLE_MS,
+  // ── NOTICES ON THEIR OWN CLOCK (notice-delivery.mjs) ────────────────────────────────────────────────
+  //
+  // A tick awaits a whole run, often hours, so a notice sent only between ticks would wait out the run that is
+  // already going. Its own timer, for as long as the loop runs; nothing at all on an install with no route.
+  // Injectable for the same reason the beat is.
+  deliverEveryMs = NOTICE_TICK_MS,
+  startDelivering = (fn, everyMs) => { const t = setInterval(fn, everyMs); t.unref?.(); return () => clearInterval(t); },
+  deliver = deliverNotices,
 } = {}) {
   note(`[runner] watch: checking every ${Math.round(tickMs / 1000)}s for a search to start or to resume. Ctrl-C to stop.`);
+  let delivering = false;
+  const stopDelivering = startDelivering(async () => {
+    if (delivering) return;   // one pass at a time in this process; the lock covers every other
+    delivering = true;
+    try { await deliver(); } catch (e) { note(`[runner] notice pass FAILED (isolated): ${e?.message ?? e}`); }
+    finally { delivering = false; }
+  }, deliverEveryMs);
   // Arrivals during a drain are not lost and not raced: they leave `woken` set, and the drain's next pass starts as
   // soon as this one ends. Never a second main() beside one in flight.
   let woken = false, rouse = null;
@@ -2538,7 +2537,7 @@ export async function watch({
         }
       }
     }
-  } finally { watcher?.close?.(); }
+  } finally { watcher?.close?.(); stopDelivering(); }
   note(`[runner] watch: stopped${stopSignal ? ` (${stopSignal})` : ""} — anything still parked resumes the next time this runs.`);
 }
 
@@ -2586,5 +2585,12 @@ if (isEntrypoint(import.meta.url)) {
     argv: process.argv.slice(1).join(" "),
   });
 
+  // An earlier version's outbox files hold only their notice and routing before anything is delivered (design,
+  // 2026-11-27): the file leaves the engine, and an upgrade must not hand on the words it would no longer write.
+  plainOlderOutboxPackets();
+  markRouteSeen();   // before the drain, so a failure in it is owed its notice
   await main({ once: !watching });
+  // A single drain ends with one notice pass, idle or not: the systemd timer is this deployment's only clock, and a
+  // notice must not wait for an order to arrive. Nothing at all on an install with no route.
+  if (!watching) await deliverNotices();
 }

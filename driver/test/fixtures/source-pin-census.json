@@ -1,5 +1,5 @@
 {
-  "total": 302,
+  "total": 303,
   "files": {
     "driver/test/a-backgrounded-install-can-actually-run-a-clearance.test.mjs": [
       0,
@@ -478,7 +478,7 @@
       0
     ],
     "driver/test/depth-ladder-rung-discipline.test.mjs": [
-      4,
+      2,
       0
     ],
     "driver/test/depth-ladder-table.test.mjs": [
@@ -1044,6 +1044,10 @@
     "driver/test/the-goods-check-reads-the-evidence-the-writer-was-given.test.mjs": [
       1,
       0
+    ],
+    "driver/test/the-install-can-keep-itself-current.test.mjs": [
+      0,
+      1
     ],
     "driver/test/the-inventory-names-the-units-this-box-runs.test.mjs": [
       0,

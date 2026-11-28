@@ -18,16 +18,19 @@ import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";   // the ledger the wall counts
 import { resolveEffectiveProfile } from "../../driver/profiles.mjs";
 import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";   // one search left and an Urgent order
-import { ORDER_REF_RE, orderRefRefusal, filedReference, orderAlreadyFiled, orderReceipt, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // one rule for filing and finding an order
+import { ORDER_REF_RE, orderRefRefusal, filedReference, orderAlreadyFiled, orderReceipt, orderAnswer, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // one rule for filing and finding an order
 import { orderUrgency } from "./urgent.mjs";   // whether this installation can run an Urgent order, as the run asks it   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
 import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one marker shape, shared with the engine
 import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver/engine/child-record.mjs";   //
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
+import { userFailurePacket } from "../../driver/run-outcome.mjs";   // a failure packet leaves only as its notice and routing
+import { userOutboxPacket } from "../../driver/outbox-notices.mjs";   // so does every outbox packet
 import { stopReason } from "../../shared/stop-reason.mjs";   //
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { driverDir, paths, readJson } from "../../driver/run-record.mjs";   // — one definition of where `_driver/` is
+import { owedPacket, sendSettled, clearSendMarkers, settleSend } from "../../driver/send-settle.mjs";   // one settle for every sender
 
 // Queue resolution (mirrors the enqueue CLI, docs/INTAKE.md): with NO explicit agent, a
 // headless deployment's CLEAROTRON_QUEUE_DIR wins; otherwise the default agent's workspace queue. An
@@ -315,9 +318,9 @@ export function startRun(args = {}, { scope } = {}) {
   {
     const prior = orderAlreadyFiled({ queueDirs: [qdir], filed: id, asked: args.id != null ? String(args.id) : "", job, scope: receiptScope(scope) });
     if (prior?.held === "mine") {
-      const r = prior.receipt;
-      return { ok: true, id: r.reference, existing: true, state: r.state, terminal: r.terminal, runId: r.runId,
-        reason: r.state === "refused" || !isClientSession(scope) ? r.reason : null, updatedAt: r.updatedAt };
+      // The same answer as order_status, from the same builder: the kind of a refusal, never the reason as written.
+      const { reference, ...answer } = orderAnswer(prior.receipt);
+      return { ok: true, id: reference, existing: true, ...answer };
     }
     if (prior?.held === "hidden" || (prior?.held === "other" && ["waiting", "checking", "running"].includes(prior.state)))
       throw new Error(`start_run: a job with id "${prior.reference}" is already queued/processing`);
@@ -393,11 +396,11 @@ export function orderStatus(args = {}, { scope } = {}) {
   const queueDirs = args.agent ? [queueDir(String(args.agent))] : [queueDir(""), ...config.queueDirs];
   const answer = orderReceipt({ queueDirs, reference: args.id, scope: receiptScope(scope) });
   if (!answer.found) return { found: false, basis: answer.basis };
-  const r = answer.receipt;
-  const client = isClientSession(scope);
-  return { found: true, reference: r.reference, state: r.state, terminal: r.terminal, runId: r.runId,
-    reason: r.state === "refused" || !client ? r.reason : null, updatedAt: r.updatedAt,
-    ...(client ? {} : { account: r.account, organisation: r.organisation ?? null }) };
+  // NOBODY IS GIVEN THE REASON AS WRITTEN (design, 2026-11-27): it can name settings, profiles, a queue and, for a
+  // duplicate, an earlier order that may be another company's. Every session is told which check refused the order, as
+  // `reasonKind`, and `reason` keeps its place in the answer, empty. An order refused before kinds were recorded is
+  // `other`. A session that sees every account is also told whose order it is.
+  return { found: true, ...orderAnswer(answer.receipt, { withAccount: !isClientSession(scope) }) };
 }
 
 // stop_run — cancel. A not-yet-claimed queue job is removed (a REAL cancel before any spend). A running run
@@ -608,8 +611,21 @@ export function listOutboxEvents() {
     try { raw = readFileSync(join(config.outboxDir, file), "utf8"); } catch { return null; } // raced an ack — skip
     try { return { file, ...JSON.parse(raw) }; }
     catch { return { file, kind: "delivered", runId: file.replace(/\.pending$/, ""), agent: raw.trim() || null }; }
-  }).filter(Boolean);
+  }).filter(Boolean)
+    // Every packet is handed on as the notice a person reads and the routing a courier sends by, whoever reads the
+    // outbox and whichever version wrote the file (design, 2026-11-27): the shape it is written in (outbox-notices.mjs),
+    // so a file an earlier version wrote, and the worker has not yet rewritten, is told in the same words as a new one.
+    .map(userOutboxPacket);
   return { ok: true, count: events.length, events };
+}
+
+// `whatsappToReason` tells an install how to give a requester a chat number: it names the requester's address and the
+// setting that holds the numbers. That is the install's own setup, never a person's to be handed (design, 2026-11-27);
+// a courier routes by `whatsappTo`, which stays. The packet on disk keeps it.
+function withoutSetupHint(p) {
+  if (!p || typeof p !== "object" || !("whatsappToReason" in p)) return p;
+  const { whatsappToReason: _hint, ...rest } = p;
+  return rest;
 }
 
 // get_delivery_packet — the run's send payload(s): _driver/delivery.json (success) and/or
@@ -627,7 +643,9 @@ export function getDeliveryPacket(args = {}) {
   return {
     ok: true, runId: run.runId, state: run.state,
     sendPending: run.status?.sendPending ?? null, sent: existsSync(join(run.runDir, ".sent")),
-    delivery, failure,
+    // `failure` is the notice and its routing, never `_driver/failure.json` as written: the stage, the reason and the
+    // repairs stay in that file, the run's own record (design, 2026-11-27).
+    delivery: withoutSetupHint(delivery), failure: failure ? userFailurePacket(failure) : null,
   };
 }
 
@@ -721,55 +739,13 @@ export function markSent(args = {}) {
   if (!args.runId) throw new Error("mark_sent: runId is required");
   const run = resolveRun(String(args.runId));
   if (!run) throw new Error(`mark_sent: run "${args.runId}" not found`);
-  const deliveryPath = paths(run.runDir).delivery;
-  const failurePath = paths(run.runDir).failure;
-  const packetPath = existsSync(deliveryPath) ? deliveryPath : failurePath;
-  if (!existsSync(packetPath))
+  const owed = owedPacket(run.runDir);
+  if (!owed)
     throw new Error(`mark_sent: run "${run.runId}" has no delivery or failure packet — nothing was pending a send`);
-  // Clear the delivered outbox marker (edge-trigger only; a missing marker is a no-op). Runs on BOTH the
-  // fresh and the alreadySent paths: the .sent guard is written BEFORE this removal, so a first call
-  // interrupted (deliver-trigger.sh SIGKILLs the wake at 840s) between the two used to orphan the marker
-  // forever — the alreadySent early-return then suppressed every retry of this cleanup. Making the
-  // removal idempotent lets a retried mark_sent finish the cleanup a killed first call left undone.
-  //
-  // EVERY FORM THE RUN WAS EVER KNOWN BY, not just one (post-merge audit 2). A pre-change packet carries the
-  // legacy dateless `<slug>-<codename>` runId while the resolved run's own id is the dated canonical
-  // `<slug>-<date>-<codename>` — a run delivered on 2026-07-29 still has exactly that pair on disk, its
-  // _driver/delivery.json naming the dateless form and its status.json the dated one. That is also why
-  // resolveRun keeps its historical dateless arm (runs.mjs), so both ids reach this function.
-  // Removing only the packet's form left the OTHER form's marker on disk, and the outbox re-fires on
-  // whatever is there; worse, the alreadySent early-return repeated the same single-form removal, so no
-  // retry could ever finish the cleanup — the orphan was permanent. Same dual-form defence rescanOwedRuns
-  // already applies when it decides a marker is already queued (charter P1 §3): one settle clears every
-  // name that delivery could have been minted under. Best-effort per form; a missing one is a no-op.
-  const clearMarker = () => {
-    const packet = (() => { try { return readJson(packetPath); } catch { return {}; } })();
-    const sanitize = (s) => String(s).replace(/[^A-Za-z0-9._-]/g, "_");   // rescanOwedRuns' own marker-name gate
-    // The three OBSERVED ids are not the whole set: rescanOwedRuns DERIVES the legacy
-    // `<slug>-<codename>` form (outbox-backoff.mjs), and a marker minted under that name is named by
-    // none of them when the packet was rewritten with the dated id after its marker was minted. That
-    // orphan is not permanent — the courier re-passes the marker's own name next pass — but it costs a
-    // RE-SEND, i.e. a duplicate report to the reader, because the deliver skill sends before mark_sent.
-    // So derive the same form rescanOwedRuns derives, and the mirror is complete rather than partial.
-    const legacy = run.slug && run.codename ? `${run.slug}-${run.codename}` : null;
-    const forms = [...new Set([packet.runId, run.runId, args.runId, legacy]
-      .filter((id) => id != null && String(id).trim() !== "").map(sanitize))];
-    // BOTH SUFFIXES, because a failure's marker IS its packet. The delivery lane drops `<id>.pending`;
-    // the failure lane writes its packet through the outbox as `<id>.failed.pending`, which the same
-    // *.pending watch matches. Clearing only the first left the failure form on disk after a settle, the
-    // sweep re-armed off it, and the run stayed owed forever — the permanent SEND PENDING the pipelines'
-    // old comment feared, arriving by the one route nobody had named. A missing form is a no-op, as
-    // before. (How many were stranded when this was found is a fact about one box on one day; it lives on
-    // the issue, not here, because a count in a comment rots and the mechanism does not.)
-    for (const id of forms) {
-      for (const suffix of [".pending", ".failed.pending"]) {
-        try { rmSync(join(config.outboxDir, `${id}${suffix}`), { force: true }); } catch { /* best-effort */ }
-      }
-    }
-  };
-  const sentPath = join(run.runDir, ".sent");
-  if (existsSync(sentPath)) {
-    clearMarker();
+  // The settle itself (driver/send-settle.mjs) is shared with the route an install configures, so a send is settled
+  // one way whichever sender made it. Its markers are cleared on the already-sent path too.
+  if (sendSettled(run.runDir)) {
+    clearSendMarkers({ run, askedId: args.runId, packetPath: owed.path });
     return { ok: true, runId: run.runId, alreadySent: true, note: "Already marked sent — outbox marker cleared (idempotent)." };
   }
   // SETTLING REQUIRES EVIDENCE (audit item 7, proven on a delivered run): the email was BLOCKED on the
@@ -786,26 +762,7 @@ export function markSent(args = {}) {
     throw new Error(`mark_sent: refusing to settle run "${run.runId}" without send evidence — pass messageId `
       + `(the sent email's id) or attestation (an explicit out-of-band statement of how the packet reached the reader, `
       + `recorded verbatim). If the send was blocked or failed, do NOT call mark_sent: leave the marker so the send stays owed.`);
-  // `settled` names WHICH packet this receipt is for. A .sent beside a failure packet and a .sent beside a
-  // delivery mean two different things to anyone reading the run dir afterwards — "the client was told it
-  // failed" is not "the client got their report" — and the file used to be silent about which.
-  writeFileSync(sentPath, JSON.stringify({
-    ts: new Date().toISOString(), messageId, via: "mcp/mark_sent",
-    ...(attestation ? { attestation } : {}),
-    settled: packetPath === deliveryPath ? "delivery" : "failure",
-  }, null, 2) + "\n");
-  // status.json: sendPending -> false (atomic tmp+rename; a torn read must never lose the flip).
-  // A failed flip is NON-FATAL (.sent is the primary store and the rollup now derives from it too) but
-  // never silent: the note names it, so a courier transcript shows the sidecar disagreeing.
-  let statusFlipped = true;
-  try {
-    const sp = join(run.runDir, "status.json");
-    const status = readJson(sp);
-    status.sendPending = false;
-    writeFileSync(`${sp}.tmp`, JSON.stringify(status, null, 2) + "\n");
-    renameSync(`${sp}.tmp`, sp);
-  } catch { statusFlipped = false; /* best-effort — .sent is the primary guard */ }
-  clearMarker();
+  const { statusFlipped } = settleSend({ run, askedId: args.runId, evidence: { messageId, attestation }, via: "mcp/mark_sent" });
   return { ok: true, runId: run.runId, alreadySent: false,
     note: `.sent written${statusFlipped ? ", sendPending cleared" : " (status.json flip FAILED — the rollup settles from .sent)"}, outbox marker removed.` };
 }

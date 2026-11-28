@@ -41,9 +41,11 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
  * installed tree rather than the packed bytes.
  *
  * Set from the measured tree on 2026-09-05: 187 packages, floored well below it so a removal does not
- * red this. It rises when somebody finds it too low, never to chase the true count.
+ * red this. It rises when somebody finds it too low, never to chase the true count. Lowered on
+ * 2026-11-27, when the connector moved to the protocol SDK's second major version and the first one's
+ * tree left the package: 120 packages measured, floored at 100.
  */
-export const MIN_NOTICE_ENTRIES = 150;
+export const MIN_NOTICE_ENTRIES = 100;
 
 export function demoDirectories(root) {
   try {

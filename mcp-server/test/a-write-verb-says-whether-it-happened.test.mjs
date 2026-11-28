@@ -10,7 +10,8 @@
 // THE CHECK IS THE SDK'S OWN CLIENT, on the stdio door and on both HTTP doors. Listing the tools compiles every
 // declared shape with the same validator a real client uses, so a shape that does not compile fails here as it
 // would fail a firm's assistant; every call's structured result is then validated against its declared shape by
-// that client. Nothing is claimed or spent: the queue has no worker, and the one engine-starting verb is refused.
+// that client. Nothing is claimed or spent: the queue has no worker, and the one engine-starting verb is refused. The
+// HTTP doors are composed as the real ones are: each request answered by a server built from its own key's scope.
 import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
@@ -43,6 +44,7 @@ const { AjvJsonSchemaValidator } = await import("@modelcontextprotocol/sdk/valid
 const { buildFixture, RUN_ID } = await import("./_fixture.mjs");
 const { makeHttpHandler } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
+const { mcpServe } = await import("../lib/mcp-serve.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
 const { mintToken } = await import("../../shared/scope.mjs");
 const { WRITE_VERBS, outputSchemaFor } = await import("../lib/result-shapes.mjs");
@@ -52,22 +54,12 @@ const { config } = await import("../lib/driver.mjs");
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SERVER = join(HERE, "..", "server.mjs");
 
-async function createSession(sessions, scope, owner = null) {
-  const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-  const server = makeServer({ scope, local: false });
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
-    onsessioninitialized: (id) => sessions.set(id, { server, transport, lastSeen: Date.now(), email: owner, sub: scope?.sub ?? null, kind: scope?.kind ?? null }),
-  });
-  transport.onclose = () => { if (transport.sessionId) sessions.delete(transport.sessionId); };
-  await server.connect(transport);
-  return transport;
-}
+const serve = mcpServe((scope) => makeServer({ scope, local: false }));
 
 const servers = [];
 async function door({ clientSurface }) {
   const srv = createServer(makeHttpHandler({ verify: null, devMode: true, clientSurface, tokenOnly: false,
-    limiter: new RateLimiter({ perMinute: 1000 }), sessions: new Map(), createSession, ns: "write-verb-shape-test" }));
+    limiter: new RateLimiter({ perMinute: 1000 }), serve, ns: "write-verb-shape-test" }));
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   servers.push(srv);
   return `http://127.0.0.1:${srv.address().port}/mcp`;
@@ -84,7 +76,7 @@ before(async () => {
 });
 after(async () => {
   for (const c of clients) { try { await c.close(); } catch { /* best-effort */ } }
-  for (const s of servers) { try { s.close(); } catch { /* best-effort */ } }
+  for (const s of servers) { try { s.closeAllConnections?.(); s.close(); } catch { /* best-effort */ } }
 });
 
 async function connect(transport) {
@@ -175,7 +167,7 @@ async function exercise(client, verb) {
     }
     case "what_if_run": {
       // Refused before anything starts: a token for no run. A real confirmation would start the engine on ops,
-      // so only a session that queues what-ifs (an account) is given one; it queues and starts nothing.
+      // so only a key that queues what-ifs (an account's) is given one; it queues and starts nothing.
       await refused({ runId: RUN_ID, confirmationToken: "not-a-token" });
       const offered = (await client.listTools()).tools.find((t) => t.name === "what_if_plan");
       const plan = offered ? (await client.callTool({ name: "what_if_plan", arguments: { runId: RUN_ID, stage: "report-overview" } })) : null;
@@ -241,7 +233,7 @@ test("a result that leaves out its outcome, or a refusal with no reason, does no
   const good = { outcome: "queued", ok: true, id: "x", agent: "a", queue: "q", queued: true, warnings: [], queuePath: "p", queueWatched: "ok", note: "n" };
   assert.equal(start(good).valid, true, "the shape start_run declares accepts its own answer");
   assert.equal(start({ ...good, surprise: 1 }).valid, false, "and refuses a field it does not declare");
-  const filed = { outcome: "already-filed", ok: true, id: "x", existing: true, state: "refused", terminal: true, runId: null, reason: "r", updatedAt: null };
+  const filed = { outcome: "already-filed", ok: true, id: "x", existing: true, state: "refused", terminal: true, runId: null, reason: "r", reasonKind: "other", updatedAt: null };
   assert.equal(start(filed).valid, true, "the order a retry meets is an answer start_run declares");
   assert.equal(start({ ...filed, state: "lost" }).valid, false, "in one of the states an order can be in");
 });

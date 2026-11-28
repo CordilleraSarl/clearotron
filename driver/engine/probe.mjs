@@ -241,6 +241,135 @@ export function credentialCheck(engine, auth) {
 }
 const capitalised = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
+// ── the run's footing ────────────────────────────────────────────────────────────────────────────────
+//
+// THE PROGRAM CAN CHANGE HOW IT STARTS UNDER US, AND THE CHANGE WOULD BE SILENT. Anthropic has announced that Claude
+// Code's minimal mode "will become the default for `-p` in a future release" (its page on unattended use). In that mode
+// the program "never reads OAuth credentials", skips the hooks passed with `--settings`, which is what this engine's
+// write boundary is (anthropic-agent.mjs, writeBoundarySettings), and offers fewer built-in tools. Version floors have
+// no ceiling and the program updates itself, so nothing on our side would hold the change back, and a run would carry
+// on without its write guard and say nothing.
+//
+// So the probe's turn proves the footing every run stands on, from the program's own output and never from our flags:
+//   (a) the credential: where the program says its API key came from (`apiKeySource`) is what the billing mode expects,
+//       and a subscription's sign-in is proved by the turn completing at all;
+//   (b) the write guard: the guard's own program, installed on the session's start with the same policy, reported
+//       running with a word minted for this turn (deny-authority-write.mjs);
+//   (c) the tools: every built-in tool any stage is granted is among those the program reports offering. Page fetching
+//       counts when the program names its `web-fetch` helper instead, as it does on a subscription sign-in from 2.1.287.
+// A mismatch refuses the run at the door, named. It makes no extra call: the evidence rides the probe's one turn.
+//
+// MEASURED on Claude Code 2.1.326, 2026-11-26. With no sign-in, so no model call: started normally, the program
+// reported the guard's word and all seven tools; with CLAUDE_CODE_SIMPLE=1, which is the minimal mode, it reported no
+// hook and offered only Edit and Read. On a subscription sign-in, one turn: the guard's word, all seven tools (page
+// fetching as WebFetch itself, no `web-fetch` helper), and `apiKeySource` "none".
+export const FOOTING_ENGINES = Object.freeze(new Set(["anthropic-agent"]));
+
+/** The version number in a program's version string ("2.1.332 (Claude Code)" → "2.1.332"), or null. PURE. */
+const versionNumber = (s) => String(s ?? "").match(/\d+\.\d+\.\d+/)?.[0] ?? null;
+
+/**
+ * THE MINIMAL MODE'S REMEDY, in the owner's approved words (his item 1345). Where the install's run records name the
+ * Claude Code version it last ran, and that is not the version now refused, the remedy names it; where none is known (a
+ * fresh install) or it is the same version, the words name no number. `lastRanVersion` is the version, or a function
+ * that reads it, called only here, so the read is paid for only on this refusal. PURE but for that function.
+ */
+export function minimalModeRemedy(currentVersion, lastRanVersion = null) {
+  let last = null;
+  try { last = versionNumber(typeof lastRanVersion === "function" ? lastRanVersion() : lastRanVersion); } catch { last = null; }
+  const head = "No search starts until it starts normally. Nothing in this install asks for that mode, so this Claude Code version starts in it by default.";
+  return last && last !== versionNumber(currentVersion)
+    ? `${head} Install Claude Code ${last}, the version this install last ran, then run this check again.`
+    : `${head} Install the Claude Code version this install last ran, then run this check again.`;
+}
+
+/** The Claude Code version the newest Claude attempt in one run's spine (its `run.jsonl` text) recorded, or null. PURE. */
+export function lastClaudeVersionIn(spineText) {
+  const lines = String(spineText ?? "").split("\n");
+  for (let i = lines.length - 1; i >= 0; i--) {
+    const l = lines[i];
+    if (!l.includes('"cliVersion"') || !l.includes('"anthropic-agent"')) continue;
+    try { const e = JSON.parse(l); if (e?.event === "attempt" && e.engine === "anthropic-agent") { const n = versionNumber(e.cliVersion); if (n) return n; } } catch { /* a torn line */ }
+  }
+  return null;
+}
+
+/**
+ * The Claude Code version this install last ran, read from its own run records: the newest runs first, by their start,
+ * the first whose spine holds a Claude attempt with its program's version (ladder/attempt-record.mjs writes it on every
+ * attempt). Null where no run holds one, a fresh install, or the workspace cannot be read: it only shapes advice, so it
+ * never fails the check. Reads at most `maxRuns` spines. IMPURE (reads).
+ */
+export async function lastRanClaudeVersion({ workspaceRoot = null, maxRuns = 30 } = {}) {
+  try {
+    const { walkRuns } = await import("../portal-runs.mjs");
+    const { paths } = await import("../run-record.mjs");   // a run's files, named by the record's one door
+    const root = workspaceRoot ?? (await import("../driver.config.mjs")).config.workspaceRoot;
+    const { runs } = walkRuns({ workspaceRoot: root, archive: true, orders: false });
+    const newest = runs.filter((r) => typeof r.status?.startedAt === "string")
+      .sort((a, b) => b.status.startedAt.localeCompare(a.status.startedAt)).slice(0, maxRuns);
+    for (const r of newest) {
+      let text = null;
+      try { text = readFileSync(paths(r.dir).run, "utf8"); } catch { continue; }
+      const v = lastClaudeVersionIn(text);
+      if (v) return v;
+    }
+  } catch { /* advice only: the words then name no number */ }
+  return null;
+}
+
+/** What a credential source the program reports should be, by billing mode. */
+const EXPECTED_KEY_SOURCE = Object.freeze({ "api-key": "ANTHROPIC_API_KEY", subscription: "none", cloud: "none" });
+
+/**
+ * The footing verdict for one turn, or null when the footing holds or there is nothing to judge. PURE.
+ *
+ * `report` is the adapter's `footing` (anthropic-agent.mjs: the session's tools, helpers, key source and version, and
+ * the hooks it ran), `expect` is `{ word, tools }`, `auth` the billing answer. A turn that died before the program listed
+ * its tools is left to the verdicts below it, which name that death; a turn that COMPLETED without the program listing
+ * them is a session nobody can vouch for, and is refused.
+ */
+export function classifyFooting({ engine, report, expect, auth = null, completed = false, env = process.env, lastRanVersion = null } = {}) {
+  const id = String(engine ?? "").trim().toLowerCase();
+  const v = (mode, headline, fix, detail = null) => ({ ok: false, engine: id, mode, basis: "session-report", headline, fix, detail });
+  // A session the program did not list its tools for is one it gave no account of. On a turn that failed, the verdicts
+  // below name the failure; on a turn that completed, nothing vouches for the guard, and that is refused.
+  if (!report || !Array.isArray(report.tools)) {
+    if (!completed) return null;
+    return v("footing-unread", "Claude Code did not report how its session started",
+      "No search starts until it does, because nothing then shows that Claude Code stops a search from writing over its own instructions. Update Claude Code, then run this check again.");
+  }
+  const word = `footing:${expect?.word ?? ""}`;
+  const guardRan = (report.hooks ?? []).some((h) => h?.hook === "SessionStart" && h?.outcome === "success" && String(h?.stderr ?? "").includes(word));
+  const offered = new Set(report.tools ?? []);
+  const helpers = new Set(report.agents ?? []);
+  const missing = (expect?.tools ?? []).filter((t) => !offered.has(t) && !(t === "WebFetch" && helpers.has("web-fetch")));
+  const simple = String(env?.CLAUDE_CODE_SIMPLE ?? "").trim();
+  const version = report.version ? ` ${report.version}` : "";
+  if (!guardRan && missing.length)
+    return v("minimal-mode", `Claude Code${version} started in its minimal mode, in which it does not stop a search from writing over its own instructions`,
+      simple
+        ? "No search starts until it starts normally. CLAUDE_CODE_SIMPLE is set in this install's environment, which turns that mode on: remove it, then run this check again."
+        : minimalModeRemedy(report.version, lastRanVersion),
+      `missing tools: ${missing.join(", ")}`);
+  if (!guardRan)
+    return v("guard-off", `Claude Code${version} did not start the check that stops a search from writing over its own instructions`,
+      "No search starts until it does. Check that nothing passes --bare to Claude Code or sets CLAUDE_CODE_SIMPLE, then run this check again.");
+  if (missing.length)
+    return v("tools-missing", `Claude Code${version} does not offer the tools a search uses: ${missing.join(", ")}`,
+      "No search starts until it does. Check this machine's Claude Code settings for a rule that removes those tools, then run this check again.");
+  const want = EXPECTED_KEY_SOURCE[auth?.mode];
+  if (want && report.apiKeySource != null && report.apiKeySource !== want)
+    return want === "none"
+      ? v("credential-mismatch", "Claude Code is paying with an API key, not with the account this install is set to pay with",
+        `No search starts, because it would bill that key. Claude Code reports the key came from ${report.apiKeySource}: remove it from this install's environment and Claude Code settings, then run this check again.`)
+      : v("credential-mismatch", "Claude Code is not using the API key this install is set to pay with",
+        report.apiKeySource === "none"
+          ? "No search starts, because it would bill another account. Claude Code reports it found no key: set ANTHROPIC_API_KEY in this install's environment, then run this check again."
+          : `No search starts, because it would bill another account. Claude Code reports its key came from ${report.apiKeySource}: set ANTHROPIC_API_KEY in this install's environment and remove the other source, then run this check again.`);
+  return null;
+}
+
 /**
  * One verdict from one turn. PURE — no clock, no filesystem, no process.
  *
@@ -252,7 +381,36 @@ const capitalised = (s) => s.charAt(0).toUpperCase() + s.slice(1);
  * (`{ source, path }`); both only shape the advice, never the mode, so the run door refuses exactly what it
  * refused before. Absent, the advice is the subscription's, naming the bare program word.
  */
-export function classifyProbe({ engine, tuple = null, error = null, timeoutSec = PROBE_TIMEOUT_SEC, auth = null, program = null, expect = null } = {}) {
+export function classifyProbe(args = {}) {
+  const verdict = classifyTurn(args);
+  const { engine, tuple = null, error = null, auth = null, expect = null } = args;
+  // THE FOOTING (classifyFooting). Judged on a turn whose adapter reports a session: `footing` is on the tuple, null when
+  // the program said nothing. The anthropic adapter always sets it, so every probe of the real program is judged; a
+  // tuple some other code made up carries no such key and is judged as it always was.
+  if (error || !tuple || !(expect && typeof expect === "object" && expect.footing) || !("footing" in tuple)) return verdict;
+  const f = classifyFooting({ engine, report: tuple.footing, expect: expect.footing, auth, completed: tuple.code === 0, lastRanVersion: args.lastRanVersion ?? null });
+  if (!f) return verdict;
+  // A turn that completed without its footing is refused whatever else it managed. A turn that failed keeps its own
+  // verdict, unless that verdict is the one the minimal mode wears: a sign-in it refused to read, or a bare failure.
+  if (tuple.code === 0 || FOOTING_EXPLAINS.has(verdict.mode)) return f;
+  return verdict;
+}
+
+/** The failed-turn verdicts a footing fault explains better: the minimal mode never reads a subscription's sign-in. */
+const FOOTING_EXPLAINS = new Set(["signed-out", "stopped-early", "failed"]);
+
+// THE ADMINISTRATOR'S REMEDIES, in the approved words (design, 2026-11-28). They point at nothing the engine said: its
+// own output stays in the private records that already hold it (the run's log and the engine check's log line), and a
+// line a person is shown no longer refers to it.
+/** The program stopped before it produced anything. */
+export const STOPPED_EARLY = "The check stopped before the engine returned a result. Try again. If it stops again, run the "
+  + "engine from your terminal to see whether it needs input.";
+/** A turn started and failed for a reason this check cannot name. */
+export const RAN_AND_FAILED = "The engine started, but the check failed. Run the check again.";
+/** Claude refused tool calls, a file write or a command, after the capability is named. */
+export const CLAUDE_REFUSES = "Run Claude Code from your terminal to check which action it refuses.";
+
+function classifyTurn({ engine, tuple = null, error = null, timeoutSec = PROBE_TIMEOUT_SEC, auth = null, program = null, expect = null } = {}) {
   const id = String(engine ?? "").trim().toLowerCase();
   const v = (mode, basis, headline, fix, extra = {}) =>
     ({ ok: false, engine: id, mode, basis, headline, fix, detail: null, ...extra });
@@ -373,8 +531,7 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
 
   // A turn that ran and failed, in words that claim nothing they cannot see: the last answer below, and the
   // locked refresh, whose explanation is the engine's own and rides in `detail`.
-  const ranAndFailed = (mode, basis) => v(mode, basis, `${id} ran but the turn failed (exit ${tuple.code})`,
-    "The engine's stderr below is the whole story; a turn that starts and fails is not a configuration this check can name.", { detail });
+  const ranAndFailed = (mode, basis) => v(mode, basis, `${id} ran but the turn failed (exit ${tuple.code})`, RAN_AND_FAILED, { detail });
 
   // A SIGN-IN REFRESH ANOTHER COPY IS HOLDING, before the pattern that would read it as a sign-out. It answers
   // as a turn that ran and failed, with the program's "retry in a minute" beneath, under a mode of its own:
@@ -407,11 +564,12 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   // The anthropic adapter's own diagnosis: the CLI exited without emitting a single stream event, i.e.
   // it died at startup (args/auth/MCP). That is the signed-out shape, and the basis says it was inferred
   // from the shape rather than read from a message.
+  //
+  // NOT A SIGN-OUT. A program that stopped before it produced anything has said nothing about its sign-in, and the
+  // remedy no longer diagnoses one from that silence, whatever the billing mode (design, 2026-11-28). The basis still
+  // says the verdict is an inference, so the run door proceeds past it with its warning, as it always has.
   if (s.noStreamEvents)
-    return v("signed-out", "startup-class", `${id} exited before it produced anything`,
-      refused
-        ? `That is what refused credentials look like, so start there: check ${refused.check}, then run this again. The engine's stderr below is the diagnosis if it is something else.`
-        : `That is the signed-out shape, so start there: ${signInLine(id, program)}, then run this again. The engine's stderr below is the diagnosis if it is something else.`, { detail });
+    return v("stopped-early", "startup-class", `${id} exited before it produced anything`, STOPPED_EARLY, { detail });
 
   return ranAndFailed("failed", "nonzero-exit");
 }
@@ -421,7 +579,7 @@ function toolsRefusedFix(engine) {
   if (engine === "openai-agent")
     return "Every search stage calls tools, so no search can finish here. codex's own sandbox refuses them on this machine: "
       + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
-  return "Every search stage calls tools, so no search can finish here. The engine's stderr below is the place to start.";
+  return `Every search stage calls tools, so no search can finish here. ${CLAUDE_REFUSES}`;
 }
 
 /** What fixes a host where the engine cannot write in a run folder. On codex it is its own sandbox, and the setting is named. */
@@ -429,7 +587,7 @@ function cannotWriteFix(engine) {
   if (engine === "openai-agent")
     return "Every search stage writes its results to a file, so no search can finish here. codex's own sandbox cannot write on this machine: "
       + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
-  return "Every search stage writes its results to a file, so no search can finish here. The engine's stderr below is the place to start.";
+  return `Every search stage writes its results to a file, so no search can finish here. ${CLAUDE_REFUSES}`;
 }
 
 /**
@@ -450,7 +608,7 @@ function cannotRunFix(engine) {
   if (engine === "openai-agent")
     return "Every search stage reads its instructions through commands, so no search can finish here. codex's own sandbox cannot run commands on this machine: "
       + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
-  return "Every search stage reads its instructions through commands, so no search can finish here. The engine's stderr below is the place to start.";
+  return `Every search stage reads its instructions through commands, so no search can finish here. ${CLAUDE_REFUSES}`;
 }
 
 /** The one place the tier doctrine is POINTED AT rather than re-authored. */
@@ -493,7 +651,9 @@ export function probeFailureText(verdict) {
 // classify is by definition one the door cannot claim to understand — and the cost of being wrong runs
 // the other way here: refusing wrongly kills a run that would have worked, proceeding wrongly costs the
 // stages before a failure the engine was going to produce anyway.
-const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "signed-out", "tier-unavailable", "cannot-spawn", "tools-refused", "cannot-write", "cannot-run-commands"]);
+const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "signed-out", "tier-unavailable", "cannot-spawn", "tools-refused", "cannot-write", "cannot-run-commands",
+  // the run's footing (classifyFooting): read off the program's own account of its session, so named, never inferred
+  "minimal-mode", "guard-off", "tools-missing", "credential-mismatch", "footing-unread"]);
 
 // …and a mode alone is not enough, because `basis` says HOW WELL the mode is known and the ladder already
 // makes that distinction for its own reasons. `startup-class` is an INFERENCE FROM SILENCE — the CLI died
@@ -505,7 +665,8 @@ const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "si
 // `tool-gauge` is named, not inferred: the adapter counted each refused call off the engine's own stream.
 // `write-gauge` is named the same way: the adapter counted the write the engine itself reported as failed.
 // `command-gauge` too: the adapter counted the command the engine itself reported as failed.
-const NAMED_BASES = new Set(["config", "text-match", "spawn-error", "tool-gauge", "write-gauge", "command-gauge"]);
+// `session-report` is named too: the program's own init event and hook events, read by the footing check.
+const NAMED_BASES = new Set(["config", "text-match", "spawn-error", "tool-gauge", "write-gauge", "command-gauge", "session-report"]);
 
 /**
  * "ok" | "configuration" | "weather" — PURE, and the whole of the door's judgment.
@@ -632,6 +793,8 @@ export async function probeEngineTurn({
   env = process.env,
   engine: injectedEngine = null,
   runTurn: injectedRunTurn = null,
+  // Where the version this install last ran is read from, on the minimal-mode refusal only (lastRanClaudeVersion).
+  lastRanVersion: readLastRan = lastRanClaudeVersion,
   loadAdapter = defaultLoadAdapter,
   timeoutSec = PROBE_TIMEOUT_SEC,
   stallSec = PROBE_STALL_SEC,
@@ -687,12 +850,23 @@ export async function probeEngineTurn({
       commandFile = join(runDir, PROBE_COMMAND_FILE);
       writeFileSync(commandFile, `${command}\n`);
     }
+    // THE FOOTING, where the engine's write guard is the program's own hooks: a word for the guard to answer with, and
+    // every built-in tool any stage is granted, which the program is asked to offer (classifyFooting).
+    const footing = FOOTING_ENGINES.has(id)
+      ? { word: mintProbeSentinel(), tools: (await import("./mcp/gather-config.mjs")).EVERY_STAGE_BUILTIN_TOOL }
+      : null;
     // ITS DUTIES ARE ITS PROMPT'S. The probe is judged on the words in its reply, so it carries no output rule: a file
     // stage's rule says to reply with just the path, which would contradict the reply it is checked on.
-    const tuple = await turn({ message: probePrompt(file, commandFile), model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec, runDir, output: PROBE_OUTPUT, ...probeToolConfig(words) });
+    const tuple = await turn({ message: probePrompt(file, commandFile), model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec, runDir, output: PROBE_OUTPUT, ...probeToolConfig(words),
+      ...(footing ? { footing: { word: footing.word }, builtinTools: footing.tools } : {}) });
     let written = null;
     try { written = readFileSync(file, "utf8"); } catch { /* not written: classifyProbe says what that means */ }
-    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program, expect: { words, written, ...(command ? { command, commandFile } : {}) } });
+    const probed = { engine: id, tuple, timeoutSec, auth, program, expect: { words, written, ...(command ? { command, commandFile } : {}), ...(footing ? { footing } : {}) } };
+    const verdict = classifyProbe(probed);
+    // THE MINIMAL MODE'S REMEDY NAMES THE VERSION THIS INSTALL LAST RAN, read from its run records only on this refusal.
+    if (verdict?.mode !== "minimal-mode" || String(env?.CLAUDE_CODE_SIMPLE ?? "").trim()) return verdict;
+    const last = await Promise.resolve().then(() => readLastRan()).catch(() => null);
+    return last ? classifyProbe({ ...probed, lastRanVersion: last }) : verdict;
   } catch (e) {
     return classifyProbe({ engine: id, error: e, timeoutSec, auth, program });
   } finally {
@@ -742,8 +916,11 @@ export async function preflightEngineTurn(opts = {}) {
   const verdict = await judgeEngineTurn(opts);
   if (verdict.ok) return verdict;
   if (probeVerdictLane(verdict) !== "configuration") return { ...verdict, warning: probeWeatherWarning(verdict) };
-  const detail = verdict.detail ? `\n  engine said: ${verdict.detail}` : "";
-  throw new Error(`[preflight] ${probeFailureText(verdict)}${detail}`);
+  // THE REFUSAL IS THE RUN'S ANSWER, so it carries the product's words and never the engine's: a refused run's reason
+  // reaches the run response and the park record a person reads (design, 2026-11-27). The engine's own words go to
+  // this process's log, the private record a run already keeps, and ride the error for a caller that records them.
+  if (verdict.detail) console.error(`[preflight] ${verdict.engine ?? "the engine"} refused the run's check; engine said: ${verdict.detail}`);
+  throw Object.assign(new Error(`[preflight] ${probeFailureText(verdict)}`), { engineSaid: verdict.detail ?? null });
 }
 
 /**

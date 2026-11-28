@@ -141,25 +141,40 @@ export function serve({ name, version = "0.1.0", tools = [], noteFor = null }) {
     if (!line) return;
     let msg; try { msg = JSON.parse(line); } catch { return; }
     const { id, method, params } = msg;
+    // A request in the protocol's 2026-07-28 revision carries its revision in `_meta`, and that revision requires every
+    // result to say it is complete. A request in the older revision is answered exactly as before.
+    const modern = Boolean(params?._meta?.["io.modelcontextprotocol/protocolVersion"]) || method === "server/discover";
+    // A list is cacheable in that revision and must say for how long and for whom: never, and only this caller, because
+    // a tool may list a schema read for the run it serves (`schemaNow`).
+    const listed = typeof method === "string" && method.endsWith("/list");
+    const reply = (rid, result) => ok(rid, modern
+      ? { resultType: "complete", ...(listed ? { ttlMs: 0, cacheScope: "private" } : {}), ...result } : result);
     try {
       if (method === "initialize") {
-        ok(id, { protocolVersion: params?.protocolVersion || "2025-06-18", capabilities: { tools: {} }, serverInfo: { name, version } });
+        reply(id, { protocolVersion: params?.protocolVersion || "2025-06-18", capabilities: { tools: {} }, serverInfo: { name, version } });
+      } else if (method === "server/discover") {
+        // THE PROTOCOL'S 2026-07-28 REVISION ASKS THIS INSTEAD OF THE HANDSHAKE (2026-11-27): what the server speaks
+        // and can do, answered in the shape SDK v2's own servers answer it. Every later request carries what the
+        // handshake used to (in `_meta`), and needs nothing kept here, so tools/list and tools/call are served below
+        // exactly as before. A client of the older revision still opens with `initialize`, above.
+        reply(id, { supportedVersions: ["2026-07-28"], capabilities: { tools: {} }, resultType: "complete", ttlMs: 0,
+          cacheScope: "private", _meta: { "io.modelcontextprotocol/serverInfo": { name, version } } });
       } else if (method === "notifications/initialized" || method?.startsWith("notifications/")) {
         /* notification: no reply */
       } else if (method === "ping") {
-        ok(id, {});
+        reply(id, {});
       } else if (method === "tools/list") {
-        ok(id, { tools: list() });
+        reply(id, { tools: list() });
       } else if (method === "tools/call") {
         const tool = byName.get(params?.name);
-        if (!tool) return ok(id, { isError: true, content: [{ type: "text", text: `unknown tool: ${params?.name}` }] });
+        if (!tool) return reply(id, { isError: true, content: [{ type: "text", text: `unknown tool: ${params?.name}` }] });
         // A later part of a held answer is read from it, and the tool does not run: no started/settled pair,
         // one row of its own, so a count of the tool's runs stays a count of its runs.
         const { args, part } = budget ? takePart(params?.arguments) : { args: params?.arguments, part: null };
         const kept = part ? held.get(tool.name, args) : null;
         if (part && (kept || part > 1)) {
           logToolEvent({ event: "answer-part", server: name, tool: tool.name, part, ...(kept ? { of: kept.length } : { held: false }) });
-          return ok(id, kept ? { content: [{ type: "text", text: servedPart(tool.name, kept, part) }] }
+          return reply(id, kept ? { content: [{ type: "text", text: servedPart(tool.name, kept, part) }] }
             : { isError: true, content: [{ type: "text", text: partNotHeld(tool.name, part) }] });
         }
         // — STAMPED BEFORE THE WORK, settled after it, and the pair is the whole mechanism. A
@@ -189,7 +204,7 @@ export function serve({ name, version = "0.1.0", tools = [], noteFor = null }) {
           // copied the message would leak the day one of them does; a row that copies `unmet` cannot.
           logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: false,
             failure: "schema", reason: `missing_required:${unmet.join(",")}` });
-          return ok(id, { isError: true, content: [{ type: "text", text:
+          return reply(id, { isError: true, content: [{ type: "text", text:
             `${tool.name}_missing_required:${unmet.join(",")} — the schema you were handed declares `
             + `${unmet.length === 1 ? "this field" : "these fields"} REQUIRED and the call did not carry `
             + `${unmet.length === 1 ? "it" : "them"}. Send the field itself, not null and not a placeholder.` }] });
@@ -202,7 +217,7 @@ export function serve({ name, version = "0.1.0", tools = [], noteFor = null }) {
           // row names the error's class and never its message, which can carry whatever the tool was given.
           logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: false,
             failure: "threw", reason: `threw:${errorClass(e)}` });
-          return ok(id, { isError: true, content: [{ type: "text", text: `${tool.name} error: ${e?.message ?? e}` }] });
+          return reply(id, { isError: true, content: [{ type: "text", text: `${tool.name} error: ${e?.message ?? e}` }] });
         }
         const isError = typeof out === "object" && out?.isError === true;
         const text = typeof out === "string" ? out : (out?.text ?? JSON.stringify(out));
@@ -216,9 +231,9 @@ export function serve({ name, version = "0.1.0", tools = [], noteFor = null }) {
         const pieces = budget && !isError ? answerPieces(text, budget, tool.name) : null;
         if (pieces && pieces.length > 1) {
           held.hold(tool.name, args, pieces);
-          return ok(id, { content: [{ type: "text", text: servedPart(tool.name, pieces, 1) }, ...noted] });
+          return reply(id, { content: [{ type: "text", text: servedPart(tool.name, pieces, 1) }, ...noted] });
         }
-        ok(id, { isError: isError || undefined, content: [{ type: "text", text }, ...noted] });
+        reply(id, { isError: isError || undefined, content: [{ type: "text", text }, ...noted] });
       } else if (id != null) {
         err(id, -32601, `method not found: ${method}`);
       }

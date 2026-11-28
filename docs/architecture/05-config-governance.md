@@ -282,7 +282,9 @@ edited — that box runs pre-rebuild code and genuinely still sets it.
 `CLEAROTRON_AGENT_WHATSAPP`, `CLEAROTRON_OUTBOX_BACKOFF_BASE_SEC` (60) / `CLEAROTRON_OUTBOX_BACKOFF_CAP_SEC` (900) /
 `CLEAROTRON_OUTBOX_BACKOFF_MAX_RETRIES` (5) / `CLEAROTRON_OUTBOX_GIVEUP_COOLDOWN_SEC` (3600 — note this one
 drops BACKOFF from the prefix, which the elided spelling this row used to carry actively misled about),
-`CLEAROTRON_OUTBOX_NOPROGRESS_MAX`, `TRADEMARK_MSGID_DOMAIN` (enqueue.local).
+`CLEAROTRON_OUTBOX_NOPROGRESS_MAX`, `TRADEMARK_MSGID_DOMAIN` (enqueue.local),
+`CLEAROTRON_NOTICE_URL` (unset: no route; loopback only), `CLEAROTRON_NOTICE_AUDIENCES` (required with the URL:
+`submitter`, `operator` or both), `CLEAROTRON_NOTICE_DEDUPE` (unset; `1` when the receiver drops a repeated id).
 Code-set per stage (not operator-set): `CLEAROTRON_GATHER_AGENT` / `CLEAROTRON_GATHER_SESSION_KEY` / `CLEAROTRON_GATHER_SESSION_ID`; per turn: `CLEAROTRON_GATHER_SEND_UNTIL_MS`.
 
 **Who the completion notice reaches** — `CLEAROTRON_REQUESTER_WHATSAPP` (empty; effect: deployment) is a
@@ -324,7 +326,7 @@ same green.
 ### 5.9 Service faces (staff MCP / client MCP / portal / profile / recipe) — T4 + T5 mirrors
 
 Staff MCP: `TRADEMARK_MCP_HTTP_PORT` (18790), `TRADEMARK_MCP_HTTP_HOST`,
-`TRADEMARK_MCP_ALLOWED_HOSTS`, `TRADEMARK_MCP_SESSION_TTL_MS` (30m), `TRADEMARK_MCP_SESSION_MAX` (500),
+`TRADEMARK_MCP_ALLOWED_HOSTS`,
 `TRADEMARK_MCP_RATE_PER_MIN` (120), `TRADEMARK_MCP_OPS_RATE_PER_MIN` (30),
 `TRADEMARK_MCP_MAX_BYTES` (64MiB), `TRADEMARK_MCP_OIDC_ISSUER`, `TRADEMARK_MCP_JWKS_URL`,
 `TRADEMARK_MCP_EMAIL_CLAIM`, `TRADEMARK_MCP_AUTH_HEADER`, `TRADEMARK_MCP_URL`,
@@ -347,7 +349,7 @@ door take a key too, which is the thing this exists to prevent. Read by `mcp-ser
 Client MCP: `CLIENT_MCP_HTTP_PORT` (code default 18811, matching the deployed unit; it was 18795,
 which collided with a co-hosted warm-MCP block, so keep any unit override that names a port),
 `CLIENT_MCP_HTTP_HOST`, `CLIENT_MCP_ALLOWED_HOSTS`,
-`CLIENT_MCP_SESSION_TTL_MS`, `CLIENT_MCP_SESSION_MAX`, `CLIENT_MCP_RATE_PER_MIN`, `CLIENT_MCP_URL`,
+`CLIENT_MCP_RATE_PER_MIN`, `CLIENT_MCP_URL`,
 `CLIENT_MCP_TOKEN_ONLY`, `CLIENT_MCP_AUTH_DISABLED` / `CLIENT_MCP_DEV` (dev seams — never set in prod). CF mirrors (T5): `CF_ACCESS_TEAM`, `CLEAROTRON_OIDC_AUDIENCE`,
 `CLEAROTRON_CLIENT_OIDC_AUDIENCE`, `MCP_ALLOWED_EMAIL_DOMAINS`, `MCP_ALLOWED_EMAILS`. Admin services:
 `PORTAL_SERVICE_PORT` (18802) / `PORTAL_SERVICE_HOST`, `PORTAL_MCP_URL`,

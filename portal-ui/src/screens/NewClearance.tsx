@@ -79,6 +79,7 @@ import { takeCreated, createdStrip } from '../contract/companyCreated.ts'
 import type { CreatedCompany } from '../contract/api.ts'
 import { seesEverything } from '../shell/permissions.ts'
 import { PageHeader } from '../components/PageHeader.tsx'
+import { OrderReceiptPanel } from './OrderReceipt.tsx'
 import { allowanceLine, searchesLeft, overOneLeft, ONE_SEARCH_LEFT } from '../contract/allowance.ts'
 
 /**
@@ -812,9 +813,13 @@ export function NewClearance({ ctx }: { readonly ctx: ShellContext }) {
     }
   }
 
+  // THE ORDER'S RECEIPT, followed from here (screens/OrderReceipt.tsx): the same panel its Clearances row reopens.
+  // Staff with no company in view see every order, so the lookup names none for them.
   if (submitted) {
     return (
-      <Submitted
+      <OrderReceiptPanel
+        reference={submitted}
+        account={account ?? ''}
         go={ctx.go}
         onAnother={() => { setSubmitted(null); writeDraft(EMPTY); setPickedByHand(false); setReceipt(null) }}
         name={names[0] ?? ''}
@@ -2746,42 +2751,6 @@ function OptionsUnavailable({
         </p>
         <div style={{ marginTop: 14 }}>
           <button type="button" className="btn-ghost" onClick={onRetry}>Try again</button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * Queued.
- *
- * Deliberately says "queued", not "started". A 200 from the run door means the request was accepted, not
- * that a search is running — the engine can still refuse it, and when it does the Clearances list is
- * where that shows up. Promising more than was promised is how a failed run becomes a support ticket.
- */
-function Submitted({ go, onAnother, name, duration }: {
-  readonly go: (p: string) => void
-  readonly onAnother: () => void
-  /** The name that was queued, as the reader typed it. */
-  readonly name: string
-  /** The quote for its pipeline, as the footer showed it at the moment of starting. */
-  readonly duration: string
-}) {
-  return (
-    <div className="screen">
-      {/* "QUEUED", NOT "STARTED". It has not started: it is waiting for a slot, and a title saying
-          otherwise is the first thing a reader would have to un-learn when the Home band shows it
-          under "queued". The sentence says the two facts the product has — that it is waiting, and how
-          long it takes once it runs — and promises nothing it cannot keep. In particular it does not
-          say anyone will be told when it finishes: nothing in the portal or the contract sends that. */}
-      <PageHeader title="Clearance queued" />
-      <div className="notice prose">
-        <p style={{ margin: 0, color: 'var(--text-muted)' }}>
-          <span data-anon="mark">{name}</span> is waiting for a slot. It runs {duration} once it starts.
-        </p>
-        <div style={{ marginTop: 14, display: 'flex', gap: 10 }}>
-          <button type="button" className="btn-primary" onClick={() => go('/portal/clearances')}>View in Clearances</button>
-          <button type="button" className="btn-ghost" onClick={onAnother}>Start another</button>
         </div>
       </div>
     </div>

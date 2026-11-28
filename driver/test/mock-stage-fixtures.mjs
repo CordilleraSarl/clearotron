@@ -877,7 +877,8 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
     meters: {
       mark_similarity: { token: "high", basis: "verified-from-record", source: "/mark/us/90000001" },
       goods_proximity: { token: "medium", basis: "inferred-from-signal" },
-      use: { token: "not-confirmed", basis: "verified-from-record", source: "https://perplexity.example/result" },
+      // MOCK_USE_CONFIRMED: the use check confirms the name in use on its page, so the web picture step collects it.
+      use: { token: process.env.MOCK_USE_CONFIRMED ? "confirmed" : "not-confirmed", basis: "verified-from-record", source: "https://perplexity.example/result" },
       enforcer: { token: "medium", basis: "inferred-from-signal" },
     },
     quadrant: { x: 0.7, y: 0.6 },

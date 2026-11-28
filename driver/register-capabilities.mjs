@@ -11,29 +11,14 @@
 // silently planning against corsearch's abilities while a thinner provider executes is exactly the class
 // of defect this whole phase exists to kill.
 //
-// The three capabilities.js files are dependency-free (no node imports, no HTTP), so importing them here
-// costs nothing and keeps the offline test fleet offline.
+// The capabilities.js files are dependency-free (no node imports, no HTTP), and so is the rest of what the providers'
+// index imports, so importing it here costs nothing and keeps the offline test fleet offline.
 
-import { CAPABILITIES as CORSEARCH_CAPABILITIES } from "../providers/corsearch/src/capabilities.js";
-import { CAPABILITIES as CLARIVATE_CAPABILITIES } from "../providers/clarivate/src/capabilities.js";
-import { CAPABILITIES as SIGNA_CAPABILITIES } from "../providers/signa/src/capabilities.js";
-import { CAPABILITIES as EUIPO_CAPABILITIES } from "../providers/euipo/src/capabilities.js";
-import { CAPABILITIES as USPTO_LOCAL_CAPABILITIES } from "../providers/uspto-local/src/capabilities.js";
-import { CAPABILITIES as FREE_TIER_CAPABILITIES } from "../providers/free-tier/src/capabilities.js";
+import { byRegister } from "../providers/registers.mjs";   // every register provider, named once
 
-export const PROVIDER_CAPABILITIES = Object.freeze({
-  corsearch: CORSEARCH_CAPABILITIES,
-  clarivate: CLARIVATE_CAPABILITIES,
-  signa: SIGNA_CAPABILITIES,
-  euipo: EUIPO_CAPABILITIES,
-  // Quoted: the id carries a hyphen, and it is the id everywhere else too.
-  "uspto-local": USPTO_LOCAL_CAPABILITIES,
-  // — the only entry that is DERIVED rather than declared: pointwise-weakest across euipo and
-  // uspto-local. It is a real contract like any other (frozen, closed vocabularies, explicit nulls) and
-  // the shape test sweeps it exactly the same way; what differs is that nobody hand-typed its values,
-  // so it cannot fall behind its members.
-  "free-tier": FREE_TIER_CAPABILITIES,
-});
+// The providers are listed once, in providers/registers.mjs; free-tier's contract is the only one derived rather than
+// declared (pointwise-weakest across euipo and uspto-local), and the shape test sweeps it like the others.
+export const PROVIDER_CAPABILITIES = Object.freeze(byRegister("capabilities"));
 
 export function capabilitiesFor(providerId) {
   const id = String(providerId ?? "").toLowerCase();

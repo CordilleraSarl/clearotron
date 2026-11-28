@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// A READ TOOL ANSWERS IN THE SHAPE IT DECLARES, ON EVERY DOOR, FOR EVERY KIND OF SESSION.
+// A READ TOOL ANSWERS IN THE SHAPE IT DECLARES, ON EVERY DOOR, FOR EVERY KIND OF KEY.
 //
 // The SDK's own client does the checking: listing the tools compiles every declared shape with the validator a real
 // client uses, and every call's structured result is validated against its shape by that client, so a mismatch fails
 // here as it would fail a firm's assistant. It runs over the four demos and a run in every state, on the stdio door
-// and both HTTP doors, for ops, account and report-link keys, and again with the install serving its demo.
+// and both HTTP doors, for ops, account and report-link keys, and again with the install serving its demo. The HTTP
+// doors are composed as the real ones are: each request answered by a server built from its own key's scope.
 //
 // The line between a closed shape and an open one is asserted too: a field the code never builds fails a closed
 // shape, and a field a run's own files may carry passes an open one.
@@ -15,7 +16,6 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 const ROOT = mkdtempSync(join(tmpdir(), "read-tool-shape-"));
@@ -43,6 +43,7 @@ const { StreamableHTTPClientTransport } = await import("@modelcontextprotocol/sd
 const { AjvJsonSchemaValidator } = await import("@modelcontextprotocol/sdk/validation/ajv-provider.js");
 const { makeHttpHandler } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
+const { mcpServe } = await import("../lib/mcp-serve.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
 const { mintToken } = await import("../../shared/scope.mjs");
 const { WRITE_VERBS, DOCUMENT_READERS, outputSchemaFor } = await import("../lib/result-shapes.mjs");
@@ -66,20 +67,10 @@ function stateRun(slug, codename, state, extra = {}) {
 }
 
 const servers = [];
-async function createSession(sessions, scope, owner = null) {
-  const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-  const server = makeServer({ scope, local: false });
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
-    onsessioninitialized: (id) => sessions.set(id, { server, transport, lastSeen: Date.now(), email: owner, sub: scope?.sub ?? null, kind: scope?.kind ?? null }),
-  });
-  transport.onclose = () => { if (transport.sessionId) sessions.delete(transport.sessionId); };
-  await server.connect(transport);
-  return transport;
-}
+const serve = mcpServe((scope) => makeServer({ scope, local: false }));
 async function door(clientSurface) {
   const srv = createServer(makeHttpHandler({ verify: null, devMode: true, clientSurface, tokenOnly: false,
-    limiter: new RateLimiter({ perMinute: 5000 }), sessions: new Map(), createSession, ns: "read-tool-shape-test" }));
+    limiter: new RateLimiter({ perMinute: 5000 }), serve, ns: "read-tool-shape-test" }));
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   servers.push(srv);
   return `http://127.0.0.1:${srv.address().port}/mcp`;
@@ -114,7 +105,7 @@ before(async () => {
 });
 after(async () => {
   for (const c of clients) { try { await c.close(); } catch { /* best-effort */ } }
-  for (const s of servers) { try { s.close(); } catch { /* best-effort */ } }
+  for (const s of servers) { try { s.closeAllConnections?.(); s.close(); } catch { /* best-effort */ } }
 });
 
 async function connect(transport) {
@@ -134,7 +125,7 @@ const RUNLESS = { server_info: [{}], list_runs: [{}, { state: "queued" }], list_
     { ...ORDER, product: "full-country-search", jurisdictions: ["CH"] }, { ...ORDER, deliveryRoute: "portal" }],
   describe_options: [{}, { profileKey: "demo-brand-owner" }],
   // What became of an order: one nobody holds, and a reference no door issues. A found order's answer is checked in
-  // a-reference-names-an-order-only-to-its-own-account.test.mjs, on every kind of session.
+  // a-reference-names-an-order-only-to-its-own-account.test.mjs, for every kind of key.
   order_status: [{ id: "NO-SUCH-ORDER" }, { id: "../escape" }] };
 const PER_RUN = {
   read_artifact: (runId) => [{ runId, name: "report" }, { runId, name: "status" }, { runId, name: "report", frontMatterOnly: true }],
@@ -147,7 +138,7 @@ const PER_RUN = {
   get_finding: (runId) => [{ runId, id: "F1" }, { runId, id: "NR1" }, { runId, id: "AT1" }],
 };
 
-/** Every read tool this session is offered with a declared shape, called on every run: the SDK client checks each answer. */
+/** Every read tool this client is offered with a declared shape, called on every run: the SDK client checks each answer. */
 async function sweep(label, client, runIds) {
   const { tools } = await client.listTools();   // compiles every declared shape
   const offered = tools.filter((t) => t.outputSchema && !WRITE_VERBS.includes(t.name) && !["start_run"].includes(t.name));

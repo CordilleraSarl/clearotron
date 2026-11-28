@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // portal-trigger-wire.test.mjs — the portal's MCP client speaks the REAL ops HTTP face
-// (initialize → tools/call over /mcp) with an accounts-scoped token, and start_run lands a queue file
+// (a tools/call over /mcp, answered by the face's own per-request server) with an accounts-scoped token, and start_run lands a queue file
 // with the server-stamped identity. This pins the WIRE SHAPE against the face's own makeHttpHandler —
 // the previous bare-REST /tools/start_run target existed on no HTTP face, and an injected-trigger unit
 // test could never have caught it.
@@ -15,31 +15,21 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync, mkdirSync } from "node:fs";
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 const { makeHttpHandler } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
+const { mcpServe } = await import("../lib/mcp-serve.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
 const { mintToken } = await import("../../shared/scope.mjs");
 const { mcpToolCall } = await import("../../driver/portal-mcp-client.mjs");
 
-async function createSession(sessions, scope = { kind: "internal", runId: null }, owner = null) {
-  const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-  const server = makeServer({ scope, local: false });
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
-    onsessioninitialized: (id) => sessions.set(id, { server, transport, lastSeen: Date.now(), email: owner, sub: scope?.sub ?? null, kind: scope?.kind ?? null }),
-  });
-  transport.onclose = () => { if (transport.sessionId) sessions.delete(transport.sessionId); };
-  await server.connect(transport);
-  return transport;
-}
+// The doors' own composition: each request is answered by a server built from that request's scope.
+const serve = mcpServe((scope) => makeServer({ scope, local: false }));
 
 test("wire: mcpToolCall → real /mcp face → start_run queues with server-stamped identity; foreign account refused upstream", async () => {
-  const sessions = new Map();
   const handler = makeHttpHandler({ verify: null, devMode: true, limiter: new RateLimiter({ perMinute: 200 }),
-    sessions, createSession, ns: "wire-test" });
+    serve, ns: "wire-test" });
   const srv = createServer(handler);
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   const url = `http://127.0.0.1:${srv.address().port}`;
@@ -56,7 +46,7 @@ test("wire: mcpToolCall → real /mcp face → start_run queues with server-stam
     assert.equal(job.enqueuedBy, "portal-poc", "attribution = the ops token's sub, stamped by the face");
     assert.equal(job.enqueuedVia, "mcp/start_run");
     // AND STOPS IT, on the same token over the same wire. The portal calls exactly these two tools, and
-    // the call handler now refuses anything the session's listing hides, so both are asserted here.
+    // the call handler now refuses anything the token's listing hides, so both are asserted here.
     const id = r.queuePath.split(/[\\/]/).pop().replace(/\.json$/, "");
     const stopped = await mcpToolCall({ url, token, tool: "stop_run", args: { id } });
     assert.equal(stopped.action, "dequeued", JSON.stringify(stopped));
@@ -65,24 +55,22 @@ test("wire: mcpToolCall → real /mcp face → start_run queues with server-stam
     await assert.rejects(
       () => mcpToolCall({ url, token, tool: "start_run", args: { profileKey: "zephyr", forwarder: "portal", markName: "X", classes: [9] } }),
       /FORBIDDEN|grant/i, "the confused-deputy bound holds at the face");
-    // scoped sessions must name profileKey — the domain-resolution bypass is closed at the door
+    // scoped tokens must name profileKey — the domain-resolution bypass is closed at the door
     await assert.rejects(
       () => mcpToolCall({ url, token, tool: "start_run", args: { forwarder: "portal", forwarderDomain: "acme.example", markName: "X", classes: [9] } }),
       /profileKey explicitly|does not include account "generic"/, "untagged jobs are not available to scoped tokens (refused at the face gate or the ops door)");
   } finally {
-    for (const [, e] of sessions) { try { e.transport.close(); } catch { /* */ } try { e.server?.close?.(); } catch { /* */ } }
     srv.closeAllConnections?.();
     await new Promise((r) => srv.close(r));
   }
 });
 
 test("wire: an ops token that names no tools cannot start a what-if over the network, through the real transport", async () => {
-  // The listing hides what_if_plan and what_if_run from every ops session on this face; the call handler
+  // The listing hides what_if_plan and what_if_run from every ops token on this face; the call handler
   // used to run them anyway once authorize() passed a verb-less token. The unit arm replaces the tool with
-  // a recorder; this one goes through the SDK transport the connectors use, and reads the answer back.
-  const sessions = new Map();
+  // a recorder; this one goes through the SDK handler the connectors reach, and reads the answer back.
   const handler = makeHttpHandler({ verify: null, devMode: true, limiter: new RateLimiter({ perMinute: 200 }),
-    sessions, createSession, ns: "wire-test" });
+    serve, ns: "wire-test" });
   const srv = createServer(handler);
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   const url = `http://127.0.0.1:${srv.address().port}`;
@@ -90,13 +78,12 @@ test("wire: an ops token that names no tools cannot start a what-if over the net
   try {
     for (const tool of ["what_if_plan", "what_if_run"]) {
       await assert.rejects(() => mcpToolCall({ url, token, tool, args: { runId: "r1", confirmationToken: "x", stage: "report-overview" } }),
-        new RegExp(`unknown tool \\\\?"${tool}`), `${tool} was not refused as a tool this session does not have`);
+        new RegExp(`unknown tool \\\\?"${tool}`), `${tool} was not refused as a tool this token does not have`);
     }
     // The control: a read the listing shows still answers on the same token and wire.
     const runs = await mcpToolCall({ url, token, tool: "list_runs", args: {} });
     assert.ok(runs && typeof runs === "object", "a listed read failed, so the refusals above prove nothing about the wall");
   } finally {
-    for (const [, e] of sessions) { try { e.transport.close(); } catch { /* */ } try { e.server?.close?.(); } catch { /* */ } }
     srv.closeAllConnections?.();
     await new Promise((r) => srv.close(r));
   }

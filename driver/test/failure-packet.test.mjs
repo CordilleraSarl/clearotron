@@ -24,14 +24,14 @@ const BASE = {
 test("deterministic kind: says retry will not help, quotes the reason verbatim (escaped), lists repairs — never a systemic claim", () => {
   const p = buildFailurePacket({ ...BASE, failClass: "deterministic", terminalKind: "deterministic",
     repairs: [{ repair: "plan-direct-execute", target: "primary-sweep", outcome: "failed: HTTP 414 URI Too Long" }] });
-  assert.match(p.emailBodyHtml, /retrying will not help/);
-  assert.doesNotMatch(p.emailBodyHtml, /cause is systemic/);
-  assert.match(p.emailBodyHtml, /The driver reported, verbatim:/);
-  assert.match(p.emailBodyHtml, /HTTP 414 &lt;URI Too Long&gt;/, "verbatim reason, HTML-escaped as text");
-  assert.match(p.emailBodyHtml, /What the machine already attempted:/);
-  assert.match(p.emailBodyHtml, /plan-direct-execute → failed: HTTP 414/);
-  assert.match(p.whatsappText, /\[deterministic\]/);
-  assert.match(p.whatsappText, /retrying will not help/);
+  assert.match(p.diagnostic.emailBodyHtml, /retrying will not help/);
+  assert.doesNotMatch(p.diagnostic.emailBodyHtml, /cause is systemic/);
+  assert.match(p.diagnostic.emailBodyHtml, /The driver reported, verbatim:/);
+  assert.match(p.diagnostic.emailBodyHtml, /HTTP 414 &lt;URI Too Long&gt;/, "verbatim reason, HTML-escaped as text");
+  assert.match(p.diagnostic.emailBodyHtml, /What the machine already attempted:/);
+  assert.match(p.diagnostic.emailBodyHtml, /plan-direct-execute → failed: HTTP 414/);
+  assert.match(p.diagnostic.line, /\[deterministic\]/);
+  assert.match(p.diagnostic.line, /retrying will not help/);
   assert.equal(p.conversationId, "AAQkConv=");
   assert.equal(p.failureSignature, "fan-in|abc123def456");
   assert.equal(p.terminalKind, "deterministic");
@@ -39,20 +39,20 @@ test("deterministic kind: says retry will not help, quotes the reason verbatim (
 
 test("repeat-signature and factual kinds carry their own honest sentences", () => {
   const rep = buildFailurePacket({ ...BASE, terminalKind: "repeat-signature", priorAttempts: 1 });
-  assert.match(rep.emailBodyHtml, /failed IDENTICALLY to the first attempt/);
-  assert.match(rep.emailBodyHtml, /after <b>1 automatic recovery attempt<\/b>/, "singular, not 'attempts'");
+  assert.match(rep.diagnostic.emailBodyHtml, /failed IDENTICALLY to the first attempt/);
+  assert.match(rep.diagnostic.emailBodyHtml, /after <b>1 automatic recovery attempt<\/b>/, "singular, not 'attempts'");
   const fact = buildFailurePacket({ ...BASE, terminalKind: "factual" });
-  assert.match(fact.emailBodyHtml, /a human decision, not a retry/);
-  assert.match(fact.whatsappText, /needs human attention/);
+  assert.match(fact.diagnostic.emailBodyHtml, /a human decision, not a retry/);
+  assert.match(fact.diagnostic.line, /needs human attention/);
 });
 
 test("exhausted kind keeps the systemic hypothesis but scoped honestly; unknown kind stays generic", () => {
   const ex = buildFailurePacket({ ...BASE, terminalKind: "exhausted", priorAttempts: 3 });
-  assert.match(ex.emailBodyHtml, /Automatic recovery is exhausted after 3 attempts/);
-  assert.match(ex.emailBodyHtml, /looks systemic \(provider\/environment\)/);
+  assert.match(ex.diagnostic.emailBodyHtml, /Automatic recovery is exhausted after 3 attempts/);
+  assert.match(ex.diagnostic.emailBodyHtml, /looks systemic \(provider\/environment\)/);
   const generic = buildFailurePacket({ ...BASE, terminalKind: undefined });
-  assert.match(generic.emailBodyHtml, /stopped on a technical failure/);
-  assert.ok(!generic.emailBodyHtml.includes("What the machine already attempted"), "no empty repairs section");
+  assert.match(generic.diagnostic.emailBodyHtml, /stopped on a technical failure/);
+  assert.ok(!generic.diagnostic.emailBodyHtml.includes("What the machine already attempted"), "no empty repairs section");
 });
 
 // ── client-started runs (2026-07-29 hardening) ──────────────────────────────────────────────────────
@@ -69,17 +69,22 @@ test("clientPrincipal: the email carries a neutral notice — no stage, no verba
   assert.doesNotMatch(p.emailBodyHtml, /fan-in|414|corsearch|FAILED at stage|verbatim|retrying/i,
     "machine internals never reach the client email");
   assert.doesNotMatch(p.subject, /FAILED/, "the subject stays factual, not alarming");
-  // the packet FIELDS keep the full truth — status listings, telemetry and WhatsApp are staff surfaces
+  // the packet FIELDS and the run's own record keep the full truth; the messaging line is the same notice
   assert.equal(p.reasonVerbatim, BASE.reasonVerbatim);
-  assert.match(p.whatsappText, /FAILED at fan-in/);
+  assert.doesNotMatch(p.whatsappText, /fan-in|414|FAILED/);
+  assert.match(p.diagnostic.line, /FAILED at fan-in/);
   assert.equal(p.failed, true);
 });
 
-test("staff runs (no clientPrincipal) keep the verbatim machine-reason email exactly as before", () => {
+test("a run staff placed is told the same words as a company's; the verbatim machine reason stays in its own record", () => {
   const p = buildFailurePacket({ ...BASE, failClass: "deterministic", terminalKind: "deterministic" });
-  assert.match(p.emailBodyHtml, /The driver reported, verbatim/);
-  assert.match(p.emailBodyHtml, /414/);
-  assert.match(p.subject, /run FAILED, nothing delivered/);
+  // Every person using Clearotron is told in product words, whoever placed the order (design, 2026-11-27).
+  const client = buildFailurePacket({ ...BASE, job: { ...BASE.job, clientPrincipal: true }, failClass: "deterministic", terminalKind: "deterministic" });
+  assert.deepEqual([p.subject, p.emailBodyHtml, p.whatsappText], [client.subject, client.emailBodyHtml, client.whatsappText]);
+  assert.doesNotMatch(p.emailBodyHtml + p.whatsappText + p.subject, /verbatim|414|fan-in|FAILED/);
+  assert.match(p.diagnostic.emailBodyHtml, /The driver reported, verbatim/);
+  assert.match(p.diagnostic.emailBodyHtml, /414/);
+  assert.match(p.diagnostic.subject, /run FAILED, nothing delivered/);
 });
 
 // ---- the weather lane's own terminal (2026-07-29) ----------------------------------------------------
@@ -90,17 +95,17 @@ test("weather-exhausted: the notice says the PROVIDER stayed down, not that the 
   // that reads as a defect, sends the reader hunting through artifacts that are fine.
   const p = buildFailurePacket({ ...BASE, failClass: "transient", terminalKind: "weather-exhausted",
     shortReason: "status_overloaded", reasonVerbatim: "status_overloaded", priorAttempts: 9 });
-  assert.match(p.emailBodyHtml, /upstream provider stayed overloaded or unreachable/);
-  assert.match(p.emailBodyHtml, /nothing in the run itself failed a check/);
-  assert.match(p.emailBodyHtml, /Re-trigger once the provider is healthy/);
-  assert.doesNotMatch(p.emailBodyHtml, /looks systemic/, "the generic exhaustion sentence is the wrong diagnosis here");
-  assert.doesNotMatch(p.emailBodyHtml, /retrying will not help/, "waiting IS the remedy for weather — never tell the reader it is futile");
+  assert.match(p.diagnostic.emailBodyHtml, /upstream provider stayed overloaded or unreachable/);
+  assert.match(p.diagnostic.emailBodyHtml, /nothing in the run itself failed a check/);
+  assert.match(p.diagnostic.emailBodyHtml, /Re-trigger once the provider is healthy/);
+  assert.doesNotMatch(p.diagnostic.emailBodyHtml, /looks systemic/, "the generic exhaustion sentence is the wrong diagnosis here");
+  assert.doesNotMatch(p.diagnostic.emailBodyHtml, /retrying will not help/, "waiting IS the remedy for weather — never tell the reader it is futile");
   // The lane split must not come apart in the copy: priorAttempts is the TOTAL across BOTH lanes, so
   // the weather sentence quotes no count of its own rather than passing 9 off as waiting attempts.
-  assert.doesNotMatch(p.emailBodyHtml, /9 (in total|waiting)/);
-  assert.match(p.emailBodyHtml, /after <b>9 automatic recovery attempts<\/b>/, "the honest total still appears, under its own name");
-  assert.match(p.whatsappText, /\[weather-exhausted\]/, "the terminal kind is greppable on every lane");
-  assert.match(p.whatsappText, /needs human attention/);
+  assert.doesNotMatch(p.diagnostic.emailBodyHtml, /9 (in total|waiting)/);
+  assert.match(p.diagnostic.emailBodyHtml, /after <b>9 automatic recovery attempts<\/b>/, "the honest total still appears, under its own name");
+  assert.match(p.diagnostic.line, /\[weather-exhausted\]/, "the terminal kind is greppable on every lane");
+  assert.match(p.diagnostic.line, /needs human attention/);
   assert.equal(p.terminalKind, "weather-exhausted");
 });
 
@@ -121,11 +126,14 @@ test("a multi-name knockout failure names all its names, in the run's own spelli
     marks: [{ name: "IRONWHISK" }, { name: "CLUVENDRA" }, { name: "SUNDAY ROAST CLUB" }],
   };
   const p = buildFailurePacket({ ...BASE, job, failedStage: "knockout-assess#0", terminalKind: "deterministic" });
-  assert.equal(p.subject, "Knockout search — IRONWHISK +2 more — run FAILED, nothing delivered");
+  assert.equal(p.subject, "Knockout search — IRONWHISK +2 more — search stopped, nothing delivered");
+  assert.equal(p.diagnostic.subject, "Knockout search — IRONWHISK +2 more — run FAILED, nothing delivered");
   // Every sentence a human reads, not only the subject — the WhatsApp line and the email body each
   // stated one name of three.
-  assert.match(p.whatsappText, /Clearotron search for IRONWHISK \+2 more FAILED/);
-  assert.match(p.emailBodyHtml, /for <b>IRONWHISK \+2 more<\/b> FAILED/);
+  assert.match(p.whatsappText, /The Knockout search for IRONWHISK \+2 more stopped before it finished/);
+  assert.match(p.diagnostic.line, /Clearotron search for IRONWHISK \+2 more FAILED/);
+  assert.match(p.emailBodyHtml, /for <b>IRONWHISK \+2 more<\/b> stopped before it finished/);
+  assert.match(p.diagnostic.emailBodyHtml, /for <b>IRONWHISK \+2 more<\/b> FAILED/);
   // The client-facing wording carries it too — that lane is the one a requester reads.
   const client = buildFailurePacket({ ...BASE, job: { ...job, clientPrincipal: true }, terminalKind: "deterministic" });
   assert.match(client.emailBodyHtml, /for <b>IRONWHISK \+2 more<\/b> stopped before it finished/);
@@ -137,13 +145,13 @@ test("a single-name job still says the name the requester TYPED, never a derived
   // so this path must read byte-identically to what it did before.
   const p = buildFailurePacket({ ...BASE, terminalKind: "deterministic",
     job: { ...BASE.job, product: "global-preliminary-search", marks: [{ name: "OPEN COUNTRY" }] } });
-  assert.match(p.subject, /^Global preliminary search — Open Country — run FAILED/);
+  assert.match(p.subject, /^Global preliminary search — Open Country — search stopped/);
   assert.doesNotMatch(p.subject, /\+\d+ more/);
   // And a job carrying no marks at all is unchanged — this is every clearance run in the archive.
   // BASE's job names no product either, so the subject leads with the mark alone, exactly as before.
   const bare = buildFailurePacket({ ...BASE, terminalKind: "deterministic" });
-  assert.equal(bare.subject, "Open Country — run FAILED, nothing delivered");
-  assert.match(bare.whatsappText, /Clearotron search for Open Country FAILED/);
+  assert.equal(bare.subject, "Open Country — search stopped, nothing delivered");
+  assert.match(bare.whatsappText, /^The search for Open Country stopped before it finished/);
 });
 
 // ---- (enforcement check E11 in the family): the payload reaches the notice ------------------
@@ -155,15 +163,16 @@ test("a single-name job still says the name the requester TYPED, never a derived
 
 const DROP_DETAIL = 'never executed, and a count-based connotation gate cannot see it (Project Sable" video game controversy)';
 
-test("the packet carries reasonDetail + reasonQuantity, and the staff email names the query", () => {
+test("the packet carries reasonDetail + reasonQuantity, and the run's own record names the query", () => {
   const p = buildFailurePacket({ ...BASE, failedStage: "common-law", failClass: "deterministic",
     terminalKind: "deterministic", shortReason: "merged half-grids dropped 1 dictated connotation query",
     reasonVerbatim: "merged half-grids dropped 1 dictated connotation query",
     reasonDetail: DROP_DETAIL, reasonQuantity: 1 });
   assert.equal(p.reasonDetail, DROP_DETAIL, "the payload is a packet FIELD, readable without an artifact replay");
   assert.equal(p.reasonQuantity, 1);
-  assert.match(p.emailBodyHtml, /Which one \(1\):/);
-  assert.match(p.emailBodyHtml, /Project Sable" video game controversy/, "the staff body names the query");
+  assert.match(p.diagnostic.emailBodyHtml, /Which one \(1\):/);
+  assert.match(p.diagnostic.emailBodyHtml, /Project Sable" video game controversy/, "the run's own record names the query");
+  assert.doesNotMatch(p.emailBodyHtml, /Which one|Project Sable/, "the notice a person reads never carries the payload");
   // — the payload rides BESIDE the sentence, never inside it. The ping and the short fallback line
   // are what a phone renders; a validator enum and a raw search query on them is the defect fixed.
   assert.doesNotMatch(p.whatsappText, /Project Sable/);

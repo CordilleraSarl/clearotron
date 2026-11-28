@@ -17,14 +17,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 const { tools, attachHandlers } = await import("../server.mjs");
-const { CallToolRequestSchema, ListToolsRequestSchema } = await import("@modelcontextprotocol/sdk/types.js");
 
 function door(scope, local) {
   const h = new Map();
   attachHandlers({ setRequestHandler(schema, fn) { h.set(schema, fn); } }, { scope, local });
   return {
-    listed: async () => (await h.get(ListToolsRequestSchema)({ params: {} })).tools.map((t) => t.name),
-    call: (name, args = {}) => h.get(CallToolRequestSchema)({ params: { name, arguments: args } }),
+    // SDK v2 registers a handler by its method name.
+    listed: async () => (await h.get("tools/list")({ params: {} })).tools.map((t) => t.name),
+    call: (name, args = {}) => h.get("tools/call")({ params: { name, arguments: args } }),
   };
 }
 

@@ -11,7 +11,8 @@
 //   <id>.processing                claimed, its pre-start checks under way
 //   <id>.processing.meta           written at dispatch, AFTER those checks passed: the run's identity is minted
 //   <id>.postponed (+ .meta)       parked, by a provider cap or our own recovery backoff; it resumes by itself
-//   <id>.failed + .failed.reason   refused at the claim, before any run existed (failAtIntake)
+//   <id>.failed + .failed.reason   refused at the claim, before any run existed (failAtIntake); `.failed.kind` says
+//                                  which check refused it (REFUSAL_KINDS), and an order refused before it was written is `other`
 //   <id>.duplicate + .reason       refused as the same matter as an earlier order (parkDuplicate)
 //   <id>.{done,failed,cancelled}.result   the run's own outcome, with its run directory
 //
@@ -33,6 +34,13 @@ import { stopReason } from "../shared/stop-reason.mjs";   // a cancelled order s
  * reference outside this set names no order, and is refused before it reaches a path. Mirrors start_run's validator.
  */
 export const ORDER_REF_MAX = 128;
+
+/**
+ * WHICH CHECK REFUSED AN ORDER BEFORE ANY RUN, as the runner records it beside the reason. The reason is the operator's
+ * text; the kind is what a door may tell the person who placed the order. `duplicate` is the same-matter park.
+ */
+export const REFUSAL_KINDS = Object.freeze(["run-cap", "details", "policy", "setup", "duplicate", "other"]);
+const refusalKind = (text) => { const k = String(text ?? "").trim(); return REFUSAL_KINDS.includes(k) ? k : "other"; };
 export const ORDER_REF_RE = new RegExp(`^[A-Za-z0-9][A-Za-z0-9._@-]{0,${ORDER_REF_MAX - 1}}$`);
 
 // ── AN ACCOUNT'S REFERENCE IS ITS OWN ─────────────────────────────────────────────────────────────────────────────────
@@ -130,12 +138,59 @@ function runIdFromMeta(job, meta) {
   try { return `${deriveSlug(job)}-${meta.dateISO}-${meta.codename}`; } catch { return null; }
 }
 
-/** The marker files for one reference in one queue directory, by the name they carry. */
-function markersFor(qdir, names, ref) {
-  const own = names.filter((n) => n === `${ref}.json` || n.startsWith(`${ref}.`));
+/**
+ * The marker files for one reference in one queue directory, by the name they carry. `own`, when a caller already
+ * holds this reference's names (markersByReference), saves a pass over the whole listing.
+ */
+function markersFor(qdir, names, ref, own = null) {
+  own = own ?? names.filter((n) => n === `${ref}.json` || n.startsWith(`${ref}.`));
   const has = (s) => own.includes(`${ref}.${s}`);
   const claimed = own.find((n) => n.startsWith(`${ref}.processing.claimed-`) && !/\.(pid|meta|skips|tmp)$/.test(n)) ?? null;
   return { own, has, claimed };
+}
+
+/** Which terminal and which live marker an order's names carry, decided from the names alone. */
+function markerState({ has, claimed }) {
+  const terminal = ["done", "failed", "cancelled", "duplicate"].find((s) => has(s)) ?? null;
+  const live = has("postponed") ? "postponed" : has("processing") ? "processing" : claimed ? "claimed" : has("json") ? "json" : null;
+  return { terminal, live };
+}
+
+/**
+ * Each wanted reference's own marker names in one queue listing, found in ONE pass over it. A name belongs to a
+ * reference when it is `<ref>.json` or starts `<ref>.`, as markersFor reads it; a reference may itself hold dots, so
+ * every prefix that ends before a dot is tried. A lookup of many references then costs one pass over the listing,
+ * not one pass per reference (review, 2026-11-27).
+ */
+export function markersByReference(names, refs) {
+  const wanted = refs instanceof Set ? refs : new Set(refs);
+  const out = new Map();
+  for (const n of names) {
+    for (let i = n.indexOf("."); i > 0; i = n.indexOf(".", i + 1)) {
+      const ref = n.slice(0, i);
+      if (!wanted.has(ref)) continue;
+      if (!out.has(ref)) out.set(ref, []);
+      out.get(ref).push(n);
+    }
+  }
+  return out;
+}
+
+/**
+ * What an order's names alone say it is, before any of its files is opened: null when the names hold nothing for it,
+ * a settled state when they decide it, and "open" when only its files can (a stop, a duplicate, a claim being checked).
+ * Agrees with receiptIn by construction: both read markerState.
+ */
+export function stateFromNames(ref, own) {
+  const m = markersFor(null, null, ref, own);
+  const { terminal, live } = markerState(m);
+  if (!terminal && !live) return null;
+  if (terminal === "done") return "delivered";
+  if (terminal === "cancelled") return "cancelled";
+  if (terminal) return "open";
+  if (live === "postponed") return "resumable";
+  if (live === "json") return "waiting";
+  return "open";
 }
 
 /**
@@ -143,16 +198,21 @@ function markersFor(qdir, names, ref) {
  * The job is read from whichever marker carries it; `.result` decides before `.meta`, so a refusal after dispatch reads
  * as a refusal, and a run directory holding a park sentinel reads as resumable whatever the queue marker says.
  */
-export function receiptIn(qdir, ref, names) {
-  const { has, claimed } = markersFor(qdir, names, ref);
+export function receiptIn(qdir, ref, names, { own = null } = {}) {
+  const markers = markersFor(qdir, names, ref, own);
+  const { claimed } = markers;
   const at = (s) => join(qdir, `${ref}.${s}`);
-  const terminal = ["done", "failed", "cancelled", "duplicate"].find((s) => has(s)) ?? null;
-  const live = has("postponed") ? "postponed" : has("processing") ? "processing" : claimed ? "claimed" : has("json") ? "json" : null;
+  const { terminal, live } = markerState(markers);
   if (!terminal && !live) return null;
   const markerPath = terminal ? at(terminal) : live === "claimed" ? join(qdir, claimed) : at(live);
   const job = readJsonSafe(markerPath);
+  // WHEN IT LAST CHANGED: the latest of the marker and what was written beside it. A marker is the job file renamed,
+  // and a rename keeps the file's time, so a refused order's marker alone says when it was PLACED; its `.reason` or
+  // `.result` says when it was refused or stopped.
   let updatedAt = null;
-  try { updatedAt = statSync(markerPath).mtime.toISOString(); } catch { /* the marker moved under us; the next read sees it */ }
+  const stamps = [markerPath, ...(terminal ? [at(`${terminal}.reason`), at(`${terminal}.result`)] : [at(`${live}.meta`)])]
+    .map((p) => { try { return statSync(p).mtimeMs; } catch { return null; } }).filter((t) => t != null);
+  if (stamps.length) updatedAt = new Date(Math.max(...stamps)).toISOString();
   const base = { reference: ref, job, updatedAt };
 
   if (terminal) {
@@ -164,7 +224,7 @@ export function receiptIn(qdir, ref, names) {
     // A DUPLICATE'S RECORDED REASON NAMES THE EARLIER ORDER it matched (its message id), and that order may be another
     // account's: the matter signature does not include the account. Only its first line, which says what happened,
     // is the receipt's. Pointing to the earlier order is for a later increment, which can ask whether this caller may see it.
-    if (terminal === "duplicate") return { ...base, state: "refused", reason: reason ? reason.split("\n")[0] : null, runId: null, kind: "duplicate" };
+    if (terminal === "duplicate") return { ...base, state: "refused", reason: reason ? reason.split("\n")[0] : null, runId: null, kind: "duplicate", reasonKind: "duplicate" };
     if (terminal === "done") return { ...base, state: "delivered", reason: null, runId: runIdFromDir(result?.runDir) };
     // `.failed`: refused at the claim (a reason, no result), refused at dispatch (a pre-run result), or a run that
     // stopped. A run directory still holding a park sentinel is a run that will come back, not a failure.
@@ -174,8 +234,11 @@ export function receiptIn(qdir, ref, names) {
     }
     const beforeStart = !result || result.failedStage === "pre-run" || !runDir;
     const why = reason ?? result?.reason ?? (result?.failedStage ? `stopped at ${result.failedStage}` : null);
+    // WHERE IT WAS REFUSED, for whoever must act: at the claim (the allowance, the order's own content, a demo account)
+    // the person who placed it can, and at dispatch (the pre-start checks, the engine's sign-in) only the operator can.
     return beforeStart
-      ? { ...base, state: "refused", reason: why, runId: null }
+      ? { ...base, state: "refused", reason: why, runId: null, kind: result ? "pre-run" : "claim",
+        reasonKind: refusalKind(readTextSafe(at("failed.kind"))) }
       : { ...base, state: "failed", reason: why, runId: runIdFromDir(runDir) };
   }
   if (live === "postponed") {
@@ -220,9 +283,25 @@ function heldUnder(listings, refs) {
 function receiptOf(r) {
   return {
     reference: r.reference, state: r.state, stateText: RECEIPT_STATES[r.state], terminal: TERMINAL.has(r.state),
-    reason: r.reason ?? null, runId: r.runId ?? null, ...(r.kind ? { kind: r.kind } : {}),
+    reason: r.reason ?? null, runId: r.runId ?? null, ...(r.kind ? { kind: r.kind } : {}), ...(r.reasonKind ? { reasonKind: r.reasonKind } : {}),
     account: r.job?.profileKey ?? null, ...(r.job?.profileKey === "generic" ? { organisation: r.job?.tenant ?? null } : {}),
     updatedAt: r.updatedAt,
+  };
+}
+
+/**
+ * AN ORDER AS ANY PERSON IS TOLD OF IT, at every door that answers by reference: the connector's `order_status`,
+ * `start_run`'s answer to a retried reference, the portal's orders route and `enqueue --status`. Nobody is given
+ * internal text, whatever their role or door (design, 2026-11-27): not the reason as the runner recorded it, which can
+ * name the installation's setup, a queue or a flag, nor where in the worker the order was refused. A refusal is told
+ * by its kind; `reason` keeps its place in the answer, empty. The recorded reason stays in the queue's
+ * `<id>.failed.reason`. `withAccount` adds whose order it is, for a caller who sees every account.
+ */
+export function orderAnswer(r, { withAccount = false } = {}) {
+  return {
+    reference: r.reference, state: r.state, terminal: r.terminal, runId: r.runId ?? null, reason: null,
+    reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null, updatedAt: r.updatedAt ?? null,
+    ...(withAccount ? { account: r.account ?? null, organisation: r.organisation ?? null } : {}),
   };
 }
 

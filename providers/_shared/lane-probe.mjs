@@ -90,6 +90,20 @@ export async function loadProviderCapabilities(repoRoot, providerId, importer = 
   } catch { return null; }
 }
 
+// THE REGISTER PROBE'S TWO FAILURES, in the approved words (design, 2026-11-28). The provider's own text and a failed
+// connection's are not shown: a person reads one of these, and the raw answer stays out of what they are shown.
+/** The register never answered the count. */
+export const REGISTER_NO_ANSWER = "The register did not answer the count request. Check the connection and try again.";
+/** The register answered with an error instead of a count. */
+export const REGISTER_ERROR = "The register returned an error instead of a count.";
+
+/** A control that could not be counted, as the probe says it: by which failure it was, or by the kernel's own reason. */
+function countFailure(control) {
+  if (control.failure === "no-answer") return REGISTER_NO_ANSWER;
+  if (control.failure === "provider-error") return REGISTER_ERROR;
+  return `the control mark ${control.mark} could not be counted: ${control.reason ?? "no reason given"}`;
+}
+
 export function makeLaneProbe(deps) {
   const { countHits, capabilities = {}, controls = DEFAULT_CONTROLS } = deps;
   if (typeof countHits !== "function")
@@ -114,10 +128,11 @@ export function makeLaneProbe(deps) {
     const one = async (control) => {
       try {
         const r = await countHits({ name: control.mark, matchMode, classes, regions }, ctx);
-        return { mark: control.mark, ok: !!r?.ok, total: r?.total ?? null, reason: r?.reason ?? null };
-      } catch (e) {
-        // The kernel guards its own transport, so reaching here means something outside it threw.
-        return { mark: control.mark, ok: false, total: null, reason: String(e?.message ?? e) };
+        return { mark: control.mark, ok: !!r?.ok, total: r?.total ?? null, reason: r?.reason ?? null, failure: r?.failure ?? null };
+      } catch {
+        // The kernel guards its own transport, so reaching here means something outside it threw. What it threw is the
+        // machine's own words, so it is not the reason a person reads (design, 2026-11-27); a provider's own reason is.
+        return { mark: control.mark, ok: false, total: null, reason: null, failure: null };
       }
     };
 
@@ -126,8 +141,7 @@ export function makeLaneProbe(deps) {
     // FAIL EARLY AND SPEND LESS. If the positive control did not retrieve, the negative control cannot
     // add anything — a dead lane returns zero for both, which is the confusion this exists to end.
     if (!positive.ok || positive.total === null) {
-      return { state: "failed", spend: { ...spend, calls: 1 }, positive, negative: null,
-        reason: `the control mark ${positive.mark} could not be counted: ${positive.reason ?? "no reason given"}` };
+      return { state: "failed", spend: { ...spend, calls: 1 }, positive, negative: null, reason: countFailure(positive) };
     }
     if (positive.total === 0) {
       return { state: "failed", spend: { ...spend, calls: 1 }, positive, negative: null,
@@ -141,7 +155,8 @@ export function makeLaneProbe(deps) {
     // that misbehaves is reported beside the proof, never instead of it.
     let caveat = null;
     if (!negative.ok || negative.total === null) {
-      caveat = `the negative control ${negative.mark} could not be counted (${negative.reason ?? "no reason"}), `
+      // The provider's own text, or a failed connection's, is not shown: only a reason this kernel wrote.
+      caveat = `the negative control ${negative.mark} could not be counted${negative.failure ? "" : ` (${negative.reason ?? "no reason"})`}, `
              + "so `0 means none` is unverified on this lane — retrieval is still proven.";
     } else if (negative.total > 0) {
       caveat = `the negative control ${negative.mark} returned ${negative.total} records. It is not a `

@@ -23,14 +23,13 @@ const { describeOptions } = await import("../lib/options.mjs");
 const { instructionsFor } = await import("../lib/instructions.mjs");
 const { DEMO_SWAPS, DEMO_GUIDANCE_LINE, demoGuidance } = await import("../lib/demo-texts.mjs");
 const { demoMode } = await import("../demo-mode.mjs");
-const { ListToolsRequestSchema } = await import("@modelcontextprotocol/sdk/types.js");
 
 const OPS = { kind: "ops", runId: null, sub: "demo-texts-arm", verbs: null, accounts: "*" };
 const ACCOUNT = { kind: "account", runId: null, sub: "client@example-firm.test", accounts: ["demo-brand-owner"] };
 const listed = async (scope) => {
   const h = new Map();
   attachHandlers({ setRequestHandler(schema, fn) { h.set(schema, fn); } }, { scope, local: true });
-  return (await h.get(ListToolsRequestSchema)({ params: {} })).tools;
+  return (await h.get("tools/list")({ params: {} })).tools;   // SDK v2 registers a handler by its method name
 };
 const inDemoMode = async (fn) => { demoMode.on = true; try { return await fn(); } finally { demoMode.on = false; } };
 const plan = TOOL_DEFS.find((d) => d.name === "plan_run");

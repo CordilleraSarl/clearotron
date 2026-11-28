@@ -449,6 +449,12 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run, product = CL
   // owed: a failure arms sendPending either way (below), because mark_sent is the only clear and it
   // settles a failure.json on the same evidence a delivery needs. ONE SEND PATH, ruled 2026-09-12.
   let failPingSent = false;
+  let failureId = null;   // this failure's id, kept if the backstop below rewrites its packet
+  // The cap wait this failure is told with, read once off the park history (the history is what survived the parks), so
+  // the backstop below composes the same notice as the event lane: a cap death told plainly on one lane and as a cap on
+  // the other would be two answers to one failure.
+  let capWait = null;
+  try { capWait = capWaitFrom(Array.isArray(statusSnapshot?.recoveryHistory) ? statusSnapshot.recoveryHistory : []); } catch { /* no cap on record */ }
   {
     try {
       const runId = `${run.slug}-${run.date}-${run.codename}`;   // ONE canonical runId form (charter P1 §3) — matches status.runId
@@ -460,11 +466,10 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run, product = CL
         runId, agent, job, failedStage, shortReason,
         reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass,
         terminalKind: terminalKind ?? null, repairs: attemptedRepairs ?? [],
-        priorAttempts,
-        // Read off the park history rather than recomputed: the history is what survived the parks.
-        capWait: capWaitFrom(Array.isArray(statusSnapshot?.recoveryHistory) ? statusSnapshot.recoveryHistory : []),
-        reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the payload reaches the notice
+        priorAttempts, capWait,
+        reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the payload reaches the run's record
       });
+      failureId = rich.failureId;
       const packet = {
         kind: "run-failed", ...rich,
         markName: job.markName ?? job.name ?? null, reason: shortReason,
@@ -474,6 +479,9 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run, product = CL
       };
       ensureDriverDir(run.runDir);
       writeFileSync(paths(run.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
+      // THE FILE LEAVES THE ENGINE (design, 2026-11-27): docs/DELIVERY.md offers it to an integrator whole, so it holds
+      // the notice and its routing and nothing else (writeOutboxPacket). The stage, the reason, the repairs and the staff
+      // copy stay in the run's own record, written the line above.
       failPingSent = Boolean(writeOutboxPacket(`${runId}.failed`, packet));
     } catch (evErr) {
       note(`failure event packet threw (swallowed): ${evErr?.message ?? evErr}`);
@@ -517,8 +525,9 @@ export async function endTheFailedRun({ P, agent, ctx, e, job, run, product = CL
       const packet = buildFailurePacket({
         runId: `${run.slug}-${run.date}-${run.codename}`, agent, job, failedStage, shortReason,   // canonical runId form (charter P1 §3)
         reasonVerbatim: String(reason).slice(0, 1000), sig: failSig.sig, failClass, terminalKind,
-        repairs: attemptedRepairs ?? [], priorAttempts,
-        reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the BACKSTOP notice carries it too
+        repairs: attemptedRepairs ?? [], priorAttempts, capWait,
+        reasonDetail: reasonDetailField, reasonQuantity: quantity,   // — the BACKSTOP record carries it too
+        failureId,   // the same failure: a notice already owed for it stays the one owed
       });
       writeFileSync(paths(run.runDir).failure, JSON.stringify(packet, null, 2) + "\n");
       mkdirSync(config.outboxDir, { recursive: true });
