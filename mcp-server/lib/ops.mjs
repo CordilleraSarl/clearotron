@@ -18,13 +18,15 @@ import { probeQueueWatch, unwatchedQueueWarning } from "../../driver/queue-watch
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../../driver/usage-ledger.mjs";   // the ledger the wall counts
 import { resolveEffectiveProfile } from "../../driver/profiles.mjs";
 import { admittedSearches, oneLeftRefusal } from "../../driver/urgent-count.mjs";   // one search left and an Urgent order
-import { ORDER_REF_RE, orderRefRefusal, filedReference, orderAlreadyFiled, orderReceipt, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // one rule for filing and finding an order
+import { ORDER_REF_RE, orderRefRefusal, filedReference, orderAlreadyFiled, orderReceipt, orderAnswer, RECEIPT_STATES } from "../../driver/order-receipt.mjs";   // one rule for filing and finding an order
 import { orderUrgency } from "./urgent.mjs";   // whether this installation can run an Urgent order, as the run asks it   //
 import { resolveRun, runAccountKey } from "./runs.mjs";
 import { accountVisible, assertAccountAccess, attributionOf, grantsGeneric, GENERIC_NOT_GRANTED } from "../../shared/scope.mjs";
 import { requestCancel, isCancelled } from "../../driver/cancel.mjs";   // one marker shape, shared with the engine
 import { readEngineChild, engineChildIsLive, endEngineChild } from "../../driver/engine/child-record.mjs";   //
 import { killEscalateMs } from "../../driver/engine/common.mjs";   // the watchdogs' grace, reused by an immediate stop
+import { userFailurePacket } from "../../driver/run-outcome.mjs";   // a failure packet leaves only as its notice and routing
+import { userOutboxPacket } from "../../driver/outbox-notices.mjs";   // so does every outbox packet
 import { stopReason } from "../../shared/stop-reason.mjs";   //
 import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 import { driverDir, paths, readJson } from "../../driver/run-record.mjs";   // — one definition of where `_driver/` is
@@ -316,9 +318,9 @@ export function startRun(args = {}, { scope } = {}) {
   {
     const prior = orderAlreadyFiled({ queueDirs: [qdir], filed: id, asked: args.id != null ? String(args.id) : "", job, scope: receiptScope(scope) });
     if (prior?.held === "mine") {
-      const r = prior.receipt;
-      return { ok: true, id: r.reference, existing: true, state: r.state, terminal: r.terminal, runId: r.runId,
-        reason: r.state === "refused" || !isClientSession(scope) ? r.reason : null, updatedAt: r.updatedAt };
+      // The same answer as order_status, from the same builder: the kind of a refusal, never the reason as written.
+      const { reference, ...answer } = orderAnswer(prior.receipt);
+      return { ok: true, id: reference, existing: true, ...answer };
     }
     if (prior?.held === "hidden" || (prior?.held === "other" && ["waiting", "checking", "running"].includes(prior.state)))
       throw new Error(`start_run: a job with id "${prior.reference}" is already queued/processing`);
@@ -394,11 +396,11 @@ export function orderStatus(args = {}, { scope } = {}) {
   const queueDirs = args.agent ? [queueDir(String(args.agent))] : [queueDir(""), ...config.queueDirs];
   const answer = orderReceipt({ queueDirs, reference: args.id, scope: receiptScope(scope) });
   if (!answer.found) return { found: false, basis: answer.basis };
-  const r = answer.receipt;
-  const client = isClientSession(scope);
-  return { found: true, reference: r.reference, state: r.state, terminal: r.terminal, runId: r.runId,
-    reason: r.state === "refused" || !client ? r.reason : null, updatedAt: r.updatedAt,
-    ...(client ? {} : { account: r.account, organisation: r.organisation ?? null }) };
+  // NOBODY IS GIVEN THE REASON AS WRITTEN (design, 2026-11-27): it can name settings, profiles, a queue and, for a
+  // duplicate, an earlier order that may be another company's. Every session is told which check refused the order, as
+  // `reasonKind`, and `reason` keeps its place in the answer, empty. An order refused before kinds were recorded is
+  // `other`. A session that sees every account is also told whose order it is.
+  return { found: true, ...orderAnswer(answer.receipt, { withAccount: !isClientSession(scope) }) };
 }
 
 // stop_run — cancel. A not-yet-claimed queue job is removed (a REAL cancel before any spend). A running run
@@ -609,8 +611,21 @@ export function listOutboxEvents() {
     try { raw = readFileSync(join(config.outboxDir, file), "utf8"); } catch { return null; } // raced an ack — skip
     try { return { file, ...JSON.parse(raw) }; }
     catch { return { file, kind: "delivered", runId: file.replace(/\.pending$/, ""), agent: raw.trim() || null }; }
-  }).filter(Boolean);
+  }).filter(Boolean)
+    // Every packet is handed on as the notice a person reads and the routing a courier sends by, whoever reads the
+    // outbox and whichever version wrote the file (design, 2026-11-27): the shape it is written in (outbox-notices.mjs),
+    // so a file an earlier version wrote, and the worker has not yet rewritten, is told in the same words as a new one.
+    .map(userOutboxPacket);
   return { ok: true, count: events.length, events };
+}
+
+// `whatsappToReason` tells an install how to give a requester a chat number: it names the requester's address and the
+// setting that holds the numbers. That is the install's own setup, never a person's to be handed (design, 2026-11-27);
+// a courier routes by `whatsappTo`, which stays. The packet on disk keeps it.
+function withoutSetupHint(p) {
+  if (!p || typeof p !== "object" || !("whatsappToReason" in p)) return p;
+  const { whatsappToReason: _hint, ...rest } = p;
+  return rest;
 }
 
 // get_delivery_packet — the run's send payload(s): _driver/delivery.json (success) and/or
@@ -628,7 +643,9 @@ export function getDeliveryPacket(args = {}) {
   return {
     ok: true, runId: run.runId, state: run.state,
     sendPending: run.status?.sendPending ?? null, sent: existsSync(join(run.runDir, ".sent")),
-    delivery, failure,
+    // `failure` is the notice and its routing, never `_driver/failure.json` as written: the stage, the reason and the
+    // repairs stay in that file, the run's own record (design, 2026-11-27).
+    delivery: withoutSetupHint(delivery), failure: failure ? userFailurePacket(failure) : null,
   };
 }
 

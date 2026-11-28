@@ -174,7 +174,7 @@ operator enrolled.
 | **Claude Code, Cursor, Gemini CLI, …** | Point them at the same URL; they open a browser for you to sign in. |
 
 **A hosted connector is read-only and narrower than a local one.** It shows what searches found and how
-they were reached; it cannot spend money or change a report. A signed-in client reaches eighteen tools
+they were reached; it cannot spend money or change a report. A signed-in client reaches twenty tools
 against their own matters — the report, the evidence under it, the audit chain behind that (the audit
 trail, the reasoning narrative, the step-by-step decision walk), and what-if: a single step re-run in a
 sandbox, queued on the server, with the original untouched. What it never shows is what the work cost or

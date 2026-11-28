@@ -43,6 +43,6 @@ it to refuse, check that you edited the right file.
 
 [`REMOTE-SETUP.md`](REMOTE-SETUP.md) for the provisioning, and
 [`../../docs/CLIENT-MCP.md`](../../docs/CLIENT-MCP.md) for what a customer reaches once you have — the
-eleven account tools, why the rest are withheld, and the daily allowance to set before you enable a demo
+twenty account tools, why the rest are withheld, and the daily allowance to set before you enable a demo
 tenant. Verify before exposing anything: `curl 127.0.0.1:<port>/healthz`, then read the boot log, which
 states its posture in words.

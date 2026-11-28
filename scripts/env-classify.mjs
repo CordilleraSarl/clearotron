@@ -358,6 +358,11 @@ export const DEPLOYMENT_NAMES = new Set([
   // spelling, so unlisted it falls through to `tuning`, the bucket step 3 deletes from — where nothing
   // records a set-site for it and nothing would object to its removal.
   "CLEAROTRON_ADMINISTRATOR_CONTACT",
+  // Whether the install's own notice receiver drops a repeated Idempotency-Key: a fact about the receiver this
+  // deployment runs, beside CLEAROTRON_NOTICE_URL and CLEAROTRON_NOTICE_AUDIENCES, and its catalogue row declares
+  // `deployment`. Those two match a shape here (_URL, AUDIENCE); this one does not, so unlisted it fell through to
+  // `tuning`, the bucket step 3 deletes from (measured in the private control, 2026-11-28).
+  "CLEAROTRON_NOTICE_DEDUPE",
   // — `CLEAROTRON_DEMO`, which is `PORTAL_DEMO` renamed. It is listed here for
   // the exact reason this list exists: the old name was `deployment` because of its `PORTAL_` prefix and
   // by nothing else, so moving it to the house prefix dropped it through to `tuning` — the bucket step 3
@@ -393,8 +398,6 @@ export const DEPLOYMENT_NAMES = new Set([
   "CLIENT_MCP_AUTH_HEADER",
   "CLIENT_MCP_DEV",
   "CLIENT_MCP_EMAIL_CLAIM",
-  "CLIENT_MCP_SESSION_MAX",
-  "CLIENT_MCP_SESSION_TTL_MS",
   "CLIENT_MCP_TOKEN_ONLY",
   "MCP_ALLOWED_EMAILS",
   "PORTAL_AUDIT",
@@ -435,8 +438,6 @@ export const DEPLOYMENT_NAMES = new Set([
   // `TRADEMARK_MCP_` prefix arm was its only route there, which a house-prefix sweep would take away.
   "TRADEMARK_MCP_KEY_SOCKET",
   "TRADEMARK_MCP_MAX_BYTES",
-  "TRADEMARK_MCP_SESSION_MAX",
-  "TRADEMARK_MCP_SESSION_TTL_MS",
   "TRADEMARK_MCP_TOKEN_DENYLIST",
   "TRADEMARK_MCP_TOKEN_SECRET",
   "TRADEMARK_MCP_TOKEN_SECRET_PREVIOUS",

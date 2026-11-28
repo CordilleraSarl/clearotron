@@ -24,9 +24,9 @@
 //
 // WHAT EACH AUDIENCE IS SENT. Fields, never sentences: the words a recipient reads are the owner's, and none are
 // approved yet. The person who placed an order is sent the receipt as `order_status` gives it to a company (no
-// account, no diagnostics, a reason only for an order refused before it ran) and the recipient their order named.
-// The operator is sent the fault and the next recovery action as a code. Nothing sent for one company carries
-// another's reference, account or mark.
+// account, no diagnostics, and for an order refused before it ran the kind of check that refused it) and the recipient
+// their order named. The operator is sent the fault and the next recovery action as a code. Nothing sent for one
+// company carries another's reference, account or mark.
 //
 // ONE ROUTE PER EVENT AND RECIPIENT. The route serves the audiences the install names (CLEAROTRON_NOTICE_AUDIENCES);
 // an audience it does not name stays with the courier, through the outbox, untouched. A receiver's 2xx stops any
@@ -55,7 +55,8 @@ import { engineCheckDir } from "./engine/health.mjs";
 import { owedPacket, sendSettled, settleSend } from "./send-settle.mjs";
 import { runDirFor } from "./outbox-backoff.mjs";   // the run a stuck marker names, live or archived
 import { note } from "./log.mjs";
-import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { homedir } from "node:os";
+import { parseEnvFile } from "../shared/env-file-merge.mjs";
 
 export const NOTICE_STATES = Object.freeze(["pending", "attempted", "confirmed", "failed", "ambiguous"]);
 /** What the operator does next, as a code: the words are the owner's. */
@@ -95,10 +96,14 @@ const reachable = (r) => Boolean(r.forwarder || r.forwarderEmail);
 const submitterKey = (r) => `submitter\u0000${r.account ?? ""}\u0000${r.organisation ?? ""}\u0000${r.forwarderEmail ?? r.forwarder ?? ""}`;
 const OPERATOR = Object.freeze({ role: "operator" });
 
-/** The receipt as a company sees it: the same fields `order_status` answers a client with. */
+/**
+ * The receipt as a company sees it: the same fields `order_status` answers a client with. A refusal is told by its
+ * kind, never by the reason as the runner recorded it, which can name the installation's setup or the queue and stays
+ * with the operator; `reason` keeps its place, empty (design, 2026-11-27).
+ */
 const clientView = (r) => ({
   reference: r.reference, state: r.state, terminal: true, runId: r.runId ?? null,
-  reason: r.state === "refused" ? (r.reason ?? null) : null,
+  reason: null, reasonKind: r.state === "refused" ? (r.reasonKind ?? "other") : null,
 });
 
 // ── what is owed ────────────────────────────────────────────────────────────────────────────────────────────────
@@ -143,7 +148,8 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
         if (reachable(submitter)) owed.push({ eventKey, kind, audience: "submitter", recipient: submitter, at: r.updatedAt, body: { order: clientView(r) } });
         if (r.kind === "pre-run")
           owed.push({ eventKey, kind, audience: "operator", recipient: OPERATOR, at: r.updatedAt,
-            body: { fault: { kind, cause: "pre-run", ...fault, reason: r.reason ?? null, nextAction: NEXT_ACTIONS["check-engine"] } } });
+            body: { fault: { kind, cause: "pre-run", ...fault, nextAction: NEXT_ACTIONS["check-engine"] } },
+            diagnostic: { reason: r.reason ?? null } });
       } else if (r.state === "failed") {
         const result = readJsonSafe(join(qdir, `${ref}.failed.result`));
         const runDir = result?.runDir ?? null;
@@ -164,7 +170,8 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
             // is never it. A failure without an id is settled by no receipt.
             ...(runDir ? { settle: { runDir, runId: r.runId, failureId, recipient: submitterKey(submitter) } } : {}) });
         owed.push({ eventKey, kind, audience: "operator", recipient: OPERATOR, at: r.updatedAt, ...occurrence,
-          body: { fault: { kind, ...fault, failedStage: result?.failedStage ?? null, reason: r.reason ?? null, nextAction: NEXT_ACTIONS["read-the-run"] } } });
+          body: { fault: { kind, ...fault, nextAction: NEXT_ACTIONS["read-the-run"] } },
+          diagnostic: { failedStage: result?.failedStage ?? null, reason: r.reason ?? null } });
       }
     }
   }
@@ -175,8 +182,8 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
     const runDir = runId ? runDirFor(runId) : null;
     if (runDir && sendSettled(runDir)) continue;
     owed.push({ eventKey: `stuck\u0000${rec.marker}\u0000${rec.ts}`, kind: "delivery-stuck", audience: "operator", recipient: OPERATOR, at: rec.ts,
-      body: { fault: { kind: "delivery-stuck", runId: runId || null, marker: rec.marker ?? null, packet: rec.kind ?? null, strikes: rec.strikes ?? null,
-        recover: rec.recover ?? null, nextAction: NEXT_ACTIONS["release-the-delivery"] } } });
+      body: { fault: { kind: "delivery-stuck", runId: runId || null, strikes: rec.strikes ?? null, nextAction: NEXT_ACTIONS["release-the-delivery"] } },
+      diagnostic: { marker: rec.marker ?? null, packet: rec.kind ?? null, recover: rec.recover ?? null } });
   }
   // The engine check: one notice per failing episode, the alert the check itself raised.
   let checks = [];
@@ -186,7 +193,8 @@ export function owedNotices({ queueDirs = config.queueDirs, since = { submitter:
     if (!rec || rec.ok !== false || rec.lane !== "configuration" || !rec.alertedAt) continue;
     const engine = name.replace(/\.check\.json$/, "");
     owed.push({ eventKey: `engine\u0000${engine}\u0000${rec.alertedAt}`, kind: "engine-check-failed", audience: "operator", recipient: OPERATOR, at: rec.alertedAt,
-      body: { fault: { kind: "engine-check-failed", engine, mode: rec.mode ?? null, basis: rec.basis ?? null, headline: rec.headline ?? null, fix: rec.fix ?? null, nextAction: NEXT_ACTIONS["check-engine"] } } });
+      body: { fault: { kind: "engine-check-failed", engine, nextAction: NEXT_ACTIONS["check-engine"] } },
+      diagnostic: { mode: rec.mode ?? null, basis: rec.basis ?? null, headline: rec.headline ?? null, fix: rec.fix ?? null } });
   }
   return owed.filter((n) => owedTo(n.audience, n.at))
     .map((n) => ({ ...n, id: deliveryId(n.eventKey, n.audience, n.audience === "operator" ? "operator" : submitterKey(n.recipient)) }));
@@ -279,6 +287,8 @@ export async function deliverNotices({ env = process.env, now = () => Date.now()
       if (!rec) {
         rec = { id: n.id, kind: n.kind, audience: n.audience, recipient: n.recipient, eventAt: n.at, state: "pending",
           ...(n.settle ? { settle: n.settle } : {}), ...(n.occurrence ? { occurrence: n.occurrence } : {}),
+          // What only the install's own record keeps: the recorded reason, the stage, the marker. No notice carries it.
+          ...(n.diagnostic ? { diagnostic: n.diagnostic } : {}),
           attempts: [], createdAt: new Date(now()).toISOString(), updatedAt: new Date(now()).toISOString() };
         writeAtomic(path, rec);
       }
@@ -419,18 +429,38 @@ export function reconcileNotice(id, answer, { now = Date.now() } = {}) {
   } finally { release(); }
 }
 
-// THE OPERATOR'S COMMAND LINE. `list` prints every notice not confirmed; `received <id>` and `absent <id>` give the
-// receiver's answer for one. Every answer is JSON, and a refusal exits 4 with its reason code.
-if (isEntrypoint(import.meta.url)) {
-  const [verb, id] = process.argv.slice(2);
-  const out = (v) => process.stdout.write(JSON.stringify(v, null, 2) + "\n");
-  if (verb === "list" && !id) out(undeliveredNotices());
-  else if ((verb === "received" || verb === "absent") && id) {
-    const r = reconcileNotice(id, verb);
-    out(r);
-    if (!r.ok) process.exitCode = 4;
-  } else {
-    process.stderr.write("usage: node driver/notice-delivery.mjs list | received <delivery id> | absent <delivery id>\n");
-    process.exitCode = 2;
+// ── WHAT STATUS SAYS OF THE NOTICES ─────────────────────────────────────────────────────────────────────────────
+//
+// In the words approved for status (2026-11-27), counted and worded for the state the install is in. A notice a later event
+// superseded asks nothing and is not shown; a confirmed one is not listed at all.
+
+/**
+ * Status's lines for the notices not yet confirmed. PURE. `listed` is undeliveredNotices(); `command` is how this
+ * install's operator runs the notices command (`clearotron notices` on a packaged install). No lines when nothing waits.
+ */
+export function noticeStatusLines(listed, command) {
+  const rows = (Array.isArray(listed) ? listed : []).filter((n) => !n.superseded);
+  const retrying = rows.filter((n) => n.retriesByItself).length;
+  const lines = [];
+  if (retrying) lines.push(`${retrying} failure ${retrying === 1 ? "notice awaits" : "notices await"} automatic retry.`);
+  for (const n of rows.filter((x) => x.nextAction === NEXT_ACTIONS["settle-with-receiver"])) {
+    lines.push(`Check whether the receiver accepted notice ${n.id}.`,
+      `  If received: ${command} received ${n.id}`,
+      `  If absent:   ${command} absent ${n.id}`);
   }
+  return lines;
+}
+
+/**
+ * The install's own settings, read once and the same way for `clearotron status` and `clearotron notices`: this process's
+ * environment, then the install's settings file (`~/.env`, what the background services read), the file winning. The
+ * outbox and work folders the file names are applied to this process where it names none, so both commands read the same
+ * notice record; the returned settings carry the receiver's duplicate-handling setting too. IMPURE.
+ */
+export function installNoticeSettings({ env = process.env, home = homedir() } = {}) {
+  let file = {};
+  try { file = parseEnvFile(readFileSync(join(home, ".env"), "utf8")); } catch { /* no file: this process's settings alone */ }
+  const effective = { ...env, ...file };
+  for (const k of ["CLEAROTRON_OUTBOX_DIR", "CLEAROTRON_WORK_DIR"]) if (effective[k] && !env[k]) env[k] = effective[k];
+  return effective;
 }

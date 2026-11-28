@@ -16,6 +16,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawn, spawnSync } from "node:child_process";
 import { createServer } from "node:http";
 import { pinEnv } from "../../shared/env-aliases.mjs";
+import { REFUSAL_KINDS } from "../order-receipt.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CLAUDE = join(HERE, "mock-claude.mjs");
@@ -143,12 +144,14 @@ test("the worker tells each company's submitter, and the operator, through the c
     await drain(box, env);
 
     const byKind = (kind, audience) => rx.records.filter((r) => r.notice.kind === kind && r.notice.audience === audience);
-    // Refused before any run existed: its submitter is told, with the runner's reason and no run id.
+    // Refused before any run existed: its submitter is told which check refused it, with no run id and none of the
+    // runner's words, which stay with the operator as order_status keeps them.
     const [refused] = byKind("order-refused", "submitter");
     assert.ok(refused, JSON.stringify(rx.records.map((r) => r.notice)));
     assert.deepEqual([refused.notice.order.reference, refused.notice.order.state, refused.notice.order.runId],
       ["notice-a-refused", "refused", null]);
-    assert.ok(refused.notice.order.reason?.length > 10, "the reason the runner recorded");
+    assert.equal(refused.notice.order.reason, null, "the reason as the runner recorded it is not the company's");
+    assert.ok(REFUSAL_KINDS.includes(refused.notice.order.reasonKind), refused.notice.order.reasonKind);
     assert.deepEqual([refused.notice.recipient.account, refused.notice.recipient.forwarderEmail], ["demo-brand-owner", "desk@demo-brand-owner.example"]);
     // Refused at the claim, on the order's own account: nothing for the operator to fix.
     assert.equal(byKind("order-refused", "operator").length, 0);
@@ -162,7 +165,9 @@ test("the worker tells each company's submitter, and the operator, through the c
     assert.deepEqual([stopped.notice.recipient.account, stopped.notice.recipient.forwarderEmail], ["zephyr", "desk@zephyr.example"]);
     const [fault] = byKind("run-stopped", "operator");
     assert.deepEqual([fault.notice.recipient, fault.notice.fault.nextAction, fault.notice.fault.runId], [{ role: "operator" }, "read-the-run", stopped.notice.order.runId]);
-    assert.ok(fault.notice.fault.reason, "the operator is told why");
+    // The runner's recorded reason is internal text: the notice carries codes only, and the install's own record keeps it.
+    assert.equal("reason" in fault.notice.fault, false, "the operator's notice carries the runner's recorded reason");
+    assert.ok(deliveries(box).find((d) => d.id === fault.key)?.diagnostic?.reason, "the install's own record lost the reason");
 
     // Neither company's notice carries anything of the other's.
     for (const r of rx.records.filter((x) => x.notice.audience === "submitter")) {
@@ -433,8 +438,21 @@ test("a finished report the courier cannot send: the operator is alerted once, t
 
 // ── THE OPERATOR SETTLES AN UNCERTAIN NOTICE BY ITS DELIVERY ID ──────────────────────────────────────────────────────
 
-const operatorSays = (box, ...args) => {
-  const r = spawnSync(process.execPath, [join(HERE, "..", "notice-delivery.mjs"), ...args], { env: { ...process.env, ...box.env }, encoding: "utf8" });
+/**
+ * The operator's answers, each in a process of its own as the command is, read as the record answers them. The command
+ * itself prints only the approved status lines (the-operator-is-told-where-failure-notices-go.test.mjs); this reads the
+ * same functions it calls, so the record's own fields can be checked.
+ */
+const operatorSays = (box, verb, id) => {
+  if (verb !== "list" && verb !== "received" && verb !== "absent") {
+    const r = spawnSync(process.execPath, [join(HERE, "..", "..", "bin", "notices.mjs"), verb, ...(id ? [id] : [])], { env: { ...process.env, ...box.env }, encoding: "utf8" });
+    return { code: r.status, out: null, stderr: r.stderr };
+  }
+  const mod = JSON.stringify(pathToFileURL(join(HERE, "..", "notice-delivery.mjs")).href);
+  const script = verb === "list"
+    ? `const m = await import(${mod}); process.stdout.write(JSON.stringify(m.undeliveredNotices()));`
+    : `const m = await import(${mod}); const r = m.reconcileNotice(${JSON.stringify(id)}, ${JSON.stringify(verb)}); process.stdout.write(JSON.stringify(r)); process.exitCode = r.ok ? 0 : 4;`;
+  const r = spawnSync(process.execPath, ["--input-type=module", "-e", script], { env: { ...process.env, ...box.env }, encoding: "utf8" });
   let out = null; try { out = JSON.parse(r.stdout); } catch { /* reported below */ }
   return { code: r.status, out, stderr: r.stderr };
 };

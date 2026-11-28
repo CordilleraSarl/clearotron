@@ -44,11 +44,14 @@ test("sent again while it waits, after a refusal before starting, or after it fi
   assert.deepEqual(filed(whileWaiting), [false, "already-filed", "retry-1", "waiting", null], text(whileWaiting));
   assert.deepEqual(jsonFiles(), ["retry-1.json"], "the first order, and no second beside it");
 
-  // The runner refused it at the claim: the marker it leaves, and the reason beside it.
+  // The runner refused it at the claim: the marker it leaves, and the reason beside it. The reason stays in the queue's
+  // record; the answer gives the kind of refusal only.
   renameSync(join(QUEUE, "retry-1.json"), join(QUEUE, "retry-1.failed"));
   writeFileSync(join(QUEUE, "retry-1.failed.reason"), "demo-brand-owner is demo data and cannot run a real clearance.\nnotify: sent\n");
   const afterRefusal = await call("start_run", order("retry-1"));
-  assert.deepEqual(filed(afterRefusal), [false, "already-filed", "retry-1", "refused", "demo-brand-owner is demo data and cannot run a real clearance."]);
+  assert.deepEqual(filed(afterRefusal), [false, "already-filed", "retry-1", "refused", null]);
+  assert.equal(afterRefusal.structuredContent.reasonKind, "other", text(afterRefusal));
+  assert.doesNotMatch(JSON.stringify(afterRefusal), /demo data and cannot run/, "the recorded reason is not given");
   assert.ok(!existsSync(join(QUEUE, "retry-1.json")), "no second order was queued");
 
   renameSync(join(QUEUE, "retry-1.failed"), join(QUEUE, "retry-1.done"));

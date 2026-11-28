@@ -18,7 +18,7 @@
 // differently, is kept every time, each with its source, and listed as having multiple stated values: different
 // descriptions may all be true. Where a label sits in a quoted older email, its source says where the text was found,
 // not that it governs this order. A request with no labelled fact and an order with no such field record nothing.
-import { rmSync, writeFileSync } from "node:fs";
+import { readFileSync, rmSync, writeFileSync } from "node:fs";
 import { goodsOf } from "./queue-markers.mjs";
 
 /** The facts read, in the order the frame shows them. */
@@ -100,6 +100,47 @@ export function statedFactsOf(job) {
   kept.sort((a, b) => STATED_FIELDS.indexOf(a.field) - STATED_FIELDS.indexOf(b.field));
   const multiple = STATED_FIELDS.filter((f) => kept.filter((x) => x.field === f).length > 1);
   return { facts: kept, multiple };
+}
+
+// ── WHERE THE FACTS REACH THE ASSESSORS: THE ORDER'S OWN SLOTS, AND ONLY WHERE THE ORDER LEFT THEM EMPTY ───────────
+//
+// The record is carried to a model only through the slots the assessors already read: the frame stage's goods and use
+// lines, and the instructed scope stamped at the head of the frame that every later stage reads. Only an order that names
+// no goods of its own is filled: its own fields are thin, and the request's labelled fields are its own words for what
+// is missing. An order that names its goods keeps every slot exactly as it is, so a run that already had the facts reads
+// what it always read. Where the order's own use and the request's differ, both are shown, each with its source.
+
+const fromOrder = (f) => /^order:/.test(String(f?.source ?? ""));
+
+/**
+ * The slots the stated facts fill: `{ goods, use, channels }`, each a list of `{ value, source }`, only the non-empty
+ * ones; or null when nothing is filled. PURE.
+ */
+export function slotsFilledFrom(record) {
+  const facts = Array.isArray(record?.facts) ? record.facts.filter((f) => f && String(f.value ?? "").trim()) : [];
+  if (facts.some((f) => f.field === "goods" && fromOrder(f))) return null;   // the order names its goods: nothing changes
+  const asked = (fields) => facts.filter((f) => fields.includes(f.field) && !fromOrder(f));
+  const slots = {};
+  const goods = asked(["description", "goods"]);
+  if (goods.length) slots.goods = goods;
+  const use = asked(["use"]);
+  if (use.length) slots.use = [...facts.filter((f) => f.field === "use" && fromOrder(f)), ...use];
+  const channels = asked(["channels"]);
+  if (channels.length) slots.channels = channels;
+  return Object.keys(slots).length ? slots : null;
+}
+
+/** One slot's text: the value with its source, or every value with its own source when there is more than one. PURE. */
+export function slotText(entries) {
+  const list = (Array.isArray(entries) ? entries : []).map((e) => `${String(e.value).trim()} — ${e.source}`);
+  return list.length > 1 ? `Multiple stated values: ${list.join("; ")}` : (list[0] ?? "");
+}
+
+/** A run's filled slot, read from its record: the slot's text, or "" when it is not filled. IMPURE. */
+export function statedSlot(P, slot) {
+  let record = null;
+  try { record = JSON.parse(readFileSync(P.statedFacts, "utf8")); } catch { return ""; }
+  return slotText(slotsFilledFrom(record)?.[slot]);
 }
 
 /**

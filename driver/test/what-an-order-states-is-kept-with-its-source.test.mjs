@@ -7,10 +7,12 @@
 // names throughout.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync, copyFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { statedFactsOf, requestFormFacts, writeStatedFacts } from "../stated-facts.mjs";
+import { join, dirname } from "node:path";
+import { statedFactsOf, requestFormFacts, writeStatedFacts, slotsFilledFrom } from "../stated-facts.mjs";
+import { STAGES } from "../stages.mjs";
+import { sandboxManifest } from "../stage-context.mjs";
 import { acceptMatterFrame, recordMatterFrame } from "../matter-frame-record.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { paths } from "../run-record.mjs";
@@ -47,13 +49,61 @@ test("the lost shape: an empty goods field, and the product and all four channel
   } finally { rmSync(d, { recursive: true, force: true }); }
 });
 
-test("keeping the record changes nothing a model reads: the frame renders exactly as it did", () => {
-  const d = runDir(JOB);
+// THE TOKEN-NEUTRAL USE OF THE RECORD: the facts go into the slots the assessors already read, and only where the order
+// left them empty. The lost order's own shape: a form run together on one line, no goods field, and a use line of the
+// order's own that the request's "Manner of Use" says more than.
+const ONE_LINE = "From: desk@example.invalid Subject: Clearance QZORVAK Body: please see the form FORM: Names: QZORVAK Classes: 7, 8 "
+  + `Description: QZORVAK Copper Edition hand blender, a limited finish of the brand's blender Manner of Use: ${CHANNELS.join(", ")} `
+  + "Additional Info: none Send Response to: desk@example.invalid";
+const LOST = { markName: "QZORVAK", classes: [7, 8], jurisdictions: ["CH", "EU"], priorUse: "assumed not yet in use", rawRequest: ONE_LINE };
+const KEPT = { ...LOST, goods: "hand blenders", priorUse: "sold online and in stores" };   // an order whose own fields carry the facts
+const frameMessage = (d, job) => String(STAGES["matter-frame"].message({ paths: paths(d), job, customerUnknown: true, profile: {}, exclusionSeed: [] }));
+
+test("the lost order's product and all four channels reach the frame stage and the frame every later stage reads, each with its source", () => {
+  const d = runDir(LOST);
   try {
+    const msg = frameMessage(d, LOST);
+    assert.match(msg, /^Goods\/services \(verbatim, as stated in the request\): QZORVAK Copper Edition hand blender, a limited finish of the brand's blender — request: the “Description” line \(line 1\)$/m);
+    assert.match(msg, /^Stated prior\/intended use: Multiple stated values: assumed not yet in use — order: the prior or intended use field; own online shop, department stores, kitchen specialist retailers, gift-box packaging — request: the “Manner of Use” line \(line 1\)$/m);
     const r = recordMatterFrame(d, PARAMS);
     assert.ok(r.written, r.refused);
-    assert.equal(readFileSync(r.written, "utf8"), acceptMatterFrame(PARAMS, { instructedScope: SCOPE }).content);
+    const scope = readFileSync(r.written, "utf8").split("## Instructed scope")[1].split("Stamped by the driver")[0];
+    assert.match(scope, /- \*\*Goods\/services:\*\* QZORVAK Copper Edition hand blender, a limited finish of the brand's blender — request: the “Description” line \(line 1\)/);
+    for (const c of CHANNELS) assert.ok(scope.includes(c), `the frame's instructed scope lost "${c}"`);
+    assert.match(scope, /- \*\*Use:\*\* Multiple stated values: assumed not yet in use — order: the prior or intended use field; own online shop/);
   } finally { rmSync(d, { recursive: true, force: true }); }
+});
+
+test("an order whose own fields carry its goods reads exactly what it always read: the frame stage and the frame, byte for byte", () => {
+  const withRecord = runDir(KEPT), without = mkdtempSync(join(tmpdir(), "stated-facts-none-"));
+  try {
+    assert.ok(statedFactsOf(KEPT), "guard: the request states facts the order already carries");
+    assert.equal(slotsFilledFrom(statedFactsOf(KEPT)), null);
+    assert.equal(frameMessage(withRecord, KEPT).replaceAll(withRecord, "<run>"), frameMessage(without, KEPT).replaceAll(without, "<run>"));
+    assert.equal(readFileSync(recordMatterFrame(withRecord, PARAMS).written, "utf8"), acceptMatterFrame(PARAMS, { instructedScope: SCOPE }).content);
+  } finally { rmSync(withRecord, { recursive: true, force: true }); rmSync(without, { recursive: true, force: true }); }
+});
+
+test("an experiment arm on the frame stage carries the record, so a replay of a goods-less order is filled as the run was", () => {
+  const d = runDir(LOST), shadow = mkdtempSync(join(tmpdir(), "stated-facts-arm-"));
+  try {
+    const manifest = sandboxManifest("matter-frame", paths(d));
+    assert.ok(manifest.some((e) => e.path === paths(d).statedFacts), "the frame stage's sandbox does not declare the record");
+    // Seeded as an --experiment arm seeds its sandbox: every manifest file the run holds, at the same place.
+    for (const e of manifest) {
+      if (e.dir || !existsSync(e.path) || !e.path.startsWith(d)) continue;
+      const to = join(shadow, e.path.slice(d.length + 1));
+      mkdirSync(dirname(to), { recursive: true });
+      copyFileSync(e.path, to);
+    }
+    assert.equal(frameMessage(shadow, LOST).replaceAll(shadow, "<run>"), frameMessage(d, LOST).replaceAll(d, "<run>"));
+    assert.match(frameMessage(shadow, LOST), /as stated in the request/);
+  } finally { rmSync(d, { recursive: true, force: true }); rmSync(shadow, { recursive: true, force: true }); }
+});
+
+test("a goods-less order whose request states nothing more is not touched either", () => {
+  const plain = { markName: "QZORVAK", classes: [7, 8], priorUse: "assumed not yet in use", rawRequest: "Please proceed as discussed." };
+  assert.equal(slotsFilledFrom(statedFactsOf(plain)), null, "an order's own use alone fills nothing");
 });
 
 test("a form flattened onto one line, as an order once arrived: each labelled field is read up to the next label", () => {

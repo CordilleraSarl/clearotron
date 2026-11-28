@@ -8,10 +8,10 @@
 // discovered a broken handshake was a customer pressing Start and watching it fail, and the cheapest
 // reproduction of that costs about forty dollars.
 //
-// So these drive the REAL mcpToolCall against the REAL makeHttpHandler over a REAL loopback socket. The
-// only thing stubbed is the tool body — nothing else is worth stubbing, because the handshake IS the
-// thing under test: session creation, the initialized notification, the session header, the scope
-// resolution, and the two encodings the transport is allowed to answer in.
+// So these drive the REAL mcpToolCall over a REAL loopback socket, against a face stubbed at the tool
+// boundary. In the protocol's 2026-07-28 revision ONE request is the whole exchange (2026-11-27): no
+// handshake and no session. What is under test is that one request — its revision, method and tool in
+// its headers, the handshake's facts in `_meta`, the token on it — and the two encodings an answer may come in.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -21,22 +21,20 @@ import { mcpToolCall } from "../portal-mcp-client.mjs";
 /**
  * A real MCP face, stubbed at the tool boundary only.
  *
- * makeHttpHandler needs a session store and a factory; the tool itself records what it was called with
- * so the test can assert the ARGUMENTS survived the trip, not merely that a call happened.
+ * The tool records what it was called with, so the test can assert the ARGUMENTS survived the trip, not
+ * merely that a call happened. `posts` records every request the face received, to pin that one is all it takes.
  */
 async function face({ toolResult = { ok: true, queued: true }, isError = false, sse = false, refuse = null } = {}) {
   const { makeHttpHandler } = await import("../../mcp-server/lib/http-handler.mjs");
-  const calls = [];
-  const sessions = new Map();
+  const calls = [], posts = [];
 
-  // The MCP SDK's server object is heavier than this test needs, so the transport contract is honoured
-  // directly: a session is created on initialize, and tools/call is dispatched against the stub.
+  // The MCP SDK's server object is heavier than this test needs, so the wire contract is honoured
+  // directly below. The handler is built as the ops face builds it, to keep its construction under test.
   const handler = makeHttpHandler({
     verify: null,
     devMode: true,               // loopback service door — exactly the prod ops face's configuration
     limiter: { take: () => true },
-    sessions,
-    createSession: () => ({ id: `sess-${sessions.size + 1}` }),
+    serve: async () => {},
     log: () => {},
   });
 
@@ -46,6 +44,7 @@ async function face({ toolResult = { ok: true, queued: true }, isError = false, 
     for await (const c of req) body += c;
     let msg = {};
     try { msg = JSON.parse(body || "{}"); } catch { /* the handler's own 400 path */ }
+    if (req.method === "POST") posts.push(msg.method ?? null);
 
     // The real face serves ONLY /mcp and 404s everything else (http-handler.mjs). The stub has to do
     // the same or it silently accepts paths production would reject — which would make the URL-contract
@@ -55,24 +54,21 @@ async function face({ toolResult = { ok: true, queued: true }, isError = false, 
       return res.end(JSON.stringify({ error: "not found — the MCP endpoint is /mcp" }));
     }
 
-    // — `refuse: {on, status}` makes the face answer a transport-layer refusal instead of serving
-    // the handshake, so a 429 can be produced on either POST. The real ops limiter
-    // (mcp-server/lib/http-handler.mjs) checks on EVERY post, so a 429 can land on initialize OR on the
-    // tools/call that follows a successful handshake, and a fix keyed only on the first would miss it.
+    // — `refuse: {on, status}` makes the face answer a transport-layer refusal instead of serving the call.
     if (refuse && refuse.on === msg.method) {
       res.writeHead(refuse.status, { "content-type": "application/json" });
       return res.end(JSON.stringify({ error: refuse.body ?? "ops principal rate limit exceeded — retry shortly" }));
     }
-    if (msg.method === "initialize") {
-      res.writeHead(200, { "content-type": "application/json", "mcp-session-id": "test-session-1" });
-      return res.end(JSON.stringify({ jsonrpc: "2.0", id: msg.id, result: { protocolVersion: "2024-11-05", capabilities: {}, serverInfo: { name: "stub", version: "1" } } }));
-    }
-    if (msg.method === "notifications/initialized") { res.writeHead(202); return res.end(); }
     if (msg.method === "tools/call") {
-      // The session header is REQUIRED on every post after initialize. Asserting it here rather than
-      // in the test body means a client that forgot it fails loudly instead of silently working.
-      assert.equal(req.headers["mcp-session-id"], "test-session-1", "tools/call must carry the session id");
-      assert.ok(req.headers["x-trademark-token"], "the scoped token rides EVERY request, not just the first");
+      // The new revision's request, asserted here so a client that forgot a part fails loudly instead of
+      // working against this stub and failing against the real door, which refuses headers and a body
+      // that disagree.
+      assert.equal(req.headers["mcp-protocol-version"], "2026-07-28", "the request names its revision");
+      assert.equal(req.headers["mcp-method"], "tools/call", "the request names its method in Mcp-Method");
+      assert.equal(req.headers["mcp-name"], msg.params?.name, "the request names its tool in Mcp-Name");
+      assert.equal(msg.params?._meta?.["io.modelcontextprotocol/protocolVersion"], "2026-07-28", "the handshake's facts ride the request");
+      assert.equal(req.headers["mcp-session-id"], undefined, "no session id: the revision has no sessions");
+      assert.ok(req.headers["x-trademark-token"], "the scoped token rides the request");
       calls.push({ name: msg.params?.name, args: msg.params?.arguments, token: req.headers["x-trademark-token"] });
       const payload = { jsonrpc: "2.0", id: msg.id, result: { content: [{ type: "text", text: JSON.stringify(toolResult) }], ...(isError ? { isError: true } : {}) } };
       if (sse) {
@@ -90,7 +86,7 @@ async function face({ toolResult = { ok: true, queued: true }, isError = false, 
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
   const url = `http://127.0.0.1:${server.address().port}`;
   void handler;
-  return { url, calls, close: () => new Promise((r) => server.close(r)) };
+  return { url, calls, posts, close: () => new Promise((r) => server.close(r)) };
 }
 
 test("THE WIRE: a start_run reaches the engine with its arguments intact", async () => {
@@ -102,6 +98,7 @@ test("THE WIRE: a start_run reaches the engine with its arguments intact", async
     });
     assert.deepEqual(out, { ok: true, queued: true }, "the tool's JSON payload is returned parsed");
     assert.equal(f.calls.length, 1, "exactly ONE run is started — never two from one press");
+    assert.deepEqual(f.posts, ["tools/call"], "one request is the whole exchange: no handshake before it");
     assert.equal(f.calls[0].name, "start_run");
     assert.equal(f.calls[0].token, "tok-abc");
     // The arguments are what decide scope and therefore cost. A trip that silently dropped `classes`
@@ -148,7 +145,7 @@ test("THE URL CONTRACT: the caller passes an ORIGIN — /mcp is appended, never 
   try {
     await assert.rejects(
       () => mcpToolCall({ url: `${g.url}/mcp`, token: "t", tool: "start_run", args: { id: "x" } }),
-      /initialize refused \(404\)/,
+      /tools\/call refused \(404\)/,
       "a URL that already ends in /mcp must fail LOUDLY, not silently start nothing",
     );
   } finally { await g.close(); }
@@ -175,31 +172,20 @@ test("a dead engine surfaces as an error, never as a silent success", async () =
 //
 // The E2E harness has to tell "the server is rate-limiting us" from "this job is out of product scope",
 // and until this landed its only evidence was formatted English. The status is on the error now.
-test("a 429 on INITIALIZE throws with .status and .transport, not just a sentence", async () => {
-  const g = await face({ refuse: { on: "initialize", status: 429 } });
-  try {
-    const err = await mcpToolCall({ url: g.url, token: "t", tool: "start_run", args: { id: "x" } })
-      .then(() => null, (e) => e);
-    assert.ok(err, "a 429 handshake must not resolve");
-    assert.equal(err.status, 429, "the status code rides the error — the caller must not have to regex the message");
-    assert.equal(err.transport, true, "marked as transport: the tool never ran, so its verdict is UNKNOWN and not 'no'");
-    assert.match(err.message, /initialize refused \(429\)/);
-  } finally { await g.close(); }
-});
-
-test("a 429 on TOOLS/CALL is classified the same — the limiter fires on every post, not just the first", async () => {
+test("a 429 on the call throws with .status and .transport, not just a sentence", async () => {
   const g = await face({ refuse: { on: "tools/call", status: 429 } });
   try {
     const err = await mcpToolCall({ url: g.url, token: "t", tool: "start_run", args: { id: "x" } })
       .then(() => null, (e) => e);
-    assert.ok(err);
-    assert.equal(err.status, 429, "a fix keyed only on 'initialize refused' would miss this one entirely");
-    assert.equal(err.transport, true);
+    assert.ok(err, "a 429 must not resolve");
+    assert.equal(err.status, 429, "the status code rides the error — the caller must not have to regex the message");
+    assert.equal(err.transport, true, "marked as transport: the tool never ran, so its verdict is UNKNOWN and not 'no'");
+    assert.match(err.message, /tools\/call refused \(429\)/);
   } finally { await g.close(); }
 });
 
 test("a 5xx is transport too — the door died before it could judge anything", async () => {
-  const g = await face({ refuse: { on: "initialize", status: 503, body: "upstream unavailable" } });
+  const g = await face({ refuse: { on: "tools/call", status: 503, body: "upstream unavailable" } });
   try {
     const err = await mcpToolCall({ url: g.url, token: "t", tool: "start_run", args: { id: "x" } })
       .then(() => null, (e) => e);

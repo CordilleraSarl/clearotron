@@ -7,8 +7,8 @@
 // scrub functions directly reproduces that hole exactly: delete the presentForPrincipal line from the
 // dispatch chokepoint and every scrub unit test still passes green while the leak is wide open.
 //
-// So this drives a REAL user-scoped session over the real HTTP face (initialize → tools/call), the same way
-// a client's Claude/ChatGPT connector does, and asserts on what comes back on the wire. It also pins the
+// So this drives REAL user-scoped calls over the real HTTP face (a tools/call, answered by a server built from that
+// request's own key), the same way a client's Claude/ChatGPT connector does, and asserts on what comes back on the wire. It also pins the
 // other half — that a STAFF principal still reads the raw internal cut — because a scrub that silently
 // applied to staff would break the internal review surface just as badly, and equally quietly.
 import { mkdtempSync, writeFileSync } from "node:fs";
@@ -21,35 +21,25 @@ process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "client-view-test-secret";
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 const { buildFixture, RUN_ID } = await import("./_fixture.mjs");
 const { makeHttpHandler } = await import("../lib/http-handler.mjs");
 const { makeServer } = await import("../server.mjs");
+const { mcpServe } = await import("../lib/mcp-serve.mjs");
 const { RateLimiter } = await import("../lib/ratelimit.mjs");
 const { mintToken } = await import("../../shared/scope.mjs");
 const { mcpToolCall } = await import("../../driver/portal-mcp-client.mjs");
 
-async function createSession(sessions, scope, owner = null) {
-  const { StreamableHTTPServerTransport } = await import("@modelcontextprotocol/sdk/server/streamableHttp.js");
-  const server = makeServer({ scope, local: false });
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
-    onsessioninitialized: (id) => sessions.set(id, { server, transport, lastSeen: Date.now(), email: owner, sub: scope?.sub ?? null, kind: scope?.kind ?? null }),
-  });
-  transport.onclose = () => { if (transport.sessionId) sessions.delete(transport.sessionId); };
-  await server.connect(transport);
-  return transport;
-}
+// The doors' own composition: each request is answered by a server built from that request's scope.
+const serve = mcpServe((scope) => makeServer({ scope, local: false }));
 
 let url, srv, fixture;
 before(async () => {
   fixture = buildFixture();
-  const sessions = new Map();
   srv = createServer(makeHttpHandler({
     verify: null, devMode: true, limiter: new RateLimiter({ perMinute: 500 }),
-    sessions, createSession, ns: "client-view-test",
+    serve, ns: "client-view-test",
   }));
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   url = `http://127.0.0.1:${srv.address().port}`;
@@ -140,10 +130,9 @@ before(async () => {
   // The run has to BELONG to the account: a run with no account tag is visible only to a full grant.
   writeFileSync(driverDir(fixture.runDir, "profile.json"), JSON.stringify({ profileKey: "acme" }));
 
-  const sessions = new Map();
   clientSrv = createServer(makeHttpHandler({
     verify: null, devMode: true, tokenOnly: false, clientSurface: true,
-    limiter: new RateLimiter({ perMinute: 500 }), sessions, createSession, ns: "client-evidence-test",
+    limiter: new RateLimiter({ perMinute: 500 }), serve, ns: "client-evidence-test",
   }));
   await new Promise((r) => clientSrv.listen(0, "127.0.0.1", r));
   clientUrl = `http://127.0.0.1:${clientSrv.address().port}`;

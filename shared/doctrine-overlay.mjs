@@ -63,7 +63,7 @@ export function readProvenance(overlayRoot) {
   } catch (e) {
     // UNREADABLE IS NOT ABSENT. A parse failure here would otherwise read as "nothing was recorded",
     // which is the one thing this file exists to distinguish.
-    return { present: false, unreadable: true, why: `${PROVENANCE_FILE} is present but unreadable: ${String(e.message).slice(0, 120)}`, entries: {} };
+    return { present: false, unreadable: true, why: `${PROVENANCE_FILE} is present but unreadable`, entries: {} };
   }
 }
 
@@ -76,7 +76,7 @@ function driftOf(rel, baseRoot, prov) {
   if (!existsSync(basePath)) return { state: "upstream-gone", why: "upstream no longer ships this file" };
   let now;
   try { now = sha256(readFileSync(basePath)); }
-  catch (e) { return { state: "unknown", why: `the upstream copy could not be read: ${String(e.message).slice(0, 90)}` }; }
+  catch { return { state: "unknown", why: "the upstream copy could not be read" }; }
   return now === recorded
     ? { state: "unchanged", why: null }
     : { state: "changed", why: `upstream has moved since this copy was taken${rec.taken_at ? ` (${rec.taken_at})` : ""}` };

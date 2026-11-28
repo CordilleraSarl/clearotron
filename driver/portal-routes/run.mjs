@@ -19,6 +19,7 @@ import { readJson } from "../run-record.mjs";
 import { countJobMarks, coverageDisclosure, kebabCollisions, policyFor, productAvailability, UNAVAILABLE_NOTE } from "../search-policy.mjs";
 import { accountUsage, DEFAULT_CLIENT_DAILY_RUNS } from "../usage-ledger.mjs";
 import { admittedSearches, oneLeftRefusal } from "../urgent-count.mjs";   // what an order counts against its allowance, as the runner's wall counts it
+import { recordStart } from "../portal-orders.mjs";   // the orders a Start accepted, for Clearances
 
 export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, trigger, stopRun, demo, orderRefusal, urgentAvailable = () => false, audit, upstream, readBuilt, readCanCount, readTerritories, loadProfilesImpl, usedJtis, sweepJtis, jobFor, selectorOf, refusalFor, allowanceExhaustedLine }, { method, parts, principal, body, query }) {
   // shared plan-time gates — run at BOTH doors so a body that would 422 at plan can never be
@@ -395,6 +396,9 @@ export async function runRoutes({ poolRoot, workspaceRoot, secret, queueDirs, tr
     // an order under its account's own reference (mcp-server/lib/ops.mjs filedReference), not the one minted here.
     const filed = typeof r?.id === "string" && r.id ? r.id : job.id;
     audit({ event: "trigger", by: principal.email, account, selector, id: filed, ok: Boolean(r?.ok ?? r?.queued) });
+    // THE ORDER THIS START ACCEPTED, recorded for its company (portal-orders.mjs), so Clearances can list it while a worker
+    // checks it and after a refusal before any run, when nothing else on disk is a row for it.
+    recordStart(workspaceRoot, { account, organisation: account === "generic" ? (job.tenant ?? null) : null, reference: filed });
     return { status: 200, json: { ok: true, queued: true, id: filed, upstream: r ?? null } };
   }
 

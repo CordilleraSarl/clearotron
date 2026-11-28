@@ -121,11 +121,12 @@ test("auto-recovery exhaustion: attempts beyond CLEAROTRON_RECOVERY_MAX go termi
     // says exactly that — no more blanket "the cause is systemic (credentials/provider/config)" claim
     // (teal-causeway's notice asserted a systemic cause for a deterministic 414).
     const packet = JSON.parse(readFileSync(driverDir(res2.runDir, "failure.json"), "utf8"));
-    assert.match(packet.whatsappText, /after 1 automatic recovery attempt\b/, "the notice names the burned recovery attempt");
+    assert.match(packet.diagnostic.line, /after 1 automatic recovery attempt\b/, "the run's own record names the burned recovery attempt");
+    assert.doesNotMatch(packet.whatsappText, /automatic recovery|FAILED/, "the notice a person reads is product words");
     assert.equal(packet.terminalKind, "repeat-signature");
-    assert.match(packet.emailBodyHtml, /failed IDENTICALLY to the first attempt/);
-    assert.match(packet.emailBodyHtml, /The driver reported, verbatim:/);
-    assert.doesNotMatch(packet.emailBodyHtml, /cause is systemic \(credentials\/provider\/config\)/, "no invented systemic claim");
+    assert.match(packet.diagnostic.emailBodyHtml, /failed IDENTICALLY to the first attempt/);
+    assert.match(packet.diagnostic.emailBodyHtml, /The driver reported, verbatim:/);
+    assert.doesNotMatch(packet.diagnostic.emailBodyHtml, /cause is systemic \(credentials\/provider\/config\)/, "no invented systemic claim");
     assert.ok(packet.failureSignature && packet.reasonVerbatim, "the packet carries the signature + verbatim reason");
     // the payload fields, through the REAL writers rather than a unit call. This failure carries
     // no detail and no count, so both must be present AND null in both sinks: a status.json or a notice

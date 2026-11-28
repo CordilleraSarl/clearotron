@@ -9,9 +9,10 @@ validated by the same `driver/enqueue-schema.mjs` (one validator, two doors):
 
 1. **The enqueue CLI** — `node driver/enqueue.mjs` (see `--help`). Validate-first, atomic write,
    machine exit codes (`0` queued / `2` refused / `3` id collision / `1` other).
-   `--status <reference>` queues nothing: it prints what became of the order filed under that reference
-   (its state, its run id once it has one, and why it was refused or stopped), and exits `4` when no
-   order answers to it.
+   `--status <reference>` queues nothing: it prints what became of the order filed under that reference,
+   as `order_status` answers a session that sees every company (its state, its run id once it has one,
+   and for an order refused before it ran the kind of check that refused it), and exits `4` when no
+   order answers to it. The reason as the runner recorded it stays in the queue's `<id>.failed.reason`.
 2. **The ops-MCP `start_run` tool** (`mcp-server/lib/ops.mjs`) — same job assembly + validation,
    for agent/programmatic operators over MCP. `order_status` answers what became of an order by its
    reference, among the companies the session may see.

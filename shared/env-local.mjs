@@ -96,6 +96,7 @@ export const CLI_ENTRIES = Object.freeze([
   // reaches module-top env captures; hand-run operator CLIs, so <repo>/.env applies like grant's.
   "bin/stop.mjs",
   "bin/status.mjs",
+  "bin/notices.mjs",   // reads the install's settings as status does: the notice status names is the one it answers
   // — `clearotron update`. A hand-run operator CLI, so it reads <repo>/.env exactly as the
   // entries above it do. It is NOT translation-only: the three configuration variables it resolves to
   // decide whether to refuse an upgrade are precisely the ones an operator sets in that file, and a

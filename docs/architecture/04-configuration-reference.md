@@ -370,8 +370,6 @@ because the rule is about what PRODUCT CODE reads, not about what a run reads.
 | `TRADEMARK_MCP_HTTP_PORT` | `18790` | The staff MCP door's port. Every caller there gets the read tools; an ops token also gets the write tools that start and stop runs, `start_run` among them. *(read from `mcp-server/http-server.mjs`)* |
 | `TRADEMARK_MCP_HTTP_HOST` | `127.0.0.1` | The address the staff MCP door listens on; in `token` mode it must be a loopback address. *(read from `mcp-server/http-server.mjs`)* |
 | `TRADEMARK_MCP_ALLOWED_HOSTS` | **none — set it** | The `host:port` values the staff MCP door answers to. With authentication on, or in `token` mode, unset refuses to start, because DNS-rebinding protection would be off. *(read from `mcp-server/http-server.mjs`)* |
-| `TRADEMARK_MCP_SESSION_TTL_MS` | 30 minutes | Session lifetime on the staff MCP door. *(read from `mcp-server/http-server.mjs`)* |
-| `TRADEMARK_MCP_SESSION_MAX` | `500` | Most sessions the staff MCP door holds at once. *(read from `mcp-server/http-server.mjs`)* |
 | `TRADEMARK_MCP_RATE_PER_MIN` | `120` | Request rate limit on the staff MCP door, per minute. *(read from `mcp-server/http-server.mjs`)* |
 | `TRADEMARK_MCP_OPS_RATE_PER_MIN` | `30` | Rate limit on the staff MCP door's ops requests, per minute. *(read from `mcp-server/http-server.mjs`)* |
 | `TRADEMARK_MCP_AUTH_MODE` | unset ⇒ `cf-access` | Selects the door: unset or `cf-access` is a JWT-fronting proxy at the edge; `token` requires a valid HMAC-signed scoped access key on **every** request and runs no auth proxy at all. An unrecognised value is fatal. |
@@ -381,8 +379,6 @@ because the rule is about what PRODUCT CODE reads, not about what a run reads.
 | `CLIENT_MCP_HTTP_PORT` | `18811` | The client MCP door's port. It was 18795, which collided with a co-hosted warm-MCP block, so keep any unit override that names a port. |
 | `CLIENT_MCP_HTTP_HOST` | `127.0.0.1` | The address the client MCP door listens on. *(read from `mcp-server/http-server-client.mjs`)* |
 | `CLIENT_MCP_ALLOWED_HOSTS` | **none — set it** | The `host:port` values the client MCP door answers to. With authentication on, or in key-only mode, unset refuses to start. *(read from `mcp-server/http-server-client.mjs`)* |
-| `CLIENT_MCP_SESSION_TTL_MS` | 30 minutes | Session lifetime on the client MCP door. *(read from `mcp-server/http-server-client.mjs`)* |
-| `CLIENT_MCP_SESSION_MAX` | `500` | Most sessions the client MCP door holds at once. *(read from `mcp-server/http-server-client.mjs`)* |
 | `CLIENT_MCP_RATE_PER_MIN` | `120` | Request rate limit on the client MCP door, per minute. *(read from `mcp-server/http-server-client.mjs`)* |
 | `CLIENT_MCP_OIDC_ISSUER` / `CLIENT_MCP_JWKS_URL` / `CLIENT_MCP_EMAIL_CLAIM` / `CLIENT_MCP_AUTH_HEADER` | unset ⇒ the staff face's matching value, then the shapes derived from `CF_ACCESS_TEAM` | The client MCP door's issuer, signing-key set, email claim and token header. |
 | `CF_ACCESS_TEAM` | **none — set it, or an issuer** | The JWT-fronting proxy's team, from which the doors derive their issuer and signing-key shapes. With `CLEAROTRON_OIDC_AUDIENCE` and `MCP_ALLOWED_EMAIL_DOMAINS` it appears in unit files as a **mirror of the dashboard**, not a second setup; they must match the edge. The boot guard is an audience PLUS either a team or an issuer. |

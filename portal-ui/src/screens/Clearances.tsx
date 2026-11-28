@@ -24,12 +24,14 @@
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Result, Run } from '../contract/api.ts'
-import { api, saveFailureText } from '../contract/api.ts'
+import { api, saveFailureText, lastSeenOrders } from '../contract/api.ts'
+import { receiptPath, type PreRunOrder } from '../contract/orderReceipt.ts'
 import { bandRank } from '../contract/tone.ts'
 import { displayName, newestFirst, readLabel, readLabelParts, readTime, sameDateAsAnother } from '../contract/reads.ts'
 import { marksOf, nameCount, rowsOf, NO_FAMILIES } from '../contract/grouping.ts'
 import type { Families, MarkGroup, Row } from '../contract/grouping.ts'
 import { BOARD_SHARES_FROM, clearancesColumns, pageWindow } from '../contract/listView.ts'
+import { entryKey, ordersInView, withOrders } from '../contract/orderRows.ts'
 import {
   familyLine,
   hasReport,
@@ -168,6 +170,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // identical call, so whichever of the two mounts consumes it; the other asks for itself.
   const { result, reload } = useLoad(() => api.runsMine(), [], 'runs:mine')
   const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
+  // THE ORDERS WITH NO RUN YET, from the same answer as the runs (contract/orderReceipt.ts): being checked, or refused
+  // before any run. Each opens its receipt, the one its Start showed.
+  const allOrders: readonly PreRunOrder[] = result?.kind === 'ok' ? lastSeenOrders() : []
 
   // THE COMPANY FILTER IS THE SIDEBAR SWITCHER. There is one control, and it is in the nav.
   //
@@ -360,7 +365,11 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
 
   // Paging and cross-owner disambiguation are decided in contract/listView.ts, where they can be
   // tested — this screen has no DOM harness, so logic left inline here is logic nothing checks.
-  const { current, pageCount, visible, from, to } = pageWindow(rows, page, PAGE)
+  // ONE ROW PER ORDER WITH NO RUN, among the names where its time puts it, on the unfiltered view, and paged with them:
+  // contract/orderRows.ts, where the placing is tested.
+  const orderRows = ordersInView(allOrders, { filter, owner: ownerFilter, level, query })
+  const entries = withOrders(rows, orderRows, { sortBy, grouped })
+  const { current, pageCount, visible, from, to } = pageWindow(entries, page, PAGE)
   const resetPage = () => setPage(0)
   // removed the cross-owner disambiguation chip, and with it the only consumer of ambiguousTitles
   // on this screen. The helper stays in contract/listView.ts with its own tests: introduces an
@@ -412,7 +421,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   //
   // The full-screen first-run stays for an account that genuinely has nothing: there is no filter to
   // undo and nothing to keep on screen. An empty FILTER renders inside the list instead, below.
-  if (!allRuns.length) return <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
+  if (!allRuns.length && !allOrders.length) return <FirstRun onNew={canRun(ctx.me) ? () => ctx.go('/portal/new') : null} />
 
   // A family is asserted over RUNS, because a mark is a grouping the browser derives rather than
   // anything the pool stores. Ticking a name therefore files every read of it.
@@ -552,7 +561,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       {/* THE TITLE NAMES THE SCREEN AND COUNTS ITS NAMES; "Group names" sits at its right (board Clearances,
           approved 2026-11-25). The lede names the company in view and the allowance, as before. */}
       <PageHeader
-        title={<>Clearances <span className="clr-title-count">{namesLabel(nameCount(rows))}</span></>}
+        title={<>Clearances <span className="clr-title-count">{namesLabel(nameCount(rows) + orderRows.length)}</span></>}
         lede={<>
           {/* No separator after the company: the allowance line is a block of its own beneath it, and
               renders nothing at all above five searches left — a trailing "·" would then point at
@@ -733,7 +742,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                 </td>
               </tr>
             ) : null}
-            {visible.map((r, i) => {
+            {visible.map((e, i) => {
               // A heading row whenever the owner changes. The rows are already sorted, so this needs no
               // separate grouping pass — and it keeps the user's chosen sort intact WITHIN each group
               // rather than silently re-sorting by owner.
@@ -743,24 +752,46 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
               // rows of page 2 sit under no owner at all, which is precisely the confusion — two brand
               // owners' identically-named marks reading as one — that grouping exists to prevent.
               const before = visible[i - 1]
-              const newGroup = grouped && (!before || runKey(r) !== runKey(before))
+              const key = entryKey(e)
+              const newGroup = grouped && (!before || key !== entryKey(before))
+              // — A SECTION HEADER, not a decorative divider. This was the smallest,
+              // lowest-contrast, most letterspaced type on the page, which read as a rule between
+              // rows rather than as "everything below this belongs to Foxglade Interactive".
+              const heading = newGroup ? (
+                <tr className="group-head">
+                  <td colSpan={5 + (showOwnerColumn ? 1 : 0)}>
+                    <span className="owner-name" data-anon="mark">
+                      {ctx.ownerName(key)}
+                    </span>
+                    <span className="owner-count">
+                      {namesLabel(nameCount(rows.filter((x) => runKey(x) === key)) + orderRows.filter((o) => runKey(o) === key).length)}
+                    </span>
+                  </td>
+                </tr>
+              ) : null
+              if (e.kind === 'order') {
+                const o = e.order
+                return (
+                  <Fragment key={`order-${o.reference}`}>
+                    {heading}
+                    <tr className="read-row openable" onClick={() => ctx.go(receiptPath(o.reference, key))}>
+                      <td className="clr-td-twisty nest-1" />
+                      <td className="clr-td-name">
+                        <b className="clr-search-name"><span data-anon="mark">{o.markName ?? o.reference}</span></b>
+                        {o.updatedAt ? <span className="sub mono" style={{ fontSize: 12.5 }}><span className="nowrap-date">{o.updatedAt.slice(0, 10)}</span></span> : null}
+                      </td>
+                      {showOwnerColumn ? <td>{ctx.ownerName(key)}</td> : null}
+                      <td className="clr-td-status">{o.state === 'refused' ? 'Order did not start' : 'Waiting to start'}</td>
+                      <td className="clr-td-risk"><span style={{ color: 'var(--text-faint)' }}>—</span></td>
+                      <td className="col-actions" />
+                    </tr>
+                  </Fragment>
+                )
+              }
+              const r = e.row
               return (
                 <Fragment key={r.id}>
-                  {newGroup ? (
-                    // — A SECTION HEADER, not a decorative divider. This was the smallest,
-                    // lowest-contrast, most letterspaced type on the page, which read as a rule between
-                    // rows rather than as "everything below this belongs to Foxglade Interactive".
-                    <tr className="group-head">
-                      <td colSpan={5 + (showOwnerColumn ? 1 : 0)}>
-                        <span className="owner-name" data-anon="mark">
-                          {ctx.ownerName(runKey(r))}
-                        </span>
-                        <span className="owner-count">
-                          {namesLabel(nameCount(rows.filter((x) => runKey(x) === runKey(r))))}
-                        </span>
-                      </td>
-                    </tr>
-                  ) : null}
+                  {heading}
                   {r.kind === 'family' ? (
                     <FamilyRows
                       family={r}
@@ -851,7 +882,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
             goes wrong when a filter narrows the list under a page that has scrolled past its end.
           */}
           <span className="mono" style={{ color: 'var(--text-muted)', fontSize: 13 }}>
-            {from}–{to} of {rows.length}
+            {from}–{to} of {entries.length}
           </span>
           <span style={{ flex: 1 }} />
           <button type="button" disabled={current === 0} onClick={() => setPage(current - 1)}>

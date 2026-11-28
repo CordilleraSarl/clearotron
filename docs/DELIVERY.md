@@ -33,9 +33,14 @@ backstop (the markers are edge-triggers, **not** the source of truth — see Wri
 | **run-failed** | `<runId>.failed.pending` | JSON packet (self-contained) | `_driver/failure.json` in the run dir |
 | **intake-rejected** | `intake-<base>.failed.pending` | JSON packet | `<base>.failed` + `.reason` in the queue |
 | **duplicate-skipped** | `intake-<base>.duplicate.pending` | JSON packet | `<base>.duplicate` + `.reason` in the queue |
-| **pre-run-failed** | `intake-<base>.prerun-failed.pending` | JSON packet | `<base>.failed` + `.reason` in the queue |
+| **pre-run-failed** | `intake-<base>.prerun-failed.pending` | JSON packet | `<base>.failed` + `.result` in the queue |
 | **late-bind-ack** | `<runId>.bindack.pending` | JSON packet | `customer-late-bind-ack` event in `_driver/run.jsonl` |
 | **engine-check-failed** | `engine-check-<engine>.failed.pending` | JSON packet for the operator: no run, no requester | `<CLEAROTRON_WORK_DIR>/engine-check/<engine>.check.json` |
+
+An outbox packet holds the notice a person reads and the routing it is sent by, and nothing else. The stage, the reason
+as the engine reported it and the check's own words stay in the record in the last column. A packet an earlier version
+wrote is rewritten in this shape, under its own name, when the worker starts and before it delivers anything: its
+routing and its failure's id are kept, so it is neither lost nor sent twice.
 
 `runId` is `<slug>-<date>-<codename>` — the SAME id `status.json`, the pool and every status surface
 carry. **There is one canonical form, and every minting site writes it.** Packets and outbox markers
@@ -55,8 +60,8 @@ both forms as defence.
 | `msgId` | string | thread with `In-Reply-To:` on the email |
 | `subject` | string | on a clearance, `<the product's own name> — <mark>` (`deliverySubject`, e.g. `Global preliminary search — NOVAPULSE`; the mark falls back to `ref`, then `matter`). On a knockout, `Knockout trademark review — <ref> (N marks)` |
 | `emailBodyHtml` | string | the FULL email body, one self-contained inline-HTML fragment — send **verbatim**, do not re-encode; report + audit links are already inside |
-| `whatsappTo` | string \| null | the chat recipient: **the person who requested the run**, when a number is held for them. `null` when none is — see `whatsappToReason` |
-| `whatsappToReason` | string \| null | why `whatsappTo` is null. Present only when it is. The packet states the gap rather than quietly routing the notice somewhere else |
+| `whatsappTo` | string \| null | the chat recipient: **the person who requested the run**, when a number is held for them. `null` when none is |
+| `whatsappToReason` | string \| null | why `whatsappTo` is null, in the run's own `delivery.json` only. Present only when it is. It names the setting that holds chat numbers, so no outbox packet and no MCP door carries it; for a notice filed before a run, the worker's log does |
 | `whatsappCcOperator` | string \| null | the operator's own copy of the same notice, from the agent roster. `null` when the deployment has switched it off. Independent of `whatsappTo`: either, both or neither may be present |
 | `whatsappText` | string | ready-to-send completion line (includes every report URL) |
 | `url` | string \| null | the run's published report URL — **null for a multi-name knockout**, which has no single report. See below |
@@ -91,42 +96,56 @@ layer sends.
 
 ### `run-failed` — `_driver/failure.json` + `<runId>.failed.pending`
 
-`{ ts, kind: "run-failed", runId, agent, forwarder, forwarderEmail, msgId, markName,
-failedStage, reason, terminalKind, refused, whatsappTo, text }` — `text` is the ready-to-send human
-line ("… failed at <stage> — <reason>. Nothing has been delivered."). Written from the pipeline's
-failure path; a rate-limit **postpone is not a failure** (the run parks resumable and no
-failure event fires).
+The outbox file holds, and `list_outbox_events` and `get_delivery_packet` hand on, `{ kind: "run-failed", file, runId,
+agent, failed, refused, forwarder, forwarderEmail, msgId, conversationId, whatsappTo, whatsappChannel,
+whatsappCcOperator, markName, failureId, product, noticeMark, capWait, subject, emailBodyHtml, whatsappText, text }`
+(`file` on the MCP answer only, `ts` in the file only). `product`, `noticeMark` and `capWait` are what the notice is
+composed from: what was ordered, the name or names it was for, and the cap wait the run stopped for, or null. `text` and `whatsappText` are the same ready-to-send notice,
+and `emailBodyHtml` carries it as HTML: "The <what was ordered> for <mark> stopped before it finished, and nothing was
+delivered." followed by one recovery action. That action is "Please tell whoever administers this installation.", or,
+when the run waited out a provider's usage cap and stopped for it, the cap sentence, which ends "Re-trigger once the cap
+has reset." Every person is told the same words, whoever placed the order. Written from the pipeline's failure path; a
+rate-limit **postpone is not a failure** (the run parks resumable and no failure event fires).
+
+`_driver/failure.json` keeps the run's own record for whoever diagnoses it: `failedStage`, `reason`, `reasonVerbatim`,
+`terminalKind`, `repairs`, the payload fields and `diagnostic`, the copy that names the stage and quotes the reason.
+Neither the outbox file nor a door carries any of it: each composes the notice again from the packet's fields, so a
+packet an earlier version wrote is told in the same words.
 
 `refused: true` means this run was **declined by the product**, not broken by the engine —
 `terminalKind: "designed-refusal"`, raised when a preflight finds that this deployment cannot serve
 the search that was ordered. The packet still routes as a no-delivery notice (`kind` and `failed` are
-unchanged, so no relay needs teaching); only its copy differs, saying REFUSED rather than FAILED. The
+unchanged, so no relay needs teaching); only its notice differs, saying the search was not started. The
 field is written `true` or `false` on every packet — an absent key means a packet older than the
 field, never "this was not a refusal".
 
 ### `intake-rejected` — `intake-<base>.failed.pending`
 
-`{ ts, kind: "intake-rejected", classify: "clarify"|"reject", base, agent, account, organisation,
+`{ ts, kind: "intake-rejected", classify: "clarify"|"reject", reasonKind, base, agent, account, organisation,
 jobId, msgId, forwarder, forwarderEmail, markName, errors[], text }` — `classify: "clarify"` means the fix
 is a question back to the requester (see [INTAKE.md](INTAKE.md)); `"reject"` means the job was
-malformed. `text` is ready to send ("… Nothing has been searched or delivered. Job parked as
-<base>.failed …").
+malformed. `reasonKind` names the check that refused it: `run-cap`, `details`, `policy`, `setup`,
+`duplicate` or `other`. `text` is ready to send, and it is the not-started sentence `pre-run-failed` also
+uses, for every order however it was placed. `errors` is empty. Nobody is sent the check's own words,
+which can name the installation's setup, a queue or a flag: they stay in the queue's `<base>.failed.reason`.
 
 ### `duplicate-skipped` — `intake-<base>.duplicate.pending`
 
 `{ ts, kind: "duplicate-skipped", base, agent, account, organisation, jobId, msgId, forwarder,
-forwarderEmail, markName, text }` — the matter-dedup gate parked the request instead of running a
-second paid search. The queue-side `.duplicate.reason` explains the match and the `dupOverride` force-run.
+forwarderEmail, markName, priorMsgId, priorJobId, priorRecordedAt, text }` — the matter-dedup gate parked
+the request instead of running a second paid search. `text` is "This order was flagged as a duplicate.
+Order reference: <base>". The `prior…` fields name the earlier order only to a requester whose company
+holds it, and are null otherwise. The queue-side `.duplicate.reason` keeps the match; the `dupOverride`
+force-run is in [INTAKE.md](INTAKE.md).
 
 ### `pre-run-failed` — `intake-<base>.prerun-failed.pending`
 
 `{ ts, kind: "pre-run-failed", base, agent, account, organisation, jobId, msgId, forwarder,
-forwarderEmail, markName, reason, text }` plus the chat routing fields — the request failed before its
-run could start, for example on the engine's sign-in check, so nothing was searched or delivered.
-`text` is ready to send. For an order placed by the person it is for (`clientPrincipal`) it is the
-not-started sentence of the failure email ("The <search ordered> for <mark> was not started, and nothing
-was delivered. Please tell whoever administers this installation."); otherwise it is the staff line with
-the reason. `reason` is always on the packet.
+forwarderEmail, markName, text }` plus the chat routing fields — the request failed before its run
+could start, for example on the engine's sign-in check, so nothing was searched or delivered. `text` is
+ready to send, for every order: the not-started sentence of the failure email ("The <search ordered> for
+<mark> was not started, and nothing was delivered. Please tell whoever administers this installation.").
+The reason stays in the queue's `<base>.failed.result`.
 
 ### Whose notice it is, when there is no run
 
@@ -190,8 +209,8 @@ The filesystem loop below remains equivalent for integrators that do have data-p
 2. **Send**: for `delivered`, email `emailBodyHtml` verbatim to the requester behind
    `forwarder`/`forwarderEmail`, `Subject:` = `subject`, `In-Reply-To:` = `msgId`; optionally
    chat `whatsappText` to `whatsappTo` and, separately, to `whatsappCcOperator` when present. A null
-   `whatsappTo` with a `whatsappToReason` means nobody is reachable for that requester — surface it, do
-   not redirect the notice to the operator instead. For every other kind, `text` is ready to route as-is,
+   `whatsappTo` means no chat number is held for that requester: send the email, and do not redirect the
+   notice to the operator instead. For every other kind, `text` is ready to route as-is,
    except `engine-check-failed`, which stays pending for the operator (step 5 of the pure-MCP loop above).
 3. **Write back**: create a `.sent` marker in the (archived) run dir after a successful send —
    the idempotency guard that prevents double-sends if markers fire twice. Then clear the
@@ -252,12 +271,14 @@ in `<outbox>/deliveries/route-since.json`, and an audience the route stops servi
 `engine-check-failed`, `delivery-stuck`), `audience`, `recipient` and `at`, and then:
 
 - for the person who placed the order, `order`: the receipt as `order_status` gives it to a company
-  (`reference`, `state`, `terminal`, `runId`, and `reason` only for an order refused before it ran),
+  (`reference`, `state`, `terminal`, `runId`, `reason`, which is always empty, and for an order refused
+  before it ran `reasonKind`, the kind of check that refused it),
   with `recipient` naming the company, its organisation for Generic, and the `forwarder`,
   `forwarderEmail` and `msgId` the order carried;
-- for the operator, `fault`: the kind, the order or run it concerns, the stage and recorded reason
-  where there are ones, and `nextAction`, a code (`check-engine`, `read-the-run`, and for a stuck send
-  `release-the-delivery`, with the outbox's own recovery step in `recover`).
+- for the operator, `fault`: the kind, the order or run it concerns, and `nextAction`, a code
+  (`check-engine`, `read-the-run`, and for a stuck send `release-the-delivery`). The recorded reason, the
+  stage, the engine check's own lines and the outbox's marker and recovery step are kept in the install's
+  own delivery record (`diagnostic`), never in a notice.
 
 Neither carries a sentence for the recipient: the words are the receiver's to choose. Nothing sent for
 one company names another company or its orders.
@@ -278,19 +299,18 @@ otherwise it waits for the operator to settle it with the receiver.
 **Settling an uncertain notice.** The operator checks the receiver for the notice's delivery id, then says what it
 found:
 
-    node driver/notice-delivery.mjs list               # every notice not confirmed: its id, state and next action
-    node driver/notice-delivery.mjs received <id>      # the receiver holds it: that notice alone is confirmed, nothing settled
-    node driver/notice-delivery.mjs absent <id>        # it does not: that notice alone is sent again, under the same id
+    clearotron notices list               # what waits: notices awaiting an automatic retry, and each to check
+    clearotron notices received <id>      # the receiver holds it: that notice alone is confirmed, nothing settled
+    clearotron notices absent <id>        # it does not: that notice alone is sent again, under the same id
 
-Where the answer stays unknown, nothing is given and the notice stays ambiguous. Each answer prints JSON; a refusal
-exits 4 with its reason code (`no-such-notice`, `not-reconcilable:<state>`, `superseded-no-retry`). `list` gives each
-notice `retriesByItself`, true for one the worker sends again by itself, and `nextAction: settle-with-receiver` for
-one that waits on the operator.
+Where the answer stays unknown, nothing is given and the notice stays ambiguous. Every command prints the lines
+`clearotron status` prints for what still waits, and nothing of the record: no recorded reason, delivery detail or
+code. An answer the record does not take (an unknown id, a notice already confirmed, a superseded one) exits 4.
 
-A stopped run's notice that a later event has taken over stays listed with its own outcome, for the record, and
-carries `superseded`: `later-failure` when the run stopped again, or `report` when it recovered and owes its report.
-Such a notice is sent again by nothing, so it has `retriesByItself: false` and no next action, and `absent` on it is
-refused with `superseded-no-retry`. Only the current event's notice asks anything of the operator. A notice whose
+A stopped run's notice that a later event has taken over keeps its own outcome in the install's record, marked
+`superseded`: `later-failure` when the run stopped again, or `report` when it recovered and owes its report.
+Such a notice is sent again by nothing, so it is not among the lines that wait, and `absent` on it is not taken. Only
+the current event's notice asks anything of the operator. A notice whose
 failure carries no `failureId` is never taken for superseded.
 
 **Settling the send.** A stopped run's owed send is settled only by a downstream send receipt for the person

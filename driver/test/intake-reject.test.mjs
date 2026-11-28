@@ -88,11 +88,14 @@ test("HANDOFF (default): intake rejects park + write outbox packets with ZERO ga
     const packet = JSON.parse(readFileSync(p, "utf8"));
     assert.equal(packet.kind, "intake-rejected");
     assert.equal(packet.base, base);
-    assert.ok(Array.isArray(packet.errors) && packet.errors.length, "packet carries the validator errors");
-    assert.match(packet.text, /Nothing has been searched or delivered/);
-    // markless/unparseable jobs have no mark name → the text must name the queue file, never a boolean
-    // leaked from a fallback chain (`Clearotron request "false"` — the review-confirmed && / ?? footgun).
-    assert.match(packet.text, new RegExp(`Clearotron request "${base}"`));
+    // The validator's own words are the record's, never the notice's (design, 2026-11-27): the packet's `errors` is
+    // empty, and the queue's .failed.reason keeps them.
+    assert.deepEqual(packet.errors, [], "the validator's words stay in the queue's record");
+    assert.ok(readFileSync(join(q, `${base}.failed.reason`), "utf8").trim().length > 0, "the record keeps why");
+    assert.match(packet.text, /was not started, and nothing was delivered/);
+    // markless/unparseable jobs have no mark name → the text must name the order's reference, never a boolean
+    // leaked from a fallback chain (`for false` — the review-confirmed && / ?? footgun).
+    assert.match(packet.text, new RegExp(`The search for ${base} was not started`));
     assert.ok(!existsSync(`${p}.tmp`), "atomic publish — no tmp residue");
   }
   assert.equal(JSON.parse(readFileSync(join(outbox, "intake-job-broken.failed.pending"), "utf8")).classify, "reject");
