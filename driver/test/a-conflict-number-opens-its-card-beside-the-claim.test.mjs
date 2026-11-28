@@ -90,7 +90,7 @@ test("in the portal the bridge scrolls the portal for the page, re-posts its hei
     "the page's shift is not handed to the portal");
   assert.match(page, /addEventListener\('rep-reflow',function\(\)\{schedule\(\);\}\)/, "a reflow does not re-post the height and the section tops");
   assert.match(page, /var cid=card\?\(card\.id\|\|card\.getAttribute\('data-card-of'\)\|\|''\):'';/, "Ask AI on the panel's card loses its finding");
-  assert.match(page, /if\(d\.command==='view'\)\{[\s\S]*?vb>vt\)\{\s*try\{document\.dispatchEvent\(new CustomEvent\('rep-view',\{detail:\{top:vt,bottom:vb\}\}\)\);/,
+  assert.match(page, /if\(d\.command==='view'\)\{[\s\S]*?vb>vt\)\s*document\.dispatchEvent\(new CustomEvent\('rep-view',\{detail:\{top:vt,bottom:vb\}\}\)\);/,
     "the portal's visible band is not handed to the page, or is handed on unchecked");
 });
 

@@ -659,9 +659,8 @@ const EMBED_JS = `
     // it to open in view. Two finite numbers, the top above the bottom, or nothing is handed on.
     if(d.command==='view'){
       var v=d.value,vt=v&&typeof v==='object'?v.top:NaN,vb=v&&typeof v==='object'?v.bottom:NaN;
-      if(typeof vt==='number'&&typeof vb==='number'&&isFinite(vt)&&isFinite(vb)&&vb>vt){
-        try{document.dispatchEvent(new CustomEvent('rep-view',{detail:{top:vt,bottom:vb}}));}catch(err){}
-      }
+      if(typeof vt==='number'&&typeof vb==='number'&&isFinite(vt)&&isFinite(vb)&&vb>vt)
+        document.dispatchEvent(new CustomEvent('rep-view',{detail:{top:vt,bottom:vb}}));
       return;
     }
     if(d.command==='theme'){
