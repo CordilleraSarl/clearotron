@@ -378,6 +378,17 @@ export function frameCommand(command: FrameVerb, value?: boolean | string) {
 }
 
 /**
+ * WHERE THE READER CAN SEE THE FRAME, sent inwards. The page scrolls and the frame does not, so the document cannot tell
+ * which part of itself is on screen below the portal's pinned header; its conflict panel needs that to open in view.
+ * `top` and `bottom` are in the frame's own coordinates: from the foot of the pinned header to the foot of the window,
+ * less the frame's own top on screen. Whole pixels; a band that is not finite, or not taller than nothing, is not sent.
+ */
+export function frameView(top: number, bottom: number) {
+  if (!Number.isFinite(top) || !Number.isFinite(bottom) || bottom <= top) return null
+  return { source: FRAME_TAG, type: 'command' as const, command: 'view' as const, value: { top: Math.round(top), bottom: Math.round(bottom) } }
+}
+
+/**
  * THE FLAG HALF OF THIS BRIDGE IS RETIRED (ruling 2026-08-20).
  *
  * `readFrameFeedback`, `frameFeedbackResult`, the `FrameFeedback` type and the `MAX_WHY` mirror lived

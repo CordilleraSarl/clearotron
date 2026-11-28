@@ -21,7 +21,7 @@ import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { proofPreamble, proofEvidence, signInHandOff } from "../../bin/onboard.mjs";
+import { proofPreamble, signInHandOff } from "../../bin/onboard.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { classifyProbe, probeFailureText } from "../engine/probe.mjs";
 import { openaiAgentEngine } from "../engine/openai-agent.mjs";
@@ -94,14 +94,8 @@ test("a program refused before it started shows no engine output, and the refusa
   const v = classifyProbe({ engine: "openai-agent", error: thrown, program });
   assert.equal(v.mode, "signed-out", "the run door and doctor still read it as a sign-in to do");
   assert.ok(probeFailureText(v).includes(`\`${program.path} login\``), `the sign-in names the copy that runs: ${probeFailureText(v)}`);
-  assert.deepEqual(proofEvidence(v), [], "a program that never started was reported as having said nothing");
-
-  // CONTROL: a program that ran keeps its own words, and one that ran and said nothing still says so.
-  const ran = classifyProbe({ engine: "anthropic-agent", tuple: { code: 1, stdout: "", stderr: "Not logged in · Please run /login", json: {}, signals: {} } });
-  assert.equal(proofEvidence(ran)[0], "engine said: Not logged in · Please run /login");
-  const silent = classifyProbe({ engine: "anthropic-agent", tuple: { code: 1, stdout: "", stderr: "", json: {}, signals: { noStreamEvents: true } } });
-  assert.match(proofEvidence(silent)[0], /^engine said: nothing/);
-  // Setup prints these, and only these, as the evidence.
-  assert.match(SRC, /problem\(proofFailureLine\(v, eng\.product\)\);[\s\S]{0,1600}for \(const line of proofEvidence\(v\)\) info\(line\);/);
-  assert.doesNotMatch(SRC, /info\("engine said: nothing/, "a second copy of the evidence lines prints beside the function");
+  // THE ENGINE'S OWN OUTPUT IS NOT SHOWN, whether the program ran or not (design, 2026-11-28): setup prints the verdict
+  // in the product's words and no "engine said" line after it.
+  assert.match(SRC, /problem\(proofFailureLine\(v, eng\.product\)\);/);
+  assert.doesNotMatch(SRC, /engine said/, "setup still prints the engine's own output under a failed proof turn");
 });

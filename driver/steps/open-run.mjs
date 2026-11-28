@@ -51,9 +51,11 @@ export async function openRun({ job, opts }) {
     parkedRun = { runDir: at.runDir, codename: at.codename, date };
     return readRunChoices(at.runDir);
   })();
-  const park = (choice) => {
+  // The engine's own words, where a refusal carried them, go to the run's own log and nowhere a person reads
+  // (design, 2026-11-27).
+  const park = (choice, engineSaid = null) => {
     const err = new RunChoiceUnavailable({ ...choice, run: parkedRun });
-    try { runLog(parkedRun.runDir, { event: "run-choices-park", ...err.dependency }); } catch { /* best-effort */ }
+    try { runLog(parkedRun.runDir, { event: "run-choices-park", ...err.dependency, ...(engineSaid ? { engineSaid } : {}) }); } catch { /* best-effort */ }
     return err;
   };
   if (recorded.state === "unreadable") {
@@ -75,7 +77,7 @@ export async function openRun({ job, opts }) {
     throw new Error(`${WEB_RESEARCH_SETTING}=${machineResearch.invalid} names no web-research service — one of: own (the AI program's own web search) or perplexity; refusing rather than guess which one searches`);
   // A recorded engine whose program or sign-in this machine lacks parks the run too; a run with no record meets the
   // doors as before. Only a refusal is caught: a door that passes, or fails open on weather, runs on unchanged.
-  const parksIfRecorded = (kind) => (e) => { throw recorded.state === "recorded" ? park({ kind, recorded: recorded.engine, detail: e?.message ?? e }) : e; };
+  const parksIfRecorded = (kind) => (e) => { throw recorded.state === "recorded" ? park({ kind, recorded: recorded.engine, detail: e?.message ?? e }, e?.engineSaid ?? null) : e; };
   // The engine binary, first and UNCONDITIONALLY — before the register preflight, which two lanes skip.
   // Every lane spawns the engine: a knockout does, and so does a run with an injected recordFetcher. So
   // unlike the credential check below this one has no exemption, because there is no shape of run that

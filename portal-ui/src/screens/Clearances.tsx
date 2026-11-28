@@ -24,7 +24,7 @@
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Result, Run } from '../contract/api.ts'
-import { api, saveFailureText, lastSeenOrders } from '../contract/api.ts'
+import { api, saveFailureText, lastSeenOrders, lastSeenRetiredOrders } from '../contract/api.ts'
 import { receiptPath, type PreRunOrder } from '../contract/orderReceipt.ts'
 import { bandRank } from '../contract/tone.ts'
 import { displayName, newestFirst, readLabel, readLabelParts, readTime, sameDateAsAnother } from '../contract/reads.ts'
@@ -247,6 +247,8 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
     [account, canGroup],
   )
   const retired: readonly Run[] = retiredResult?.kind === 'ok' ? retiredResult.value : []
+  // An order refused before any run, retired, comes back the way a run does: from this tab (design, 2026-11-27).
+  const retiredOrders: readonly PreRunOrder[] = retiredResult?.kind === 'ok' ? lastSeenRetiredOrders() : []
 
   // The comment above is a promise the code has to keep: switching company replaces every row,
   // so a selection made under the previous owner is ticks over rows that no longer exist — the
@@ -488,6 +490,27 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
       after: () => { reload(); reloadRetired() },
     })
   }
+  // AN ORDER THAT NEVER STARTED IS RETIRED BY ITS REFERENCE, and its words say what it is: never a search, so never
+  // "search" (design, 2026-11-27). Its receipt stays at its link, as a retired run's report does.
+  const retireOrder = (o: PreRunOrder) => {
+    const name = o.markName ?? o.reference
+    setAsk({
+      title: 'Retire this order?',
+      body: `The order for ${name}${o.updatedAt ? ` · ${o.updatedAt.slice(0, 10)}` : ''} did not start. It will move to Retired for everyone. Its receipt stays at its link. You can restore it there.`,
+      confirm: 'Retire order',
+      returnTo: `More actions for ${name}`,
+      act: () => api.setRetired({ action: 'retire', runIds: [o.reference] }),
+      done: 'Moved 1 order to Retired.',
+      after: () => { reload(); reloadRetired() },
+    })
+  }
+  const restoreOrder = async (o: PreRunOrder) => {
+    const r = await api.setRetired({ action: 'restore', runIds: [o.reference] })
+    if (r.kind !== 'ok') { setNote(saveFailureText(r)); return }
+    setNote(`Restored the order for ${o.markName ?? o.reference}.`)
+    reload()
+    reloadRetired()
+  }
   const restoreRun = async (run: Run) => {
     const r = await api.setRetired({ action: 'restore', runIds: [run.runId] })
     if (r.kind !== 'ok') { setNote(saveFailureText(r)); return }
@@ -548,12 +571,14 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // The Retired tab follows the same company and search-type narrowing, and the same name search.
   const retiredShown = retired.filter((r) => (!ownerFilter || runKey(r) === ownerFilter) && atLevel(r, level)
     && (!query.trim() || displayName(r).toLowerCase().includes(query.trim().toLowerCase())))
+  // Narrowed as Clearances narrows its order rows (contract/orderRows.ts), by company, search type and name.
+  const retiredOrdersShown = ordersInView(retiredOrders, { filter: 'all', owner: ownerFilter, level, query })
   const tabs: readonly { readonly key: Filter; readonly label: string; readonly count: number }[] = [
     { key: 'all', label: 'All', count: 0 },
     { key: 'progress', label: 'In progress', count: 0 },
     { key: 'finished', label: 'Finished', count: 0 },
     { key: 'failed', label: 'Failed', count: failedCount },
-    ...(canGroup ? [{ key: 'retired' as const, label: 'Retired', count: retired.length }] : []),
+    ...(canGroup ? [{ key: 'retired' as const, label: 'Retired', count: retired.length + retiredOrders.length }] : []),
   ]
 
   return (
@@ -783,7 +808,15 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                       {showOwnerColumn ? <td>{ctx.ownerName(key)}</td> : null}
                       <td className="clr-td-status">{o.state === 'refused' ? 'Order did not start' : 'Waiting to start'}</td>
                       <td className="clr-td-risk"><span style={{ color: 'var(--text-faint)' }}>—</span></td>
-                      <td className="col-actions" />
+                      <td className="col-actions">
+                        {canGroup && o.state === 'refused' ? (
+                          <RowActions open={null} ask={null} menu={(
+                            <RowMenu label={`More actions for ${o.markName ?? o.reference}`}>
+                              <MenuItem onSelect={() => retireOrder(o)}>Retire this order…</MenuItem>
+                            </RowMenu>
+                          )} />
+                        ) : null}
+                      </td>
                     </tr>
                   </Fragment>
                 )
@@ -847,7 +880,7 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
               </tr>
             </thead>
             <tbody>
-              {!retiredShown.length ? (
+              {!retiredShown.length && !retiredOrdersShown.length ? (
                 <tr><td colSpan={3} style={{ padding: '22px 12px', color: 'var(--text-muted)' }}>
                   <span className="list-empty">No retired searches in this view.</span>
                 </td></tr>
@@ -866,6 +899,18 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
                   </td>
                   <td className="col-actions" style={{ textAlign: 'right' }}>
                     <button type="button" className="btn-ghost clr-open" onClick={() => void restoreRun(run)}>Restore</button>
+                  </td>
+                </tr>
+              ))}
+              {retiredOrdersShown.map((o) => (
+                <tr key={`order-${o.reference}`} className="row">
+                  <td className="clr-td-name">
+                    <b data-anon="mark" style={{ color: 'var(--text-strong)' }}>{o.markName ?? o.reference}</b>
+                    {o.updatedAt ? <div className="sub" style={{ color: 'var(--text-muted)', fontSize: 12.5 }}><span className="nowrap-date">{o.updatedAt.slice(0, 10)}</span></div> : null}
+                  </td>
+                  <td className="clr-td-status">Order did not start</td>
+                  <td className="col-actions" style={{ textAlign: 'right' }}>
+                    <button type="button" className="btn-ghost clr-open" onClick={() => void restoreOrder(o)}>Restore</button>
                   </td>
                 </tr>
               ))}

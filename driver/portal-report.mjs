@@ -654,6 +654,15 @@ const EMBED_JS = `
       }
       return;
     }
+    // WHERE THE READER CAN SEE THIS FRAME. The page scrolls, not the frame, so only the portal knows which band of the
+    // document is on screen below its pinned header. It says so in this frame's own coordinates; the conflict panel reads
+    // it to open in view. Two finite numbers, the top above the bottom, or nothing is handed on.
+    if(d.command==='view'){
+      var v=d.value,vt=v&&typeof v==='object'?v.top:NaN,vb=v&&typeof v==='object'?v.bottom:NaN;
+      if(typeof vt==='number'&&typeof vb==='number'&&isFinite(vt)&&isFinite(vb)&&vb>vt)
+        document.dispatchEvent(new CustomEvent('rep-view',{detail:{top:vt,bottom:vb}}));
+      return;
+    }
     if(d.command==='theme'){
       var th=d.value==='dark'?'dark':'light';
       document.documentElement.setAttribute('data-theme',th);

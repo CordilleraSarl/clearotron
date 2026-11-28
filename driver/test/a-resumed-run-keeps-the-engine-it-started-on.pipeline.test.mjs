@@ -212,3 +212,21 @@ test("the run's register is decided once at its opening, from its record", async
   assert.equal(registerForRun(runDir), recordOf(runDir).register, "the run's register is the one it recorded");
   assert.deepEqual(registerCapabilities(recordOf(runDir).register), registerCapabilities(), "naming the machine's register changes nothing");
 });
+
+test("a resumed run its engine refuses is parked in the product's words, and the engine's own are kept in the run's log", async () => {
+  // A park's reason reaches the run response a person reads, so the engine's free text stays out of it and goes to the
+  // run's own log (design, 2026-11-27). The mock's failed write is refused at the door, and its last words are what the engine said.
+  const { root, runDir, codename } = await startedAndFailed();
+  const before = stateOf(runDir);
+  process.env.MOCK_CLAUDE_WRITE_FAILED = "1";
+  try {
+    const { parkedFor } = await resumeParked(root, codename, runDir);
+    assert.deepEqual({ kind: parkedFor.kind, recorded: parkedFor.recorded }, { kind: "engine-sign-in", recorded: "anthropic-agent" });
+    assert.match(String(parkedFor.detail), /^\[preflight\] /, "the door's own words do not ride with the park");
+    const logged = events(runDir).filter((e) => e.event === "run-choices-park").at(-1);
+    assert.ok(typeof logged?.engineSaid === "string" && logged.engineSaid.trim(), `the engine's words were not kept in the run's log: ${JSON.stringify(logged)}`);
+    assert.ok(!String(parkedFor.detail).includes(logged.engineSaid) && !/engine said/.test(String(parkedFor.detail)),
+      `the engine's words reached the park: ${parkedFor.detail}`);
+    unchanged(runDir, before);
+  } finally { delete process.env.MOCK_CLAUDE_WRITE_FAILED; }
+});

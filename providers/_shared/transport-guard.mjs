@@ -87,7 +87,8 @@ export function guardToolCall(fn, where = "provider") {
     try {
       return await fn(...args);
     } catch (err) {
-      return { isError: true, text: `ERROR: ${faultText(err, where)}` };
+      // `transport` marks the failure as ours to name: the provider never answered (design, 2026-11-28).
+      return { isError: true, transport: true, text: `ERROR: ${faultText(err, where)}` };
     }
   };
 }
@@ -103,7 +104,7 @@ export function guardCountCall(fn, where = "count") {
     try {
       return await fn(...args);
     } catch (err) {
-      return { ok: false, total: null, reason: faultText(err, where) };
+      return { ok: false, total: null, transport: true, reason: faultText(err, where) };
     }
   };
 }

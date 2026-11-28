@@ -17,6 +17,7 @@ import {
   MAX_FRAME,
   MIN_FRAME,
   frameCommand,
+  frameView,
   readFrameHeight,
   readFrameScroll,
   readAskAi,
@@ -167,4 +168,15 @@ test('a report address that names a card lands on it; a malformed one names none
   assert.equal(cardFromSearch('?ask=open&card=k1-2'), 'k1-2')
   assert.equal(cardFromSearch('?card=c3%3Cscript%3E'), null)
   assert.equal(cardFromSearch(''), null)
+})
+
+test('the visible band is sent in whole pixels, and a band that is not one is not sent', () => {
+  // The document's conflict panel opens inside this band, so a NaN or an inverted pair would put it nowhere.
+  assert.deepEqual(frameView(-120.4, 707.6), { source: FRAME_TAG, type: 'command', command: 'view', value: { top: -120, bottom: 708 } })
+  assert.equal(frameView(Number.NaN, 700), null)
+  assert.equal(frameView(0, Number.POSITIVE_INFINITY), null)
+  assert.equal(frameView(500, 500), null)
+  assert.equal(frameView(600, 100), null)
+  // It is a command inwards, never mistaken for a message from the frame.
+  assert.equal(readFrameHeight(frameView(0, 700), true), null)
 })
