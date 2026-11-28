@@ -30,7 +30,8 @@ import { fileURLToPath } from "node:url";
 
 import { classifyProbe, probeEngineTurn, preflightEngineTurn, probeFailureText, probeVerdictLane,
   PROBE_MODEL, PROBE_THINKING, PROBE_TOOLS, PROBE_FILE, probePrompt, isProbePrompt, probeToolConfig,
-  ENGINES_WITH_A_SHELL, PROBE_COMMAND_FILE, PROBE_OUTPUT, namesPathWhole, REFRESH_LOCK_WAIT_MS } from "../engine/probe.mjs";
+  ENGINES_WITH_A_SHELL, PROBE_COMMAND_FILE, PROBE_OUTPUT, namesPathWhole, REFRESH_LOCK_WAIT_MS,
+  STOPPED_EARLY, RAN_AND_FAILED, CLAUDE_REFUSES } from "../engine/probe.mjs";
 import { claudeTurnInstructions } from "../engine/common.mjs";
 import { parseCodexEvent } from "../engine/openai-agent.mjs";
 import { CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "../engine/auth.mjs";
@@ -311,11 +312,12 @@ test("a cloud that refuses the credentials is named, with what to check, and nev
   assert.match(say("bedrock"), /^Amazon Bedrock refused the credentials — check AWS_REGION and the AWS credentials on this machine/);
   assert.match(say("gateway"), /^The gateway refused the credentials — check ANTHROPIC_BASE_URL and ANTHROPIC_AUTH_TOKEN/);
 
-  // The startup-class shape, inferred from silence, points at the same check on a cloud.
+  // The startup-class shape, inferred from silence, diagnoses no refused credential on a cloud either (design,
+  // 2026-11-28): the check could not be completed, and it says so.
   const mute = classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ signals: { noStreamEvents: true } }), auth: { mode: "cloud", cloud: "foundry" } });
-  assert.equal(mute.mode, "signed-out");
+  assert.equal(mute.mode, "stopped-early");
   assert.equal(mute.basis, "startup-class");
-  assert.match(mute.fix, /start there: check ANTHROPIC_FOUNDRY_API_KEY/);
+  assert.equal(mute.fix, STOPPED_EARLY);
   assert.doesNotMatch(mute.fix, SUBSCRIPTION_ADVICE);
 });
 
@@ -369,8 +371,6 @@ test("the sign-in advice names the copy Clearotron installed, and only that copy
   assert.doesNotMatch(v.fix, /run `claude` once/, "the bare word survived for a copy that is not on PATH");
   // The token route runs on any machine, so it keeps the bare word and names this machine's copy beside it.
   assert.ok(v.fix.includes(`run \`claude setup-token\` on any machine you can sign in on (on this one, \`${installed.path} setup-token\`)`), v.fix);
-  const mute = classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ signals: { noStreamEvents: true } }), program: installed });
-  assert.ok(mute.fix.includes(`run \`${installed.path}\` once`), mute.fix);
   // Codex's device route runs here, so it names the copy that runs here.
   const codex = classifyProbe({ engine: "openai-agent", tuple: REFUSED, program: { source: "installed", path: "/opt/engines/codex" } });
   assert.ok(codex.fix.includes("run `/opt/engines/codex login --device-auth` here"), codex.fix);
@@ -468,14 +468,22 @@ test("the #752 anchor the tier message sends a reader to actually exists", () =>
   assert.match(doc, /Model tiers and resolution/);
 });
 
-test("a startup-class death is called the signed-out shape, and says that is what it is", () => {
+test("a startup-class death is not called a sign-out, and says the check could not be completed", () => {
   // The anthropic adapter's own diagnosis: the CLI exited without emitting a single stream event, so the
-  // failure happened before any turn ran (args/auth/MCP). Reported as signed-out because that is the
-  // actionable reading, with `basis` saying it was inferred from the shape and not read from a message.
-  const v = classifyProbe({ engine: "anthropic-agent",
-    tuple: tupleOf({ stderr: "", signals: { noStreamEvents: true } }) });
-  assert.equal(v.mode, "signed-out");
-  assert.equal(v.basis, "startup-class");
+  // failure happened before any turn ran. That silence says nothing about the sign-in, so the verdict no longer
+  // diagnoses one, whatever the billing mode (design, 2026-11-28); `basis` still says it was inferred from the shape.
+  for (const auth of [null, { mode: "api-key" }]) {
+    const v = classifyProbe({ engine: "anthropic-agent", auth,
+      tuple: tupleOf({ stderr: "", signals: { noStreamEvents: true } }) });
+    assert.equal(v.mode, "stopped-early");
+    assert.equal(v.basis, "startup-class");
+    assert.equal(v.fix, STOPPED_EARLY);
+    assert.equal(probeVerdictLane(v), "weather", "the run door now refuses what it proceeded past before");
+  }
+  // The approved words, character for character.
+  assert.equal(STOPPED_EARLY, "The check stopped before the engine returned a result. Try again. If it stops again, run the engine from your terminal to see whether it needs input.");
+  assert.equal(RAN_AND_FAILED, "The engine started, but the check failed. Run the check again.");
+  assert.equal(CLAUDE_REFUSES, "Run Claude Code from your terminal to check which action it refuses.");
 });
 
 test("a stall, a spawn failure and a plain failed turn are three different answers", () => {
@@ -490,6 +498,7 @@ test("a stall, a spawn failure and a plain failed turn are three different answe
   const failed = classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ code: 1, stderr: "the model produced a teapot" }) });
   assert.equal(failed.mode, "failed");
   assert.equal(failed.basis, "nonzero-exit");
+  assert.equal(failed.fix, RAN_AND_FAILED, "a turn that ran and failed is not given the remedy the design ruled");
   assert.match(failed.detail, /teapot/, "the engine's own words ride along — the generic case is where they matter most");
 });
 
@@ -553,9 +562,9 @@ test("the door refuses a fault this box owns, and lets the weather through", () 
   // …and the INFERENCE FROM SILENCE, which is the one that matters. A CLI that dies before emitting a
   // stream event is the signed-out shape AND the wedged-MCP shape AND the PATH-gap shape — onboard-wizard
   // records a hosted runner where a hermetic PATH produced exactly this verdict on a healthy engine. The
-  // mode is named for the reader; the door must not refuse a production run on it.
+  // door must not refuse a production run on it, and the remedy no longer names a sign-out (design, 2026-11-28).
   const mute = classifyProbe({ engine: "anthropic-agent", tuple: tupleOf({ signals: { noStreamEvents: true } }) });
-  assert.equal(mute.mode, "signed-out", "the reader is still told the likeliest cause");
+  assert.equal(mute.mode, "stopped-early", "the silence is diagnosed as a sign-out again");
   assert.equal(mute.basis, "startup-class");
   assert.equal(probeVerdictLane(mute), "weather", "but a refusal is not made on an inference from silence");
 });
@@ -871,7 +880,7 @@ test("through the real claude adapter: a write the program reports as failed is 
   const failed = await probeWith(CLAUDE, { MOCK_CLAUDE_WRITE_FAILED: "1" });
   assert.equal(failed.mode, "cannot-write", JSON.stringify(failed));
   assert.equal(probeVerdictLane(failed), "configuration");
-  assert.equal(failed.fix, "Every search stage writes its results to a file, so no search can finish here. The engine's stderr below is the place to start.");
+  assert.equal(failed.fix, `Every search stage writes its results to a file, so no search can finish here. ${CLAUDE_REFUSES}`);
   const skipped = await probeWith(CLAUDE, { MOCK_CLAUDE_PROBE_NO_WRITE: "1" });
   assert.equal(skipped.mode, "write-unproven", JSON.stringify(skipped));
   assert.equal(probeVerdictLane(skipped), "weather", "a missing file with no failed write shows nothing either way, so it warns");
@@ -1004,8 +1013,9 @@ test("a binary that exits silently is diagnosed, not shrugged at", async () => {
   chmodSync(mute, 0o755);
   const v = await probeEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: mute } });
   assert.equal(v.ok, false);
-  assert.equal(v.mode, "signed-out");
+  assert.equal(v.mode, "stopped-early");
   assert.equal(v.basis, "startup-class");
+  assert.equal(v.fix, STOPPED_EARLY);
 });
 
 // ── one registry, and it has to stay one ─────────────────────────────────────────────────────────────

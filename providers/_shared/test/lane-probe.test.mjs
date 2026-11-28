@@ -6,7 +6,7 @@
 // rather than only against a live account.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { makeLaneProbe, probeSpend, DEFAULT_CONTROLS, loadProviderCapabilities } from "../lane-probe.mjs";
+import { makeLaneProbe, probeSpend, DEFAULT_CONTROLS, loadProviderCapabilities, REGISTER_NO_ANSWER, REGISTER_ERROR } from "../lane-probe.mjs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -36,12 +36,39 @@ test("a lane where EVERYTHING returns zero is FAILED, not silently fine", async 
   assert.match(r.reason, /returned 0 records/);
 });
 
-test("a dead credential fails with THE PROVIDER'S OWN REASON, not a generic one", async () => {
-  const r = await probe(async () => ({ ok: false, total: null, reason: "401 Unauthorized" }))({}, {});
-  assert.equal(r.state, "failed");
-  assert.match(r.reason, /401 Unauthorized/,
-    "the provider said why and the probe replaced it with its own words — an operator then has to "
-    + "reproduce the call by hand to learn what this already knew");
+test("a count that failed says which failure it was, in the approved words, and never the provider's own text", async () => {
+  // The provider's answer and a failed connection's text stay out of what a person is shown (design, 2026-11-28).
+  // Which failure it was is read from the count's structure, never from its text.
+  const noAnswer = await probe(async () => ({ ok: false, total: null, failure: "no-answer", reason: "ECONNREFUSED — transport failure" }))({}, {});
+  assert.equal(noAnswer.state, "failed");
+  assert.equal(noAnswer.reason, REGISTER_NO_ANSWER);
+  const errored = await probe(async () => ({ ok: false, total: null, failure: "provider-error", reason: "401 Unauthorized at a vendor" }))({}, {});
+  assert.equal(errored.reason, REGISTER_ERROR);
+  for (const r of [noAnswer, errored]) {
+    assert.doesNotMatch(r.reason, /ECONNREFUSED|401|vendor|COCA-COLA/, `the raw answer or the control mark reached the line: ${r.reason}`);
+  }
+  // A reason this kernel wrote itself keeps its own words, the control mark included.
+  const kernel = await probe(async () => ({ ok: false, total: null, reason: "unparseable search response on the count probe" }))({}, {});
+  assert.match(kernel.reason, /COCA-COLA could not be counted: unparseable search response on the count probe/);
+  // The approved words, character for character.
+  assert.equal(REGISTER_NO_ANSWER, "The register did not answer the count request. Check the connection and try again.");
+  assert.equal(REGISTER_ERROR, "The register returned an error instead of a count.");
+  // And a negative control that failed is said without the provider's text either.
+  const negDown = await probe(async (q) => q.name === DEFAULT_CONTROLS.positive.mark
+    ? { ok: true, total: 136 } : { ok: false, total: null, failure: "provider-error", reason: "HTTP 500 from a vendor" })({}, {});
+  assert.equal(negDown.state, "proven");
+  assert.doesNotMatch(negDown.caveat, /HTTP 500|vendor/, negDown.caveat);
+});
+
+test("the count kernel marks a count the transport guard caught as no answer, and any other error as the provider's", async () => {
+  const { makeCountProbe } = await import("../count.mjs");
+  const threw = makeCountProbe({ count: async () => { throw Object.assign(new Error("connect ECONNREFUSED"), { code: "ECONNREFUSED" }); },
+    capabilities: { countProbe: "endpoint" } });
+  assert.equal((await threw({}, {}, {})).failure, "no-answer");
+  const searchThrew = makeCountProbe({ search: async () => { throw new Error("socket hang up"); }, capabilities: { countProbe: "cheap" } });
+  assert.equal((await searchThrew({}, {}, {})).failure, "no-answer");
+  const answeredError = makeCountProbe({ search: async () => ({ type: "text", text: "ERROR: HTTP 500" }), capabilities: { countProbe: "cheap" } });
+  assert.equal((await answeredError({}, {}, {})).failure, "provider-error");
 });
 
 // ── THE COULD-NOT-LOOK DISTINCTION, one subsystem over from the bus and allocation-failure classifiers ─────────
