@@ -64,6 +64,7 @@ const BASE = Object.freeze({
   CLEAROTRON_DATABASE: REG.id, ...Object.fromEntries(REG.credentials.map((k) => [k, "fixture-credential"])),
   CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: "/usr/bin/true",
   PERPLEXITY_API_KEY: "fixture-research-key",
+  CLEAROTRON_WEB_RESEARCH: "perplexity",   // no search runs without web research, so a configured box names its service
   // NOT A CLOUD SETTING, and a secret: it must stay in the shell. The carry copies named settings, never
   // the environment, and this is the tests' witness that it still does.
   UNRELATED_SHELL_TOKEN: SECRET,

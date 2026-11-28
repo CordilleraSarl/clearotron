@@ -217,7 +217,7 @@ const REG = PROVIDERS.find((p) => (p.credentials ?? []).length);
 
 test("doctor names what the order-time gate refuses for — the engine path included — and keeps exit 0", () => {
   assert.ok(REG, "no register declares a credential — the configured control below would be vacuous");
-  const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent"]);
+  const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`), "CLEAROTRON_WEB_RESEARCH=perplexity", "CLEAROTRON_AI=anthropic-agent"]);
   try {
     const r = doctor(home);
     assert.equal(r.status, 0, "an install that is not configured yet is unfinished, not broken — the exit contract holds");
@@ -228,7 +228,7 @@ test("doctor names what the order-time gate refuses for — the engine path incl
 });
 
 test("THE CONTROL: with everything the gate asks for, doctor says so and refuses nothing", () => {
-  const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`),
+  const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`), "CLEAROTRON_WEB_RESEARCH=perplexity",
     "CLEAROTRON_AI=anthropic-agent", "CLEAROTRON_CLAUDE_PATH=/usr/bin/true"]);
   try {
     const r = doctor(home);
@@ -265,7 +265,7 @@ test("doctor counts the copy Clearotron installed as the engine a search needs",
   mkdirSync(join(dir, "bin"), { recursive: true });
   writeFileSync(join(dir, "package.json"), JSON.stringify({ name: spec.package, version: "9.9.9", bin: { [spec.fallback]: "bin/claude.exe" } }));
   writeFileSync(join(dir, "bin", "claude.exe"), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
-  const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent"]);
+  const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`), "CLEAROTRON_WEB_RESEARCH=perplexity", "CLEAROTRON_AI=anthropic-agent"]);
   try {
     const r = spawnSync(process.execPath, [join(DOCTOR_ROOT, "bin", "clearotron.mjs"), "doctor"], { cwd: DOCTOR_ROOT, encoding: "utf8", timeout: 120000,
       env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, USERPROFILE: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_ENGINES_DIR: root }, {}) });

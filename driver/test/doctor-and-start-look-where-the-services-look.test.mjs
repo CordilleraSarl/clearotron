@@ -42,7 +42,7 @@ const PATH_SETTING = ENGINE_BINARIES["anthropic-agent"].env;
 // The register is taken from the table, not typed, so the configuration below is one the gate accepts.
 const REG = PROVIDERS.find((p) => (p.credentials ?? []).length);
 /** Everything the gate asks for except the engine's program. */
-const CONFIGURED = [`CLEAROTRON_DATABASE=${REG?.id}`, ...(REG?.credentials ?? []).map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent"];
+const CONFIGURED = [`CLEAROTRON_DATABASE=${REG?.id}`, ...(REG?.credentials ?? []).map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent", "CLEAROTRON_WEB_RESEARCH=perplexity"];
 
 /** An executable file under the name the engine runs, in `dir`. Windows finds a program on PATH only under
  *  an extension it starts, so there it is `claude.exe`; it is found and never run. */

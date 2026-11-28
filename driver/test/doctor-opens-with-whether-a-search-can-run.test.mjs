@@ -48,7 +48,7 @@ const NODE_DIR = (() => {
 const REG = PROVIDERS.find((p) => (p.credentials ?? []).length);
 /** The settings of an install that can search: a register and its credentials, an AI, and its program. */
 const CAN_SEARCH = [`CLEAROTRON_DATABASE=${REG?.id}`, ...(REG?.credentials ?? []).map((k) => `${k}=x`),
-  "CLEAROTRON_AI=anthropic-agent", `CLEAROTRON_CLAUDE_PATH=${STAND_IN}`];
+  "CLEAROTRON_AI=anthropic-agent", `CLEAROTRON_CLAUDE_PATH=${STAND_IN}`, "CLEAROTRON_WEB_RESEARCH=perplexity"];
 
 /**
  * A scratch home. `file` is the install's own settings file, by its lines. `units` installs the background
