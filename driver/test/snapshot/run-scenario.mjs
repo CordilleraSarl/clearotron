@@ -29,14 +29,18 @@ function cancelOnceStarted() {
 let result;
 try {
   if (spec.cancel) cancelOnceStarted();
-  result = await pipeline(spec.job, spec.opts ?? {});
+  // The web picture step asks no live page in a snapshot run: each page answers that it declares no picture, as the
+  // mock harness's offlinePictureFetcher does. A build without the step ignores the option.
+  const offline = async (url) => ({ ok: true, status: 200, url: String(url), contentType: "text/html", bytes: Buffer.from("<title>offline</title>") });
+  const opts = { pictureFetcher: offline, ...(spec.opts ?? {}) };
+  result = await pipeline(spec.job, opts);
   if (spec.resume) {
     // The fault clears and the same run is asked for again by name, as a resume does.
     delete process.env.MOCK_FAIL_STAGE;
     // A stage that already passed read this file, so the resume has to find that stage stale and redo it.
     if (spec.tamperBeforeResume) appendFileSync(join(String(result.runDir), spec.tamperBeforeResume), "\nchanged between the two attempts\n");
     const codename = String(result.runDir).split(/[\\/]/).pop().split("-").slice(3).join("-");
-    result = await pipeline(spec.job, { ...(spec.opts ?? {}), codename });
+    result = await pipeline(spec.job, { ...opts, codename });
   }
 } catch (e) { result = { ok: false, threw: String(e?.message ?? e) }; }
 writeFileSync(spec.resultFile, JSON.stringify(result));

@@ -5,8 +5,10 @@
 //
 // Driven through the real command with a scratch HOME, so the env file is the one doctor reads and no
 // developer's own settings reach the child. The provider is the local US index, so nothing here goes
-// over the network or spends anything: an empty file stands in for an index nobody synced, and the
-// provider's refusal names the path it was handed, which is what shows which value reached the call.
+// over the network or spends anything. Which value reached the call shows in whether the lane retrieves: one path
+// holds a small real index carrying the probe's control mark, the other an empty file standing in for an index nobody
+// synced. (The provider's own refusal once named the path, and doctor no longer prints a provider's text: design,
+// 2026-11-28.)
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
@@ -15,6 +17,21 @@ import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { handRunEnv } from "./drive-env.mjs";
+import { openIndex, createSchema, putRecords, rebuildFts, setMeta } from "../../providers/uspto-local/src/index-store.js";
+import { DEFAULT_CONTROLS } from "../../providers/_shared/lane-probe.mjs";
+
+/** A small index as a healthy sync leaves it, holding the probe's positive control and nothing else. */
+function realIndex(path) {
+  const db = createSchema(openIndex(path));
+  putRecords(db, [{ serial: "70000001", text: DEFAULT_CONTROLS.positive.mark, status: "700", classes: ["032"], owner: "AN INVENTED OWNER SA" }]);
+  rebuildFts(db);
+  setMeta(db, "records", "1");
+  setMeta(db, "newest_delta", new Date(Date.now() - 24 * 3_600_000).toISOString());
+  setMeta(db, "synced_at", new Date().toISOString());
+  setMeta(db, "backfile_through", new Date().toISOString());
+  db.close();
+  return path;
+}
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -24,6 +41,7 @@ function probe({ env = {}, dotenv = {} } = {}) {
   const home = mkdtempSync(join(tmpdir(), "probe-home-"));
   try {
     const index = (name) => { const p = join(home, name); writeFileSync(p, ""); return p; };
+    index.real = (name) => realIndex(join(home, name));
     const resolveIn = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, typeof v === "function" ? v(index) : v]));
     const file = resolveIn(dotenv), vars = resolveIn(env);
     mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
@@ -51,15 +69,16 @@ test("a provider named only in the install's env file is the one the probe asks"
 });
 
 test("a credential kept only in the install's env file reaches the probe", () => {
-  const { section, file } = probe({ env: { CLEAROTRON_DATABASE: "uspto-local" }, dotenv: { USPTO_LOCAL_DB: (i) => i("file.db") } });
-  assert.doesNotMatch(section, /USPTO_LOCAL_DB absent/,
-    "the probe reported the variable absent while the env file doctor itself read holds it");
-  assert.ok(section.includes(file.USPTO_LOCAL_DB), `the probe was not handed the env file's index path:\n${section}`);
+  const { section } = probe({ env: { CLEAROTRON_DATABASE: "uspto-local" }, dotenv: { USPTO_LOCAL_DB: (i) => i.real("file.db") } });
+  assert.match(section, /uspto-local RETRIEVES/, `the probe was not handed the env file's index:\n${section}`);
 });
 
 test("the environment still wins over the env file, as it does for a run", () => {
-  const { section, file, vars } = probe({ env: { CLEAROTRON_DATABASE: "uspto-local", USPTO_LOCAL_DB: (i) => i("env.db") },
+  const envReal = probe({ env: { CLEAROTRON_DATABASE: "uspto-local", USPTO_LOCAL_DB: (i) => i.real("env.db") },
     dotenv: { USPTO_LOCAL_DB: (i) => i("file.db") } });
-  assert.ok(section.includes(vars.USPTO_LOCAL_DB), `the probe did not use the environment's index path:\n${section}`);
-  assert.ok(!section.includes(file.USPTO_LOCAL_DB), "the env file's value overrode the environment's");
+  assert.match(envReal.section, /uspto-local RETRIEVES/, `the probe did not use the environment's index:\n${envReal.section}`);
+  // The control: the same two values the other way round, so the verdict above is the environment's and not luck.
+  const fileReal = probe({ env: { CLEAROTRON_DATABASE: "uspto-local", USPTO_LOCAL_DB: (i) => i("env.db") },
+    dotenv: { USPTO_LOCAL_DB: (i) => i.real("file.db") } });
+  assert.match(fileReal.section, /uspto-local did NOT retrieve/, `the env file's value overrode the environment's:\n${fileReal.section}`);
 });

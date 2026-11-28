@@ -38,6 +38,9 @@ export const lastSeenRunStates = (): ReadonlyMap<string, RunState> | null => las
  */
 let lastOrders: readonly PreRunOrder[] = []
 export const lastSeenOrders = (): readonly PreRunOrder[] => lastOrders
+// The retired orders the Retired tab lists beside the retired runs, from the same answer, read the way `lastOrders` is.
+let lastRetiredOrders: readonly PreRunOrder[] = []
+export const lastSeenRetiredOrders = (): readonly PreRunOrder[] => lastRetiredOrders
 
 export type Result<T> =
   | { kind: 'ok'; value: T }
@@ -2876,11 +2879,13 @@ export const api = {
    * treats it as "no retired view", never as a fault.
    */
   retiredRuns: (account: string | null): Promise<Result<readonly Run[]>> =>
-    call(`/portal/admin/retired${accountQuery(account)}`, (b) =>
-      asArray(b['runs'])
+    call(`/portal/admin/retired${accountQuery(account)}`, (b) => {
+      // An order refused before any run, retired, is listed beside the runs so it can be restored (design, 2026-11-27).
+      lastRetiredOrders = asArray(b['orders']).map(decodePreRunOrder).filter((o): o is PreRunOrder => o !== null)
+      return asArray(b['runs'])
         .map(decodeRun)
-        .filter((r): r is Run => r !== null),
-    ),
+        .filter((r): r is Run => r !== null)
+    }),
 
   /**
    * Retire runs, or bring them back. RETIRE, NOT DELETE — this writes one visibility tag and nothing

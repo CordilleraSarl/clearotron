@@ -24,7 +24,7 @@ import { resolveEngineBin, readEnvFile, preflightCandidate, PROVIDERS, engineOpt
   usptoSyncPlan, usptoConsentPrompt, isExplicitYes, backgroundSyncSpec,
   offerUsptoSync, deploymentCurrency, namingProgram, engineProgramSetting, unusableEngineWords,
   installSizeLine, engineMenuState, PAY_PREAMBLE, payQuestion, proofTurn } from "../../bin/onboard.mjs";
-import { probeEngineTurn } from "../engine/probe.mjs";
+import { probeEngineTurn, STOPPED_EARLY } from "../engine/probe.mjs";
 import { VERBS } from "../../bin/clearotron.mjs";
 import { USPTO_ARCHIVE_GB, USPTO_INGEST_GB_PER_HOUR, usptoBuildHours } from "../../shared/uspto-index-size.mjs";
 import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES, resolveEngineProgram } from "../driver.config.mjs";
@@ -740,17 +740,18 @@ test("--check --probe-engine proves the engine with one turn, and still writes n
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("the probe reports a signed-out engine as signed out, not as 'cannot run'", () => {
+test("the probe reports a program that stopped before producing anything as a check that could not be completed", () => {
   // A binary that runs, says nothing and exits nonzero — the startup-class shape. It passes every
-  // filesystem check preflightEngineBinary makes, which is the entire reason this probe exists.
+  // filesystem check preflightEngineBinary makes, which is the entire reason this probe exists. Its silence says
+  // nothing about the sign-in, so the remedy no longer diagnoses one (design, 2026-11-28).
   const dir = mkdtempSync(join(tmpdir(), "onboard-mute-"));
   const mute = muteProgram(dir);
   try {
     const r = run(["--check", "--probe-engine"], { ...CLAUDE_CHOSEN, CLEAROTRON_CLAUDE_PATH: mute });
     assert.equal(r.code, 1, r.out);
     assert.match(r.out, /exited before it produced anything/, r.out);
-    assert.match(r.out, /signed-out shape/, "it names the mode rather than shrugging at 'cannot run'");
-    assert.match(r.out, /run `claude` once/, "…and the next thing the reader does");
+    assert.ok(r.out.replace(/\s+/g, " ").includes(STOPPED_EARLY), `the approved remedy is not printed:\n${r.out}`);
+    assert.doesNotMatch(r.out, /signed-out shape|stderr below/, "the remedy still diagnoses a sign-out from silence, or points at output it no longer shows");
     // A program that started and failed still ran, so the problem count's closing line says so too.
     assert.ok(r.out.includes(`problem(s). ${TURN_KEPT_ITS_FILES}`), r.out);
   } finally { rmSync(dir, { recursive: true, force: true }); }

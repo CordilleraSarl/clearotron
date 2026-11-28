@@ -2530,8 +2530,8 @@
           "todos": 0
         },
         "a-resumed-run-keeps-the-engine-it-started-on.pipeline.test.mjs": {
-          "tests": 8,
-          "asserts": 43,
+          "tests": 9,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -3618,6 +3618,12 @@
         "an-order-is-found-where-it-was-placed.test.mjs": {
           "tests": 3,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-order-refused-before-any-run-can-be-retired.test.mjs": {
+          "tests": 2,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -4936,8 +4942,8 @@
           "todos": 0
         },
         "engine-probe.test.mjs": {
-          "tests": 55,
-          "asserts": 291,
+          "tests": 56,
+          "asserts": 302,
           "skips": 0,
           "todos": 0
         },
@@ -7349,13 +7355,13 @@
         },
         "setup-says-where-and-when-to-sign-in.test.mjs": {
           "tests": 4,
-          "asserts": 23,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
         "setup-speaks-the-readers-words.test.mjs": {
           "tests": 11,
-          "asserts": 20,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -8837,7 +8843,7 @@
         },
         "the-register-probe-reads-the-install-env-file.test.mjs": {
           "tests": 3,
-          "asserts": 7,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -9318,6 +9324,12 @@
         "the-verb-table-resolves-to-files-that-ship.test.mjs": {
           "tests": 6,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-web-picture-step-asks-only-the-fetcher-it-is-handed.pipeline.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -9892,7 +9904,7 @@
         },
         "a-removed-person-loses-their-assistant-too.test.mjs": {
           "tests": 4,
-          "asserts": 15,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -10920,8 +10932,8 @@
           "todos": 0
         },
         "providers/_shared/test/lane-probe.test.mjs": {
-          "tests": 13,
-          "asserts": 31,
+          "tests": 14,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },

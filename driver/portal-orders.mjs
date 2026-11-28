@@ -17,6 +17,7 @@ import { appendFileSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
 import { markersByReference, orderInScope, receiptIn, stateFromNames } from "./order-receipt.mjs";
+import { readArchivedSet } from "./publish/archive-tags.mjs";
 
 export const STARTS_DIR = "portal-starts";
 
@@ -73,7 +74,20 @@ const STATES = new Set(["checking", "refused"]);
  * over without opening a file: only an order a worker may be checking, or one that stopped, is read. Measured before
  * this: 4.6 to 5.7 s at 4,000 delivered orders.
  */
-export function preRunOrders({ workspaceRoot, queueDirs = [], scopes = [], everything = false } = {}) {
+export function preRunOrders({ poolRoot = null, ...args } = {}) {
+  // A RETIRED ORDER LEAVES CLEARANCES, as a retired run does (design, 2026-11-27): the firm's curation, in the same
+  // set the retire action writes, and it comes back with Restore. Its receipt stays reachable by its link.
+  const retired = poolRoot ? readArchivedSet(poolRoot) : new Set();
+  return ordersBeforeAnyRun(args).filter((o) => !retired.has(o.reference));
+}
+
+/** The retired ones alone, for the Retired tab, each marked so its row offers Restore. */
+export function retiredPreRunOrders({ poolRoot = null, ...args } = {}) {
+  const retired = poolRoot ? readArchivedSet(poolRoot) : new Set();
+  return retired.size ? ordersBeforeAnyRun(args).filter((o) => retired.has(o.reference)).map((o) => ({ ...o, retired: true })) : [];
+}
+
+function ordersBeforeAnyRun({ workspaceRoot, queueDirs = [], scopes = [], everything = false } = {}) {
   const listings = [];
   for (const d of [...new Set((Array.isArray(queueDirs) ? queueDirs : []).filter((x) => typeof x === "string" && x).map((x) => resolve(x)))]) {
     try { listings.push({ qdir: d, names: readdirSync(d) }); } catch { /* a queue that will not open answers nothing here */ }
