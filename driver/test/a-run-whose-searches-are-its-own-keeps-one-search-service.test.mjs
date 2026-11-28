@@ -186,18 +186,3 @@ test("at the stage's tool, only a fully supported answer or a completed negative
   }
 });
 
-test("a question on a run whose deepest questions were routed to Perplexity goes there, never to the driver, and is logged as the fallback's", async () => {
-  const { runDir } = aRun();
-  writeFileSync(driverDir(runDir, "web-research-route.json"), JSON.stringify({ schema: 1, route: "perplexity", model: "gpt-6.2-sol" }));
-  let asked = 0;
-  const stop = serveOwnQuestions(runDir, { pollMs: 50, tierOf: () => QUESTION_TIERS["full-country-search"],
-    makeSessions: async () => ({ search: "codex", question: async () => { asked++; return { text: "x", events: [] }; } }) });
-  try {
-    // No key in this test, so the fallback is refused by name and nothing is sent anywhere.
-    const out = await callTool({ task: "Does QZORVAK sell candles?" }, { CLEAROTRON_BAND_RUN_DIR: runDir });
-    assert.equal(out, "ERROR: PERPLEXITY_API_KEY not set — marketplace research unavailable.");
-    const row = log(runDir).find((r) => r.tool === "perplexity_research");
-    assert.deepEqual({ ok: row.ok, fallback: row.fallback, service: row.service ?? null }, { ok: false, fallback: true, service: null });
-    assert.equal(asked, 0, "the driver's own search was asked a question the route sends to Perplexity");
-  } finally { stop(); }
-});

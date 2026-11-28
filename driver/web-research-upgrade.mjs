@@ -71,6 +71,3 @@ export function webResearchToAdd(env, runDirs) {
 export function installationRunDirs(workspaceRoot) {
   return walkRuns({ workspaceRoot, archive: true, orders: false }).runs.map((r) => r.dir);
 }
-
-/** The line written above the setting, so a reader of the settings file sees where it came from. */
-export const UPGRADE_NOTE = "Perplexity was used on this installation before upgrade. To change it, run npx clearotron install.";

@@ -13,10 +13,10 @@
 // through `webResearchCapability`. Nothing decides the service from which keys are present: a Perplexity key on an
 // installation set to "own" is not used for its searches, and a missing key on one set to "own" refuses nothing.
 //
-// AN INSTALLATION THAT NAMES NO SERVICE HAS CHOSEN NONE, and nothing chooses for it. A clearance that needs the web half
-// is refused at the door with what to set, before anything is spent; a Knockout, whose answer stands without the web
-// half, runs its register half and says the web half did not run. An installation upgraded from before the setting
-// had the setting written once, by the upgrade, from its own record of research that ran on Perplexity
+// AN INSTALLATION THAT NAMES NO SERVICE HAS CHOSEN NONE, and nothing chooses for it. No search runs without web
+// research: it is the user's own AI program or Perplexity (owner, 2026-11-27). So every order, a Knockout's included,
+// is refused at the door until the setting names one, before anything is spent. An installation upgraded from before
+// the setting had it written once, by the upgrade, from its own record of research that ran on Perplexity
 // (web-research-upgrade.mjs), never from its keys.
 //
 // A RUN KEEPS THE SERVICE IT STARTED ON (engine/run-choices.mjs). A run recorded before the setting existed ran on
@@ -25,16 +25,10 @@
 // IT IS NEVER A TOOL SERVER'S IMPORT: it reads the setting and the billing rules (engine/auth.mjs), which no tool server is
 // handed. The names alone live in web-research-names.mjs, for the modules tool servers do import.
 import { resolveAuthMode } from "./engine/auth.mjs";
-import { QUESTION_TIERS, questionModel } from "./engine/mcp/own-search.mjs";   // the model each product's questions are ruled for
-import { openaiModel } from "./engine/openai-agent.mjs";   // — as the Codex engine names it
 
-import { OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_FALLBACK_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";
-import { readFileSync, renameSync, writeFileSync } from "node:fs";
-import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";
-import { paths } from "./run-record.mjs";
-import { questionRoute, QUESTION_ROUTE_FILE } from "./engine/mcp/own-search-setting.mjs";
+import { OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING } from "./web-research-names.mjs";
 import { preflightResearchCredential } from "./driver.config.mjs";
-export { OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_FALLBACK_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING, questionRoute };
+export { OWN_SEARCH_STILL_PERPLEXITY, PERPLEXITY_KEY, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SERVICES, WEB_RESEARCH_SETTING };
 
 const ENGINE_SEARCH = Object.freeze({ "anthropic-agent": "Claude", "openai-agent": "Codex" });
 
@@ -91,138 +85,25 @@ export function webResearchCapability({ service, engine = null, env = process.en
 }
 
 /**
- * THE RUN DOOR FOR WEB RESEARCH: the run's service (`service`; a resumed run's recorded one, or null for a run recorded
- * as having none) or, where `service` is not given, the installation's, checked on the engine the run uses. Throws, as
- * the configuration's door does, before anything is spent. A setting that names no service is refused by name, never
- * read as either service. No service at all is refused for a clearance, whose answer needs the web half; a product
- * not yet known, which its profile settles later, is not refused here, and `refuseUnchosenResearch` asks again once
- * it is (design's ruling, 2026-11-27). IMPURE only through `env`.
+ * THE RUN DOOR FOR WEB RESEARCH: the run's service (`service`, a resumed run's recorded one) or, where `service` is not
+ * given, the installation's, checked on the engine the run uses. Throws, as the configuration's door does, before
+ * anything is spent. A setting that names no service is refused by name, never read as either service, and an
+ * installation that names none is refused for every product. IMPURE only through `env`.
  */
 export function researchDoor(policy, env = process.env, { service, engine = null } = {}) {
   const install = service === undefined ? installWebResearch(env) : { service };
   if (install.invalid)
     throw new Error(`[preflight] ${WEB_RESEARCH_SETTING}=${install.invalid} names no web-research service on product "${policy?.product}" `
       + `— one of: own (the AI program's own web search) or perplexity; refusing rather than guess which one searches`);
-  if (!install.service) {
-    if (policy?.components?.commonLawGrid !== true) return { checked: false, component: "commonLawGrid", service: null, credEnv: null, missing: [], ...(policy ? {} : { deferred: true }) };
-    throw new Error(notChosenRefusal(policy));
-  }
+  if (!install.service) throw new Error(notChosenRefusal());
   return preflightResearchCredential(policy, env, { service: install.service,
     own: install.service === "own" ? webResearchCapability({ service: "own", engine, env }) : null });
 }
 
 /**
- * THE SAME REFUSAL, ONCE THE RUN'S PRODUCT IS KNOWN: a run with no web-research service whose product needs the web half
- * is refused before its first stage; a Knockout, which runs its register half without one, passes. IMPURE only by
- * throwing.
+ * The door's words for an installation that has chosen no web-research service. Operator text, naming the setting:
+ * the reader-facing words await design's and the owner's approval, and land in place of these. PURE.
  */
-export function refuseUnchosenResearch(policy) {
-  if (policy?.components?.commonLawGrid === true) throw new Error(notChosenRefusal(policy));
-}
-
-// ── THE ROUTE A RUN'S QUESTIONS TAKE ON OWN SEARCH ────────────────────────────────────────────────────────────────
-//
-// A question never runs on a model below the one ruled for its product (design's ruling, 2026-11-26). Measured on the
-// test box, 2026-11-27: a Codex ChatGPT sign-in offers no `gpt-6.2-sol`, Full country's model. So the route is resolved
-// when the run opens, from the sign-in's own catalog read once with no model call (engine/codex-catalog.mjs), and frozen
-// beside the run for every later question and every resume (design's ruling, 2026-11-27):
-//   · the model is in the catalog: the run's own AI program answers;
-//   · Full country, the model is missing, and the installer configured the fallback with its key: Perplexity answers
-//     those questions, disclosed before the order runs and in the report;
-//   · Full country, the model missing with no fallback, or the catalog not readable: the order stops before anything
-//     is spent. A catalog that cannot be read is not known, never proof the model is missing nor authority to buy the
-//     fallback;
-//   · another product whose model the catalog lacks stops too; one whose catalog cannot be read runs, and a question it
-//     cannot serve fails with the program's own reason.
-export const FULL_COUNTRY = "full-country-search";
-
-/** The words for each case, design's drafts awaiting the owner's yes. */
-export const ROUTE_WORDS = Object.freeze({
-  fullCountryMissing: "This Codex sign-in lacks the model needed for Full country. Configure the Perplexity fallback or choose a supported AI setup.",
-  fullCountryUnknown: "Clearotron could not check whether this Codex sign-in supports Full country. Check the sign-in and try again.",
-  fallbackBefore: "Perplexity will handle any questions that need the deepest research level.",
-  fallbackReport: "Perplexity answered the deepest research questions.",
-});
-
-/** Whether the installer configured the Perplexity fallback, and with its key: `{ configured, keyed }`. PURE. */
-export function researchFallback(env = process.env) {
-  const configured = String(env?.[WEB_RESEARCH_FALLBACK_SETTING] ?? "").trim().toLowerCase() === "perplexity";
-  return { configured, keyed: String(env?.[PERPLEXITY_KEY] ?? "").trim() !== "" };
-}
-
-/**
- * The route the run's questions take on own search: `{ route: "own" }`, `{ route: "perplexity", model, disclosure }`,
- * or `{ stop, why, detail }` where the order stops before anything is spent. `catalog` is the sign-in's model catalog
- * (a Set), or null where it could not be read. Codex only: Claude's catalog is not read. PURE.
- */
-export function ownSearchRoute({ policy, engine, catalog, env = process.env }) {
-  // The run's frozen policy names its product `level`; the registry's own entry names it `product`.
-  const level = policy?.level ?? policy?.product ?? null;
-  const tier = level ? QUESTION_TIERS[level] : null;
-  if (engine !== "openai-agent" || !tier) return { route: "own" };
-  let model;
-  try { model = openaiModel(questionModel(tier, engine)); } catch { return { route: "own" }; }
-  const known = catalog instanceof Set;
-  if (known && catalog.has(model)) return { route: "own" };
-  const detail = `${WEB_RESEARCH_FALLBACK_SETTING}=perplexity, with ${PERPLEXITY_KEY}`;
-  if (level === FULL_COUNTRY) {
-    if (!known) return { stop: "unknown", model, why: `[preflight] ${ROUTE_WORDS.fullCountryUnknown}`, detail: null };
-    const fb = researchFallback(env);
-    if (fb.configured && fb.keyed) return { route: "perplexity", model, disclosure: ROUTE_WORDS.fallbackBefore };
-    return { stop: "missing", model, why: `[preflight] ${ROUTE_WORDS.fullCountryMissing} (${detail})`, detail };
-  }
-  if (!known) return { route: "own" };
-  return { stop: "missing", model, detail: null, why: `[preflight] This search's research questions need ${model}, which this Codex sign-in does not offer. `
-    + "Use Claude, or a Codex sign-in that offers it, then start the search again." };
-}
-
-/**
- * WHAT AN ORDER SHOWS BEFORE IT STARTS, for the screens that take it (the portal, the connector): `{ notice }` where
- * Perplexity will answer its deepest questions, `{ stop }` with the words of a stop the run would meet, or null. It
- * reads the installation's setting and the Codex sign-in's catalog as the run's opening step does, with no model call;
- * the run resolves and freezes its own route when it opens. `readCatalog` is engine/codex-catalog.mjs's. IMPURE through
- * `readCatalog`.
- */
-export function orderResearchNotice({ product, env = process.env, engine = null, readCatalog }) {
-  const install = installWebResearch(env);
-  if (install.service !== "own") return null;
-  const name = String(engine ?? env?.CLEAROTRON_AI ?? DEFAULT_ENGINE).trim().toLowerCase() || DEFAULT_ENGINE;
-  if (name !== "openai-agent") return null;
-  const route = ownSearchRoute({ policy: { level: product }, engine: name, catalog: readCatalog({ env }), env });
-  if (route.route === "perplexity") return { notice: route.disclosure };
-  return route.stop ? { stop: route.why.replace(/^\[preflight\] /, "") } : null;
-}
-
-/** Freeze the run's question route, once: a route already frozen is never rewritten. Returns the route that stands. IMPURE. */
-export function freezeQuestionRoute(runDir, route) {
-  const held = questionRoute(runDir);
-  if (held) return held;
-  ensureDriverDir(runDir);
-  const p = driverDir(runDir, QUESTION_ROUTE_FILE);
-  writeFileSync(`${p}.tmp`, JSON.stringify({ schema: 1, route: route.route, ...(route.model ? { model: route.model } : {}),
-    ...(route.disclosure ? { disclosure: route.disclosure } : {}), frozenAt: new Date().toISOString() }, null, 2) + "\n");
-  renameSync(`${p}.tmp`, p);
-  return route.route;
-}
-
-/**
- * What a report may say about the fallback, from the run's own call log: `{ line, answered, failed }`. `line` is the
- * report's sentence only where every fallback question the run asked was answered; none asked attributes nothing to
- * Perplexity, and some failed leaves the line null for the actual outcome to be reported. IMPURE (reads).
- */
-export function fallbackReport(runDir) {
-  let answered = 0, failed = 0;
-  let text = "";
-  try { text = readFileSync(paths(runDir).readingLog, "utf8"); } catch { return { line: null, answered, failed }; }
-  for (const l of text.split("\n")) {
-    let row; try { row = JSON.parse(l); } catch { continue; }
-    if (row?.tool !== "perplexity_research" || row.fallback !== true || row.args?.grid) continue;
-    if (row.ok === true) answered++; else failed++;
-  }
-  return { line: answered > 0 && failed === 0 ? ROUTE_WORDS.fallbackReport : null, answered, failed };
-}
-
-/** The door's words for an installation that has chosen no web-research service. PURE. */
 export function notChosenRefusal() {
-  return "[preflight] Choose a web research service before starting this clearance. Run npx clearotron install.";
+  return `[preflight] ${WEB_RESEARCH_SETTING} is not set, so this installation has chosen no web-research service, and no search runs without one`;
 }

@@ -6,7 +6,7 @@
 // A cold start records the installation's service beside its engine and register. A resume is checked on the service it
 // recorded, never on the machine's current setting, and one this runner cannot serve parks by name with its work kept. A
 // run recorded before the service was ran on Perplexity and is checked there. An installation that names no service, and
-// a setting that names none, each refuse a new run before anything is spent. The order is the one the engine-record tests use; the resumes name a product whose
+// a setting that names none, each refuse every new run before anything is spent: no search runs without web research. The order is the one the engine-record tests use; the resumes name a product whose
 // answer needs the web half, so the research door applies to them.
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
@@ -116,26 +116,14 @@ test("a setting that names no service refuses a new run before anything is spent
   assert.equal(existsSync(join(root, "pool")), false, "nothing was delivered");
 });
 
-test("an installation that names no service is refused a new clearance before anything is spent, with what to set", async () => {
-  for (const job of [JOB, { ...JOB, product: WITH_THE_WEB_HALF }]) {
+test("an installation that names no service is refused every new search before anything is spent, a Knockout's included", async () => {
+  for (const job of [JOB, { ...JOB, product: WITH_THE_WEB_HALF }, { ...JOB, product: "knockout-search" }]) {
     const root = mkdtempSync(join(tmpdir(), "clearotron-web-research-"));
     TEMP_DIRS.push(root);
     await assert.rejects(segment(root, { research: undefined, job, env: { PERPLEXITY_API_KEY: "test-offline" } }),
-      /Choose a web research service before starting this clearance\. Run npx clearotron install\./,
+      /CLEAROTRON_WEB_RESEARCH is not set, so this installation has chosen no web-research service, and no search runs without one/,
       `${job.product ?? "an order whose product its profile settles"}: a key present chose nothing`);
     assert.equal(existsSync(join(root, "pool")), false, "nothing was delivered");
   }
 });
 
-test("a Knockout on an installation that names no service is not refused for it, and records that none was chosen", async () => {
-  const root = mkdtempSync(join(tmpdir(), "clearotron-web-research-"));
-  TEMP_DIRS.push(root);
-  let res, err = null;
-  try { res = await segment(root, { research: undefined, job: { ...JOB, product: "knockout-search" }, env: { PERPLEXITY_API_KEY: "test-offline" } }); }
-  catch (e) { err = e; }
-  assert.doesNotMatch(String(err?.message ?? ""), /Choose a web research service/, "a Knockout was refused for want of a web-research service");
-  const runDir = res?.runDir ?? err?.run?.runDir ?? null;
-  assert.ok(runDir, `the Knockout opened no run: ${String(err?.message ?? JSON.stringify(res)).slice(0, 300)}`);
-  const rec = recordOf(runDir);
-  assert.ok(Object.hasOwn(rec, "research") && rec.research === null, "the run records that no service was chosen, so a key set chooses nothing");
-});

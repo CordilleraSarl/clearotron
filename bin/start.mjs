@@ -121,7 +121,7 @@ import { namingProgram } from "../driver/engine/probe.mjs";   // the bare `claud
 import { wslTarget } from "../shared/wsl.mjs";   // — and which distribution a row should start the server in
 import { ensureDemoProgram } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
 import { mergeEnvFile } from "../shared/env-file-merge.mjs";
-import { webResearchToAdd, installationRunDirs, UPGRADE_NOTE } from "../driver/web-research-upgrade.mjs";   // — the web-research setting an upgraded install is given once
+import { webResearchToAdd, installationRunDirs } from "../driver/web-research-upgrade.mjs";   // — the web-research setting an upgraded install is given once
 import { WEB_RESEARCH_SETTING } from "../driver/web-research-names.mjs";
 import { mcpOriginFor } from "../shared/lane-address.mjs";   // — one author for the origin
 import { SERVER_INSTALL_SET, SERVER_UNITS, BACKGROUND_RETIRED, aBackgroundStartRefreshes, unitsToRestartOnRefresh, unitHealthVerdict } from "../shared/server-units.mjs";   // — one authority, two callers
@@ -1543,7 +1543,7 @@ if (isMain) {
   if ((Object.keys(generated).length || Object.keys(stores).length || Object.keys(researchAdded).length) && !DEMO) {
     let existing = "";
     try { existing = readFileSync(ENV_PATH, "utf8"); } catch (e) { if (e.code !== "ENOENT") fatal(`${ENV_PATH} exists but could not be read (${e.code}).`); }
-    const merged = mergeEnvFile(existing, { ...generated, ...stores, ...researchAdded }, { notes: { ...STORE_NOTES, [WEB_RESEARCH_SETTING]: UPGRADE_NOTE } });
+    const merged = mergeEnvFile(existing, { ...generated, ...stores, ...researchAdded }, { notes: STORE_NOTES });
     if (merged.added.length) {
       // ONE WRITER FOR EVERY FILE THAT HOLDS CREDENTIALS, and it creates the directory. This site had its
       // own copy of the write and did not learn what the wizard's copy learned when `.env` moved under

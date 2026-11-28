@@ -15,7 +15,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { questionRecordsPath, searchRecordsPath } from "../engine/mcp/own-search.mjs";
-import { installationRunDirs, researchOnRecord, webResearchToAdd, UPGRADE_NOTE } from "../web-research-upgrade.mjs";
+import { installationRunDirs, researchOnRecord, webResearchToAdd } from "../web-research-upgrade.mjs";
 import { runRequiredNames } from "../run-requirements.mjs";
 import { studioDirFor } from "../../shared/pre-rename-spellings.mjs";
 
@@ -74,7 +74,6 @@ test("an installation whose runs show Perplexity research, and nothing else, is 
   const dirs = installationRunDirs(root);
   assert.equal(dirs.length, 3, "live and archived runs are both read");
   assert.deepEqual(webResearchToAdd({ PERPLEXITY_API_KEY: "k" }, dirs), { add: { CLEAROTRON_WEB_RESEARCH: "perplexity" }, runs: 2 });
-  assert.equal(UPGRADE_NOTE, "Perplexity was used on this installation before upgrade. To change it, run npx clearotron install.");
 });
 
 test("a choice already named stands, valid or not, and a record that cannot settle it writes nothing", () => {

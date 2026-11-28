@@ -135,8 +135,6 @@ export const COUNTED_EVENTS = {
   "profile-store": { kind: FAILED, when: (e) => e.outcome !== "pass" },
   // a cold start that could not record the engine and register the run belongs to
   "run-choices": { kind: FAILED, when: (e) => e.state === "not-written" },
-  // own search's question route: one that stops the run before its first stage is a gate refusing; one resolved is not
-  "web-research-route": { kind: FAILED, when: (e) => Boolean(e.stop) },
   "registry-record-closure": { kind: FAILED, when: (e) => (Array.isArray(e.failed) ? e.failed.length : 0) > 0 },
   "silently-lost-findings": { kind: FAILED, when: (e) => Number(e.lost) > 0 },
   "correction-kinds": { kind: FAILED, when: (e) => e.ok === false },

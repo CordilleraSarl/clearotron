@@ -178,7 +178,7 @@ export async function runDictatedSearches(search, items, session, { batch = BATC
       for (const o of searchOutcomes(search, b, r.events ?? [], { answered: Boolean(r.answered) })) {
         const key = itemKey(o);
         outcomes.set(key, o);
-        records.push({ attempt, service: search, model: r.model ?? null, speed: r.speed ?? null, query: o.query, site: o.site,
+        records.push({ attempt, service: search, model: r.model ?? null, modelRequested: r.modelRequested ?? null, speed: r.speed ?? null, query: o.query, site: o.site,
           sent: sent(search, o), outcome: o.outcome, links: o.results.map(({ url, title, offSite }) => ({ url, title, offSite })),
           // The session's seconds and tokens are the whole batch's, so they ride under the session's own number: a reader
           // that sums them sums each session once, never once per search.
@@ -227,8 +227,9 @@ export function ledgerFromOutcomes(items, outcomes, { keep = 8 } = {}) {
 //
 // A session is a turn of the run's own AI program through the door the native-language turns use (engine/jx-turn.mjs):
 // the run's one engine, its one billing mode, and its speed, so an Urgent order asks for the faster setting where the
-// model has one and records why where it has not. It runs on the cheap tier: trying the deepest models against the
-// cheapest changed what a search returned no more than running the same model again did (measured 2026-11-26). It is
+// model has one and records why where it has not. On Claude it runs on the cheap tier: trying the deepest models against
+// the cheapest changed what a search returned no more than running the same model again did (measured 2026-11-26). On
+// Codex it runs on GPT-6.2 Sol, the model own search is signed off on (owner, 2026-11-28). It is
 // handed nothing but its dictated searches and the program's own web search, and its event stream is kept, so each
 // search's own record is read back from it. Nothing here starts a turn until a session is called.
 export const SESSION_TIER = "haiku";
@@ -247,9 +248,11 @@ export function readSessionStream(file) {
  * A maker of research-only sessions for `runDir`, or `{ error }` where the run's engine cannot run one. `session(items)`
  * runs one batch and returns what `runDictatedSearches` reads. `makeRunner` is the native-language turns' door.
  */
-export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSION_TIER, thinking = "low", timeoutSec = SESSION_TIMEOUT_SEC, makeRunner = null } = {}) {
+export async function makeOwnSearchSessions({ runDir, sessionDir, model = null, thinking = "low", timeoutSec = SESSION_TIMEOUT_SEC, makeRunner = null } = {}) {
   const make = makeRunner ?? (await import("../jx-turn.mjs")).makeJxTurnRunner;
-  const runner = await make({ runDir, model, thinking, lane: "the own web search", timeoutSec });
+  // THE MODEL ASKED FOR, kept beside the one the program reports in every record below.
+  const requested = model ?? (recordedEngine(runDir) === "openai-agent" ? CODEX_RESEARCH_MODEL : SESSION_TIER);
+  const runner = await make({ runDir, model: requested, thinking, lane: "the own web search", timeoutSec });
   if (runner?.error) return { error: runner.error };
   const search = SEARCH_OF_ENGINE[runner.engine];
   if (!search) return { error: `the ${runner.engine} engine has no web search of its own that this reads` };
@@ -262,7 +265,7 @@ export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSIO
       const t0 = Date.now();
       const r = await runner.turn({ prompt: batchPrompt(search, items), extra });
       return { events: readSessionStream(streamFile), answered: Boolean(r?.ok && String(r.text ?? "").trim()), seconds: (Date.now() - t0) / 1000,
-        usage: r?.usage ?? null, model: r?.model ?? null, speed: r?.speed ?? null, cause: r?.ok ? null : r?.cause ?? null };
+        usage: r?.usage ?? null, model: r?.model ?? null, modelRequested: requested, speed: r?.speed ?? null, cause: r?.ok ? null : r?.cause ?? null };
     },
     /** One question, answered with the program's own web search: what `answerOf` reads. */
     async question(task, { timeoutSec: turnSec = null } = {}) {
@@ -272,7 +275,7 @@ export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSIO
       const t0 = Date.now();
       const r = await runner.turn({ prompt: questionPrompt(task), extra });
       return { events: readSessionStream(streamFile), text: r?.ok ? String(r.text ?? "") : "", seconds: (Date.now() - t0) / 1000,
-        usage: r?.usage ?? null, model: r?.model ?? null, speed: r?.speed ?? null, cause: r?.ok ? null : r?.cause ?? null };
+        usage: r?.usage ?? null, model: r?.model ?? null, modelRequested: requested, speed: r?.speed ?? null, cause: r?.ok ? null : r?.cause ?? null };
     },
   };
 }
@@ -281,20 +284,24 @@ export async function makeOwnSearchSessions({ runDir, sessionDir, model = SESSIO
 //
 // A follow-up question (an owner lookup, a use check) is asked of the run's own AI program in a session of its own,
 // handed nothing but the question and the program's own web search. The model is the one ruled for the question's
-// level, never a lesser one (design's ruling, 2026-11-26), named per product:
-//   · Knockout: one question at light depth on the sweep tier, Sonnet on Claude and GPT-6.1 Terra on Codex;
-//   · Global preliminary: the same models, at medium effort, the depth its questions are asked at today;
-//   · Multi-country: Opus 5.5 on Claude and GPT-6.1 Sol on Codex, at high effort;
-//   · Full country: Opus 5.5 at its highest effort on Claude, GPT-6.2 Sol at its deepest on Codex.
-// These are the candidates the comparison verifies, not a finding that they match the other service. An answer counts
+// level, never a lesser one (design's ruling, 2026-11-26), named per product. On Codex every product's questions run
+// on GPT-6.2 Sol (owner, 2026-11-28: "we use 6.2"), each at its own effort; on Claude:
+//   · Knockout: one question at light depth on Sonnet;
+//   · Global preliminary: Sonnet, at medium effort, the depth its questions are asked at today;
+//   · Multi-country: Opus 5.5, at high effort;
+//   · Full country: Opus 5.5 at its highest effort.
+// GPT-6.2 Sol is the selected model; the comparison measured other Codex models against Perplexity. An answer counts
 // only where the program searched: a reply with no search behind it is an answer from memory, and is recorded as not
 // answered. The pages behind an answer are the addresses the program's own search records returned, never addresses
 // the reply names that no search returned.
+/** The Codex model own search runs on: its follow-up questions and its dictated searches alike (owner, 2026-11-28). */
+export const CODEX_RESEARCH_MODEL = "gpt-6.2-sol";
+const ON_CODEX = Object.freeze({ "openai-agent": CODEX_RESEARCH_MODEL });
 export const QUESTION_TIERS = Object.freeze({
-  "knockout-search": Object.freeze({ model: "sonnet", thinking: "low" }),
-  "global-preliminary-search": Object.freeze({ model: "sonnet", thinking: "medium" }),
-  "multi-country-focus-search": Object.freeze({ model: "opus", thinking: "high" }),
-  "full-country-search": Object.freeze({ model: "opus", thinking: "max", models: Object.freeze({ "openai-agent": "gpt-6.2-sol" }) }),
+  "knockout-search": Object.freeze({ model: "sonnet", thinking: "low", models: ON_CODEX }),
+  "global-preliminary-search": Object.freeze({ model: "sonnet", thinking: "medium", models: ON_CODEX }),
+  "multi-country-focus-search": Object.freeze({ model: "opus", thinking: "high", models: ON_CODEX }),
+  "full-country-search": Object.freeze({ model: "opus", thinking: "max", models: ON_CODEX }),
 });
 
 /** The model a tier asks for on `engine`: the tier's own name for that engine where it has one, else its tier. PURE. */
@@ -422,7 +429,7 @@ export function ownSearchQuestioner(runDir, { tier, timeoutSec = SESSION_TIMEOUT
     const a = r.cause || !String(r.text ?? "").trim() ? null : questionAnswer(s.search, r);
     const ev = a?.evidence ?? answerEvidence(s.search, r.events ?? []);
     const outcome = a?.outcome ?? (r.cause ? "failed" : ev.searches || ev.read.length ? "no-source" : "unsearched");
-    const record = { kind: "question", outcome, service, model: r.model ?? null, speed: r.speed ?? null, question: task,
+    const record = { kind: "question", outcome, service, model: r.model ?? null, modelRequested: r.modelRequested ?? null, speed: r.speed ?? null, question: task,
       searches: ev.searches, searched: ev.searched, read: ev.read, failedOperations: ev.failed, sources: a?.sources ?? [], unrecorded: a?.unrecorded ?? [],
       ...(a?.withheld ? { withheld: a.withheld } : {}), seconds: r.seconds ?? null, usage: r.usage ?? null };
     try { ensureDriverDir(runDir, RECORDS_DIR); appendFileSync(questionRecordsPath(runDir), JSON.stringify({ ts: new Date().toISOString(), ...record }) + "\n"); }
@@ -600,7 +607,8 @@ export async function prepareOwnSearchGrid(runDir, specPath, { sessions } = {}) 
     writeFileSync(gridProvenancePath(spec.output_path), JSON.stringify({
       _what: "which service served this grid, written beside it because the ledger itself is the checks' input.",
       provider: sessions.search, surface: "the AI program's own web search, in research-only sessions", engine: sessions.engine,
-      models: [...new Set(records.map((r) => r.model).filter(Boolean))], ran: true, searches: items.length, outcomes: counts,
+      models: [...new Set(records.map((r) => r.model).filter(Boolean))], modelsRequested: [...new Set(records.map((r) => r.modelRequested).filter(Boolean))],
+      ran: true, searches: items.length, outcomes: counts,
     }, null, 2) + "\n");
   } catch { /* the ledger is on disk; a sidecar fault never undoes it */ }
   const written = JSON.parse(cap.ledgerJson);

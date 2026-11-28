@@ -12,8 +12,6 @@ export const WEB_RESEARCH_SERVICES = Object.freeze(["own", "perplexity"]);
 /** The service of a run recorded before the setting existed, which ran there. An installation that names none chooses none. */
 export const WEB_RESEARCH_BEFORE_THE_SETTING = "perplexity";
 export const PERPLEXITY_KEY = "PERPLEXITY_API_KEY";
-/** Perplexity for the questions a sign-in's catalog lacks the model for, set by the installer; Full country only. */
-export const WEB_RESEARCH_FALLBACK_SETTING = "CLEAROTRON_WEB_RESEARCH_FALLBACK";
 
 // THE PARTS OF A CLEARANCE'S WEB RESEARCH THAT OWN SEARCH DOES NOT RUN YET, each still sent to Perplexity. While one is
 // listed, own search needs the Perplexity key for it, and says so: a part with no service would be a question the writer

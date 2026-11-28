@@ -82,11 +82,6 @@ export function researchForRun(runDir) {
   return rec.state === "recorded" ? (Object.hasOwn(rec, "research") ? rec.research : WEB_RESEARCH_BEFORE_THE_SETTING) : null;
 }
 
-/** Whether the run recorded that its installation chose no web-research service, which only a Knockout runs with. PURE but for the read. */
-export function researchNotChosen(runDir) {
-  const rec = readRunChoices(runDir);
-  return rec.state === "recorded" && Object.hasOwn(rec, "research") && rec.research === null;
-}
 
 /**
  * What the run recorded: `{ state: "recorded", engine, register, urgent?, research? }`, `{ state: "none" }` for a run

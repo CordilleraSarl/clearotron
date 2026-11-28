@@ -15,8 +15,7 @@ import { preflightEngineTurn } from "../engine/probe.mjs";
 import { engineNamed, registeredEngines, selectEngine } from "../engine/registry.mjs";
 import { RunChoiceUnavailable, readRunChoices, recordRunChoices, registerAdapter, registerDoor, registerForRun, unservedChoice } from "../engine/run-choices.mjs";
 import { urgentDecision } from "../engine/speed.mjs";
-import { freezeQuestionRoute, installWebResearch, ownSearchRoute, questionRoute, refuseUnchosenResearch, researchDoor, researchFallback, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
-import { readCodexCatalog } from "../engine/codex-catalog.mjs";   // the models a Codex sign-in offers, read with no model call
+import { installWebResearch, researchDoor, WEB_RESEARCH_BEFORE_THE_SETTING, WEB_RESEARCH_SETTING } from "../web-research.mjs";
 import { serveOwnQuestions } from "../own-search-questions.mjs";   // a run on its own search has its stages' questions answered here
 import { resolveAuthMode } from "../engine/auth.mjs";
 import { note, runLog } from "../log.mjs";
@@ -65,12 +64,10 @@ export async function openRun({ job, opts }) {
   const unserved = unservedChoice(recorded, { engineRegistered: recorded.state === "recorded" && Boolean(engineNamed(recorded.engine)) });
   if (unserved) throw park({ ...unserved, ...(unserved.kind === "engine" ? { detail: `registered: ${registeredEngines().join(", ")}` } : {}) });
   const engineEnv = recorded.state === "recorded" ? { ...process.env, CLEAROTRON_AI: recorded.engine } : process.env;
-  // THE WEB-RESEARCH SERVICE THIS RUN SEARCHES WITH (web-research.mjs). A resumed run keeps the one it recorded, none
-  // included, and one recorded before the service was ran on Perplexity, as did a resumed run with no record at all,
-  // which predates the record; a new run takes the installation's setting, and an installation that names none gives
-  // it none, which the research door below refuses unless the order names a Knockout. A setting that names no service
-  // refuses every new run, as an unknown billing word does: it is a configuration fault, not a missing search service,
-  // so the Knockout's rule of running without one does not cover it.
+  // THE WEB-RESEARCH SERVICE THIS RUN SEARCHES WITH (web-research.mjs). A resumed run keeps the one it recorded, and one
+  // recorded before the service was ran on Perplexity, as did a resumed run with no record at all, which predates the
+  // record; a new run takes the installation's setting. An installation that names none, and a setting that names no
+  // service, each refuse every new run at the research door below: no search runs without web research.
   const machineResearch = installWebResearch(process.env);
   const runResearch = recorded.state === "recorded" ? (Object.hasOwn(recorded, "research") ? recorded.research : WEB_RESEARCH_BEFORE_THE_SETTING)
     : resuming ? WEB_RESEARCH_BEFORE_THE_SETTING : machineResearch.service;
@@ -333,13 +330,11 @@ export async function openRun({ job, opts }) {
       note(`[run-choices] this run started on the ${held.register ?? "(none)"} register; this machine is set to ${machine.register ?? "(none)"}, and serves the run on the run's own`);
   } catch (e) {
     try { runLog(run.runDir, { event: "run-choices", state: "not-written", detail: String(e?.message ?? e).slice(0, 300) }); } catch { /* best-effort */ }
-    // EXCEPT FOR THE AI PROGRAM'S OWN SEARCH, AND FOR NO SERVICE AT ALL, which the research server and the sweep read from
-    // this record alone: a run without it would search with Perplexity instead, or refuse its grid after the register
-    // stages were paid. Nothing has been spent yet, so it stops here and says why.
+    // EXCEPT FOR THE AI PROGRAM'S OWN SEARCH, which the research server and the sweep read from this record alone: a run
+    // without it would search with Perplexity instead, or refuse its grid after the register stages were paid. Nothing
+    // has been spent yet, so it stops here and says why.
     if (!isResume && runResearch === "own")
       throw new Error(`the run's record of its web-research service could not be written, so its own web search cannot be used: ${String(e?.message ?? e).slice(0, 300)}`);
-    if (!isResume && runResearch == null)
-      throw new Error(`the run's record that this installation chose no web-research service could not be written, so its web half could be searched with a service nobody chose: ${String(e?.message ?? e).slice(0, 300)}`);
   }
   // A RUN WHOSE SEARCHES ARE ITS OWN AI PROGRAM'S has its stages' research questions answered by this process, with a
   // session of its engine (own-search-questions.mjs), from here until the segment ends (pipeline.mjs). Nothing is asked
@@ -410,33 +405,6 @@ export async function openRun({ job, opts }) {
   else {
     attachProfile(ctx, job);
     attachSearchPolicy(ctx, job);
-  }
-  // A RUN WITH NO WEB-RESEARCH SERVICE, NOW THAT ITS PRODUCT IS KNOWN: a clearance is refused before its first stage, as
-  // the research door refuses one its order names; a Knockout, its profile's default included, runs its register half.
-  if (runResearch == null && !opts.recordFetcher) refuseUnchosenResearch(ctx.searchPolicy);
-  // A RUN ON ITS OWN SEARCH TAKES THE QUESTION ROUTE RESOLVED HERE, ONCE (web-research.mjs, ownSearchRoute): its own AI
-  // program, or Perplexity for Full country where the sign-in lacks the model and the installer configured the
-  // fallback, or a stop before the first stage. The route is frozen beside the run, so every question and every resume
-  // takes the one it started on; the sign-in's catalog is read once, here, with no model call. A resumed run that cannot
-  // take its route parks by name with its work kept.
-  if (runResearch === "own" && !opts.recordFetcher) {
-    const runEngine = recorded.state === "recorded" ? recorded.engine : selectEngine().name;
-    const parkOrThrow = (why) => { throw recorded.state === "recorded" ? park({ kind: "research", recorded: "own", machine: machineResearch.service ?? null, detail: why }) : new Error(why); };
-    let frozen = questionRoute(run.runDir);
-    if (!frozen) {
-      const route = runEngine === "openai-agent"
-        ? ownSearchRoute({ policy: ctx.searchPolicy, engine: runEngine, catalog: readCodexCatalog({ env: engineEnv }), env: engineEnv })
-        : { route: "own" };
-      if (route.stop) {
-        try { runLog(run.runDir, { event: "web-research-route", stop: route.stop, model: route.model ?? null }); } catch { /* best-effort */ }
-        parkOrThrow(route.why);
-      }
-      frozen = freezeQuestionRoute(run.runDir, route);
-      try { runLog(run.runDir, { event: "web-research-route", route: frozen, model: route.model ?? null }); } catch { /* best-effort */ }
-      if (frozen === "perplexity") note(`[web-research] ${route.disclosure}`);
-    }
-    if (frozen === "perplexity" && !researchFallback(engineEnv).keyed)
-      parkOrThrow("[preflight] this run's deepest research questions are routed to Perplexity, and PERPLEXITY_API_KEY is not set");
   }
   // acceptance 5 — recorded on EVERY run, ungraded included: "which ladder applied" must be a
   // read, never an inference from which product the job asked for.

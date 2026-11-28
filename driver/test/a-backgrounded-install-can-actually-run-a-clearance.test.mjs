@@ -181,17 +181,13 @@ test("a value that NARROWS the product never refuses a start — a Knockout box 
   const row = runRequirements(knockoutOnly, T).find((r) => r.name === RESEARCH_ENV);
   assert.equal(row.blocking, false);
   assert.match(row.why, /Knockout/, "the reason must say which product still works, or it reads as a dead install");
-  // THE CHOICE OF WHO RUNS THE WEB RESEARCH NARROWS IN THE SAME WAY: without it the clearances refuse at the research
-  // door, and a Knockout search still runs.
+  // WHO RUNS THE WEB RESEARCH IS DIFFERENT: no search runs without it, so every order is refused until it is set. It is
+  // still never a reason to refuse a start, which is how an installation gets it set.
   delete knockoutOnly.CLEAROTRON_WEB_RESEARCH;
   const unchosen = missingRequirements(knockoutOnly, T);
-  assert.deepEqual(unchosen.blocking.map((r) => r.name), [], "no web-research choice blocked the start");
-  const choice = unchosen.narrowing.find((r) => r.name === "CLEAROTRON_WEB_RESEARCH");
-  assert.ok(choice, "the operator is not told no web-research service is chosen");
-  assert.match(choice.why, /Knockout/);
-  // THE FALLBACK IS OPTIONAL: never reported missing, and carried where it is set.
-  assert.equal(runRequirements(knockoutOnly, T).some((r) => r.name === "CLEAROTRON_WEB_RESEARCH_FALLBACK"), false, "an unset fallback is reported as missing");
-  assert.ok(runRequiredNames({ ...SUPERVISOR, CLEAROTRON_WEB_RESEARCH_FALLBACK: "perplexity" }, T).includes("CLEAROTRON_WEB_RESEARCH_FALLBACK"), "a set fallback does not travel");
+  assert.deepEqual(unchosen.atStart.map((r) => r.name), [], "no web-research choice refused the start");
+  assert.ok(unchosen.atOrder.some((r) => r.name === "CLEAROTRON_WEB_RESEARCH"), "an install with no web-research choice is not refused its orders");
+  assert.match(unchosen.atOrder.find((r) => r.name === "CLEAROTRON_WEB_RESEARCH").why, /every search is refused/);
 });
 
 test("the billing row names only the ways the configured engine can be paid for, and never refuses a start", () => {

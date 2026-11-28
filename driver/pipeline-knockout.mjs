@@ -32,7 +32,7 @@ import { keepPriorOutput, runLaneStage } from "./stage-runner.mjs";   // the one
 import { config, RESEARCH_PROVIDERS, REGISTER_PROVIDER, missingCredentials } from "./driver.config.mjs";
 import { ownSearchOn, ownSearchKnockoutGrid, ownSearchQuestioner, QUESTION_TIERS } from "./engine/mcp/own-search.mjs";   // a run whose searches are its own AI program's
 import { webResearchCapability } from "./web-research.mjs";
-import { readRunChoices, researchNotChosen } from "./engine/run-choices.mjs";
+import { readRunChoices } from "./engine/run-choices.mjs";
 import { registerAdapter as adapterForRegister } from "./engine/run-choices.mjs";   // the run's register adapter, from ctx.register
 import { StageFailure } from "./run-outcome.mjs";
 import { endTheDeliveredRun, runShell } from "./run-shell.mjs";   // — the runner and the delivered ending both products share
@@ -788,10 +788,6 @@ export function resolveSweepExecutor(opts, { runDir = null } = {}) {   // export
   // per mark, the cred-guard would degrade each one, and the batch would die at the all-failed branch
   // AFTER the paid frame turn — worse than the refusal, and it costs money to reach. Not-attempted and
   // attempted-and-failed are different runs; this is the first.
-  // A RUN WHOSE INSTALLATION CHOSE NO WEB-RESEARCH SERVICE searches the web with none, whatever keys are set: nobody
-  // chose Perplexity for it. Its register half runs, and the web half is skipped under its own cause, which is neither a
-  // missing key nor a route that cannot search.
-  if (researchNotChosen(runDir)) return { source: "none", grid: null, exec: null, skipped: "web-research-not-chosen" };
   // A RUN WHOSE SEARCHES ARE ITS OWN AI PROGRAM'S sweeps through that program (engine/mcp/own-search.mjs), never through
   // Perplexity, and asks its owner lookups of it too: each is one question at the Knockout's light depth, on the tier
   // ruled for it, so a Knockout on own search needs no Perplexity key. A route that carries no web search of its own

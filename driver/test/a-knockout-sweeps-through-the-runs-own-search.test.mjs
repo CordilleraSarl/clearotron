@@ -98,24 +98,6 @@ test("a route with no web search of its own skips the web half under its own cau
   } finally { for (const [k, v] of Object.entries(env)) pinEnv(process.env, k, v); }
 });
 
-test("a run whose installation chose no web-research service searches the web with none, whatever key is set", () => {
-  const saved = process.env.PERPLEXITY_API_KEY;
-  const runDir = aRun(null);
-  try {
-    writeFileSync(join(runDir, "_driver", "run-choices.json"), JSON.stringify({ schema: 1, engine: "anthropic-agent", register: null, research: null }));
-    pinEnv(process.env, "PERPLEXITY_API_KEY", "test-offline");
-    const r = resolveSweepExecutor({}, { runDir });
-    assert.deepEqual({ source: r.source, grid: r.grid, exec: r.exec, skipped: r.skipped },
-      { source: "none", grid: null, exec: null, skipped: "web-research-not-chosen" }, "nobody chose Perplexity for it, so a key does not send its searches there");
-    // Neither a missing key nor a route that cannot search: its own cause, with design's sentence for the reader.
-    assert.equal(CAPABILITY_SKIPPED_NOTE["web-research-not-chosen"],
-      "No web research service was selected. Only register filings were screened. Unregistered use remains unchecked for every name.");
-    assert.ok(CAPABILITY_SKIPPED_CAUSE["web-research-not-chosen"], "the assessment reads a cause for it");
-    rmSync(join(runDir, "_driver", "run-choices.json"));
-    assert.equal(resolveSweepExecutor({}, { runDir }).source, "perplexity", "a run with no record meets the route it always had");
-  } finally { pinEnv(process.env, "PERPLEXITY_API_KEY", saved); rmSync(runDir, { recursive: true, force: true }); }
-});
-
 test("an owner lookup that was never sent is recorded as not run, not as one that did not answer", async () => {
   const runDir = aRun("own");
   try {
@@ -142,7 +124,7 @@ test("an owner lookup on own search is one question on the Knockout's tier, and 
     const exec = ownSearchQuestioner(runDir, { tier: QUESTION_TIERS["knockout-search"], makeSessions });
     const rows = await runOwnerChecks({ owners: [{ mark: "QZORVAK", owner: "Northwind Play GmbH", recordIds: ["r1"], classes: [28] },
       { mark: "QZORVIK", owner: "Lakeside Craft Ltd", recordIds: ["r2"], classes: [28] }], exec, runDir, concurrency: 2 });
-    assert.deepEqual(made, [{ model: "sonnet", thinking: "low" }], "one session maker for the run, on the Knockout's tier");
+    assert.deepEqual(made, [{ model: "gpt-6.2-sol", thinking: "low" }], "one session maker for the run, on Codex's research model at the Knockout's light depth");
     assert.equal(rows.length, 2);
     for (const row of rows) {
       assert.equal(row.ok, true, row.cause);

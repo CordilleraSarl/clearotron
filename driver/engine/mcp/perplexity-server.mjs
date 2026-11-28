@@ -29,7 +29,7 @@ import { parsePrRiskResults, connotationObligations, renderConnotationObligation
 // What stays is the GRID path's own need — the obligations sidecar written beside the grid's ledger.
 import { obligationsSidecarPath } from "../../disposition-tool.mjs";
 import { writeGridProvenance } from "./grid-provenance.mjs";   // — what served the grid, beside the ledger
-import { ownSearchOn, questionRoute } from "./own-search-setting.mjs";   // a run whose dictated searches are its own AI program's, and its questions' route
+import { ownSearchOn } from "./own-search-setting.mjs";   // a run whose dictated searches are its own AI program's
 import { askTheDriver } from "./own-question-channel.mjs";   // — and whose questions the driver answers with its own engine
 import { insideRun } from "../../../shared/inside-run.mjs";   // a path a tool is handed is served only inside this run
 import { keepResearchAnswer, isResearchAnswer, replayAnswersFrom, researchReplayOn, savedResearchAnswer, researchRequestKey, heldAnswerToRequest } from "../../research-answers.mjs";   // each answer's text, kept for a later attempt of its stage, which is answered from it; a replay answers from them
@@ -331,15 +331,7 @@ async function research(params, { preparing = false } = {}) {
     logCall("perplexity_research", { task: "", depth: null }, { ok: false, error: "empty task" });
     return "ERROR: `task` is required for research. A grid call needs only `grid_spec_path`.";
   }
-  // A RUN WHOSE DEEPEST QUESTIONS THE INSTALLER ROUTED TO PERPLEXITY (web-research.mjs, ownSearchRoute) asks them here, as
-  // any run on this service does, each logged as the fallback's, so the report says which service answered.
-  const fellBack = ownSearch && questionRoute(RUN_DIR) === "perplexity";
-  if (ownSearch && !fellBack) return askOwnSearch(task);
-  const fb = fellBack ? { fallback: true } : {};
-  if (fellBack && !API_KEY) {
-    logCall("perplexity_research", { task }, { ok: false, error: "refused: no research credential", ...fb });
-    return "ERROR: PERPLEXITY_API_KEY not set — marketplace research unavailable.";
-  }
+  if (ownSearch) return askOwnSearch(task);
   const preset = questionPresetFor({ pinned: PINNED_QUESTION_PRESET, depth, task });
   // The resolved preset, not the requested one: `depth` is often absent and detectPreset decides, so
   // logging the request would record a null where the fact is what actually ran. `pinned` says the run's
@@ -353,7 +345,7 @@ async function research(params, { preparing = false } = {}) {
   const request = researchRequestKey(body);
   const held = heldAnswerToRequest(RUN_DIR, SESSION, request);
   if (held) {
-    logCall("perplexity_research", asked, { ok: true, bytes: held.text.length, reused: true, ...fb });
+    logCall("perplexity_research", asked, { ok: true, bytes: held.text.length, reused: true });
     return withoutProviderCharge(held.text);
   }
   try {
@@ -363,15 +355,15 @@ async function research(params, { preparing = false } = {}) {
     // A REPLY THE FORMATTER COULD NOT READ IS NO ANSWER, and is logged as a failure: it was logged as answered, beside
     // completed searches, though it is not kept and is asked again (research-answers.mjs).
     logCall("perplexity_research", asked, isResearchAnswer(text)
-      ? { ok: true, bytes: String(text ?? "").length, citations: citationCount(data), ...fb }
-      : { ok: false, error: String(text ?? "").slice(0, 200), ...fb });
+      ? { ok: true, bytes: String(text ?? "").length, citations: citationCount(data) }
+      : { ok: false, error: String(text ?? "").slice(0, 200) });
     keepResearchAnswer(RUN_DIR, { session: SESSION, agent: AGENT, task, preset, request, text });
     return text;
   } catch (err) {
     // A FAILED LOOKUP IS LOGGED TOO, and that is the half that matters most: without it, "the search
     // ran and found nothing" and "the search errored" leave the same trace, which is the exact
     // ambiguity this whole issue is about.
-    logCall("perplexity_research", asked, { ok: false, error: String(err?.message ?? err).slice(0, 200), ...fb });
+    logCall("perplexity_research", asked, { ok: false, error: String(err?.message ?? err).slice(0, 200) });
     return `ERROR: Research failed — ${err.message}${err?.cause ? ` (${err.cause.code || err.cause.name || err.cause})` : ""}`;
   }
 }

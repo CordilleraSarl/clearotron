@@ -12,10 +12,10 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { installWebResearch, notChosenRefusal, refuseUnchosenResearch, researchDoor, webResearchCapability, OWN_SEARCH_STILL_PERPLEXITY, WEB_RESEARCH_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
+import { installWebResearch, notChosenRefusal, researchDoor, webResearchCapability, OWN_SEARCH_STILL_PERPLEXITY, WEB_RESEARCH_SETTING, WEB_RESEARCH_SERVICES } from "../web-research.mjs";
 import { preflightResearchCredential } from "../driver.config.mjs";
 import { policyFor } from "../search-policy.mjs";
-import { readRunChoices, recordRunChoices, researchForRun, researchNotChosen, RunChoiceUnavailable } from "../engine/run-choices.mjs";
+import { readRunChoices, recordRunChoices, researchForRun, RunChoiceUnavailable } from "../engine/run-choices.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 
 test("the setting names one of two services; unset chooses none; anything else is no service", () => {
@@ -87,23 +87,20 @@ test("the door checks the run's service, and the service handed in wins over the
     "a Knockout is never refused at this door");
 });
 
-test("an installation that names no service is refused a clearance by name, with what to set; a Knockout runs without one", () => {
+test("an installation that names no service is refused every search by name, a Knockout's included, whatever key is set", () => {
   const KEY = { PERPLEXITY_API_KEY: "k" };
-  for (const product of ["global-preliminary-search", "multi-country-focus-search", "full-country-search"]) {
-    assert.throws(() => researchDoor(policyFor(product), KEY),
-      { message: "[preflight] Choose a web research service before starting this clearance. Run npx clearotron install." }, `${product}: a key present chose nothing`);
-    assert.throws(() => researchDoor(policyFor(product), KEY, { service: null }), /Choose a web research service/, "a run recorded with none is refused too");
+  const refusal = "[preflight] CLEAROTRON_WEB_RESEARCH is not set, so this installation has chosen no web-research service, and no search runs without one";
+  assert.equal(notChosenRefusal(), refusal);
+  for (const product of ["knockout-search", "global-preliminary-search", "multi-country-focus-search", "full-country-search"]) {
+    assert.throws(() => researchDoor(policyFor(product), KEY), { message: refusal }, `${product}: a key present chose nothing`);
+    assert.throws(() => researchDoor(policyFor(product), KEY, { service: null }), { message: refusal }, `${product}: a run recorded with none is refused too`);
   }
-  assert.equal(notChosenRefusal(), "[preflight] Choose a web research service before starting this clearance. Run npx clearotron install.");
-  assert.doesNotMatch(notChosenRefusal(), /PERPLEXITY_API_KEY/, "a key is not the choice, so the refusal never sends the reader to one");
-  assert.equal(researchDoor(null, KEY).deferred, true, "an order whose product its profile settles is asked again once it is known");
-  assert.throws(() => refuseUnchosenResearch(policyFor("full-country-search")), /Choose a web research service/, "a clearance its profile settled is refused");
-  assert.equal(refuseUnchosenResearch(policyFor("knockout-search")), undefined, "a Knockout its profile settled runs its register half");
-  assert.deepEqual(researchDoor(policyFor("knockout-search"), KEY),
-    { checked: false, component: "commonLawGrid", service: null, credEnv: null, missing: [] });
+  assert.throws(() => researchDoor(null, KEY), { message: refusal }, "an order whose product its profile settles later is refused at once: no product runs without web research");
+  assert.doesNotMatch(refusal, /PERPLEXITY_API_KEY/, "a key is not the choice, so the refusal never sends the reader to one");
   assert.throws(() => researchDoor(policyFor("knockout-search"), { [WEB_RESEARCH_SETTING]: "google" }), /names no web-research service/,
-    "a setting that names no service is a fault every run is refused over, a Knockout's included");
+    "a setting that names no service is a fault every run is refused over");
 });
+
 
 test("the configuration's door never reads the setting: it checks the service it is handed, Perplexity when none is", () => {
   const p = policyFor("full-country-search");
@@ -132,11 +129,9 @@ test("the run's record holds its service or that none was chosen, and a run reco
     const rec = readRunChoices(runDir);
     assert.ok(Object.hasOwn(rec, "research") && rec.research === null, "none chosen reads back as none, not as a record from before the service");
     assert.equal(researchForRun(runDir), null);
-    assert.equal(researchNotChosen(runDir), true);
     rmSync(driverDir(runDir, "run-choices.json"));
     recordRunChoices(runDir, { engine: "anthropic-agent", register: null });
     assert.equal(Object.hasOwn(readRunChoices(runDir), "research"), false, "a caller that names no service records nothing about it");
-    assert.equal(researchNotChosen(runDir), false);
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
@@ -145,73 +140,4 @@ test("a run whose service this runner cannot serve parks under its own kind", ()
   assert.deepEqual(e.dependency, { kind: "research", recorded: "own", machine: "perplexity", detail: "no web search" });
   assert.match(e.message, /started on the AI program's own web search, and this runner cannot serve it/);
   assert.match(new RunChoiceUnavailable({ kind: "research", recorded: "perplexity", run: null }).message, /started on the perplexity web research/);
-});
-
-test("on own search, each product's questions take the route its sign-in's catalog allows, and Full country stops before spending otherwise", async () => {
-  const { ownSearchRoute, ROUTE_WORDS } = await import("../web-research.mjs");
-  const { catalogFrom, readCodexCatalog } = await import("../engine/codex-catalog.mjs");
-  // The catalog's shape as `codex debug models` renders it (measured 2026-11-27), model ids only.
-  const catalog = catalogFrom(JSON.stringify({ models: [{ slug: "gpt-6.1-terra" }, { slug: "gpt-6.1-sol" }, { slug: "gpt-6-luna" }] }));
-  assert.deepEqual([...catalog], ["gpt-6.1-terra", "gpt-6.1-sol", "gpt-6-luna"]);
-  const full = policyFor("full-country-search"), codex = "openai-agent";
-  const FALLBACK = { CLEAROTRON_WEB_RESEARCH_FALLBACK: "perplexity", PERPLEXITY_API_KEY: "k" };
-  assert.deepEqual(ownSearchRoute({ policy: full, engine: codex, catalog, env: {} }),
-    { stop: "missing", model: "gpt-6.2-sol", detail: "CLEAROTRON_WEB_RESEARCH_FALLBACK=perplexity, with PERPLEXITY_API_KEY",
-      why: `[preflight] ${ROUTE_WORDS.fullCountryMissing} (CLEAROTRON_WEB_RESEARCH_FALLBACK=perplexity, with PERPLEXITY_API_KEY)` });
-  assert.equal(ROUTE_WORDS.fullCountryMissing, "This Codex sign-in lacks the model needed for Full country. Configure the Perplexity fallback or choose a supported AI setup.");
-  assert.deepEqual(ownSearchRoute({ policy: full, engine: codex, catalog, env: FALLBACK }),
-    { route: "perplexity", model: "gpt-6.2-sol", disclosure: "Perplexity will handle any questions that need the deepest research level." });
-  assert.equal(ownSearchRoute({ policy: full, engine: codex, catalog, env: { CLEAROTRON_WEB_RESEARCH_FALLBACK: "perplexity" } }).stop, "missing", "a fallback with no key is no fallback");
-  assert.deepEqual(ownSearchRoute({ policy: full, engine: codex, catalog: null, env: FALLBACK }),
-    { stop: "unknown", model: "gpt-6.2-sol", detail: null, why: "[preflight] Clearotron could not check whether this Codex sign-in supports Full country. Check the sign-in and try again." },
-    "a catalog that cannot be read is not known: never proof the model is missing, nor authority to buy the fallback");
-  assert.deepEqual(ownSearchRoute({ policy: { level: "full-country-search" }, engine: codex, catalog: new Set(["gpt-6.2-sol"]), env: {} }), { route: "own" }, "the run's frozen policy names its product `level`");
-  for (const product of ["knockout-search", "global-preliminary-search", "multi-country-focus-search"]) {
-    assert.deepEqual(ownSearchRoute({ policy: policyFor(product), engine: codex, catalog, env: {} }), { route: "own" }, `${product}: its model is offered`);
-    assert.deepEqual(ownSearchRoute({ policy: policyFor(product), engine: codex, catalog: null, env: {} }), { route: "own" }, `${product}: not known runs, and fails with the program's reason if it must`);
-  }
-  assert.match(ownSearchRoute({ policy: policyFor("multi-country-focus-search"), engine: codex, catalog: new Set(["gpt-6-luna"]), env: FALLBACK }).why,
-    /need gpt-6\.1-sol, which this Codex sign-in does not offer/, "the fallback is Full country's alone");
-  assert.deepEqual(ownSearchRoute({ policy: full, engine: "anthropic-agent", catalog: null, env: {} }), { route: "own" }, "Claude's catalog is not read here");
-  for (const text of ["not json", JSON.stringify({ models: [] }), JSON.stringify({ other: 1 })]) assert.equal(catalogFrom(text), null, text);
-  // The program is asked for its catalog, with no model call, and a failed or refused render reads as not known.
-  const asked = [];
-  const run = (bin, args) => { asked.push(args); return { status: 0, stdout: JSON.stringify({ models: [{ slug: "gpt-6-luna" }] }) }; };
-  assert.deepEqual([...readCodexCatalog({ env: { CLEAROTRON_CODEX_PATH: "/usr/local/bin/codex" }, run })], ["gpt-6-luna"]);
-  assert.deepEqual(asked, [["debug", "models"]]);
-  assert.equal(readCodexCatalog({ env: { CLEAROTRON_CODEX_PATH: "/usr/local/bin/codex" }, run: () => ({ status: 1, stdout: "" }) }), null);
-  assert.equal(readCodexCatalog({ env: { CLEAROTRON_CODEX_PATH: "/usr/local/bin/codex" }, run: () => { throw new Error("ENOENT"); } }), null);
-});
-
-test("a run's question route is frozen once, kept on resume, and the report credits Perplexity only where every fallback question was answered", async () => {
-  const { freezeQuestionRoute, questionRoute, fallbackReport } = await import("../web-research.mjs");
-  const runDir = mkdtempSync(join(tmpdir(), "web-research-route-"));
-  try {
-    assert.equal(questionRoute(runDir), null);
-    assert.equal(freezeQuestionRoute(runDir, { route: "perplexity", model: "gpt-6.2-sol", disclosure: "d" }), "perplexity");
-    assert.equal(freezeQuestionRoute(runDir, { route: "own" }), "perplexity", "a frozen route is never rewritten");
-    assert.equal(questionRoute(join(runDir, "_experiments", "arm")), "perplexity", "an experiment's arm reads its run's route");
-    const log = (rows) => writeFileSync(driverDir(runDir, "reading-log.jsonl"), rows.map((r) => JSON.stringify(r)).join("\n") + "\n");
-    const q = (over) => ({ tool: "perplexity_research", args: { task: "q" }, ...over });
-    assert.deepEqual(fallbackReport(runDir), { line: null, answered: 0, failed: 0 }, "no call log: nothing attributed");
-    log([q({ ok: true }), q({ ok: true, fallback: true }), q({ ok: true, fallback: true, args: { task: "", grid: true } })]);
-    assert.deepEqual(fallbackReport(runDir), { line: "Perplexity answered the deepest research questions.", answered: 1, failed: 0 });
-    log([q({ ok: true, fallback: true }), q({ ok: false, fallback: true })]);
-    assert.deepEqual(fallbackReport(runDir), { line: null, answered: 1, failed: 1 }, "some failed: the actual outcome is reported, not the sentence");
-    log([q({ ok: true })]);
-    assert.deepEqual(fallbackReport(runDir), { line: null, answered: 0, failed: 0 }, "none asked: no work is attributed to the fallback");
-  } finally { rmSync(runDir, { recursive: true, force: true }); }
-});
-
-test("an order says before it starts that Perplexity will answer its deepest questions, or which stop it would meet", async () => {
-  const { orderResearchNotice } = await import("../web-research.mjs");
-  const lacking = () => new Set(["gpt-6.1-terra", "gpt-6.1-sol", "gpt-6-luna"]);
-  const OWN_CODEX = { CLEAROTRON_WEB_RESEARCH: "own", CLEAROTRON_AI: "openai-agent" };
-  assert.deepEqual(orderResearchNotice({ product: "full-country-search", env: { ...OWN_CODEX, CLEAROTRON_WEB_RESEARCH_FALLBACK: "perplexity", PERPLEXITY_API_KEY: "k" }, readCatalog: lacking }),
-    { notice: "Perplexity will handle any questions that need the deepest research level." });
-  assert.deepEqual(orderResearchNotice({ product: "full-country-search", env: OWN_CODEX, readCatalog: lacking }),
-    { stop: "This Codex sign-in lacks the model needed for Full country. Configure the Perplexity fallback or choose a supported AI setup. (CLEAROTRON_WEB_RESEARCH_FALLBACK=perplexity, with PERPLEXITY_API_KEY)" });
-  assert.equal(orderResearchNotice({ product: "multi-country-focus-search", env: OWN_CODEX, readCatalog: lacking }), null);
-  assert.equal(orderResearchNotice({ product: "full-country-search", env: { CLEAROTRON_WEB_RESEARCH: "perplexity", CLEAROTRON_AI: "openai-agent" }, readCatalog: lacking }), null, "Perplexity installs show nothing");
-  assert.equal(orderResearchNotice({ product: "full-country-search", env: { CLEAROTRON_WEB_RESEARCH: "own", CLEAROTRON_AI: "anthropic-agent" }, readCatalog: () => { throw new Error("not read"); } }), null, "Claude's catalog is not read");
 });
